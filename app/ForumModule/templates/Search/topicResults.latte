@@ -1,0 +1,24 @@
+{block content}
+{control searchTopicForm}
+
+{if count($topicData)}
+    <div class="col-sm-12 main">
+        <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">   
+            <thead>
+                <tr>
+                    <th>{_topic_id}</th>
+                    <th>{_topic_name}</th>
+                </tr>
+            </thead>   
+            <tbody>
+                {foreach $topicData as $data}
+                    <tr>
+                        <td><a href="{link Post:all, $data->topic_forum_id, $data->topic_id}">{$data->topic_name}</a></td>
+                        <td>{$data->topic_name}</td>
+                    </tr>
+                {/foreach}
+            </tbody>
+        </table>
+    </div>
+{/if}
+{/block}

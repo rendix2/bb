@@ -1,0 +1,88 @@
+#   
+# WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
+# https://nette.org/security-warning
+#
+parameters:
+    databases:
+        username:  "root"
+        password:  ""
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+
+session:
+        expiration: 14 days
+        autoStart: true # výchozí hodnota je 'smart'
+
+
+#database:
+#	dsn: 'mysql:host=127.0.0.1;dbname=test'
+#	user:
+#	password:
+#	options:
+#   		lazy: yes
+
+services:
+    router: App\RouterFactory::createRouter
+    IndexManager:
+        factory:  App\Models\IndexManager
+        #setup:
+        #        - factory
+    ForumsManager: 
+        factory: App\Models\ForumsManager
+        setup:
+                - factory
+    PostsManager: 
+        factory: App\Models\PostsManager
+        setup:
+                - factory
+    UsersManager: 
+        factory: App\Models\UsersManager
+        setup:
+                - factory
+    ThanksManager: 
+        factory: App\Models\ThanksManager
+        setup:
+                - factory
+    TopicsManager: 
+        factory: App\Models\TopicsManager
+        setup:
+            - factory
+    CategoriesManager: 
+        factory: App\Models\CategoriesManager
+        setup:
+                - factory
+    RolesMnager:
+        factory: App\Models\RolesManager
+        setup:
+                - factory
+    RanksManager:
+        factory: App\Models\RanksManager
+        setup:
+                - factory
+    LanaguagesManager:        
+        factory: App\Models\LanguagesManager
+        setup:
+                - factory
+    authenticator: App\Authenticator
+
+extensions:
+    dibi: Dibi\Bridges\Nette\DibiExtension22
+
+dibi:
+    driver: mysql
+    port: 5433
+    database: bb
+    username: %databases.username%
+    password: %databases.password%
+    lazy: TRUE   
+
+di:
+    debugger: true  # vypne DI panel v Debugger baru
+
+tracy:
+    maxLen: 500
+    maxDepth: 10

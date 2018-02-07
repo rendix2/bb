@@ -1,0 +1,22 @@
+{block content}
+<div class="col-sm-12 main">
+    <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+        <thead>
+            <tr>
+                <th>{_topic_id}</th>
+                <th>{_topic_name}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {foreach $thanks as $thank}
+                <tr>
+                    <td>
+                        <a href="{link Post:all, $thank->thank_forum_id, $thank->thank_topic_id}">{$thank->thank_topic_id}</a>
+                    </td>
+                    <td>{$thank->topic_name}</td>
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+</div>
+

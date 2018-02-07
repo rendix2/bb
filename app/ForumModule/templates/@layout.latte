@@ -1,0 +1,60 @@
+{**
+ * @param string   $basePath web base path
+ * @param array    $flashes  flash messages
+*}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>{ifset title}{include title|stripHtml} | {/ifset}Nette Sandbox</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{$basePath}/css/style.css">
+        <link rel="stylesheet" href="{$basePath}/css/bootstrap.css">
+        <link rel="stylesheet" href="{$basePath}/css/bootstrap-grid.css">
+        <link rel="stylesheet" href="{$basePath}/css/bootstrap-reboot.css">
+        {block head}{/block}
+    </head>
+
+    <body>
+        <div class="col-sm-12 main">
+            <a href="{link Index:default}">Index</a>
+
+            {if $user->isLoggedIn()}
+                <a href="{link User:edit}">{_user_settings}</a>
+                <a href="{link User:profile $user->getId()}">{$user->getIdentity()->getData()['user_name']}</a>
+                <a href="{link Search:default}">{_search}</a>
+                <a href="{link User:logout}">Logout</a>
+                
+                {if $user->isInRole('Admin')}
+                <a href="{link :Admin:Index:default}">Admin</a>
+                {/if}
+
+            {else}
+                <a href="{link Login:default}">Login</a>
+            {/if}
+        </div>
+
+        <div class="col-sm-4 main">
+            {foreach $flashes as $flash}
+                <div class="alert alert-{$flash->type}">{$flash->message}</div>
+            {/foreach}
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                {include content} 
+            </div>
+        </div>     
+
+        {block scripts}
+        <script src="{$basePath}/js/bootstrap.js"></script>
+        <script src="{$basePath}/js/bootstrap.bundle.js"></script>
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src="https://nette.github.io/resources/js/netteForms.min.js"></script>
+        <script src="{$basePath}/js/main.js"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+        {/block}
+    </body>
+</html>

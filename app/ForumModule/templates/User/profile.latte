@@ -1,0 +1,30 @@
+{block content}
+
+<div class="col-sm-12 main">
+    <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+        <thead>
+            <tr>
+                <th>{_user_name}</th>
+                <th>{_user_post_count}</th>
+                <th>{_user_topic_count}</th>
+                <th>{_user_thank_count}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{$userData->user_name}</td>
+                <td>
+                    <a href="{link User:posts $userData->user_id}">{$userData->user_post_count}</a>
+                </td>
+                <td>
+                    <a href="{link User:topics $userData->user_id}">{$userData->user_topic_count}</a>
+                </td>
+                <td>
+                    <a href="{link User:thanks $userData->user_id}">{$userData->user_thank_count}</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{/block}

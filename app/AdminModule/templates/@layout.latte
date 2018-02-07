@@ -1,0 +1,58 @@
+{**
+ * @param string   $basePath web base path
+ * @param array    $flashes  flash messages
+*}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>{ifset title}{include title|stripHtml} | {/ifset}Nette Sandbox</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{$basePath}/css/style.css">
+        <link rel="stylesheet" href="{$basePath}/css/bootstrap.css">
+        <link rel="stylesheet" href="{$basePath}/css/bootstrap-grid.css">
+        <link rel="stylesheet" href="{$basePath}/css/bootstrap-reboot.css">
+        {block head}{/block}
+    </head>
+
+    <body>
+        <div class="col-sm-12 main">            
+            {if $user->isLoggedIn()}
+                <a href="{link Index:default}">Index</a>
+                <a href="{link :Forum:Index:default}">Forum</a>
+                <br>                                
+                <a href="{link Forum:default}">{_menu_forums}<a>
+                <a href="{link Category:default}">{_menu_categories}</a>
+                <a href="{link Roles:default}">{_menu_roles}</a>
+                <a href="{link User:default}">{_menu_users}</a>
+                <a href="{link Cache:default}">{_menu_cache}</a>               
+                <a href="{link Language:default}">{_menu_languages}</a>
+            {else}
+                <a href="{link Login:default}">Login</a>
+            {/if}
+        </div>
+
+        <div class="col-sm-4 main">
+            {foreach $flashes as $flash}
+                <div class="alert alert-{$flash->type}">{$flash->message}</div>
+            {/foreach}
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                {include content} 
+            </div>
+        </div>    
+
+        {block scripts}
+        <script src="{$basePath}/js/bootstrap.js"></script>
+        <script src="{$basePath}/js/bootstrap.bundle.js"></script>
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src="https://nette.github.io/resources/js/netteForms.min.js"></script>
+        <script src="{$basePath}/js/main.js"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+        {/block}
+    </body>
+</html>

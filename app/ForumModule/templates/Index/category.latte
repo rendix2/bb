@@ -1,0 +1,16 @@
+{block content}
+    {block forums}
+    <ul>
+    {foreach $forums as $forum}
+        <li>
+            <a href="{link Forum:default, $forum->forum_id}">{$forum->forum_name}</a>
+        </li> 
+        
+        {if is_array($forum['childs'])}
+            {include forums, forums => $forum['childs']}
+        {/if}
+                  
+    {/foreach}
+    </ul>
+    {/block}
+{/block}

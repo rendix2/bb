@@ -1,0 +1,26 @@
+{block content}
+
+{control searchUserForm}
+
+{if count($userData)}
+    <div class="col-sm-12 main">
+        <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">   
+            <thead>
+                <tr>
+                    <th>{_user_id}</th>
+                    <th>{_user_name}</th>
+                </tr>
+            </thead>   
+            <tbody>
+                {foreach $userData as $data}
+                    <tr>
+                        <td><a href="{link User:profile, $data->user_id}">{$data->user_id}</a></td>
+                        <td>{$data->user_name}</td>
+                    </tr>
+                {/foreach}
+            </tbody>
+        </table>
+    </div>
+{/if}
+
+{/block}
