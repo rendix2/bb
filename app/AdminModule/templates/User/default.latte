@@ -15,6 +15,9 @@
             <tr>
                 <th>{_user_id}</th>
                 <th>{_user_name}</th>
+                <th>{_user_post_count}</th>
+                <th>{_user_topic_count}</th>
+                <th>{_user_thank_count}</th>
                 <th></th>
             </tr>
         </thead>
@@ -26,8 +29,17 @@
                     </td>
                     <td>{$item->user_name}</td>
                     <td>
-                        <a href="{link User:delete, $item->user_id}">{_delete}</a>
+                        {$item->user_post_count}
                     </td>
+                    <td>
+                        {$item->user_topic_count}
+                    </td>
+                    <td>
+                        {$item->user_thank_count}
+                    </td>                    
+                    <td>
+                        <a href="{link User:delete, $item->user_id}">{_delete}</a>
+                    </td>    
                 </tr>
             {/foreach}
         </tbody>

@@ -1,5 +1,27 @@
 {block content}
-<div class="col-sm-8 main">  
-{control editForm}
+<div class="col-sm-12 main">
+<div class="row">
+    <div class="col-sm-8 main">  
+        {control editForm}
+    </div>
+    <div class="col-m-4">
+    <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+        <thead>
+            <tr>
+                <th>{_user_post_count}</th>
+                <th>{_user_post_count}</th>
+                <th>{_user_thank_count}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{$item->user_post_count}</td>
+                <td>{$item->user_topic_count}</td>
+                <td>{$item->user_thank_count}</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
 </div>
 {/block}
