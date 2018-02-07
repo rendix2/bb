@@ -1,6 +1,9 @@
 {block content}
+<div class="col-sm-8 main">
 {control editForm}
+</div>
 
+<div class="col-sm-4 main">
 {block forums}
 <ul>
     {foreach $forums as $forum}
@@ -11,8 +14,37 @@
         {if is_array($forum['childs'])}
             {include forums, forums => $forum['childs']}
         {/if}
-
     {/foreach}
 </ul>
 {/block}
+</div>
+
+<div class="col-sm-12 main">
+    <table>
+        <thead>
+        <tr>
+            <th>{_forum_topic_count}</th>
+            <th>{_forum_last_topic}</th>
+            <th>{_forum_last_post}</th>
+            <th>{_forum_last_post_user}</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{$item->forum_topic_count}</td>
+                <td>
+                    {if $topicData}
+                    <a href="{link :Forum:Post:all, $topicData->topic_forum_id, $topicData->topic_id}">{$topicData->topic_name}</a>
+                    {else}
+                        Empty
+                    {/if}
+                </td>
+                <td>{$item->forum_last_post_id}</td>
+                <td>
+                    <a href="{link User:edit $item->forum_last_post_user_id}">{$userData->user_name}</a>
+                </td>
+            </tr>
+        </tbody>
+    </table> 
+</div>
 {/block}

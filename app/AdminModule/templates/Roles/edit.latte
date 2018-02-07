@@ -1,3 +1,8 @@
 {block content}
+<div class="col-sm-12"> 
 {control editForm}
+</div>
+<div class="col-sm-12"> 
+{_user_role_count}: <a href="{link Roles:users, $presenter->getParameter('id')}">{$userCount}</a>
+</div>
 {/block}

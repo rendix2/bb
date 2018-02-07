@@ -12,7 +12,7 @@ class ForumsManager extends Crud\CrudManager {
     public function getTopics($forum_id) {
         return $this->dibi->select('*')->from(self::TOPICS_TABLE)->as('t')->leftJoin(self::USERS_TABLE)->as('u')->on('[t.topic_user_id] = [u.user_id]')->where('[t.topic_forum_id] = %i', $forum_id);
     }
-
+    
     public function getForumsByForumParentId($forum_id) {
         return $this->dibi->select('*')->from($this->getTable())->where('[forum_parent_id] = %i', $forum_id)->fetchAll();
     }

@@ -56,7 +56,7 @@
                     <td>{$topic->topic_post_count}</td>
                     <td>
                         {if $user->getId() === $topic->topic_user_id}
-                            <a href="{link Post:deleteTopic, $presenter->getParameter('forum_id'), $topic->topic_id}" class="btn btn-danger btn-fa-only" title="Delete topic"><i class="fa fa-remove" aria-hidden="true"></i></a>
+                            <a href="{link Post:deleteTopic, $presenter->getParameter('forum_id'), $topic->topic_id, $presenter->getParameter('page')}" class="btn btn-danger btn-fa-only" title="Delete topic"><i class="fa fa-remove" aria-hidden="true"></i></a>
                             {/if}
                     </td>
                 </tr>    
@@ -67,6 +67,6 @@
 <div class="col-sm-12 main">
     <div class="float-right">
         {control paginator}
-    </div>d
+    </div>
 </div>
 {/block}

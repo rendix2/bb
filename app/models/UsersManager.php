@@ -32,5 +32,13 @@ class UsersManager extends Crud\CrudManager {
     public function getRoles($user_id){
         return $this->dibi->select('*')->from(self::USERS2ROLES)->as('ur')->innerJoin(self::ROLES_TABLE)->as('r')->on('[r.role_id] = [ur.role_id]')->where('[ur.user_id] = %i', $user_id)->fetchPairs('role_id', 'role_name');        
     }
+    
+    public function getByRoleId($role_id){
+        return $this->dibi->select('*')->from($this->getTable())->where('[user_role_id] = %i', $role_id)->fetchAll();
+    }
+    
+    public function getCountByRoleId($role_id){
+        return $this->dibi->select('COUNT(*)')->from($this->getTable())->where('[user_role_id] = %i', $role_id)->fetchSingle()  ;
+    }
        
 }

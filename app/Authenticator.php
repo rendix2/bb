@@ -44,6 +44,10 @@ class Authenticator implements \Nette\Security\IAuthenticator {
         
         $roles = $this->userManager->getRoles($userData->user_id);
         
+        if (!$roles){
+            throw new \Nette\Security\AuthenticationException('User is not assigned to any role.');
+        }
+        
         return new \Nette\Security\Identity($userData->user_id, $roles, ['user_name' => $userData->user_name, 'lang_file_name' => $langData->lang_file_name ]);
     }
 }
