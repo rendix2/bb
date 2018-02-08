@@ -40,5 +40,9 @@ class ThanksManager extends Crud\CrudManager {
     public function getThanksByUserId($user_id) {
         return $this->dibi->select('*')->from($this->getTable())->where('[thank_user_id] = %i', $user_id)->fetchAll();
     }
+    
+    public function deleteByTopicId($topic_id){
+        return $this->dibi->delete($this->getTable())->where('[thank_topic_id] = %i', $topic_id)->execute();
+    }
 
 }

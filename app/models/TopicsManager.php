@@ -58,19 +58,18 @@ class TopicsManager extends Crud\CrudManager {
     public function injectThankManager(\App\Models\ThanksManager $thanksManager){
         $this->thanksManager = $thanksManager;
     }
-    /*
+    
     public function injectPostManager(\App\Models\PostsManager $postManager){
         $this->postManager = $postManager;
-    }
-     *
-     */
-
+    }    
+    
     public function delete($topic_id) {
         $this->dibi->begin();
         
         $topic           = $this->getById($topic_id);
         $forum           = $this->forumManager->getById($topic->topic_forum_id);
-        $lastPostByForum = $this->getManager()->getLastPostByForum($topic->topic_forum_id, 0, $topic_id);
+        $lastPostByForum = $this->postManager->getLastPostByForum($topic->topic_forum_id, 0, $topic_id);
+        $forum_id        = $topic->topic_forum_id;
 
         if ((int) $topic_id === $forum->forum_last_topic_id) {
             $this->update($topic_id, \Nette\Utils\ArrayHash::from(['topic_last_post_id' => $lastPostByForum->post_id, 'topic_last_post_user_id' => $lastPostByForum->post_user_id]));
@@ -85,7 +84,8 @@ class TopicsManager extends Crud\CrudManager {
         foreach ($thanks as $thank) {
             $this->userManager->update($thank->thank_user_id, \Nette\Utils\ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1']));
         }
-
+        
+        $this->thanksManager->deleteByTopicId($topic_id);
         $this->forumManager->update($topic->topic_forum_id, \Nette\Utils\ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
         $this->userManager->update($topic->topic_user_id, \Nette\Utils\ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1', 'user_post_count%sql' => 'user_post_count - 1']));
         $this->postManager->deleteByTopicId($topic_id);
