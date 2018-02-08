@@ -33,38 +33,47 @@ services:
         #        - factory
     ForumsManager: 
         factory: App\Models\ForumsManager
+        inject: yes
         setup:
                 - factory
     PostsManager: 
         factory: App\Models\PostsManager
+        inject: yes
         setup:
                 - factory
     UsersManager: 
         factory: App\Models\UsersManager
+        inject: yes
         setup:
                 - factory
     ThanksManager: 
         factory: App\Models\ThanksManager
+        inject: yes
         setup:
                 - factory
     TopicsManager: 
         factory: App\Models\TopicsManager
+        inject: yes
         setup:
             - factory
     CategoriesManager: 
         factory: App\Models\CategoriesManager
+        inject: yes
         setup:
                 - factory
     RolesMnager:
         factory: App\Models\RolesManager
+        inject: yes
         setup:
                 - factory
     RanksManager:
         factory: App\Models\RanksManager
+        inject: yes
         setup:
                 - factory
     LanaguagesManager:        
         factory: App\Models\LanguagesManager
+        inject: yes
         setup:
                 - factory
     authenticator: App\Authenticator

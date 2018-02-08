@@ -62,47 +62,18 @@ class PostPresenter extends Base\ForumPresenter {
             $this->error('You are not author of post!', Http\IResponse::S403_FORBIDDEN);
         }
 
-        $topic = $this->topicsManager->getById($topic_id);
-
-        $lastPost = $this->getManager()->getLastPostByTopic($topic_id, $post_id);
-        $lastPostByForum = $this->getManager()->getLastPostByForum($forum_id, $post_id, $topic_id);
-
-        if ((int) $post_id === $topic->topic_last_post_id) {
-            if ($lastPost) {
-                $this->topicsManager->update($topic_id, \Nette\Utils\ArrayHash::from(['topic_last_post_id' => $lastPost->post_id, 'topic_last_post_user_id' => $lastPost->post_user_id]));
-                $this->forumManager->update($forum_id, \Nette\Utils\ArrayHash::from(['forum_last_topic_id' => $lastPostByForum->post_topic_id, 'forum_last_post_id' => $lastPostByForum->post_id, 'forum_last_post_user_id' => $lastPostByForum->post_user_id]));
-            } else {
-                $this->topicsManager->update($topic_id, \Nette\Utils\ArrayHash::from(['topic_last_post_id' => 0, 'topic_last_post_user_id' => 0]));
-                $this->forumManager->update($forum_id, \Nette\Utils\ArrayHash::from(['forum_last_topic_id' => $lastPostByForum->post_topic_id, 'forum_last_post_id' => $lastPostByForum->post_id, 'forum_last_post_user_id' => $lastPostByForum->post_user_id]));
-            }
-        }
-
-        $this->topicsManager->update($topic_id, \Nette\Utils\ArrayHash::from(['topic_post_count%sql' => 'topic_post_count - 1']));
         $this->getManager()->delete($post_id);
-        $this->userManager->update($this->getUser()->getId(), \Nette\Utils\ArrayHash::from(['user_post_count%sql' => 'user_post_count - 1']));
 
         $this->flashMessage('Post deleted.', self::FLASH_MESSAGE_SUCCES);
         $this->redirect('Post:all', $forum_id, $topic_id);
     }
 
-    public function actionDeleteTopic($forum_id, $topic_id, $page) {
+    public function actionDeleteTopic($forum_id, $topic_id, $page) {                     
         $topic = $this->topicsManager->getById($topic_id);
-        $forum = $this->forumManager->getById($forum_id);
-
-
-        $lastPostByForum = $this->getManager()->getLastPostByForum($forum_id, 0, $topic_id);
-
-        if ((int) $topic_id === $forum->forum_last_topic_id) {
-            $this->topicsManager->update($topic_id, \Nette\Utils\ArrayHash::from(['topic_last_post_id' => $lastPostByForum->post_id, 'topic_last_post_user_id' => $lastPostByForum->post_user_id]));
-            $this->forumManager->update($forum_id, \Nette\Utils\ArrayHash::from(['forum_last_topic_id' => $lastPostByForum->post_topic_id, 'forum_last_post_id' => $lastPostByForum->post_id, 'forum_last_post_user_id' => $lastPostByForum->post_user_id]));
-        } else {
-            $this->topicsManager->update($topic_id, \Nette\Utils\ArrayHash::from(['topic_last_post_id' => $lastPostByForum->post_id, 'topic_last_post_user_id' => $lastPostByForum->post_user_id]));
-            $this->forumManager->update($forum_id, \Nette\Utils\ArrayHash::from(['forum_last_post_id' => $lastPostByForum->post_id, 'forum_last_post_user_id' => $lastPostByForum->post_user_id]));
-        }
-
+        
         if ($topic->topic_user_id !== $this->getUser()->getId()) {
             $this->error('You are not author of topic!', Http\IResponse::S403_FORBIDDEN);
-        }
+        }       
 
         $this->topicsManager->delete($topic_id);
 
@@ -119,7 +90,6 @@ class PostPresenter extends Base\ForumPresenter {
             'thank_time' => time()];
 
         $this->thanksManager->add(\Nette\Utils\ArrayHash::from($data));
-        $this->userManager->update($user_id, \Nette\Utils\ArrayHash::from(['user_thank_count%sql' => 'user_thank_count + 1']));
 
         $this->flashMessage('Your thank to this topic!', self::FLASH_MESSAGE_SUCCES);
         $this->redirect('Post:all', $forum_id, $topic_id);
@@ -217,12 +187,8 @@ class PostPresenter extends Base\ForumPresenter {
         $values->post_forum_id = $forum_id;
         $values->post_topic_id = $post_topic_id;
 
-        $post_id = $this->getManager()->add($values);
-
-        $this->topicsManager->update($post_topic_id, \Nette\Utils\ArrayHash::from(['topic_last_post_id' => $post_id]));
-        $this->userManager->update($user_id, \Nette\Utils\ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1', 'user_post_count%sql' => 'user_post_count + 1']));
-        $this->forumManager->update($forum_id, \Nette\Utils\ArrayHash::from(['forum_last_post_id' => $post_id, 'forum_last_post_user_id' => $user_id, 'forum_last_topic_id' => $post_topic_id, 'forum_topic_count%sql' => 'forum_topic_count + 1']));
-
+         $this->getManager()->add($values);
+        
         $this->flashMessage('Topic saved.', self::FLASH_MESSAGE_SUCCES);
         $this->redirect('Post:all', $forum_id, $post_topic_id);
     }
@@ -244,11 +210,7 @@ class PostPresenter extends Base\ForumPresenter {
             $values->post_topic_id = $topic_id;
             $values->post_add_time = time();
 
-            $result = $post_id = $this->getManager()->add($values);
-
-            $this->userManager->update($user_id, \Nette\Utils\ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1']));
-            $this->topicsManager->update($topic_id, \Nette\Utils\ArrayHash::from(['topic_post_count%sql' => 'topic_post_count+1', 'topic_last_post_user_id' => $user_id, 'topic_last_post_id' => $post_id]));
-            $this->forumManager->update($forum_id, \Nette\Utils\ArrayHash::from(['forum_last_topic_id' => $topic_id, 'forum_last_post_id' => $post_id, 'forum_last_post_user_id' => $user_id]));
+            $result = $this->getManager()->add($values);         
         }
 
         if ($result) {

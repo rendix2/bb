@@ -18,7 +18,6 @@ class IndexPresenter extends Base\ForumPresenter {
     const CACHE_KEY_TOTAL_POSTS = 'totalPosts';
     const CACHE_KEY_LAST_TOPIC = 'lastTopic';
 
-    private $allForums;
     private $cache;
     
     private $forumsManager;

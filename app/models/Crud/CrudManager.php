@@ -14,6 +14,8 @@ abstract class CrudManager extends \App\Models\Manager {
     private $table;
     private $primaryKey;
     private $cache;
+    
+    public $storage;
 
     public function __construct(\Dibi\Connection $dibi) {
         parent::__construct($dibi);
@@ -24,6 +26,7 @@ abstract class CrudManager extends \App\Models\Manager {
     public function factory(\Nette\Caching\IStorage $storage) {
         $this->cache = new Cache($storage, \App\Presenters\crud\CrudPresenter::CACHE_KEY_PRIMARY_KEY);
         $this->primaryKey = $this->getPrimaryKeyQuery();
+        $this->storage = $storage;
     }
 
     public function getCache() {

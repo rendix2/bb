@@ -33,32 +33,53 @@ class TopicsManager extends Crud\CrudManager {
      */
     private $thanksManager;
     
+    /**
+     *
+     * @var \App\Models\ForumsManager $forumManager 
+     */
     private $forumManager;
 
     /**
      * 
      * @param \Dibi\Connection $dibi
-     * @param \App\Models\PostsManager $postManager
-     * @param \App\Models\UsersManager $userManager
-     * @param \App\Models\ThanksManager $thanksManager
      */
-    public function __construct(\Dibi\Connection $dibi, \App\Models\PostsManager $postManager, \App\Models\UsersManager $userManager, \App\Models\ThanksManager $thanksManager, \App\Models\ForumsManager $forumManager) {
+    public function __construct(\Dibi\Connection $dibi ) {
         parent::__construct($dibi);
-
-        $this->thanksManager = $thanksManager;
-        $this->userManager = $userManager;
-        $this->postManager = $postManager;
-        $this->forumManager = $forumManager;
     }
     
-    public function injectForumManager(){
-        
+    public function injectForumManager(\App\Models\ForumsManager $forumManager){
+        $this->forumManager = $forumManager;        
     }
+    
+    public function injectUserManager(UsersManager $userManager){
+        $this->userManager = $userManager;
+    }
+    
+    public function injectThankManager(\App\Models\ThanksManager $thanksManager){
+        $this->thanksManager = $thanksManager;
+    }
+    /*
+    public function injectPostManager(\App\Models\PostsManager $postManager){
+        $this->postManager = $postManager;
+    }
+     *
+     */
 
     public function delete($topic_id) {
         $this->dibi->begin();
+        
+        $topic           = $this->getById($topic_id);
+        $forum           = $this->forumManager->getById($topic->topic_forum_id);
+        $lastPostByForum = $this->getManager()->getLastPostByForum($topic->topic_forum_id, 0, $topic_id);
 
-        $topic  = $this->getById($topic_id);
+        if ((int) $topic_id === $forum->forum_last_topic_id) {
+            $this->update($topic_id, \Nette\Utils\ArrayHash::from(['topic_last_post_id' => $lastPostByForum->post_id, 'topic_last_post_user_id' => $lastPostByForum->post_user_id]));
+            $this->forumManager->update($forum_id, \Nette\Utils\ArrayHash::from(['forum_last_topic_id' => $lastPostByForum->post_topic_id, 'forum_last_post_id' => $lastPostByForum->post_id, 'forum_last_post_user_id' => $lastPostByForum->post_user_id]));
+        } else {
+            $this->update($topic_id, \Nette\Utils\ArrayHash::from(['topic_last_post_id' => $lastPostByForum->post_id, 'topic_last_post_user_id' => $lastPostByForum->post_user_id]));
+            $this->forumManager->update($forum_id, \Nette\Utils\ArrayHash::from(['forum_last_post_id' => $lastPostByForum->post_id, 'forum_last_post_user_id' => $lastPostByForum->post_user_id]));
+        }
+               
         $thanks = $this->thanksManager->getThanksByTopicId($topic_id);
 
         foreach ($thanks as $thank) {
