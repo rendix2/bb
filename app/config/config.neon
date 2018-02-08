@@ -41,6 +41,7 @@ services:
         inject: yes
         setup:
                 - factory
+                - set
     UsersManager: 
         factory: App\Models\UsersManager
         inject: yes

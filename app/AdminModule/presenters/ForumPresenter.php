@@ -66,7 +66,10 @@ class ForumPresenter extends Base\AdminPresenter {
         } else {
             $this->template->title = $this->getTitleOnAdd();
             $this->template->forums = [];
-
+            
+//            $this->template->item = \Nette\Utils\ArrayHash::from(['forum_topic_count' =>null, 'forum_last_post_id' => null, 'forum_last_post_user_id' => null]);
+//            $this->template->topicData = [];   
+//            $this->template->userData = \Nette\Utils\ArrayHash::from(['user_name' => null]);
             $this['editForm']->setDefaults([]);
         }
     }

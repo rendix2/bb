@@ -13,7 +13,7 @@ class PostsManager extends Crud\CrudManager {
     private $forumManager;
     private $userManager;     
     
-    private function set(){
+    public function set(){
         $this->topicsManager = new TopicsManager($this->dibi);
         $this->topicsManager->factory($this->storage);
         $this->forumManager = new ForumsManager($this->dibi);
@@ -65,9 +65,6 @@ class PostsManager extends Crud\CrudManager {
     }
     
     public function delete($item_id) {
-        $this->set();
-        
-        
         $post            = $this->getById($item_id);
         $topic           = $this->topicsManager->getById($post->post_topic_id);
         $lastPost        = $this->getLastPostByTopic($post->post_topic_id, $item_id);
@@ -89,9 +86,7 @@ class PostsManager extends Crud\CrudManager {
         parent::delete($item_id);
     }
     
-    public function add(\Nette\Utils\ArrayHash $item_data) {
-        $this->set();
-               
+    public function add(\Nette\Utils\ArrayHash $item_data) {            
         $post_id = parent::add($item_data);
         $user_id = $item_data->post_user_id;
         $topic_id = $item_data->post_topic_id;
