@@ -20,9 +20,9 @@ abstract class AdminPresenter extends \App\Presenters\crud\CrudPresenter {
         parent::__construct($manager);
         
         $this->form             = new \Nette\Application\UI\Form();
-        $this->bootStrapForm    = new \App\Controls\BootstrapForm();          
+        $this->bootStrapForm    = new \App\Controls\BootstrapForm(); 
     }
-    
+   
     public function getAdminTranslator(){
         return $this->adminTtranslator;                
     }
@@ -54,13 +54,15 @@ abstract class AdminPresenter extends \App\Presenters\crud\CrudPresenter {
 
         if (!$user->isInRole('Admin')) {
             $this->error('You are not admin.');
-        }              
+        }  
+        
+        $this->adminTtranslator = new \App\Translator('Admin',$this->getUser()->getIdentity()->getData()['lang_file_name']);        
     }
     
     public function beforeRender() {
         parent::beforeRender();
         
-        $this->template->setTranslator($this->adminTtranslator = new \App\Translator('Admin',$this->getUser()->getIdentity()->getData()['lang_file_name']));
+        $this->template->setTranslator($this->adminTtranslator);
     }
 
 }

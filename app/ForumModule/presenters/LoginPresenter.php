@@ -10,8 +10,8 @@ namespace App\ForumModule\Presenters;
 class LoginPresenter extends \App\Presenters\Base\BasePresenter {
 
     private $authenticator;
-    
-    /** 
+
+    /**
      * @persistent
      */
     public $backlink = '';
@@ -41,12 +41,16 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter {
 
     public function loginForumSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
         $user = $this->getUser();
-        
-        $user->login($values->user_name, $values->user_password);
-        $user->setExpiration('1 hour');
 
-        $this->flashMessage('Successfuly logged in.', self::FLASH_MESSAGE_SUCCES);
-        $this->restoreRequest($this->backlink);
-        $this->redirect('Index:default');
-   }
+        try {
+            $user->login($values->user_name, $values->user_password);
+            $user->setExpiration('1 hour');
+            $this->flashMessage('Successfuly logged in.', self::FLASH_MESSAGE_SUCCES);
+            $this->restoreRequest($this->backlink);
+            $this->redirect('Index:default');
+        } catch (\Nette\Security\AuthenticationException $e) {
+            $this->flashMessage($e->getMessage(), self::FLASH_MESSAGE_DANGER);
+        }
+    }
+
 }
