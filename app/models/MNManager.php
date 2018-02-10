@@ -22,7 +22,7 @@ abstract class MNManager extends Manager {
     public function __construct(\Dibi\Connection $dibi, \App\Models\Crud\CrudManager $left, \App\Models\Crud\CrudManager $right) {
         parent::__construct($dibi);
 
-        $this->left  = $left;
+        $this->left = $left;
         $this->right = $right;
         $this->table = $left->getTable() . '2' . $right->getTable();
     }
@@ -31,26 +31,33 @@ abstract class MNManager extends Manager {
         return substr($tableName, 0, 1);
     }
 
-    public function add(array $values) {
-        return $this->dibi->query('INSERT INTO [' . $this->table . '] %m', $values);
+    public function add(array $values, $left_id = null, $right_id = null) {
+        $data = [];
+
+        foreach ($values as $value) {
+            $data[$this->left->getPrimaryKey()][] = $left_id !== null ? (int)$left_id : (int)$value;
+            $data[$this->right->getPrimaryKey()][] = $right_id !== null ? (int)$right_id : (int)$value;
+        }
+
+        return $this->dibi->query('INSERT INTO [' . $this->table . '] %m', $data);
     }
 
     public function addByLeft($left_id, array $values) {
         $this->deleteByLeft($left_id);
-        return $this->add($values);
+        return $this->add($values, $left_id, null);
     }
 
     public function addByRight($right_id, array $values) {
         $this->deleteByRight($right_id);
-        return $this->add($values);
+        return $this->add($values, null, $right_id);
     }
 
     public function getByLeft($left_id) {
-        return $this->dibi->select($this->right->getPrimaryKey())->from($this->table)->as($alias)->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)->fetchAll();
+        return $this->dibi->select($this->right->getPrimaryKey())->from($this->table)->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)->fetchPairs(null, $this->right->getPrimaryKey());
     }
 
     public function getByRight($right_id) {
-        return $this->dibi->select($this->left->getPrimaryKey())->from($this->table)->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)->fetchAll();
+        return $this->dibi->select($this->left->getPrimaryKey())->from($this->table)->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)->fetchPairs(null, $this->left->getPrimaryKey());
     }
 
     public function getByLeftJoined($left_id) {
@@ -73,6 +80,14 @@ abstract class MNManager extends Manager {
 
     public function deleteByRight($right_id) {
         return $this->dibi->delete($this->table)->where($this->right->getPrimaryKey() . ' = %i', $right_id)->execute();
+    }
+    
+    public function getCountByLeft($left_id){
+     return $this->dibi->select('COUNT(*)')->from($this->table)->where($this->left->getPrimaryKey() . ' = %i', $left_id)->fetchSingle();
+    }
+    
+    public function getCountByRight($right_id){
+        return $this->dibi->select('COUNT(*)')->from($this->table)->where($this->right->getPrimaryKey() . ' = %i', $right_id)->fetchSingle();
     }
 
 }

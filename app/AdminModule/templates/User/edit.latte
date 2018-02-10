@@ -31,14 +31,15 @@
     </div>
 </div>
 
-<div class="col-sm-12 main">
+<div class="col-sm-4">
     <h2>Groups</h2>
     {form groupFrom}            
         <ul>
             {foreach $groups as $group}
                 <li>
                     <label>{$group->group_name}
-                        <input type="checkbox" name="group[]" value="{$group->group_id}" {if in_array($group->group_id, $myGroups)}checked="checked"{/if}>
+                        <input type="checkbox" name="group[]" value="{$group->group_id}" 
+                               {if in_array($group->group_id,$myGroups)}checked="checked"{/if}>
                     </label>
                 </li>
             {/foreach}
@@ -46,5 +47,27 @@
         {input send_group}
     {/form}
 </div>
+<div class="col-sm-4">
+    <h2>Forums</h2>
+    {form forumsForm}
+        {block forums}
+        <ul>
+            {foreach $forums as $forum}
+                <li>
+                    <label>
+                        <input type="checkbox" name="forums[]" value="{$forum->forum_id}" {if in_array($forum->forum_id, $myForums)}checked="checked"{/if}>
+                        {$forum->forum_name}
+                    </label>
+                </li> 
 
+                {if is_array($forum['childs'])}
+                    {include forums, forums => $forum['childs']}
+                {/if}
+            {/foreach}
+        </ul>
+        {/block}
+        
+        {input send_forum}
+    {/form}
+</div>    
 {/block}

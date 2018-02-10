@@ -15,8 +15,21 @@ namespace App\AdminModule\Presenters;
  */
 class GroupPresenter extends Base\AdminPresenter {
 
+    private $users2Groups;
+
+
     public function __construct(\App\Models\GroupsManager $manager) {
         parent::__construct($manager);
+    }
+    
+    public function injectUsers2Groups(\App\Models\Users2Groups $users2Groups){
+    $this->users2Groups = $users2Groups;
+    }
+    
+    public function renderEdit($id = null) {
+        parent::renderEdit($id);
+        
+        $this->template->countOfUsers = $this->users2Groups->getCountByRight($id);
     }
 
     protected function createComponentEditForm() {

@@ -11,26 +11,13 @@ class UserPresenter extends Base\AdminPresenter {
 
     private $rolesManager;
     private $languagesManager;
-
-    /**
-     *
-     * @var \App\Models\GroupsManager $groupManager
-     */
+    private $group2User;
     private $groupManager;
+    private $forumsManager;
+    private $users2Forums;
 
     public function __construct(\App\Models\UsersManager $manager) {
         parent::__construct($manager);
-    }
-
-    public function renderChangePassword($user_id) {
-        
-    }
-
-    public function renderEdit($id = null) {
-        parent::renderEdit($id);
-
-        $this->template->groups   = $this->groupManager->getAll();
-        $this->template->myGroups = $this->groupManager->getGrupsByUserId($id);
     }
 
     public function injectRolesManager(\App\Models\RolesManager $rolesManager) {
@@ -43,6 +30,32 @@ class UserPresenter extends Base\AdminPresenter {
 
     public function injectgGroupManager(\App\Models\GroupsManager $groupManager) {
         $this->groupManager = $groupManager;
+    }
+
+    public function injectGroup2UserManager(\App\Models\Users2Groups $group2User) {
+        $this->group2User = $group2User;
+    }
+
+    public function injectForumsManager(\App\Models\ForumsManager $forumsManager) {
+        $this->forumsManager = $forumsManager;
+    }
+
+    public function injectUsers2Forums(\App\Models\Users2Forums $users2Forums) {
+        $this->users2Forums = $users2Forums;
+    }
+
+    public function renderChangePassword($user_id) {
+        
+    }
+
+    public function renderEdit($id = null) {
+        parent::renderEdit($id);
+
+        $this->template->groups = $this->groupManager->getAllCached();
+        $this->template->myGroups = array_values($this->group2User->getByLeft($id));
+
+        $this->template->forums = $this->forumsManager->createForums($this->forumsManager->getAllCached(), 0);
+        $this->template->myForums = array_values($this->users2Forums->getByLeft($id));
     }
 
     protected function createComponentEditForm() {
@@ -78,21 +91,28 @@ class UserPresenter extends Base\AdminPresenter {
 
     public function groupSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
         $groups = $form->getHttpData($form::DATA_TEXT, 'group[]');
+        $user_id = $this->getParameter('id');
 
-        $user_id = $this->getParameter('id');        
-        $data = [];
-
-        foreach ($groups as $group) {
-            $data['group_id'][] = (int)$group;
-            $data['user_id'][] = (int)$user_id;
-        }
-        
-        $this->groupManager->deleteRelationByUserId($user_id);
-        $this->groupManager->addRealtion($data);
-        
+        $this->group2User->addByLeft((int) $user_id, array_values($groups));
         $this->flashMessage('Groups saved.', self::FLASH_MESSAGE_SUCCES);
-        $this->renderChangePassword('User:edit', $user_id);
-        
+        $this->redirect('User:edit', $user_id);
+    }
+
+    public function createComponentForumsForm() {
+        $form = new \App\Controls\BootstrapForm();
+
+        $form->addSubmit('send_forum', 'Send');
+        $form->onSuccess[] = [$this, 'forumsSuccess'];
+        return $form;
+    }
+
+    public function forumsSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
+        $forums = $form->getHttpData($form::DATA_TEXT, 'forums[]');
+        $user_id = $this->getParameter('id');
+
+        $this->users2Forums->addByLeft((int) $user_id, array_values($forums));
+        $this->flashMessage('Forums saved.', self::FLASH_MESSAGE_SUCCES);
+        $this->redirect('User:edit', $user_id);
     }
 
 }

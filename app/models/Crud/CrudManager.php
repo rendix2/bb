@@ -32,6 +32,10 @@ abstract class CrudManager extends \App\Models\Manager {
     public function getCache() {
         return $this->cache;
     }
+    
+    public function getStorage(){
+        return $this->storage;
+    }
 
     private function getNameOfTableFromClass() {
         $explodedName = explode('\\', str_replace('Manager', '', get_class($this)));
@@ -64,7 +68,7 @@ abstract class CrudManager extends \App\Models\Manager {
     }
 
     public function getCount() {
-        return $this->dibi->select('¨COUNT(*)')->from($this->table)->fetchSingle();
+        return $this->dibi->select('COUNT(*)')->from($this->table)->fetchSingle();
     }
 
     public function add(\Nette\Utils\ArrayHash $item_data) {
@@ -85,6 +89,18 @@ abstract class CrudManager extends \App\Models\Manager {
 
     public function getAll() {
         return $this->dibi->select('*')->from($this->table)->fetchAll();
+    }
+    
+    public function getAllCached(){
+        $cache = new Cache($this->getStorage(), $this->getTable());
+        
+        $cached = $cache->load('data');
+        
+        if (!$cached){
+            $cache->save('data', $cached = $this->getAll());
+        }
+        
+        return $cached;
     }
 
     public function getById($item_id) {

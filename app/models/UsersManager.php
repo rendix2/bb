@@ -38,7 +38,15 @@ class UsersManager extends Crud\CrudManager {
     }
     
     public function getCountByRoleId($role_id){
-        return $this->dibi->select('COUNT(*)')->from($this->getTable())->where('[user_role_id] = %i', $role_id)->fetchSingle()  ;
+        return $this->dibi->select('COUNT(*)')->from($this->getTable())->where('[user_role_id] = %i', $role_id)->fetchSingle();
+    }
+    
+    public function getByLangId($lang_id){
+       return $this->dibi->select('*')->from($this->getTable())->where('[user_lang_id] = %i', $lang_id)->fetchAll(); 
+    }
+    
+    public function getCountByLangId($lang_id){
+        return $this->dibi->select('COUNT(*)')->from($this->getTable())->where('[user_lang_id] = %i', $lang_id)->fetchSingle();
     }
        
 }

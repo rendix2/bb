@@ -85,6 +85,12 @@ services:
     Users2Roles: 
         factory: App\Models\Users2Roles
         inject: yes
+    Group2User:
+        factory: App\Models\Users2Groups
+        inject: yes
+    Users2Forums:
+        factory: App\Models\Users2Forums
+        inject: yes
     authenticator: App\Authenticator
 
 extensions:

@@ -15,11 +15,11 @@ class PostsManager extends Crud\CrudManager {
     
     public function set(){
         $this->topicsManager = new TopicsManager($this->dibi);
-        $this->topicsManager->factory($this->storage);
+        $this->topicsManager->factory($this->getStorage());
         $this->forumManager = new ForumsManager($this->dibi);
-        $this->forumManager->factory($this->storage);
+        $this->forumManager->factory($this->getStorage());
         $this->userManager = new UsersManager($this->dibi);
-        $this->userManager->factory($this->storage);
+        $this->userManager->factory($this->getStorage());
     }
 
     public function getPostsByTopicId($topic_id) {
