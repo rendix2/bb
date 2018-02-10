@@ -25,6 +25,14 @@ class Tables {
     
     const THANKS_TABLE = self::PREFIX . 'thanks';
     
-    const USERS2ROLES = self::PREFIX . 'users2roles';
+    const USERS2ROLES_TABLE = self::PREFIX . 'users2roles';
+    
+    const USERS2GROUPS_TABLE = self::PREFIX . 'users2group';
+    
+    const GROUPS_TABLE = self::PREFIX . 'groups';
+    
+    const LANGUAGES_TABLE = self::PREFIX . 'languages';
+    
+    const FORUMS2GROUPS_TABLE = self::PREFIX . 'forums2group';
     
 }

@@ -27,6 +27,11 @@ session:
 
 services:
     router: App\RouterFactory::createRouter
+    GroupsManager: 
+        factory: App\Models\GroupsManager
+        inject: yes
+        setup:
+                - factory                
     IndexManager:
         factory:  App\Models\IndexManager
         #setup:
@@ -77,6 +82,9 @@ services:
         inject: yes
         setup:
                 - factory
+    Users2Roles: 
+        factory: App\Models\Users2Roles
+        inject: yes
     authenticator: App\Authenticator
 
 extensions:

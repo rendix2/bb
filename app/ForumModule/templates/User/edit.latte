@@ -1,5 +1,12 @@
 {block content}
-<div class="col-sm-12 main">
-    {control editUserForm}
+<div class="row">
+    <div class="col-sm-6">
+        {control editUserForm}
+    </div>
+    <div class="col-sm-6">                
+        {control changePasswordControl $user->getId()}
+    </div>
 </div>
+
+
 {/block}

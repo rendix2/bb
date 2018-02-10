@@ -79,6 +79,7 @@ class ForumPresenter extends Base\AdminPresenter {
 
         $form->setTranslator($this->getAdminTranslator());
 
+        $form->addGroup('forum');
         $form->addText('forum_name', 'Forum name:')->setRequired(true);
         $form->addText('forum_description', 'Forum description:')->setRequired(true);
         $form->addSelect('forum_category_id', 'Forum category:', $this->categoryManager->getForSelect())->setRequired(true)->setTranslator(null);

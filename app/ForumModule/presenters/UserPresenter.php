@@ -96,5 +96,9 @@ class UserPresenter extends Base\ForumPresenter {
     
     public function editUserOnValidate(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values){
         
-    }    
+    }   
+    
+    public function createComponentChangePasswordControl() {
+        return new \App\Controls\ChangePasswordControl($this->getManager(), $this->getForumTranslator(), false);
+    }
 }

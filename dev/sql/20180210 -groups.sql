@@ -1,0 +1,1 @@
+CREATE TABLE `bb`.`groups` ( `group_id` INT NOT NULL AUTO_INCREMENT , `group_name` VARCHAR(255) NOT NULL , PRIMARY KEY (`group_id`)) ENGINE = InnoDB;
