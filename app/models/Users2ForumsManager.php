@@ -7,7 +7,7 @@ namespace App\Models;
  *
  * @author rendi
  */
-class Users2Forums extends MNManager{
+class Users2ForumsManager extends MNManager{
 
     public function __construct(\Dibi\Connection $dibi, UsersManager $left, ForumsManager $right) {
         parent::__construct($dibi, $left, $right);

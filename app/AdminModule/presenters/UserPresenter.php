@@ -32,7 +32,7 @@ class UserPresenter extends Base\AdminPresenter {
         $this->groupManager = $groupManager;
     }
 
-    public function injectGroup2UserManager(\App\Models\Users2Groups $group2User) {
+    public function injectGroup2UserManager(\App\Models\Users2GroupsManager $group2User) {
         $this->group2User = $group2User;
     }
 
@@ -40,7 +40,7 @@ class UserPresenter extends Base\AdminPresenter {
         $this->forumsManager = $forumsManager;
     }
 
-    public function injectUsers2Forums(\App\Models\Users2Forums $users2Forums) {
+    public function injectUsers2Forums(\App\Models\Users2ForumsManager $users2Forums) {
         $this->users2Forums = $users2Forums;
     }
 
@@ -52,10 +52,10 @@ class UserPresenter extends Base\AdminPresenter {
         parent::renderEdit($id);
 
         $this->template->groups = $this->groupManager->getAllCached();
-        $this->template->myGroups = array_values($this->group2User->getByLeft($id));
+        $this->template->myGroups = array_values($this->group2User->getByLeftPairs($id));
 
         $this->template->forums = $this->forumsManager->createForums($this->forumsManager->getAllCached(), 0);
-        $this->template->myForums = array_values($this->users2Forums->getByLeft($id));
+        $this->template->myForums = array_values($this->users2Forums->getByLeftPairs($id));
     }
 
     protected function createComponentEditForm() {

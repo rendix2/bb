@@ -26,6 +26,10 @@ abstract class MNManager extends Manager {
         $this->right = $right;
         $this->table = $left->getTable() . '2' . $right->getTable();
     }
+    
+    public function getTable(){
+        return $this->table;
+    }
 
     private static function createAlias($tableName) {
         return substr($tableName, 0, 1);
@@ -52,12 +56,20 @@ abstract class MNManager extends Manager {
         return $this->add($values, null, $right_id);
     }
 
-    public function getByLeft($left_id) {
+    public function getByLeftPairs($left_id) {
         return $this->dibi->select($this->right->getPrimaryKey())->from($this->table)->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)->fetchPairs(null, $this->right->getPrimaryKey());
     }
 
-    public function getByRight($right_id) {
+    public function getByRightPairs($right_id) {
         return $this->dibi->select($this->left->getPrimaryKey())->from($this->table)->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)->fetchPairs(null, $this->left->getPrimaryKey());
+    }
+    
+    public function getByLeftAll($left_id) {
+        return $this->dibi->select('*')->from($this->table)->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)->fetchAll();
+    }
+
+    public function getByRightAll($right_id) {
+        return $this->dibi->select('*')->from($this->table)->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)->fetchAll();
     }
 
     public function getByLeftJoined($left_id) {

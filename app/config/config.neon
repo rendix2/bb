@@ -82,14 +82,14 @@ services:
         inject: yes
         setup:
                 - factory
-    Users2Roles: 
-        factory: App\Models\Users2Roles
+    Forums2GroupsManager: 
+        factory: App\Models\Forums2GroupsManager
         inject: yes
     Group2User:
-        factory: App\Models\Users2Groups
+        factory: App\Models\Users2GroupsManager
         inject: yes
     Users2Forums:
-        factory: App\Models\Users2Forums
+        factory: App\Models\Users2ForumsManager
         inject: yes
     authenticator: App\Authenticator
     authorizator: App\Authorizator

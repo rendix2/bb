@@ -3,7 +3,69 @@
     {control editForm}
 </div>
 <div class="col-sm-4">
-{_user_count_lang}:{$countOfUsers}
+    {_user_count_lang}:{$countOfUsers}
 </div>
-    
+
+<div class="col-sm-4 main">
+    {form forumsForm}
+    {block forums}
+    <ul>
+        {foreach $forums as $forum}
+            <li>
+                <a href="{link Forum:edit, $forum->forum_id}">{$forum->forum_name}</a>
+            </li> 
+
+            <ul>        
+                <li>
+                    <label>
+                        <input type="checkbox" value="{$forum->forum_id}" name="post_add[]" {if $permissions[$forum->forum_id]['post_add']}checked="checked"{/if}>
+                        {_group_post_add}
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" value="{$forum->forum_id}" name="post_edit[]" {if $permissions[$forum->forum_id]['post_edit']}checked="checked"{/if}>
+                        {_group_post_edit}                        
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" value="{$forum->forum_id}" name="post_delete[]" {if $permissions[$forum->forum_id]['post_delete']}checked="checked"{/if}>
+                        {_group_post_delete}                        
+                    </label>
+                </li>
+            </ul>
+
+            <ul>
+                <li>
+                    <label>
+
+                        <input type="checkbox" value="{$forum->forum_id}" name="topic_add[]" {if $permissions[$forum->forum_id]['topic_add']}checked="checked"{/if}>
+                        {_group_topic_add}
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" value="{$forum->forum_id}" name="topic_edit[]" {if $permissions[$forum->forum_id]['topic_edit']}checked="checked"{/if}>
+                        {_group_topic_edit}                        
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" value="{$forum->forum_id}" name="topic_delete[]" {if $permissions[$forum->forum_id]['topic_delete']}checked="checked"{/if}>
+                        {_group_topic_delete}                        
+                    </label>
+                </li>
+            </ul>                    
+                    
+            {if is_array($forum['childs'])}
+                {include forums, forums => $forum['childs']}
+            {/if}
+        {/foreach}
+    </ul>
+    {/block}
+    {input send}
+    {/form}
+</div>
+
 {/block}

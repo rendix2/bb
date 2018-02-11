@@ -7,9 +7,9 @@ namespace App\Models;
  *
  * @author rendi
  */
-class Users2Groups extends MNManager{
+class Users2GroupsManager extends MNManager{
 
     public function __construct(\Dibi\Connection $dibi, UsersManager $left, GroupsManager $right) {
         parent::__construct($dibi, $left, $right);
-    }
+    }  
 }
