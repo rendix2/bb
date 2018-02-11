@@ -35,8 +35,7 @@ class UserPresenter extends Base\ForumPresenter {
         $this->template->userData = $userData;
     }
     
-    public function renderPosts($user_id){
-        
+    public function renderPosts($user_id){        
         $this->template->posts = $this->getManager()->getPosts($user_id);
     }
     

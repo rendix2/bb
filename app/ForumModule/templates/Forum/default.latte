@@ -4,12 +4,14 @@
     <div class="float-left">
         <h1>{_forum}: {$forum->forum_name}</h1>
     </div>
+     {if $user->isAllowed($presenter->getParameter('forum_id'), 'topic_add')}
     <div class="float-right">
         <a class="btn btn-primary" href="{link Post:editTopic, $presenter->getParameter('forum_id')}">
             <i class="fa fa-plus" aria-hidden="true"></i>
             {_topic_add_new}
         </a>            
     </div>
+        {/if}
 </div>
 
 <div class="col-sm-12 main">

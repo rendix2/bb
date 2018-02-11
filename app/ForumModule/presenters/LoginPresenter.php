@@ -40,9 +40,8 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter {
     }
 
     public function loginForumSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
-        $user = $this->getUser();
-
         try {
+            $user = $this->getUser();
             $user->login($values->user_name, $values->user_password);
             $user->setExpiration('1 hour');
             $this->flashMessage('Successfuly logged in.', self::FLASH_MESSAGE_SUCCES);

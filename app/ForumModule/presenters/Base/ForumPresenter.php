@@ -16,12 +16,17 @@ abstract class ForumPresenter extends \App\Presenters\Base\ManagerPresenter {
     private $forumTranslator;
     private $form;
     private $bootStrapForm;
+    private $authorizator;
 
     public function __construct(\App\Models\Manager $manager) {
         parent::__construct($manager);
 
         $this->form = new \Nette\Application\UI\Form();
         $this->bootStrapForm = new \App\Controls\BootstrapForm();
+    }
+
+    public function injectAuthorizator(\App\Authorizator $authorizator) {
+        $this->authorizator = $authorizator;
     }
 
     /**
@@ -44,6 +49,7 @@ abstract class ForumPresenter extends \App\Presenters\Base\ManagerPresenter {
         parent::startup();
 
         $this->forumTranslator = new \App\Translator('Forum', $this->getUser()->getIdentity()->getData()['lang_file_name']);
+        $this->getUser()->setAuthorizator($this->authorizator->getAcl());
     }
 
     public function beforeRender() {

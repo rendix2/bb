@@ -27,7 +27,7 @@
                 <a href="{link Search:default}">{_search}</a>
                 <a href="{link User:logout}">Logout</a>
                 
-                {if $user->isInRole('Admin')}
+                {if $user->isInRole('admin')}
                 <a href="{link :Admin:Index:default}">Admin</a>
                 {/if}
 

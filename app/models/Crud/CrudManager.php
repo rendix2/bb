@@ -97,7 +97,9 @@ abstract class CrudManager extends \App\Models\Manager {
         $cached = $cache->load('data');
         
         if (!$cached){
-            $cache->save('data', $cached = $this->getAll());
+            $cache->save('data', $cached = $this->getAll(),[
+                Cache::EXPIRE => '24 hours',
+            ]);
         }
         
         return $cached;

@@ -52,7 +52,7 @@ abstract class AdminPresenter extends \App\Presenters\crud\CrudPresenter {
             $this->error('You are not logged in.');
         }
 
-        if (!$user->isInRole('Admin')) {
+        if (!$user->isInRole('admin')) {
             $this->error('You are not admin.');
         }  
         

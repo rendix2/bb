@@ -92,6 +92,7 @@ services:
         factory: App\Models\Users2Forums
         inject: yes
     authenticator: App\Authenticator
+    authorizator: App\Authorizator
 
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22

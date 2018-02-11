@@ -56,24 +56,20 @@ class PostPresenter extends Base\ForumPresenter {
     }
 
     public function actionDeletePost($forum_id, $topic_id, $post_id) {
-        $post = $this->getManager()->getById($post_id);
-
-        if ($post->post_user_id !== $this->getUser()->getId()) {
-            $this->error('You are not author of post!', Http\IResponse::S403_FORBIDDEN);
+        if (!$this->getUser()->isAllowed($forum_id, 'post_delete')) {
+            $this->error('Not allowed.');
         }
-
+                
         $this->getManager()->delete($post_id);
 
         $this->flashMessage('Post deleted.', self::FLASH_MESSAGE_SUCCES);
         $this->redirect('Post:all', $forum_id, $topic_id);
     }
 
-    public function actionDeleteTopic($forum_id, $topic_id, $page) {                     
-        $topic = $this->topicsManager->getById($topic_id);
-        
-        if ($topic->topic_user_id !== $this->getUser()->getId()) {
-            $this->error('You are not author of topic!', Http\IResponse::S403_FORBIDDEN);
-        }       
+    public function actionDeleteTopic($forum_id, $topic_id, $page) {
+        if (!$this->getUser()->isAllowed($forum_id, 'topic_delete')) {
+            $this->error('Not allowed');
+        }
 
         $this->topicsManager->delete($topic_id);
 
@@ -82,6 +78,10 @@ class PostPresenter extends Base\ForumPresenter {
     }
 
     public function actionThank($forum_id, $topic_id) {
+        if (!$this->getUser()->isAllowed($forum_id, 'topic_thank')) {
+            $this->error('Not allowed');
+        }
+
         $user_id = $this->getUser()->getId();
 
         $data = ['thank_forum_id' => $forum_id,
@@ -123,6 +123,16 @@ class PostPresenter extends Base\ForumPresenter {
      * @param int $topic_id
      */
     public function renderEditTopic($forum_id, $topic_id = null) {
+        if ($topic_id === null) {
+            if (!$this->getUser()->isAllowed($forum_id, 'topic_add')) {
+                $this->error('Not allowed');
+            }
+        } else {
+            if (!$this->getUser()->isAllowed($forum_id, 'topic_edit')) {
+                $this->error('Not allowed');
+            }
+        }
+
         $topic = [];
 
         if ($topic_id) {
@@ -139,6 +149,16 @@ class PostPresenter extends Base\ForumPresenter {
      * @param int $post_id
      */
     public function renderEditPost($forum_id, $topic_id, $post_id = null) {
+        if ($post_id === null) {
+            if (!$this->getUser()->isAllowed($forum_id, 'post_add')) {
+                $this->error('Not allowed');
+            }
+        } else {
+            if (!$this->getUser()->isAllowed($forum_id, 'post_update')) {
+                $this->error('Not allowed');
+            }
+        }
+
         $post = [];
 
         if ($post_id) {
@@ -187,8 +207,8 @@ class PostPresenter extends Base\ForumPresenter {
         $values->post_forum_id = $forum_id;
         $values->post_topic_id = $post_topic_id;
 
-         $this->getManager()->add($values);
-        
+        $this->getManager()->add($values);
+
         $this->flashMessage('Topic saved.', self::FLASH_MESSAGE_SUCCES);
         $this->redirect('Post:all', $forum_id, $post_topic_id);
     }
@@ -210,7 +230,7 @@ class PostPresenter extends Base\ForumPresenter {
             $values->post_topic_id = $topic_id;
             $values->post_add_time = time();
 
-            $result = $this->getManager()->add($values);         
+            $result = $this->getManager()->add($values);
         }
 
         if ($result) {

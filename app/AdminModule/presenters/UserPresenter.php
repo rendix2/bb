@@ -66,7 +66,7 @@ class UserPresenter extends Base\AdminPresenter {
         $form->addText('user_name', 'User name:')->setRequired(true);
         $form->addEmail('user_email', 'User mail:')->setRequired(true);
         $form->addGroup('user_settings');
-        $form->addSelect('user_role_id', 'User role:', $this->rolesManager->getForSelect())->setTranslator(null)->setRequired(true);
+        $form->addSelect('user_role_id', 'User role:', \App\Authenticator::ROLES)->setTranslator(null);
         $form->addSelect('user_lang_id', 'User language:', $this->languagesManager->getAllForSelect());
         $form->addTextArea('user_signature', 'User signature:');
         //$form->addUpload('user_avatar', 'User avatar:');

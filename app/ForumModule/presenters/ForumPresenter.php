@@ -25,7 +25,7 @@ final class ForumPresenter extends Base\ForumPresenter {
     }
 
     public function renderDefault($forum_id, $page = 1){          
-        $forum = $this->getManager()->getById($forum_id);
+        $forum = $this->getManager()->getById($forum_id);       
         
         if ( !$forum ){
             $this->error('Forum not exists.');
@@ -33,6 +33,10 @@ final class ForumPresenter extends Base\ForumPresenter {
         
         if ( !$forum->forum_active ){
           $this->error('Forum is not active.');   
+        }
+        
+        if (!$this->getUser()->isAllowed($forum_id, 'forum_view')){
+            $this->error('Not allowed.');
         }
         
         $category = $this->categoryManager->getByForumId($forum_id);

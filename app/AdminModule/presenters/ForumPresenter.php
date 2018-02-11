@@ -84,9 +84,16 @@ class ForumPresenter extends Base\AdminPresenter {
         $form->addText('forum_description', 'Forum description:')->setRequired(true);
         $form->addSelect('forum_category_id', 'Forum category:', $this->categoryManager->getForSelect())->setRequired(true)->setTranslator(null);
         $form->addCheckbox('forum_active', 'Forum active:');
+        
+        $form->addGroup('user');
         $form->addCheckbox('forum_thank', 'Forum thank:');
+        $form->addCheckbox('forum_post_add', 'Forum add post:');
+        $form->addCheckbox('forum_post_delete', 'Forum post delete:');
+        $form->addCheckbox('forum_post_update', 'Forum post update:');
+        $form->addCheckbox('forum_topic_add', 'Forum topic add:');
+        $form->addCheckbox('forum_topic_update', 'Forum topic update:');
+        $form->addCheckbox('forum_topic_delete', 'Forum delete topic:');
 
         return $this->addSubmitB($form);
     }
-
 }

@@ -18,7 +18,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     const FLASH_MESSAGE_INFO = 'info';
     
     public function startup() {
-        parent::startup();
+        parent::startup();               
     }
     
 }
