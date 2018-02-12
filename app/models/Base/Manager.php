@@ -34,5 +34,31 @@ abstract class Manager extends Tables {
     public function getDibi() {
         return $this->dibi;
     }
+    
+    /**
+     * returns extension of file
+     *
+     * @param string $fileName file name
+     *
+     * @return string
+     * @api
+     */
+    public static function getFileExtension($fileName)
+    {
+        $file = new \SplFileInfo($fileName);
 
+        return $file->getExtension();
+    }
+    
+    /**
+     * this method returns random string
+     *
+     * @return string
+     * @see    https://php.vrana.cz/trvale-prihlaseni.php php vrana
+     */
+    public static function getRandomString()
+    {
+        return mb_substr(md5(uniqid(mt_rand(), true)), 0, 15); // php.vrana.cz
+    }
+        
 }

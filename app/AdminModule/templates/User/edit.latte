@@ -1,32 +1,39 @@
 {block content}
-<div class="col-sm-12 main">
-    <h2>User</h2>
+<div class="col-sm-12">
+    {if $presenter->getParameter('id')}
+        <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+            <thead>
+                <tr>
+                    <th>{_user_post_count}</th>
+                    <th>{_user_post_count}</th>
+                    <th>{_user_thank_count}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{$item->user_post_count}</td>
+                    <td>{$item->user_topic_count}</td>
+                    <td>{$item->user_thank_count}</td>
+                </tr>
+            </tbody>
+        </table>
+    {/if}
+</div>
+
+<div class="col-sm-12">
     <div class="row">
-        <div class="col-sm-8 main">  
+        <div class="col-sm-8">  
             {control editForm}
         </div>
-        <div class="col-m-4">
+        <div class="col-sm-4">
+            {control changePasswordControl}                        
 
-            {if $presenter->getParameter('id')}
-                <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
-                    <thead>
-                        <tr>
-                            <th>{_user_post_count}</th>
-                            <th>{_user_post_count}</th>
-                            <th>{_user_thank_count}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{$item->user_post_count}</td>
-                            <td>{$item->user_topic_count}</td>
-                            <td>{$item->user_thank_count}</td>
-                        </tr>
-                    </tbody>
-                </table>
+            {if $item->user_avatar}        
+                <img src="{$basePath}/avatars/{$item->user_avatar}" class="img-thumbnail img-fluid">
+                {control deleteAvatar}
 
-                <a href="{link User:changePassword $presenter->getParameter('id')}">{_user_change_password}</a>
             {/if}
+
         </div>
     </div>
 </div>
@@ -66,7 +73,7 @@
             {/foreach}
         </ul>
         {/block}
-        
+
         {input send_forum}
     {/form}
 </div>    

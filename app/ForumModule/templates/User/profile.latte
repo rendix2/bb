@@ -26,5 +26,11 @@
         </tbody>
     </table>
 </div>
+                {if $userData->user_avatar}
+                <div class="col-sm-6">
+                    <img src="{$basePath}/avatars/{$userData->user_avatar}" class="rounded-circle img-fluid">
+                </div>
+                {/if}
+                    
 
 {/block}

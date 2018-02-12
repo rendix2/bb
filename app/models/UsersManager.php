@@ -48,5 +48,22 @@ class UsersManager extends Crud\CrudManager {
     public function getCountByLangId($lang_id){
         return $this->dibi->select('COUNT(*)')->from($this->getTable())->where('[user_lang_id] = %i', $lang_id)->fetchSingle();
     }
+   
+    public function getForumsPermissionsByUserThroughGroup($user_id){
+        return $this->dibi->select('*')->from(self::USERS2GROUPS_TABLE)->as('ug')->innerJoin(self::FORUMS2GROUPS_TABLE)->as('fg')->on('[ug.group_id] = [fg.group_id]')->where('[ug.user_id] = %i', $user_id)->fetchAll();             
+    }
+
+    public function movieAvatar(\Nette\Http\FileUpload $file, $wwwDir){
+        if ( $file->ok){
+            $extension = self::getFileExtension($file->name);
+            $hash = self::getRandomString();
+            $separator = DIRECTORY_SEPARATOR;            
+            $name = $hash.'.'.$extension;
+            
+            $file->move($wwwDir.$separator.'avatars'.$separator.$name);
+            
+            return $name;
+        }
+    }
        
 }

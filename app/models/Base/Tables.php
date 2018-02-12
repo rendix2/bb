@@ -27,12 +27,12 @@ class Tables {
     
     const USERS2ROLES_TABLE = self::PREFIX . 'users2roles';
     
-    const USERS2GROUPS_TABLE = self::PREFIX . 'users2group';
+    const USERS2GROUPS_TABLE = self::PREFIX . 'users2groups';
     
     const GROUPS_TABLE = self::PREFIX . 'groups';
     
     const LANGUAGES_TABLE = self::PREFIX . 'languages';
     
-    const FORUMS2GROUPS_TABLE = self::PREFIX . 'forums2group';
+    const FORUMS2GROUPS_TABLE = self::PREFIX . 'forums2groups';
     
 }

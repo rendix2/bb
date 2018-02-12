@@ -1,12 +1,20 @@
 {block content}
+<div class="col-sm-12 main">
 <div class="row">
     <div class="col-sm-6">
         {control editUserForm}
     </div>
     <div class="col-sm-6">                
-        {control changePasswordControl $user->getId()}
+        {control changePasswordControl}
     </div>
 </div>
-
-
+{if $item->user_avatar}  
+    <div class="row">
+        <div class="col-sm-4">        
+            <img src="{$basePath}/avatars/{$item->user_avatar}" class="img-thumbnail img-fluid">
+            {control deleteAvatar}        
+        </div>
+    </div>
+{/if}
+</div>
 {/block}

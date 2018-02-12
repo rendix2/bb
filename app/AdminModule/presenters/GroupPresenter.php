@@ -51,7 +51,10 @@ class GroupPresenter extends Base\AdminPresenter {
             $data[$permission->forum_id]['topic_add'] = $permission->topic_add;
             $data[$permission->forum_id]['topic_edit'] = $permission->topic_edit;
             $data[$permission->forum_id]['topic_delete'] = $permission->topic_delete;
+            $data[$permission->forum_id]['topic_thank'] = $permission->topic_thank;
         }
+        
+        \Tracy\Debugger::barDump($data);
         
         $this->template->permissions = $data;
     }
@@ -94,6 +97,7 @@ class GroupPresenter extends Base\AdminPresenter {
         $topic_edit = $form->getHttpData($form::DATA_TEXT, 'topic_edit[]');
         $topic_delete = $form->getHttpData($form::DATA_TEXT, 'topic_delete[]');
         $forum_id = $form->getHttpData($form::DATA_TEXT, 'forum_id[]');
+        $topic_thank = $form->getHttpData($form::DATA_TEXT, 'topic_thank[]');
 
         $count = $this->forumsManager->getCount();
         $group_id = $this->getParameter('id');
@@ -113,6 +117,7 @@ class GroupPresenter extends Base\AdminPresenter {
             'topic_add' => $this->map(array_pad($topic_add, $count + 1, 0)),
             'topic_edit' => $this->map(array_pad($topic_edit, $count + 1, 0)),
             'topic_delete' => $this->map(array_pad($topic_delete, $count + 1, 0)),
+            'topic_thank' => $this->map(array_pad($topic_thank, $count + 1, 0)),
             'forum_id' => $forums,
             'group_id' => $groups
         ];

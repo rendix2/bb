@@ -44,10 +44,6 @@ class UserPresenter extends Base\AdminPresenter {
         $this->users2Forums = $users2Forums;
     }
 
-    public function renderChangePassword($user_id) {
-        
-    }
-
     public function renderEdit($id = null) {
         parent::renderEdit($id);
 
@@ -77,7 +73,7 @@ class UserPresenter extends Base\AdminPresenter {
     }
 
     protected function createComponentChangePasswordControl() {
-        return new \App\Controls\ChangePasswordControl($this->getManager(), $this->getAdminTranslator(), true);
+        return new \App\Controls\ChangePasswordControl($this->getManager(), $this->getAdminTranslator(), $this->getUser());
     }
 
     protected function createComponentGroupFrom() {
@@ -113,6 +109,10 @@ class UserPresenter extends Base\AdminPresenter {
         $this->users2Forums->addByLeft((int) $user_id, array_values($forums));
         $this->flashMessage('Forums saved.', self::FLASH_MESSAGE_SUCCES);
         $this->redirect('User:edit', $user_id);
+    }
+    
+    public function createComponentDeleteAvatar(){
+        return new \DeleteAvatarControl($this->getManager(), $this->getContext(), $this->getUser(), $this->getAdminTranslator());    
     }
 
 }
