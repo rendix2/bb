@@ -92,11 +92,19 @@ class PostsManager extends Crud\CrudManager {
         $topic_id = $item_data->post_topic_id;
         $forum_id = $item_data->post_forum_id;
                
-        $this->userManager->update($user_id, \Nette\Utils\ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1']));
+        $this->userManager->update($user_id, \Nette\Utils\ArrayHash::from(['user_post_count%sql' =>'user_post_count + 1' ]));
         $this->topicsManager->update($topic_id, \Nette\Utils\ArrayHash::from(['topic_post_count%sql' => 'topic_post_count+1', 'topic_last_post_user_id' => $user_id, 'topic_last_post_id' => $post_id]));
         $this->forumManager->update($forum_id, \Nette\Utils\ArrayHash::from(['forum_last_topic_id' => $topic_id, 'forum_last_post_id' => $post_id, 'forum_last_post_user_id' => $user_id]));
         
         return $post_id;
+    }
+    
+    public function getCountPostByUserId($topic_id,$user_id){
+        return $this->dibi->select('COUNT(*)')->from($this->getTable())->where('[post_topic_id] = %i', $topic_id)->where('[post_user_id] = %i', $user_id)->fetchSingle();
+    }
+    
+    public function getCountOfUsersByTopicId($topic_id){                
+        return $this->dibi->select('count(post_user_id) as post_count, post_user_id')->from($this->getTable())->where('[post_topic_id] = %i', $topic_id)->groupBy('post_user_id')->fetchAll();
     }
 
 }

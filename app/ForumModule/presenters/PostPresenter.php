@@ -109,6 +109,7 @@ class PostPresenter extends Base\ForumPresenter {
 
         if (!$pagination->getCount()) {
             $this->flashMessage('No posts.', self::FLASH_MESSAGE_WARNING);
+            $this->redirect('Forum:default', $forum_id);
         }
 
         $this->template->posts = $data->fetchAll();
@@ -200,7 +201,8 @@ class PostPresenter extends Base\ForumPresenter {
         $topic_id = $this->getParameter('topic_id');
         $user_id = $this->getUser()->getId();
 
-        $post_topic_id = $this->topicsManager->add(\Nette\Utils\ArrayHash::from(['topic_forum_id' => $forum_id, 'topic_name' => $values->post_title, 'topic_post_count' => 1, 'topic_user_id' => $user_id, 'topic_last_post_user_id' => $user_id, 'topic_add_time' => time()]));
+        $post_topic_id = $this->topicsManager->add(\Nette\Utils\ArrayHash::from(['topic_forum_id' => $forum_id, 'topic_name' => $values->post_title, 'topic_user_id' => $user_id, 'topic_last_post_user_id' => $user_id, 'topic_add_time' => time()]));        
+        $this->userManager->update($user_id, \Nette\Utils\ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1']));
 
         $values->post_add_time = time();
         $values->post_user_id = $user_id;

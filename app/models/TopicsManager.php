@@ -87,7 +87,14 @@ class TopicsManager extends Crud\CrudManager {
         
         $this->thanksManager->deleteByTopicId($topic_id);
         $this->forumManager->update($topic->topic_forum_id, \Nette\Utils\ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
-        $this->userManager->update($topic->topic_user_id, \Nette\Utils\ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1', 'user_post_count%sql' => 'user_post_count - 1']));
+        
+        $counts = $this->postManager->getCountOfUsersByTopicId($topic_id);
+        
+        foreach ( $counts as $count){
+            $this->userManager->update($count->post_user_id, \Nette\Utils\ArrayHash::from(['user_post_count%sql' => 'user_post_count - '.$count->post_count]));
+        }
+                     
+        $this->userManager->update($topic->topic_user_id, \Nette\Utils\ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
         $this->postManager->deleteByTopicId($topic_id);
 
         parent::delete($topic_id);
