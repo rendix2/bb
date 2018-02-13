@@ -1,6 +1,7 @@
 log/*
 temp/*
 vendor/*
+vendor/
 !.gitignore
 !.htaccess
 !web.config
