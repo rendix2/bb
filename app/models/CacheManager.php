@@ -7,6 +7,7 @@ namespace App\Models;
  *
  * @author rendi
  */
-class CacheManager extends Crud\CrudManager {
+class CacheManager extends Crud\CrudManager
+{
 
 }

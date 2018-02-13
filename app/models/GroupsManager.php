@@ -7,7 +7,8 @@ namespace App\Models;
  *
  * @author rendi
  */
-class GroupsManager extends Crud\CrudManager {
+class GroupsManager extends Crud\CrudManager
+{
 
     //put your code here
 }
