@@ -2,6 +2,10 @@
 
 namespace App;
 
+use App\Models\UsersManager;
+use Nette\Security\Permission;
+use Nette\Security\User;
+
 /**
  * Description of Authorizator
  *
@@ -14,8 +18,8 @@ class Authorizator {
     private $user;
     private $userManager;
 
-    public function __construct(Models\ForumsManager $forumsManager, \Nette\Security\User $user, \App\Models\UsersManager $userMnager) {
-        $this->acl = new \Nette\Security\Permission();
+    public function __construct(Models\ForumsManager $forumsManager, User $user, UsersManager $userMnager) {
+        $this->acl = new Permission();
         $this->forumManager = $forumsManager;
         $this->user = $user;
         $this->userManager = $userMnager;
@@ -111,21 +115,21 @@ class Authorizator {
 
         if ($this->user->isInRole('admin')) {
             foreach ($this->forumManager->getAllCached() as $forum) {
-                $this->acl->allow('admin', "" . $forum->forum_id, \Nette\Security\Permission::ALL);
+                $this->acl->allow('admin', "" . $forum->forum_id, Permission::ALL);
             }
         }       
     }
 
     private function definePrivilegies() {
 
-        $this->acl->deny('geust', \Nette\Security\Permission::ALL, 'topic_thank');
-        $this->acl->deny('geust', \Nette\Security\Permission::ALL, 'post_add');
-        $this->acl->deny('geust', \Nette\Security\Permission::ALL, 'post_delete');
+        $this->acl->deny('geust', Permission::ALL, 'topic_thank');
+        $this->acl->deny('geust', Permission::ALL, 'post_add');
+        $this->acl->deny('geust', Permission::ALL, 'post_delete');
 
         // moderator
-        $this->acl->allow('moderator', \Nette\Security\Permission::ALL, 'post_delete');
-        $this->acl->allow('moderator', \Nette\Security\Permission::ALL, 'post_update');
-        $this->acl->allow('moderator', \Nette\Security\Permission::ALL, 'topic_thank');
+        $this->acl->allow('moderator', Permission::ALL, 'post_delete');
+        $this->acl->allow('moderator', Permission::ALL, 'post_update');
+        $this->acl->allow('moderator', Permission::ALL, 'topic_thank');
     }
 
 }

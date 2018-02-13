@@ -8,6 +8,9 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
+use Dibi\Connection;
+
 /**
  * Description of MNManager
  *
@@ -19,7 +22,7 @@ abstract class MNManager extends Manager {
     private $right;
     private $table;
 
-    public function __construct(\Dibi\Connection $dibi, \App\Models\Crud\CrudManager $left, \App\Models\Crud\CrudManager $right) {
+    public function __construct(Connection $dibi, CrudManager $left, CrudManager $right) {
         parent::__construct($dibi);
 
         $this->left = $left;

@@ -2,60 +2,154 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Controls\BootstrapForm;
+use App\Models\PostsManager;
+use App\Models\TopicsManager;
+use App\Models\UsersManager;
+use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of SearchPresenter
  *
  * @author rendi
- * @method \App\Models\UsersManager getManager()
+ * @method UsersManager getManager()
  */
-class SearchPresenter extends Base\ForumPresenter {
+class SearchPresenter extends Base\ForumPresenter
+{
 
+    /**
+     * @var TopicsManager $topicsManager
+     */
     private $topicsManager;
+
+    /**
+     * @var PostsManager $postsManager
+     */
     private $postsManager;
 
-    public function __construct(\App\Models\UsersManager $userManager) {
+    /**
+     * SearchPresenter constructor.
+     *
+     * @param UsersManager $userManager
+     */
+    public function __construct(UsersManager $userManager)
+    {
         parent::__construct($userManager);
     }
 
-    public function injectPostsManager(\App\Models\PostsManager $postsManager) {
+    /**
+     * @return BootstrapForm
+     */
+    public function createComponentSearchPostForm()
+    {
+        $form = new BootstrapForm();
+
+        $form->setTranslator($this->getForumTranslator());
+
+        $form->addText('search_post', 'Post')->setRequired('Please enter some in post');
+        $form->addSubmit('send_post', 'Search post');
+        $form->onSuccess[] = [
+            $this,
+            'searchPostFormSuccess'
+        ];
+
+        return $form;
+    }
+
+    /**
+     * @return BootstrapForm
+     */
+    public function createComponentSearchTopicForm()
+    {
+        $form = new BootstrapForm();
+        $form->setTranslator($this->getForumTranslator());
+
+        $form->addText('search_topic', 'Topic')->setRequired('Please enter some in topic');
+        $form->addSubmit('send_topic', 'Search topic');
+        $form->onSuccess[] = [
+            $this,
+            'searchTopicFormSuccess'
+        ];
+
+        return $form;
+    }
+
+    /**
+     * @return BootstrapForm
+     */
+    public function createComponentSearchUserForm()
+    {
+        $form = new BootstrapForm();
+
+        $form->setTranslator($this->getForumTranslator());
+
+        $form->addText('search_user', 'User')->setRequired('Please enter name.');
+        $form->addSubmit('send_user', 'Search user');
+        $form->onSuccess[] = [
+            $this,
+            'searchUserFormSuccess'
+        ];
+
+        return $form;
+    }
+
+    /**
+     * @param PostsManager $postsManager
+     */
+    public function injectPostsManager(PostsManager $postsManager)
+    {
         $this->postsManager = $postsManager;
     }
 
-    public function injectTopicsManager(\App\Models\TopicsManager $topicsManager) {
+    /**
+     * @param TopicsManager $topicsManager
+     */
+    public function injectTopicsManager(TopicsManager $topicsManager)
+    {
         $this->topicsManager = $topicsManager;
     }
 
-    public function renderDefault() {
-        
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function searchPostFormSuccess(Form $form, ArrayHash $values)
+    {
+        $this->redirect('Search:postResults', $values->search_post);
     }
 
-    public function renderUserResults($q) {
-        $result = $this->getManager()->findUsersByUserName($q);
-
-        $this['searchUserForm']->setDefaults(['search_user' => $q]);
-
-        if (!$result) {
-            $this->flashMessage('User was not found.', self::FLASH_MESSAGE_WARNING);
-            $result = [];
-        }
-
-        $this->template->userData = $result;
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function searchTopicFormSuccess(Form $form, ArrayHash $values)
+    {
+        $this->redirect('Search:topicResults', $values->search_topic);
     }
 
-    public function renderTopicResults($q) {
-        $result = $this->topicsManager->findTopicsByTopicName($q);
-
-        $this['searchTopicForm']->setDefaults(['search_topic' => $q]);
-
-        if (!$result) {
-            $this->flashMessage('Topics was not found.', self::FLASH_MESSAGE_WARNING);
-            $result = [];
-        }
-
-        $this->template->topicData = $result;
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function searchUserFormSuccess(Form $form, ArrayHash $values)
+    {
+        $this->redirect('Search:userResults', $values->search_user);
     }
 
-    public function renderPostResults($q) {
+    /**
+     *
+     */
+    public function renderDefault()
+    {
+
+    }
+
+    /**
+     * @param $q
+     */
+    public function renderPostResults($q)
+    {
         $result = $this->postsManager->findPosts($q);
 
         $this['searchPostForm']->setDefaults(['search_post' => $q]);
@@ -68,51 +162,38 @@ class SearchPresenter extends Base\ForumPresenter {
         $this->template->postData = $result;
     }
 
-    public function createComponentSearchUserForm() {
-        $form = new \App\Controls\BootstrapForm();
+    /**
+     * @param $q
+     */
+    public function renderTopicResults($q)
+    {
+        $result = $this->topicsManager->findTopicsByTopicName($q);
 
-        $form->setTranslator($this->getForumTranslator());
+        $this['searchTopicForm']->setDefaults(['search_topic' => $q]);
 
-        $form->addText('search_user', 'User')->setRequired('Please enter name.');
-        $form->addSubmit('send_user', 'Search user');
-        $form->onSuccess[] = [$this, 'searchUserFormSuccess'];
+        if (!$result) {
+            $this->flashMessage('Topics was not found.', self::FLASH_MESSAGE_WARNING);
+            $result = [];
+        }
 
-        return $form;
+        $this->template->topicData = $result;
     }
 
-    public function createComponentSearchTopicForm() {
-        $form = new \App\Controls\BootstrapForm();
-        $form->setTranslator($this->getForumTranslator());
+    /**
+     * @param $q
+     */
+    public function renderUserResults($q)
+    {
+        $result = $this->getManager()->findUsersByUserName($q);
 
-        $form->addText('search_topic', 'Topic')->setRequired('Please enter some in topic');
-        $form->addSubmit('send_topic', 'Search topic');
-        $form->onSuccess[] = [$this, 'searchTopicFormSuccess'];
+        $this['searchUserForm']->setDefaults(['search_user' => $q]);
 
-        return $form;
-    }
+        if (!$result) {
+            $this->flashMessage('User was not found.', self::FLASH_MESSAGE_WARNING);
+            $result = [];
+        }
 
-    public function createComponentSearchPostForm() {
-        $form = new \App\Controls\BootstrapForm();
-
-        $form->setTranslator($this->getForumTranslator());
-
-        $form->addText('search_post', 'Post')->setRequired('Please enter some in post');
-        $form->addSubmit('send_post', 'Search post');
-        $form->onSuccess[] = [$this, 'searchPostFormSuccess'];
-
-        return $form;
-    }
-
-    public function searchUserFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
-        $this->redirect('Search:userResults', $values->search_user);
-    }
-
-    public function searchTopicFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
-        $this->redirect('Search:topicResults', $values->search_topic);
-    }
-
-    public function searchPostFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
-        $this->redirect('Search:postResults', $values->search_post);
+        $this->template->userData = $result;
     }
 
 }

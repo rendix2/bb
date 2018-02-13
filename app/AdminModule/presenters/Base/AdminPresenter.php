@@ -2,48 +2,64 @@
 
 namespace App\AdminModule\Presenters\Base;
 
+use App\Controls\BootstrapForm;
+use App\Models\Crud\CrudManager;
+use App\Presenters\crud\CrudPresenter;
+use App\Translator;
+use Nette\Localization\ITranslator;
+
 /**
  * Description of AdminPresenter¨
  *
  * @author rendi
  */
-abstract class AdminPresenter extends \App\Presenters\crud\CrudPresenter {
+abstract class AdminPresenter extends CrudPresenter
+{
 
-    private $adminTtranslator;
-    
-    private $form;
-    
+    /**
+     * @var ITranslator $adminTranslator
+     */
+    private $adminTranslator;
+
+    /**
+     * @var BootstrapForm $bootStrapForm
+     */
     private $bootStrapForm;
 
-
-    public function __construct(\App\Models\Crud\CrudManager $manager) {
+    /**
+     * AdminPresenter constructor.
+     *
+     * @param CrudManager $manager
+     */
+    public function __construct(CrudManager $manager)
+    {
         parent::__construct($manager);
-        
-        $this->form             = new \Nette\Application\UI\Form();
-        $this->bootStrapForm    = new \App\Controls\BootstrapForm(); 
-    }
-   
-    public function getAdminTranslator(){
-        return $this->adminTtranslator;                
-    }
-    
-    /**
-     * 
-     * @return \Nette\Application\UI\Form
-     */
-    public function getForm() {
-        return $this->form;
-    }
-    
-    /**
-     * 
-     * @return \App\Controls\BootstrapForm
-     */
-    public function getBootStrapForm(){
-        return $this->bootStrapForm;
-    }    
 
-    public function startup() {
+        $this->bootStrapForm = new BootstrapForm();
+    }
+
+    /**
+     * @return ITranslator
+     */
+    public function getAdminTranslator()
+    {
+        return $this->adminTranslator;
+    }
+
+    /**
+     *
+     * @return BootstrapForm
+     */
+    public function getBootStrapForm()
+    {
+        return $this->bootStrapForm;
+    }
+
+    /**
+     *
+     */
+    public function startup()
+    {
         parent::startup();
 
         $user = $this->getUser();
@@ -54,15 +70,21 @@ abstract class AdminPresenter extends \App\Presenters\crud\CrudPresenter {
 
         if (!$user->isInRole('admin')) {
             $this->error('You are not admin.');
-        }  
-        
-        $this->adminTtranslator = new \App\Translator('Admin',$this->getUser()->getIdentity()->getData()['lang_file_name']);        
+        }
+
+        $lang_name = $this->getUser()->getIdentity()->getData()['lang_file_name'];
+
+        $this->adminTranslator = new Translator('Admin', $lang_name);
     }
-    
-    public function beforeRender() {
+
+    /**
+     *
+     */
+    public function beforeRender()
+    {
         parent::beforeRender();
-        
-        $this->template->setTranslator($this->adminTtranslator);
+
+        $this->template->setTranslator($this->adminTranslator);
     }
 
 }

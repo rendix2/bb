@@ -2,37 +2,75 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Controls\BootStrapForm;
+use App\Models\CategoriesManager;
+use App\Models\ForumsManager;
+use App\Models\TopicsManager;
+use App\Models\UsersManager;
+
 /**
  * Description of ForumPresenter
  *
  * @author rendi
- * @method \App\Models\ForumsManager getManager()
+ * @method ForumsManager getManager()
  */
-class ForumPresenter extends Base\AdminPresenter {
+class ForumPresenter extends Base\AdminPresenter
+{
 
+    /**
+     * @var CategoriesManager $categoryManager
+     */
     private $categoryManager;
-    
+
+    /**
+     * @var UsersManager $userManager
+     */
     private $userManager;
-    
+
+    /**
+     * @var TopicsManager $topicManager
+     */
     private $topicManager;
 
-    public function __construct(\App\Models\ForumsManager $manager) {
+    /**
+     * ForumPresenter constructor.
+     *
+     * @param ForumsManager $manager
+     */
+    public function __construct(ForumsManager $manager)
+    {
         parent::__construct($manager);
     }
 
-    public function injectCategoryManager(\App\Models\CategoriesManager $categoryManager) {
+    /**
+     * @param CategoriesManager $categoryManager
+     */
+    public function injectCategoryManager(CategoriesManager $categoryManager)
+    {
         $this->categoryManager = $categoryManager;
     }
-    
-    public function injectUserManager(\App\Models\UsersManager $userManager){
-        $this->userManager = $userManager;
-    }
-    
-    public function injectTopicManager(\App\Models\TopicsManager $topicManager){
+
+    /**
+     * @param TopicsManager $topicManager
+     */
+    public function injectTopicManager(TopicsManager $topicManager)
+    {
         $this->topicManager = $topicManager;
     }
 
-    public function renderEdit($id = null) {
+    /**
+     * @param UsersManager $userManager
+     */
+    public function injectUserManager(UsersManager $userManager)
+    {
+        $this->userManager = $userManager;
+    }
+
+    /**
+     * @param int|null $id
+     */
+    public function renderEdit($id = null)
+    {
         if ($id) {
             if (!is_numeric($id)) {
                 $this->error('Param id is not numeric.');
@@ -46,35 +84,40 @@ class ForumPresenter extends Base\AdminPresenter {
 
             $this['editForm']->setDefaults($item);
 
-            $subForums = $this->getManager()->createForums($this->getManager()->getForumsByForumParentId($id), intval($id));
+            $subForums = $this->getManager()->createForums($this->getManager()
+                                                                ->getForumsByForumParentId($id), intval($id));
 
             if (!$subForums) {
                 $this->flashMessage('No subforums.', self::FLASH_MESSAGE_WARNING);
             }
 
             $lastTopic = $this->topicManager->getById($item->forum_last_topic_id);
-            
-            if ( !$lastTopic ){
-                $this->flashMessage('No last topic', self::FLASH_MESSAGE_WARNING);               
+
+            if (!$lastTopic) {
+                $this->flashMessage('No last topic', self::FLASH_MESSAGE_WARNING);
             }
-            
-            $this->template->topicData = $lastTopic;    
-            $this->template->userData = $this->userManager->getById($item->forum_last_post_user_id);
-            $this->template->item = $item;
-            $this->template->title = $this->getTitleOnEdit();
-            $this->template->forums = $subForums;           
+
+            $this->template->topicData = $lastTopic;
+            $this->template->userData  = $this->userManager->getById($item->forum_last_post_user_id);
+            $this->template->item      = $item;
+            $this->template->title     = $this->getTitleOnEdit();
+            $this->template->forums    = $subForums;
         } else {
-            $this->template->title = $this->getTitleOnAdd();
+            $this->template->title  = $this->getTitleOnAdd();
             $this->template->forums = [];
-            
-//            $this->template->item = \Nette\Utils\ArrayHash::from(['forum_topic_count' =>null, 'forum_last_post_id' => null, 'forum_last_post_user_id' => null]);
-//            $this->template->topicData = [];   
-//            $this->template->userData = \Nette\Utils\ArrayHash::from(['user_name' => null]);
+
+            //            $this->template->item = \Nette\Utils\ArrayHash::from(['forum_topic_count' =>null, 'forum_last_post_id' => null, 'forum_last_post_user_id' => null]);
+            //            $this->template->topicData = [];
+            //            $this->template->userData = \Nette\Utils\ArrayHash::from(['user_name' => null]);
             $this['editForm']->setDefaults([]);
         }
     }
 
-    protected function createComponentEditForm() {
+    /**
+     * @return BootStrapForm
+     */
+    protected function createComponentEditForm()
+    {
         $form = $this->getBootStrapForm();
 
         $form->setTranslator($this->getAdminTranslator());
@@ -82,9 +125,11 @@ class ForumPresenter extends Base\AdminPresenter {
         $form->addGroup('forum');
         $form->addText('forum_name', 'Forum name:')->setRequired(true);
         $form->addText('forum_description', 'Forum description:')->setRequired(true);
-        $form->addSelect('forum_category_id', 'Forum category:', $this->categoryManager->getForSelect())->setRequired(true)->setTranslator(null);
+        $form->addSelect('forum_category_id', 'Forum category:', $this->categoryManager->getForSelect())
+             ->setRequired(true)
+             ->setTranslator(null);
         $form->addCheckbox('forum_active', 'Forum active:');
-        
+
         $form->addGroup('user');
         $form->addCheckbox('forum_thank', 'Forum thank:');
         $form->addCheckbox('forum_post_add', 'Forum add post:');

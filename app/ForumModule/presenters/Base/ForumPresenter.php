@@ -2,64 +2,90 @@
 
 namespace App\ForumModule\Presenters\Base;
 
+use App\Authorizator;
+use App\Controls\BootstrapForm;
+use App\Models\Manager;
+use App\Presenters\Base\ManagerPresenter;
+use App\Translator;
+use Nette\Localization\ITranslator;
+use Nette\Security\IAuthorizator;
+
 /**
  * Description of ForumPresenter
  *
  * @author rendi
  */
-abstract class ForumPresenter extends \App\Presenters\Base\ManagerPresenter {
+abstract class ForumPresenter extends ManagerPresenter
+{
 
     /**
      *
-     * @var App\Translator $transaltor
+     * @var ITranslator $forumTranslator
      */
     private $forumTranslator;
-    private $form;
+
+    /**
+     * @var BootstrapForm $bootStrapForm
+     */
     private $bootStrapForm;
+
+    /**
+     * @var IAuthorizator $authorizator
+     */
     private $authorizator;
 
-    public function __construct(\App\Models\Manager $manager) {
+    /**
+     * ForumPresenter constructor.
+     *
+     * @param Manager $manager
+     */
+    public function __construct(Manager $manager)
+    {
         parent::__construct($manager);
 
-        $this->form = new \Nette\Application\UI\Form();
-        $this->bootStrapForm = new \App\Controls\BootstrapForm();
-    }
-
-    public function injectAuthorizator(\App\Authorizator $authorizator) {
-        $this->authorizator = $authorizator;
+        $this->bootStrapForm = new BootstrapForm();
     }
 
     /**
-     * 
-     * @return \Nette\Application\UI\Form
+     *
+     * @return BootstrapForm
      */
-    public function getForm() {
-        return $this->form;
-    }
-
-    /**
-     * 
-     * @return \App\Controls\BootstrapForm
-     */
-    public function getBootStrapForm() {
+    public function getBootStrapForm()
+    {
         return $this->bootStrapForm;
     }
 
-    public function startup() {
+    /**
+     * @return ITranslator
+     */
+    public function getForumTranslator()
+    {
+        return $this->forumTranslator;
+    }
+
+    /**
+     * @param Authorizator $authorizator
+     */
+    public function injectAuthorizator(Authorizator $authorizator)
+    {
+        $this->authorizator = $authorizator;
+    }
+
+    public function startup()
+    {
         parent::startup();
 
-        $this->forumTranslator = new \App\Translator('Forum', $this->getUser()->getIdentity()->getData()['lang_file_name']);
+        $this->forumTranslator = new Translator('Forum', $this->getUser()
+                                                                   ->getIdentity()
+                                                                   ->getData()['lang_file_name']);
         $this->getUser()->setAuthorizator($this->authorizator->getAcl());
     }
 
-    public function beforeRender() {
+    public function beforeRender()
+    {
         parent::beforeRender();
 
         $this->template->setTranslator($this->forumTranslator);
-    }
-
-    public function getForumTranslator() {
-        return $this->forumTranslator;
     }
 
 }

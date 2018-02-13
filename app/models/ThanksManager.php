@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of ThanksMnager
  *
@@ -9,14 +11,20 @@ namespace App\Models;
  */
 class ThanksManager extends Crud\CrudManager {
 
+    /**
+     * @var UsersManager $userManager
+     */
     private $userManager;
 
+    /**
+     * @param UsersManager $userManager
+     */
     public function injectUserManager(UsersManager $userManager) {
         $this->userManager = $userManager;
     }
 
-    public function add(\Nette\Utils\ArrayHash $item_data) {
-        $this->userManager->update($item_data->thank_user_id, \Nette\Utils\ArrayHash::from(['user_thank_count%sql' => 'user_thank_count + 1']));
+    public function add(ArrayHash $item_data) {
+        $this->userManager->update($item_data->thank_user_id, ArrayHash::from(['user_thank_count%sql' => 'user_thank_count + 1']));
 
         parent::add($item_data);
     }

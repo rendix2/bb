@@ -8,6 +8,8 @@
 
 namespace App\Models;
 
+use Dibi\Connection;
+
 /**
  * Description of Forums2Groups
  *
@@ -15,7 +17,7 @@ namespace App\Models;
  */
 class Forums2GroupsManager extends MNManager {
     
-    public function __construct(\Dibi\Connection $dibi, ForumsManager $left, GroupsManager $right) {
+    public function __construct(Connection $dibi, ForumsManager $left, GroupsManager $right) {
         parent::__construct($dibi, $left, $right);
     }
 

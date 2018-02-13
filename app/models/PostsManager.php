@@ -2,16 +2,30 @@
 
 namespace App\Models;
 
+use dibi;
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of PostManager
  *
  * @author rendi
  */
 class PostsManager extends Crud\CrudManager {
-    
+
+    /**
+     * @var TopicsManager $topicsManager
+     */
     private $topicsManager;
+
+    /**
+     * @var ForumsManager $forumManager
+     */
     private $forumManager;
-    private $userManager;     
+
+    /**
+     * @var UsersManager $userManager
+     */
+    private $userManager;
     
     public function set(){
         $this->topicsManager = new TopicsManager($this->dibi);
@@ -47,7 +61,7 @@ class PostsManager extends Crud\CrudManager {
     }
     
     public function getLastPostByTopic($topic_id, $post_id){
-        return $this->dibi->select('*')->from($this->getTable())->where('[post_topic_id] = %i', $topic_id)->where('[post_id] < %i', $post_id)->orderBy('post_id', \dibi::DESC)->fetch();
+        return $this->dibi->select('*')->from($this->getTable())->where('[post_topic_id] = %i', $topic_id)->where('[post_id] < %i', $post_id)->orderBy('post_id', dibi::DESC)->fetch();
     }
     
     public function getLastPostByForum($forum_id, $post_id, $topic_id){
@@ -61,7 +75,7 @@ class PostsManager extends Crud\CrudManager {
             $q->where('[post_topic_id] < %i', $topic_id);
         }             
         
-        return $q->orderBy('post_id', \dibi::DESC)->fetch();        
+        return $q->orderBy('post_id', dibi::DESC)->fetch();
     }
     
     public function delete($item_id) {
@@ -72,29 +86,29 @@ class PostsManager extends Crud\CrudManager {
 
         if ((int) $item_id === $topic->topic_last_post_id) {
             if ($lastPost) {
-                $this->topicsManager->update($post->post_topic_id, \Nette\Utils\ArrayHash::from(['topic_last_post_id' => $lastPost->post_id, 'topic_last_post_user_id' => $lastPost->post_user_id]));
-                $this->forumManager->update($post->post_forum_id, \Nette\Utils\ArrayHash::from(['forum_last_topic_id' => $lastPostByForum->post_topic_id, 'forum_last_post_id' => $lastPostByForum->post_id, 'forum_last_post_user_id' => $lastPostByForum->post_user_id]));
+                $this->topicsManager->update($post->post_topic_id, ArrayHash::from(['topic_last_post_id' => $lastPost->post_id, 'topic_last_post_user_id' => $lastPost->post_user_id]));
+                $this->forumManager->update($post->post_forum_id, ArrayHash::from(['forum_last_topic_id' => $lastPostByForum->post_topic_id, 'forum_last_post_id' => $lastPostByForum->post_id, 'forum_last_post_user_id' => $lastPostByForum->post_user_id]));
             } else {
-                $this->topicsManager->update($post->post_topic_id, \Nette\Utils\ArrayHash::from(['topic_last_post_id' => 0, 'topic_last_post_user_id' => 0]));
-                $this->forumManager->update($post->post_forum_id, \Nette\Utils\ArrayHash::from(['forum_last_topic_id' => $lastPostByForum->post_topic_id, 'forum_last_post_id' => $lastPostByForum->post_id, 'forum_last_post_user_id' => $lastPostByForum->post_user_id]));
+                $this->topicsManager->update($post->post_topic_id, ArrayHash::from(['topic_last_post_id' => 0, 'topic_last_post_user_id' => 0]));
+                $this->forumManager->update($post->post_forum_id, ArrayHash::from(['forum_last_topic_id' => $lastPostByForum->post_topic_id, 'forum_last_post_id' => $lastPostByForum->post_id, 'forum_last_post_user_id' => $lastPostByForum->post_user_id]));
             }
         }
 
-        $this->topicsManager->update($post->post_topic_id, \Nette\Utils\ArrayHash::from(['topic_post_count%sql' => 'topic_post_count - 1']));       
-        $this->userManager->update($post->post_user_id, \Nette\Utils\ArrayHash::from(['user_post_count%sql' => 'user_post_count - 1']));
+        $this->topicsManager->update($post->post_topic_id, ArrayHash::from(['topic_post_count%sql' => 'topic_post_count - 1']));
+        $this->userManager->update($post->post_user_id, ArrayHash::from(['user_post_count%sql' => 'user_post_count - 1']));
        
         parent::delete($item_id);
     }
     
-    public function add(\Nette\Utils\ArrayHash $item_data) {            
+    public function add(ArrayHash $item_data) {
         $post_id = parent::add($item_data);
         $user_id = $item_data->post_user_id;
         $topic_id = $item_data->post_topic_id;
         $forum_id = $item_data->post_forum_id;
                
-        $this->userManager->update($user_id, \Nette\Utils\ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1']));
-        $this->topicsManager->update($topic_id, \Nette\Utils\ArrayHash::from(['topic_post_count%sql' => 'topic_post_count+1', 'topic_last_post_user_id' => $user_id, 'topic_last_post_id' => $post_id]));
-        $this->forumManager->update($forum_id, \Nette\Utils\ArrayHash::from(['forum_last_topic_id' => $topic_id, 'forum_last_post_id' => $post_id, 'forum_last_post_user_id' => $user_id]));
+        $this->userManager->update($user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1']));
+        $this->topicsManager->update($topic_id, ArrayHash::from(['topic_post_count%sql' => 'topic_post_count+1', 'topic_last_post_user_id' => $user_id, 'topic_last_post_id' => $post_id]));
+        $this->forumManager->update($forum_id, ArrayHash::from(['forum_last_topic_id' => $topic_id, 'forum_last_post_id' => $post_id, 'forum_last_post_user_id' => $user_id]));
         
         return $post_id;
     }

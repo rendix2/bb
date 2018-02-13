@@ -2,7 +2,7 @@
 
 namespace App\Presenters\Base;
 
-use App\Presenters\Base\BasePresenter;
+use App\Models\Manager;
 use Nette\Security\IUserStorage;
 
 /**
@@ -10,34 +10,38 @@ use Nette\Security\IUserStorage;
  *
  * @author rendi
  */
-abstract class ManagerPresenter extends BasePresenter {
+abstract class ManagerPresenter extends BasePresenter
+{
 
     /**
      *
-     * @var \App\Models\Manager $manager
+     * @var Manager $manager
      */
     private $manager;
 
     /**
-     * 
-     * @param \App\Models\Manager $manager
+     *
+     * @param Manager $manager
      */
-    public function __construct(\App\Models\Manager $manager) {
+    public function __construct(Manager $manager)
+    {
         parent::__construct();
 
         $this->manager = $manager;
     }
 
     /**
-     * 
-     * @return \App\Models\Manager $manager
-     * 
+     *
+     * @return Manager $manager
+     *
      */
-    protected function getManager() {
+    protected function getManager()
+    {
         return $this->manager;
     }
 
-    public function startup() {
+    public function startup()
+    {
         parent::startup();
 
         $user = $this->getUser();

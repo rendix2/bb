@@ -2,15 +2,28 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Controls\BootstrapForm;
+use App\Presenters\Base\BasePresenter;
+use App\Translator;
+use Nette\Application\UI\Form;
+use Nette\Localization\ITranslator;
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of CachePresenter
  *
  * @author rendi
  */
-class CachePresenter extends \App\Presenters\Base\BasePresenter {
-    
+class CachePresenter extends BasePresenter {
+
+    /**
+     * @var ITranslator $translator
+     */
     private $translator;
-    
+
+    /**
+     *
+     */
     public function startup() {
         parent::startup();
 
@@ -24,8 +37,11 @@ class CachePresenter extends \App\Presenters\Base\BasePresenter {
         }
     }
 
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentEditForm() {
-        $form = new \App\Controls\BootstrapForm();
+        $form = new BootstrapForm();
         $form->setTranslator($this->translator);
         $form->addSubmit('Delete_all', 'Delete all cache');
         
@@ -34,15 +50,22 @@ class CachePresenter extends \App\Presenters\Base\BasePresenter {
 
         return $form;
     }
-    
-    public function success(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values){
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function success(Form $form, ArrayHash $values){
         
     }
 
+    /**
+     *
+     */
     public function beforeRender() {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->translator  = new \App\Translator('Admin', $this->getUser()->getIdentity()->getData()['lang_file_name']));
+        $this->template->setTranslator($this->translator  = new Translator('Admin', $this->getUser()->getIdentity()->getData()['lang_file_name']));
     }
 
 }

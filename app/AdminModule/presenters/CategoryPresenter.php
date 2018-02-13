@@ -2,6 +2,10 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Controls\BootStrapForm;
+use App\Models\CategoriesManager;
+use App\Models\ForumsManager;
+
 /**
  * Description of CategoryPresenter
  *
@@ -9,16 +13,30 @@ namespace App\AdminModule\Presenters;
  */
 class CategoryPresenter extends Base\AdminPresenter {
 
+    /**
+     * @var ForumsManager $forumsManager
+     */
     private $forumsManager;
 
-    public function __construct(\App\Models\CategoriesManager $manager) {
+    /**
+     * CategoryPresenter constructor.
+     *
+     * @param CategoriesManager $manager
+     */
+    public function __construct(CategoriesManager $manager) {
         parent::__construct($manager);
     }
 
-    public function injectForumsManager(\App\Models\ForumsManager $forumsManager) {
+    /**
+     * @param ForumsManager $forumsManager
+     */
+    public function injectForumsManager(ForumsManager $forumsManager) {
         $this->forumsManager = $forumsManager;
     }
 
+    /**
+     * @param int|null $id
+     */
     public function renderEdit($id = null) {
         if ($id) {
             if (!is_numeric($id)) {
@@ -50,6 +68,9 @@ class CategoryPresenter extends Base\AdminPresenter {
         }
     }
 
+    /**
+     * @return BootStrapForm
+     */
     protected function createComponentEditForm() {
         $form = $this->getBootStrapForm();
 

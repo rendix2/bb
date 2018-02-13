@@ -8,28 +8,24 @@
 
 namespace App\Controls;
 
+use App\Cpontrols\Checkbox as MyCheckBox;
 use Controls\forms\PwCheckboxLabelPlaintText;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IContainer;
-use Nette\Forms\Controls;
 use Nette\Forms\Controls\Button;
-use Nette\Forms\Controls\Checkbox;
 use Nette\Forms\Controls\CheckboxList;
 use Nette\Forms\Controls\MultiSelectBox;
 use Nette\Forms\Controls\RadioList;
 use Nette\Forms\Controls\SelectBox;
 use Nette\Forms\Controls\TextArea;
 use Nette\Forms\Controls\TextBase;
-use Nette\Forms\Controls\TextInput;
-use Nette\Forms\Rules;
-use App\Cpontrols\Checkbox as MyCheckkBox;
 
 /**
  * Class BootstrapForm
  *
  * @package Controls\forms
  * @author  Tomáš Babický tomas.babicky@layoutmaschine.de
- * 
+ *
  */
 class BootstrapForm extends Form
 {
@@ -69,7 +65,7 @@ class BootstrapForm extends Form
      *
      * @api
      */
-    public function __construct($columnCount = 8 ,$columnType = 'sm', $labelColumnCount = 5, IContainer $parent = null, $name = null)
+    public function __construct($columnCount = 8, $columnType = 'sm', $labelColumnCount = 5, IContainer $parent = null, $name = null)
     {
         parent::__construct($parent, $name);
         $this->addProtection('Try it again.');
@@ -89,6 +85,17 @@ class BootstrapForm extends Form
         $this->columnCount      = null;
         $this->columnType       = null;
         $this->labelColumnCount = null;
+    }
+
+    /**
+     * @param string      $name
+     * @param string|null $caption
+     *
+     * @return MyCheckBox
+     */
+    public function addCheckbox($name, $caption = null)
+    {
+        return $this[$name] = new MyCheckBox($name, $caption);
     }
 
     /**
@@ -188,9 +195,5 @@ class BootstrapForm extends Form
         parent::beforeRender();
         $this->useBootStrap();
     }
-    
-    public function addCheckbox($name, $caption = null) {
-        return $this[$name] =  new MyCheckkBox($name, $caption);
-    }
-            
+
 }

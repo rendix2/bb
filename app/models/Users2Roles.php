@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Dibi\Connection;
+
 /**
  * Description of Users2Roles
  *
@@ -10,7 +12,7 @@ namespace App\Models;
 class Users2Roles extends MNManager {
     //put your code here
     
-    public function __construct(\Dibi\Connection $dibi, \App\Models\RolesManager $left, \App\Models\UsersManager $right) {
+    public function __construct(Connection $dibi, RolesManager $left, UsersManager $right) {
         parent::__construct($dibi, $left, $right);
     }
 }
