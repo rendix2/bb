@@ -8,7 +8,7 @@
 
 namespace App\Models;
 
-use Nette\Caching\Cache;
+use Dibi\Connection;
 
 /**
  * Description of Manager
@@ -19,15 +19,15 @@ abstract class Manager extends Tables {
 
     /**
      * 
-     * @var \Dibi\Connection $dibi dibi
+     * @var Connection $dibi dibi
      */
     protected $dibi;
 
     /**
      * 
-     * @param \Dibi\Connection $dibi
+     * @param Connection $dibi
      */
-    public function __construct(\Dibi\Connection $dibi) {
+    public function __construct(Connection $dibi) {
         $this->dibi = $dibi;        
     }
 

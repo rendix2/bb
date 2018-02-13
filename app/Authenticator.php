@@ -2,19 +2,42 @@
 
 namespace App;
 
+use App\Models\LanguagesManager;
+use App\Models\UsersManager;
+use Nette\Security\AuthenticationException;
+use Nette\Security\IAuthenticator;
+use Nette\Security\Identity;
+use Nette\Security\Passwords;
+
 /**
  * Description of Authenticator
  *
  * @author rendi
  */
-class Authenticator implements \Nette\Security\IAuthenticator {
+class Authenticator implements IAuthenticator {
 
+    /**
+     *
+     */
     const ROLES = [1 => 'geust', 2 => 'registered', 3 => 'moderator', 4 => 'juniorAdmin', 5 => 'admin'];
 
+    /**
+     * @var UsersManager $userManager
+     */
     private $userManager;
+
+    /**
+     * @var LanguagesManager $languageManager
+     */
     private $languageManager;
 
-    public function __construct(\App\Models\UsersManager $userManger, \App\Models\LanguagesManager $languageManager) {
+    /**
+     * Authenticator constructor.
+     *
+     * @param UsersManager     $userManger
+     * @param LanguagesManager $languageManager
+     */
+    public function __construct(UsersManager $userManger, LanguagesManager $languageManager) {
         $this->userManager = $userManger;
         $this->languageManager = $languageManager;
     }
@@ -22,8 +45,9 @@ class Authenticator implements \Nette\Security\IAuthenticator {
     /**
      * 
      * @param array $credentials
-     * @return \Nette\Security\Identity
-     * @throws \Nette\Security\AuthenticationException
+     *
+     * @return Identity
+     * @throws AuthenticationException
      */
     public function authenticate(array $credentials) {
         list($userName, $userPassword) = $credentials;
@@ -32,18 +56,18 @@ class Authenticator implements \Nette\Security\IAuthenticator {
         $langData = $this->languageManager->getById($userData->user_lang_id);
 
         if (!$userData) {
-            throw new \Nette\Security\AuthenticationException('User name not found.');
+            throw new AuthenticationException('User name not found.');
         }
 
         if (!$userData->user_active) {
-            throw new \Nette\Security\AuthenticationException('User account is not active.');
+            throw new AuthenticationException('User account is not active.');
         }
 
-        if (!\Nette\Security\Passwords::verify($userPassword, $userData->user_password)) {
-            throw new \Nette\Security\AuthenticationException('Pasword is incorrect.');
+        if (!Passwords::verify($userPassword, $userData->user_password)) {
+            throw new AuthenticationException('Pasword is incorrect.');
         }
 
-        return new \Nette\Security\Identity($userData->user_id, self::ROLES[$userData->user_role_id], ['user_name' => $userData->user_name, 'lang_file_name' => $langData->lang_file_name]);
+        return new Identity($userData->user_id, self::ROLES[$userData->user_role_id], ['user_name' => $userData->user_name, 'lang_file_name' => $langData->lang_file_name]);
     }
 
 }

@@ -2,14 +2,20 @@
 
 namespace App\Models\Crud;
 
+use App\Models\Manager;
+use App\Presenters\crud\CrudPresenter;
+use dibi;
+use Dibi\Connection;
 use Nette\Caching\Cache;
+use Nette\Caching\IStorage;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of CrudManager
  *
  * @author rendi
  */
-abstract class CrudManager extends \App\Models\Manager {
+abstract class CrudManager extends Manager {
 
     private $table;
     private $primaryKey;
@@ -17,14 +23,14 @@ abstract class CrudManager extends \App\Models\Manager {
     
     public $storage;
 
-    public function __construct(\Dibi\Connection $dibi) {
+    public function __construct(Connection $dibi) {
         parent::__construct($dibi);
 
         $this->table = $this->getNameOfTableFromClass();
     }
 
-    public function factory(\Nette\Caching\IStorage $storage) {
-        $this->cache = new Cache($storage, \App\Presenters\crud\CrudPresenter::CACHE_KEY_PRIMARY_KEY);
+    public function factory(IStorage $storage) {
+        $this->cache = new Cache($storage, CrudPresenter::CACHE_KEY_PRIMARY_KEY);
         $this->primaryKey = $this->getPrimaryKeyQuery();
         $this->storage = $storage;
     }
@@ -71,16 +77,16 @@ abstract class CrudManager extends \App\Models\Manager {
         return $this->dibi->select('COUNT(*)')->from($this->table)->fetchSingle();
     }
 
-    public function add(\Nette\Utils\ArrayHash $item_data) {
-        return $this->dibi->insert($this->table, $item_data)->execute(\dibi::IDENTIFIER);
+    public function add(ArrayHash $item_data) {
+        return $this->dibi->insert($this->table, $item_data)->execute(dibi::IDENTIFIER);
     }
 
     public function delete($item_id) {
-        return $this->dibi->delete($this->table)->where('[' . $this->primaryKey . '] = %i', $item_id)->execute(\dibi::AFFECTED_ROWS);
+        return $this->dibi->delete($this->table)->where('[' . $this->primaryKey . '] = %i', $item_id)->execute(dibi::AFFECTED_ROWS);
     }
 
-    public function update($item_id, \Nette\Utils\ArrayHash $item_data) {
-        return $this->dibi->update($this->table, $item_data)->where('[' . $this->primaryKey . '] = %i', $item_id)->execute(\dibi::AFFECTED_ROWS);
+    public function update($item_id, ArrayHash $item_data) {
+        return $this->dibi->update($this->table, $item_data)->where('[' . $this->primaryKey . '] = %i', $item_id)->execute(dibi::AFFECTED_ROWS);
     }
 
     public function getAllFluent() {

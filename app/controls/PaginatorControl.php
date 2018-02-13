@@ -2,7 +2,9 @@
 
 namespace App\Controls;
 
+use dibi;
 use Dibi\Fluent;
+use Nette\Application\UI\Control;
 use Nette\Utils\Paginator;
 
 /**
@@ -10,7 +12,7 @@ use Nette\Utils\Paginator;
  *
  * @package App\controls\forms
  */
-class PaginatorControl extends \Nette\Application\UI\Control {
+class PaginatorControl extends Control {
 
     /**
      * items per page
@@ -77,7 +79,6 @@ class PaginatorControl extends \Nette\Application\UI\Control {
     /**
      * PaginatorControl destructor.
      *
-     * @author Tomáš Babický tomas.babicky@layoutmaschine.de
      * @api
      */
     public function __destruct() {
@@ -117,7 +118,7 @@ class PaginatorControl extends \Nette\Application\UI\Control {
      */
     final private function setCount($table, $where, $alias) {
         if ($table !== null && $where !== null) {
-            $query = \dibi::select('COUNT(*)')->from($table);
+            $query = dibi::select('COUNT(*)')->from($table);
 
             if ($alias !== '') {
                 $query->as($alias);
@@ -159,7 +160,6 @@ class PaginatorControl extends \Nette\Application\UI\Control {
     /**
      * renders paginator
      *
-     * @author Tomáš Babický tomas.babicky@layoutmaschine.de
      * @api
      */
     final public function render() {

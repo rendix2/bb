@@ -2,8 +2,8 @@
 
 namespace App\Presenters;
 
-use Nette;
 use App\Presenters\Base\BasePresenter;
+use Nette;
 
 class Error4xxPresenter extends BasePresenter
 {

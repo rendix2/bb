@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Dibi\Connection;
+
 /**
  * Description of Group2User
  *
@@ -9,7 +11,14 @@ namespace App\Models;
  */
 class Users2GroupsManager extends MNManager{
 
-    public function __construct(\Dibi\Connection $dibi, UsersManager $left, GroupsManager $right) {
+    /**
+     * Users2GroupsManager constructor.
+     *
+     * @param Connection    $dibi
+     * @param UsersManager  $left
+     * @param GroupsManager $right
+     */
+    public function __construct(Connection $dibi, UsersManager $left, GroupsManager $right) {
         parent::__construct($dibi, $left, $right);
     }  
 }

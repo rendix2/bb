@@ -8,20 +8,35 @@
 
 namespace App\Models;
 
+use Dibi\Connection;
+
 /**
  * Description of Forums2Groups
  *
  * @author rendi
  */
-class Forums2GroupsManager extends MNManager {
-    
-    public function __construct(\Dibi\Connection $dibi, ForumsManager $left, GroupsManager $right) {
+class Forums2GroupsManager extends MNManager
+{
+
+    /**
+     * Forums2GroupsManager constructor.
+     *
+     * @param Connection    $dibi
+     * @param ForumsManager $left
+     * @param GroupsManager $right
+     */
+    public function __construct(Connection $dibi, ForumsManager $left, GroupsManager $right)
+    {
         parent::__construct($dibi, $left, $right);
     }
 
-        public function addForums2group($group_id, $data){
-            $this->deleteByRight($group_id);
-        $this->dibi->query('INSERT INTO ['.$this->getTable().'] %m', $data);
-        
-    }   
+    /**
+     * @param $group_id
+     * @param $data
+     */
+    public function addForums2group($group_id, $data)
+    {
+        $this->deleteByRight($group_id);
+        $this->dibi->query('INSERT INTO [' . $this->getTable() . '] %m', $data);
+    }
 }

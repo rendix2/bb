@@ -2,62 +2,91 @@
 
 namespace App\Controls;
 
+use App\Models\UsersManager;
+use App\Presenters\Base\BasePresenter;
+use Nette\Application\UI\Control;
+use Nette\Application\UI\Form;
+use Nette\Localization\ITranslator;
+use Nette\Security\Passwords;
+use Nette\Security\User;
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of ChangePasswordControl
  *
  * @author rendi
  */
-class ChangePasswordControl extends \Nette\Application\UI\Control {
+class ChangePasswordControl extends Control
+{
 
     const MIN_LENGTH = 7;
 
+    /**
+     * @var UsersManager $userManager
+     */
     private $userManager;
+
+    /**
+     * @var ITranslator $translator
+     */
     private $translator;
-    
+
+    /**
+     * @var User $user
+     */
     private $user;
 
-    public function __construct(\App\Models\UsersManager $userManager, \Nette\Localization\ITranslator $translator, \Nette\Security\User $user) {
+    /**
+     * ChangePasswordControl constructor.
+     *
+     * @param UsersManager $userManager
+     * @param ITranslator  $translator
+     * @param User         $user
+     */
+    public function __construct(UsersManager $userManager, ITranslator $translator, User $user)
+    {
         parent::__construct();
 
         $this->userManager = $userManager;
         $this->translator  = $translator;
-        $this->user       = $user;
+        $this->user        = $user;
     }
 
-    protected function createComponentChangePasswordForm() {
-        $form = new \App\Controls\BootstrapForm();
-        $form->setTranslator($this->translator);
-        $form->addGroup('Password');
-        
-        if (!$this->user->isInRole('admin')){
-            $form->addPassword('user_last_password', 'User last password:')->setRequired(true);
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function changePasswordSuccess(Form $form, ArrayHash $values)
+    {
+        $result = $this->userManager->update($this->user->getId(), ArrayHash::from(['user_password' => Passwords::hash($values->user_password)]));
+
+        if ($result) {
+            $this->presenter->flashMessage('Password changed.', BasePresenter::FLASH_MESSAGE_SUCCES);
+            $this->presenter->redirect('this');
         }
-               
-        $form->addPassword('user_password', 'User password:')->setRequired(true);
-        $form->addPassword('user_password_check', 'User password for check:')->setRequired(true);
-        $form->addSubmit('send', 'Change password');
-        $form->onSuccess[] = [$this, 'changePasswordSuccess'];
-        $form->onValidate[] = [$this, 'changePasswordValidate'];
-
-        return $form;
     }
 
-    public function changePasswordValidate(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function changePasswordValidate(Form $form, ArrayHash $values)
+    {
         if (!$values->user_password) {
             $form->addError('Empty password');
         }
-        
-        if (!$this->user->isInRole('admin') && !$values->user_last_password ){
+
+        if (!$this->user->isInRole('admin') && !$values->user_last_password) {
             $form->add('Empty last password');
         }
-        
+
         $user = $this->userManager->getById($this->user->getId());
-        
-        if ( !$user ){
+
+        if (!$user) {
             $form->addError('User not exists!');
         }
-        
-        if ( !$this->user->isInRole('admin') && !\Nette\Security\Passwords::verify($values->user_last_password, $user->user_password) ){
+
+        if (!$this->user->isInRole('admin') && !Passwords::verify($values->user_last_password, $user->user_password)) {
             $form->addError('Last password is incorrect');
         }
 
@@ -70,18 +99,35 @@ class ChangePasswordControl extends \Nette\Application\UI\Control {
         }
     }
 
-    public function changePasswordSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
-        $result = $this->userManager->update($this->user->getId(), \Nette\Utils\ArrayHash::from(['user_password' => \Nette\Security\Passwords::hash($values->user_password)]));
-
-        if ($result) {
-            $this->presenter->flashMessage('Password changed.', \App\Presenters\Base\BasePresenter::FLASH_MESSAGE_SUCCES);
-            $this->presenter->redirect('this');
-        }
-    }
-
-    public function render() {
+    public function render()
+    {
         $this->template->setFile(__DIR__ . '/templates/changePassword/changePassword.latte');
         $this->template->render();
+    }
+
+    protected function createComponentChangePasswordForm()
+    {
+        $form = new BootstrapForm();
+        $form->setTranslator($this->translator);
+        $form->addGroup('Password');
+
+        if (!$this->user->isInRole('admin')) {
+            $form->addPassword('user_last_password', 'User last password:')->setRequired(true);
+        }
+
+        $form->addPassword('user_password', 'User password:')->setRequired(true);
+        $form->addPassword('user_password_check', 'User password for check:')->setRequired(true);
+        $form->addSubmit('send', 'Change password');
+        $form->onSuccess[] = [
+            $this,
+            'changePasswordSuccess'
+        ];
+        $form->onValidate[] = [
+            $this,
+            'changePasswordValidate'
+        ];
+
+        return $form;
     }
 
 }

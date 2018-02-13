@@ -7,6 +7,7 @@ namespace App\Models;
  *
  * @author rendi
  */
-class RanksManager extends Crud\CrudManager{
-   
+class RanksManager extends Crud\CrudManager
+{
+
 }

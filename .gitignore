@@ -12,5 +12,5 @@ www/avatars/*
 
 core
 nbproject/*
-!nbproject/project.properties
-!nbproject/project.xml
+nbproject/project.properties
+nbproject/project.xml

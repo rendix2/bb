@@ -2,71 +2,188 @@
 
 namespace App\ForumModule\Presenters;
 
-use Nette\Http;
+use App\Controls\BootstrapForm;
+use App\Controls\PaginatorControl;
+use App\Models\ForumsManager;
+use App\Models\PostsManager;
+use App\Models\ThanksManager;
+use App\Models\TopicsManager;
+use App\Models\UsersManager;
+use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of PostPresenter
  *
  * @author rendi
- * @method \App\Models\PostsManager getManager()
+ * @method PostsManager getManager()
  */
-class PostPresenter extends Base\ForumPresenter {
+class PostPresenter extends Base\ForumPresenter
+{
 
     /**
-     * @var \App\Models\UsersManager $userManager 
+     * @var UsersManager $userManager
      */
     private $userManager;
 
     /**
-     * @var \App\Models\ForumsManager $forumManager
+     * @var ForumsManager $forumManager
      */
     private $forumManager;
 
     /**
-     * @var \App\Models\ThanksManager $thanksManager
+     * @var ThanksManager $thanksManager
      */
     private $thanksManager;
 
     /**
-     * @var \App\Models\TopicsManager $topicsManager
+     * @var TopicsManager $topicsManager
      */
     private $topicsManager;
 
     /**
-     * @param \App\Models\PostsManager $manager
+     * @param PostsManager $manager
      */
-    public function __construct(\App\Models\PostsManager $manager) {
+    public function __construct(PostsManager $manager)
+    {
         parent::__construct($manager);
     }
 
-    public function injectUsersManager(\App\Models\UsersManager $usersManager) {
-        $this->userManager = $usersManager;
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function editPostFormSuccess(Form $form, ArrayHash $values)
+    {
+        $forum_id = $this->getParameter('forum_id');
+        $post_id  = $this->getParameter('post_id');
+        $topic_id = $this->getParameter('topic_id');
+        $user_id  = $this->getUser()->getId();
+
+        if ($post_id) {
+            $values['post_edit_count%sql'] = 'post_edit_count + 1';
+            $values->post_last_edit_time   = time();
+
+            $result = $this->getManager()->update($post_id, $values);
+        } else {
+            $values->post_forum_id = $forum_id;
+            $values->post_user_id  = $user_id;
+            $values->post_topic_id = $topic_id;
+            $values->post_add_time = time();
+
+            $result = $this->getManager()->add($values);
+        }
+
+        if ($result) {
+            $this->flashMessage('Post saved.', self::FLASH_MESSAGE_SUCCES);
+        } else {
+            $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
+        }
+
+        $this->redirect('Post:all', $forum_id, $topic_id);
     }
 
-    public function injectForumsManager(\App\Models\ForumsManager $forumsManager) {
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function editTopicFormSuccess(Form $form, ArrayHash $values)
+    {
+        $forum_id = $this->getParameter('forum_id');
+        $topic_id = $this->getParameter('topic_id');
+        $user_id  = $this->getUser()->getId();
+
+        $post_topic_id = $this->topicsManager->add(ArrayHash::from([
+            'topic_forum_id'          => $forum_id,
+            'topic_name'              => $values->post_title,
+            'topic_post_count'        => 1,
+            'topic_user_id'           => $user_id,
+            'topic_last_post_user_id' => $user_id,
+            'topic_add_time'          => time()
+        ]));
+
+        $values->post_add_time = time();
+        $values->post_user_id  = $user_id;
+        $values->post_forum_id = $forum_id;
+        $values->post_topic_id = $post_topic_id;
+
+        $this->getManager()->add($values);
+
+        $this->flashMessage('Topic saved.', self::FLASH_MESSAGE_SUCCES);
+        $this->redirect('Post:all', $forum_id, $post_topic_id);
+    }
+
+    /**
+     * @param ForumsManager $forumsManager
+     */
+    public function injectForumsManager(ForumsManager $forumsManager)
+    {
         $this->forumManager = $forumsManager;
     }
 
-    public function injectThanksManager(\App\Models\ThanksManager $thanksManager) {
+    /**
+     * @param ThanksManager $thanksManager
+     */
+    public function injectThanksManager(ThanksManager $thanksManager)
+    {
         $this->thanksManager = $thanksManager;
     }
 
-    public function injectTopicsManager(\App\Models\TopicsManager $topicsManager) {
+    /**
+     * @param TopicsManager $topicsManager
+     */
+    public function injectTopicsManager(TopicsManager $topicsManager)
+    {
         $this->topicsManager = $topicsManager;
     }
 
-    public function actionDeletePost($forum_id, $topic_id, $post_id) {
+    /**
+     * @param UsersManager $usersManager
+     */
+    public function injectUsersManager(UsersManager $usersManager)
+    {
+        $this->userManager = $usersManager;
+    }
+
+    /**
+     * @return BootstrapForm
+     */
+    private function postForm()
+    {
+        $form = new BootstrapForm();
+        $form->setTranslator($this->getForumTranslator());
+
+        $form->addText('post_title', 'Title')->setRequired(true);
+        $form->addTextArea('post_text', 'Text', 0, 15)->setRequired(true);
+        $form->addSubmit('send', 'Send');
+
+        return $form;
+    }
+
+    /**
+     * @param $forum_id
+     * @param $topic_id
+     * @param $post_id
+     */
+    public function actionDeletePost($forum_id, $topic_id, $post_id)
+    {
         if (!$this->getUser()->isAllowed($forum_id, 'post_delete')) {
             $this->error('Not allowed.');
         }
-                
+
         $this->getManager()->delete($post_id);
 
         $this->flashMessage('Post deleted.', self::FLASH_MESSAGE_SUCCES);
         $this->redirect('Post:all', $forum_id, $topic_id);
     }
 
-    public function actionDeleteTopic($forum_id, $topic_id, $page) {
+    /**
+     * @param $forum_id
+     * @param $topic_id
+     * @param $page
+     */
+    public function actionDeleteTopic($forum_id, $topic_id, $page)
+    {
         if (!$this->getUser()->isAllowed($forum_id, 'topic_delete')) {
             $this->error('Not allowed');
         }
@@ -77,34 +194,42 @@ class PostPresenter extends Base\ForumPresenter {
         $this->redirect('Forum:default', $forum_id, $page);
     }
 
-    public function actionThank($forum_id, $topic_id) {
+    /**
+     * @param $forum_id
+     * @param $topic_id
+     */
+    public function actionThank($forum_id, $topic_id)
+    {
         if (!$this->getUser()->isAllowed($forum_id, 'topic_thank')) {
             $this->error('Not allowed');
         }
 
         $user_id = $this->getUser()->getId();
 
-        $data = ['thank_forum_id' => $forum_id,
+        $data = [
+            'thank_forum_id' => $forum_id,
             'thank_topic_id' => $topic_id,
-            'thank_user_id' => $user_id,
-            'thank_time' => time()];
+            'thank_user_id'  => $user_id,
+            'thank_time'     => time()
+        ];
 
-        $this->thanksManager->add(\Nette\Utils\ArrayHash::from($data));
+        $this->thanksManager->add(ArrayHash::from($data));
 
         $this->flashMessage('Your thank to this topic!', self::FLASH_MESSAGE_SUCCES);
         $this->redirect('Post:all', $forum_id, $topic_id);
     }
 
     /**
-     * @param int $forum_id
-     * @param int $topic_id
+     * @param int      $forum_id
+     * @param int      $topic_id
      * @param int|null $page_id
-     * 
+     * @param int      $page
      */
-    public function renderAll($forum_id, $topic_id, $page_id = null, $page = 1) {
+    public function renderAll($forum_id, $topic_id, $page_id = null, $page = 1)
+    {
         $data = $this->getManager()->getPostsByTopicId($topic_id);
 
-        $pagination = new \App\Controls\PaginatorControl($data, 10, 5, $page);
+        $pagination = new PaginatorControl($data, 10, 5, $page);
         $this->addComponent($pagination, 'paginator');
 
         if (!$pagination->getCount()) {
@@ -112,18 +237,46 @@ class PostPresenter extends Base\ForumPresenter {
             $this->redirect('Forum:default', $forum_id);
         }
 
-        $this->template->posts = $data->fetchAll();
-        $this->template->topic = $this->topicsManager->getById($topic_id);
+        $this->template->posts    = $data->fetchAll();
+        $this->template->topic    = $this->topicsManager->getById($topic_id);
         $this->template->canThank = $this->thanksManager->canUserThank($forum_id, $topic_id, $this->getUser()->getId());
-        $this->template->thanks = $this->thanksManager->getThanksWithUserInTopic($topic_id);
+        $this->template->thanks   = $this->thanksManager->getThanksWithUserInTopic($topic_id);
     }
 
     /**
-     * 
+     *
+     * @param int $forum_id
+     * @param int $topic_id
+     * @param int $post_id
+     */
+    public function renderEditPost($forum_id, $topic_id, $post_id = null)
+    {
+        if ($post_id === null) {
+            if (!$this->getUser()->isAllowed($forum_id, 'post_add')) {
+                $this->error('Not allowed');
+            }
+        } else {
+            if (!$this->getUser()->isAllowed($forum_id, 'post_update')) {
+                $this->error('Not allowed');
+            }
+        }
+
+        $post = [];
+
+        if ($post_id) {
+            $post = $this->getManager()->getById($post_id);
+        }
+
+        $this['editPostForm']->setDefaults($post);
+    }
+
+    /**
+     *
      * @param int $forum_id
      * @param int $topic_id
      */
-    public function renderEditTopic($forum_id, $topic_id = null) {
+    public function renderEditTopic($forum_id, $topic_id = null)
+    {
         if ($topic_id === null) {
             if (!$this->getUser()->isAllowed($forum_id, 'topic_add')) {
                 $this->error('Not allowed');
@@ -144,104 +297,32 @@ class PostPresenter extends Base\ForumPresenter {
     }
 
     /**
-     * 
-     * @param int $forum_id
-     * @param int $topic_id
-     * @param int $post_id
+     * @return BootstrapForm
      */
-    public function renderEditPost($forum_id, $topic_id, $post_id = null) {
-        if ($post_id === null) {
-            if (!$this->getUser()->isAllowed($forum_id, 'post_add')) {
-                $this->error('Not allowed');
-            }
-        } else {
-            if (!$this->getUser()->isAllowed($forum_id, 'post_update')) {
-                $this->error('Not allowed');
-            }
-        }
-
-        $post = [];
-
-        if ($post_id) {
-            $post = $this->getManager()->getById($post_id);
-        }
-
-        $this['editPostForm']->setDefaults($post);
-    }
-
-    private function postForm() {
-        $form = new \App\Controls\BootstrapForm();
-        $form->setTranslator($this->getForumTranslator());
-
-        $form->addText('post_title', 'Title')->setRequired(true);
-        $form->addTextArea('post_text', 'Text', 0, 15)->setRequired(true);
-        $form->addSubmit('send', 'Send');
-
-        return $form;
-    }
-
-    protected function createComponentEditTopicForm() {
+    protected function createComponentEditPostForm()
+    {
         $form = $this->postForm();
 
-        $form->onSuccess[] = [$this, 'editTopicFormSuccess'];
+        $form->onSuccess[] = [
+            $this,
+            'editPostFormSuccess'
+        ];
 
         return $form;
     }
 
-    protected function createComponentEditPostForm() {
+    /**
+     * @return BootstrapForm
+     */
+    protected function createComponentEditTopicForm()
+    {
         $form = $this->postForm();
 
-        $form->onSuccess[] = [$this, 'editPostFormSuccess'];
+        $form->onSuccess[] = [
+            $this,
+            'editTopicFormSuccess'
+        ];
 
         return $form;
     }
-
-    public function editTopicFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
-        $forum_id = $this->getParameter('forum_id');
-        $topic_id = $this->getParameter('topic_id');
-        $user_id = $this->getUser()->getId();
-
-        $post_topic_id = $this->topicsManager->add(\Nette\Utils\ArrayHash::from(['topic_forum_id' => $forum_id, 'topic_name' => $values->post_title, 'topic_user_id' => $user_id, 'topic_last_post_user_id' => $user_id, 'topic_add_time' => time()]));        
-        $this->userManager->update($user_id, \Nette\Utils\ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1']));
-
-        $values->post_add_time = time();
-        $values->post_user_id = $user_id;
-        $values->post_forum_id = $forum_id;
-        $values->post_topic_id = $post_topic_id;
-
-        $this->getManager()->add($values);
-
-        $this->flashMessage('Topic saved.', self::FLASH_MESSAGE_SUCCES);
-        $this->redirect('Post:all', $forum_id, $post_topic_id);
-    }
-
-    public function editPostFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
-        $forum_id = $this->getParameter('forum_id');
-        $post_id = $this->getParameter('post_id');
-        $topic_id = $this->getParameter('topic_id');
-        $user_id = $this->getUser()->getId();
-
-        if ($post_id) {
-            $values['post_edit_count%sql'] = 'post_edit_count + 1';
-            $values->post_last_edit_time = time();
-
-            $result = $this->getManager()->update($post_id, $values);
-        } else {
-            $values->post_forum_id = $forum_id;
-            $values->post_user_id = $user_id;
-            $values->post_topic_id = $topic_id;
-            $values->post_add_time = time();
-
-            $result = $this->getManager()->add($values);
-        }
-
-        if ($result) {
-            $this->flashMessage('Post saved.', self::FLASH_MESSAGE_SUCCES);
-        } else {
-            $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
-        }
-
-        $this->redirect('Post:all', $forum_id, $topic_id);
-    }
-
 }
