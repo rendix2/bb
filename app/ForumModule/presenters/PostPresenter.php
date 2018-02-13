@@ -93,24 +93,14 @@ class PostPresenter extends Base\ForumPresenter
         $topic_id = $this->getParameter('topic_id');
         $user_id  = $this->getUser()->getId();
 
-        $post_topic_id = $this->topicsManager->add(ArrayHash::from([
-            'topic_forum_id'          => $forum_id,
-            'topic_name'              => $values->post_title,
-            'topic_post_count'        => 1,
-            'topic_user_id'           => $user_id,
-            'topic_last_post_user_id' => $user_id,
-            'topic_add_time'          => time()
-        ]));
-
         $values->post_add_time = time();
         $values->post_user_id  = $user_id;
         $values->post_forum_id = $forum_id;
-        $values->post_topic_id = $post_topic_id;
 
-        $this->getManager()->add($values);
-
+        $topic_id = $this->topicsManager->add($values);
+        
         $this->flashMessage('Topic saved.', self::FLASH_MESSAGE_SUCCES);
-        $this->redirect('Post:all', $forum_id, $post_topic_id);
+        $this->redirect('Post:all', $forum_id, $topic_id);
     }
 
     /**
@@ -165,7 +155,7 @@ class PostPresenter extends Base\ForumPresenter
      * @param $topic_id
      * @param $post_id
      */
-    public function actionDeletePost($forum_id, $topic_id, $post_id)
+    public function actionDeletePost($forum_id, $topic_id, $post_id, $page)
     {
         if (!$this->getUser()->isAllowed($forum_id, 'post_delete')) {
             $this->error('Not allowed.');
@@ -174,7 +164,7 @@ class PostPresenter extends Base\ForumPresenter
         $this->getManager()->delete($post_id);
 
         $this->flashMessage('Post deleted.', self::FLASH_MESSAGE_SUCCES);
-        $this->redirect('Post:all', $forum_id, $topic_id);
+        $this->redirect('Post:all', $forum_id, $topic_id, $page);
     }
 
     /**
@@ -222,10 +212,9 @@ class PostPresenter extends Base\ForumPresenter
     /**
      * @param int      $forum_id
      * @param int      $topic_id
-     * @param int|null $page_id
      * @param int      $page
      */
-    public function renderAll($forum_id, $topic_id, $page_id = null, $page = 1)
+    public function renderAll($forum_id, $topic_id, $page = 1)
     {
         $data = $this->getManager()->getPostsByTopicId($topic_id);
 

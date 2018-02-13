@@ -40,9 +40,9 @@
                             Empty
                         {/if}
                     </td>
-                    <td>{$item->forum_last_post_id}</td>
+                    <td>{if $lastPost}{$lastPost->post_id}{else}No posts in forum{/if}</td>
                     <td>
-                        <a href="{link User:edit $item->forum_last_post_user_id}">{$userData->user_name}</a>
+                        {if $lastPost}<a href="{link User:edit $lastPost->post_user_id}">{$userData->user_name}</a>{else}No posts in forum{/if}</td>
                     </td>
                 </tr>
             </tbody>

@@ -31,6 +31,8 @@ class ForumPresenter extends Base\AdminPresenter
      * @var TopicsManager $topicManager
      */
     private $topicManager;
+    
+    private $postManager;
 
     /**
      * ForumPresenter constructor.
@@ -56,6 +58,10 @@ class ForumPresenter extends Base\AdminPresenter
     public function injectTopicManager(TopicsManager $topicManager)
     {
         $this->topicManager = $topicManager;
+    }
+    
+    public function injectPostManager(\App\Models\PostsManager $postManager){
+        $this->postManager = $postManager;
     }
 
     /**
@@ -91,14 +97,24 @@ class ForumPresenter extends Base\AdminPresenter
                 $this->flashMessage('No subforums.', self::FLASH_MESSAGE_WARNING);
             }
 
-            $lastTopic = $this->topicManager->getById($item->forum_last_topic_id);
+            $lastTopic = $this->topicManager->getLastTopicByForumId($id);
 
             if (!$lastTopic) {
                 $this->flashMessage('No last topic', self::FLASH_MESSAGE_WARNING);
             }
 
+            $lastPost = $this->postManager->getLastPostByForumId($id);
+            
+            if ( $lastPost ){
+                $userData = $this->userManager->getById($lastPost->post_user_id);
+            }
+            else{
+                $userData = false;
+            }
+                       
             $this->template->topicData = $lastTopic;
-            $this->template->userData  = $this->userManager->getById($item->forum_last_post_user_id);
+            $this->template->lastPost  = $lastPost;
+            $this->template->userData  = $userData;
             $this->template->item      = $item;
             $this->template->title     = $this->getTitleOnEdit();
             $this->template->forums    = $subForums;
