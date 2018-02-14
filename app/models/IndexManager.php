@@ -25,7 +25,7 @@ class IndexManager extends Manager
     }
 
     /**
-     * @param $category_id
+     * @param int $category_id
      *
      * @return array
      */
@@ -39,7 +39,7 @@ class IndexManager extends Manager
     }
 
     /**
-     * @param $category_id
+     * @param int $category_id
      *
      * @return array
      */
@@ -59,10 +59,7 @@ class IndexManager extends Manager
      */
     public function getLastTopic()
     {
-        return $this->dibi->select('topic_id, topic_forum_id, topic_name')
-                          ->from(self::TOPICS_TABLE)
-                          ->orderBy('topic_id', \dibi::DESC)
-                          ->fetch();
+        return $this->dibi->query('SELECT * FROM ['.self::TOPICS_TABLE.'] WHERE [topic_id] = (SELECT MAX(topic_id) FROM ['.self::TOPICS_TABLE.'])')->fetch();
     }
 
     /**
@@ -70,10 +67,7 @@ class IndexManager extends Manager
      */
     public function getLastUser()
     {
-        return $this->dibi->select('user_id, user_name')
-                          ->from(self::USERS_TABLE)
-                          ->orderBy('user_id', \dibi::DESC)
-                          ->fetch();
+        return $this->dibi->query('SELECT * FROM ['.self::USERS_TABLE.'] WHERE [user_id] = (SELECT MAX(user_id) FROM ['.self::USERS_TABLE.'])')->fetch();
     }
 
     /**

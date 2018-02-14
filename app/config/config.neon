@@ -67,11 +67,6 @@ services:
         inject: yes
         setup:
                 - factory
-    RolesMnager:
-        factory: App\Models\RolesManager
-        inject: yes
-        setup:
-                - factory
     RanksManager:
         factory: App\Models\RanksManager
         inject: yes

@@ -44,12 +44,14 @@
 
 <div class="col-sm-12 main">
 
-    <a href="{link Index:default}">Index</a>&raquo;<a href="{link Forum:default $presenter->getParameter('forum_id')}">Forum</a>
+    <a href="{link Index:default}">Index</a>&raquo;<a href="{link Forum:default $presenter->getParameter('forum_id')}">{$forum->forum_name}</a>&raquo;<a href="{link Post:all $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">{$topic->topic_name}</a>
 
     <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
         <thead>
         <th>{_post_id}</th>
         <th>{_post_add_date}</th>
+        <th>{_post_user_name}</th>
+        <th></th>
         <th>{_post_title}</th>
         <th>{_post_text}</th>
         <th></th>
@@ -61,6 +63,8 @@
                         <a href="{link Post:editPost, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id}">{$post->post_id}</a>
                     </td>
                     <td>{$post->post_add_time|date:'%d.%m.%Y %H:%M:%S'}
+                    <td>{$post->user_name}</td>
+                    <th>{if $post->user_avatar}<img src="{$basePath}/avatars/{$post->user_avatar}" class="rounded-circle img-fluid" alt="{$post->user_name}" title="{$post->user_name}">{/if}</th>
                     <td>{$post->post_title}</td>
                     <td>{$post->post_text}</td>
                     <td> 

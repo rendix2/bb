@@ -19,17 +19,14 @@ class Authorizator {
     private $userManager;
 
     public function __construct(Models\ForumsManager $forumsManager, User $user, UsersManager $userMnager) {
-        $this->acl = new Permission();
+        $this->acl          = new Permission();
         $this->forumManager = $forumsManager;
-        $this->user = $user;
-        $this->userManager = $userMnager;
+        $this->user         = $user;
+        $this->userManager  = $userMnager;
 
         $this->defineRoles();
         $this->defineResources();
         $this->definePrivilegies();
-
-        \Tracy\Debugger::barDump($this->acl->getRoles());
-        \Tracy\Debugger::barDump($this->acl->getResources());
     }
 
     public function getAcl() {

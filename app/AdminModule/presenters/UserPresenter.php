@@ -9,7 +9,6 @@ use App\Controls\DeleteAvatarControl;
 use App\Models\ForumsManager;
 use App\Models\GroupsManager;
 use App\Models\LanguagesManager;
-use App\Models\RolesManager;
 use App\Models\Users2ForumsManager;
 use App\Models\Users2GroupsManager;
 use App\Models\UsersManager;
@@ -23,12 +22,6 @@ use Nette\Utils\ArrayHash;
  */
 class UserPresenter extends Base\AdminPresenter
 {
-
-    /**
-     * @var RolesManager $rolesManager
-     */
-    private $rolesManager;
-
     /**
      * @var LanguagesManager $languagesManager
      */
@@ -138,14 +131,6 @@ class UserPresenter extends Base\AdminPresenter
     public function injectLanguagesManager(LanguagesManager $languagesManager)
     {
         $this->languagesManager = $languagesManager;
-    }
-
-    /**
-     * @param RolesManager $rolesManager
-     */
-    public function injectRolesManager(RolesManager $rolesManager)
-    {
-        $this->rolesManager = $rolesManager;
     }
 
     /**

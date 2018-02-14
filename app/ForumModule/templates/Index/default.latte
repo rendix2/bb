@@ -43,13 +43,17 @@
         <tbody>
             <tr>
                 <td>
+                    {if $lastUser}
                     <a href="{link User:profile, $lastUser->user_id}">{$lastUser->user_name}</a>
+                    {/if}
                 </td>
                 <td>{$totalPosts}</td>
                 <td>{$totalTopics}</td>
                 <td>{$totalUsers}</td>
                 <td>
+                    {if $lastTopic}
                     <a href="{link Post:all, $lastTopic->topic_forum_id, $lastTopic->topic_id}">{$lastTopic->topic_name}</a>
+                    {/if}
                 </td>
             </tr>
         </tbody>

@@ -226,10 +226,11 @@ class PostPresenter extends Base\ForumPresenter
             $this->redirect('Forum:default', $forum_id);
         }
 
-        $this->template->posts    = $data->fetchAll();
+        $this->template->posts    = $data->orderBy('post_id', \dibi::DESC)->fetchAll();
         $this->template->topic    = $this->topicsManager->getById($topic_id);
         $this->template->canThank = $this->thanksManager->canUserThank($forum_id, $topic_id, $this->getUser()->getId());
         $this->template->thanks   = $this->thanksManager->getThanksWithUserInTopic($topic_id);
+        $this->template->forum    = $this->forumManager->getById($forum_id);
     }
 
     /**

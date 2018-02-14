@@ -70,7 +70,7 @@ class PostsManager extends Crud\CrudManager {
      * @return \Dibi\Fluent
      */
     public function getPostsByTopicId($topic_id) {
-        return $this->dibi->select('*')->from($this->getTable())->where('[post_topic_id] = %i', $topic_id);
+        return $this->dibi->select('*')->from($this->getTable())->as('p')->innerJoin(self::USERS_TABLE)->as('u')->on('[p.post_user_id] = [u.user_id]')->where('[post_topic_id] = %i', $topic_id);
     }
 
     /**
