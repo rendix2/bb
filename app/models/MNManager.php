@@ -195,7 +195,7 @@ abstract class MNManager extends Manager
     }
 
     /**
-     * @param       $left_id
+     * @param int   $left_id
      * @param array $values
      *
      * @return Result|int
@@ -221,7 +221,7 @@ abstract class MNManager extends Manager
     }
 
     /**
-     * @param $tableName
+     * @param string $tableName
      *
      * @return bool|string
      */

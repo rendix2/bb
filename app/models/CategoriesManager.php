@@ -12,7 +12,7 @@ class CategoriesManager extends Crud\CrudManager
 {
 
     /**
-     * @param $forum_id
+     * @param int $forum_id
      *
      * @return Row|false
      */

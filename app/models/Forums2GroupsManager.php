@@ -31,10 +31,10 @@ class Forums2GroupsManager extends MNManager
     }
 
     /**
-     * @param $group_id
-     * @param $data
+     * @param int $group_id
+     * @param array $data
      */
-    public function addForums2group($group_id, $data)
+    public function addForums2group($group_id, array $data)
     {
         $this->deleteByRight($group_id);
         $this->dibi->query('INSERT INTO [' . $this->getTable() . '] %m', $data);

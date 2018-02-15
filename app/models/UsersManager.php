@@ -159,7 +159,7 @@ class UsersManager extends Crud\CrudManager
      *
      * @return string
      */
-    public function movieAvatar(FileUpload $file, $wwwDir)
+    public function moveAvatar(FileUpload $file, $wwwDir)
     {
         if ($file->ok) {
             $extension = self::getFileExtension($file->name);

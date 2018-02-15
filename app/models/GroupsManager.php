@@ -10,5 +10,4 @@ namespace App\Models;
 class GroupsManager extends Crud\CrudManager
 {
 
-    //put your code here
 }

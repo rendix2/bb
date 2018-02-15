@@ -9,6 +9,7 @@
 namespace App\Models;
 
 use Dibi\Connection;
+use SplFileInfo;
 
 /**
  * Description of Manager
@@ -45,7 +46,7 @@ abstract class Manager extends Tables {
      */
     public static function getFileExtension($fileName)
     {
-        $file = new \SplFileInfo($fileName);
+        $file = new SplFileInfo($fileName);
 
         return $file->getExtension();
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use dibi;
 use Dibi\Row;
 
 /**
@@ -20,7 +21,7 @@ class IndexManager extends Manager
         return $this->dibi->select('*')
                           ->from(self::CATEGORIES_TABLE)
                           ->where('[category_active] = %i', 1)
-                          ->orderBy('category_order', \dibi::ASC)
+                          ->orderBy('category_order', dibi::ASC)
                           ->fetchAll();
     }
 
@@ -34,7 +35,7 @@ class IndexManager extends Manager
         return $this->dibi->select('*')
                           ->from(self::FORUM_TABLE)
                           ->where('[forum_category_id] = %i', $category_id)
-                          ->orderBy('forum_order', \dibi::ASC)
+                          ->orderBy('forum_order', dibi::ASC)
                           ->fetchAll();
     }
 
@@ -50,7 +51,7 @@ class IndexManager extends Manager
                           ->where('[forum_category_id] = %i', $category_id)
                           ->where('[forum_active] = %i', 1)
                           ->where('forum_parent_id = %i', 0)
-                          ->orderBy('forum_order', \dibi::ASC)
+                          ->orderBy('forum_order', dibi::ASC)
                           ->fetchAll();
     }
 
@@ -71,7 +72,7 @@ class IndexManager extends Manager
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getTotalPosts()
     {
@@ -79,7 +80,7 @@ class IndexManager extends Manager
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getTotalTopics()
     {
@@ -87,7 +88,7 @@ class IndexManager extends Manager
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getTotalUsers()
     {

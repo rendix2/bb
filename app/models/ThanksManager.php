@@ -29,7 +29,7 @@ class ThanksManager extends Crud\CrudManager
     }
 
     /**
-     * @param $topic_id
+     * @param int $topic_id
      *
      * @return array
      */
@@ -39,7 +39,7 @@ class ThanksManager extends Crud\CrudManager
     }
 
     /**
-     * @param $user_id
+     * @param int $user_id
      *
      * @return array
      */
@@ -49,7 +49,7 @@ class ThanksManager extends Crud\CrudManager
     }
 
     /**
-     * @param $topic_id
+     * @param int $topic_id
      *
      * @return array
      */
@@ -66,9 +66,9 @@ class ThanksManager extends Crud\CrudManager
     }
 
     /**
-     * @param $forum_id
-     * @param $topic_id
-     * @param $user_id
+     * @param int $forum_id
+     * @param int $topic_id
+     * @param int $user_id
      *
      * @return bool
      */
@@ -95,7 +95,7 @@ class ThanksManager extends Crud\CrudManager
     }
 
     /**
-     * @param $topic_id
+     * @param int $topic_id
      *
      * @return Result|int
      */

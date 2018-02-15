@@ -45,8 +45,8 @@ class UserPresenter extends Base\ForumPresenter
         $user = $this->getUser();
 
 
-        $values->user_avatar = $this->getManager()->movieAvatar($values->user_avatar, $this->getContext()
-                                                                                           ->getParameters()['wwwDir']);
+        $values->user_avatar = $this->getManager()->moveAvatar($values->user_avatar, $this->getContext()
+                                                                                          ->getParameters()['wwwDir']);
 
         if ($user->isLoggedIn()) {
             $result = $this->getManager()->update($user->getId(), $values);

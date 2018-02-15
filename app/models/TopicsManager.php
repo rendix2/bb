@@ -101,7 +101,6 @@ class TopicsManager extends Crud\CrudManager {
         $this->postManager->add($item_data);
         $this->userManager->update($values->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1']));
 
-
         return $topic_id;
     }
 

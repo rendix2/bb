@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Dibi\Fluent;
+use Dibi\Row;
+
 /**
  * Description of ForumManager
  *
@@ -11,7 +14,7 @@ class ForumsManager extends Crud\CrudManager
 {
 
     /**
-     * @param $category_id
+     * @param int $category_id
      *
      * @return array
      */
@@ -24,7 +27,7 @@ class ForumsManager extends Crud\CrudManager
     }
 
     /**
-     * @param $forum_id
+     * @param int $forum_id
      *
      * @return array
      */
@@ -37,9 +40,9 @@ class ForumsManager extends Crud\CrudManager
     }
 
     /**
-     * @param $forum_id
+     * @param int $forum_id
      *
-     * @return \Dibi\Row|false
+     * @return Row|false
      */
     public function getParentForumByForumId($forum_id)
     {
@@ -54,9 +57,9 @@ class ForumsManager extends Crud\CrudManager
     }
 
     /**
-     * @param $forum_id
+     * @param int $forum_id
      *
-     * @return \Dibi\Fluent
+     * @return Fluent
      */
     public function getTopics($forum_id)
     {
@@ -70,8 +73,8 @@ class ForumsManager extends Crud\CrudManager
     }
 
     /**
-     * @param $forums
-     * @param $forum_parent_id
+     * @param iterable $forums
+     * @param int $forum_parent_id
      *
      * @return array
      */
