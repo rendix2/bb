@@ -26,11 +26,19 @@
         </tbody>
     </table>
 </div>
-                {if $userData->user_avatar}
-                <div class="col-sm-6">
-                    <img src="{$basePath}/avatars/{$userData->user_avatar}" class="rounded-circle img-fluid">
-                </div>
-                {/if}
-                    
+{if $userData->user_avatar}
+    <div class="col-sm-6">
+        <img src="{$basePath}/avatars/{$userData->user_avatar}" class="rounded-circle img-fluid" alt="{$userData->user_name}" title="{$userData->user_name}">
+    </div>
+{/if}
 
+{if $rank}
+    <div class="col-sm-6">
+        {$rank->rank_name}
+
+        {if $rank->rank_file}
+            <img src="{$basePath}/ranks/{$rank->rank_file}" class="rounded-circle img-fluid" alt="{$rank->rank_name}" title="{$rank->rank_name}">
+        {/if}
+    </div>
+{/if}
 {/block}

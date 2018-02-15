@@ -22,6 +22,8 @@ class UserPresenter extends Base\ForumPresenter
      * @var LanguagesManager $languageManager
      */
     private $languageManager;
+    
+    private $rankManager;
 
     /**
      * UserPresenter constructor.
@@ -34,6 +36,10 @@ class UserPresenter extends Base\ForumPresenter
         parent::__construct($manager);
 
         $this->languageManager = $languageManager;
+    }
+    
+    public function injectRankManager(\App\Models\RanksManager $rankManager){
+        $this->rankManager = $rankManager;
     }
 
     /**
@@ -121,8 +127,18 @@ class UserPresenter extends Base\ForumPresenter
         if (!$userData) {
             $this->error('User not found.');
         }
-
+        
+        $ranks = $this->rankManager->getAllCached();
+        $rankUser;
+        foreach ( $ranks as $rank){
+            if ( $userData->user_post_count >= $rank->rank_from && $userData->user_post_count <= $rank->rank_to ){
+                 $rankUser = $rank; 
+                break;
+            }
+        }
+        
         $this->template->userData = $userData;
+        $this->template->rank    = $rankUser;
     }
 
     /**

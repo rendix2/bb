@@ -93,6 +93,7 @@ abstract class CrudPresenter extends ManagerPresenter
             $this->flashMessage('Nothing to save.');
         }
 
+        $this->getManager()->deleteCache();        
         $this->redirect(':' . $this->getName() . ':default');
     }
 
