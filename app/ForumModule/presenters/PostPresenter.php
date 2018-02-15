@@ -40,6 +40,8 @@ class PostPresenter extends Base\ForumPresenter
      * @var TopicsManager $topicsManager
      */
     private $topicsManager;
+    
+    private $rankManager;
 
     /**
      * @param PostsManager $manager
@@ -208,6 +210,10 @@ class PostPresenter extends Base\ForumPresenter
         $this->flashMessage('Your thank to this topic!', self::FLASH_MESSAGE_SUCCES);
         $this->redirect('Post:all', $forum_id, $topic_id);
     }
+    
+    public function injectRanksManager(\App\Models\RanksManager $rankManager){
+        $this->rankManager = $rankManager;
+    }
 
     /**
      * @param int      $forum_id
@@ -226,6 +232,7 @@ class PostPresenter extends Base\ForumPresenter
             $this->redirect('Forum:default', $forum_id);
         }
 
+        $this->template->ranks    = $this->rankManager->getAllCached();
         $this->template->posts    = $data->orderBy('post_id', \dibi::DESC)->fetchAll();
         $this->template->topic    = $this->topicsManager->getById($topic_id);
         $this->template->canThank = $this->thanksManager->canUserThank($forum_id, $topic_id, $this->getUser()->getId());
