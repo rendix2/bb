@@ -161,7 +161,7 @@ abstract class CrudManager extends Manager
                                ->fetchSingle();
 
             $this->cache->save('primaryKey_' . $this->table, $cachedPrimaryKey = $data, [
-                Cache::EXPIRE => '24 hours',
+                Cache::EXPIRE => '168 hours',
             ]);
         }
 
