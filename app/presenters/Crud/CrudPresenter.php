@@ -149,6 +149,7 @@ abstract class CrudPresenter extends ManagerPresenter
             $this->template->title = $this->getTitleOnEdit();
         } else {
             $this->template->title = $this->getTitleOnAdd();
+            $this->template->item = [];
 
             $this['editForm']->setDefaults([]);
         }

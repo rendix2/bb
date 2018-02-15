@@ -43,10 +43,14 @@ class UserPresenter extends Base\ForumPresenter
     public function editUserFormSuccess(Form $form, ArrayHash $values)
     {
         $user = $this->getUser();
+        $move = $this->getManager()->moveAvatar($values->user_avatar, $this->getUser()->getId(), $this->getContext()->getParameters()['wwwDir']);
 
-
-        $values->user_avatar = $this->getManager()->moveAvatar($values->user_avatar, $this->getContext()
-                                                                                          ->getParameters()['wwwDir']);
+        if ( $move !== UsersManager::NOT_UPLOADED ){
+            $values->user_avatar = $move;
+        }
+        else{
+            unset($values->user_avatar);
+        }
 
         if ($user->isLoggedIn()) {
             $result = $this->getManager()->update($user->getId(), $values);
@@ -159,13 +163,10 @@ class UserPresenter extends Base\ForumPresenter
     protected function createComponentEditUserForm()
     {
         $form = $this->getBootStrapForm();
-
         $form->setTranslator($this->getForumTranslator());
-
         $form->addText('user_name', 'User name:');
         $form->addSelect('user_lang_id', 'User language:', $this->languageManager->getAllForSelect());
         $form->addUpload('user_avatar', 'User avatar:');
-
         $form->addSubmit('send', 'Send');
 
         $form->onSuccess[] = [

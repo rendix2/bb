@@ -13,6 +13,10 @@ use Nette\Http\FileUpload;
 class UsersManager extends Crud\CrudManager
 {
 
+    const AVATAR_FOLDER = 'avatars';
+    
+    const NOT_UPLOADED = -5;
+    
     /**
      * @param int $lang_id
      *
@@ -159,9 +163,11 @@ class UsersManager extends Crud\CrudManager
      *
      * @return string
      */
-    public function moveAvatar(FileUpload $file, $wwwDir)
+    public function moveAvatar(FileUpload $file, $id, $wwwDir)
     {
         if ($file->ok) {
+            $this->deletePreviousRankFile($id, $wwwDir);
+            
             $extension = self::getFileExtension($file->name);
             $hash      = self::getRandomString();
             $separator = DIRECTORY_SEPARATOR;
@@ -171,6 +177,22 @@ class UsersManager extends Crud\CrudManager
 
             return $name;
         }
+        else{
+            return self::NOT_UPLOADED;
+        }
+    }
+    
+    public function deletePreviousRankFile($id, $wwwDir){
+        $user = $this->getById($id);
+        $separator = DIRECTORY_SEPARATOR;
+        
+        \Tracy\Debugger::barDump($user, 'user');
+        
+        if ($user){     
+            \Tracy\Debugger::barDump('delete');
+            
+            \Nette\Utils\FileSystem::delete($wwwDir.$separator.self::AVATAR_FOLDER.$separator.$user->user_avatar);
+        }       
     }
 
 }
