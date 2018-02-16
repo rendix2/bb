@@ -22,6 +22,7 @@ abstract class CrudManager extends Manager {
 
     const CACHE_ALL_KEY = 'data';
     const CACHE_COUNT_KEY = 'count';
+    const CACHE_PAIRS = 'pairs';
 
     /**
      * @var IStorage $storage
@@ -107,6 +108,24 @@ abstract class CrudManager extends Manager {
                         ->where('[' . $this->primaryKey . '] IN %in', $item_id)->fetchAll();
     }
 
+    public function getAllPairs($second) {
+        return $this->dibi->select($this->getPrimaryKey() . ', ' . $second)->from($this->getTable())->fetchPairs($this->getPrimaryKey(), $second);
+    }
+
+    public function getAllPairsCached($second) {
+        $cache = new Cache($this->getStorage(), $this->getTable());
+
+        $cached = $cache->load(self::CACHE_PAIRS);
+
+        if (!$cached) {
+            $cache->save(self::CACHE_PAIRS, $cached = $this->getAllPairs($second), [
+                Cache::EXPIRE => '24 hours',
+            ]);
+        }
+
+        return $cached;
+    }
+
     /**
      * @return Cache
      */
@@ -125,7 +144,7 @@ abstract class CrudManager extends Manager {
      * @return string
      */
     public function getCountCached() {
-        $cache  = new Cache($this->getStorage(), $this->getTable());
+        $cache = new Cache($this->getStorage(), $this->getTable());
         $cached = $cache->load(self::CACHE_COUNT_KEY);
 
         if (!$cached) {

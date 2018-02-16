@@ -70,7 +70,9 @@
                         <a href="{link Post:editPost, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id}">{$post->post_id}</a>
                     </td>
                     <td>{$post->post_add_time|date:'%d.%m.%Y %H:%M:%S'}
-                    <td>{$post->user_name}</td>
+                    <td>
+                        <a href="{link User:profile $post->post_user_id}">{$post->user_name}</a>
+                    </td>
                     <th>{if $post->user_avatar}<img src="{$basePath}/avatars/{$post->user_avatar}" class="rounded-circle img-fluid" alt="{$post->user_name}" title="{$post->user_name}">{/if}{if $rankUser}{$rankUser->rank_name}{/if}</th>
                     <td>{$post->post_title}</td>
                     <td>{$post->post_text}</td>

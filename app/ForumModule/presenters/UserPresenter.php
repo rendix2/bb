@@ -181,7 +181,7 @@ class UserPresenter extends Base\ForumPresenter
         $form = $this->getBootStrapForm();
         $form->setTranslator($this->getForumTranslator());
         $form->addText('user_name', 'User name:');
-        $form->addSelect('user_lang_id', 'User language:', $this->languageManager->getAllForSelect());
+        $form->addSelect('user_lang_id', 'User language:', $this->languageManager->getAllPairsCached('lang_name'));
         $form->addUpload('user_avatar', 'User avatar:');
         $form->addSubmit('send', 'Send');
 
