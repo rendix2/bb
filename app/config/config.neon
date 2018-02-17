@@ -86,6 +86,9 @@ services:
     Users2Forums:
         factory: App\Models\Users2ForumsManager
         inject: yes
+    TopicWatch:
+        factory: App\Models\TopicWatchManager
+        inject: yes
     authenticator: App\Authenticator
     authorizator: App\Authorizator
     WwwDir:

@@ -40,13 +40,19 @@ abstract class MNManager extends Manager
      * @param CrudManager $left
      * @param CrudManager $right
      */
-    public function __construct(Connection $dibi, CrudManager $left, CrudManager $right)
+    public function __construct(Connection $dibi, CrudManager $left, CrudManager $right, $tableName = null)
     {
         parent::__construct($dibi);
 
         $this->left  = $left;
         $this->right = $right;
-        $this->table = $left->getTable() . '2' . $right->getTable();
+        
+        if ( $tableName == null ){
+            $this->table = $left->getTable() . '2' . $right->getTable();
+        }
+        else{
+            $this->table = $tableName;
+        }
     }
 
     /**

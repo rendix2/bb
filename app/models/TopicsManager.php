@@ -43,6 +43,12 @@ class TopicsManager extends Crud\CrudManager {
      * @var ForumsManager $forumManager
      */
     private $forumManager;
+    
+    /**
+     *
+     * @var TopicWatchManager $topicWatchManager 
+     */
+    private $topicWatchManager;
 
     /**
      *
@@ -79,10 +85,8 @@ class TopicsManager extends Crud\CrudManager {
     public function injectPostManager(PostsManager $postManager) {
         $this->postManager = $postManager;
     }
-
+    
     public function add(ArrayHash $item_data) {
-
-
         $values = clone $item_data;
 
         $values->topic_name = $item_data->post_title;
@@ -100,6 +104,9 @@ class TopicsManager extends Crud\CrudManager {
         $item_data->post_topic_id = $topic_id;
         $this->postManager->add($item_data);
         $this->userManager->update($values->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1']));
+        
+        $this->topicWatchManager = new TopicWatchManager($this->dibi, $this, $this->userManager, self::TOPIC_WATCH_TABLE);        
+        $this->topicWatchManager->addByLeft($topic_id, [$values->topic_user_id]);
 
         return $topic_id;
     }
