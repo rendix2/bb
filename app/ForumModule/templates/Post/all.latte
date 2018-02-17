@@ -86,10 +86,22 @@
         </tbody>
     </table>
 </div>
-
-<div class="col-sm-12 main">
+            
+<div class="col-sm-12">
     <div class="float-right">
         {control paginator}
     </div>
 </div>
+        
+<div class="col-sm-12">
+    <div class="float-right">
+        {if $topicWatch}
+            <a href="{link Post:stopWatchTopic $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $presenter->getParameter('page')}">{_topic_stop_watch}</a>
+        {else}
+            <a href="{link Post:startWatchTopic $presenter->getParameter('forum_id'),$presenter->getParameter('topic_id'), $presenter->getParameter('page')}">{_topic_start_watch}</a>
+        {/if}
+        
+        <a href="{link Post:watchers, $presenter->getParameter('topic_id')}">{_topic_wacthers}</a>
+    </div>
+</div>         
 {/block}

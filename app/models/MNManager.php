@@ -243,7 +243,7 @@ abstract class MNManager extends Manager
      */
     public function deleteByLeft($left_id)
     {
-        return $this->dibi->delete($this->table)->where($this->left->getPrimaryKey() . ' = %i', $left_id)->execute();
+        return $this->dibi->delete($this->table)->where('['.$this->left->getPrimaryKey() . '] = %i', $left_id)->execute();
     }
 
     /**
@@ -253,7 +253,15 @@ abstract class MNManager extends Manager
      */
     public function deleteByRight($right_id)
     {
-        return $this->dibi->delete($this->table)->where($this->right->getPrimaryKey() . ' = %i', $right_id)->execute();
+        return $this->dibi->delete($this->table)->where('['.$this->right->getPrimaryKey() . '] = %i', $right_id)->execute();
+    }
+    
+    public function fullCheck($left_id, $right_id){
+        return $this->dibi->select('1')->from($this->table)->where('['.$this->left->getPrimaryKey() . '] = %i', $left_id)->where('['.$this->right->getPrimaryKey() . '] = %i', $right_id)->fetchSingle() === 1;
+    }
+    
+    public function fullDelete($left_id, $right_id){
+        return $this->dibi->delete($this->table)->where('['.$this->left->getPrimaryKey() . '] = %i', $left_id)->where('['.$this->right->getPrimaryKey() . '] = %i', $right_id)->execute();
     }
 
 }

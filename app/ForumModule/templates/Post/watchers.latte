@@ -1,0 +1,8 @@
+{block content}
+<div class="col-sm-12">
+    {foreach $watchers as $watcher}
+        <a href="{link User:profile $watcher->user_id}">{$watcher->user_name}</a>
+        {if !$iterator->last}, {/if}                   
+    {/foreach}
+</div>
+{/block}

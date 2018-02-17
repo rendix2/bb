@@ -42,6 +42,8 @@ class PostPresenter extends Base\ForumPresenter
     private $topicsManager;
     
     private $rankManager;
+    
+    private $topicWatchManager;
 
     /**
      * @param PostsManager $manager
@@ -214,6 +216,10 @@ class PostPresenter extends Base\ForumPresenter
     public function injectRanksManager(\App\Models\RanksManager $rankManager){
         $this->rankManager = $rankManager;
     }
+    
+    public function injectTopicsWatchManager(\App\Models\TopicWatchManager $topicWatchManager){
+        $this->topicWatchManager =  $topicWatchManager;
+    }
 
     /**
      * @param int      $forum_id
@@ -231,13 +237,34 @@ class PostPresenter extends Base\ForumPresenter
             $this->flashMessage('No posts.', self::FLASH_MESSAGE_WARNING);
             $this->redirect('Forum:default', $forum_id);
         }
-
-        $this->template->ranks    = $this->rankManager->getAllCached();
-        $this->template->posts    = $data->orderBy('post_id', \dibi::DESC)->fetchAll();
-        $this->template->topic    = $this->topicsManager->getById($topic_id);
-        $this->template->canThank = $this->thanksManager->canUserThank($forum_id, $topic_id, $this->getUser()->getId());
-        $this->template->thanks   = $this->thanksManager->getThanksWithUserInTopic($topic_id);
-        $this->template->forum    = $this->forumManager->getById($forum_id);
+                
+        $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $this->getUser()->getId());
+        $this->template->ranks      = $this->rankManager->getAllCached();
+        $this->template->posts      = $data->orderBy('post_id', \dibi::DESC)->fetchAll();
+        $this->template->topic      = $this->topicsManager->getById($topic_id);
+        $this->template->canThank   = $this->thanksManager->canUserThank($forum_id, $topic_id, $this->getUser()->getId());
+        $this->template->thanks     = $this->thanksManager->getThanksWithUserInTopic($topic_id);
+        $this->template->forum      = $this->forumManager->getById($forum_id);
+    }
+    
+    public function actionStopWatchTopic($forum_id, $topic_id, $page){
+        $res = $this->topicWatchManager->fullDelete($topic_id, $this->getUser()->getId());
+        
+        if ($res){
+            $this->flashMessage('You have stop watching topic.', self::FLASH_MESSAGE_SUCCES);
+        }
+        
+        $this->redirect('Post:all', $forum_id, $topic_id, $page);
+    }
+    
+    public function actionStartWatchTopic($forum_id, $topic_id, $page){
+       $res = $this->topicWatchManager->addByLeft($topic_id, [$this->getUser()->getId()]);
+        
+                if ($res){
+            $this->flashMessage('You have start watching topic.', self::FLASH_MESSAGE_SUCCES);
+        }
+        
+        $this->redirect('Post:all', $forum_id, $topic_id, $page);
     }
 
     /**
@@ -291,6 +318,10 @@ class PostPresenter extends Base\ForumPresenter
         }
 
         $this['editTopicForm']->setDefaults($topic);
+    }
+    
+    public function renderWatchers($topic_id){
+        $this->template->watchers = $this->topicWatchManager->getByLeftJoined($topic_id);
     }
 
     /**
