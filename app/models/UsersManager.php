@@ -50,7 +50,7 @@ class UsersManager extends Crud\CrudManager
     /**
      * @param int $lang_id
      *
-     * @return mixed
+     * @return int
      */
     public function getCountByLangId($lang_id)
     {
@@ -63,7 +63,7 @@ class UsersManager extends Crud\CrudManager
     /**
      * @param int $role_id
      *
-     * @return mixed
+     * @return int
      */
     public function getCountByRoleId($role_id)
     {
@@ -185,14 +185,18 @@ class UsersManager extends Crud\CrudManager
     public function deletePreviousRankFile($id, $wwwDir){
         $user = $this->getById($id);
         $separator = DIRECTORY_SEPARATOR;
-        
-        \Tracy\Debugger::barDump($user, 'user');
-        
-        if ($user){     
-            \Tracy\Debugger::barDump('delete');
-            
+               
+        if ($user){            
             \Nette\Utils\FileSystem::delete($wwwDir.$separator.self::AVATAR_FOLDER.$separator.$user->user_avatar);
         }       
+    }
+    
+    public function canBeActivated($user_id, $key){
+        return $this->dibi->select('1')->from($this->getTable())->where('['.$this->getPrimaryKey().'] = %i', $user_id)->where('user_activation_key')->where('[user_active] = %i', 0)->fetchSingle();
+    }
+    
+    public function getByEmail($email){
+        return $this->dibi->select('1')->from($this->getTable())->where('[user_email] = %s', $email)->fetchSingle();
     }
 
 }

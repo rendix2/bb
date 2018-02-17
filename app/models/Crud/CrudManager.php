@@ -183,7 +183,7 @@ abstract class CrudManager extends Manager {
             $data = $this->dibi->select('COLUMN_NAME')
                     ->from('information_schema.COLUMNS')
                     ->where('[TABLE_NAME] = %s', $this->table)
-                    ->where('COLUMN_KEY = %s', 'PRI')
+                    ->where('[COLUMN_KEY] = %s', 'PRI')
                     ->fetchSingle();
 
             $this->cache->save('primaryKey_' . $this->table, $cachedPrimaryKey = $data, [

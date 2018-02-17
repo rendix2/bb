@@ -92,6 +92,59 @@ class UserPresenter extends Base\ForumPresenter
         $this->flashMessage('Successfuly logged out. ', self::FLASH_MESSAGE_SUCCES);
         $this->redirect('Index:default');
     }
+    
+    public function actionActivate($user_id, $key){
+        // after register
+        if ( !$this->getUser()->isLoggedIn() ){
+            $can = $this->getManager()->canBeActivated($user_id, $key);
+            
+            if ( $can ){
+                $this->getManager()->update($user_id, ArrayHash::from(['user_active' => 1, 'user_activation_key' => null]));
+                $this->flashMessage('You have been activated.', self::FLASH_MESSAGE_SUCCES);
+                $this->redirect('Login:default');
+            }else{
+                $this->flashMessage('You cannot be activated.', self::FLASH_MESSAGE_DANGER);
+            }
+        }
+        else{
+            $this->flashMessage('You are logged in!', self::FLASH_MESSAGE_DANGER);
+        }        
+    }
+    
+    protected function createComponentResetPasswordForm(){
+        $form = $this->getBootStrapForm();
+        $form->addEmail('user_email', 'User email:');
+        $form->addSubmit('send', 'Reset');
+        $form->onSuccess[] = [$this, 'resetPasswordFormSuccess'];
+        
+        return $form;
+    }
+    
+    public function resetPasswordFormSuccess(Form $form, ArrayHash $values){
+        $found_mail = $this->getManager()->getByEmail($values->user_email);
+        
+        if ( $found_mail ){
+            // send mail!
+            
+            $this->flashMessage('Email was sent.', self::FLASH_MESSAGE_SUCCES);            
+        }
+        else{
+            $this->flashMessage('User mail was not found!', self::FLASH_MESSAGE_DANGER);
+        }
+    }
+
+    public function renderLostPassword(){
+        // give mail and send on that mail mail with info how to change it
+        // give link to reset this action if owner of account dont ask to reset pass
+    }
+    
+    public function actionResetLostPassword(){
+        // case when you do not send request to reset password
+    }
+    
+    public function actionChangeLostPassword(){
+       // set new password 
+    }
 
     /**
      *
@@ -110,7 +163,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $user_id
+     * @param int $user_id
      */
     public function renderPosts($user_id)
     {
@@ -118,7 +171,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $user_id
+     * @param int $user_id
      */
     public function renderProfile($user_id)
     {
@@ -138,11 +191,11 @@ class UserPresenter extends Base\ForumPresenter
         }
         
         $this->template->userData = $userData;
-        $this->template->rank    = $rankUser;
+        $this->template->rank     = $rankUser;
     }
 
     /**
-     * @param $user_id
+     * @param int $user_id
      */
     public function renderThanks($user_id)
     {
@@ -150,7 +203,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $user_id
+     * @param int $user_id
      */
     public function renderTopics($user_id)
     {
