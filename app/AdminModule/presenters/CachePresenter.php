@@ -20,6 +20,12 @@ class CachePresenter extends BasePresenter {
      * @var ITranslator $translator
      */
     private $translator;
+    
+    private $appDir;
+    
+    public function injectAppDir(\App\Controls\AppDir $appDir){
+        $this->appDir = $appDir;
+    }  
 
     /**
      *
@@ -65,7 +71,7 @@ class CachePresenter extends BasePresenter {
     public function beforeRender() {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->translator  = new Translator('Admin', $this->getUser()->getIdentity()->getData()['lang_file_name']));
+        $this->template->setTranslator($this->translator  = new Translator($this->appDir,'Admin', $this->getUser()->getIdentity()->getData()['lang_file_name']));
     }
 
 }

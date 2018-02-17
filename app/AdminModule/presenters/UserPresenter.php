@@ -46,6 +46,8 @@ class UserPresenter extends Base\AdminPresenter
      * @var Users2ForumsManager $users2Forums
      */
     private $users2Forums;
+    
+    private $wwwDir;
 
     /**
      * UserPresenter constructor.
@@ -56,13 +58,17 @@ class UserPresenter extends Base\AdminPresenter
     {
         parent::__construct($manager);
     }
+    
+    public function injectWwwDir(\App\Controls\WwwDir $wwwDir){
+        $this->wwwDir = $wwwDir;
+    }
 
     /**
      * @return DeleteAvatarControl
      */
     public function createComponentDeleteAvatar()
     {
-        return new DeleteAvatarControl($this->getManager(), $this->getContext(), $this->getUser(), $this->getAdminTranslator());
+        return new DeleteAvatarControl($this->getManager(), $this->wwwDir, $this->getUser(), $this->getAdminTranslator());
     }
 
     /**

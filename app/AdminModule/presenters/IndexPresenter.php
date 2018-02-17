@@ -12,6 +12,12 @@ use App\Translator;
  */
 class IndexPresenter extends BasePresenter
 {
+    private $appDir;
+    
+    public function injectWwwDir(\App\Controls\AppDir $appDir){
+        $this->appDir = $appDir;
+    }
+    
     /**
      *
      */
@@ -20,7 +26,7 @@ class IndexPresenter extends BasePresenter
         parent::beforeRender();
         $lang_name = $this->getUser()->getIdentity()->getData()['lang_file_name'];
 
-        $this->template->setTranslator(new Translator('Admin', $lang_name));
+        $this->template->setTranslator(new Translator($this->appDir,'admin', $lang_name));
     }
 
     /**

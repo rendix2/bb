@@ -88,6 +88,10 @@ services:
         inject: yes
     authenticator: App\Authenticator
     authorizator: App\Authorizator
+    WwwDir:
+        class: App\Controls\WwwDir(%wwwDir%)
+    Appir:
+        class: App\Controls\AppDir(%appDir%)
 
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22

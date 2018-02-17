@@ -15,6 +15,9 @@ class RankPresenter extends Base\AdminPresenter {
 
     const N = -1;
     
+    private $wwwDir;
+
+
     /**
      * RankPresenter constructor.
      *
@@ -23,6 +26,11 @@ class RankPresenter extends Base\AdminPresenter {
     public function __construct(RanksManager $manager) {
         parent::__construct($manager);
     }
+    
+    public function injectWwwDir(\App\Controls\WwwDir $wwwDir){
+        $this->wwwDir = $wwwDir;
+    }
+    
 
     /**
      * @return BootStrapForm
@@ -70,7 +78,7 @@ class RankPresenter extends Base\AdminPresenter {
     }
 
     public function editFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
-        $move = $this->getManager()->moveRank($values->rank_file, $this->getParameter('id'), $this->getContext()->getParameters()['wwwDir']);
+        $move = $this->getManager()->moveRank($values->rank_file, $this->getParameter('id'), $this->wwwDir->wwwDir);
 
         if ($move !== RanksManager::NOT_UPLOADED) {
             $values->rank_file = $move;

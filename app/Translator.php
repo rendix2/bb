@@ -16,10 +16,12 @@ class Translator implements ITranslator {
     private $lang;
     private $tr;
 
-    public function __construct($module, $lang) {
+    public function __construct(\App\Controls\AppDir $appDir, $module, $lang) {
         $this->module = $module;
         $this->lang = $lang;
-        $this->tr = parse_ini_file('c:/xampp/htdocs/bb/App/' . $this->module . 'Module/languages/' . $this->lang . '.ini');
+        $separator = DIRECTORY_SEPARATOR;
+
+        $this->tr = parse_ini_file($appDir->appDir . $separator . $this->module . 'Module' . $separator . 'languages' . $separator . $this->lang . '.ini');
     }
 
     public function __destruct() {
@@ -30,7 +32,7 @@ class Translator implements ITranslator {
 
     public function translate($message, $count = null) {
         if (!array_key_exists($message, $this->tr)) {
-            throw new InvalidArgumentException("'{$message}'" . ' in language ' . $this->lang . ' in '.$this->module.' is missing.');
+            throw new InvalidArgumentException("'{$message}'" . ' in language ' . $this->lang . ' in ' . $this->module . ' is missing.');
         }
 
         return $this->tr[$message];

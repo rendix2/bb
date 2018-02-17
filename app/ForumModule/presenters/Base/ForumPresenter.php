@@ -33,6 +33,8 @@ abstract class ForumPresenter extends ManagerPresenter
      * @var IAuthorizator $authorizator
      */
     private $authorizator;
+    
+    private $appDir;
 
     /**
      * ForumPresenter constructor.
@@ -70,15 +72,19 @@ abstract class ForumPresenter extends ManagerPresenter
     {
         $this->authorizator = $authorizator;
     }
+    
+    public function injectAppDir(\App\Controls\AppDir $appDir){
+        $this->appDir = $appDir;
+    }
 
     public function startup()
     {
         parent::startup();
 
-        $this->forumTranslator = new Translator('Forum', $this->getUser()
+        $this->forumTranslator = new Translator($this->appDir,'Forum', $this->getUser()
                                                                    ->getIdentity()
                                                                    ->getData()['lang_file_name']);
-        $this->getUser()->setAuthorizator($this->authorizator->getAcl());
+        $this->getUser()->setAuthorizator($this->authorizator->getAcl());              
     }
 
     public function beforeRender()

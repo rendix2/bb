@@ -25,9 +25,9 @@ class DeleteAvatarControl extends Control
      */
     private $userManager;
     /**
-     * @var Container $container
+     * @var \App\Controls\WwwDir $container
      */
-    private $container;
+    private $wwwDir;
     /**
      * @var User $user
      */
@@ -42,16 +42,16 @@ class DeleteAvatarControl extends Control
      * DeleteAvatarControl constructor.
      *
      * @param UsersManager $userManager
-     * @param Container    $container
+     * @param WwwDir       $wwwDir
      * @param User         $user
      * @param ITranslator  $translator
      */
-    public function __construct(UsersManager $userManager, Container $container, User $user, ITranslator $translator)
+    public function __construct(UsersManager $userManager, WwwDir $wwwDir, User $user, ITranslator $translator)
     {
         parent::__construct();
 
         $this->userManager = $userManager;
-        $this->container   = $container;
+        $this->wwwDir      = $wwwDir;
         $this->user        = $user;
         $this->translator  = $translator;
 
@@ -67,10 +67,10 @@ class DeleteAvatarControl extends Control
             $user = $this->userManager->getById($this->user->getId());
 
             if ($user->user_avatar) {
-                $wwwDir = $this->container->getParameters()['wwwDir'];
+
                 $separator = DIRECTORY_SEPARATOR;
 
-                $path = $wwwDir . $separator . 'avatars' . $separator . $user->user_avatar;
+                $path = $this->wwwDir->wwwDir . $separator . 'avatars' . $separator . $user->user_avatar;
 
                 FileSystem::delete($path);
                 $this->userManager->update($user->user_id, ArrayHash::from(['user_avatar' => null]));

@@ -24,6 +24,8 @@ class UserPresenter extends Base\ForumPresenter
     private $languageManager;
     
     private $rankManager;
+    
+    private $wwwDir;
 
     /**
      * UserPresenter constructor.
@@ -41,6 +43,10 @@ class UserPresenter extends Base\ForumPresenter
     public function injectRankManager(\App\Models\RanksManager $rankManager){
         $this->rankManager = $rankManager;
     }
+    
+    public function injectWwwDir(\App\Controls\WwwDir $wwwDir){
+        $this->wwwDir = $wwwDir;
+    }
 
     /**
      * @param Form      $form
@@ -49,7 +55,7 @@ class UserPresenter extends Base\ForumPresenter
     public function editUserFormSuccess(Form $form, ArrayHash $values)
     {
         $user = $this->getUser();
-        $move = $this->getManager()->moveAvatar($values->user_avatar, $this->getUser()->getId(), $this->getContext()->getParameters()['wwwDir']);
+        $move = $this->getManager()->moveAvatar($values->user_avatar, $this->getUser()->getId(), $this->wwwDir->wwwDir);
 
         if ( $move !== UsersManager::NOT_UPLOADED ){
             $values->user_avatar = $move;
@@ -223,7 +229,7 @@ class UserPresenter extends Base\ForumPresenter
      */
     protected function createComponentDeleteAvatar()
     {
-        return new DeleteAvatarControl($this->getManager(), $this->getContext(), $this->getUser(), $this->getForumTranslator());
+        return new DeleteAvatarControl($this->getManager(), $this->wwwDir, $this->getUser(), $this->getForumTranslator());
     }
 
     /**
