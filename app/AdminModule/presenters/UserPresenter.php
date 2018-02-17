@@ -97,7 +97,7 @@ class UserPresenter extends Base\AdminPresenter
         $user_id = $this->getParameter('id');
 
         $this->users2Forums->addByLeft((int)$user_id, array_values($forums));
-        $this->flashMessage('Forums saved.', self::FLASH_MESSAGE_SUCCES);
+        $this->flashMessage('Forums saved.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('User:edit', $user_id);
     }
 
@@ -111,7 +111,7 @@ class UserPresenter extends Base\AdminPresenter
         $user_id = $this->getParameter('id');
 
         $this->group2User->addByLeft((int)$user_id, array_values($groups));
-        $this->flashMessage('Groups saved.', self::FLASH_MESSAGE_SUCCES);
+        $this->flashMessage('Groups saved.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('User:edit', $user_id);
     }
 

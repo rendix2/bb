@@ -71,7 +71,7 @@ class UserPresenter extends Base\ForumPresenter
         }
 
         if ($result) {
-            $this->flashMessage('User saved.', self::FLASH_MESSAGE_SUCCES);
+            $this->flashMessage('User saved.', self::FLASH_MESSAGE_SUCCESS);
         } else {
             $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
         }
@@ -95,7 +95,7 @@ class UserPresenter extends Base\ForumPresenter
     {
         $this->getUser()->logout();
 
-        $this->flashMessage('Successfuly logged out. ', self::FLASH_MESSAGE_SUCCES);
+        $this->flashMessage('Successfuly logged out. ', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('Index:default');
     }
     
@@ -106,7 +106,7 @@ class UserPresenter extends Base\ForumPresenter
             
             if ( $can ){
                 $this->getManager()->update($user_id, ArrayHash::from(['user_active' => 1, 'user_activation_key' => null]));
-                $this->flashMessage('You have been activated.', self::FLASH_MESSAGE_SUCCES);
+                $this->flashMessage('You have been activated.', self::FLASH_MESSAGE_SUCCESS);
                 $this->redirect('Login:default');
             }else{
                 $this->flashMessage('You cannot be activated.', self::FLASH_MESSAGE_DANGER);
@@ -132,7 +132,7 @@ class UserPresenter extends Base\ForumPresenter
         if ( $found_mail ){
             // send mail!
             
-            $this->flashMessage('Email was sent.', self::FLASH_MESSAGE_SUCCES);            
+            $this->flashMessage('Email was sent.', self::FLASH_MESSAGE_SUCCESS);            
         }
         else{
             $this->flashMessage('User mail was not found!', self::FLASH_MESSAGE_DANGER);

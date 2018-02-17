@@ -74,7 +74,7 @@ class DeleteAvatarControl extends Control
 
                 FileSystem::delete($path);
                 $this->userManager->update($user->user_id, ArrayHash::from(['user_avatar' => null]));
-                $this->flashMessage('Avatar was deleted.', BasePresenter::FLASH_MESSAGE_SUCCES);
+                $this->flashMessage('Avatar was deleted.', BasePresenter::FLASH_MESSAGE_SUCCESS);
                 $this->redirect('this');
             }
         }

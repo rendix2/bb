@@ -30,7 +30,11 @@ abstract class CrudPresenter extends ManagerPresenter
 
     public function getTitle()
     {
-        return $this->title ? $this->title : $this->getName();;
+        $name  = explode(':', $this->getName());
+        $count = count($name);        
+        $name  = $name[$count-1];
+                
+        return $this->title ? $this->title : $name;
     }
 
     public function setTitle($title)
@@ -88,9 +92,9 @@ abstract class CrudPresenter extends ManagerPresenter
         }
 
         if ($result) {
-            $this->flashMessage($this->getTitle() . ' was saved.');
+            $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
         } else {
-            $this->flashMessage('Nothing to save.');
+            $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
         }
 
         $this->getManager()->deleteCache();        
@@ -111,9 +115,9 @@ abstract class CrudPresenter extends ManagerPresenter
         $result = $this->getManager()->delete($id);
 
         if ($result) {
-            $this->flashMessage('Item was deleted.');
+            $this->flashMessage('Item was deleted.', self::FLASH_MESSAGE_SUCCESS);
         } else {
-            $this->flashMessage('Item was not deleted.');
+            $this->flashMessage('Item was not deleted.', self::FLASH_MESSAGE_DANGER);
         }
 
         $this->redirect(':' . $this->getName() . ':default');
@@ -122,13 +126,15 @@ abstract class CrudPresenter extends ManagerPresenter
     public function renderDefault()
     {
         $items = $this->getManager()->getAllFluent();
+        $count = count($items);
 
-        if (!count($items)) {
-            $this->flashMessage('No items');
+        if (!$count) {
+            $this->flashMessage('No items', self::FLASH_MESSAGE_WARNING);
         }
 
-        $this->template->items = $items->fetchAll();
-        $this->template->title = $this->getTitleOnDefault();
+        $this->template->items      = $items->fetchAll();
+        $this->template->title      = $this->getTitleOnDefault();
+        $this->template->countItems = $count; 
     }
 
     public function renderEdit($id = null)

@@ -61,7 +61,7 @@ class ChangePasswordControl extends Control
         $result = $this->userManager->update($this->user->getId(), ArrayHash::from(['user_password' => Passwords::hash($values->user_password)]));
 
         if ($result) {
-            $this->presenter->flashMessage('Password changed.', BasePresenter::FLASH_MESSAGE_SUCCES);
+            $this->presenter->flashMessage('Password changed.', BasePresenter::FLASH_MESSAGE_SUCCESS);
             $this->presenter->redirect('this');
         }
     }

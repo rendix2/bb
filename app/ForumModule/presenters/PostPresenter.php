@@ -103,7 +103,7 @@ class PostPresenter extends Base\ForumPresenter
         $res = $this->topicWatchManager->fullDelete($topic_id, $this->getUser()->getId());
         
         if ($res){
-            $this->flashMessage('You have stop watching topic.', self::FLASH_MESSAGE_SUCCES);
+            $this->flashMessage('You have stop watching topic.', self::FLASH_MESSAGE_SUCCESS);
         }
         
         $this->redirect('Post:all', $forum_id, $topic_id, $page);
@@ -113,7 +113,7 @@ class PostPresenter extends Base\ForumPresenter
        $res = $this->topicWatchManager->addByLeft($topic_id, [$this->getUser()->getId()]);
         
                 if ($res){
-            $this->flashMessage('You have start watching topic.', self::FLASH_MESSAGE_SUCCES);
+            $this->flashMessage('You have start watching topic.', self::FLASH_MESSAGE_SUCCESS);
         }
         
         $this->redirect('Post:all', $forum_id, $topic_id, $page);
@@ -132,7 +132,7 @@ class PostPresenter extends Base\ForumPresenter
 
         $this->getManager()->delete($post_id);
 
-        $this->flashMessage('Post deleted.', self::FLASH_MESSAGE_SUCCES);
+        $this->flashMessage('Post deleted.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('Post:all', $forum_id, $topic_id, $page);
     }
 
@@ -149,7 +149,7 @@ class PostPresenter extends Base\ForumPresenter
 
         $this->topicsManager->delete($topic_id);
 
-        $this->flashMessage('Topic deleted.', self::FLASH_MESSAGE_SUCCES);
+        $this->flashMessage('Topic deleted.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('Forum:default', $forum_id, $page);
     }
 
@@ -174,7 +174,7 @@ class PostPresenter extends Base\ForumPresenter
 
         $this->thanksManager->add(ArrayHash::from($data));
 
-        $this->flashMessage('Your thank to this topic!', self::FLASH_MESSAGE_SUCCES);
+        $this->flashMessage('Your thank to this topic!', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('Post:all', $forum_id, $topic_id);
     }    
 
@@ -336,7 +336,7 @@ class PostPresenter extends Base\ForumPresenter
         $res = $this->reportManager->add($values);
         
         if ( $res ){
-            $this->flashMessage('Post was reported.', self::FLASH_MESSAGE_SUCCES);
+            $this->flashMessage('Post was reported.', self::FLASH_MESSAGE_SUCCESS);
         }
         
         $this->redirect('Post:all', $forum_id, $topic_id, $page);      
@@ -368,7 +368,7 @@ class PostPresenter extends Base\ForumPresenter
         }
 
         if ($result) {
-            $this->flashMessage('Post saved.', self::FLASH_MESSAGE_SUCCES);
+            $this->flashMessage('Post saved.', self::FLASH_MESSAGE_SUCCESS);
         } else {
             $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
         }
@@ -392,7 +392,7 @@ class PostPresenter extends Base\ForumPresenter
 
         $topic_id = $this->topicsManager->add($values);
         
-        $this->flashMessage('Topic saved.', self::FLASH_MESSAGE_SUCCES);
+        $this->flashMessage('Topic saved.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('Post:all', $forum_id, $topic_id);
     }    
 }
