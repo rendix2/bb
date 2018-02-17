@@ -29,6 +29,11 @@ class PostsManager extends Crud\CrudManager {
      * @var UsersManager $userManager
      */
     private $userManager;
+    
+        /**
+     * @var TopicWatchManager $topicWatchManager
+     */
+    private $topicWatchManager;
 
     /**
      * @param int $category_id
@@ -86,6 +91,8 @@ class PostsManager extends Crud\CrudManager {
         $this->topicsManager->injectUserManager($this->userManager);
         $this->forumManager = new ForumsManager($this->dibi);
         $this->forumManager->factory($this->getStorage());
+        $this->topicWatchManager = new TopicWatchManager($this->dibi, $this->topicsManager, $this->userManager);
+        //$this->topicWatchManager->factory($this->getStorage());
     }
 
     /**
@@ -100,6 +107,12 @@ class PostsManager extends Crud\CrudManager {
         
         $this->userManager->update($user_id, ArrayHash::from(['user_post_count%sql' => 'user_post_count + 1']));
         $this->topicsManager->update($item_data->post_topic_id, ArrayHash::from(['topic_post_count%sql' => 'topic_post_count+1']));
+               
+        $topicWatching = $this->topicWatchManager->fullCheck($item_data->post_topic_id, $user_id);
+        
+        if ( !$topicWatching ){
+            $this->topicWatchManager->addByLeft($item_data->post_topic_id, [$user_id]);
+        }
 
         return $post_id;
     }

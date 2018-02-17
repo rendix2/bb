@@ -89,6 +89,11 @@ services:
     TopicWatch:
         factory: App\Models\TopicWatchManager
         inject: yes
+    ReportManager:
+        factory: App\Models\ReportsManager
+        inject: yes
+        setup:
+                - factory
     authenticator: App\Authenticator
     authorizator: App\Authorizator
     WwwDir:
