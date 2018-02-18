@@ -109,7 +109,7 @@ abstract class CrudPresenter extends ManagerPresenter
     public function actionDelete($id)
     {
         if (!is_numeric($id)) {
-            $this->error('Param id is not numeric.');
+            $this->error('Parameter is not numeric.');
         }
 
         $result = $this->getManager()->delete($id);
@@ -129,7 +129,7 @@ abstract class CrudPresenter extends ManagerPresenter
         $count = count($items);
 
         if (!$count) {
-            $this->flashMessage('No items', self::FLASH_MESSAGE_WARNING);
+            $this->flashMessage('No items.', self::FLASH_MESSAGE_WARNING);
         }
 
         $this->template->items      = $items->fetchAll();
@@ -141,7 +141,7 @@ abstract class CrudPresenter extends ManagerPresenter
     {
         if ($id) {
             if (!is_numeric($id)) {
-                $this->error('Param id is not numeric.');
+                $this->error('Parameter id is not numeric.');
             }
 
             $item = $this->getManager()->getById($id);

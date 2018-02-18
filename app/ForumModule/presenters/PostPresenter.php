@@ -139,7 +139,7 @@ class PostPresenter extends Base\ForumPresenter
     /**
      * @param int $forum_id
      * @param int $topic_id
-     * @param tint $page
+     * @param int $page
      */
     public function actionDeleteTopic($forum_id, $topic_id, $page)
     {
@@ -200,6 +200,26 @@ class PostPresenter extends Base\ForumPresenter
      */
     public function renderAll($forum_id, $topic_id, $page = 1)
     {
+        if ( !is_numeric($forum_id) ){
+            $this->error('Forum parameter is not numeric.');
+        }
+        
+        $forum = $this->forumManager->getById($forum_id);
+        
+        if ( !$forum ){
+            $this->error('Forum does not exists.');
+        }
+        
+        if ( !is_numeric($topic_id) ){
+            $this->error('Topic parameter is not numeric.');
+        }
+        
+        $topic = $this->topicsManager->getById($topic_id);
+                
+        if (!$topic){
+            $this->error('Topic does not exists.');
+        } 
+                
         $data = $this->getManager()->getPostsByTopicId($topic_id);
 
         $pagination = new PaginatorControl($data, 10, 5, $page);
@@ -213,10 +233,11 @@ class PostPresenter extends Base\ForumPresenter
         $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $this->getUser()->getId());
         $this->template->ranks      = $this->rankManager->getAllCached();
         $this->template->posts      = $data->orderBy('post_id', \dibi::DESC)->fetchAll();
-        $this->template->topic      = $this->topicsManager->getById($topic_id);
         $this->template->canThank   = $this->thanksManager->canUserThank($forum_id, $topic_id, $this->getUser()->getId());
         $this->template->thanks     = $this->thanksManager->getThanksWithUserInTopic($topic_id);
-        $this->template->forum      = $this->forumManager->getById($forum_id);
+        
+        $this->template->forum      = $forum;
+        $this->template->topic      = $topic;
     }   
 
     /**

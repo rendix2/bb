@@ -173,7 +173,23 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function renderPosts($user_id)
     {
-        $this->template->posts = $this->getManager()->getPosts($user_id);
+        if ( !is_numeric($user_id) ){
+            $this->error('Parameter is not numeric.');
+        }
+        
+        $user = $this->getManager()->getById($user_id);
+        
+        if (!$user){
+            $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
+        }
+        
+        $posts = $this->getManager()->getPosts($user_id);
+        
+        if ( !$posts ){
+            $this->flashMessage('User have no posts', self::FLASH_MESSAGE_WARNING);
+        }
+                
+        $this->template->posts = $posts;
     }
 
     /**
@@ -181,14 +197,19 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function renderProfile($user_id)
     {
+        if ( !is_numeric($user_id) ){
+            $this->error('Parameter is not numeric');            
+        }
+        
         $userData = $this->getManager()->getById($user_id);
 
         if (!$userData) {
             $this->error('User not found.');
         }
         
-        $ranks = $this->rankManager->getAllCached();
-        $rankUser;
+        $ranks    = $this->rankManager->getAllCached();
+        $rankUser = null;
+        
         foreach ( $ranks as $rank){
             if ( $userData->user_post_count >= $rank->rank_from && $userData->user_post_count <= $rank->rank_to ){
                  $rankUser = $rank; 
@@ -205,7 +226,23 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function renderThanks($user_id)
     {
-        $this->template->thanks = $this->getManager()->getThanks($user_id);
+        if ( !is_numeric($user_id) ){
+            $this->error('Parameter is not numeric.');
+        }
+               
+        $user = $this->getManager()->getById($user_id);
+        
+        if (!$user){
+            $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
+        }        
+        
+        $thanks = $this->getManager()->getThanks($user_id);
+        
+        if (!$thanks){
+            $this->flashMessage('User have no thanks.', self::FLASH_MESSAGE_WARNING);
+        }
+        
+        $this->template->thanks = $thanks;
     }
 
     /**
@@ -213,7 +250,23 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function renderTopics($user_id)
     {
-        $this->template->topics = $this->getManager()->getTopics($user_id);
+        if ( !is_numeric($user_id) ){
+            $this->error('Parameter is not numeric.');
+        }
+               
+        $user = $this->getManager()->getById($user_id);
+        
+        if (!$user){
+            $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
+        }        
+        
+        $topics = $this->getManager()->getTopics($user_id);
+        
+        if ( !$topics ){
+            $this->flashMessage('User have no topics.', self::FLASH_MESSAGE_WARNING);
+        }
+        
+        $this->template->topics = $topics;
     }
 
     /**
