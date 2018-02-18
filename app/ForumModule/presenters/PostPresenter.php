@@ -331,6 +331,35 @@ class PostPresenter extends Base\ForumPresenter
         return $form;        
     }
     
+    protected function createComponentFastReply(){
+        $form = $this->getBootStrapForm();
+        
+        $form->addGroup('Fast reply');
+        $form->addTextArea('post_text');
+        $form->addSubmit('send', 'Save');
+        
+        $form->onSuccess[] = [$this, 'fastReplySuccess'];
+        return $form;
+    }
+    
+    public function fastReplySuccess(Form $form, ArrayHash $values){
+        $forum_id = $this->getParameter('forum_id');
+        $topic_id = $this->getParameter('topic_id');        
+        $page     = $this->getParameter('page');
+        
+        $values->post_forum_id = $forum_id;
+        $values->post_topic_id = $topic_id;
+        $values->post_user_id  = $this->getUser()->getId();
+                
+        $res = $this->getManager()->add($values);
+        
+        if ( $res ){
+            $this->flashMessage('Post was added.', self::FLASH_MESSAGE_SUCCESS);
+        }
+        
+        $this->redirect('Post:all', $forum_id, $topic_id, $page);        
+    }
+
     public function reportFormSuccess(Form $form, ArrayHash $values){
         $forum_id = $this->getParameter('forum_id');
         $topic_id = $this->getParameter('topic_id');

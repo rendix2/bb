@@ -70,6 +70,10 @@ class Authorizator {
             if ($forum->forum_topic_delete) {
                 $this->acl->allow('registered', "" . $forum->forum_id, 'topic_delete');
             }
+            
+            if ($forum->forum_fast_reply) {
+                $this->acl->allow('registered', "" . $forum->forum_id, 'fast_reply');
+            }            
         }
 
         foreach ($this->userManager->getForumsPermissionsByUserThroughGroup($this->user->getId()) as $perm) {

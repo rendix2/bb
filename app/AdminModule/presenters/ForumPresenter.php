@@ -145,7 +145,8 @@ class ForumPresenter extends Base\AdminPresenter
              ->setRequired(true)
              ->setTranslator(null);
         $form->addCheckbox('forum_active', 'Forum active:');
-
+        $form->addCheckbox('forum_fast_reply', 'Forum enable fast reply:');
+         
         $form->addGroup('user');
         $form->addCheckbox('forum_thank', 'Forum thank:');
         $form->addCheckbox('forum_post_add', 'Forum add post:');
