@@ -6,7 +6,7 @@
         <h6>{_topic_post_count}: {$topic->topic_post_count}</h6>
     </div>
     <div class="float-right">
-        {if $user->isAllowed($presenter->getParameter('forum_id'), 'post_add')}
+        {if $user->isAllowed($presenter->getParameter('forum_id'), 'post_add') && !$topic->topic_locked }
         <a class="btn btn-primary" href="{link Post:editPost $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">
             <i class="fa fa-plus" aria-hidden="true"></i>
             {_post_add}

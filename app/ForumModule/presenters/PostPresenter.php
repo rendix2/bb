@@ -236,6 +236,16 @@ class PostPresenter extends Base\ForumPresenter
                 $this->error('Not allowed');
             }
         }
+        
+        $topic = $this->topicsManager->getById($topic_id);
+        
+        if (!$topic){
+            $this->error('Topic does not exists.');
+        }
+        
+        if ($topic->topic_locked){
+            $this->error('Topic is locked.');
+        }
 
         $post = [];
 
