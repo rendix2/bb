@@ -101,13 +101,13 @@ class TopicsManager extends Crud\CrudManager {
 
         $topic_id = parent::add($values);
 
+        $this->topicWatchManager = new TopicWatchManager($this->dibi, $this, $this->userManager, self::TOPIC_WATCH_TABLE);        
+        $this->topicWatchManager->add([$values->topic_user_id], $topic_id);
+        
         $item_data->post_topic_id = $topic_id;
         $this->postManager->add($item_data);
         $this->userManager->update($values->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1']));
         
-        $this->topicWatchManager = new TopicWatchManager($this->dibi, $this, $this->userManager, self::TOPIC_WATCH_TABLE);        
-        $this->topicWatchManager->add([$values->topic_user_id], $topic_id);
-
         return $topic_id;
     }
 
