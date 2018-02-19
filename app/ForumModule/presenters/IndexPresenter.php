@@ -46,6 +46,12 @@ class IndexPresenter extends Base\ForumPresenter
      * @var ForumsManager $forumsManager
      */
     private $forumsManager;
+    
+    private $topicManager;
+        
+    private $postManger;
+    
+    private $userManager;
 
     /**
      * IndexPresenter constructor.
@@ -80,6 +86,18 @@ class IndexPresenter extends Base\ForumPresenter
     {
         $this->forumsManager = $forumsManager;
     }
+    
+    public function injectTopicManager(\App\Models\TopicsManager $topicManager){
+        $this->topicManager = $topicManager;
+    }
+    
+    public function injectPostManager(\App\Models\PostsManager $postManager){
+        $this->postManger = $postManager;
+    }
+    
+    public function injectUserManager(\App\Models\UsersManager $userManager){
+        $this->userManager = $userManager;
+    }
 
     /**
      * @param $category_id
@@ -102,10 +120,16 @@ class IndexPresenter extends Base\ForumPresenter
     {
         $categories = $this->getManager()->getActiveCategories();
         $result     = [];
+        $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
 
         foreach ($categories as $category) {
             $forums = $this->getManager()->getForumsFirstLevel($category->category_id);
-
+                        
+            foreach ($forums as $forum){
+                $forum->hasNewPosts = count($this->postManger->getNewerPosts($forum->forum_id, $last_login_time));
+                $forum->hasNewTopics = count($this->topicManager->getNewerTopics($forum->forum_id, $last_login_time));
+            }
+                                  
             $result[$category->category_id]['category'] = $category;
             $result[$category->category_id]['forum']    = $forums;
         }
@@ -113,53 +137,25 @@ class IndexPresenter extends Base\ForumPresenter
         $cachedLastUser = $this->getCache()->load(self::CACHE_KEY_LAST_USER);
 
         if (!$cachedLastUser) {
-            $this->getCache()->save(self::CACHE_KEY_LAST_USER, $cachedLastUser = $this->getManager()->getLastUser(), [
+            $this->getCache()->save(self::CACHE_KEY_LAST_USER, $cachedLastUser = $this->userManager->getLastUser(), [
                 Cache::EXPIRE => '1 hour',
             ]);
         }
-
-        $cachedTotalUsers = $this->getCache()->load(self::CACHE_KEY_TOTAL_USERS);
-
-        if (!$cachedTotalUsers) {
-            $this->getCache()->save(self::CACHE_KEY_TOTAL_USERS, $cachedTotalUsers = $this->getManager()
-                                                                                          ->getTotalUsers(), [
-                Cache::EXPIRE => '1 hour',
-            ]);
-        }
-
-        $cachedTotalPosts = $this->getCache()->load(self::CACHE_KEY_TOTAL_POSTS);
-
-        if (!$cachedTotalPosts) {
-            $this->getCache()->save(self::CACHE_KEY_TOTAL_POSTS, $cachedTotalPosts = $this->getManager()
-                                                                                          ->getTotalPosts(), [
-                Cache::EXPIRE => '1 hour',
-            ]);
-        }
-
-        $cachedTotalTopics = $this->getCache()->load(self::CACHE_KEY_TOTAL_TOPICS);
-
-        if (!$cachedTotalTopics) {
-            $this->getCache()->save(self::CACHE_KEY_TOTAL_TOPICS, $cachedTotalTopics = $this->getManager()
-                                                                                            ->getTotalTopics(), [
-                Cache::EXPIRE => '1 hour',
-            ]);
-        }
-
 
         $cachedLastTopic = $this->getCache()->load(self::CACHE_KEY_LAST_TOPIC);
 
         if (!$cachedLastTopic) {
-            $this->getCache()->save(self::CACHE_KEY_LAST_TOPIC, $cachedLastTopic = $this->getManager()
-                                                                                        ->getLastTopic(), [
+            $this->getCache()->save(self::CACHE_KEY_LAST_TOPIC, $cachedLastTopic = $this->topicManager->getLastTopic(), [
                 Cache::EXPIRE => '1 hour',
             ]);
         }
 
+        $this->template->mostPostsUser = $this->getManager()->getUserWithMostPosts();
         $this->template->lastTopic   = $cachedLastTopic;
         $this->template->lastUser    = $cachedLastUser;
-        $this->template->totalUsers  = $cachedTotalUsers;
-        $this->template->totalPosts  = $cachedTotalPosts;
-        $this->template->totalTopics = $cachedTotalTopics;
+        $this->template->totalUsers  = $this->userManager->getCountCached();
+        $this->template->totalPosts  = $this->postManger->getCountCached();
+        $this->template->totalTopics = $this->topicManager->getCountCached();
         $this->template->data        = $result;
     }
 

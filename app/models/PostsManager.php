@@ -14,7 +14,7 @@ use Nette\Utils\ArrayHash;
  * @author rendi
  */
 class PostsManager extends Crud\CrudManager {
-
+    
     /**
      * @var TopicsManager $topicsManager
      */
@@ -101,8 +101,8 @@ class PostsManager extends Crud\CrudManager {
      * @return Result|int
      */
     public function add(ArrayHash $item_data) {
-        $post_id = parent::add($item_data);
-        $user_id = $item_data->post_user_id;
+        $post_id  = parent::add($item_data);
+        $user_id  = $item_data->post_user_id;
         $forum_id = $item_data->post_forum_id;
         
         $this->userManager->update($user_id, ArrayHash::from(['user_post_count%sql' => 'user_post_count + 1']));
@@ -111,7 +111,7 @@ class PostsManager extends Crud\CrudManager {
         $topicWatching = $this->topicWatchManager->fullCheck($item_data->post_topic_id, $user_id);
         
         if ( !$topicWatching ){
-            $this->topicWatchManager->addByLeft($item_data->post_topic_id, [$user_id]);
+            $this->topicWatchManager->add([$user_id], $item_data->post_topic_id);
         }
 
         return $post_id;
@@ -193,5 +193,19 @@ class PostsManager extends Crud\CrudManager {
     public function getLastPostByForumId($forum_id) {
         return $this->dibi->query('SELECT * FROM [' . self::POSTS_TABLES . '] WHERE [post_id] = ( SELECT MAX(post_id) FROM [' . self::POSTS_TABLES . '] WHERE [post_forum_id] = %i )', $forum_id)->fetch();
     }
+    
+    public function getNewerPosts($forum_id, $post_time){        
+        $cache  = new \Nette\Caching\Cache($this->storage, $this->getTable());
+        $key    = $forum_id.'-'.$post_time;
+        $cached = $cache->load($key);
+        
+        if ( !isset($cached) ){
+            $cache->save($key, $cached = $this->dibi->select('*')->from($this->getTable())->where('[post_forum_id] = %i', $forum_id)->where('[post_add_time] > %i', $post_time)->fetchAll(),[
+                \Nette\Caching\Cache::EXPIRE => '2 hours',
+            ]);
+        }
+                
+        return $cached;
+    }    
 
 }

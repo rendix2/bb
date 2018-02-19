@@ -8,20 +8,23 @@
                 <th>{_user_post_count}</th>
                 <th>{_user_topic_count}</th>
                 <th>{_user_thank_count}</th>
+                <th>{_user_watch_count}</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>{$userData->user_name}</td>
                 <td>
-                    <a href="{link User:posts $userData->user_id}">{$userData->user_post_count}</a>
+                    <a href="{link User:posts $userData->user_id}">{$userData->user_post_count}</a>/{$postCount} ({($userData->user_post_count/$postCount)*100})%
                 </td>
                 <td>
-                    <a href="{link User:topics $userData->user_id}">{$userData->user_topic_count}</a>
+                    <a href="{link User:topics $userData->user_id}">{$userData->user_topic_count}</a>/{$topicCount} ({($userData->user_topic_count/$topicCount)*100})%
                 </td>
                 <td>
-                    <a href="{link User:thanks $userData->user_id}">{$userData->user_thank_count}</a>
+                    <a href="{link User:thanks $userData->user_id}">{$userData->user_thank_count}</a>/{$thankCount} ({($userData->user_thank_count/$thankCount)*100})%
                 </td>
+                <td>
+                    <a href="{link User:watches $userData->user_id}">{$watchesCount}</a>
             </tr>
         </tbody>
     </table>

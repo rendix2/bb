@@ -16,6 +16,7 @@
                                 {foreach $data[$category_id ]['forum'] as $forum} 
                                 <tr>
                                     <td>
+                                        {if $forum->hasNewTopics || $forum->hasNewPosts}NEW POSTS{/if}
                                         <a href="{link Forum:default, $forum->forum_id}">{$forum->forum_name}</a>
                                     </td>                                
                                 </tr>
@@ -38,6 +39,7 @@
                 <th>{_topic_total}</th>
                 <th>{_user_total}</th>
                 <th>{_topic_last}</th>
+                <th>{_most_post_user}</th>
             </tr>
         </thead>
         <tbody>
@@ -55,6 +57,7 @@
                     <a href="{link Post:all, $lastTopic->topic_forum_id, $lastTopic->topic_id}">{$lastTopic->topic_name}</a>
                     {/if}
                 </td>
+                <td><a href="{link User:profile $mostPostsUser->user_id}">{$mostPostsUser->user_name}</a> ({$mostPostsUser->post_count})</th>
             </tr>
         </tbody>
     </table>

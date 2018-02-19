@@ -26,7 +26,14 @@ class UserPresenter extends Base\ForumPresenter
     private $rankManager;
     
     private $wwwDir;
+    
+    private $topicWatchManager;
 
+    private $topicManager;
+    
+    private $postManager;
+    
+    private $thanksManager;
     /**
      * UserPresenter constructor.
      *
@@ -46,6 +53,22 @@ class UserPresenter extends Base\ForumPresenter
     
     public function injectWwwDir(\App\Controls\WwwDir $wwwDir){
         $this->wwwDir = $wwwDir;
+    }
+    
+    public function injectTopicWatchManager(\App\Models\TopicWatchManager $topicWatchManager){
+        $this->topicWatchManager = $topicWatchManager;
+    }
+
+    public function injectTopicManager(\App\Models\TopicsManager $topicManager){
+        $this->topicManager = $topicManager;
+    }
+    
+    public function injectPostManager(\App\Models\PostsManager $postManager){
+        $this->postManager = $postManager;
+    }
+    
+    public function injectThankManager(\App\Models\ThanksManager $thanksManager){
+        $this->thanksManager = $thanksManager;        
     }
 
     /**
@@ -216,9 +239,13 @@ class UserPresenter extends Base\ForumPresenter
                 break;
             }
         }
-        
-        $this->template->userData = $userData;
-        $this->template->rank     = $rankUser;
+
+        $this->template->thankCount     = $this->thanksManager->getCountCached();
+        $this->template->topicCount     = $this->topicManager->getCountCached();
+        $this->template->postCount      = $this->postManager->getCountCached();
+        $this->template->watchesCount   = $this->topicWatchManager->getCountByRight($user_id);
+        $this->template->userData       = $userData;
+        $this->template->rank           = $rankUser;
     }
 
     /**
@@ -267,6 +294,26 @@ class UserPresenter extends Base\ForumPresenter
         }
         
         $this->template->topics = $topics;
+    }
+    
+    public function renderWatches($user_id){
+        if ( !is_numeric($user_id) ){
+            $this->error('Parameter is not numeric.');
+        }
+               
+        $user = $this->getManager()->getById($user_id);
+        
+        if (!$user){
+            $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
+        }  
+        
+        $watches = $this->topicWatchManager->getByRightJoined($user_id);
+        
+        if (!$watches){
+            $this->flashMessage('User is not watching any topic.', self::FLASH_MESSAGE_WARNING);
+        }
+        
+        $this->template->watches = $watches;
     }
 
     /**

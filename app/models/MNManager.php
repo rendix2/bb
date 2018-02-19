@@ -263,5 +263,9 @@ abstract class MNManager extends Manager
     public function fullDelete($left_id, $right_id){
         return $this->dibi->delete($this->table)->where('['.$this->left->getPrimaryKey() . '] = %i', $left_id)->where('['.$this->right->getPrimaryKey() . '] = %i', $right_id)->execute();
     }
-
+    
+    public function getCount(){
+        return $this->dibi->select('COUNT(*)')->from($this->table)->fetchSingle();
+    }
+    
 }

@@ -54,44 +54,8 @@ class IndexManager extends Manager
                           ->orderBy('forum_order', dibi::ASC)
                           ->fetchAll();
     }
-
-    /**
-     * @return Row|false
-     */
-    public function getLastTopic()
-    {
-        return $this->dibi->query('SELECT * FROM ['.self::TOPICS_TABLE.'] WHERE [topic_id] = (SELECT MAX(topic_id) FROM ['.self::TOPICS_TABLE.'])')->fetch();
-    }
-
-    /**
-     * @return Row|false
-     */
-    public function getLastUser()
-    {
-        return $this->dibi->query('SELECT * FROM ['.self::USERS_TABLE.'] WHERE [user_id] = (SELECT MAX(user_id) FROM ['.self::USERS_TABLE.'])')->fetch();
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalPosts()
-    {
-        return $this->dibi->select('COUNT(post_id)')->from(self::POSTS_TABLES)->fetchSingle();
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalTopics()
-    {
-        return $this->dibi->select('COUNT(topic_id)')->from(self::TOPICS_TABLE)->fetchSingle();
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalUsers()
-    {
-        return $this->dibi->select('COUNT(user_id)')->from(self::USERS_TABLE)->fetchSingle();
+    
+    public function getUserWithMostPosts(){        
+        return $this->dibi->select('count(p.post_id) as post_count, u.user_id, u.user_name')->from(self::POSTS_TABLES)->as('p')->innerJoin(self::USERS_TABLE)->as('u')->on('[p.post_user_id] = [u.user_id]')->groupBy('post_user_id', \dibi::ASC)->fetch();        
     }
 }

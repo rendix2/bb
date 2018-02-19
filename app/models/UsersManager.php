@@ -198,5 +198,19 @@ class UsersManager extends Crud\CrudManager
     public function getByEmail($email){
         return $this->dibi->select('1')->from($this->getTable())->where('[user_email] = %s', $email)->fetchSingle();
     }
+    
+    /**
+     * @return Row|false
+     */
+    public function getLastUser()
+    {
+        return $this->dibi->query('SELECT * FROM ['.self::USERS_TABLE.'] WHERE [user_id] = (SELECT MAX(user_id) FROM ['.self::USERS_TABLE.'])')->fetch();
+    }    
+    
+    public function delete($item_id) {
+        parent::delete($item_id);
+        
+         // TODO
+    }
 
 }

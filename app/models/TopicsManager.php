@@ -106,7 +106,7 @@ class TopicsManager extends Crud\CrudManager {
         $this->userManager->update($values->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1']));
         
         $this->topicWatchManager = new TopicWatchManager($this->dibi, $this, $this->userManager, self::TOPIC_WATCH_TABLE);        
-        $this->topicWatchManager->addByLeft($topic_id, [$values->topic_user_id]);
+        $this->topicWatchManager->add([$values->topic_user_id], $topic_id);
 
         return $topic_id;
     }
@@ -154,5 +154,28 @@ class TopicsManager extends Crud\CrudManager {
     public function getLastTopicByForumId($forum_id) {
         return $this->dibi->query('SELECT * FROM [' . self::TOPICS_TABLE . '] WHERE [topic_id] = ( SELECT MAX(topic_id) FROM [' . self::TOPICS_TABLE . '] WHERE [topic_forum_id] = %i )', $forum_id)->fetch();
     }
+    
 
+    /**
+     * @return Row|false
+     */
+    public function getLastTopic()
+    {
+        return $this->dibi->query('SELECT * FROM ['.self::TOPICS_TABLE.'] WHERE [topic_id] = (SELECT MAX(topic_id) FROM ['.self::TOPICS_TABLE.'])')->fetch();
+    }    
+    
+    public function getNewerTopics($forum_id, $topic_time){
+        $cache  = new \Nette\Caching\Cache($this->storage,$this->getTable());
+        $key    = $forum_id.'-'.$topic_time;
+        $cached = $cache->load($key);          
+        
+        if (!isset($cached)){
+            $cache->save($key, $cached = $this->dibi->select('*')->from($this->getTable())->where('[topic_forum_id] = %i', $forum_id)->where('[topic_add_time] > %i', $topic_time)->fetchAll(), [
+                \Nette\Caching\Cache::EXPIRE => '2 hours',
+            ]);
+        }
+        
+        return $cached;
+    }
+    
 }

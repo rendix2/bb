@@ -32,6 +32,10 @@ class ForumPresenter extends Base\AdminPresenter
      */
     private $topicManager;
     
+    /**
+     *
+     * @var PostsManager $postManager 
+     */
     private $postManager;
 
     /**
