@@ -77,7 +77,7 @@ class ChangePasswordControl extends Control
         }
 
         if (!$this->user->isInRole('admin') && !$values->user_last_password) {
-            $form->add('Empty last password');
+            $form->addError('Empty last password');
         }
 
         $user = $this->userManager->getById($this->user->getId());

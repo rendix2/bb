@@ -18,10 +18,22 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendi
  */
-abstract class CrudManager extends Manager {
+abstract class CrudManager extends Manager
+{
 
+    /**
+     *
+     */
     const CACHE_ALL_KEY = 'data';
+
+    /**
+     *
+     */
     const CACHE_COUNT_KEY = 'count';
+
+    /**
+     *
+     */
     const CACHE_PAIRS = 'pairs';
 
     /**
@@ -49,7 +61,8 @@ abstract class CrudManager extends Manager {
      *
      * @param Connection $dibi
      */
-    public function __construct(Connection $dibi) {
+    public function __construct(Connection $dibi)
+    {
         parent::__construct($dibi);
 
         $this->table = $this->getNameOfTableFromClass();
@@ -58,14 +71,16 @@ abstract class CrudManager extends Manager {
     /**
      * @return array
      */
-    public function getAll() {
+    public function getAll()
+    {
         return $this->dibi->select('*')->from($this->table)->fetchAll();
     }
 
     /**
      * @return array|mixed
      */
-    public function getAllCached() {
+    public function getAllCached()
+    {
         $cache = new Cache($this->getStorage(), $this->getTable());
 
         $cached = $cache->load(self::CACHE_ALL_KEY);
@@ -82,37 +97,30 @@ abstract class CrudManager extends Manager {
     /**
      * @return Fluent
      */
-    public function getAllFluent() {
+    public function getAllFluent()
+    {
         return $this->dibi->select('*')->from($this->table);
     }
 
     /**
-     * @param int $item_id
-     *
-     * @return Row|false
-     */
-    public function getById($item_id) {
-        return $this->dibi->select('*')
-                        ->from($this->table)
-                        ->where('[' . $this->primaryKey . '] = %i', $item_id)
-                        ->fetch();
-    }
-
-    /**
-     * @param array     $item_id
+     * @param string $second
      *
      * @return array
      */
-    public function getByIds(array $item_id) {
-        return $this->dibi->select('*')->from($this->table)
-                        ->where('[' . $this->primaryKey . '] IN %in', $item_id)->fetchAll();
+    public function getAllPairs($second)
+    {
+        return $this->dibi->select($this->getPrimaryKey() . ', ' . $second)
+                          ->from($this->getTable())
+                          ->fetchPairs($this->getPrimaryKey(), $second);
     }
 
-    public function getAllPairs($second) {
-        return $this->dibi->select($this->getPrimaryKey() . ', ' . $second)->from($this->getTable())->fetchPairs($this->getPrimaryKey(), $second);
-    }
-
-    public function getAllPairsCached($second) {
+    /**
+     * @param string $second
+     *
+     * @return array|mixed
+     */
+    public function getAllPairsCached($second)
+    {
         $cache = new Cache($this->getStorage(), $this->getTable());
 
         $cached = $cache->load(self::CACHE_PAIRS);
@@ -127,24 +135,53 @@ abstract class CrudManager extends Manager {
     }
 
     /**
+     * @param int $item_id
+     *
+     * @return Row|false
+     */
+    public function getById($item_id)
+    {
+        return $this->dibi->select('*')
+                          ->from($this->table)
+                          ->where('[' . $this->primaryKey . '] = %i', $item_id)
+                          ->fetch();
+    }
+
+    /**
+     * @param array $item_id
+     *
+     * @return array
+     */
+    public function getByIds(array $item_id)
+    {
+        return $this->dibi->select('*')
+                          ->from($this->table)
+                          ->where('[' . $this->primaryKey . '] IN %in', $item_id)
+                          ->fetchAll();
+    }
+
+    /**
      * @return Cache
      */
-    public function getCache() {
+    public function getCache()
+    {
         return $this->cache;
     }
 
     /**
      * @return string
      */
-    public function getCount() {
+    public function getCount()
+    {
         return $this->dibi->select('COUNT(*)')->from($this->table)->fetchSingle();
     }
 
     /**
      * @return string
      */
-    public function getCountCached() {
-        $cache = new Cache($this->getStorage(), $this->getTable());
+    public function getCountCached()
+    {
+        $cache  = new Cache($this->getStorage(), $this->getTable());
         $cached = $cache->load(self::CACHE_COUNT_KEY);
 
         if (!$cached) {
@@ -159,9 +196,10 @@ abstract class CrudManager extends Manager {
     /**
      * @return string
      */
-    private function getNameOfTableFromClass() {
+    private function getNameOfTableFromClass()
+    {
         $explodedName = explode('\\', str_replace('Manager', '', get_class($this)));
-        $count = count($explodedName);
+        $count        = count($explodedName);
 
         return mb_strtolower($explodedName[$count - 1]);
     }
@@ -169,22 +207,24 @@ abstract class CrudManager extends Manager {
     /**
      * @return string
      */
-    public function getPrimaryKey() {
+    public function getPrimaryKey()
+    {
         return $this->primaryKey;
     }
 
     /**
      * @return string
      */
-    private function getPrimaryKeyQuery() {
+    private function getPrimaryKeyQuery()
+    {
         $cachedPrimaryKey = $this->cache->load('primaryKey_' . $this->table);
 
         if (!$cachedPrimaryKey) {
             $data = $this->dibi->select('COLUMN_NAME')
-                    ->from('information_schema.COLUMNS')
-                    ->where('[TABLE_NAME] = %s', $this->table)
-                    ->where('[COLUMN_KEY] = %s', 'PRI')
-                    ->fetchSingle();
+                               ->from('information_schema.COLUMNS')
+                               ->where('[TABLE_NAME] = %s', $this->table)
+                               ->where('[COLUMN_KEY] = %s', 'PRI')
+                               ->fetchSingle();
 
             $this->cache->save('primaryKey_' . $this->table, $cachedPrimaryKey = $data, [
                 Cache::EXPIRE => '168 hours',
@@ -197,14 +237,16 @@ abstract class CrudManager extends Manager {
     /**
      * @return IStorage
      */
-    public function getStorage() {
+    public function getStorage()
+    {
         return $this->storage;
     }
 
     /**
      * @return string
      */
-    public function getTable() {
+    public function getTable()
+    {
         return $this->table;
     }
 
@@ -213,7 +255,8 @@ abstract class CrudManager extends Manager {
      *
      * @return Result|int
      */
-    public function add(ArrayHash $item_data) {
+    public function add(ArrayHash $item_data)
+    {
         return $this->dibi->insert($this->table, $item_data)->execute(dibi::IDENTIFIER);
     }
 
@@ -222,10 +265,20 @@ abstract class CrudManager extends Manager {
      *
      * @return Result|int
      */
-    public function delete($item_id) {
+    public function delete($item_id)
+    {
         return $this->dibi->delete($this->table)
-                        ->where('[' . $this->primaryKey . '] = %i', $item_id)
-                        ->execute(dibi::AFFECTED_ROWS);
+                          ->where('[' . $this->primaryKey . '] = %i', $item_id)
+                          ->execute(dibi::AFFECTED_ROWS);
+    }
+
+    /**
+     *
+     */
+    public function deleteCache()
+    {
+        $cache = new Cache($this->getStorage(), $this->getTable());
+        $cache->remove(self::CACHE_ALL_KEY);
     }
 
     /**
@@ -233,19 +286,21 @@ abstract class CrudManager extends Manager {
      *
      * @return Result|int
      */
-    public function deleteMulti(array $item_id) {
+    public function deleteMulti(array $item_id)
+    {
         return $this->dibi->delete($this->table)
-                        ->where('[' . $this->primaryKey . '] IN %in', $item_id)
-                        ->execute(dibi::AFFECTED_ROWS);
+                          ->where('[' . $this->primaryKey . '] IN %in', $item_id)
+                          ->execute(dibi::AFFECTED_ROWS);
     }
 
     /**
      * @param IStorage $storage
      */
-    public function factory(IStorage $storage) {
-        $this->cache = new Cache($storage, CrudPresenter::CACHE_KEY_PRIMARY_KEY);
+    public function factory(IStorage $storage)
+    {
+        $this->cache      = new Cache($storage, CrudPresenter::CACHE_KEY_PRIMARY_KEY);
         $this->primaryKey = $this->getPrimaryKeyQuery();
-        $this->storage = $storage;
+        $this->storage    = $storage;
     }
 
     /**
@@ -254,10 +309,11 @@ abstract class CrudManager extends Manager {
      *
      * @return Result|int
      */
-    public function update($item_id, ArrayHash $item_data) {
+    public function update($item_id, ArrayHash $item_data)
+    {
         return $this->dibi->update($this->table, $item_data)
-                        ->where('[' . $this->primaryKey . '] = %i', $item_id)
-                        ->execute(dibi::AFFECTED_ROWS);
+                          ->where('[' . $this->primaryKey . '] = %i', $item_id)
+                          ->execute(dibi::AFFECTED_ROWS);
     }
 
     /**
@@ -266,15 +322,11 @@ abstract class CrudManager extends Manager {
      *
      * @return Result|int
      */
-    public function updateMulti(array $item_id, ArrayHash $item_data) {
+    public function updateMulti(array $item_id, ArrayHash $item_data)
+    {
         return $this->dibi->update($this->table, $item_data)
-                        ->where('[' . $this->primaryKey . '] IN %in', $item_id)
-                        ->execute(dibi::AFFECTED_ROWS);
-    }
-
-    public function deleteCache() {
-        $cache = new Cache($this->getStorage(), $this->getTable());
-        $cache->remove(self::CACHE_ALL_KEY);
+                          ->where('[' . $this->primaryKey . '] IN %in', $item_id)
+                          ->execute(dibi::AFFECTED_ROWS);
     }
 
 }

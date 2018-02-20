@@ -8,6 +8,7 @@ use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
 use Nette\Security\Identity;
 use Nette\Security\Passwords;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of Authenticator
@@ -19,7 +20,7 @@ class Authenticator implements IAuthenticator {
     /**
      *
      */
-    const ROLES = [1 => 'geust', 2 => 'registered', 3 => 'moderator', 4 => 'juniorAdmin', 5 => 'admin'];
+    const ROLES = [1 => 'guest', 2 => 'registered', 3 => 'moderator', 4 => 'juniorAdmin', 5 => 'admin'];
 
     /**
      * @var UsersManager $userManager
@@ -64,10 +65,10 @@ class Authenticator implements IAuthenticator {
         }
 
         if (!Passwords::verify($userPassword, $userData->user_password)) {
-            throw new AuthenticationException('Pasword is incorrect.');
+            throw new AuthenticationException('Password is incorrect.');
         }
         
-        $this->userManager->update($userData->user_id, \Nette\Utils\ArrayHash::from(['user_last_login_time' =>time()]));
+        $this->userManager->update($userData->user_id, ArrayHash::from(['user_last_login_time' =>time()]));
 
         return new Identity($userData->user_id, self::ROLES[$userData->user_role_id], ['user_name' => $userData->user_name, 'lang_file_name' => $langData->lang_file_name, 'user_last_login_time' => $userData->user_last_login_time]);
     }

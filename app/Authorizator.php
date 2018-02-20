@@ -18,11 +18,11 @@ class Authorizator {
     private $user;
     private $userManager;
 
-    public function __construct(Models\ForumsManager $forumsManager, User $user, UsersManager $userMnager) {
+    public function __construct(Models\ForumsManager $forumsManager, User $user, UsersManager $userManager) {
         $this->acl          = new Permission();
         $this->forumManager = $forumsManager;
         $this->user         = $user;
-        $this->userManager  = $userMnager;
+        $this->userManager  = $userManager;
 
         $this->defineRoles();
         $this->defineResources();
@@ -34,7 +34,7 @@ class Authorizator {
     }
 
     private function defineRoles() {
-        $this->acl->addRole('geust');
+        $this->acl->addRole('guest');
         $this->acl->addRole('registered', 'geust');
         $this->acl->addRole('moderator', 'registered');
         $this->acl->addRole('juniorAdmin', 'moderator');
@@ -45,7 +45,7 @@ class Authorizator {
         foreach ($this->forumManager->getAllCached() as $forum) {
             $this->acl->addResource("" . $forum->forum_id);
 
-            $this->acl->allow('geust', "" . $forum->forum_id, 'forum_view');
+            $this->acl->allow('guest', "" . $forum->forum_id, 'forum_view');
 
             if ($forum->forum_thank) {
                 $this->acl->allow('registered', "" . $forum->forum_id, 'topic_thank');
@@ -108,9 +108,9 @@ class Authorizator {
             }
 
             if ($perm->topic_delete) {
-                $this->acl->allow('registered', "" . $forum->forum_id, 'topic_delete');
+                $this->acl->allow('registered', "" . $perm->forum_id, 'topic_delete');
             } else {
-                $this->acl->deny('registered', "" . $forum->forum_id, 'topic_delete');
+                $this->acl->deny('registered', "" . $perm->forum_id, 'topic_delete');
             }
         }
 
@@ -123,9 +123,9 @@ class Authorizator {
 
     private function definePrivilegies() {
 
-        $this->acl->deny('geust', Permission::ALL, 'topic_thank');
-        $this->acl->deny('geust', Permission::ALL, 'post_add');
-        $this->acl->deny('geust', Permission::ALL, 'post_delete');
+        $this->acl->deny('guest', Permission::ALL, 'topic_thank');
+        $this->acl->deny('guest', Permission::ALL, 'post_add');
+        $this->acl->deny('guest', Permission::ALL, 'post_delete');
 
         // moderator
         $this->acl->allow('moderator', Permission::ALL, 'post_delete');

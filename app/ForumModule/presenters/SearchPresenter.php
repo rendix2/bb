@@ -146,7 +146,7 @@ class SearchPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $q
+     * @param string $q
      */
     public function renderPostResults($q)
     {
@@ -163,7 +163,7 @@ class SearchPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $q
+     * @param string $q
      */
     public function renderTopicResults($q)
     {

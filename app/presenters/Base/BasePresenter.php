@@ -9,9 +9,6 @@ use Nette;
  */
 abstract class BasePresenter extends Nette\Application\UI\Presenter
 {
-    private $wwwDir;
-
-
     const FLASH_MESSAGE_SUCCESS = 'success';
 
     const FLASH_MESSAGE_DANGER = 'danger';

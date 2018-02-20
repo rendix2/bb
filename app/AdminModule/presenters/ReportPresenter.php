@@ -2,6 +2,9 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Controls\BootStrapForm;
+use App\Models\ReportsManager;
+
 /**
  * Description of ReportPresenter
  *
@@ -9,22 +12,39 @@ namespace App\AdminModule\Presenters;
  */
 class ReportPresenter extends Base\AdminPresenter {
 
-    public function __construct(\App\Models\ReportsManager $manager) {
+    /**
+     * ReportPresenter constructor.
+     *
+     * @param ReportsManager $manager
+     */
+    public function __construct(ReportsManager $manager) {
         parent::__construct($manager);
     }
 
+    /**
+     *
+     */
     public function renderForum() {
         
     }
 
+    /**
+     *
+     */
     public function renderTopic() {
         
     }
 
+    /**
+     *
+     */
     public function renderUser() {
         
     }
 
+    /**
+     * @return BootStrapForm
+     */
     protected function createComponentEditForm() {
         $form = $this->getBootStrapForm();
         $form->addTextAreaHtml('report_text', 'Report text:');

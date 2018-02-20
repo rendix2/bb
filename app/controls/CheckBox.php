@@ -3,6 +3,7 @@
 namespace App\Cpontrols;
 
 use Nette;
+use Nette\Forms\Rule;
 use Nette\Utils\Html;
 
 
@@ -51,6 +52,9 @@ class Checkbox extends \Nette\Forms\Controls\Checkbox
 
     /**
      * Bypasses label generation.
+     *
+     * @param null $caption
+     *
      * @return void
      */
     public function getLabel($caption = null)

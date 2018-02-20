@@ -4,7 +4,13 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\ChangePasswordControl;
 use App\Controls\DeleteAvatarControl;
+use App\Controls\WwwDir;
 use App\Models\LanguagesManager;
+use App\Models\PostsManager;
+use App\Models\RanksManager;
+use App\Models\ThanksManager;
+use App\Models\TopicsManager;
+use App\Models\TopicWatchManager;
 use App\Models\UsersManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -22,17 +28,35 @@ class UserPresenter extends Base\ForumPresenter
      * @var LanguagesManager $languageManager
      */
     private $languageManager;
-    
+
+    /**
+     * @var RanksManager $rankManager
+     */
     private $rankManager;
-    
+
+    /**
+     * @var WwwDir $wwwDir
+     */
     private $wwwDir;
-    
+
+    /**
+     * @var TopicWatchManager $topicWatchManager
+     */
     private $topicWatchManager;
 
+    /**
+     * @var TopicsManager $topicManager
+     */
     private $topicManager;
-    
+
+    /**
+     * @var PostsManager $postManager
+     */
     private $postManager;
-    
+
+    /**
+     * @var ThanksManager $thanksManager
+     */
     private $thanksManager;
     /**
      * UserPresenter constructor.
@@ -46,28 +70,46 @@ class UserPresenter extends Base\ForumPresenter
 
         $this->languageManager = $languageManager;
     }
-    
-    public function injectRankManager(\App\Models\RanksManager $rankManager){
+
+    /**
+     * @param RanksManager $rankManager
+     */
+    public function injectRankManager(RanksManager $rankManager){
         $this->rankManager = $rankManager;
     }
-    
-    public function injectWwwDir(\App\Controls\WwwDir $wwwDir){
+
+    /**
+     * @param WwwDir $wwwDir
+     */
+    public function injectWwwDir(WwwDir $wwwDir){
         $this->wwwDir = $wwwDir;
     }
-    
-    public function injectTopicWatchManager(\App\Models\TopicWatchManager $topicWatchManager){
+
+    /**
+     * @param TopicWatchManager $topicWatchManager
+     */
+    public function injectTopicWatchManager(TopicWatchManager $topicWatchManager){
         $this->topicWatchManager = $topicWatchManager;
     }
 
-    public function injectTopicManager(\App\Models\TopicsManager $topicManager){
+    /**
+     * @param TopicsManager $topicManager
+     */
+    public function injectTopicManager(TopicsManager $topicManager){
         $this->topicManager = $topicManager;
     }
-    
-    public function injectPostManager(\App\Models\PostsManager $postManager){
+
+    /**
+     * @param PostsManager $postManager
+     */
+    public function injectPostManager(PostsManager $postManager){
         $this->postManager = $postManager;
     }
-    
-    public function injectThankManager(\App\Models\ThanksManager $thanksManager){
+
+    /**
+     * @param ThanksManager $thanksManager
+     */
+    public function injectThankManager(ThanksManager $thanksManager){
         $this->thanksManager = $thanksManager;        
     }
 
@@ -118,10 +160,14 @@ class UserPresenter extends Base\ForumPresenter
     {
         $this->getUser()->logout();
 
-        $this->flashMessage('Successfuly logged out. ', self::FLASH_MESSAGE_SUCCESS);
+        $this->flashMessage('Successfully logged out. ', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('Index:default');
     }
-    
+
+    /**
+     * @param $user_id
+     * @param $key
+     */
     public function actionActivate($user_id, $key){
         // after register
         if ( !$this->getUser()->isLoggedIn() ){
@@ -139,7 +185,10 @@ class UserPresenter extends Base\ForumPresenter
             $this->flashMessage('You are logged in!', self::FLASH_MESSAGE_DANGER);
         }        
     }
-    
+
+    /**
+     * @return \App\Controls\BootstrapForm
+     */
     protected function createComponentResetPasswordForm(){
         $form = $this->getBootStrapForm();
         $form->addEmail('user_email', 'User email:');
@@ -148,7 +197,11 @@ class UserPresenter extends Base\ForumPresenter
         
         return $form;
     }
-    
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
     public function resetPasswordFormSuccess(Form $form, ArrayHash $values){
         $found_mail = $this->getManager()->getByEmail($values->user_email);
         
@@ -162,15 +215,24 @@ class UserPresenter extends Base\ForumPresenter
         }
     }
 
+    /**
+     *
+     */
     public function renderLostPassword(){
         // give mail and send on that mail mail with info how to change it
-        // give link to reset this action if owner of account dont ask to reset pass
+        // give link to reset this action if owner of account don't ask to reset pass
     }
-    
+
+    /**
+     *
+     */
     public function actionResetLostPassword(){
         // case when you do not send request to reset password
     }
-    
+
+    /**
+     *
+     */
     public function actionChangeLostPassword(){
        // set new password 
     }
@@ -180,7 +242,8 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function renderEdit()
     {
-        $user = $this->getUser();
+        $user     = $this->getUser();
+        $userData = [];
 
         if ($user->isLoggedIn()) {
             $userData = $this->getManager()->getById($this->getUser()->getId());
@@ -295,7 +358,10 @@ class UserPresenter extends Base\ForumPresenter
         
         $this->template->topics = $topics;
     }
-    
+
+    /**
+     * @param $user_id
+     */
     public function renderWatches($user_id){
         if ( !is_numeric($user_id) ){
             $this->error('Parameter is not numeric.');

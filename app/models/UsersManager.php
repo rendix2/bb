@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Dibi\Row;
 use Nette\Http\FileUpload;
+use Nette\Utils\FileSystem;
 
 /**
  * Description of UserManager
@@ -13,8 +14,14 @@ use Nette\Http\FileUpload;
 class UsersManager extends Crud\CrudManager
 {
 
+    /**
+     *
+     */
     const AVATAR_FOLDER = 'avatars';
-    
+
+    /**
+     *
+     */
     const NOT_UPLOADED = -5;
     
     /**
@@ -159,6 +166,7 @@ class UsersManager extends Crud\CrudManager
 
     /**
      * @param FileUpload $file
+     * @param int        $id
      * @param string     $wwwDir
      *
      * @return string
@@ -181,20 +189,35 @@ class UsersManager extends Crud\CrudManager
             return self::NOT_UPLOADED;
         }
     }
-    
+
+    /**
+     * @param int $id
+     * @param string $wwwDir
+     */
     public function deletePreviousRankFile($id, $wwwDir){
         $user = $this->getById($id);
         $separator = DIRECTORY_SEPARATOR;
                
         if ($user){            
-            \Nette\Utils\FileSystem::delete($wwwDir.$separator.self::AVATAR_FOLDER.$separator.$user->user_avatar);
+            FileSystem::delete($wwwDir.$separator.self::AVATAR_FOLDER.$separator.$user->user_avatar);
         }       
     }
-    
+
+    /**
+     * @param int $user_id
+     * @param string $key
+     *
+     * @return mixed
+     */
     public function canBeActivated($user_id, $key){
         return $this->dibi->select('1')->from($this->getTable())->where('['.$this->getPrimaryKey().'] = %i', $user_id)->where('user_activation_key')->where('[user_active] = %i', 0)->fetchSingle();
     }
-    
+
+    /**
+     * @param $email
+     *
+     * @return mixed
+     */
     public function getByEmail($email){
         return $this->dibi->select('1')->from($this->getTable())->where('[user_email] = %s', $email)->fetchSingle();
     }
@@ -205,8 +228,11 @@ class UsersManager extends Crud\CrudManager
     public function getLastUser()
     {
         return $this->dibi->query('SELECT * FROM ['.self::USERS_TABLE.'] WHERE [user_id] = (SELECT MAX(user_id) FROM ['.self::USERS_TABLE.'])')->fetch();
-    }    
-    
+    }
+
+    /**
+     * @param int $item_id
+     */
     public function delete($item_id) {
         parent::delete($item_id);
         

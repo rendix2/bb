@@ -4,8 +4,12 @@ namespace App\ForumModule\Presenters;
 
 use App\Models\ForumsManager;
 use App\Models\IndexManager;
+use App\Models\PostsManager;
+use App\Models\TopicsManager;
+use App\Models\UsersManager;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
+use Nette\Security\User;
 
 /**
  * Description of IndexPresenter¨
@@ -46,11 +50,20 @@ class IndexPresenter extends Base\ForumPresenter
      * @var ForumsManager $forumsManager
      */
     private $forumsManager;
-    
+
+    /**
+     * @var TopicsManager $topicManager
+     */
     private $topicManager;
-        
+
+    /**
+     * @var PostsManager $postManger
+     */
     private $postManger;
-    
+
+    /**
+     * @var UsersManager $userManager
+     */
     private $userManager;
 
     /**
@@ -86,16 +99,25 @@ class IndexPresenter extends Base\ForumPresenter
     {
         $this->forumsManager = $forumsManager;
     }
-    
-    public function injectTopicManager(\App\Models\TopicsManager $topicManager){
+
+    /**
+     * @param TopicsManager $topicManager
+     */
+    public function injectTopicManager(TopicsManager $topicManager){
         $this->topicManager = $topicManager;
     }
-    
-    public function injectPostManager(\App\Models\PostsManager $postManager){
+
+    /**
+     * @param PostsManager $postManager
+     */
+    public function injectPostManager(PostsManager $postManager){
         $this->postManger = $postManager;
     }
-    
-    public function injectUserManager(\App\Models\UsersManager $userManager){
+
+    /**
+     * @param UsersManager $userManager
+     */
+    public function injectUserManager(UsersManager $userManager){
         $this->userManager = $userManager;
     }
 

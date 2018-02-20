@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use dibi;
 use Dibi\Fluent;
 use Dibi\Result;
 use Dibi\Row;
+use Nette\Caching\Cache;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -193,15 +193,21 @@ class PostsManager extends Crud\CrudManager {
     public function getLastPostByForumId($forum_id) {
         return $this->dibi->query('SELECT * FROM [' . self::POSTS_TABLES . '] WHERE [post_id] = ( SELECT MAX(post_id) FROM [' . self::POSTS_TABLES . '] WHERE [post_forum_id] = %i )', $forum_id)->fetch();
     }
-    
-    public function getNewerPosts($forum_id, $post_time){        
-        $cache  = new \Nette\Caching\Cache($this->storage, $this->getTable());
+
+    /**
+     * @param int $forum_id
+     * @param int $post_time
+     *
+     * @return array|mixed
+     */
+    public function getNewerPosts($forum_id, $post_time){
+        $cache  = new Cache($this->storage, $this->getTable());
         $key    = $forum_id.'-'.$post_time;
         $cached = $cache->load($key);
         
         if ( !isset($cached) ){
             $cache->save($key, $cached = $this->dibi->select('*')->from($this->getTable())->where('[post_forum_id] = %i', $forum_id)->where('[post_add_time] > %i', $post_time)->fetchAll(),[
-                \Nette\Caching\Cache::EXPIRE => '2 hours',
+                Cache::EXPIRE => '2 hours',
             ]);
         }
                 

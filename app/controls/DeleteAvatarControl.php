@@ -6,7 +6,6 @@ use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-use Nette\DI\Container;
 use Nette\Localization\ITranslator;
 use Nette\Security\User;
 use Nette\Utils\ArrayHash;

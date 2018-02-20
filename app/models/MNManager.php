@@ -39,6 +39,7 @@ abstract class MNManager extends Manager
      * @param Connection  $dibi
      * @param CrudManager $left
      * @param CrudManager $right
+     * @param string|null $tableName
      */
     public function __construct(Connection $dibi, CrudManager $left, CrudManager $right, $tableName = null)
     {
@@ -255,15 +256,30 @@ abstract class MNManager extends Manager
     {
         return $this->dibi->delete($this->table)->where('['.$this->right->getPrimaryKey() . '] = %i', $right_id)->execute();
     }
-    
+
+    /**
+     * @param int $left_id
+     * @param int $right_id
+     *
+     * @return bool
+     */
     public function fullCheck($left_id, $right_id){
         return $this->dibi->select('1')->from($this->table)->where('['.$this->left->getPrimaryKey() . '] = %i', $left_id)->where('['.$this->right->getPrimaryKey() . '] = %i', $right_id)->fetchSingle() === 1;
     }
-    
+
+    /**
+     * @param int $left_id
+     * @param int $right_id
+     *
+     * @return Result|int
+     */
     public function fullDelete($left_id, $right_id){
         return $this->dibi->delete($this->table)->where('['.$this->left->getPrimaryKey() . '] = %i', $left_id)->where('['.$this->right->getPrimaryKey() . '] = %i', $right_id)->execute();
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getCount(){
         return $this->dibi->select('COUNT(*)')->from($this->table)->fetchSingle();
     }

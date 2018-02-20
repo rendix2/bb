@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Controls\AppDir;
 use App\Presenters\Base\BasePresenter;
 use App\Translator;
 
@@ -12,9 +13,15 @@ use App\Translator;
  */
 class IndexPresenter extends BasePresenter
 {
+    /**
+     * @var AppDir $appDir
+     */
     private $appDir;
-    
-    public function injectWwwDir(\App\Controls\AppDir $appDir){
+
+    /**
+     * @param AppDir $appDir
+     */
+    public function injectAppDir(AppDir $appDir){
         $this->appDir = $appDir;
     }
     

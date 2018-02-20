@@ -2,11 +2,13 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Controls\AppDir;
 use App\Controls\BootstrapForm;
 use App\Presenters\Base\BasePresenter;
 use App\Translator;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
+use Nette\Security\IUserStorage;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -20,10 +22,16 @@ class CachePresenter extends BasePresenter {
      * @var ITranslator $translator
      */
     private $translator;
-    
+
+    /**
+     * @var AppDir $appDir
+     */
     private $appDir;
-    
-    public function injectAppDir(\App\Controls\AppDir $appDir){
+
+    /**
+     * @param AppDir $appDir
+     */
+    public function injectAppDir(AppDir $appDir){
         $this->appDir = $appDir;
     }  
 

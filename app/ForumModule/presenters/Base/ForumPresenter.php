@@ -3,6 +3,7 @@
 namespace App\ForumModule\Presenters\Base;
 
 use App\Authorizator;
+use App\Controls\AppDir;
 use App\Controls\BootstrapForm;
 use App\Models\Manager;
 use App\Presenters\Base\ManagerPresenter;
@@ -30,7 +31,7 @@ abstract class ForumPresenter extends ManagerPresenter
     private $bootStrapForm;
 
     /**
-     * @var IAuthorizator $authorizator
+     * @var Authorizator $authorizator
      */
     private $authorizator;
     
@@ -73,7 +74,7 @@ abstract class ForumPresenter extends ManagerPresenter
         $this->authorizator = $authorizator;
     }
     
-    public function injectAppDir(\App\Controls\AppDir $appDir){
+    public function injectAppDir(AppDir $appDir){
         $this->appDir = $appDir;
     }
 

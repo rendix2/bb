@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters\Base;
 
+use App\Controls\AppDir;
 use App\Controls\BootstrapForm;
 use App\Models\Crud\CrudManager;
 use App\Presenters\crud\CrudPresenter;
@@ -25,7 +26,10 @@ abstract class AdminPresenter extends CrudPresenter
      * @var BootstrapForm $bootStrapForm
      */
     private $bootStrapForm;
-    
+
+    /**
+     * @var
+     */
     private $appDir;
 
     /**
@@ -39,8 +43,11 @@ abstract class AdminPresenter extends CrudPresenter
 
         $this->bootStrapForm = new BootstrapForm();
     }
-    
-    public function injectAppDir(\App\Controls\AppDir $appDir){
+
+    /**
+     * @param AppDir $appDir
+     */
+    public function injectAppDir(AppDir $appDir){
         $this->appDir = $appDir;
     }    
 

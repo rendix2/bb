@@ -5,6 +5,7 @@ namespace App\AdminModule\Presenters;
 use App\Controls\BootStrapForm;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
+use App\Models\PostsManager;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
 
@@ -63,8 +64,11 @@ class ForumPresenter extends Base\AdminPresenter
     {
         $this->topicManager = $topicManager;
     }
-    
-    public function injectPostManager(\App\Models\PostsManager $postManager){
+
+    /**
+     * @param PostsManager $postManager
+     */
+    public function injectPostManager(PostsManager $postManager){
         $this->postManager = $postManager;
     }
 

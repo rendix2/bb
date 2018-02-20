@@ -54,8 +54,11 @@ class IndexManager extends Manager
                           ->orderBy('forum_order', dibi::ASC)
                           ->fetchAll();
     }
-    
-    public function getUserWithMostPosts(){        
+
+    /**
+     * @return Row|false
+     */
+    public function getUserWithMostPosts(){
         return $this->dibi->select('count(p.post_id) as post_count, u.user_id, u.user_name')->from(self::POSTS_TABLES)->as('p')->innerJoin(self::USERS_TABLE)->as('u')->on('[p.post_user_id] = [u.user_id]')->groupBy('post_user_id', \dibi::ASC)->fetch();        
     }
 }

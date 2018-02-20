@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Dibi\Connection;
+
 /**
  * Description of Users2SessionsManager
  *
@@ -9,7 +11,7 @@ namespace App\Models;
  */
 class Users2SessionsManager extends MNManager {
     
-    public function __construct(\Dibi\Connection $dibi, UsersManager $left, SessionsManager $right) {
+    public function __construct(Connection $dibi, UsersManager $left, SessionsManager $right) {
         parent::__construct($dibi, $left, $right);
     }
     

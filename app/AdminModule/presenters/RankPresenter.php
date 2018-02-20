@@ -3,7 +3,10 @@
 namespace App\AdminModule\Presenters;
 
 use App\Controls\BootStrapForm;
+use App\Controls\WwwDir;
 use App\Models\RanksManager;
+use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of RankPresenter
@@ -14,7 +17,10 @@ use App\Models\RanksManager;
 class RankPresenter extends Base\AdminPresenter {
 
     const N = -1;
-    
+
+    /**
+     * @var
+     */
     private $wwwDir;
 
 
@@ -26,8 +32,11 @@ class RankPresenter extends Base\AdminPresenter {
     public function __construct(RanksManager $manager) {
         parent::__construct($manager);
     }
-    
-    public function injectWwwDir(\App\Controls\WwwDir $wwwDir){
+
+    /**
+     * @param WwwDir $wwwDir
+     */
+    public function injectWwwDir(WwwDir $wwwDir){
         $this->wwwDir = $wwwDir;
     }
     
@@ -42,22 +51,18 @@ class RankPresenter extends Base\AdminPresenter {
         $form->addInteger('rank_from', 'Rank from:');
         $form->addInteger('rank_to', 'Rank to:');
         $form->addUpload('rank_file', 'Rank file:');
-
-        $checkbox = $form->addCheckbox('rank_special', 'Rank special:');
-        /*
-          $checkbox->addConditionOn($form['rank_from'], \Nette\Application\UI\Form::FILLED)
-          ->addRule(\Nette\Application\UI\Form::BLANK, 'Post from have to be empty', $form['rank_from']);
-          $checkbox->addConditionOn($form['rank_to'], \Nette\Application\UI\Form::FILLED)
-          ->addRule(\Nette\Application\UI\Form::BLANK, 'Post to have to be empty', $form['rank_to']);
-         * 
-         */
+        $form->addCheckbox('rank_special', 'Rank special:');
 
         $form->onValidate[] = [$this, 'onValidate'];
 
         return $this->addSubmitB($form);
     }
 
-    public function onValidate(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function onValidate(Form $form, ArrayHash $values) {
         if ($values->rank_special) {
             if ($values->rank_to || $values->rank_from) {
                 $form->addError('Special rank have not Rank from and Rank to');
@@ -77,7 +82,11 @@ class RankPresenter extends Base\AdminPresenter {
         }
     }
 
-    public function editFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values) {
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function editFormSuccess(Form $form, ArrayHash $values) {
         $move = $this->getManager()->moveRank($values->rank_file, $this->getParameter('id'), $this->wwwDir->wwwDir);
 
         if ($move !== RanksManager::NOT_UPLOADED) {

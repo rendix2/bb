@@ -6,6 +6,7 @@ use App\Authenticator;
 use App\Controls\BootstrapForm;
 use App\Controls\ChangePasswordControl;
 use App\Controls\DeleteAvatarControl;
+use App\Controls\WwwDir;
 use App\Models\ForumsManager;
 use App\Models\GroupsManager;
 use App\Models\LanguagesManager;
@@ -59,7 +60,7 @@ class UserPresenter extends Base\AdminPresenter
         parent::__construct($manager);
     }
     
-    public function injectWwwDir(\App\Controls\WwwDir $wwwDir){
+    public function injectWwwDir(WwwDir $wwwDir){
         $this->wwwDir = $wwwDir;
     }
 

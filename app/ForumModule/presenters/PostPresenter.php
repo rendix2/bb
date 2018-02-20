@@ -6,8 +6,11 @@ use App\Controls\BootstrapForm;
 use App\Controls\PaginatorControl;
 use App\Models\ForumsManager;
 use App\Models\PostsManager;
+use App\Models\RanksManager;
+use App\Models\ReportsManager;
 use App\Models\ThanksManager;
 use App\Models\TopicsManager;
+use App\Models\TopicWatchManager;
 use App\Models\UsersManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -40,11 +43,20 @@ class PostPresenter extends Base\ForumPresenter
      * @var TopicsManager $topicsManager
      */
     private $topicsManager;
-    
+
+    /**
+     * @var RanksManager $rankManager
+     */
     private $rankManager;
-    
+
+    /**
+     * @var TopicWatchManager $topicWatchManager
+     */
     private $topicWatchManager;
-    
+
+    /**
+     * @var ReportsManager $reportManager
+     */
     private $reportManager;
 
     /**
@@ -85,21 +97,35 @@ class PostPresenter extends Base\ForumPresenter
     public function injectUsersManager(UsersManager $usersManager)
     {
         $this->userManager = $usersManager;
-    }    
-    
-    public function injectRanksManager(\App\Models\RanksManager $rankManager){
+    }
+
+    /**
+     * @param RanksManager $rankManager
+     */
+    public function injectRanksManager(RanksManager $rankManager){
         $this->rankManager = $rankManager;
     }
-    
-    public function injectTopicsWatchManager(\App\Models\TopicWatchManager $topicWatchManager){
+
+    /**
+     * @param TopicWatchManager $topicWatchManager
+     */
+    public function injectTopicsWatchManager(TopicWatchManager $topicWatchManager){
         $this->topicWatchManager =  $topicWatchManager;
-    } 
-    
-    public function injectReportManager(\App\Models\ReportsManager $reportManager){
+    }
+
+    /**
+     * @param ReportsManager $reportManager
+     */
+    public function injectReportManager(ReportsManager $reportManager){
         $this->reportManager = $reportManager;
     }
 
-        public function actionStopWatchTopic($forum_id, $topic_id, $page){
+    /**
+     * @param $forum_id
+     * @param $topic_id
+     * @param $page
+     */
+    public function actionStopWatchTopic($forum_id, $topic_id, $page){
         $res = $this->topicWatchManager->fullDelete($topic_id, $this->getUser()->getId());
         
         if ($res){
@@ -108,7 +134,12 @@ class PostPresenter extends Base\ForumPresenter
         
         $this->redirect('Post:all', $forum_id, $topic_id, $page);
     }
-    
+
+    /**
+     * @param $forum_id
+     * @param $topic_id
+     * @param $page
+     */
     public function actionStartWatchTopic($forum_id, $topic_id, $page){
        $res = $this->topicWatchManager->addByLeft($topic_id, [$this->getUser()->getId()]);
         
@@ -117,12 +148,13 @@ class PostPresenter extends Base\ForumPresenter
         }
         
         $this->redirect('Post:all', $forum_id, $topic_id, $page);
-    }    
-    
+    }
+
     /**
      * @param int $forum_id
      * @param int $topic_id
      * @param int $post_id
+     * @param int    $page
      */
     public function actionDeletePost($forum_id, $topic_id, $post_id, $page)
     {
@@ -302,11 +334,20 @@ class PostPresenter extends Base\ForumPresenter
 
         $this['editTopicForm']->setDefaults($topic);
     }
-    
+
+    /**
+     * @param $topic_id
+     */
     public function renderWatchers($topic_id){
         $this->template->watchers = $this->topicWatchManager->getByLeftJoined($topic_id);
     }
-    
+
+    /**
+     * @param $forum_id
+     * @param $topic_id
+     * @param $post_id
+     * @param $page
+     */
     public function renderReport($forum_id, $topic_id, $post_id, $page){
         
     }
@@ -340,7 +381,10 @@ class PostPresenter extends Base\ForumPresenter
 
         return $form;
     }
-    
+
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentReportForm()
     {
         $form = $this->getBootStrapForm();
@@ -351,7 +395,10 @@ class PostPresenter extends Base\ForumPresenter
         
         return $form;        
     }
-    
+
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentFastReply(){
         $form = $this->getBootStrapForm();
         
@@ -362,7 +409,11 @@ class PostPresenter extends Base\ForumPresenter
         $form->onSuccess[] = [$this, 'fastReplySuccess'];
         return $form;
     }
-    
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
     public function fastReplySuccess(Form $form, ArrayHash $values){
         $forum_id = $this->getParameter('forum_id');
         $topic_id = $this->getParameter('topic_id');        
@@ -381,6 +432,10 @@ class PostPresenter extends Base\ForumPresenter
         $this->redirect('Post:all', $forum_id, $topic_id, $page);        
     }
 
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
     public function reportFormSuccess(Form $form, ArrayHash $values){
         $forum_id = $this->getParameter('forum_id');
         $topic_id = $this->getParameter('topic_id');

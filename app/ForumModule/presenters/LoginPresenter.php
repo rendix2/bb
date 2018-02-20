@@ -49,7 +49,7 @@ class LoginPresenter extends BasePresenter
             $user = $this->getUser();
             $user->login($values->user_name, $values->user_password);
             $user->setExpiration('1 hour');
-            $this->flashMessage('Successfuly logged in.', self::FLASH_MESSAGE_SUCCESS);
+            $this->flashMessage('Successfully logged in.', self::FLASH_MESSAGE_SUCCESS);
             $this->restoreRequest($this->backlink);
             $this->redirect('Index:default');
         } catch (AuthenticationException $e) {

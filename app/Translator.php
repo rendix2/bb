@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Controls\AppDir;
 use Nette\InvalidArgumentException;
 use Nette\Localization\ITranslator;
 
@@ -16,7 +17,7 @@ class Translator implements ITranslator {
     private $lang;
     private $tr;
 
-    public function __construct(\App\Controls\AppDir $appDir, $module, $lang) {
+    public function __construct(AppDir $appDir, $module, $lang) {
         $this->module = $module;
         $this->lang = $lang;
         $separator = DIRECTORY_SEPARATOR;

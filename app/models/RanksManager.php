@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Nette\Http\FileUpload;
+use Nette\Utils\FileSystem;
 
 /**
  * Description of RanksManager
@@ -14,9 +15,10 @@ class RanksManager extends Crud\CrudManager
     const RANK_FOLDER = 'ranks';
     
     const NOT_UPLOADED = -5;
-    
+
     /**
      * @param FileUpload $file
+     * @param int        $id
      * @param string     $wwwDir
      *
      * @return string
@@ -45,7 +47,7 @@ class RanksManager extends Crud\CrudManager
         $separator = DIRECTORY_SEPARATOR;
         
         if ($rank){                                      
-            \Nette\Utils\FileSystem::delete($wwwDir.$separator.self::RANK_FOLDER.$separator.$rank->rank_file);
+            FileSystem::delete($wwwDir.$separator.self::RANK_FOLDER.$separator.$rank->rank_file);
         }       
     }
     
