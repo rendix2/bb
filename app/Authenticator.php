@@ -69,7 +69,7 @@ class Authenticator implements IAuthenticator {
         }
         
         $this->userManager->update($userData->user_id, ArrayHash::from(['user_last_login_time' =>time()]));
-
+       
         return new Identity($userData->user_id, self::ROLES[$userData->user_role_id], ['user_name' => $userData->user_name, 'lang_file_name' => $langData->lang_file_name, 'user_last_login_time' => $userData->user_last_login_time]);
     }
 

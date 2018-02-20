@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Dibi\Row;
+use dibi;
 
 /**
  * Class CategoriesManager
@@ -19,7 +20,7 @@ class CategoriesManager extends Crud\CrudManager
     public function getByForumId($forum_id)
     {
         return $this->dibi->select('*')
-                          ->from(self::CATEGORIES_TABLE)
+                          ->from($this->getTable())
                           ->as('c')
                           ->leftJoin(self::FORUM_TABLE)
                           ->as('f')
@@ -27,15 +28,28 @@ class CategoriesManager extends Crud\CrudManager
                           ->where('[f.forum_id] = %i', $forum_id)
                           ->fetch();
     }
-
-    /**
+    
+     /**
      * @return array
      */
-    public function getForSelect()
+    public function getActiveCategories()
     {
-        return $this->dibi->select('category_id, category_name')
+        return $this->dibi->select('*')
                           ->from($this->getTable())
-                          ->fetchPairs('category_id', 'category_name');
+                          ->where('[category_active] = %i', 1)
+                          ->orderBy('category_order', dibi::ASC)
+                          ->fetchAll();
     }
-
+    
+    public function getActiveCategoriesCached(){
+        $key    = 'ActiveCategories';
+        $cache  = new \Nette\Caching\Cache($this->getStorage(), $this->getTable()); 
+        $cached = $cache->load($key);
+               
+        if ( !$cached ){
+            $cache->save($key, $cached = $this->getActiveCategories());
+        }
+        
+        return $cached;        
+    }
 }

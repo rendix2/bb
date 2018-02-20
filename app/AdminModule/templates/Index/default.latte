@@ -1,3 +1,34 @@
 {block content}
+<div class="col-sm-12 main">
+<span>Count of logged in users: {$countLogged}
+    
 
+    
+    {if $countLogged <= $maxLogged} 
+        <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+            <thead>
+                <tr>
+                    <th>{_user_id}</th>
+                    <th>{_user_name}</th>
+                    <th colspan="3">{_user_sessions_time_from}</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                {foreach $loggedUsers as $userData}
+                    <tr>
+                        <td>{$userData->user_id}</td>
+                        <td>
+                            <a href="{link User:edit, $userData->user_id}">{$userData->user_name}</a>
+                        </td>
+                        <td>{$userData->session_from|date:'%d.%m.%Y %H:%M:%S'}</td>
+                        <td>{time()-3600-$userData->session_from|date:'%H:%M:%S'}</td>
+                        <td>{$userData->session_last_activity-3600-$userData->session_from|date:'%H:%M:%S'}</td>
+                    </tr>
+                    {/foreach}
+            </tbody>    
+        </table>
+    {/if}
+
+</div>
 {/block}

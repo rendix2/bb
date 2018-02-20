@@ -65,6 +65,8 @@ class IndexPresenter extends Base\ForumPresenter
      * @var UsersManager $userManager
      */
     private $userManager;
+    
+    private $categoriesManager;
 
     /**
      * IndexPresenter constructor.
@@ -120,6 +122,10 @@ class IndexPresenter extends Base\ForumPresenter
     public function injectUserManager(UsersManager $userManager){
         $this->userManager = $userManager;
     }
+    
+    public function injectCategoriesManager(\App\Models\CategoriesManager $categoriesManager){
+        $this->categoriesManager = $categoriesManager;
+    }
 
     /**
      * @param $category_id
@@ -139,8 +145,8 @@ class IndexPresenter extends Base\ForumPresenter
      *
      */
     public function renderDefault()
-    {
-        $categories = $this->getManager()->getActiveCategories();
+    {        
+        $categories = $this->categoriesManager->getActiveCategoriesCached();
         $result     = [];
         $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
 

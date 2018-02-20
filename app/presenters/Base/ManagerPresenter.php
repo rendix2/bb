@@ -10,24 +10,31 @@ use Nette\Security\IUserStorage;
  *
  * @author rendi
  */
-abstract class ManagerPresenter extends BasePresenter
-{
+abstract class ManagerPresenter extends BasePresenter {
 
     /**
      *
      * @var Manager $manager
      */
     private $manager;
+    private $sessionManager;
 
     /**
      *
      * @param Manager $manager
      */
-    public function __construct(Manager $manager)
-    {
+    public function __construct(Manager $manager) {
         parent::__construct();
 
         $this->manager = $manager;
+    }
+
+    public function injectSessionsManager(\App\Models\SessionsManager $sessionManager) {
+        $this->sessionManager = $sessionManager;
+    }
+
+    public function getSessionManager() {
+        return $this->sessionManager;
     }
 
     /**
@@ -35,20 +42,21 @@ abstract class ManagerPresenter extends BasePresenter
      * @return Manager $manager
      *
      */
-    protected function getManager()
-    {
+    protected function getManager() {
         return $this->manager;
     }
 
-    public function startup()
-    {
+    public function startup() {
         parent::startup();
 
         $user = $this->getUser();
 
-        if (!$this->user->isLoggedIn()) {
+        if ($user->isLoggedIn()) {            
+            $this->sessionManager->updateByUserId($this->getUser()->getId(), \Nette\Utils\ArrayHash::from(['session_last_activity' => time()]));
+        } else {
             if ($user->logoutReason === IUserStorage::INACTIVITY) {
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
+                $this->sessionManager->deleteBySessionId($this->getSession()->getId());
             }
             $this->redirect(':Forum:Login:default', ['backlink' => $this->storeRequest()]);
         }

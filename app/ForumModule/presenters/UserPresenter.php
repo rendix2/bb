@@ -112,7 +112,7 @@ class UserPresenter extends Base\ForumPresenter
     public function injectThankManager(ThanksManager $thanksManager){
         $this->thanksManager = $thanksManager;        
     }
-
+    
     /**
      * @param Form      $form
      * @param ArrayHash $values
@@ -158,8 +158,9 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function actionLogout()
     {
+        $this->getSessionManager()->deleteBySessionId($this->getSession()->getId());       
         $this->getUser()->logout();
-
+        
         $this->flashMessage('Successfully logged out. ', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('Index:default');
     }

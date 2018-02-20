@@ -14,18 +14,6 @@ class IndexManager extends Manager
 {
 
     /**
-     * @return array
-     */
-    public function getActiveCategories()
-    {
-        return $this->dibi->select('*')
-                          ->from(self::CATEGORIES_TABLE)
-                          ->where('[category_active] = %i', 1)
-                          ->orderBy('category_order', dibi::ASC)
-                          ->fetchAll();
-    }
-
-    /**
      * @param int $category_id
      *
      * @return array

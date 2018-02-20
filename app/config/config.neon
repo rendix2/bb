@@ -94,6 +94,11 @@ services:
         inject: yes
         setup:
                 - factory
+    SessionsManager:
+        factory: App\Models\SessionsManager
+        inject: yes
+        setup:
+                - factory
     authenticator: App\Authenticator
     authorizator: App\Authorizator
     WwwDir:

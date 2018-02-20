@@ -26,6 +26,8 @@ class LoginPresenter extends BasePresenter
      * @var Authenticator $authenticator
      */
     private $authenticator;
+    
+    private $sessionManager;
 
     /**
      * LoginPresenter constructor.
@@ -38,6 +40,10 @@ class LoginPresenter extends BasePresenter
 
         $this->authenticator = $authenticator;
     }
+    
+    public function injectSessionManager(\App\Models\SessionsManager $sessionManager){
+        $this->sessionManager = $sessionManager;
+    }
 
     /**
      * @param Form      $form
@@ -48,6 +54,7 @@ class LoginPresenter extends BasePresenter
         try {
             $user = $this->getUser();
             $user->login($values->user_name, $values->user_password);
+            $this->sessionManager->add(ArrayHash::from(['session_key' => $this->getSession()->getId(), 'session_user_id' => $this->getUser()->getId(), 'session_from' => time()]));
             $user->setExpiration('1 hour');
             $this->flashMessage('Successfully logged in.', self::FLASH_MESSAGE_SUCCESS);
             $this->restoreRequest($this->backlink);

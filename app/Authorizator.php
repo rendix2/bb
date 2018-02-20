@@ -35,7 +35,7 @@ class Authorizator {
 
     private function defineRoles() {
         $this->acl->addRole('guest');
-        $this->acl->addRole('registered', 'geust');
+        $this->acl->addRole('registered', 'guest');
         $this->acl->addRole('moderator', 'registered');
         $this->acl->addRole('juniorAdmin', 'moderator');
         $this->acl->addRole('admin', 'juniorAdmin');

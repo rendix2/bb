@@ -225,6 +225,10 @@ abstract class CrudManager extends Manager
                                ->where('[TABLE_NAME] = %s', $this->table)
                                ->where('[COLUMN_KEY] = %s', 'PRI')
                                ->fetchSingle();
+            
+            if (!$data){
+                \Tracy\Debugger::log('Primary key of table:'.$this->table. ' was not found!', \Tracy\ILogger::CRITICAL);               
+            }
 
             $this->cache->save('primaryKey_' . $this->table, $cachedPrimaryKey = $data, [
                 Cache::EXPIRE => '168 hours',

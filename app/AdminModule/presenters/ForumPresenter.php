@@ -149,7 +149,7 @@ class ForumPresenter extends Base\AdminPresenter
         $form->addGroup('forum');
         $form->addText('forum_name', 'Forum name:')->setRequired(true);
         $form->addText('forum_description', 'Forum description:')->setRequired(true);
-        $form->addSelect('forum_category_id', 'Forum category:', $this->categoryManager->getForSelect())
+        $form->addSelect('forum_category_id', 'Forum category:', $this->categoryManager->getAllPairsCached('category_name'))
              ->setRequired(true)
              ->setTranslator(null);
         $form->addCheckbox('forum_active', 'Forum active:');
