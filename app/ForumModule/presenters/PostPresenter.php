@@ -55,7 +55,7 @@ class PostPresenter extends Base\ForumPresenter
     private $topicWatchManager;
 
     /**
-     * @var ReportsManager $reportManager
+     * @var ReportsManager $
      */
     private $reportManager;
 
@@ -121,9 +121,9 @@ class PostPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $forum_id
-     * @param $topic_id
-     * @param $page
+     * @param int $forum_id
+     * @param int $topic_id
+     * @param int $page
      */
     public function actionStopWatchTopic($forum_id, $topic_id, $page){
         $res = $this->topicWatchManager->fullDelete($topic_id, $this->getUser()->getId());
@@ -136,9 +136,9 @@ class PostPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $forum_id
-     * @param $topic_id
-     * @param $page
+     * @param int $forum_id
+     * @param int $topic_id
+     * @param int $page
      */
     public function actionStartWatchTopic($forum_id, $topic_id, $page){
        $res = $this->topicWatchManager->addByLeft($topic_id, [$this->getUser()->getId()]);
@@ -336,17 +336,17 @@ class PostPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $topic_id
+     * @param int $topic_id
      */
     public function renderWatchers($topic_id){
         $this->template->watchers = $this->topicWatchManager->getByLeftJoined($topic_id);
     }
 
     /**
-     * @param $forum_id
-     * @param $topic_id
-     * @param $post_id
-     * @param $page
+     * @param int $forum_id
+     * @param int $topic_id
+     * @param int $post_id
+     * @param int $page
      */
     public function renderReport($forum_id, $topic_id, $post_id, $page){
         

@@ -3,7 +3,9 @@
 namespace App\Presenters\Base;
 
 use App\Models\Manager;
+use App\Models\SessionsManager;
 use Nette\Security\IUserStorage;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of ManagerPresenter
@@ -17,6 +19,10 @@ abstract class ManagerPresenter extends BasePresenter {
      * @var Manager $manager
      */
     private $manager;
+
+    /**
+     * @var SessionsManager $sessionManager
+     */
     private $sessionManager;
 
     /**
@@ -29,10 +35,16 @@ abstract class ManagerPresenter extends BasePresenter {
         $this->manager = $manager;
     }
 
-    public function injectSessionsManager(\App\Models\SessionsManager $sessionManager) {
+    /**
+     * @param SessionsManager $sessionManager
+     */
+    public function injectSessionsManager(SessionsManager $sessionManager) {
         $this->sessionManager = $sessionManager;
     }
 
+    /**
+     * @return SessionsManager
+     */
     public function getSessionManager() {
         return $this->sessionManager;
     }
@@ -46,13 +58,16 @@ abstract class ManagerPresenter extends BasePresenter {
         return $this->manager;
     }
 
+    /**
+     *
+     */
     public function startup() {
         parent::startup();
 
         $user = $this->getUser();
 
         if ($user->isLoggedIn()) {            
-            $this->sessionManager->updateByUserId($this->getUser()->getId(), \Nette\Utils\ArrayHash::from(['session_last_activity' => time()]));
+            $this->sessionManager->updateByUserId($this->getUser()->getId(), ArrayHash::from(['session_last_activity' => time()]));
         } else {
             if ($user->logoutReason === IUserStorage::INACTIVITY) {
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');

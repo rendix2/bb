@@ -12,8 +12,14 @@ use Nette\Utils\FileSystem;
  */
 class RanksManager extends Crud\CrudManager
 {
+    /**
+     *
+     */
     const RANK_FOLDER = 'ranks';
-    
+
+    /**
+     *
+     */
     const NOT_UPLOADED = -5;
 
     /**
@@ -42,6 +48,10 @@ class RanksManager extends Crud\CrudManager
         }
     }
 
+    /**
+     * @param int $id
+     * @param string $wwwDir
+     */
     public function deletePreviousRankFile($id, $wwwDir){
         $rank = $this->getById($id);
         $separator = DIRECTORY_SEPARATOR;

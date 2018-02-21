@@ -20,7 +20,8 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendi
  */
-class TopicsManager extends Crud\CrudManager {
+class TopicsManager extends Crud\CrudManager
+{
 
     /**
      *
@@ -45,10 +46,10 @@ class TopicsManager extends Crud\CrudManager {
      * @var ForumsManager $forumManager
      */
     private $forumManager;
-    
+
     /**
      *
-     * @var TopicWatchManager $topicWatchManager 
+     * @var TopicWatchManager $topicWatchManager
      */
     private $topicWatchManager;
 
@@ -56,36 +57,54 @@ class TopicsManager extends Crud\CrudManager {
      *
      * @param Connection $dibi
      */
-    public function __construct(Connection $dibi) {
+    public function __construct(Connection $dibi)
+    {
         parent::__construct($dibi);
     }
 
     /**
-     * @param ForumsManager $forumManager
+     * @return Row|false
      */
-    public function injectForumManager(ForumsManager $forumManager) {
-        $this->forumManager = $forumManager;
+    public function getLastTopic()
+    {
+        return $this->dibi->query('SELECT * FROM [' . self::TOPICS_TABLE . '] WHERE [topic_id] = (SELECT MAX(topic_id) FROM [' . self::TOPICS_TABLE . '])')
+                          ->fetch();
     }
 
     /**
-     * @param UsersManager $userManager
+     * @param int $forum_id
+     *
+     * @return Row|false
      */
-    public function injectUserManager(UsersManager $userManager) {
-        $this->userManager = $userManager;
+    public function getLastTopicByForumId($forum_id)
+    {
+        return $this->dibi->query('SELECT * FROM [' . self::TOPICS_TABLE . '] WHERE [topic_id] = ( SELECT MAX(topic_id) FROM [' . self::TOPICS_TABLE . '] WHERE [topic_forum_id] = %i )', $forum_id)
+                          ->fetch();
     }
 
     /**
-     * @param ThanksManager $thanksManager
+     * @param int $forum_id
+     * @param int $topic_time
+     *
+     * @return array|mixed
      */
-    public function injectThankManager(ThanksManager $thanksManager) {
-        $this->thanksManager = $thanksManager;
-    }
+    public function getNewerTopics($forum_id, $topic_time)
+    {
+        $cache  = new Cache($this->storage, $this->getTable());
+        $key    = $forum_id . '-' . $topic_time;
+        $cached = $cache->load($key);
 
-    /**
-     * @param PostsManager $postManager
-     */
-    public function injectPostManager(PostsManager $postManager) {
-        $this->postManager = $postManager;
+        if (!isset($cached)) {
+            $cache->save($key, $cached = $this->dibi->select('*')
+                                                    ->from($this->getTable())
+                                                    ->where('[topic_forum_id] = %i', $forum_id)
+                                                    ->where('[topic_add_time] > %i', $topic_time)
+                                                    ->fetchAll(), [
+                Cache::EXPIRE => '2 hours',
+            ]);
+        }
+
+        return $cached;
     }
 
     /**
@@ -93,11 +112,12 @@ class TopicsManager extends Crud\CrudManager {
      *
      * @return Result|int
      */
-    public function add(ArrayHash $item_data) {
+    public function add(ArrayHash $item_data)
+    {
         $values = clone $item_data;
 
-        $values->topic_name = $item_data->post_title;
-        $values->topic_user_id = $item_data->post_user_id;
+        $values->topic_name     = $item_data->post_title;
+        $values->topic_user_id  = $item_data->post_user_id;
         $values->topic_forum_id = $item_data->post_forum_id;
 
         unset($values->post_title);
@@ -108,22 +128,23 @@ class TopicsManager extends Crud\CrudManager {
 
         $topic_id = parent::add($values);
 
-        $this->topicWatchManager = new TopicWatchManager($this->dibi, $this, $this->userManager, self::TOPIC_WATCH_TABLE);        
+        $this->topicWatchManager = new TopicWatchManager($this->dibi, $this, $this->userManager, self::TOPIC_WATCH_TABLE);
         $this->topicWatchManager->add([$values->topic_user_id], $topic_id);
-        
+
         $item_data->post_topic_id = $topic_id;
         $this->postManager->add($item_data);
         $this->userManager->update($values->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1']));
-        
+
         return $topic_id;
     }
 
     /**
      * @param int $topic_id
      *
-     * @return Result|int|void
+     * @return Result|int
      */
-    public function delete($topic_id) {
+    public function delete($topic_id)
+    {
         $topic = $this->getById($topic_id);
 
         $thanks = $this->thanksManager->getThanksByTopicId($topic_id);
@@ -151,49 +172,44 @@ class TopicsManager extends Crud\CrudManager {
      *
      * @return array
      */
-    public function findTopicsByTopicName($topic_name) {
-        return $this->dibi->select('*')
-                        ->from($this->getTable())
-                        ->where('MATCH([topic_name]) AGAINST (%s IN BOOLEAN MODE)', $topic_name)
-                        ->fetchAll();
-    }
-
-    /**
-     * @param int $forum_id
-     *
-     * @return Row|false
-     */
-    public function getLastTopicByForumId($forum_id) {
-        return $this->dibi->query('SELECT * FROM [' . self::TOPICS_TABLE . '] WHERE [topic_id] = ( SELECT MAX(topic_id) FROM [' . self::TOPICS_TABLE . '] WHERE [topic_forum_id] = %i )', $forum_id)->fetch();
-    }
-    
-
-    /**
-     * @return Row|false
-     */
-    public function getLastTopic()
+    public function findTopicsByTopicName($topic_name)
     {
-        return $this->dibi->query('SELECT * FROM ['.self::TOPICS_TABLE.'] WHERE [topic_id] = (SELECT MAX(topic_id) FROM ['.self::TOPICS_TABLE.'])')->fetch();
+        return $this->dibi->select('*')
+                          ->from($this->getTable())
+                          ->where('MATCH([topic_name]) AGAINST (%s IN BOOLEAN MODE)', $topic_name)
+                          ->fetchAll();
     }
 
     /**
-     * @param int $forum_id
-     * @param int $topic_time
-     *
-     * @return array|mixed
+     * @param ForumsManager $forumManager
      */
-    public function getNewerTopics($forum_id, $topic_time){
-        $cache  = new Cache($this->storage,$this->getTable());
-        $key    = $forum_id.'-'.$topic_time;
-        $cached = $cache->load($key);          
-        
-        if (!isset($cached)){
-            $cache->save($key, $cached = $this->dibi->select('*')->from($this->getTable())->where('[topic_forum_id] = %i', $forum_id)->where('[topic_add_time] > %i', $topic_time)->fetchAll(), [
-                Cache::EXPIRE => '2 hours',
-            ]);
-        }
-        
-        return $cached;
+    public function injectForumManager(ForumsManager $forumManager)
+    {
+        $this->forumManager = $forumManager;
     }
-    
+
+    /**
+     * @param PostsManager $postManager
+     */
+    public function injectPostManager(PostsManager $postManager)
+    {
+        $this->postManager = $postManager;
+    }
+
+    /**
+     * @param ThanksManager $thanksManager
+     */
+    public function injectThankManager(ThanksManager $thanksManager)
+    {
+        $this->thanksManager = $thanksManager;
+    }
+
+    /**
+     * @param UsersManager $userManager
+     */
+    public function injectUserManager(UsersManager $userManager)
+    {
+        $this->userManager = $userManager;
+    }
+
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Dibi\Row;
 use dibi;
+use Nette\Caching\Cache;
 
 /**
  * Class CategoriesManager
@@ -40,10 +41,13 @@ class CategoriesManager extends Crud\CrudManager
                           ->orderBy('category_order', dibi::ASC)
                           ->fetchAll();
     }
-    
+
+    /**
+     * @return array|mixed
+     */
     public function getActiveCategoriesCached(){
         $key    = 'ActiveCategories';
-        $cache  = new \Nette\Caching\Cache($this->getStorage(), $this->getTable()); 
+        $cache  = new Cache($this->getStorage(), $this->getTable());
         $cached = $cache->load($key);
                
         if ( !$cached ){

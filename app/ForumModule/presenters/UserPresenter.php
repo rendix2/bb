@@ -166,8 +166,8 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $user_id
-     * @param $key
+     * @param int $user_id
+     * @param string $key
      */
     public function actionActivate($user_id, $key){
         // after register
@@ -361,7 +361,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $user_id
+     * @param int $user_id
      */
     public function renderWatches($user_id){
         if ( !is_numeric($user_id) ){

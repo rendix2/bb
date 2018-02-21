@@ -2,6 +2,7 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Models\IndexManager;
 use App\Models\PostsManager;
@@ -65,7 +66,10 @@ class IndexPresenter extends Base\ForumPresenter
      * @var UsersManager $userManager
      */
     private $userManager;
-    
+
+    /**
+     * @var CategoriesManager $categoriesManager
+     */
     private $categoriesManager;
 
     /**
@@ -122,13 +126,16 @@ class IndexPresenter extends Base\ForumPresenter
     public function injectUserManager(UsersManager $userManager){
         $this->userManager = $userManager;
     }
-    
-    public function injectCategoriesManager(\App\Models\CategoriesManager $categoriesManager){
+
+    /**
+     * @param CategoriesManager $categoriesManager
+     */
+    public function injectCategoriesManager(CategoriesManager $categoriesManager){
         $this->categoriesManager = $categoriesManager;
     }
 
     /**
-     * @param $category_id
+     * @param int $category_id
      */
     public function renderCategory($category_id)
     {

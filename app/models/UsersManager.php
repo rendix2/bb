@@ -23,7 +23,17 @@ class UsersManager extends Crud\CrudManager
      *
      */
     const NOT_UPLOADED = -5;
-    
+
+    /**
+     * @param string $email
+     *
+     * @return mixed
+     */
+    public function getByEmail($email)
+    {
+        return $this->dibi->select('1')->from($this->getTable())->where('[user_email] = %s', $email)->fetchSingle();
+    }
+
     /**
      * @param int $lang_id
      *
@@ -98,6 +108,15 @@ class UsersManager extends Crud\CrudManager
     }
 
     /**
+     * @return Row|false
+     */
+    public function getLastUser()
+    {
+        return $this->dibi->query('SELECT * FROM [' . self::USERS_TABLE . '] WHERE [user_id] = (SELECT MAX(user_id) FROM [' . self::USERS_TABLE . '])')
+                          ->fetch();
+    }
+
+    /**
      * @param int $user_id
      *
      * @return array
@@ -152,6 +171,46 @@ class UsersManager extends Crud\CrudManager
     }
 
     /**
+     * @param int    $user_id
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function canBeActivated($user_id, $key)
+    {
+        return $this->dibi->select('1')
+                          ->from($this->getTable())
+                          ->where('[' . $this->getPrimaryKey() . '] = %i', $user_id)
+                          ->where('user_activation_key')
+                          ->where('[user_active] = %i', 0)
+                          ->fetchSingle();
+    }
+
+    /**
+     * @param int $item_id
+     */
+    public function delete($item_id)
+    {
+        parent::delete($item_id);
+
+        // TODO
+    }
+
+    /**
+     * @param int    $id
+     * @param string $wwwDir
+     */
+    public function deletePreviousRankFile($id, $wwwDir)
+    {
+        $user      = $this->getById($id);
+        $separator = DIRECTORY_SEPARATOR;
+
+        if ($user) {
+            FileSystem::delete($wwwDir . $separator . self::AVATAR_FOLDER . $separator . $user->user_avatar);
+        }
+    }
+
+    /**
      * @param string $user_name
      *
      * @return array
@@ -175,7 +234,7 @@ class UsersManager extends Crud\CrudManager
     {
         if ($file->ok) {
             $this->deletePreviousRankFile($id, $wwwDir);
-            
+
             $extension = self::getFileExtension($file->name);
             $hash      = self::getRandomString();
             $separator = DIRECTORY_SEPARATOR;
@@ -184,59 +243,9 @@ class UsersManager extends Crud\CrudManager
             $file->move($wwwDir . $separator . 'avatars' . $separator . $name);
 
             return $name;
-        }
-        else{
+        } else {
             return self::NOT_UPLOADED;
         }
-    }
-
-    /**
-     * @param int $id
-     * @param string $wwwDir
-     */
-    public function deletePreviousRankFile($id, $wwwDir){
-        $user = $this->getById($id);
-        $separator = DIRECTORY_SEPARATOR;
-               
-        if ($user){            
-            FileSystem::delete($wwwDir.$separator.self::AVATAR_FOLDER.$separator.$user->user_avatar);
-        }       
-    }
-
-    /**
-     * @param int $user_id
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function canBeActivated($user_id, $key){
-        return $this->dibi->select('1')->from($this->getTable())->where('['.$this->getPrimaryKey().'] = %i', $user_id)->where('user_activation_key')->where('[user_active] = %i', 0)->fetchSingle();
-    }
-
-    /**
-     * @param $email
-     *
-     * @return mixed
-     */
-    public function getByEmail($email){
-        return $this->dibi->select('1')->from($this->getTable())->where('[user_email] = %s', $email)->fetchSingle();
-    }
-    
-    /**
-     * @return Row|false
-     */
-    public function getLastUser()
-    {
-        return $this->dibi->query('SELECT * FROM ['.self::USERS_TABLE.'] WHERE [user_id] = (SELECT MAX(user_id) FROM ['.self::USERS_TABLE.'])')->fetch();
-    }
-
-    /**
-     * @param int $item_id
-     */
-    public function delete($item_id) {
-        parent::delete($item_id);
-        
-         // TODO
     }
 
 }

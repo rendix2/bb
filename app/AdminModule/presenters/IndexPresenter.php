@@ -3,6 +3,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\Controls\AppDir;
+use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
 use App\Translator;
 
@@ -13,13 +14,19 @@ use App\Translator;
  */
 class IndexPresenter extends BasePresenter
 {
+    /**
+     *
+     */
     const MAX_LOGGED_IN_USERS_TO_SHOW = 200;
     
     /**
      * @var AppDir $appDir
      */
     private $appDir;
-    
+
+    /**
+     * @var SessionsManager $sessionsManager
+     */
     private $sessionsManager;
 
     /**
@@ -28,8 +35,11 @@ class IndexPresenter extends BasePresenter
     public function injectAppDir(AppDir $appDir){
         $this->appDir = $appDir;
     }
-    
-    public function injectSessionManager(\App\Models\SessionsManager $sessionManager){
+
+    /**
+     * @param SessionsManager $sessionManager
+     */
+    public function injectSessionManager(SessionsManager $sessionManager){
         $this->sessionsManager = $sessionManager;
     }
     

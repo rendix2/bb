@@ -9,7 +9,8 @@ use Dibi\Connection;
  *
  * @author rendi
  */
-class Users2ForumsManager extends MNManager{
+class Users2ForumsManager extends MNManager
+{
 
     /**
      * Users2ForumsManager constructor.
@@ -18,8 +19,9 @@ class Users2ForumsManager extends MNManager{
      * @param UsersManager  $left
      * @param ForumsManager $right
      */
-    public function __construct(Connection $dibi, UsersManager $left, ForumsManager $right) {
+    public function __construct(Connection $dibi, UsersManager $left, ForumsManager $right)
+    {
         parent::__construct($dibi, $left, $right);
     }
-    
+
 }

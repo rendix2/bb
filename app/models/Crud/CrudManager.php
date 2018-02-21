@@ -12,6 +12,8 @@ use Dibi\Row;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Utils\ArrayHash;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 /**
  * Description of CrudManager
@@ -227,7 +229,7 @@ abstract class CrudManager extends Manager
                                ->fetchSingle();
             
             if (!$data){
-                \Tracy\Debugger::log('Primary key of table:'.$this->table. ' was not found!', \Tracy\ILogger::CRITICAL);               
+                Debugger::log('Primary key of table:'.$this->table. ' was not found!', ILogger::CRITICAL);
             }
 
             $this->cache->save('primaryKey_' . $this->table, $cachedPrimaryKey = $data, [

@@ -8,7 +8,7 @@
 
 namespace App\Controls;
 
-use App\Cpontrols\Checkbox as MyCheckBox;
+use App\Controls\Checkbox as MyCheckBox;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IContainer;
 use Nette\Forms\Controls\Button;

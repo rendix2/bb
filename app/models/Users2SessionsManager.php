@@ -9,10 +9,19 @@ use Dibi\Connection;
  *
  * @author rendi
  */
-class Users2SessionsManager extends MNManager {
-    
-    public function __construct(Connection $dibi, UsersManager $left, SessionsManager $right) {
+class Users2SessionsManager extends MNManager
+{
+
+    /**
+     * Users2SessionsManager constructor.
+     *
+     * @param Connection      $dibi
+     * @param UsersManager    $left
+     * @param SessionsManager $right
+     */
+    public function __construct(Connection $dibi, UsersManager $left, SessionsManager $right)
+    {
         parent::__construct($dibi, $left, $right);
     }
-    
+
 }

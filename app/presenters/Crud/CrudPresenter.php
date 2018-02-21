@@ -17,17 +17,34 @@ use Nette\Utils\ArrayHash;
 abstract class CrudPresenter extends ManagerPresenter
 {
 
+    /**
+     *
+     */
     const CACHE_KEY_PRIMARY_KEY = 'BBPrimaryKeys';
 
+    /**
+     * @var string $title
+     */
     private $title;
 
+    /**
+     * @return mixed
+     */
     abstract protected function createComponentEditForm();
 
+    /**
+     * CrudPresenter constructor.
+     *
+     * @param CrudManager $manager
+     */
     public function __construct(CrudManager $manager)
     {
         parent::__construct($manager);
     }
 
+    /**
+     * @return mixed
+     */
     public function getTitle()
     {
         $name  = explode(':', $this->getName());
@@ -37,6 +54,11 @@ abstract class CrudPresenter extends ManagerPresenter
         return $this->title ? $this->title : $name;
     }
 
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
     public function setTitle($title)
     {
         $this->title = $title;
@@ -44,21 +66,35 @@ abstract class CrudPresenter extends ManagerPresenter
         return $this;
     }
 
+    /**
+     * @return string string
+     */
     public function getTitleOnAdd()
     {
         return $this->title . ' add';
     }
 
+    /**
+     * @return string
+     */
     public function getTitleOnDefault()
     {
         return $this->title . ' list';
     }
 
+    /**
+     * @return string
+     */
     public function getTitleOnEdit()
     {
         return $this->title . ' edit';
     }
 
+    /**
+     * @param Form $form
+     *
+     * @return Form
+     */
     protected function addSubmit(Form $form)
     {
         $form->addSubmit('Send', 'Send');
@@ -70,6 +106,11 @@ abstract class CrudPresenter extends ManagerPresenter
         return $form;
     }
 
+    /**
+     * @param BootStrapForm $form
+     *
+     * @return BootStrapForm
+     */
     protected function addSubmitB(BootStrapForm $form)
     {
         $form->addSubmit('Send', 'Send');
@@ -81,6 +122,10 @@ abstract class CrudPresenter extends ManagerPresenter
         return $form;
     }
 
+    /**
+     * @param Form      $form   form
+     * @param ArrayHash $values values
+     */
     public function editFormSuccess(Form $form, ArrayHash $values)
     {
         $id = $this->getParameter('id');
@@ -101,11 +146,18 @@ abstract class CrudPresenter extends ManagerPresenter
         $this->redirect(':' . $this->getName() . ':default');
     }
 
+    /**
+     * @param Form      $form   form
+     * @param ArrayHash $values values
+     */
     public function onValidate(Form $form, ArrayHash $values)
     {
 
     }
 
+    /**
+     * @param int $id
+     */
     public function actionDelete($id)
     {
         if (!is_numeric($id)) {
@@ -123,6 +175,9 @@ abstract class CrudPresenter extends ManagerPresenter
         $this->redirect(':' . $this->getName() . ':default');
     }
 
+    /**
+     *
+     */
     public function renderDefault()
     {
         $items = $this->getManager()->getAllFluent();
@@ -137,6 +192,9 @@ abstract class CrudPresenter extends ManagerPresenter
         $this->template->countItems = $count; 
     }
 
+    /**
+     * @param int|null $id
+     */
     public function renderEdit($id = null)
     {
         if ($id) {

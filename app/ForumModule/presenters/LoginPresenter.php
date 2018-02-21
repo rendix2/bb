@@ -4,6 +4,7 @@ namespace App\ForumModule\Presenters;
 
 use App\Authenticator;
 use App\Controls\BootstrapForm;
+use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
@@ -26,7 +27,10 @@ class LoginPresenter extends BasePresenter
      * @var Authenticator $authenticator
      */
     private $authenticator;
-    
+
+    /**
+     * @var SessionsManager $sessionManager
+     */
     private $sessionManager;
 
     /**
@@ -40,8 +44,11 @@ class LoginPresenter extends BasePresenter
 
         $this->authenticator = $authenticator;
     }
-    
-    public function injectSessionManager(\App\Models\SessionsManager $sessionManager){
+
+    /**
+     * @param SessionsManager $sessionManager
+     */
+    public function injectSessionManager(SessionsManager $sessionManager){
         $this->sessionManager = $sessionManager;
     }
 

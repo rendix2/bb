@@ -47,7 +47,10 @@ class UserPresenter extends Base\AdminPresenter
      * @var Users2ForumsManager $users2Forums
      */
     private $users2Forums;
-    
+
+    /**
+     * @var WwwDir $wwwDir
+     */
     private $wwwDir;
 
     /**
@@ -59,7 +62,10 @@ class UserPresenter extends Base\AdminPresenter
     {
         parent::__construct($manager);
     }
-    
+
+    /**
+     * @param WwwDir $wwwDir
+     */
     public function injectWwwDir(WwwDir $wwwDir){
         $this->wwwDir = $wwwDir;
     }

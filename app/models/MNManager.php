@@ -278,7 +278,7 @@ abstract class MNManager extends Manager
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getCount(){
         return $this->dibi->select('COUNT(*)')->from($this->table)->fetchSingle();

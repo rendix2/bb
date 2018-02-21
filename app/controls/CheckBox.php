@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Cpontrols;
+namespace App\Controls;
 
 use Nette;
+use Nette\Forms\Controls\Checkbox as NetteCheckbox;
 use Nette\Forms\Rule;
 use Nette\Utils\Html;
 
@@ -11,7 +12,7 @@ use Nette\Utils\Html;
  * Check box control. Allows the user to select a true or false condition.
  * @property Rule $rules Description
  */
-class Checkbox extends \Nette\Forms\Controls\Checkbox
+class Checkbox extends NetteCheckbox
 {
     /** @var Html  wrapper element template */
     private $wrapper;

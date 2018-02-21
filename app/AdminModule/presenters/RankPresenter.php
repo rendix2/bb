@@ -16,6 +16,9 @@ use Nette\Utils\ArrayHash;
  */
 class RankPresenter extends Base\AdminPresenter {
 
+    /**
+     *
+     */
     const N = -1;
 
     /**

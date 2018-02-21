@@ -34,7 +34,10 @@ abstract class ForumPresenter extends ManagerPresenter
      * @var Authorizator $authorizator
      */
     private $authorizator;
-    
+
+    /**
+     * @var AppDir $appDir
+     */
     private $appDir;
 
     /**
@@ -73,11 +76,17 @@ abstract class ForumPresenter extends ManagerPresenter
     {
         $this->authorizator = $authorizator;
     }
-    
+
+    /**
+     * @param AppDir $appDir
+     */
     public function injectAppDir(AppDir $appDir){
         $this->appDir = $appDir;
     }
 
+    /**
+     *
+     */
     public function startup()
     {
         parent::startup();
@@ -88,6 +97,9 @@ abstract class ForumPresenter extends ManagerPresenter
         $this->getUser()->setAuthorizator($this->authorizator->getAcl());              
     }
 
+    /**
+     *
+     */
     public function beforeRender()
     {
         parent::beforeRender();

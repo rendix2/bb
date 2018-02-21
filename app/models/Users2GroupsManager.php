@@ -9,7 +9,8 @@ use Dibi\Connection;
  *
  * @author rendi
  */
-class Users2GroupsManager extends MNManager{
+class Users2GroupsManager extends MNManager
+{
 
     /**
      * Users2GroupsManager constructor.
@@ -18,7 +19,8 @@ class Users2GroupsManager extends MNManager{
      * @param UsersManager  $left
      * @param GroupsManager $right
      */
-    public function __construct(Connection $dibi, UsersManager $left, GroupsManager $right) {
+    public function __construct(Connection $dibi, UsersManager $left, GroupsManager $right)
+    {
         parent::__construct($dibi, $left, $right);
-    }  
+    }
 }

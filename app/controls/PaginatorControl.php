@@ -110,9 +110,9 @@ class PaginatorControl extends Control {
     /**
      * set count of items
      *
-     * @param $table
-     * @param $where
-     * @param $alias
+     * @param string $table
+     * @param string $where
+     * @param string $alias
      *
      * @api
      */
