@@ -91,5 +91,9 @@ class ForumsManager extends Crud\CrudManager
 
         return $result;
     }
+    
+    public function move(){
+        
+    }
 
 }

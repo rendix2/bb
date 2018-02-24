@@ -287,7 +287,7 @@ class PostPresenter extends Base\ForumPresenter
         } else {
             if (!$this->getUser()->isAllowed($forum_id, 'post_update')) {
                 $this->error('Not allowed');
-            }
+            }           
         }
         
         $topic = $this->topicsManager->getById($topic_id);
@@ -304,6 +304,10 @@ class PostPresenter extends Base\ForumPresenter
 
         if ($post_id) {
             $post = $this->getManager()->getById($post_id);
+            
+            if ( $post->post_locked ){
+                $this->error('Post is locked.');
+            }
         }
 
         $this['editPostForm']->setDefaults($post);
@@ -350,6 +354,10 @@ class PostPresenter extends Base\ForumPresenter
      */
     public function renderReport($forum_id, $topic_id, $post_id, $page){
         
+    }
+    
+    public function createComponentJumpToForum(){
+        return new \App\Controls\JumpToForumControl($this->forumManager);
     }
 
     /**

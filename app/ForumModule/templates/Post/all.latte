@@ -68,7 +68,9 @@
                 <tr>
                     <td>
                         {if $topic->topic_locked}
-                            <span>Locked</span>
+                            <span>Topic Locked</span>
+                        {elseif $post->post_locked}
+                            <span>Post Loced</span>
                         {else}
                             <a href="{link Post:editPost, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id}">{$post->post_id}</a>
                         {/if}
@@ -101,7 +103,7 @@
 
 <div class="col-sm-12">    
     <div class="float-right">
-        {control paginator}
+        {control paginator} {control jumpToForum}
     </div>
 </div>
 

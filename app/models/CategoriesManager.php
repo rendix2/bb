@@ -56,4 +56,8 @@ class CategoriesManager extends Crud\CrudManager
         
         return $cached;        
     }
+    
+    public function move(){
+        
+    }
 }

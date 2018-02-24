@@ -19,6 +19,8 @@ final class ForumPresenter extends Base\ForumPresenter
      * @var CategoriesManager $categoryManager
      */
     private $categoryManager;
+    
+    private $topicManager;
 
     /**
      *
@@ -35,6 +37,10 @@ final class ForumPresenter extends Base\ForumPresenter
     public function injectCategoryManager(CategoriesManager $categoryManager)
     {
         $this->categoryManager = $categoryManager;
+    }
+    
+    public function injectTopicManager(\App\Models\TopicsManager $topicManager){
+        $this->topicManager = $topicManager;
     }
 
     /**
@@ -84,5 +90,33 @@ final class ForumPresenter extends Base\ForumPresenter
         $this->template->topics      = $topics->fetchAll();
         $this->template->subForums   = $this->getManager()->getForumsByForumParentId($forum_id);
         $this->template->parentForum = $this->getManager()->getParentForumByForumId($forum_id);
+    }
+    
+    public function renderRules($forum_id){
+        if ( !is_numeric($forum_id) ){
+            $this->error('Parameter is not numeric');
+        }
+        
+        $forum = $this->getManager()->getById($forum_id);
+        
+        if (!$forum){
+            $this->error('Forum not found');
+        }
+        
+        $this->template->forum = $forum;
+    }
+    
+    public function renderTopics($forum_id){
+             if ( !is_numeric($forum_id) ){
+            $this->error('Parameter is not numeric');
+        }
+        
+        $forum = $this->getManager()->getById($forum_id);
+        
+        if (!$forum){
+            $this->error('Forum not found');
+        }
+        
+        $this->template->topics = $this->getManager()->getTopics($forum_id)->fetchAll();
     }
 }

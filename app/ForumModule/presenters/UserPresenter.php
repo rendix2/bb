@@ -308,6 +308,7 @@ class UserPresenter extends Base\ForumPresenter
         $this->template->topicCount     = $this->topicManager->getCountCached();
         $this->template->postCount      = $this->postManager->getCountCached();
         $this->template->watchesCount   = $this->topicWatchManager->getCountByRight($user_id);
+        $this->template->watchTotalCount = $this->topicWatchManager->getCount();
         $this->template->userData       = $userData;
         $this->template->rank           = $rankUser;
     }

@@ -4,14 +4,14 @@
     <div class="float-left">
         <h1>{_forum}: {$forum->forum_name}</h1>
     </div>
-     {if $user->isAllowed($presenter->getParameter('forum_id'), 'topic_add')}
-    <div class="float-right">
-        <a class="btn btn-primary" href="{link Post:editTopic, $presenter->getParameter('forum_id')}">
-            <i class="fa fa-plus" aria-hidden="true"></i>
-            {_topic_add_new}
-        </a>            
-    </div>
-        {/if}
+    {if $user->isAllowed($presenter->getParameter('forum_id'), 'topic_add')}
+        <div class="float-right">
+            <a class="btn btn-primary" href="{link Post:editTopic, $presenter->getParameter('forum_id')}">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                {_topic_add_new}
+            </a>            
+        </div>
+    {/if}
 </div>
 
 <div class="col-sm-12 main">
@@ -34,10 +34,15 @@
         {control paginator}
     </div>
 </div>
-   
+
 <div class="col-sm-12 main">
-    <a href="{link Index:default}">Index</a>&raquo;<a href="{link Forum:default $presenter->getParameter('forum_id')}">{$forum->forum_name}</a>
-    
+    <div class="float-left">
+        <a href="{link Index:default}">Index</a>&raquo;<a href="{link Forum:default $presenter->getParameter('forum_id')}">{$forum->forum_name}</a>
+    </div>
+    <div class="float-right">
+        <a href="{link Forum:rules $presenter->getParameter('forum_id')}">{_rules}</a>
+        <a href="{link Forum:topics $presenter->getParameter('forum_id')}">{_topics}</a>
+    </div>
     <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
         <thead>
             <tr>

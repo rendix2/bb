@@ -152,6 +152,7 @@ class ForumPresenter extends Base\AdminPresenter
         $form->addSelect('forum_category_id', 'Forum category:', $this->categoryManager->getAllPairsCached('category_name'))
              ->setRequired(true)
              ->setTranslator(null);
+        $form->addTextArea('forum_rules', 'Forum rules:');
         $form->addCheckbox('forum_active', 'Forum active:');
         $form->addCheckbox('forum_fast_reply', 'Forum enable fast reply:');
          
