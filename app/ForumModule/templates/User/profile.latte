@@ -15,16 +15,16 @@
             <tr>
                 <td>{$userData->user_name}</td>
                 <td>
-                    <a href="{link User:posts $userData->user_id}">{$userData->user_post_count}</a>/{$postCount} ({($userData->user_post_count/$postCount)*100|number:2})%
+                    {if $postCount}<a href="{link User:posts $userData->user_id}">{$userData->user_post_count}</a>/{$postCount} ({($userData->user_post_count/$postCount)*100|number:2})%{/if}
                 </td>
                 <td>
-                    <a href="{link User:topics $userData->user_id}">{$userData->user_topic_count}</a>/{$topicCount} ({($userData->user_topic_count/$topicCount)*100|number:2})%
+                    {if $topicCount}<a href="{link User:topics $userData->user_id}">{$userData->user_topic_count}</a>/{$topicCount} ({($userData->user_topic_count/$topicCount)*100|number:2})%{/if}
                 </td>
                 <td>
-                    <a href="{link User:thanks $userData->user_id}">{$userData->user_thank_count}</a>/{$thankCount} ({($userData->user_thank_count/$thankCount)*100|number:2})%
+                    {if $thankCount}<a href="{link User:thanks $userData->user_id}">{$userData->user_thank_count}</a>/{$thankCount} ({($userData->user_thank_count/$thankCount)*100|number:2})%{/if}
                 </td>
                 <td>
-                    <a href="{link User:watches $userData->user_id}">{$watchesCount}</a>/{$watchTotalCount} ({($watchesCount/$watchTotalCount)*100|number:2})%
+                    {if $watchTotalCount}<a href="{link User:watches $userData->user_id}">{$userData->user_watch_count}</a>/{$watchTotalCount} ({($userData->user_watch_count/$watchTotalCount)*100|number:2})%{/if}
             </tr>
         </tbody>
     </table>

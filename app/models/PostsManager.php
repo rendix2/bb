@@ -33,7 +33,7 @@ class PostsManager extends Crud\CrudManager {
         /**
      * @var TopicWatchManager $topicWatchManager
      */
-    private $topicWatchManager;
+    public $topicWatchManager;
 
     /**
      * @param int $category_id
@@ -104,15 +104,19 @@ class PostsManager extends Crud\CrudManager {
         $post_id  = parent::add($item_data);
         $user_id  = $item_data->post_user_id;
         $forum_id = $item_data->post_forum_id;
-        
-        $this->userManager->update($user_id, ArrayHash::from(['user_post_count%sql' => 'user_post_count + 1']));
+               
         $this->topicsManager->update($item_data->post_topic_id, ArrayHash::from(['topic_post_count%sql' => 'topic_post_count+1']));
                
         $topicWatching = $this->topicWatchManager->fullCheck($item_data->post_topic_id, $user_id);
         
+        $watch = [];
+        
         if ( !$topicWatching ){
             $this->topicWatchManager->add([$user_id], $item_data->post_topic_id);
+            $watch = ['user_watch_count%sql' => 'user_watch_count + 1'];
         }
+        
+        $this->userManager->update($user_id, ArrayHash::from(['user_post_count%sql' => 'user_post_count + 1']+ $watch));
 
         return $post_id;
     }
@@ -128,6 +132,16 @@ class PostsManager extends Crud\CrudManager {
 
         $this->userManager->update($post->post_user_id, ArrayHash::from(['user_post_count%sql' => 'user_post_count - 1']));
         $this->topicsManager->update($post->post_topic_id, ArrayHash::from(['topic_post_count%sql' => 'topic_post_count-1']));
+        
+        $postCount = $this->getCountOfUsersByTopicId($post->post_topic_id);        
+        
+        foreach ( $postCount as $ps ){        
+            if ( $ps->post_count === 1 || $ps->post_count === 0 ){
+                $check = $this->topicWatchManager->fullCheck($post->post_topic_id, $ps->post_user_id);
+            
+                $this->topicWatchManager->fullDelete($post->post_topic_id, $post->post_user_id);
+            }         
+        }
 
         return $res;
     }

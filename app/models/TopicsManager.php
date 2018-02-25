@@ -133,7 +133,7 @@ class TopicsManager extends Crud\CrudManager
 
         $item_data->post_topic_id = $topic_id;
         $this->postManager->add($item_data);
-        $this->userManager->update($values->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1']));
+        $this->userManager->update($values->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count + 1', 'user_watch_count%sql' => 'user_watch_count + 1']));
 
         return $topic_id;
     }
@@ -155,14 +155,32 @@ class TopicsManager extends Crud\CrudManager
 
         $this->thanksManager->deleteByTopicId($topic_id);
 
+        /*
         $counts = $this->postManager->getCountOfUsersByTopicId($topic_id);
 
         foreach ($counts as $count) {
             $this->userManager->update($count->post_user_id, ArrayHash::from(['user_post_count%sql' => 'user_post_count - ' . $count->post_count]));
         }
-
-        $this->userManager->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
-        $this->postManager->deleteByTopicId($topic_id);
+         */
+        
+        $fullCheck = $this->topicWatchManager->fullCheck($topic_id, $topic->topic_user_id);
+        
+        $watch = [];
+        
+        if ( $fullCheck ){
+            $this->topicWatchManager->fullDelete($topic_id, $topic->topic_user_id);
+            $watch = ['user_watch_count%sql' => 'user_watch_count-1'];
+        }
+        
+        $this->userManager->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1'] + $watch));
+        
+        $posts = $this->postManager->getPostsByTopicId($topic_id)->fetchAll();
+        
+        foreach ( $posts as $post){
+            $this->postManager->delete($post->post_id);
+        }
+        
+        //$this->postManager->deleteByTopicId($topic_id);
 
         return parent::delete($topic_id);
     }
@@ -210,6 +228,7 @@ class TopicsManager extends Crud\CrudManager
     public function injectUserManager(UsersManager $userManager)
     {
         $this->userManager = $userManager;
+        $this->topicWatchManager = new TopicWatchManager($this->dibi, $this, $userManager);
     }
-
+   
 }

@@ -258,7 +258,7 @@ class UserPresenter extends Base\ForumPresenter
     /**
      * @param int $user_id
      */
-    public function renderPosts($user_id)
+    public function renderPosts($user_id, $page = 1)
     {
         if ( !is_numeric($user_id) ){
             $this->error('Parameter is not numeric.');
@@ -270,13 +270,15 @@ class UserPresenter extends Base\ForumPresenter
             $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
         }
         
-        $posts = $this->getManager()->getPosts($user_id);
+        $posts = $this->getManager()->getPosts($user_id);        
+        $pag   = new \App\Controls\PaginatorControl($posts, 15, 5, $page);
+        $this->addComponent($pag, 'paginator');
         
-        if ( !$posts ){
+        if ( !$pag->getCount() ){
             $this->flashMessage('User have no posts', self::FLASH_MESSAGE_WARNING);
         }
                 
-        $this->template->posts = $posts;
+        $this->template->posts = $posts->fetchAll();
     }
 
     /**
@@ -307,7 +309,6 @@ class UserPresenter extends Base\ForumPresenter
         $this->template->thankCount     = $this->thanksManager->getCountCached();
         $this->template->topicCount     = $this->topicManager->getCountCached();
         $this->template->postCount      = $this->postManager->getCountCached();
-        $this->template->watchesCount   = $this->topicWatchManager->getCountByRight($user_id);
         $this->template->watchTotalCount = $this->topicWatchManager->getCount();
         $this->template->userData       = $userData;
         $this->template->rank           = $rankUser;
@@ -316,7 +317,7 @@ class UserPresenter extends Base\ForumPresenter
     /**
      * @param int $user_id
      */
-    public function renderThanks($user_id)
+    public function renderThanks($user_id, $page = 1)
     {
         if ( !is_numeric($user_id) ){
             $this->error('Parameter is not numeric.');
@@ -328,19 +329,21 @@ class UserPresenter extends Base\ForumPresenter
             $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
         }        
         
-        $thanks = $this->getManager()->getThanks($user_id);
+        $thanks = $this->getManager()->getThanks($user_id);        
+        $pag    = new \App\Controls\PaginatorControl($thanks, 15, 5, $page);
+        $this->addComponent($pag, 'paginator');
         
-        if (!$thanks){
+        if (!$pag->getCount()){
             $this->flashMessage('User have no thanks.', self::FLASH_MESSAGE_WARNING);
         }
         
-        $this->template->thanks = $thanks;
+        $this->template->thanks = $thanks->fetchAll();
     }
 
     /**
      * @param int $user_id
      */
-    public function renderTopics($user_id)
+    public function renderTopics($user_id, $page = 1)
     {
         if ( !is_numeric($user_id) ){
             $this->error('Parameter is not numeric.');
@@ -353,12 +356,14 @@ class UserPresenter extends Base\ForumPresenter
         }        
         
         $topics = $this->getManager()->getTopics($user_id);
+        $pag    = new \App\Controls\PaginatorControl($topics, 15, 5, $page);        
+        $this->addComponent($pag, 'paginator');
         
-        if ( !$topics ){
+        if ( !$pag->getCount() ){
             $this->flashMessage('User have no topics.', self::FLASH_MESSAGE_WARNING);
         }
         
-        $this->template->topics = $topics;
+        $this->template->topics = $topics->fetchAll();
     }
 
     /**

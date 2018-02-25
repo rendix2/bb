@@ -396,6 +396,7 @@ class PostPresenter extends Base\ForumPresenter
     protected function createComponentReportForm()
     {
         $form = $this->getBootStrapForm();
+        $form->setTranslator($this->getForumTranslator());
         
         $form->addTextArea('report_text', 'Report text:');
         $form->addSubmit('send', 'Send');

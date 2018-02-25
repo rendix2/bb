@@ -47,7 +47,8 @@ class ReportPresenter extends Base\AdminPresenter {
      */
     protected function createComponentEditForm() {
         $form = $this->getBootStrapForm();
-        $form->addTextAreaHtml('report_text', 'Report text:');
+        $form->setTranslator($this->getAdminTranslator());
+        $form->addSelect('report_status', 'Report status:', [0 => 'Added', 1 => 'Fixed' ]);
         
         return $this->addSubmitB($form);
     }

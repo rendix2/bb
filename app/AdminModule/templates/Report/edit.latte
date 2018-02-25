@@ -1,7 +1,11 @@
 {block content}
-<div class="col-sm-12 main">   
-    {control editForm}
+<div class="col-sm-12 main"> 
+    <div class="row">
+        <div class="col-sm-6 border p-3 mb-3 bg-secondary text-white">{$item->report_text}</div>
+        <div class="col-sm-6">   
+            {control editForm}
+        </div>
+    </div>
 </div>
-
 
 {/block}

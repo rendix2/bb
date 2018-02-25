@@ -123,25 +123,9 @@ class UsersManager extends Crud\CrudManager
      */
     public function getPosts($user_id)
     {
-        return $this->dibi->select('*')->from(self::POSTS_TABLES)->where('[post_user_id] = %i', $user_id)->fetchAll();
+        return $this->dibi->select('*')->from(self::POSTS_TABLES)->where('[post_user_id] = %i', $user_id);
     }
 
-    /**
-     * @param int $user_id
-     *
-     * @return array
-     */
-    public function getRoles($user_id)
-    {
-        return $this->dibi->select('*')
-                          ->from(self::USERS2ROLES_TABLE)
-                          ->as('ur')
-                          ->innerJoin(self::ROLES_TABLE)
-                          ->as('r')
-                          ->on('[r.role_id] = [ur.role_id]')
-                          ->where('[ur.user_id] = %i', $user_id)
-                          ->fetchPairs('role_id', 'role_name');
-    }
 
     /**
      * @param int $user_id
@@ -156,8 +140,7 @@ class UsersManager extends Crud\CrudManager
                           ->innerJoin(self::TOPICS_TABLE)
                           ->as('to')
                           ->on('[th.thank_topic_id] = [to.topic_id]')
-                          ->where('[th.thank_user_id] = %i', $user_id)
-                          ->fetchAll();
+                          ->where('[th.thank_user_id] = %i', $user_id);
     }
 
     /**
@@ -167,7 +150,7 @@ class UsersManager extends Crud\CrudManager
      */
     public function getTopics($user_id)
     {
-        return $this->dibi->select('*')->from(self::TOPICS_TABLE)->where('[topic_user_id] = %i', $user_id)->fetchAll();
+        return $this->dibi->select('*')->from(self::TOPICS_TABLE)->where('[topic_user_id] = %i', $user_id);
     }
 
     /**
