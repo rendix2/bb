@@ -9,32 +9,33 @@
 
         <title>{ifset title}{include title|stripHtml} | {/ifset}Nette Sandbox</title>
 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!--<meta name="viewport" content="width=device-width, initial-scale=1"> -->
         <link rel="stylesheet" href="{$basePath}/css/style.css">
-        <link rel="stylesheet" href="{$basePath}/css/bootstrap.css">
-        <link rel="stylesheet" href="{$basePath}/css/bootstrap-grid.css">
-        <link rel="stylesheet" href="{$basePath}/css/bootstrap-reboot.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
         {block head}{/block}
     </head>
 
     <body>
-        <div class="col-sm-12 main">
-            <a href="{link Index:default}">Index</a>
 
-            {if $user->isLoggedIn()}
-                <a href="{link User:edit}">{_user_settings}</a>
-                <a href="{link User:profile $user->getId()}">{$user->getIdentity()->getData()['user_name']}</a>
-                <a href="{link Search:default}">{_search}</a>
-                <a href="{link User:logout}">Logout</a>
-                
-                {if $user->isInRole('admin')}
-                <a href="{link :Admin:Index:default}">Admin</a>
-                {/if}
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <ul class="navbar-nav">
 
-            {else}
-                <a href="{link Login:default}">Login</a>
-            {/if}
-        </div>
+                <li class="nav-item {if $presenter->getName() == 'Forum:Index' || $presenter->getName() == 'Forum:Post' || $presenter->getName() == 'Forum:Forum' }active{/if}"><a class="nav-link" href="{link Index:default}">Index</a></li>
+
+                {if $user->isLoggedIn()}
+                    <li class="nav-item {if $presenter->getName() === 'Forum:User' && $presenter->getAction() === 'edit'}active{/if}"><a class="nav-link" href="{link User:edit}">{_user_settings}</a></li>
+                    <li class="nav-item {if $presenter->getName() == 'Forum:User'  && $presenter->getAction() !== 'edit' && $presenter->getParameter('user_id') == $user->getId() }active{/if}"><a class="nav-link" href="{link User:profile $user->getId()}">{$user->getIdentity()->getData()['user_name']}</a></li>
+                    <li class="nav-item {if $presenter->getName() == 'Forum:Search'}active{/if}"><a class="nav-link" href="{link Search:default}">{_search}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{link User:logout}">Logout</a></li>
+                    {else}
+                    <li class="nav-item"><a class="nav-link" href="{link Login:default}">Login</a></a>
+                    {/if}                      
+
+                    {if $user->isInRole('admin')}
+                    <li class="nav-item"><a class="nav-link" href="{link :Admin:Index:default}">Admin</a></li>
+                    {/if}   
+            </ul>
+        </nav>
 
         <div class="col-sm-4 main">
             {foreach $flashes as $flash}
@@ -49,12 +50,11 @@
         </div>     
 
         {block scripts}
-        <script src="{$basePath}/js/bootstrap.js"></script>
-        <script src="{$basePath}/js/bootstrap.bundle.js"></script>
-        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
         <script src="https://nette.github.io/resources/js/netteForms.min.js"></script>
         <script src="{$basePath}/js/main.js"></script>
         <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+        <script src="{$basePath}/js/jquery-3.3.1.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
         {/block}
     </body>
 </html>
