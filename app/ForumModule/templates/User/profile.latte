@@ -4,9 +4,9 @@
     <div class="float-left">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="{link Index:default}">Index</a>
+                <a href="{link Index:default}">{_menu_index}</a>
             </li>
-            <li class="breadcrumb-item">Profile</li>
+            <li class="breadcrumb-item">{$userData->user_name}</li>
         </ol>
     </div>        
 </div>
@@ -44,7 +44,7 @@
 {if $userData->user_avatar}
     <div class="col-sm-6">
         <div class="card">
-            <div class="card-header">Avatar</div>
+            <div class="card-header">{_user_avatar}</div>
             <div class="card-block">
                 <img src="{$basePath}/avatars/{$userData->user_avatar}" class="img-fluid" alt="{$userData->user_name}" title="{$userData->user_name}">
             </div>
@@ -55,7 +55,7 @@
 {if $rank}
     <div class="col-sm-6">
         <div class="card">
-            <div class="card-header">Rank</div>
+            <div class="card-header">{_user_rank}</div>
             <div class="card-block">
 
                 <p class="card-text">{$rank->rank_name}</p>
@@ -72,9 +72,9 @@
     <div class="float-left">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="{link Index:default}">Index</a>
+                <a href="{link Index:default}">{_menu_index}</a>
             </li>
-            <li class="breadcrumb-item">Profile</li>
+            <li class="breadcrumb-item">{$userData->user_name}</li>
         </ol>
     </div>        
 </div>

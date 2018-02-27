@@ -3,9 +3,9 @@
     <div class="float-left">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="{link Index:default}">Index</a>
+                <a href="{link Index:default}">{_menu_index}</a>
             </li>
-            <li class="breadcrumb-item">Edit user</li>
+            <li class="breadcrumb-item">{_menu_user}</li>
         </ol>
     </div>        
 </div>  
@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-sm-6">
             <div class="card h-100">
-                <div class="card-header">User</div>
+                <div class="card-header">{_menu_user}</div>
                 <div class="card-block p-3">
                     {control editUserForm}
                 </div>
@@ -22,7 +22,7 @@
         </div>
         <div class="col-sm-6">  
             <div class="card h-100">
-                <div class="card-header">Password</div>
+                <div class="card-header">{_Password}</div>
                 <div class="card-block p-3">
                     {control changePasswordControl}
                 </div>
@@ -33,7 +33,7 @@
         <div class="row mt-3">
             <div class="col-sm-6">   
                 <div class="card h-100">
-                    <div class="card-header">Avatar</div>
+                    <div class="card-header">{_user_avatar}</div>
                     <div class="card-block p-3">
                         <img src="{$basePath}/avatars/{$item->user_avatar}" class="img-thumbnail img-fluid">
                         {control deleteAvatar}        
@@ -48,9 +48,9 @@
     <div class="float-left">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="{link Index:default}">Index</a>
+                <a href="{link Index:default}">{_menu_index}</a>
             </li>
-            <li class="breadcrumb-item">Edit user</li>
+            <li class="breadcrumb-item">{_menu_user}</li>
         </ol>
     </div>        
 </div>  
