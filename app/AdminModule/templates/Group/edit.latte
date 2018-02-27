@@ -3,92 +3,114 @@
 <div class="col-sm-12">     
     <div class="float-left">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{link Index:default}">Index</a></li>
-            <li class="breadcrumb-item"><a href="{link Group:default}">Group</a></li>
+            <li class="breadcrumb-item">
+                <a href="{link Index:default}">Index</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{link Group:default}">Groups</a>
+            </li>
+            <li class="breadcrumb-item">Group</li>
         </ol>
     </div>
 </div>        
 
 <div class="col-sm-8 main">
-    {control editForm}
+    <div class="card h-100">
+        <div class="card-header">Form</div>
+        <div class="card-block p-3">
+            {control editForm}
+        </div>
+    </div>
 </div>
 <div class="col-sm-4">
-    {_user_count_lang}:{$countOfUsers}
+    <div class="card h-100">
+        <div class="card-header">Form</div>
+        <div class="card-block p-3">
+            {_user_count_lang}:{$countOfUsers}
+        </div>
+    </div>
 </div>
 
-<div class="col-sm-4 main">
-    {form forumsForm}
-        {block forums}
-        <ul>
-            {foreach $forums as $forum}
-                <li>
-                    <a href="{link Forum:edit, $forum->forum_id}">{$forum->forum_name}</a>
-                </li> 
+<div class="col-sm-8 main mt-3">
+    <div class="card h-100">
+        <div class="card-header">Form</div>
+        <div class="card-block p-3">
 
-                <ul>        
-                    <li>
-                        <label>
-                            <input type="checkbox" value="{$forum->forum_id}" name="post_add[]" {if isset($permissions[$forum->forum_id]['post_add']) && $permissions[$forum->forum_id]['post_add'] === 1}checked="checked"{/if}>
-                            {_group_post_add}
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            <input type="checkbox" value="{$forum->forum_id}" name="post_edit[]" {if isset($permissions[$forum->forum_id]['post_edit']) &&  $permissions[$forum->forum_id]['post_edit'] === 1}checked="checked"{/if}>
-                            {_group_post_edit}                          
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            <input type="checkbox" value="{$forum->forum_id}" name="post_delete[]" {if isset($permissions[$forum->forum_id]['post_delete']) &&  $permissions[$forum->forum_id]['post_delete'] === 1}checked="checked"{/if}>
-                            {_group_post_delete}                        
-                        </label>
-                    </li>
+            {form forumsForm}
+                {block forums}
+                <ul class="list-group">
+                    {foreach $forums as $forum}
+                        <li class="list-group-item list-group-item-primary">
+                            <a href="{link Forum:edit, $forum->forum_id}">{$forum->forum_name}</a>
+
+                            <ul>        
+                                <li class="list-group-item list-group-item-secondary">
+                                    <label>
+                                        <input type="checkbox" value="{$forum->forum_id}" name="post_add[]" {if isset($permissions[$forum->forum_id]['post_add']) && $permissions[$forum->forum_id]['post_add'] === 1}checked="checked"{/if}>
+                                        {_group_post_add}
+                                    </label>
+                                </li>
+                                <li class="list-group-item list-group-item-secondary">
+                                    <label>
+                                        <input type="checkbox" value="{$forum->forum_id}" name="post_edit[]" {if isset($permissions[$forum->forum_id]['post_edit']) &&  $permissions[$forum->forum_id]['post_edit'] === 1}checked="checked"{/if}>
+                                        {_group_post_edit}                          
+                                    </label>
+                                </li>
+                                <li class="list-group-item list-group-item-secondary">
+                                    <label>
+                                        <input type="checkbox" value="{$forum->forum_id}" name="post_delete[]" {if isset($permissions[$forum->forum_id]['post_delete']) &&  $permissions[$forum->forum_id]['post_delete'] === 1}checked="checked"{/if}>
+                                        {_group_post_delete}                        
+                                    </label>
+                                </li>
+                                <li class="list-group-item list-group-item-success">
+                                    <label>
+
+                                        <input type="checkbox" value="{$forum->forum_id}" name="topic_add[]" {if isset($permissions[$forum->forum_id]['topic_add']) &&  $permissions[$forum->forum_id]['topic_add'] === 1}checked="checked"{/if}>
+                                        {_group_topic_add}
+                                    </label>
+                                </li>
+                                <li class="list-group-item list-group-item-success">
+                                    <label>
+                                        <input type="checkbox" value="{$forum->forum_id}" name="topic_edit[]" {if isset($permissions[$forum->forum_id]['topic_edit']) &&  $permissions[$forum->forum_id]['topic_edit'] === 1}checked="checked"{/if}>
+                                        {_group_topic_edit}                        
+                                    </label>
+                                </li>
+                                <li class="list-group-item list-group-item-success">
+                                    <label>
+                                        <input type="checkbox" value="{$forum->forum_id}" name="topic_delete[]" {if isset($permissions[$forum->forum_id]['topic_delete']) &&  $permissions[$forum->forum_id]['topic_delete'] === 1}checked="checked"{/if}>
+                                        {_group_topic_delete}                        
+                                    </label>
+                                </li>
+                                <li class="list-group-item list-group-item-success">
+                                    <label>
+                                        <input type="checkbox" value="{$forum->forum_id}" name="topic_thank[]" {if isset($permissions[$forum->forum_id]['topic_thank']) &&  $permissions[$forum->forum_id]['topic_thank'] === 1}checked="checked"{/if}>
+                                        {_group_topic_thank}                        
+                                    </label>
+                                </li>
+                            </ul>                    
+
+                            {if is_array($forum['childs'])}
+                                {include forums, forums => $forum['childs']}
+                            {/if}
+                        {/foreach}
                 </ul>
-
-                <ul>
-                    <li>
-                        <label>
-
-                            <input type="checkbox" value="{$forum->forum_id}" name="topic_add[]" {if isset($permissions[$forum->forum_id]['topic_add']) &&  $permissions[$forum->forum_id]['topic_add'] === 1}checked="checked"{/if}>
-                            {_group_topic_add}
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            <input type="checkbox" value="{$forum->forum_id}" name="topic_edit[]" {if isset($permissions[$forum->forum_id]['topic_edit']) &&  $permissions[$forum->forum_id]['topic_edit'] === 1}checked="checked"{/if}>
-                            {_group_topic_edit}                        
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            <input type="checkbox" value="{$forum->forum_id}" name="topic_delete[]" {if isset($permissions[$forum->forum_id]['topic_delete']) &&  $permissions[$forum->forum_id]['topic_delete'] === 1}checked="checked"{/if}>
-                            {_group_topic_delete}                        
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            <input type="checkbox" value="{$forum->forum_id}" name="topic_thank[]" {if isset($permissions[$forum->forum_id]['topic_thank']) &&  $permissions[$forum->forum_id]['topic_thank'] === 1}checked="checked"{/if}>
-                            {_group_topic_thank}                        
-                        </label>
-                    </li>
-                </ul>                    
-
-                {if is_array($forum['childs'])}
-                    {include forums, forums => $forum['childs']}
-                {/if}
-            {/foreach}
-        </ul>
-        {/block}
-        {input send}
-    {/form}
+                {/block}
+                {input send}
+            {/form}
+        </div>
+    </div>
 </div>
 
 <div class="col-sm-12">     
     <div class="float-left">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{link Index:default}">Index</a></li>
-            <li class="breadcrumb-item"><a href="{link Group:default}">Group</a></li>
+            <li class="breadcrumb-item">
+                <a href="{link Index:default}">Index</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{link Group:default}">Groups</a>
+            </li>
+            <li class="breadcrumb-item">Group</li>
         </ol>
     </div>
 </div>

@@ -3,25 +3,54 @@
 <div class="col-sm-12">
     <div class="float-left">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{link Index:default}">Index</a></li>
-            <li class="breadcrumb-item"><a href="{link Search:default}">Forum</a></li>
+            <li class="breadcrumb-item">
+                <a href="{link Index:default}">Index</a>
+            </li>
+            <li class="breadcrumb-item">Search</li>
         </ol>
+    </div>
+</div>
+<div class="col-sm-12 main">
+    <div class="row">
+
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">User</div>
+                <div class="card-block m-3">
+                    {control searchUserForm}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">Topic</div>
+                <div class="card-block m-3">
+                    {control searchTopicForm}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row pt-3">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">Post</div>
+                <div class="card-block m-3">
+                    {control searchPostForm}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="col-sm-12 main">
-    {control searchUserForm}
-    {control searchTopicForm}
-    {control searchPostForm}
-</div>
-    
-<div class="col-sm-12">
+<div class="col-sm-12 mt-3">
     <div class="float-left">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{link Index:default}">Index</a></li>
-            <li class="breadcrumb-item"><a href="{link Search:default}">Search</a></li>
+            <li class="breadcrumb-item">
+                <a href="{link Index:default}">Index</a>
+            </li>
+            <li class="breadcrumb-item">Search</li>
         </ol>
     </div>
-</div>    
-    
+</div>  
+
 {/block}

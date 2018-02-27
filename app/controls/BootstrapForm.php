@@ -64,7 +64,7 @@ class BootstrapForm extends Form
      *
      * @api
      */
-    public function __construct($columnCount = 8, $columnType = 'sm', $labelColumnCount = 5, IContainer $parent = null, $name = null)
+    public function __construct($columnCount = 6, $columnType = 'sm', $labelColumnCount = 7, IContainer $parent = null, $name = null)
     {
         parent::__construct($parent, $name);
         $this->addProtection('Try it again.');

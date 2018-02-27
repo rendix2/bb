@@ -1,23 +1,38 @@
 {block content}
 
-<div class="col-sm-12">
+<div class="col-sm-12 mt-3">
     <div class="float-left">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{link Index:default}">Index</a></li>
-            <li class="breadcrumb-item"><a href="{link Forum:default $presenter->getParameter('forum_id')}">Forum</a></li>
+            <li class="breadcrumb-item">
+                <a href="{link Index:default}">Index</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{link Forum:default $presenter->getParameter('forum_id')}">Forum</a>
+            </li>
+            <li class="breadcrumb-item">New topic</li>
         </ol>
+    </div>
+</div> 
+
+<div class="col-sm-12 main">
+    <div class="card">
+        <div class="card-header">Topic</div>
+        <div class="card-block p-3">
+            {control editTopicForm}
+        </div>
     </div>
 </div>
 
-<div class="col-sm-12 main">
-    {control editTopicForm}
-</div>
-
-<div class="col-sm-12">
+<div class="col-sm-12 mt-3">
     <div class="float-left">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{link Index:default}">Index</a></li>
-            <li class="breadcrumb-item"><a href="{link Forum:default $presenter->getParameter('forum_id')}">Forum</a></li>
+            <li class="breadcrumb-item">
+                <a href="{link Index:default}">Index</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{link Forum:default $presenter->getParameter('forum_id')}">Forum</a>
+            </li>
+            <li class="breadcrumb-item">New topic</li>
         </ol>
     </div>
 </div>    

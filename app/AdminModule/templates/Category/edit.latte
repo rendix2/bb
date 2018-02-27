@@ -3,34 +3,61 @@
 <div class="col-sm-12">     
     <div class="float-left">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{link Index:default}">Index</a></li>
-            <li class="breadcrumb-item"><a href="{link Category:default}">Category</a></li>
+            <li class="breadcrumb-item">
+                <a href="{link Index:default}">Index</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{link Category:default}">Categories</a>
+            </li>
+            <li class="breadcrumb-item">Category</li>
         </ol>
     </div>
 </div>        
+<div class="container-fluid">
+    <div class="row pb-3">
+        <div class="col-sm-6">  
+            <div class="card h-100">
+                <div class="card-header">Category</div>
+                <div class="card-block p-3">
+                    {control editForm}
+                </div>
+            </div>
+        </div>
 
-{control editForm}
+        <div class="col-sm-6">  
+            <div class="card h-100">
+                <div class="card-header">Category</div>
+                <div class="card-block p-3">            
+                    {block forums}
+                    <ul>
+                        {foreach $forums as $forum}
+                            <li>
+                                <a href="{link Forum:edit, $forum->forum_id}">{$forum->forum_name}</a>
+                            </li> 
 
-{block forums}
-<ul>
-    {foreach $forums as $forum}
-        <li>
-            <a href="{link Forum:edit, $forum->forum_id}">{$forum->forum_name}</a>
-        </li> 
+                            {if is_array($forum['childs'])}
+                                {include forums, forums => $forum['childs']}
+                            {/if}
 
-        {if is_array($forum['childs'])}
-            {include forums, forums => $forum['childs']}
-        {/if}
-
-    {/foreach}
-</ul>
-{/block}
+                        {/foreach}
+                    </ul>
+                    {/block}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="col-sm-12">     
     <div class="float-left">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{link Index:default}">Index</a></li>
-            <li class="breadcrumb-item"><a href="{link Category:default}">Category</a></li>
+            <li class="breadcrumb-item">
+                <a href="{link Index:default}">Index</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{link Category:default}">Categories</a>
+            </li>
+            <li class="breadcrumb-item">Category</li>
         </ol>
     </div>
 </div>        

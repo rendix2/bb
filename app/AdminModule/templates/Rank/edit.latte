@@ -3,27 +3,54 @@
 <div class="col-sm-12">     
     <div class="float-left">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{link Index:default}">Index</a></li>
-            <li class="breadcrumb-item"><a href="{link Rank:default}">Rank</a></li>
+            <li class="breadcrumb-item">
+                <a href="{link Index:default}">Index</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{link Rank:default}">Rank</a>
+            </li>
+            <li class="breadcrumb-item">Rank</li>
         </ol>
     </div> 
 </div>
+<div class="col-sm-12">
+    <div class="row">
+        <div class="col-sm-6">   
+            <div class="card h-100">
+                <div class="card-header">Rank</div>
+                <div class="card-block p-3">
+                    {control editForm}
+                </div>
+            </div>
+        </div>
 
-<div class="col-sm-12 main">   
-{control editForm}
+        {if  $presenter->getParameter('id') && $item->rank_file}
+            <div class="col-sm-6">
+                <div class="card h-100">
+                    <div class="card-header">Image</div>
+                    <div class="card-block p-3">
+                        <img src="{$basePath}/ranks/{$item->rank_file}" class="img-fluid">
+                    </div>
+                </div>
+            </div>    
+        {/if}
+    </div>
 </div>
 
-{if  $presenter->getParameter('id') && $item->rank_file}
-    <img src="{$basePath}/ranks/{$item->rank_file}">
-{/if}
-
-<div class="col-sm-12">     
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{link Index:default}">Index</a></li>
-            <li class="breadcrumb-item"><a href="{link Rank:default}">Rank</a></li>
-        </ol>
-    </div> 
+    <div class="col-sm-12 mt-3">   
+      
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">Index</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{link Rank:default}">Ranks</a>
+                </li>
+                <li class="breadcrumb-item">Rank</li>
+            </ol>
+        </div> 
+   
 </div>
 
 {/block}
