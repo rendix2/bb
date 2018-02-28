@@ -352,10 +352,15 @@ class PostPresenter extends Base\ForumPresenter
      * @param int $post_id
      * @param int $page
      */
-    public function renderReport($forum_id, $topic_id, $post_id, $page){
+    public function renderReportPost($forum_id, $topic_id, $post_id, $page){
         
     }
     
+    public function renderReportTopic($forum_id, $topic_id, $page)
+    {
+        
+    }
+
     public function createComponentJumpToForum(){
         return new \App\Controls\JumpToForumControl($this->forumManager);
     }
@@ -456,11 +461,17 @@ class PostPresenter extends Base\ForumPresenter
         $values->report_topic_id = $topic_id;
         $values->report_post_id  = $post_id;
         $values->report_user_id  = $user_id;
+        $values->report_time     = time();
                 
         $res = $this->reportManager->add($values);
         
         if ( $res ){
-            $this->flashMessage('Post was reported.', self::FLASH_MESSAGE_SUCCESS);
+            if ( $post_id ){            
+                $this->flashMessage('Post was reported.', self::FLASH_MESSAGE_SUCCESS);
+            }
+            else{
+                $this->flashMessage('Topic was reported.', self::FLASH_MESSAGE_SUCCESS);
+            }
         }
         
         $this->redirect('Post:all', $forum_id, $topic_id, $page);      
