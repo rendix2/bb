@@ -17,14 +17,28 @@ class CategoryPresenter extends Base\AdminPresenter {
      * @var ForumsManager $forumsManager
      */
     private $forumsManager;
+    
+
 
     /**
      * CategoryPresenter constructor.
      *
      * @param CategoriesManager $manager
      */
-    public function __construct(CategoriesManager $manager) {
-        parent::__construct($manager);
+    public function __construct(CategoriesManager $manager, \App\Controls\GridFilter $gf) {
+        parent::__construct($manager);          
+    }
+    
+    public function startup() {
+        parent::startup();
+              
+        if ( $this->getAction() == 'default' ){
+        $this->gf->addFilter('category_id', 'Category ID', \App\Controls\GridFilter::INT_EQUAL);
+        $this->gf->addFilter('category_name', 'Category name', \App\Controls\GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('', '', \App\Controls\GridFilter::NOTHING);
+        
+        $this->addComponent($this->gf , 'gridFilter');                
+        }
     }
 
     /**
@@ -33,11 +47,17 @@ class CategoryPresenter extends Base\AdminPresenter {
     public function injectForumsManager(ForumsManager $forumsManager) {
         $this->forumsManager = $forumsManager;
     }
+    
+    public function renderDefault() {
+        parent::renderDefault();
+        \Tracy\Debugger::barDump($this->gf->getWhere(), 'WHERE');
+        \Tracy\Debugger::barDump($this->gf->getOrderBy(), 'ORDER BY');
+    }
 
     /**
      * @param int|null $id
      */
-    public function renderEdit($id = null) {
+    public function renderEdit($id = null) {  
         if ($id) {
             if (!is_numeric($id)) {
                 $this->error('Param id is not numeric.');

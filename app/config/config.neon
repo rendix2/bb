@@ -99,6 +99,10 @@ services:
         inject: yes
         setup:
                 - factory
+    GridFilter:
+        factory: App\Controls\GridFilter
+        setup:
+                - factory
     authenticator: App\Authenticator
     authorizator: App\Authorizator
     WwwDir:

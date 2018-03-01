@@ -26,6 +26,10 @@ abstract class CrudPresenter extends ManagerPresenter
      * @var string $title
      */
     private $title;
+    
+    protected $gf;
+    
+    private $useGf;
 
     /**
      * @return mixed
@@ -39,7 +43,15 @@ abstract class CrudPresenter extends ManagerPresenter
      */
     public function __construct(CrudManager $manager)
     {
-        parent::__construct($manager);
+        parent::__construct($manager);       
+    }
+    
+    public function injectGridFilter(\App\Controls\GridFilter $gridFilter){
+        $this->gf = $gridFilter;
+    }
+    
+    public function useGF(){
+        $this->useGf = true;
     }
 
     /**
@@ -186,6 +198,17 @@ abstract class CrudPresenter extends ManagerPresenter
         if (!$count) {
             $this->flashMessage('No items.', self::FLASH_MESSAGE_WARNING);
         }
+        
+        foreach ( $this->gf->getWhere() as $where ){
+            if ( $where['value'] ){
+                \Tracy\Debugger::barDump($where);
+                $items->where('['.$where['column'].'] '.$where['type'].' '.$where['before']. $where['value'].$where['after']);
+            }
+        }
+        
+        foreach ( $this->gf->getOrderBy() as $column => $type ){
+            $items->orderBy($column, $type);
+        }       
 
         $this->template->items      = $items->fetchAll();
         $this->template->title      = $this->getTitleOnDefault();

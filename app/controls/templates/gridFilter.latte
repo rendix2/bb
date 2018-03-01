@@ -1,0 +1,38 @@
+{block content}
+
+{form gridFilter}
+    {input send, 'style' => 'display:none'}
+    <tr>
+        {foreach $type as $name => $val}
+            <th>{$val['text']}
+                {if $val['type'] != 'empty'} 
+                    {var $p = $params}
+                    {var $destroy = $params}
+
+                    {if $gf->getParameter('sort_'.$name) == 'ASC'}                    
+                        {var $p['sort_'.$name] = 'DESC'}
+                        <a href="{$gf->link('this', $p)}">Radit DESC</a>
+                    {else}{* if $gf->getParameter('sort_'.$name) == 'DESC'} *}
+                        {var $p['sort_'.$name] = 'ASC'}
+                        <a href="{$gf->link('this', $p)}">Radit ASC</a>                
+                    {/if}
+
+                    {if isset($destroy['sort_'.$name]) && $destroy['sort_'.$name] != null}
+                        {var $destroy['sort_'.$name] = null}
+                        <a href="{$gf->link('this', $destroy)}">Zrušit</a>
+                    {/if}
+                {/if}
+            </th>
+        {/foreach}
+    </tr>
+    <tr>
+        {foreach $type as $name => $val}
+            {if $val['type'] != 'empty'} 
+                <td>{input $name}</td>
+            {else}
+                <td></td>
+            {/if}
+        {/foreach}
+    </tr>
+{/form}
+{/block}
