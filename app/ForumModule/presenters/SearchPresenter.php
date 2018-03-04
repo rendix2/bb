@@ -15,8 +15,7 @@ use Nette\Utils\ArrayHash;
  * @author rendi
  * @method UsersManager getManager()
  */
-class SearchPresenter extends Base\ForumPresenter
-{
+class SearchPresenter extends Base\ForumPresenter {
 
     /**
      * @var TopicsManager $topicsManager
@@ -33,16 +32,14 @@ class SearchPresenter extends Base\ForumPresenter
      *
      * @param UsersManager $userManager
      */
-    public function __construct(UsersManager $userManager)
-    {
+    public function __construct(UsersManager $userManager) {
         parent::__construct($userManager);
     }
 
     /**
      * @return BootstrapForm
      */
-    public function createComponentSearchPostForm()
-    {
+    public function createComponentSearchPostForm() {
         $form = new BootstrapForm();
 
         $form->setTranslator($this->getForumTranslator());
@@ -60,8 +57,7 @@ class SearchPresenter extends Base\ForumPresenter
     /**
      * @return BootstrapForm
      */
-    public function createComponentSearchTopicForm()
-    {
+    public function createComponentSearchTopicForm() {
         $form = new BootstrapForm();
         $form->setTranslator($this->getForumTranslator());
 
@@ -78,8 +74,7 @@ class SearchPresenter extends Base\ForumPresenter
     /**
      * @return BootstrapForm
      */
-    public function createComponentSearchUserForm()
-    {
+    public function createComponentSearchUserForm() {
         $form = new BootstrapForm();
 
         $form->setTranslator($this->getForumTranslator());
@@ -97,16 +92,14 @@ class SearchPresenter extends Base\ForumPresenter
     /**
      * @param PostsManager $postsManager
      */
-    public function injectPostsManager(PostsManager $postsManager)
-    {
+    public function injectPostsManager(PostsManager $postsManager) {
         $this->postsManager = $postsManager;
     }
 
     /**
      * @param TopicsManager $topicsManager
      */
-    public function injectTopicsManager(TopicsManager $topicsManager)
-    {
+    public function injectTopicsManager(TopicsManager $topicsManager) {
         $this->topicsManager = $topicsManager;
     }
 
@@ -114,8 +107,7 @@ class SearchPresenter extends Base\ForumPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function searchPostFormSuccess(Form $form, ArrayHash $values)
-    {
+    public function searchPostFormSuccess(Form $form, ArrayHash $values) {
         $this->redirect('Search:postResults', $values->search_post);
     }
 
@@ -123,8 +115,7 @@ class SearchPresenter extends Base\ForumPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function searchTopicFormSuccess(Form $form, ArrayHash $values)
-    {
+    public function searchTopicFormSuccess(Form $form, ArrayHash $values) {
         $this->redirect('Search:topicResults', $values->search_topic);
     }
 
@@ -132,24 +123,21 @@ class SearchPresenter extends Base\ForumPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function searchUserFormSuccess(Form $form, ArrayHash $values)
-    {
+    public function searchUserFormSuccess(Form $form, ArrayHash $values) {
         $this->redirect('Search:userResults', $values->search_user);
     }
 
     /**
      *
      */
-    public function renderDefault()
-    {
-
+    public function renderDefault() {
+        
     }
 
     /**
      * @param string $q
      */
-    public function renderPostResults($q)
-    {
+    public function renderPostResults($q) {
         $result = $this->postsManager->findPosts($q);
 
         $this['searchPostForm']->setDefaults(['search_post' => $q]);
@@ -165,8 +153,7 @@ class SearchPresenter extends Base\ForumPresenter
     /**
      * @param string $q
      */
-    public function renderTopicResults($q)
-    {
+    public function renderTopicResults($q) {
         $result = $this->topicsManager->findTopicsByTopicName($q);
 
         $this['searchTopicForm']->setDefaults(['search_topic' => $q]);
@@ -182,8 +169,7 @@ class SearchPresenter extends Base\ForumPresenter
     /**
      * @param string $q
      */
-    public function renderUserResults($q)
-    {
+    public function renderUserResults($q) {
         $result = $this->getManager()->findUsersByUserName($q);
 
         $this['searchUserForm']->setDefaults(['search_user' => $q]);

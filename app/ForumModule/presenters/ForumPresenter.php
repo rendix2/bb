@@ -12,34 +12,30 @@ use App\Models\ForumsManager;
  * @author rendi
  * @method ForumsManager getManager()
  */
-final class ForumPresenter extends Base\ForumPresenter
-{
+final class ForumPresenter extends Base\ForumPresenter {
 
     /**
      * @var CategoriesManager $categoryManager
      */
     private $categoryManager;
-    
     private $topicManager;
 
     /**
      *
      * @param ForumsManager $manager
      */
-    public function __construct(ForumsManager $manager)
-    {
+    public function __construct(ForumsManager $manager) {
         parent::__construct($manager);
     }
 
     /**
      * @param CategoriesManager $categoryManager
      */
-    public function injectCategoryManager(CategoriesManager $categoryManager)
-    {
+    public function injectCategoryManager(CategoriesManager $categoryManager) {
         $this->categoryManager = $categoryManager;
     }
-    
-    public function injectTopicManager(\App\Models\TopicsManager $topicManager){
+
+    public function injectTopicManager(\App\Models\TopicsManager $topicManager) {
         $this->topicManager = $topicManager;
     }
 
@@ -47,12 +43,11 @@ final class ForumPresenter extends Base\ForumPresenter
      * @param     $forum_id
      * @param int $page
      */
-    public function renderDefault($forum_id, $page = 1)
-    {
-        if ( !is_numeric($forum_id) ){
+    public function renderDefault($forum_id, $page = 1) {
+        if (!is_numeric($forum_id)) {
             $this->error('Parameter is not numeric');
         }
-        
+
         $forum = $this->getManager()->getById($forum_id);
 
         if (!$forum) {
@@ -77,7 +72,7 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->error('Category is not active.');
         }
 
-        $topics    = $this->getManager()->getTopics($forum_id);
+        $topics = $this->getManager()->getTopics($forum_id);
         $paginator = new PaginatorControl($topics, 10, 5, $page);
 
         $this->addComponent($paginator, 'paginator');
@@ -86,37 +81,38 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->flashMessage('No topics.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $this->template->forum       = $forum;
-        $this->template->topics      = $topics->fetchAll();
-        $this->template->subForums   = $this->getManager()->getForumsByForumParentId($forum_id);
+        $this->template->forum = $forum;
+        $this->template->topics = $topics->fetchAll();
+        $this->template->subForums = $this->getManager()->getForumsByForumParentId($forum_id);
         $this->template->parentForum = $this->getManager()->getParentForumByForumId($forum_id);
     }
-    
-    public function renderRules($forum_id){
-        if ( !is_numeric($forum_id) ){
+
+    public function renderRules($forum_id) {
+        if (!is_numeric($forum_id)) {
             $this->error('Parameter is not numeric');
         }
-        
+
         $forum = $this->getManager()->getById($forum_id);
-        
-        if (!$forum){
+
+        if (!$forum) {
             $this->error('Forum not found');
         }
-        
+
         $this->template->forum = $forum;
     }
-    
-    public function renderTopics($forum_id){
-             if ( !is_numeric($forum_id) ){
+
+    public function renderTopics($forum_id) {
+        if (!is_numeric($forum_id)) {
             $this->error('Parameter is not numeric');
         }
-        
+
         $forum = $this->getManager()->getById($forum_id);
-        
-        if (!$forum){
+
+        if (!$forum) {
             $this->error('Forum not found');
         }
-        
+
         $this->template->topics = $this->getManager()->getTopics($forum_id)->fetchAll();
     }
+
 }

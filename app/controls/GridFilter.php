@@ -26,6 +26,8 @@ class GridFilter extends \Nette\Application\UI\Control {
         parent::__construct();
 
         $this->form = new BootstrapForm();
+        $this->type = [];
+        $this->orderBy = [];
     }
 
     public function factory(\Nette\Http\Session $session) {
@@ -74,37 +76,29 @@ class GridFilter extends \Nette\Application\UI\Control {
             // get from session
             $where = [];
 
-            if (is_array($this->type)) {
-                foreach ($this->type as $col => $val) {
-                    if (( $val['strint'] == '%i' && is_numeric($this->session->getSection($col)->value) ) || ($val['strint'] == '%s' && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1 ) && $col !== self::NOTHING) {
-                        $columnName = $col;
+            foreach ($this->type as $col => $val) {
+                if (( $val['strint'] == '%i' && is_numeric($this->session->getSection($col)->value) ) || ($val['strint'] == '%s' && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1 ) && $col !== self::NOTHING) {
+                    $columnName = $this->checkFTI($col);
 
-                        if (preg_match('#_Xfrom$#', $col)) {
-                            $columnName = str_replace('_Xfrom', '', $col);
-                        }
-
-                        if (preg_match('#_Xto$#', $col)) {
-                            $columnName = str_replace('_Xto', '', $col);
-                        }
-
-                        if ($val['operator'] == 'LIKE') {
-                            $where[] = ['column' => $columnName, 'type' => $val['operator'], 'value' => '%' . $this->session->getSection($col)->value . '%', 'strint' => $val['strint']];
-                        } else {
-                            $where[] = ['column' => $columnName, 'type' => $val['operator'], 'value' => $this->session->getSection($col)->value, 'strint' => $val['strint']];
-                        }
+                    if ($val['operator'] == 'LIKE') {
+                        $where[] = ['column' => $columnName, 'type' => $val['operator'], 'value' => '%' . $this->session->getSection($col)->value . '%', 'strint' => $val['strint']];
+                    } else {
+                        $where[] = ['column' => $columnName, 'type' => $val['operator'], 'value' => $this->session->getSection($col)->value, 'strint' => $val['strint']];
                     }
                 }
             }
+
             return $where;
         }
     }
 
     public function getOrderBy() {
         $orderBy = [];
-        $params = $this->getParameters() ? $this->getParameters() : $this->orderBy;
 
         foreach ($this->getParameters() as $param => $value) {
             $param = str_replace('sort_', '', $param);
+            $param = $this->checkFTI($param);
+
             $orderBy[$param] = ($value === 'ASC' || $value === 'DESC') ? $value : null;
         }
 
@@ -135,11 +129,25 @@ class GridFilter extends \Nette\Application\UI\Control {
             $this['gridFilter']->setDefaults([$column => $this->session->getSection($column)->value]);
         }
 
-        $template->type = $this->type;
-        $template->gf = $this;
+        $template->type   = $this->type;
+        $template->gf     = $this;
         $template->params = $this->getParameters();
 
         $template->render();
+    }
+
+    public function checkFTI($name) {
+        $columnName = $name;
+
+        if (preg_match('#_Xfrom$#', $name)) {
+            $columnName = str_replace('_Xfrom', '', $name);
+        }
+
+        if (preg_match('#_Xto$#', $name)) {
+            $columnName = str_replace('_Xto', '', $name);
+        }
+        
+        return $columnName;
     }
 
 }

@@ -15,17 +15,18 @@
                 {if $val['type'] != 'empty'} 
                     {var $p = $params}
                     {var $destroy = $params}
+                    {var $name2 = $gf->checkFTI($name)}
 
-                    {if $gf->getParameter('sort_'.$name) == 'ASC'}                    
-                        {var $p['sort_'.$name] = 'DESC'}
+                    {if $gf->getParameter('sort_'.$name2) == 'ASC'}                    
+                        {var $p['sort_'.$name2] = 'DESC'}
                         <a href="{$gf->link('this', $p)}">Radit DESC</a>
-                    {else}{* if $gf->getParameter('sort_'.$name) == 'DESC'} *}
-                        {var $p['sort_'.$name] = 'ASC'}
+                    {else}{* if $gf->getParameter('sort_'.$name2) == 'DESC'} *}
+                        {var $p['sort_'.$name2] = 'ASC'}
                         <a href="{$gf->link('this', $p)}">Radit ASC</a>                
                     {/if}
 
-                    {if isset($destroy['sort_'.$name]) && $destroy['sort_'.$name] != null}
-                        {var $destroy['sort_'.$name] = null}
+                    {if isset($destroy['sort_'.$name2]) && $destroy['sort_'.$name2] != null}
+                        {var $destroy['sort_'.$name2] = null}
                         <a href="{$gf->link('this', $destroy)}">Zrušit</a>
                     {/if}
                 {/if}

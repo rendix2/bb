@@ -26,7 +26,6 @@ class RankPresenter extends Base\AdminPresenter {
      */
     private $wwwDir;
 
-
     /**
      * RankPresenter constructor.
      *
@@ -39,10 +38,9 @@ class RankPresenter extends Base\AdminPresenter {
     /**
      * @param WwwDir $wwwDir
      */
-    public function injectWwwDir(WwwDir $wwwDir){
+    public function injectWwwDir(WwwDir $wwwDir) {
         $this->wwwDir = $wwwDir;
     }
-    
 
     /**
      * @return BootStrapForm
@@ -78,8 +76,8 @@ class RankPresenter extends Base\AdminPresenter {
             if (!is_numeric($values->rank_to)) {
                 $form->addError('Rank to is not numeric');
             }
-            
-            if ( $values->rank_from === $values->rank_to ){
+
+            if ($values->rank_from === $values->rank_to) {
                 $form->addError('From and to should not to be same.');
             }
         }

@@ -12,14 +12,10 @@ use App\Models\ReportsManager;
  * @method ReportsManager getManager()
  */
 class ReportPresenter extends Base\AdminPresenter {
-    
+
     private $userManager;
-    
     private $forumManager;
-    
     private $topicManager;
-    
-    
 
     /**
      * ReportPresenter constructor.
@@ -29,17 +25,16 @@ class ReportPresenter extends Base\AdminPresenter {
     public function __construct(ReportsManager $manager) {
         parent::__construct($manager);
     }
-    
-    
-    public function injectUserManager(\App\Models\UsersManager $userManager){
+
+    public function injectUserManager(\App\Models\UsersManager $userManager) {
         $this->userManager = $userManager;
     }
-    
-    public function injectTopicManager(\App\Models\TopicsManager $topicManager){
+
+    public function injectTopicManager(\App\Models\TopicsManager $topicManager) {
         $this->topicManager = $topicManager;
     }
-    
-    public function injectForumManager(\App\Models\ForumsManager $forumManager){
+
+    public function injectForumManager(\App\Models\ForumsManager $forumManager) {
         $this->forumManager = $forumManager;
     }
 
@@ -50,12 +45,12 @@ class ReportPresenter extends Base\AdminPresenter {
         if (!is_numeric($forum_id)) {
             $this->error('Parameter is not numeric.');
         }
-        
+
         $forum = $this->forumManager->getById($forum_id);
-        
-        if ( !$forum ){
+
+        if (!$forum) {
             $this->error('Forums does not exists.');
-        }           
+        }
 
         $items = $this->getManager()->getByForumId($forum_id);
         $this->template->items = $items->fetchAll();
@@ -69,10 +64,10 @@ class ReportPresenter extends Base\AdminPresenter {
         if (!is_numeric($topic_id)) {
             $this->error('Parameter is not numeric.');
         }
-        
+
         $topic = $this->topicManager->getById($topic_id);
-        
-        if ( !$topic ){
+
+        if (!$topic) {
             $this->error('Topic doesnt exists');
         }
 
@@ -88,16 +83,16 @@ class ReportPresenter extends Base\AdminPresenter {
         if (!is_numeric($user_id)) {
             $this->error('Parameter is not numeric.');
         }
-        
+
         $user = $this->userManager->getById($user_id);
-        
-        if ( !$user ){
+
+        if (!$user) {
             $this->error('User does not exists');
         }
 
         $items = $this->getManager()->getByUserId($user_id);
         $this->template->items = $items->fetchAll();
-        $this->template->userData  = $user;
+        $this->template->userData = $user;
     }
 
     /**

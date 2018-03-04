@@ -21,8 +21,7 @@ use Nette\Utils\ArrayHash;
  * @author rendi
  * @method UsersManager getManager()
  */
-class UserPresenter extends Base\ForumPresenter
-{
+class UserPresenter extends Base\ForumPresenter {
 
     /**
      * @var LanguagesManager $languageManager
@@ -58,14 +57,14 @@ class UserPresenter extends Base\ForumPresenter
      * @var ThanksManager $thanksManager
      */
     private $thanksManager;
+
     /**
      * UserPresenter constructor.
      *
      * @param UsersManager     $manager
      * @param LanguagesManager $languageManager
      */
-    public function __construct(UsersManager $manager, LanguagesManager $languageManager)
-    {
+    public function __construct(UsersManager $manager, LanguagesManager $languageManager) {
         parent::__construct($manager);
 
         $this->languageManager = $languageManager;
@@ -74,58 +73,56 @@ class UserPresenter extends Base\ForumPresenter
     /**
      * @param RanksManager $rankManager
      */
-    public function injectRankManager(RanksManager $rankManager){
+    public function injectRankManager(RanksManager $rankManager) {
         $this->rankManager = $rankManager;
     }
 
     /**
      * @param WwwDir $wwwDir
      */
-    public function injectWwwDir(WwwDir $wwwDir){
+    public function injectWwwDir(WwwDir $wwwDir) {
         $this->wwwDir = $wwwDir;
     }
 
     /**
      * @param TopicWatchManager $topicWatchManager
      */
-    public function injectTopicWatchManager(TopicWatchManager $topicWatchManager){
+    public function injectTopicWatchManager(TopicWatchManager $topicWatchManager) {
         $this->topicWatchManager = $topicWatchManager;
     }
 
     /**
      * @param TopicsManager $topicManager
      */
-    public function injectTopicManager(TopicsManager $topicManager){
+    public function injectTopicManager(TopicsManager $topicManager) {
         $this->topicManager = $topicManager;
     }
 
     /**
      * @param PostsManager $postManager
      */
-    public function injectPostManager(PostsManager $postManager){
+    public function injectPostManager(PostsManager $postManager) {
         $this->postManager = $postManager;
     }
 
     /**
      * @param ThanksManager $thanksManager
      */
-    public function injectThankManager(ThanksManager $thanksManager){
-        $this->thanksManager = $thanksManager;        
+    public function injectThankManager(ThanksManager $thanksManager) {
+        $this->thanksManager = $thanksManager;
     }
-    
+
     /**
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function editUserFormSuccess(Form $form, ArrayHash $values)
-    {
+    public function editUserFormSuccess(Form $form, ArrayHash $values) {
         $user = $this->getUser();
         $move = $this->getManager()->moveAvatar($values->user_avatar, $this->getUser()->getId(), $this->wwwDir->wwwDir);
 
-        if ( $move !== UsersManager::NOT_UPLOADED ){
+        if ($move !== UsersManager::NOT_UPLOADED) {
             $values->user_avatar = $move;
-        }
-        else{
+        } else {
             unset($values->user_avatar);
         }
 
@@ -148,19 +145,17 @@ class UserPresenter extends Base\ForumPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function editUserOnValidate(Form $form, ArrayHash $values)
-    {
-
+    public function editUserOnValidate(Form $form, ArrayHash $values) {
+        
     }
 
     /**
      *
      */
-    public function actionLogout()
-    {
-        $this->getSessionManager()->deleteBySessionId($this->getSession()->getId());       
+    public function actionLogout() {
+        $this->getSessionManager()->deleteBySessionId($this->getSession()->getId());
         $this->getUser()->logout();
-        
+
         $this->flashMessage('Successfully logged out. ', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('Index:default');
     }
@@ -169,33 +164,32 @@ class UserPresenter extends Base\ForumPresenter
      * @param int $user_id
      * @param string $key
      */
-    public function actionActivate($user_id, $key){
+    public function actionActivate($user_id, $key) {
         // after register
-        if ( !$this->getUser()->isLoggedIn() ){
+        if (!$this->getUser()->isLoggedIn()) {
             $can = $this->getManager()->canBeActivated($user_id, $key);
-            
-            if ( $can ){
+
+            if ($can) {
                 $this->getManager()->update($user_id, ArrayHash::from(['user_active' => 1, 'user_activation_key' => null]));
                 $this->flashMessage('You have been activated.', self::FLASH_MESSAGE_SUCCESS);
                 $this->redirect('Login:default');
-            }else{
+            } else {
                 $this->flashMessage('You cannot be activated.', self::FLASH_MESSAGE_DANGER);
             }
-        }
-        else{
+        } else {
             $this->flashMessage('You are logged in!', self::FLASH_MESSAGE_DANGER);
-        }        
+        }
     }
 
     /**
      * @return \App\Controls\BootstrapForm
      */
-    protected function createComponentResetPasswordForm(){
+    protected function createComponentResetPasswordForm() {
         $form = $this->getBootStrapForm();
         $form->addEmail('user_email', 'User email:');
         $form->addSubmit('send', 'Reset');
         $form->onSuccess[] = [$this, 'resetPasswordFormSuccess'];
-        
+
         return $form;
     }
 
@@ -203,15 +197,14 @@ class UserPresenter extends Base\ForumPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function resetPasswordFormSuccess(Form $form, ArrayHash $values){
+    public function resetPasswordFormSuccess(Form $form, ArrayHash $values) {
         $found_mail = $this->getManager()->getByEmail($values->user_email);
-        
-        if ( $found_mail ){
+
+        if ($found_mail) {
             // send mail!
-            
-            $this->flashMessage('Email was sent.', self::FLASH_MESSAGE_SUCCESS);            
-        }
-        else{
+
+            $this->flashMessage('Email was sent.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
             $this->flashMessage('User mail was not found!', self::FLASH_MESSAGE_DANGER);
         }
     }
@@ -219,7 +212,7 @@ class UserPresenter extends Base\ForumPresenter
     /**
      *
      */
-    public function renderLostPassword(){
+    public function renderLostPassword() {
         // give mail and send on that mail mail with info how to change it
         // give link to reset this action if owner of account don't ask to reset pass
     }
@@ -227,23 +220,22 @@ class UserPresenter extends Base\ForumPresenter
     /**
      *
      */
-    public function actionResetLostPassword(){
+    public function actionResetLostPassword() {
         // case when you do not send request to reset password
     }
 
     /**
      *
      */
-    public function actionChangeLostPassword(){
-       // set new password 
+    public function actionChangeLostPassword() {
+        // set new password 
     }
 
     /**
      *
      */
-    public function renderEdit()
-    {
-        $user     = $this->getUser();
+    public function renderEdit() {
+        $user = $this->getUser();
         $userData = [];
 
         if ($user->isLoggedIn()) {
@@ -258,158 +250,151 @@ class UserPresenter extends Base\ForumPresenter
     /**
      * @param int $user_id
      */
-    public function renderPosts($user_id, $page = 1)
-    {
-        if ( !is_numeric($user_id) ){
+    public function renderPosts($user_id, $page = 1) {
+        if (!is_numeric($user_id)) {
             $this->error('Parameter is not numeric.');
         }
-        
+
         $user = $this->getManager()->getById($user_id);
-        
-        if (!$user){
+
+        if (!$user) {
             $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
         }
-        
-        $posts = $this->getManager()->getPosts($user_id);        
-        $pag   = new \App\Controls\PaginatorControl($posts, 15, 5, $page);
+
+        $posts = $this->getManager()->getPosts($user_id);
+        $pag = new \App\Controls\PaginatorControl($posts, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
-        
-        if ( !$pag->getCount() ){
+
+        if (!$pag->getCount()) {
             $this->flashMessage('User have no posts', self::FLASH_MESSAGE_WARNING);
         }
-                
+
         $this->template->posts = $posts->fetchAll();
     }
 
     /**
      * @param int $user_id
      */
-    public function renderProfile($user_id)
-    {
-        if ( !is_numeric($user_id) ){
-            $this->error('Parameter is not numeric');            
+    public function renderProfile($user_id) {
+        if (!is_numeric($user_id)) {
+            $this->error('Parameter is not numeric');
         }
-        
+
         $userData = $this->getManager()->getById($user_id);
 
         if (!$userData) {
             $this->error('User not found.');
         }
-        
-        $ranks    = $this->rankManager->getAllCached();
+
+        $ranks = $this->rankManager->getAllCached();
         $rankUser = null;
-        
-        foreach ( $ranks as $rank){
-            if ( $userData->user_post_count >= $rank->rank_from && $userData->user_post_count <= $rank->rank_to ){
-                 $rankUser = $rank; 
+
+        foreach ($ranks as $rank) {
+            if ($userData->user_post_count >= $rank->rank_from && $userData->user_post_count <= $rank->rank_to) {
+                $rankUser = $rank;
                 break;
             }
         }
 
-        $this->template->thankCount     = $this->thanksManager->getCountCached();
-        $this->template->topicCount     = $this->topicManager->getCountCached();
-        $this->template->postCount      = $this->postManager->getCountCached();
+        $this->template->thankCount = $this->thanksManager->getCountCached();
+        $this->template->topicCount = $this->topicManager->getCountCached();
+        $this->template->postCount = $this->postManager->getCountCached();
         $this->template->watchTotalCount = $this->topicWatchManager->getCount();
-        $this->template->userData       = $userData;
-        $this->template->rank           = $rankUser;
+        $this->template->userData = $userData;
+        $this->template->rank = $rankUser;
     }
 
     /**
      * @param int $user_id
      */
-    public function renderThanks($user_id, $page = 1)
-    {
-        if ( !is_numeric($user_id) ){
+    public function renderThanks($user_id, $page = 1) {
+        if (!is_numeric($user_id)) {
             $this->error('Parameter is not numeric.');
         }
-               
+
         $user = $this->getManager()->getById($user_id);
-        
-        if (!$user){
+
+        if (!$user) {
             $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
-        }        
-        
-        $thanks = $this->getManager()->getThanks($user_id);        
-        $pag    = new \App\Controls\PaginatorControl($thanks, 15, 5, $page);
+        }
+
+        $thanks = $this->getManager()->getThanks($user_id);
+        $pag = new \App\Controls\PaginatorControl($thanks, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
-        
-        if (!$pag->getCount()){
+
+        if (!$pag->getCount()) {
             $this->flashMessage('User have no thanks.', self::FLASH_MESSAGE_WARNING);
         }
-        
+
         $this->template->thanks = $thanks->fetchAll();
     }
 
     /**
      * @param int $user_id
      */
-    public function renderTopics($user_id, $page = 1)
-    {
-        if ( !is_numeric($user_id) ){
+    public function renderTopics($user_id, $page = 1) {
+        if (!is_numeric($user_id)) {
             $this->error('Parameter is not numeric.');
         }
-               
+
         $user = $this->getManager()->getById($user_id);
-        
-        if (!$user){
+
+        if (!$user) {
             $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
-        }        
-        
+        }
+
         $topics = $this->getManager()->getTopics($user_id);
-        $pag    = new \App\Controls\PaginatorControl($topics, 15, 5, $page);        
+        $pag = new \App\Controls\PaginatorControl($topics, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
-        
-        if ( !$pag->getCount() ){
+
+        if (!$pag->getCount()) {
             $this->flashMessage('User have no topics.', self::FLASH_MESSAGE_WARNING);
         }
-        
+
         $this->template->topics = $topics->fetchAll();
     }
 
     /**
      * @param int $user_id
      */
-    public function renderWatches($user_id){
-        if ( !is_numeric($user_id) ){
+    public function renderWatches($user_id) {
+        if (!is_numeric($user_id)) {
             $this->error('Parameter is not numeric.');
         }
-               
+
         $user = $this->getManager()->getById($user_id);
-        
-        if (!$user){
+
+        if (!$user) {
             $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
-        }  
-        
+        }
+
         $watches = $this->topicWatchManager->getByRightJoined($user_id);
-        
-        if (!$watches){
+
+        if (!$watches) {
             $this->flashMessage('User is not watching any topic.', self::FLASH_MESSAGE_WARNING);
         }
-        
+
         $this->template->watches = $watches;
     }
 
     /**
      * @return ChangePasswordControl
      */
-    protected function createComponentChangePasswordControl()
-    {
+    protected function createComponentChangePasswordControl() {
         return new ChangePasswordControl($this->getManager(), $this->getForumTranslator(), $this->getUser());
     }
 
     /**
      * @return DeleteAvatarControl
      */
-    protected function createComponentDeleteAvatar()
-    {
+    protected function createComponentDeleteAvatar() {
         return new DeleteAvatarControl($this->getManager(), $this->wwwDir, $this->getUser(), $this->getForumTranslator());
     }
 
     /**
      * @return \App\Controls\BootstrapForm
      */
-    protected function createComponentEditUserForm()
-    {
+    protected function createComponentEditUserForm() {
         $form = $this->getBootStrapForm();
         $form->setTranslator($this->getForumTranslator());
         $form->addText('user_name', 'User name:');
@@ -428,4 +413,5 @@ class UserPresenter extends Base\ForumPresenter
 
         return $form;
     }
+
 }

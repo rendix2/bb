@@ -31,9 +31,9 @@ class CachePresenter extends BasePresenter {
     /**
      * @param AppDir $appDir
      */
-    public function injectAppDir(AppDir $appDir){
+    public function injectAppDir(AppDir $appDir) {
         $this->appDir = $appDir;
-    }  
+    }
 
     /**
      *
@@ -58,7 +58,7 @@ class CachePresenter extends BasePresenter {
         $form = new BootstrapForm();
         $form->setTranslator($this->translator);
         $form->addSubmit('Delete_all', 'Delete all cache');
-        
+
         $form->onSuccess[] = [$this, 'success'];
 
 
@@ -69,7 +69,7 @@ class CachePresenter extends BasePresenter {
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function success(Form $form, ArrayHash $values){
+    public function success(Form $form, ArrayHash $values) {
         
     }
 
@@ -79,7 +79,7 @@ class CachePresenter extends BasePresenter {
     public function beforeRender() {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->translator  = new Translator($this->appDir,'Admin', $this->getUser()->getIdentity()->getData()['lang_file_name']));
+        $this->template->setTranslator($this->translator = new Translator($this->appDir, 'Admin', $this->getUser()->getIdentity()->getData()['lang_file_name']));
     }
 
 }

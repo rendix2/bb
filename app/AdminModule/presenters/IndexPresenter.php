@@ -12,13 +12,13 @@ use App\Translator;
  *
  * @author rendi
  */
-class IndexPresenter extends BasePresenter
-{
+class IndexPresenter extends BasePresenter {
+
     /**
      *
      */
     const MAX_LOGGED_IN_USERS_TO_SHOW = 200;
-    
+
     /**
      * @var AppDir $appDir
      */
@@ -32,22 +32,21 @@ class IndexPresenter extends BasePresenter
     /**
      * @param AppDir $appDir
      */
-    public function injectAppDir(AppDir $appDir){
+    public function injectAppDir(AppDir $appDir) {
         $this->appDir = $appDir;
     }
 
     /**
      * @param SessionsManager $sessionManager
      */
-    public function injectSessionManager(SessionsManager $sessionManager){
+    public function injectSessionManager(SessionsManager $sessionManager) {
         $this->sessionsManager = $sessionManager;
     }
-    
+
     /**
      *
      */
-    public function startup()
-    {
+    public function startup() {
         parent::startup();
 
         $user = $this->getUser();
@@ -64,34 +63,31 @@ class IndexPresenter extends BasePresenter
 
         //$this->adminTranslator = new Translator($this->appDir,'Admin', $lang_name);
     }
-    
 
-        /**
+    /**
      *
      */
-    public function beforeRender()
-    {
+    public function beforeRender() {
         parent::beforeRender();
         $lang_name = $this->getUser()->getIdentity()->getData()['lang_file_name'];
 
-        $this->template->setTranslator(new Translator($this->appDir,'admin', $lang_name));
+        $this->template->setTranslator(new Translator($this->appDir, 'admin', $lang_name));
     }
 
     /**
      *
      */
-    public function renderDefault()
-    {
+    public function renderDefault() {
         $count = $this->sessionsManager->getCountOfLoggedUsers();
-        
-        if ( $count <= self::MAX_LOGGED_IN_USERS_TO_SHOW ){
-                    $loggedUsers = $this->sessionsManager->getLoggedUsers();
-        }else{
+
+        if ($count <= self::MAX_LOGGED_IN_USERS_TO_SHOW) {
+            $loggedUsers = $this->sessionsManager->getLoggedUsers();
+        } else {
             $loggedUsers = null;
         }
-     
+
         $this->template->countLogged = $count;
-        $this->template->maxLogged   = self::MAX_LOGGED_IN_USERS_TO_SHOW;
+        $this->template->maxLogged = self::MAX_LOGGED_IN_USERS_TO_SHOW;
         $this->template->loggedUsers = $loggedUsers;
     }
 

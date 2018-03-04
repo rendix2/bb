@@ -18,25 +18,28 @@ use Nette\Security\User;
  * @author rendi
  * @method IndexManager getManager()
  */
-class IndexPresenter extends Base\ForumPresenter
-{
+class IndexPresenter extends Base\ForumPresenter {
 
     /**
      *
      */
     const CACHE_KEY_LAST_USER = 'lastUser';
+
     /**
      *
      */
     const CACHE_KEY_TOTAL_USERS = 'totalUsers';
+
     /**
      *
      */
     const CACHE_KEY_TOTAL_TOPICS = 'totalTopics';
+
     /**
      *
      */
     const CACHE_KEY_TOTAL_POSTS = 'totalPosts';
+
     /**
      *
      */
@@ -77,68 +80,63 @@ class IndexPresenter extends Base\ForumPresenter
      *
      * @param IndexManager $manager
      */
-    public function __construct(IndexManager $manager)
-    {
+    public function __construct(IndexManager $manager) {
         parent::__construct($manager);
     }
 
     /**
      * @return mixed
      */
-    public function getCache()
-    {
+    public function getCache() {
         return $this->cache;
     }
 
     /**
      * @param IStorage $storage
      */
-    public function injectCache(IStorage $storage)
-    {
+    public function injectCache(IStorage $storage) {
         $this->cache = new Cache($storage, 'BBIndex');
     }
 
     /**
      * @param ForumsManager $forumsManager
      */
-    public function injectForumManager(ForumsManager $forumsManager)
-    {
+    public function injectForumManager(ForumsManager $forumsManager) {
         $this->forumsManager = $forumsManager;
     }
 
     /**
      * @param TopicsManager $topicManager
      */
-    public function injectTopicManager(TopicsManager $topicManager){
+    public function injectTopicManager(TopicsManager $topicManager) {
         $this->topicManager = $topicManager;
     }
 
     /**
      * @param PostsManager $postManager
      */
-    public function injectPostManager(PostsManager $postManager){
+    public function injectPostManager(PostsManager $postManager) {
         $this->postManger = $postManager;
     }
 
     /**
      * @param UsersManager $userManager
      */
-    public function injectUserManager(UsersManager $userManager){
+    public function injectUserManager(UsersManager $userManager) {
         $this->userManager = $userManager;
     }
 
     /**
      * @param CategoriesManager $categoriesManager
      */
-    public function injectCategoriesManager(CategoriesManager $categoriesManager){
+    public function injectCategoriesManager(CategoriesManager $categoriesManager) {
         $this->categoriesManager = $categoriesManager;
     }
 
     /**
      * @param int $category_id
      */
-    public function renderCategory($category_id)
-    {
+    public function renderCategory($category_id) {
         $forums = $this->getManager()->getForumByCategoryId($category_id);
 
         if (!$forums) {
@@ -151,22 +149,21 @@ class IndexPresenter extends Base\ForumPresenter
     /**
      *
      */
-    public function renderDefault()
-    {        
+    public function renderDefault() {
         $categories = $this->categoriesManager->getActiveCategoriesCached();
-        $result     = [];
+        $result = [];
         $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
 
         foreach ($categories as $category) {
             $forums = $this->getManager()->getForumsFirstLevel($category->category_id);
-                        
-            foreach ($forums as $forum){
+
+            foreach ($forums as $forum) {
                 $forum->hasNewPosts = count($this->postManger->getNewerPosts($forum->forum_id, $last_login_time));
                 $forum->hasNewTopics = count($this->topicManager->getNewerTopics($forum->forum_id, $last_login_time));
             }
-                                  
+
             $result[$category->category_id]['category'] = $category;
-            $result[$category->category_id]['forum']    = $forums;
+            $result[$category->category_id]['forum'] = $forums;
         }
 
         $cachedLastUser = $this->getCache()->load(self::CACHE_KEY_LAST_USER);
@@ -186,12 +183,12 @@ class IndexPresenter extends Base\ForumPresenter
         }
 
         $this->template->mostPostsUser = $this->getManager()->getUserWithMostPosts();
-        $this->template->lastTopic   = $cachedLastTopic;
-        $this->template->lastUser    = $cachedLastUser;
-        $this->template->totalUsers  = $this->userManager->getCountCached();
-        $this->template->totalPosts  = $this->postManger->getCountCached();
+        $this->template->lastTopic = $cachedLastTopic;
+        $this->template->lastUser = $cachedLastUser;
+        $this->template->totalUsers = $this->userManager->getCountCached();
+        $this->template->totalPosts = $this->postManger->getCountCached();
         $this->template->totalTopics = $this->topicManager->getCountCached();
-        $this->template->data        = $result;
+        $this->template->data = $result;
     }
 
 }

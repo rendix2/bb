@@ -18,8 +18,6 @@ class CategoryPresenter extends Base\AdminPresenter {
      */
     private $forumsManager;
     
-
-
     /**
      * CategoryPresenter constructor.
      *
