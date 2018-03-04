@@ -13,6 +13,7 @@ class GridFilter extends \Nette\Application\UI\Control {
     const TEXT_LIKE = 'tl';
     const INT_EQUAL = 'i';
     const NOTHING = 'empty';
+    const FROM_TO_INT = 'FTI';
 
     private $whereColumns;
     private $limit = 100;
@@ -35,21 +36,27 @@ class GridFilter extends \Nette\Application\UI\Control {
         switch ($type) {
             case self::TEXT_EQUAL:
                 $this->form->addText($columnName, $text);
-                $this->type[$columnName] = ['type' => $type, 'text' => $text, 'operator' => '=', 'before' => "'", 'after' => "'"];
+                $this->type[$columnName] = ['type' => $type, 'text' => $text, 'operator' => '=', 'strint' => '%s'];
                 break;
             case self::TEXT_LIKE:
                 $this->form->addText($columnName, $text);
-                $this->type[$columnName] = ['type' => $type, 'text' => $text, 'operator' => 'LIKE', 'before' => "'%", 'after' => "%'"];
-                break;            
+                $this->type[$columnName] = ['type' => $type, 'text' => $text, 'operator' => 'LIKE', 'strint' => '%s'];
+                break;
             case self::INT_EQUAL:
-                $this->form->addInteger($columnName, $text);
-                $this->type[$columnName] = ['type' => $type, 'text' => $text, 'operator' => '=','before' => "", 'after' => ""];
+                $this->form->addText($columnName, $text)->setRequired(false)->addRule(\Nette\Application\UI\Form::INTEGER);
+                $this->type[$columnName] = ['type' => $type, 'text' => $text, 'operator' => '=', 'strint' => '%i'];
                 break;
             case self::NOTHING:
-                $this->type[$columnName] = ['type' => $type, 'text' => $text];
+                $this->type[self::NOTHING] = ['type' => $type, 'text' => $text, 'operator' => null, 'strint' => 'null'];
+                break;
+            case self::FROM_TO_INT:
+                $this->form->addText($columnName . '_Xfrom', $text)->setRequired(false)->addRule(\Nette\Application\UI\Form::INTEGER)->setAttribute('placeholder', 'From')->setAttribute('class', 'mb-1');
+                $this->form->addText($columnName . '_Xto', $text)->setRequired(false)->addRule(\Nette\Application\UI\Form::INTEGER)->setAttribute('placeholder', 'To');
+                $this->type[$columnName . '_Xfrom'] = ['type' => $type, 'text' => $text, 'operator' => '>=', 'strint' => '%i'];
+                $this->type[$columnName . '_Xto'] = ['type' => $type, 'text' => $text, 'operator' => '<=', 'strint' => '%i'];
                 break;
         }
-    }   
+    }
 
     protected function createComponentGridFilter() {
         $this->form->setAction($this->link('this', $this->getParameters()));
@@ -62,33 +69,45 @@ class GridFilter extends \Nette\Application\UI\Control {
     public function getWhere() {
 
         if ($this->whereColumns) {
-            // get from form
             return $this->whereColumns;
         } else {
             // get from session
             $where = [];
-            
-            if ( is_array($this->type) ){
-            foreach ($this->type as $col => $val) {
-                if ($this->session->getSection($col)->value){
-                    $where[] = ['column' => $col, 'type' => $val['operator'], 'value' => $this->session->getSection($col)->value, 'before' => $val['before'], 'after' => $val['after']];
+
+            if (is_array($this->type)) {
+                foreach ($this->type as $col => $val) {
+                    if (( $val['strint'] == '%i' && is_numeric($this->session->getSection($col)->value) ) || ($val['strint'] == '%s' && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1 ) && $col !== self::NOTHING) {
+                        $columnName = $col;
+
+                        if (preg_match('#_Xfrom$#', $col)) {
+                            $columnName = str_replace('_Xfrom', '', $col);
+                        }
+
+                        if (preg_match('#_Xto$#', $col)) {
+                            $columnName = str_replace('_Xto', '', $col);
+                        }
+
+                        if ($val['operator'] == 'LIKE') {
+                            $where[] = ['column' => $columnName, 'type' => $val['operator'], 'value' => '%' . $this->session->getSection($col)->value . '%', 'strint' => $val['strint']];
+                        } else {
+                            $where[] = ['column' => $columnName, 'type' => $val['operator'], 'value' => $this->session->getSection($col)->value, 'strint' => $val['strint']];
+                        }
+                    }
                 }
             }
-            }
-
             return $where;
         }
     }
 
     public function getOrderBy() {
         $orderBy = [];
+        $params = $this->getParameters() ? $this->getParameters() : $this->orderBy;
 
-        $params =  $this->getParameters() ? $this->getParameters() : $this->orderBy;
-        foreach ( $this->getParameters() as $param => $value) {
+        foreach ($this->getParameters() as $param => $value) {
             $param = str_replace('sort_', '', $param);
             $orderBy[$param] = ($value === 'ASC' || $value === 'DESC') ? $value : null;
         }
-        
+
         return $orderBy;
     }
 
@@ -96,14 +115,16 @@ class GridFilter extends \Nette\Application\UI\Control {
         $where = [];
 
         foreach ($this->type as $name => $type) {
-            $section = $this->session->getSection($name);
-            $section->value = $values[$name];
+            if ((isset($values[$name]) ) && $name != self::NOTHING) {
+                $section = $this->session->getSection($name);
+                $section->value = $values[$name];
 
-            $where[] = ['column' => $name, 'type' => $type['operator'], 'value' => "'".$values[$name]."'",];
+                $where[] = ['column' => $name, 'type' => $type['operator'], 'value' => "'" . $values[$name] . "'",];
+            }
         }
 
         $this->whereColumns = $where;
-        
+
         $this->redirect('this');
     }
 
@@ -114,8 +135,8 @@ class GridFilter extends \Nette\Application\UI\Control {
             $this['gridFilter']->setDefaults([$column => $this->session->getSection($column)->value]);
         }
 
-        $template->type   = $this->type;
-        $template->gf     = $this;
+        $template->type = $this->type;
+        $template->gf = $this;
         $template->params = $this->getParameters();
 
         $template->render();

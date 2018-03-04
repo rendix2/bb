@@ -20,11 +20,7 @@
 <div class="col-sm-12 main">
     <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
         <thead>
-            <tr>
-                <th>{_forum_id}</th>
-                <th>{_forum_name}</th>
-                <th></th>
-            </tr>
+            {control gridFilter}
         </thead>
         <tbody>
             {foreach $items as $item}

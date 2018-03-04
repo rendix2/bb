@@ -58,7 +58,7 @@
                 <tr>
                     <td>
                         <a href="{link Post:editTopic, $presenter->getParameter('forum_id'), $topic->topic_id}">{$topic->topic_id}</a>
-                        {if $topic->topic_locked}<span>Locked</span>{/if}
+                        {if $topic->topic_locked}<span class="badge badge-secondary">Locked</span>{/if}
                     </td>
                     <td>
                         <a href="{link Post:all, $presenter->getParameter('forum_id'), $topic->topic_id}">{$topic->topic_name}</a>

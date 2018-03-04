@@ -62,6 +62,22 @@ class UserPresenter extends Base\AdminPresenter
     {
         parent::__construct($manager);
     }
+    
+    public function startup() {
+        parent::startup();                      
+        if ( $this->getAction() == 'default' ){
+        $this->gf->addFilter('user_id', 'User ID', \App\Controls\GridFilter::INT_EQUAL);
+        $this->gf->addFilter('user_name', 'User name', \App\Controls\GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('user_post_count', 'Post count', \App\Controls\GridFilter::FROM_TO_INT);
+                $this->gf->addFilter('user_topic_count', 'Topic count', \App\Controls\GridFilter::FROM_TO_INT);
+                $this->gf->addFilter('user_thank_count', 'Thank count', \App\Controls\GridFilter::FROM_TO_INT);
+        $this->gf->addFilter('', '', \App\Controls\GridFilter::NOTHING);
+        
+        $this->addComponent($this->gf , 'gridFilter');                
+        }                
+        
+        
+    }
 
     /**
      * @param WwwDir $wwwDir

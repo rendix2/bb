@@ -3,7 +3,14 @@
 {form gridFilter}
     {input send, 'style' => 'display:none'}
     <tr>
-        {foreach $type as $name => $val}
+        {var $fti = false}
+        {foreach $type as $name => $val} 
+
+            {if $fti == true}
+                {var $fti = false}
+                {continueIf true}                    
+            {/if}
+
             <th>{$val['text']}
                 {if $val['type'] != 'empty'} 
                     {var $p = $params}
@@ -23,12 +30,29 @@
                     {/if}
                 {/if}
             </th>
+
+            {if $val['type'] == 'FTI' && preg_match('#_Xfrom$#', $name)  }
+                {var $fti = true}
+            {/if}
+
         {/foreach}
     </tr>
     <tr>
+        {var $fti = false}
         {foreach $type as $name => $val}
-            {if $val['type'] != 'empty'} 
-                <td>{input $name}</td>
+
+            {if $fti == true}
+                {var $fti = false}
+                {continueIf  true}
+            {/if}
+
+            {if $val['type'] == 'FTI' && preg_match('#_Xfrom$#', $name) }
+                {var $toName = str_replace('_Xfrom', '_Xto', $name)}
+                {var $fti = true}
+                <td>{input $name}{input $toName}</td>    
+
+            {elseif $val['type'] != 'empty' && $val['type'] != 'FTI' } 
+                <td>{input $name}</td>                
             {else}
                 <td></td>
             {/if}

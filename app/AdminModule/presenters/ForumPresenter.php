@@ -79,6 +79,18 @@ class ForumPresenter extends Base\AdminPresenter
     {
         $this->userManager = $userManager;
     }
+    
+    public function startup() {
+        parent::startup();
+              
+        if ( $this->getAction() == 'default' ){
+        $this->gf->addFilter('forum_id', 'Forum ID', \App\Controls\GridFilter::INT_EQUAL);
+        $this->gf->addFilter('forum_name', 'Forum name', \App\Controls\GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('', '', \App\Controls\GridFilter::NOTHING);
+        
+        $this->addComponent($this->gf , 'gridFilter');                
+        }
+    }    
 
     /**
      * @param int|null $id

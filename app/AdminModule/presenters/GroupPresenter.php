@@ -47,6 +47,18 @@ class GroupPresenter extends Base\AdminPresenter
     {
         parent::__construct($manager);
     }
+    
+    public function startup() {
+        parent::startup();
+              
+        if ( $this->getAction() == 'default' ){
+        $this->gf->addFilter('group_id', 'Group ID', \App\Controls\GridFilter::INT_EQUAL);
+        $this->gf->addFilter('group_name', 'Group name', \App\Controls\GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('', '', \App\Controls\GridFilter::NOTHING);
+        
+        $this->addComponent($this->gf , 'gridFilter');                
+        }
+    }    
 
     /**
      * @param Form      $form

@@ -15,22 +15,24 @@
 </div>
 
 
-    <div class="col-sm-6">
-        <div class="card h-100">
-            <div class="card-header">{_menu_language}</div>
-            <div class="card-block p-3">
-                {control editForm}
+<div class="col-sm-6">
+    <div class="card h-100">
+        <div class="card-header">{_menu_language}</div>
+        <div class="card-block p-3">
+            {control editForm}
+        </div>
+    </div>
+</div>
+<div class="col-sm-6">
+    <div class="card h-100">
+        <div class="card-header">{_statistic}</div>
+        <div class="card-block p-3">
+            <div class="col-sm-2">
+                <div class="btn btn-primary">{_user_count_lang} <span class="badge badge-light">{$countOfUsers}</span></div>
             </div>
         </div>
     </div>
-    <div class="col-sm-6">
-        <div class="card h-100">
-            <div class="card-header">{_statistic}</div>
-            <div class="card-block p-3">
-                {_user_count_lang}:{$countOfUsers}
-            </div>
-        </div>
-    </div>
+</div>
 
 <div class="col-sm-12 mt-3">     
     <div class="float-left">

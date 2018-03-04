@@ -26,7 +26,7 @@
     <div class="card h-100">
         <div class="card-header">{_statistic}</div>
         <div class="card-block p-3">
-            {_user_count_lang}:{$countOfUsers}
+            <div class="btn btn-primary">{_user_count_lang} <span class="badge badge-light">{$countOfUsers}</span></div>
         </div>
     </div>
 </div>
@@ -43,7 +43,7 @@
                         <li class="list-group-item list-group-item-primary">
                             <a href="{link Forum:edit, $forum->forum_id}">{$forum->forum_name}</a>
 
-                            <ul>        
+                            <ul class="mb-3">        
                                 <li class="list-group-item list-group-item-secondary">
                                     <label>
                                         <input type="checkbox" value="{$forum->forum_id}" name="post_add[]" {if isset($permissions[$forum->forum_id]['post_add']) && $permissions[$forum->forum_id]['post_add'] === 1}checked="checked"{/if}>

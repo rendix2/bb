@@ -28,7 +28,7 @@
             <tbody>
                 {foreach $topicData as $data}
                     <tr>
-                        <td><a href="{link Post:all, $data->topic_forum_id, $data->topic_id}">{$data->topic_name}</a></td>
+                        <td><a href="{link Post:all, $data->topic_forum_id, $data->topic_id}">{$data->topic_id}</a></td>
                         <td>{$data->topic_name}</td>
                     </tr>
                 {/foreach}

@@ -200,9 +200,9 @@ abstract class CrudPresenter extends ManagerPresenter
         }
         
         foreach ( $this->gf->getWhere() as $where ){
-            if ( $where['value'] ){
+            if ( isset($where['value']) ){
                 \Tracy\Debugger::barDump($where);
-                $items->where('['.$where['column'].'] '.$where['type'].' '.$where['before']. $where['value'].$where['after']);
+                $items->where('['.$where['column'].'] '.$where['type'].' '.$where['strint'], $where['value']);
             }
         }
         
