@@ -19,7 +19,6 @@ use Dibi\Result;
  */
 abstract class MNManager extends Manager
 {
-
     /**
      * @var CrudManager $left
      */
@@ -47,11 +46,10 @@ abstract class MNManager extends Manager
 
         $this->left  = $left;
         $this->right = $right;
-        
-        if ( $tableName == null ){
+
+        if ($tableName == null) {
             $this->table = $left->getTable() . '2' . $right->getTable();
-        }
-        else{
+        } else {
             $this->table = $tableName;
         }
     }
@@ -64,9 +62,12 @@ abstract class MNManager extends Manager
     public function getByLeftAll($left_id)
     {
         return $this->dibi->select('*')
-                          ->from($this->table)
-                          ->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)
-                          ->fetchAll();
+            ->from($this->table)
+            ->where(
+                '[' . $this->left->getPrimaryKey() . '] = %i',
+                $left_id
+            )
+            ->fetchAll();
     }
 
     /**
@@ -80,13 +81,20 @@ abstract class MNManager extends Manager
         $aliasR = self::createAlias($this->right->getTable());
 
         return $this->dibi->select($aliasR . '.*')
-                          ->from($this->table)
-                          ->as('relation')
-                          ->innerJoin($this->right->getTable())
-                          ->as($aliasR)
-                          ->on($aliasR . '.' . $this->right->getPrimaryKey() . ' = [relation.' . $this->right->getPrimaryKey() . ']')
-                          ->where('[relation.' . $this->left->getPrimaryKey() . '] = %i', $left_id)
-                          ->fetchAll();
+            ->from($this->table)
+            ->as('relation')
+            ->innerJoin(
+                $this->right->getTable()
+            )
+            ->as($aliasR)
+            ->on(
+                $aliasR . '.' . $this->right->getPrimaryKey() . ' = [relation.' . $this->right->getPrimaryKey() . ']'
+            )
+            ->where(
+                '[relation.' . $this->left->getPrimaryKey() . '] = %i',
+                $left_id
+            )
+            ->fetchAll();
     }
 
     /**
@@ -97,9 +105,15 @@ abstract class MNManager extends Manager
     public function getByLeftPairs($left_id)
     {
         return $this->dibi->select($this->right->getPrimaryKey())
-                          ->from($this->table)
-                          ->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)
-                          ->fetchPairs(null, $this->right->getPrimaryKey());
+            ->from($this->table)
+            ->where(
+                '[' . $this->left->getPrimaryKey() . '] = %i',
+                $left_id
+            )
+            ->fetchPairs(
+                null,
+                $this->right->getPrimaryKey()
+            );
     }
 
     /**
@@ -110,9 +124,12 @@ abstract class MNManager extends Manager
     public function getByRightAll($right_id)
     {
         return $this->dibi->select('*')
-                          ->from($this->table)
-                          ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)
-                          ->fetchAll();
+            ->from($this->table)
+            ->where(
+                '[' . $this->right->getPrimaryKey() . '] = %i',
+                $right_id
+            )
+            ->fetchAll();
     }
 
     /**
@@ -126,13 +143,20 @@ abstract class MNManager extends Manager
         $aliasR = self::createAlias($this->right->getTable());
 
         return $this->dibi->select($aliasL . '.*')
-                          ->from($this->table)
-                          ->as('relation')
-                          ->innerJoin($this->left->getTable())
-                          ->as($aliasL)
-                          ->on($aliasL . '.' . $this->left->getPrimaryKey() . ' = [relation.' . $this->left->getPrimaryKey() . ']')
-                          ->where('[relation.' . $this->right->getPrimaryKey() . '] = %i', $right_id)
-                          ->fetchAll();
+            ->from($this->table)
+            ->as('relation')
+            ->innerJoin(
+                $this->left->getTable()
+            )
+            ->as($aliasL)
+            ->on(
+                $aliasL . '.' . $this->left->getPrimaryKey() . ' = [relation.' . $this->left->getPrimaryKey() . ']'
+            )
+            ->where(
+                '[relation.' . $this->right->getPrimaryKey() . '] = %i',
+                $right_id
+            )
+            ->fetchAll();
     }
 
     /**
@@ -143,9 +167,25 @@ abstract class MNManager extends Manager
     public function getByRightPairs($right_id)
     {
         return $this->dibi->select($this->left->getPrimaryKey())
-                          ->from($this->table)
-                          ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)
-                          ->fetchPairs(null, $this->left->getPrimaryKey());
+            ->from($this->table)
+            ->where(
+                '[' . $this->right->getPrimaryKey() . '] = %i',
+                $right_id
+            )
+            ->fetchPairs(
+                null,
+                $this->left->getPrimaryKey()
+            );
+    }
+
+    /**
+     * @return int
+     */
+    public function getCount()
+    {
+        return $this->dibi->select('COUNT(*)')
+            ->from($this->table)
+            ->fetchSingle();
     }
 
     /**
@@ -156,9 +196,12 @@ abstract class MNManager extends Manager
     public function getCountByLeft($left_id)
     {
         return $this->dibi->select('COUNT(*)')
-                          ->from($this->table)
-                          ->where($this->left->getPrimaryKey() . ' = %i', $left_id)
-                          ->fetchSingle();
+            ->from($this->table)
+            ->where(
+                $this->left->getPrimaryKey() . ' = %i',
+                $left_id
+            )
+            ->fetchSingle();
     }
 
     /**
@@ -169,9 +212,12 @@ abstract class MNManager extends Manager
     public function getCountByRight($right_id)
     {
         return $this->dibi->select('COUNT(*)')
-                          ->from($this->table)
-                          ->where($this->right->getPrimaryKey() . ' = %i', $right_id)
-                          ->fetchSingle();
+            ->from($this->table)
+            ->where(
+                $this->right->getPrimaryKey() . ' = %i',
+                $right_id
+            )
+            ->fetchSingle();
     }
 
     /**
@@ -198,7 +244,10 @@ abstract class MNManager extends Manager
             $data[$this->right->getPrimaryKey()][] = $right_id !== null ? (int)$right_id : (int)$value;
         }
 
-        return $this->dibi->query('INSERT INTO [' . $this->table . '] %m', $data);
+        return $this->dibi->query(
+            'INSERT INTO [' . $this->table . '] %m',
+            $data
+        );
     }
 
     /**
@@ -211,7 +260,11 @@ abstract class MNManager extends Manager
     {
         $this->deleteByLeft($left_id);
 
-        return $this->add($values, $left_id, null);
+        return $this->add(
+            $values,
+            $left_id,
+            null
+        );
     }
 
     /**
@@ -224,7 +277,11 @@ abstract class MNManager extends Manager
     {
         $this->deleteByRight($right_id);
 
-        return $this->add($values, null, $right_id);
+        return $this->add(
+            $values,
+            null,
+            $right_id
+        );
     }
 
     /**
@@ -234,7 +291,11 @@ abstract class MNManager extends Manager
      */
     private static function createAlias($tableName)
     {
-        return substr($tableName, 0, 1);
+        return substr(
+            $tableName,
+            0,
+            1
+        );
     }
 
     /**
@@ -244,7 +305,12 @@ abstract class MNManager extends Manager
      */
     public function deleteByLeft($left_id)
     {
-        return $this->dibi->delete($this->table)->where('['.$this->left->getPrimaryKey() . '] = %i', $left_id)->execute();
+        return $this->dibi->delete($this->table)
+            ->where(
+                '[' . $this->left->getPrimaryKey() . '] = %i',
+                $left_id
+            )
+            ->execute();
     }
 
     /**
@@ -254,7 +320,12 @@ abstract class MNManager extends Manager
      */
     public function deleteByRight($right_id)
     {
-        return $this->dibi->delete($this->table)->where('['.$this->right->getPrimaryKey() . '] = %i', $right_id)->execute();
+        return $this->dibi->delete($this->table)
+            ->where(
+                '[' . $this->right->getPrimaryKey() . '] = %i',
+                $right_id
+            )
+            ->execute();
     }
 
     /**
@@ -263,8 +334,19 @@ abstract class MNManager extends Manager
      *
      * @return bool
      */
-    public function fullCheck($left_id, $right_id){
-        return $this->dibi->select('1')->from($this->table)->where('['.$this->left->getPrimaryKey() . '] = %i', $left_id)->where('['.$this->right->getPrimaryKey() . '] = %i', $right_id)->fetchSingle() === 1;
+    public function fullCheck($left_id, $right_id)
+    {
+        return $this->dibi->select('1')
+                ->from($this->table)
+                ->where(
+                    '[' . $this->left->getPrimaryKey() . '] = %i',
+                    $left_id
+                )
+                ->where(
+                    '[' . $this->right->getPrimaryKey() . '] = %i',
+                    $right_id
+                )
+                ->fetchSingle() === 1;
     }
 
     /**
@@ -273,15 +355,17 @@ abstract class MNManager extends Manager
      *
      * @return Result|int
      */
-    public function fullDelete($left_id, $right_id){
-        return $this->dibi->delete($this->table)->where('['.$this->left->getPrimaryKey() . '] = %i', $left_id)->where('['.$this->right->getPrimaryKey() . '] = %i', $right_id)->execute();
+    public function fullDelete($left_id, $right_id)
+    {
+        return $this->dibi->delete($this->table)
+            ->where(
+                '[' . $this->left->getPrimaryKey() . '] = %i',
+                $left_id
+            )
+            ->where(
+                '[' . $this->right->getPrimaryKey() . '] = %i',
+                $right_id
+            )
+            ->execute();
     }
-
-    /**
-     * @return int
-     */
-    public function getCount(){
-        return $this->dibi->select('COUNT(*)')->from($this->table)->fetchSingle();
-    }
-    
 }

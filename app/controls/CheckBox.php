@@ -7,9 +7,9 @@ use Nette\Forms\Controls\Checkbox as NetteCheckbox;
 use Nette\Forms\Rule;
 use Nette\Utils\Html;
 
-
 /**
  * Check box control. Allows the user to select a true or false condition.
+ *
  * @property Rule $rules Description
  */
 class Checkbox extends NetteCheckbox

@@ -1,54 +1,54 @@
 {block content}
-<div class="col-sm-12">     
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">{_menu_ranks}</li>
-        </ol>
-    </div> 
-    <div class="float-right">
-        <a class="btn btn-primary" href="{link Rank:edit}">
-            <i class="fa fa-plus" aria-hidden="true"></i>
-            {_rank_add}
-        </a>
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">{_menu_ranks}</li>
+            </ol>
+        </div>
+        <div class="float-right">
+            <a class="btn btn-primary" href="{link Rank:edit}">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                {_rank_add}
+            </a>
+        </div>
     </div>
-</div>
 
-<div class="col-sm-12 main">   
-    <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
-        <thead>
-            <tr>
-                <th>{_rank_id}</th>
-                <th>{_rank_name}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {foreach $items as $item}
+    <div class="col-sm-12 main">
+        <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+            <thead>
                 <tr>
-                    <td>
-                        <a href="{link Rank:edit, $item->rank_id}">{$item->rank_id}</a>
-                    </td>
-                    <td>{$item->rank_name}</td>
-                    <td>
-                        <a href="{link Rank:delete, $item->rank_id}">{_delete}</a>
-                    </td>
+                    <th>{_rank_id}</th>
+                    <th>{_rank_name}</th>
+                    <th></th>
                 </tr>
-            {/foreach}
-        </tbody>
-    </table>
-</div>
-            
-<div class="col-sm-12">     
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">{_menu_ranks}</li>
-        </ol>
-    </div> 
-</div>            
+            </thead>
+            <tbody>
+                {foreach $items as $item}
+                    <tr>
+                        <td>
+                            <a href="{link Rank:edit, $item->rank_id}">{$item->rank_id}</a>
+                        </td>
+                        <td>{$item->rank_name}</td>
+                        <td>
+                            <a href="{link Rank:delete, $item->rank_id}">{_delete}</a>
+                        </td>
+                    </tr>
+                {/foreach}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">{_menu_ranks}</li>
+            </ol>
+        </div>
+    </div>
 {/block}

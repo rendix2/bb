@@ -1,149 +1,154 @@
 {block content}
 
-<div class="col-sm-12">     
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{link User:default}">{_menu_users}</a>
-            </li>
-            <li class="breadcrumb-item">{$item->user_name}</li>
-        </ol>
-    </div> 
-</div>
-
-{if $presenter->getParameter('id')}
-<div class="col-sm-12 my-2">  
-    <div class="card h-100">
-        <div class="card-header">{_statistic}</div>
-        <div class="card-block row p-1">
-
-            <div class="col-sm-2">
-                <div class="btn btn-primary">{_user_post_count} <span class="badge badge-light">{$item->user_post_count}</span></div>
-            </div>
-            <div class="col-sm-2">
-                <div class="btn btn-primary">{_user_topic_count} <span class="badge badge-light">{$item->user_topic_count}</span></div>
-            </div>
-            <div class="col-sm-2">
-                <div class="btn btn-primary">{_user_thank_count} <span class="badge badge-light">{$item->user_thank_count}</span></div>
-            </div>
-            <div class="col-sm-2">
-                <div class="btn btn-primary">{_user_topic_watch_count} <span class="badge badge-light">{$item->user_watch_count}</span></div>
-            </div>
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{link User:default}">{_menu_users}</a>
+                </li>
+                <li class="breadcrumb-item">{$item->user_name}</li>
+            </ol>
         </div>
     </div>
-</div>
-{/if}
 
-<div class="col-sm-12 my-2">
-    <div class="row">
-
-        <div class="col-sm-12 my-2">  
+    {if $presenter->getParameter('id')}
+        <div class="col-sm-12 my-2">
             <div class="card h-100">
-                <div class="card-header">{_menu_user}</div>
-                <div class="card-block p-3">
-                    {control editForm}
+                <div class="card-header">{_statistic}</div>
+                <div class="card-block row p-1">
+
+                    <div class="col-sm-2">
+                        <div class="btn btn-primary">{_user_post_count} <span
+                                    class="badge badge-light">{$item->user_post_count}</span></div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="btn btn-primary">{_user_topic_count} <span
+                                    class="badge badge-light">{$item->user_topic_count}</span></div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="btn btn-primary">{_user_thank_count} <span
+                                    class="badge badge-light">{$item->user_thank_count}</span></div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="btn btn-primary">{_user_topic_watch_count} <span
+                                    class="badge badge-light">{$item->user_watch_count}</span></div>
+                    </div>
                 </div>
             </div>
         </div>
+    {/if}
 
-        <div class="col-sm-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    {_Password}
-                </div>
-                <div class="card-block p-3">                
-                    {control changePasswordControl}
+    <div class="col-sm-12 my-2">
+        <div class="row">
+
+            <div class="col-sm-12 my-2">
+                <div class="card h-100">
+                    <div class="card-header">{_menu_user}</div>
+                    <div class="card-block p-3">
+                        {control editForm}
+                    </div>
                 </div>
             </div>
-        </div>
 
-        {if isset($item->user_avatar) && $item->user_avatar} 
             <div class="col-sm-6">
                 <div class="card h-100">
                     <div class="card-header">
-                        {_Avatar}
+                        {_Password}
                     </div>
-                    <div class="card-block">    
-                        <img src="{$basePath}/avatars/{$item->user_avatar}" class="img-thumbnail img-fluid">
-                        {control deleteAvatar}
+                    <div class="card-block p-3">
+                        {control changePasswordControl}
                     </div>
                 </div>
             </div>
-        {/if}
+
+            {if isset($item->user_avatar) && $item->user_avatar}
+                <div class="col-sm-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            {_Avatar}
+                        </div>
+                        <div class="card-block">
+                            <img src="{$basePath}/avatars/{$item->user_avatar}" class="img-thumbnail img-fluid">
+                            {control deleteAvatar}
+                        </div>
+                    </div>
+                </div>
+            {/if}
 
 
+        </div>
     </div>
-</div>
 
-<div class="col-sm-12 my-2">
-    <div class="row">   
-        <div class="col-sm-4">
-            <div class="card h-100">
-                <div class="card-header">{_menu_group}</div>
-                <div class="card-block p-3">
-                    <h2>Groups</h2>
-                    {form groupFrom}            
-                        <ul>
-                            {foreach $groups as $group}
-                                <li>
-                                    <label>{$group->group_name}
-                                        <input type="checkbox" name="group[]" value="{$group->group_id}" 
-                                               {if in_array($group->group_id,$myGroups)}checked="checked"{/if}>
-                                    </label>
-                                </li>
-                            {/foreach}
-                        </ul>
-                        {input send_group}
-                    {/form}
+    <div class="col-sm-12 my-2">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="card h-100">
+                    <div class="card-header">{_menu_group}</div>
+                    <div class="card-block p-3">
+                        <h2>Groups</h2>
+                        {form groupFrom}
+                            <ul>
+                                {foreach $groups as $group}
+                                    <li>
+                                        <label>{$group->group_name}
+                                            <input type="checkbox" name="group[]" value="{$group->group_id}"
+                                                   {if in_array($group->group_id,$myGroups)}checked="checked"{/if}>
+                                        </label>
+                                    </li>
+                                {/foreach}
+                            </ul>
+                            {input send_group}
+                        {/form}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="card h-100">
+                    <div class="card-header">{_menu_forums}</div>
+                    <div class="card-block p-3">
+                        <h2>Forums</h2>
+                        {form forumsForm}
+                            {block forums}
+                                <ul>
+                                    {foreach $forums as $forum}
+                                        <li>
+                                            <label>
+                                                <input type="checkbox" name="forums[]" value="{$forum->forum_id}"
+                                                       {if in_array($forum->forum_id, $myForums)}checked="checked"{/if}>
+                                                {$forum->forum_name}
+                                            </label>
+                                        </li>
+
+                                        {if is_array($forum['childs'])}
+                                            {include forums, forums => $forum['childs']}
+                                        {/if}
+                                    {/foreach}
+                                </ul>
+                            {/block}
+
+                            {input send_forum}
+                        {/form}
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-sm-4">
-            <div class="card h-100">
-                <div class="card-header">{_menu_forums}</div>
-                <div class="card-block p-3">  
-                    <h2>Forums</h2>
-                    {form forumsForm}
-                        {block forums}
-                        <ul>
-                            {foreach $forums as $forum}
-                                <li>
-                                    <label>
-                                        <input type="checkbox" name="forums[]" value="{$forum->forum_id}" {if in_array($forum->forum_id, $myForums)}checked="checked"{/if}>
-                                        {$forum->forum_name}
-                                    </label>
-                                </li> 
-
-                                {if is_array($forum['childs'])}
-                                    {include forums, forums => $forum['childs']}
-                                {/if}
-                            {/foreach}
-                        </ul>
-                        {/block}
-
-                        {input send_forum}
-                    {/form}
-                </div>
-            </div>
-        </div>  
     </div>
-</div>
 
-<div class="col-sm-12">     
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{link User:default}">{_menu_users}</a>
-            </li>
-            <li class="breadcrumb-item">{$item->user_name}</li>
-        </ol>
-    </div> 
-</div>   
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{link User:default}">{_menu_users}</a>
+                </li>
+                <li class="breadcrumb-item">{$item->user_name}</li>
+            </ol>
+        </div>
+    </div>
 {/block}

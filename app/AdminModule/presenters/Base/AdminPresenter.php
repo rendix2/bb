@@ -16,19 +16,16 @@ use Nette\Localization\ITranslator;
  */
 abstract class AdminPresenter extends CrudPresenter
 {
-
     /**
      * @var ITranslator $adminTranslator
      */
     private $adminTranslator;
-
     /**
      * @var BootstrapForm $bootStrapForm
      */
     private $bootStrapForm;
-
     /**
-     * @var
+     * @var AppDir $appDir
      */
     private $appDir;
 
@@ -43,13 +40,6 @@ abstract class AdminPresenter extends CrudPresenter
 
         $this->bootStrapForm = new BootstrapForm();
     }
-
-    /**
-     * @param AppDir $appDir
-     */
-    public function injectAppDir(AppDir $appDir){
-        $this->appDir = $appDir;
-    }    
 
     /**
      * @return ITranslator
@@ -69,6 +59,14 @@ abstract class AdminPresenter extends CrudPresenter
     }
 
     /**
+     * @param AppDir $appDir
+     */
+    public function injectAppDir(AppDir $appDir)
+    {
+        $this->appDir = $appDir;
+    }
+
+    /**
      *
      */
     public function startup()
@@ -85,9 +83,15 @@ abstract class AdminPresenter extends CrudPresenter
             $this->error('You are not admin.');
         }
 
-        $lang_name = $this->getUser()->getIdentity()->getData()['lang_file_name'];
+        $lang_name = $this->getUser()
+                         ->getIdentity()
+                         ->getData()['lang_file_name'];
 
-        $this->adminTranslator = new Translator($this->appDir,'Admin', $lang_name);
+        $this->adminTranslator = new Translator(
+            $this->appDir,
+            'Admin',
+            $lang_name
+        );
     }
 
     /**
@@ -99,5 +103,4 @@ abstract class AdminPresenter extends CrudPresenter
 
         $this->template->setTranslator($this->adminTranslator);
     }
-
 }

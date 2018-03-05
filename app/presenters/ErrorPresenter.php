@@ -3,41 +3,60 @@
 namespace App\Presenters;
 
 use Nette;
+use Nette\Application\Helpers;
+use Nette\Application\Request;
 use Nette\Application\Responses;
 use Tracy\ILogger;
 
-
+/**
+ * Class ErrorPresenter
+ *
+ * @package App\Presenters
+ */
 class ErrorPresenter implements Nette\Application\IPresenter
 {
-	use Nette\SmartObject;
+    use Nette\SmartObject;
+    /**
+     * @var ILogger $logger
+     */
+    private $logger;
 
-	/** @var ILogger */
-	private $logger;
+    /**
+     * ErrorPresenter constructor.
+     *
+     * @param ILogger $logger
+     */
+    public function __construct(ILogger $logger)
+    {
+        $this->logger = $logger;
+    }
 
+    /**
+     * @param Request $request
+     *
+     * @return Nette\Application\IResponse
+     */
+    public function run(Request $request)
+    {
+        $e = $request->getParameter('exception');
 
-	public function __construct(ILogger $logger)
-	{
-		$this->logger = $logger;
-	}
+        if ($e instanceof Nette\Application\BadRequestException) {
+            // $this->logger->log("HTTP code {$e->getCode()}: {$e->getMessage()} in {$e->getFile()}:{$e->getLine()}", 'access');
+            list($module, , $sep) = Helpers::splitName($request->getPresenterName());
+            $errorPresenter = $module . $sep . 'Error4xx';
 
+            return new Responses\ForwardResponse($request->setPresenterName($errorPresenter));
+        }
 
-	/**
-	 * @return Nette\Application\IResponse
-	 */
-	public function run(Nette\Application\Request $request)
-	{
-		$e = $request->getParameter('exception');
+        $this->logger->log(
+            $e,
+            ILogger::EXCEPTION
+        );
 
-		if ($e instanceof Nette\Application\BadRequestException) {
-			// $this->logger->log("HTTP code {$e->getCode()}: {$e->getMessage()} in {$e->getFile()}:{$e->getLine()}", 'access');
-			list($module, , $sep) = Nette\Application\Helpers::splitName($request->getPresenterName());
-			$errorPresenter = $module . $sep . 'Error4xx';
-			return new Responses\ForwardResponse($request->setPresenterName($errorPresenter));
-		}
-
-		$this->logger->log($e, ILogger::EXCEPTION);
-		return new Responses\CallbackResponse(function () {
-			require __DIR__ . '/templates/Error/500.phtml';
-		});
-	}
+        return new Responses\CallbackResponse(
+            function () {
+                require __DIR__ . '/templates/Error/500.phtml';
+            }
+        );
+    }
 }

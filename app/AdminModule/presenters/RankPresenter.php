@@ -14,13 +14,12 @@ use Nette\Utils\ArrayHash;
  * @author rendi
  * @method RanksManager getManager()
  */
-class RankPresenter extends Base\AdminPresenter {
-
+class RankPresenter extends Base\AdminPresenter
+{
     /**
      *
      */
     const N = -1;
-
     /**
      * @var
      */
@@ -31,50 +30,61 @@ class RankPresenter extends Base\AdminPresenter {
      *
      * @param RanksManager $manager
      */
-    public function __construct(RanksManager $manager) {
+    public function __construct(RanksManager $manager)
+    {
         parent::__construct($manager);
-    }
-
-    /**
-     * @param WwwDir $wwwDir
-     */
-    public function injectWwwDir(WwwDir $wwwDir) {
-        $this->wwwDir = $wwwDir;
-    }
-
-    /**
-     * @return BootStrapForm
-     */
-    protected function createComponentEditForm() {
-        $form = $this->getBootStrapForm();
-        $form->setTranslator($this->getAdminTranslator());
-        $form->addText('rank_name', 'Rank name:')->setRequired(true);
-        $form->addInteger('rank_from', 'Rank from:');
-        $form->addInteger('rank_to', 'Rank to:');
-        $form->addUpload('rank_file', 'Rank file:');
-        $form->addCheckbox('rank_special', 'Rank special:');
-
-        $form->onValidate[] = [$this, 'onValidate'];
-
-        return $this->addSubmitB($form);
     }
 
     /**
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function onValidate(Form $form, ArrayHash $values) {
+    public function editFormSuccess(Form $form, ArrayHash $values)
+    {
+        $move = $this->getManager()
+            ->moveRank(
+                $values->rank_file,
+                $this->getParameter('id'),
+                $this->wwwDir->wwwDir
+            );
+
+        if ($move !== RanksManager::NOT_UPLOADED) {
+            $values->rank_file = $move;
+        } else {
+            unset($values->rank_file);
+        }
+
+        parent::editFormSuccess(
+            $form,
+            $values
+        );
+    }
+
+    /**
+     * @param WwwDir $wwwDir
+     */
+    public function injectWwwDir(WwwDir $wwwDir)
+    {
+        $this->wwwDir = $wwwDir;
+    }
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function onValidate(Form $form, ArrayHash $values)
+    {
         if ($values->rank_special) {
             if ($values->rank_to || $values->rank_from) {
-                $form->addError('Special rank have not Rank from and Rank to');
+                $form->addError('Special rank have not Rank from and Rank to.');
             }
         } else {
             if (!is_numeric($values->rank_from)) {
-                $form->addError('Rank from is not numeric');
+                $form->addError('Rank from is not numeric.');
             }
 
             if (!is_numeric($values->rank_to)) {
-                $form->addError('Rank to is not numeric');
+                $form->addError('Rank to is not numeric.');
             }
 
             if ($values->rank_from === $values->rank_to) {
@@ -84,19 +94,39 @@ class RankPresenter extends Base\AdminPresenter {
     }
 
     /**
-     * @param Form      $form
-     * @param ArrayHash $values
+     * @return BootStrapForm
      */
-    public function editFormSuccess(Form $form, ArrayHash $values) {
-        $move = $this->getManager()->moveRank($values->rank_file, $this->getParameter('id'), $this->wwwDir->wwwDir);
+    protected function createComponentEditForm()
+    {
+        $form = $this->getBootStrapForm();
+        $form->setTranslator($this->getAdminTranslator());
+        $form->addText(
+            'rank_name',
+            'Rank name:'
+        )
+            ->setRequired(true);
+        $form->addInteger(
+            'rank_from',
+            'Rank from:'
+        );
+        $form->addInteger(
+            'rank_to',
+            'Rank to:'
+        );
+        $form->addUpload(
+            'rank_file',
+            'Rank file:'
+        );
+        $form->addCheckbox(
+            'rank_special',
+            'Rank special:'
+        );
 
-        if ($move !== RanksManager::NOT_UPLOADED) {
-            $values->rank_file = $move;
-        } else {
-            unset($values->rank_file);
-        }
+        $form->onValidate[] = [
+            $this,
+            'onValidate'
+        ];
 
-        parent::editFormSuccess($form, $values);
+        return $this->addSubmitB($form);
     }
-
 }

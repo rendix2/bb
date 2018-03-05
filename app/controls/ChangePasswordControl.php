@@ -18,7 +18,9 @@ use Nette\Utils\ArrayHash;
  */
 class ChangePasswordControl extends Control
 {
-
+    /**
+     *
+     */
     const MIN_LENGTH = 7;
 
     /**
@@ -99,12 +101,18 @@ class ChangePasswordControl extends Control
         }
     }
 
+    /**
+     *
+     */
     public function render()
     {
         $this->template->setFile(__DIR__ . '/templates/changePassword/changePassword.latte');
         $this->template->render();
     }
 
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentChangePasswordForm()
     {
         $form = new BootstrapForm();
@@ -129,5 +137,4 @@ class ChangePasswordControl extends Control
 
         return $form;
     }
-
 }

@@ -1,18 +1,30 @@
 <?php
 
+namespace App\ModeratorModule;
+
+use App\Models\TopicsManager;
+
 /**
  * Description of TopicPresenter
  *
  * @author rendi
  */
-class TopicPresenter extends ModeratorPresenter {
-    
-    public function __construct(\App\Models\TopicsManager $manager) {
+class TopicPresenter extends ModeratorPresenter
+{
+    /**
+     * TopicPresenter constructor.
+     *
+     * @param TopicsManager $manager
+     */
+    public function __construct(TopicsManager $manager)
+    {
         parent::__construct($manager);
     }
 
-        protected function createComponentEditForm() {
-        
+    /**
+     *
+     */
+    protected function createComponentEditForm()
+    {
     }
-
 }

@@ -53,7 +53,6 @@ class DeleteAvatarControl extends Control
         $this->wwwDir      = $wwwDir;
         $this->user        = $user;
         $this->translator  = $translator;
-
     }
 
     /**
@@ -66,7 +65,6 @@ class DeleteAvatarControl extends Control
             $user = $this->userManager->getById($this->user->getId());
 
             if ($user->user_avatar) {
-
                 $separator = DIRECTORY_SEPARATOR;
 
                 $path = $this->wwwDir->wwwDir . $separator . 'avatars' . $separator . $user->user_avatar;
@@ -105,5 +103,4 @@ class DeleteAvatarControl extends Control
 
         return $form;
     }
-
 }

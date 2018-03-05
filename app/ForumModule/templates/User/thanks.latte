@@ -1,57 +1,57 @@
 {block content}
-<div class="col-sm-12">
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{link User:profile $presenter->getParameter('user_id')}">{_menu_user}</a>
-            </li>
-            <li class="breadcrumb-item active">Thanks</li>
-        </ol>
-    </div> 
-    
-    <div class="float-right">
-        {control paginator}
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{link User:profile $presenter->getParameter('user_id')}">{_menu_user}</a>
+                </li>
+                <li class="breadcrumb-item active">Thanks</li>
+            </ol>
+        </div>
+
+        <div class="float-right">
+            {control paginator}
+        </div>
     </div>
-</div>
-<div class="col-sm-12 main">
-    <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
-        <thead>
-            <tr>
-                <th>{_topic_id}</th>
-                <th>{_topic_name}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {foreach $thanks as $thank}
+    <div class="col-sm-12 main">
+        <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+            <thead>
                 <tr>
-                    <td>
-                        <a href="{link Post:all, $thank->thank_forum_id, $thank->thank_topic_id}">{$thank->thank_topic_id}</a>
-                    </td>
-                    <td>{$thank->topic_name}</td>
+                    <th>{_topic_id}</th>
+                    <th>{_topic_name}</th>
                 </tr>
-            {/foreach}
-        </tbody>
-    </table>
-</div>
-<div class="col-sm-12">
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{link User:profile $presenter->getParameter('user_id')}">{_menu_user}</a>
-            </li>
-            <li class="breadcrumb-item active">Thanks</li>
-        </ol>
-    </div> 
-        
-    <div class="float-right">
-        {control paginator}
+            </thead>
+            <tbody>
+                {foreach $thanks as $thank}
+                    <tr>
+                        <td>
+                            <a href="{link Post:all, $thank->thank_forum_id, $thank->thank_topic_id}">{$thank->thank_topic_id}</a>
+                        </td>
+                        <td>{$thank->topic_name}</td>
+                    </tr>
+                {/foreach}
+            </tbody>
+        </table>
     </div>
-</div>
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{link User:profile $presenter->getParameter('user_id')}">{_menu_user}</a>
+                </li>
+                <li class="breadcrumb-item active">Thanks</li>
+            </ol>
+        </div>
+
+        <div class="float-right">
+            {control paginator}
+        </div>
+    </div>
 {/block}
 

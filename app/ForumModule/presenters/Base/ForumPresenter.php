@@ -9,7 +9,6 @@ use App\Models\Manager;
 use App\Presenters\Base\ManagerPresenter;
 use App\Translator;
 use Nette\Localization\ITranslator;
-use Nette\Security\IAuthorizator;
 
 /**
  * Description of ForumPresenter
@@ -18,14 +17,16 @@ use Nette\Security\IAuthorizator;
  */
 abstract class ForumPresenter extends ManagerPresenter
 {
-
     /**
+     * Translator
      *
      * @var ITranslator $forumTranslator
      */
     private $forumTranslator;
 
     /**
+     * Bootstrap form
+     *
      * @var BootstrapForm $bootStrapForm
      */
     private $bootStrapForm;
@@ -70,18 +71,19 @@ abstract class ForumPresenter extends ManagerPresenter
     }
 
     /**
+     * @param AppDir $appDir
+     */
+    public function injectAppDir(AppDir $appDir)
+    {
+        $this->appDir = $appDir;
+    }
+
+    /**
      * @param Authorizator $authorizator
      */
     public function injectAuthorizator(Authorizator $authorizator)
     {
         $this->authorizator = $authorizator;
-    }
-
-    /**
-     * @param AppDir $appDir
-     */
-    public function injectAppDir(AppDir $appDir){
-        $this->appDir = $appDir;
     }
 
     /**
@@ -91,10 +93,15 @@ abstract class ForumPresenter extends ManagerPresenter
     {
         parent::startup();
 
-        $this->forumTranslator = new Translator($this->appDir,'Forum', $this->getUser()
-                                                                   ->getIdentity()
-                                                                   ->getData()['lang_file_name']);
-        $this->getUser()->setAuthorizator($this->authorizator->getAcl());              
+        $this->forumTranslator = new Translator(
+            $this->appDir,
+            'Forum',
+            $this->getUser()
+                ->getIdentity()
+                ->getData()['lang_file_name']
+        );
+        $this->getUser()
+            ->setAuthorizator($this->authorizator->getAcl());
     }
 
     /**
@@ -106,5 +113,4 @@ abstract class ForumPresenter extends ManagerPresenter
 
         $this->template->setTranslator($this->forumTranslator);
     }
-
 }

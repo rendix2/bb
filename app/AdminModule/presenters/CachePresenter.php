@@ -16,13 +16,12 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendi
  */
-class CachePresenter extends BasePresenter {
-
+class CachePresenter extends BasePresenter
+{
     /**
      * @var ITranslator $translator
      */
     private $translator;
-
     /**
      * @var AppDir $appDir
      */
@@ -31,14 +30,24 @@ class CachePresenter extends BasePresenter {
     /**
      * @param AppDir $appDir
      */
-    public function injectAppDir(AppDir $appDir) {
+    public function injectAppDir(AppDir $appDir)
+    {
         $this->appDir = $appDir;
+    }
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function success(Form $form, ArrayHash $values)
+    {
     }
 
     /**
      *
      */
-    public function startup() {
+    public function startup()
+    {
         parent::startup();
 
         $user = $this->getUser();
@@ -47,39 +56,49 @@ class CachePresenter extends BasePresenter {
             if ($user->logoutReason === IUserStorage::INACTIVITY) {
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
             }
-            $this->redirect('Login:default', ['backlink' => $this->storeRequest()]);
+            $this->redirect(
+                'Login:default',
+                ['backlink' => $this->storeRequest()]
+            );
         }
-    }
-
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentEditForm() {
-        $form = new BootstrapForm();
-        $form->setTranslator($this->translator);
-        $form->addSubmit('Delete_all', 'Delete all cache');
-
-        $form->onSuccess[] = [$this, 'success'];
-
-
-        return $form;
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function success(Form $form, ArrayHash $values) {
-        
     }
 
     /**
      *
      */
-    public function beforeRender() {
+    public function beforeRender()
+    {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->translator = new Translator($this->appDir, 'Admin', $this->getUser()->getIdentity()->getData()['lang_file_name']));
+        $this->template->setTranslator(
+            $this->translator = new Translator(
+                $this->appDir,
+                'Admin',
+                $this->getUser()
+                    ->getIdentity()
+                    ->getData()['lang_file_name']
+            )
+        );
     }
 
+    /**
+     * @return BootstrapForm
+     */
+    protected function createComponentEditForm()
+    {
+        $form = new BootstrapForm();
+        $form->setTranslator($this->translator);
+        $form->addSubmit(
+            'Delete_all',
+            'Delete all cache'
+        );
+
+        $form->onSuccess[] = [
+            $this,
+            'success'
+        ];
+
+
+        return $form;
+    }
 }

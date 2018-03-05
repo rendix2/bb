@@ -1,67 +1,70 @@
 {block content}
 
-<div class="col-sm-12 main">
-    <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
-        {foreach $data as $category_id => $values}
-            <tr>
-                <td>
-                    <a href="{link Index:category, $data[$category_id]['category']->category_id}">{$data[$category_id]['category']->category_name}</a>
-                </td>
-            </tr>
-            {if count($data[$category_id ]['forum'])}
+    <div class="col-sm-12 main">
+        <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+            {foreach $data as $category_id => $values}
                 <tr>
                     <td>
-                        <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
-                            <tr>
-                                {foreach $data[$category_id ]['forum'] as $forum} 
+                        <a href="{link Index:category, $data[$category_id]['category']->category_id}">{$data[$category_id]['category']->category_name}</a>
+                    </td>
+                </tr>
+                {if count($data[$category_id ]['forum'])}
+                    <tr>
+                        <td>
+                            <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+                                <tr>
+                                    {foreach $data[$category_id ]['forum'] as $forum}
                                 <tr>
                                     <td>
                                         {if $forum->hasNewTopics || $forum->hasNewPosts}NEW POSTS{/if}
                                         <a href="{link Forum:default, $forum->forum_id}">{$forum->forum_name}</a>
-                                    </td>                                
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>{$forum->forum_description}</td>
                                 </tr>
-                            {/foreach}
-                        </table>
-                    </td>
-                </tr>
-            {/if}
-        {/foreach}
-    </table>
+                                {/foreach}
+                            </table>
+                        </td>
+                    </tr>
+                {/if}
+            {/foreach}
+        </table>
 
-    <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
-        <thead>
-            <tr>
-                <th>{_user_last}</th>
-                <th>{_post_total}</th>
-                <th>{_topic_total}</th>
-                <th>{_user_total}</th>
-                <th>{_topic_last}</th>
-                <th>{_most_post_user}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    {if $lastUser}
-                    <a href="{link User:profile, $lastUser->user_id}">{$lastUser->user_name}</a>
-                    {/if}
-                </td>
-                <td>{$totalPosts}</td>
-                <td>{$totalTopics}</td>
-                <td>{$totalUsers}</td>
-                <td>
-                    {if $lastTopic}
-                    <a href="{link Post:all, $lastTopic->topic_forum_id, $lastTopic->topic_id}">{$lastTopic->topic_name}</a>
-                    {else}None
-                    {/if}
-                </td>
-                <td>{if $mostPostsUser}<a href="{link User:profile $mostPostsUser->user_id}">{$mostPostsUser->user_name}</a> ({$mostPostsUser->post_count}){else}No one{/if}</th>
-            </tr>
-        </tbody>
-    </table>
-</div>
+        <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+            <thead>
+                <tr>
+                    <th>{_user_last}</th>
+                    <th>{_post_total}</th>
+                    <th>{_topic_total}</th>
+                    <th>{_user_total}</th>
+                    <th>{_topic_last}</th>
+                    <th>{_most_post_user}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        {if $lastUser}
+                            <a href="{link User:profile, $lastUser->user_id}">{$lastUser->user_name}</a>
+                        {/if}
+                    </td>
+                    <td>{$totalPosts}</td>
+                    <td>{$totalTopics}</td>
+                    <td>{$totalUsers}</td>
+                    <td>
+                        {if $lastTopic}
+                            <a href="{link Post:all, $lastTopic->topic_forum_id, $lastTopic->topic_id}">{$lastTopic->topic_name}</a>
+                        {else}None
+                        {/if}
+                    </td>
+                    <td>{if $mostPostsUser}<a
+                                href="{link User:profile $mostPostsUser->user_id}">{$mostPostsUser->user_name}</a>
+                        ({$mostPostsUser->post_count}){else}No one
+                    {/if}</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
 {/block}

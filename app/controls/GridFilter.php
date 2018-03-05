@@ -2,101 +2,96 @@
 
 namespace App\Controls;
 
+use Nette\Application\UI\Control;
+use Nette\Application\UI\Form;
+use Nette\Http\Session;
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of GridFilter
  *
  * @author rendi
  */
-class GridFilter extends \Nette\Application\UI\Control {
-
+class GridFilter extends Control
+{
+    /**
+     *
+     */
     const TEXT_EQUAL = 'teq';
+    /**
+     *
+     */
     const TEXT_LIKE = 'tl';
+    /**
+     *
+     */
     const INT_EQUAL = 'i';
+
+    /**
+     *
+     */
     const NOTHING = 'empty';
+
+    /**
+     *
+     */
     const FROM_TO_INT = 'FTI';
 
+    /**
+     * @var array $whereColumns
+     */
     private $whereColumns;
+
+    /**
+     * @var int $limit
+     */
     private $limit = 100;
+
+    /**
+     * @var BootstrapForm $form
+     */
     private $form;
+
+    /**
+     * @var array $type
+     */
     private $type;
+
+    /**
+     * @var array $orderBy
+     */
     private $orderBy;
+
+    /**
+     * @var Session $session
+     */
     private $session;
 
-    public function __construct() {
+    /**
+     * GridFilter constructor.
+     */
+    public function __construct()
+    {
         parent::__construct();
 
-        $this->form = new BootstrapForm();
-        $this->type = [];
+        $this->form    = new BootstrapForm();
+        $this->type    = [];
         $this->orderBy = [];
     }
 
-    public function factory(\Nette\Http\Session $session) {
-        $this->session = $session;
-    }
-
-    public function addFilter($columnName, $text, $type) {
-        switch ($type) {
-            case self::TEXT_EQUAL:
-                $this->form->addText($columnName, $text);
-                $this->type[$columnName] = ['type' => $type, 'text' => $text, 'operator' => '=', 'strint' => '%s'];
-                break;
-            case self::TEXT_LIKE:
-                $this->form->addText($columnName, $text);
-                $this->type[$columnName] = ['type' => $type, 'text' => $text, 'operator' => 'LIKE', 'strint' => '%s'];
-                break;
-            case self::INT_EQUAL:
-                $this->form->addText($columnName, $text)->setRequired(false)->addRule(\Nette\Application\UI\Form::INTEGER);
-                $this->type[$columnName] = ['type' => $type, 'text' => $text, 'operator' => '=', 'strint' => '%i'];
-                break;
-            case self::NOTHING:
-                $this->type[self::NOTHING] = ['type' => $type, 'text' => $text, 'operator' => null, 'strint' => 'null'];
-                break;
-            case self::FROM_TO_INT:
-                $this->form->addText($columnName . '_Xfrom', $text)->setRequired(false)->addRule(\Nette\Application\UI\Form::INTEGER)->setAttribute('placeholder', 'From')->setAttribute('class', 'mb-1');
-                $this->form->addText($columnName . '_Xto', $text)->setRequired(false)->addRule(\Nette\Application\UI\Form::INTEGER)->setAttribute('placeholder', 'To');
-                $this->type[$columnName . '_Xfrom'] = ['type' => $type, 'text' => $text, 'operator' => '>=', 'strint' => '%i'];
-                $this->type[$columnName . '_Xto'] = ['type' => $type, 'text' => $text, 'operator' => '<=', 'strint' => '%i'];
-                break;
-        }
-    }
-
-    protected function createComponentGridFilter() {
-        $this->form->setAction($this->link('this', $this->getParameters()));
-        $this->form->onSuccess[] = [$this, 'success'];
-        $this->form->addSubmit('send', 'SEND');
-
-        return $this->form;
-    }
-
-    public function getWhere() {
-
-        if ($this->whereColumns) {
-            return $this->whereColumns;
-        } else {
-            // get from session
-            $where = [];
-
-            foreach ($this->type as $col => $val) {
-                if (( $val['strint'] == '%i' && is_numeric($this->session->getSection($col)->value) ) || ($val['strint'] == '%s' && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1 ) && $col !== self::NOTHING) {
-                    $columnName = $this->checkFTI($col);
-
-                    if ($val['operator'] == 'LIKE') {
-                        $where[] = ['column' => $columnName, 'type' => $val['operator'], 'value' => '%' . $this->session->getSection($col)->value . '%', 'strint' => $val['strint']];
-                    } else {
-                        $where[] = ['column' => $columnName, 'type' => $val['operator'], 'value' => $this->session->getSection($col)->value, 'strint' => $val['strint']];
-                    }
-                }
-            }
-
-            return $where;
-        }
-    }
-
-    public function getOrderBy() {
+    /**
+     * @return array
+     */
+    public function getOrderBy()
+    {
         $orderBy = [];
 
         foreach ($this->getParameters() as $param => $value) {
-            $param = str_replace('sort_', '', $param);
+            $param = str_replace(
+                'sort_',
+                '',
+                $param
+            );
             $param = $this->checkFTI($param);
 
             $orderBy[$param] = ($value === 'ASC' || $value === 'DESC') ? $value : null;
@@ -105,15 +100,203 @@ class GridFilter extends \Nette\Application\UI\Control {
         return $orderBy;
     }
 
-    public function success(\Nette\Forms\Form $form, \Nette\Utils\ArrayHash $values) {
+    /**
+     * @return array
+     */
+    public function getWhere()
+    {
+
+        if ($this->whereColumns) {
+            return $this->whereColumns;
+        } else {
+            // get from session
+            $where = [];
+
+            foreach ($this->type as $col => $val) {
+                if (($val['strint'] == '%i' && is_numeric(
+                            $this->session->getSection($col)->value
+                        )) || ($val['strint'] == '%s' && is_string(
+                            $this->session->getSection($col)->value
+                        ) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
+                    $columnName = $this->checkFTI($col);
+
+                    if ($val['operator'] == 'LIKE') {
+                        $where[] = [
+                            'column' => $columnName,
+                            'type'   => $val['operator'],
+                            'value'  => '%' . $this->session->getSection($col)->value . '%',
+                            'strint' => $val['strint']
+                        ];
+                    } else {
+                        $where[] = [
+                            'column' => $columnName,
+                            'type'   => $val['operator'],
+                            'value'  => $this->session->getSection($col)->value,
+                            'strint' => $val['strint']
+                        ];
+                    }
+                }
+            }
+
+            return $where;
+        }
+    }
+
+    /**
+     * @param $columnName
+     * @param $text
+     * @param $type
+     */
+    public function addFilter($columnName, $text, $type)
+    {
+        switch ($type) {
+            case self::TEXT_EQUAL:
+                $this->form->addText(
+                    $columnName,
+                    $text
+                );
+                $this->type[$columnName] = [
+                    'type'     => $type,
+                    'text'     => $text,
+                    'operator' => '=',
+                    'strint'   => '%s'
+                ];
+                break;
+            case self::TEXT_LIKE:
+                $this->form->addText(
+                    $columnName,
+                    $text
+                );
+                $this->type[$columnName] = [
+                    'type'     => $type,
+                    'text'     => $text,
+                    'operator' => 'LIKE',
+                    'strint'   => '%s'
+                ];
+                break;
+            case self::INT_EQUAL:
+                $this->form->addText(
+                    $columnName,
+                    $text
+                )
+                    ->setRequired(false)
+                    ->addRule(Form::INTEGER);
+                $this->type[$columnName] = [
+                    'type'     => $type,
+                    'text'     => $text,
+                    'operator' => '=',
+                    'strint'   => '%i'
+                ];
+                break;
+            case self::NOTHING:
+                $this->type[self::NOTHING] = [
+                    'type'     => $type,
+                    'text'     => $text,
+                    'operator' => null,
+                    'strint'   => 'null'
+                ];
+                break;
+            case self::FROM_TO_INT:
+                $this->form->addText(
+                    $columnName . '_Xfrom',
+                    $text
+                )
+                    ->setRequired(false)
+                    ->addRule(Form::INTEGER)
+                    ->setAttribute(
+                        'placeholder',
+                        'From'
+                    )
+                    ->setAttribute(
+                        'class',
+                        'mb-1'
+                    );
+                $this->form->addText(
+                    $columnName . '_Xto',
+                    $text
+                )
+                    ->setRequired(false)
+                    ->addRule(Form::INTEGER)
+                    ->setAttribute(
+                        'placeholder',
+                        'To'
+                    );
+                $this->type[$columnName . '_Xfrom'] = [
+                    'type'     => $type,
+                    'text'     => $text,
+                    'operator' => '>=',
+                    'strint'   => '%i'
+                ];
+                $this->type[$columnName . '_Xto']   = [
+                    'type'     => $type,
+                    'text'     => $text,
+                    'operator' => '<=',
+                    'strint'   => '%i'
+                ];
+                break;
+        }
+    }
+
+    /**
+     * @param $name
+     *
+     * @return mixed
+     */
+    public function checkFTI($name)
+    {
+        $columnName = $name;
+
+        if (preg_match(
+            '#_Xfrom$#',
+            $name
+        )) {
+            $columnName = str_replace(
+                '_Xfrom',
+                '',
+                $name
+            );
+        }
+
+        if (preg_match(
+            '#_Xto$#',
+            $name
+        )) {
+            $columnName = str_replace(
+                '_Xto',
+                '',
+                $name
+            );
+        }
+
+        return $columnName;
+    }
+
+    /**
+     * @param Session $session
+     */
+    public function factory(Session $session)
+    {
+        $this->session = $session;
+    }
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function success(Form $form, ArrayHash $values)
+    {
         $where = [];
 
         foreach ($this->type as $name => $type) {
-            if ((isset($values[$name]) ) && $name != self::NOTHING) {
-                $section = $this->session->getSection($name);
+            if ((isset($values[$name])) && $name != self::NOTHING) {
+                $section        = $this->session->getSection($name);
                 $section->value = $values[$name];
 
-                $where[] = ['column' => $name, 'type' => $type['operator'], 'value' => "'" . $values[$name] . "'",];
+                $where[] = [
+                    'column' => $name,
+                    'type'   => $type['operator'],
+                    'value'  => "'" . $values[$name] . "'",
+                ];
             }
         }
 
@@ -122,32 +305,46 @@ class GridFilter extends \Nette\Application\UI\Control {
         $this->redirect('this');
     }
 
-    public function render() {
+    /**
+     *
+     */
+    public function render()
+    {
         $template = $this->template->setFile(__DIR__ . '/templates/gridFilter.latte');
 
         foreach ($this->type as $column => $value) {
             $this['gridFilter']->setDefaults([$column => $this->session->getSection($column)->value]);
         }
 
-        $template->type   = $this->type;
-        $template->gf     = $this;
+        $template->type = $this->type;
+        $template->gf   = $this;
+
+        // TODO params is var of template class
         $template->params = $this->getParameters();
 
         $template->render();
     }
 
-    public function checkFTI($name) {
-        $columnName = $name;
+    /**
+     * @return BootstrapForm
+     */
+    protected function createComponentGridFilter()
+    {
+        $this->form->setAction(
+            $this->link(
+                'this',
+                $this->getParameters()
+            )
+        );
+        $this->form->onSuccess[] = [
+            $this,
+            'success'
+        ];
+        $this->form->addSubmit(
+            'send',
+            'SEND'
+        );
 
-        if (preg_match('#_Xfrom$#', $name)) {
-            $columnName = str_replace('_Xfrom', '', $name);
-        }
-
-        if (preg_match('#_Xto$#', $name)) {
-            $columnName = str_replace('_Xto', '', $name);
-        }
-        
-        return $columnName;
+        return $this->form;
     }
-
 }
