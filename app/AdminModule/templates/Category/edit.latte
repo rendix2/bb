@@ -1,65 +1,65 @@
 {block content}
 
-<div class="col-sm-12">     
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{link Category:default}">{_menu_categories}</a>
-            </li>
-            <li class="breadcrumb-item">{$item->category_name}</li>
-        </ol>
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{link Category:default}">{_menu_categories}</a>
+                </li>
+                <li class="breadcrumb-item">{$item->category_name}</li>
+            </ol>
+        </div>
     </div>
-</div>        
-<div class="container-fluid">
-    <div class="row pb-3">
-        <div class="col-sm-6">  
-            <div class="card h-100">
-                <div class="card-header">{_menu_category}</div>
-                <div class="card-block p-3">
-                    {control editForm}
+    <div class="container-fluid">
+        <div class="row pb-3">
+            <div class="col-sm-6">
+                <div class="card h-100">
+                    <div class="card-header">{_menu_category}</div>
+                    <div class="card-block p-3">
+                        {control editForm}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="card h-100">
+                    <div class="card-header">{_menu_categories}</div>
+                    <div class="card-block p-3">
+                        {block forums}
+                            <ul>
+                                {foreach $forums as $forum}
+                                    <li>
+                                        <a href="{link Forum:edit, $forum->forum_id}">{$forum->forum_name}</a>
+                                    </li>
+
+                                    {if is_array($forum['childs'])}
+                                        {include forums, forums => $forum['childs']}
+                                    {/if}
+
+                                {/foreach}
+                            </ul>
+                        {/block}
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="col-sm-6">  
-            <div class="card h-100">
-                <div class="card-header">{_menu_categories}</div>
-                <div class="card-block p-3">            
-                    {block forums}
-                    <ul>
-                        {foreach $forums as $forum}
-                            <li>
-                                <a href="{link Forum:edit, $forum->forum_id}">{$forum->forum_name}</a>
-                            </li> 
-
-                            {if is_array($forum['childs'])}
-                                {include forums, forums => $forum['childs']}
-                            {/if}
-
-                        {/foreach}
-                    </ul>
-                    {/block}
-                </div>
-            </div>
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{link Category:default}">{_menu_categories}</a>
+                </li>
+                <li class="breadcrumb-item">{$item->category_name}</li>
+            </ol>
         </div>
     </div>
-</div>
-
-<div class="col-sm-12">     
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{link Category:default}">{_menu_categories}</a>
-            </li>
-            <li class="breadcrumb-item">{$item->category_name}</li>
-        </ol>
-    </div>
-</div>        
 
 {/block}

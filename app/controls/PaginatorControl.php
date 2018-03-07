@@ -12,8 +12,8 @@ use Nette\Utils\Paginator;
  *
  * @package App\controls\forms
  */
-class PaginatorControl extends Control {
-
+class PaginatorControl extends Control
+{
     /**
      * items per page
      *
@@ -59,21 +59,29 @@ class PaginatorControl extends Control {
      * @param null   $where
      * @param null   $table
      * @param null   $alias
-     *   
+     *
      * @api
      */
-    public function __construct(Fluent $data, $itemsPerPage, $itemsAround, $page, $where = null, $table = null, $alias = null) {
+    public function __construct(Fluent $data, $itemsPerPage, $itemsAround, $page, $where = null, $table = null, $alias = null)
+    {
+        parent::__construct();
+
         $this->itemsPerPage = $itemsPerPage;
-        $this->itemsAround = $itemsAround;
+        $this->itemsAround  = $itemsAround;
 
         $this->paginator = new Paginator();
         $this->paginator->setItemsPerPage($this->itemsPerPage);
         $this->paginator->setPage($page);
 
         $this->data = $data;
-        $this->setCount($table, $where, $alias);
+        $this->setCount(
+            $table,
+            $where,
+            $alias
+        );
         $this->paginator->setItemCount($this->count);
-        $data->limit($this->paginator->getLength())->offset($this->paginator->getOffset());
+        $data->limit($this->paginator->getLength())
+            ->offset($this->paginator->getOffset());
     }
 
     /**
@@ -81,12 +89,13 @@ class PaginatorControl extends Control {
      *
      * @api
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->itemsPerPage = null;
-        $this->itemsAround = null;
-        $this->count = null;
-        $this->paginator = null;
-        $this->data = null;
+        $this->itemsAround  = null;
+        $this->count        = null;
+        $this->paginator    = null;
+        $this->data         = null;
     }
 
     /**
@@ -94,16 +103,18 @@ class PaginatorControl extends Control {
      *
      * @return int
      */
-    final public function getCount() {
+    final public function getCount()
+    {
         return $this->count;
     }
 
     /**
      * returns paginator
      *
-     * @return Paginator  
+     * @return Paginator
      */
-    final public function getPaginator() {
+    final public function getPaginator()
+    {
         return $this->paginator;
     }
 
@@ -116,24 +127,42 @@ class PaginatorControl extends Control {
      *
      * @api
      */
-    final private function setCount($table, $where, $alias) {
+    final private function setCount($table, $where, $alias)
+    {
         if ($table !== null && $where !== null) {
-            $query = dibi::select('COUNT(*)')->from($table);
+            $query = dibi::select('COUNT(*)')
+                ->from($table);
 
             if ($alias !== '') {
                 $query->as($alias);
             }
 
             if ($where) {
-                $where = explode(' AND ', $where);
+                $where = explode(
+                    ' AND ',
+                    $where
+                );
 
                 // adding alias :)
                 foreach ($where as &$whereItem) {
-                    if (!substr($alias . '.', 0, 2) && !preg_match('#^`' . $alias . '`\.#', $whereItem) && !preg_match('#^' . $alias . '\.#', $whereItem)) {
+                    if (!substr(
+                            $alias . '.',
+                            0,
+                            2
+                        ) && !preg_match(
+                            '#^`' . $alias . '`\.#',
+                            $whereItem
+                        ) && !preg_match(
+                            '#^' . $alias . '\.#',
+                            $whereItem
+                        )) {
 
-                        $explodedWhereItem = explode(' ', $whereItem);
+                        $explodedWhereItem = explode(
+                            ' ',
+                            $whereItem
+                        );
 
-                        $count = count($explodedWhereItem);
+                        $count  = count($explodedWhereItem);
                         $result = '';
 
                         for ($i = 1; $i < $count; $i++) {
@@ -144,7 +173,10 @@ class PaginatorControl extends Control {
                     }
                 }
 
-                $where = implode(' AND ', $where);
+                $where = implode(
+                    ' AND ',
+                    $where
+                );
 
                 if ($where) {
                     $query->where($where);
@@ -155,14 +187,15 @@ class PaginatorControl extends Control {
         } else {
             $this->count = $this->data->count();
         }
-    }   
+    }
 
     /**
      * renders paginator
      *
      * @api
      */
-    final public function render() {
+    final public function render()
+    {
 
         $template = $this->template;
 
@@ -172,21 +205,20 @@ class PaginatorControl extends Control {
         $params    = $presenter->getParameters();
         unset($params['page']);
 
-        $template->link = ':' . $presenter->getName() . ':' . $presenter->getAction();
+        $template->link   = ':' . $presenter->getName() . ':' . $presenter->getAction();
         $template->params = $params;
 
         // some black magic to make nicer paginator
-        $left = $this->paginator->page - $this->itemsAround >= 1 ? $this->getPaginator()->page - $this->itemsAround : 1; // start
-        $right = $this->paginator->page + $this->itemsAround <= $this->getPaginator()
-                        ->getPageCount() ? $this->getPaginator()->page + $this->itemsAround : $this->getPaginator()
-                        ->getPageCount(); // end
-        $template->arround = $this->itemsAround;
+        $left                = $this->paginator->page - $this->itemsAround >= 1 ? $this->getPaginator()->page - $this->itemsAround : 1; // start
+        $right               = $this->paginator->page + $this->itemsAround <= $this->getPaginator()
+            ->getPageCount() ? $this->getPaginator()->page + $this->itemsAround : $this->getPaginator()
+            ->getPageCount(); // end
+        $template->arround   = $this->itemsAround;
         $template->paginator = $this->paginator;
-        $template->left = $left;
-        $template->right = ($left == 1 && $this->paginator->getPageCount() > $this->itemsAround) ? $this->itemsAround * 2 + 1 : $right;
+        $template->left      = $left;
+        $template->right     = ($left == 1 && $this->paginator->getPageCount() > $this->itemsAround) ? $this->itemsAround * 2 + 1 : $right;
 
         // render now!
         $template->render();
     }
-
 }

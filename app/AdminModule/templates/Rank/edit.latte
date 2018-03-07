@@ -1,54 +1,54 @@
 {block content}
 
-<div class="col-sm-12">     
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{link Rank:default}">{_menu_ranks}</a>
-            </li>
-            <li class="breadcrumb-item">{$item->rank_name}</li>
-        </ol>
-    </div> 
-</div>
-<div class="col-sm-12">
-    <div class="row">
-        <div class="col-sm-6">   
-            <div class="card h-100">
-                <div class="card-header">{_menu_rank}</div>
-                <div class="card-block p-3">
-                    {control editForm}
-                </div>
-            </div>
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{link Rank:default}">{_menu_ranks}</a>
+                </li>
+                <li class="breadcrumb-item">{$item->rank_name}</li>
+            </ol>
         </div>
-
-        {if $presenter->getParameter('id') && $item->rank_file}
+    </div>
+    <div class="col-sm-12">
+        <div class="row">
             <div class="col-sm-6">
                 <div class="card h-100">
-                    <div class="card-header">{_image}</div>
+                    <div class="card-header">{_menu_rank}</div>
                     <div class="card-block p-3">
-                        <img src="{$basePath}/ranks/{$item->rank_file}" class="img-fluid">
+                        {control editForm}
                     </div>
                 </div>
-            </div>    
-        {/if}
-    </div>
-</div>
+            </div>
 
-<div class="col-sm-12 mt-3">        
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{link Rank:default}">{_menu_ranks}</a>
-            </li>
-            <li class="breadcrumb-item">{$item->rank_name}</li>
-        </ol>
-    </div>    
-</div>
+            {if $presenter->getParameter('id') && $item->rank_file}
+                <div class="col-sm-6">
+                    <div class="card h-100">
+                        <div class="card-header">{_image}</div>
+                        <div class="card-block p-3">
+                            <img src="{$basePath}/ranks/{$item->rank_file}" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            {/if}
+        </div>
+    </div>
+
+    <div class="col-sm-12 mt-3">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{link Rank:default}">{_menu_ranks}</a>
+                </li>
+                <li class="breadcrumb-item">{$item->rank_name}</li>
+            </ol>
+        </div>
+    </div>
 
 {/block}

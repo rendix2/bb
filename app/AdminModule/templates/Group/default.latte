@@ -1,52 +1,52 @@
 {block content}
 
-<div class="col-sm-12">     
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">{_menu_groups}</li>
-        </ol>
-        </ol>
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">{_menu_groups}</li>
+            </ol>
+            </ol>
+        </div>
+        <div class="float-right">
+            <a class="btn btn-primary" href="{link Group:edit}">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                {_group_add}
+            </a>
+        </div>
     </div>
-    <div class="float-right">
-        <a class="btn btn-primary" href="{link Group:edit}">
-            <i class="fa fa-plus" aria-hidden="true"></i>
-            {_group_add}
-        </a>
-    </div>
-</div>
 
-<div class="col-sm-12 main">
-    <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
-        <thead>
-            {control gridFilter}
-        </thead>
-        <tbody>
-            {foreach $items as $item}
-                <tr>
-                    <td>
-                        <a href="{link Group:edit, $item->group_id}">{$item->group_id}</a>
-                    </td>
-                    <td>{$item->group_name}</td>
-                    <td>
-                        <a href="{link Group:delete, $item->group_id}">{_delete}</a>
-                    </td>
-                </tr>
-            {/foreach}
-        </tbody>
-    </table>
-</div>
-            
-<div class="col-sm-12">     
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">{_menu_groups}</li>
-        </ol>
+    <div class="col-sm-12 main">
+        <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+            <thead>
+                {control gridFilter}
+            </thead>
+            <tbody>
+                {foreach $items as $item}
+                    <tr>
+                        <td>
+                            <a href="{link Group:edit, $item->group_id}">{$item->group_id}</a>
+                        </td>
+                        <td>{$item->group_name}</td>
+                        <td>
+                            <a href="{link Group:delete, $item->group_id}">{_delete}</a>
+                        </td>
+                    </tr>
+                {/foreach}
+            </tbody>
+        </table>
     </div>
-</div>            
+
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">{_menu_groups}</li>
+            </ol>
+        </div>
+    </div>
 {/block}

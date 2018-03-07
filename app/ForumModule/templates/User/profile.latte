@@ -1,79 +1,85 @@
 {block content}
 
-<div class="col-sm-12">
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">{$userData->user_name}</li>
-        </ol>
-    </div>        
-</div>
-
-<div class="col-sm-12 main">
-    <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
-        <thead>
-            <tr>
-                <th>{_user_name}</th>
-                <th>{_user_post_count}</th>
-                <th>{_user_topic_count}</th>
-                <th>{_user_thank_count}</th>
-                <th>{_user_watch_count}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{$userData->user_name}</td>
-                <td>
-                    {if $postCount}<a href="{link User:posts $userData->user_id}">{$userData->user_post_count}</a>/{$postCount} ({($userData->user_post_count/$postCount)*100|number:2})%{/if}
-                </td>
-                <td>
-                    {if $topicCount}<a href="{link User:topics $userData->user_id}">{$userData->user_topic_count}</a>/{$topicCount} ({($userData->user_topic_count/$topicCount)*100|number:2})%{/if}
-                </td>
-                <td>
-                    {if $thankCount}<a href="{link User:thanks $userData->user_id}">{$userData->user_thank_count}</a>/{$thankCount} ({($userData->user_thank_count/$thankCount)*100|number:2})%{/if}
-                </td>
-                <td>
-                    {if $watchTotalCount}<a href="{link User:watches $userData->user_id}">{$userData->user_watch_count}</a>/{$watchTotalCount} ({($userData->user_watch_count/$watchTotalCount)*100|number:2})%{/if}
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-{if $userData->user_avatar}
-    <div class="col-sm-6">
-        <div class="card">
-            <div class="card-header">{_user_avatar}</div>
-            <div class="card-block">
-                <img src="{$basePath}/avatars/{$userData->user_avatar}" class="img-fluid" alt="{$userData->user_name}" title="{$userData->user_name}">
-            </div>
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">{$userData->user_name}</li>
+            </ol>
         </div>
     </div>
-{/if}
 
-{if $rank}
-    <div class="col-sm-6">
-        <div class="card">
-            <div class="card-header">{_user_rank}</div>
-            <div class="card-block">
-                {if $rank->rank_file}
-                    <img src="{$basePath}/ranks/{$rank->rank_file}" class="img-fluid" alt="{$rank->rank_name}" title="{$rank->rank_name}">
-                {/if}
+    <div class="col-sm-12 main">
+        <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+            <thead>
+                <tr>
+                    <th>{_user_name}</th>
+                    <th>{_user_post_count}</th>
+                    <th>{_user_topic_count}</th>
+                    <th>{_user_thank_count}</th>
+                    <th>{_user_watch_count}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{$userData->user_name}</td>
+                    <td>
+                        {if $postCount}<a
+                            href="{link User:posts $userData->user_id}">{$userData->user_post_count}</a>/{$postCount} ({($userData->user_post_count/$postCount)*100|number:2})%{/if}
+                    </td>
+                    <td>
+                        {if $topicCount}<a
+                            href="{link User:topics $userData->user_id}">{$userData->user_topic_count}</a>/{$topicCount} ({($userData->user_topic_count/$topicCount)*100|number:2})%{/if}
+                    </td>
+                    <td>
+                        {if $thankCount}<a
+                            href="{link User:thanks $userData->user_id}">{$userData->user_thank_count}</a>/{$thankCount} ({($userData->user_thank_count/$thankCount)*100|number:2})%{/if}
+                    </td>
+                    <td>
+                        {if $watchTotalCount}<a
+                            href="{link User:watches $userData->user_id}">{$userData->user_watch_count}</a>/{$watchTotalCount} ({($userData->user_watch_count/$watchTotalCount)*100|number:2})%{/if}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    {if $userData->user_avatar}
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">{_user_avatar}</div>
+                <div class="card-block">
+                    <img src="{$basePath}/avatars/{$userData->user_avatar}" class="img-fluid"
+                         alt="{$userData->user_name}" title="{$userData->user_name}">
+                </div>
             </div>
         </div>
-    </div>
-{/if}
+    {/if}
 
-<div class="col-sm-12 mt-3">
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">{$userData->user_name}</li>
-        </ol>
-    </div>        
-</div>
+    {if $rank}
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">{_user_rank}</div>
+                <div class="card-block">
+                    {if $rank->rank_file}
+                        <img src="{$basePath}/ranks/{$rank->rank_file}" class="img-fluid" alt="{$rank->rank_name}"
+                             title="{$rank->rank_name}">
+                    {/if}
+                </div>
+            </div>
+        </div>
+    {/if}
+
+    <div class="col-sm-12 mt-3">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">{$userData->user_name}</li>
+            </ol>
+        </div>
+    </div>
 
 {/block}

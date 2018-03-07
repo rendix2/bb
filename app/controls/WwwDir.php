@@ -7,12 +7,25 @@ namespace App\Controls;
  *
  * @author rendi
  */
-class WwwDir {
-
+/**
+ * Class WwwDir
+ *
+ * @package App\Controls
+ */
+class WwwDir
+{
+    /**
+     * @var string $wwwDir
+     */
     public $wwwDir;
-    
-    public function __construct($wwwDir) {
+
+    /**
+     * WwwDir constructor.
+     *
+     * @param $wwwDir
+     */
+    public function __construct($wwwDir)
+    {
         $this->wwwDir = $wwwDir;
     }
-    
 }

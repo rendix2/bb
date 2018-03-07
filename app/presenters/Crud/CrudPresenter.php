@@ -3,10 +3,12 @@
 namespace App\Presenters\crud;
 
 use App\Controls\BootStrapForm;
+use App\Controls\GridFilter;
 use App\Models\Crud\CrudManager;
 use App\Presenters\Base\ManagerPresenter;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use Tracy\Debugger;
 
 /**
  * Description of CrudPresenter
@@ -16,20 +18,18 @@ use Nette\Utils\ArrayHash;
  */
 abstract class CrudPresenter extends ManagerPresenter
 {
-
     /**
      *
      */
     const CACHE_KEY_PRIMARY_KEY = 'BBPrimaryKeys';
-
+    /**
+     * @var GridFilter $gf
+     */
+    protected $gf;
     /**
      * @var string $title
      */
     private $title;
-    
-    protected $gf;
-    
-    private $useGf;
 
     /**
      * @return mixed
@@ -43,15 +43,7 @@ abstract class CrudPresenter extends ManagerPresenter
      */
     public function __construct(CrudManager $manager)
     {
-        parent::__construct($manager);       
-    }
-    
-    public function injectGridFilter(\App\Controls\GridFilter $gridFilter){
-        $this->gf = $gridFilter;
-    }
-    
-    public function useGF(){
-        $this->useGf = true;
+        parent::__construct($manager);
     }
 
     /**
@@ -59,10 +51,13 @@ abstract class CrudPresenter extends ManagerPresenter
      */
     public function getTitle()
     {
-        $name  = explode(':', $this->getName());
-        $count = count($name);        
-        $name  = $name[$count-1];
-                
+        $name  = explode(
+            ':',
+            $this->getName()
+        );
+        $count = count($name);
+        $name  = $name[$count - 1];
+
         return $this->title ? $this->title : $name;
     }
 
@@ -109,7 +104,10 @@ abstract class CrudPresenter extends ManagerPresenter
      */
     protected function addSubmit(Form $form)
     {
-        $form->addSubmit('Send', 'Send');
+        $form->addSubmit(
+            'Send',
+            'Send'
+        );
         $form->onSuccess[] = [
             $this,
             'editFormSuccess'
@@ -125,7 +123,10 @@ abstract class CrudPresenter extends ManagerPresenter
      */
     protected function addSubmitB(BootStrapForm $form)
     {
-        $form->addSubmit('Send', 'Send');
+        $form->addSubmit(
+            'Send',
+            'Send'
+        );
         $form->onSuccess[] = [
             $this,
             'editFormSuccess'
@@ -143,19 +144,39 @@ abstract class CrudPresenter extends ManagerPresenter
         $id = $this->getParameter('id');
 
         if ($id) {
-            $result = $this->getManager()->update($id, $values);
+            $result = $this->getManager()
+                ->update(
+                    $id,
+                    $values
+                );
         } else {
-            $result = $id = $this->getManager()->add($values);
+            $result = $id = $this->getManager()
+                ->add($values);
         }
 
         if ($result) {
-            $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+            $this->flashMessage(
+                $this->getTitle() . ' was saved.',
+                self::FLASH_MESSAGE_SUCCESS
+            );
         } else {
-            $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
+            $this->flashMessage(
+                'Nothing to save.',
+                self::FLASH_MESSAGE_INFO
+            );
         }
 
-        $this->getManager()->deleteCache();        
+        $this->getManager()
+            ->deleteCache();
         $this->redirect(':' . $this->getName() . ':default');
+    }
+
+    /**
+     * @param GridFilter $gridFilter
+     */
+    public function injectGridFilter(GridFilter $gridFilter)
+    {
+        $this->gf = $gridFilter;
     }
 
     /**
@@ -164,7 +185,6 @@ abstract class CrudPresenter extends ManagerPresenter
      */
     public function onValidate(Form $form, ArrayHash $values)
     {
-
     }
 
     /**
@@ -176,12 +196,19 @@ abstract class CrudPresenter extends ManagerPresenter
             $this->error('Parameter is not numeric.');
         }
 
-        $result = $this->getManager()->delete($id);
+        $result = $this->getManager()
+            ->delete($id);
 
         if ($result) {
-            $this->flashMessage('Item was deleted.', self::FLASH_MESSAGE_SUCCESS);
+            $this->flashMessage(
+                'Item was deleted.',
+                self::FLASH_MESSAGE_SUCCESS
+            );
         } else {
-            $this->flashMessage('Item was not deleted.', self::FLASH_MESSAGE_DANGER);
+            $this->flashMessage(
+                'Item was not deleted.',
+                self::FLASH_MESSAGE_DANGER
+            );
         }
 
         $this->redirect(':' . $this->getName() . ':default');
@@ -192,27 +219,37 @@ abstract class CrudPresenter extends ManagerPresenter
      */
     public function renderDefault()
     {
-        $items = $this->getManager()->getAllFluent();
+        $items = $this->getManager()
+            ->getAllFluent();
         $count = count($items);
 
         if (!$count) {
-            $this->flashMessage('No items.', self::FLASH_MESSAGE_WARNING);
+            $this->flashMessage(
+                'No items.',
+                self::FLASH_MESSAGE_WARNING
+            );
         }
-        
-        foreach ( $this->gf->getWhere() as $where ){
-            if ( isset($where['value']) ){
-                \Tracy\Debugger::barDump($where);
-                $items->where('['.$where['column'].'] '.$where['type'].' '.$where['strint'], $where['value']);
+
+        foreach ($this->gf->getWhere() as $where) {
+            if (isset($where['value'])) {
+                Debugger::barDump($where);
+                $items->where(
+                    '[' . $where['column'] . '] ' . $where['type'] . ' ' . $where['strint'],
+                    $where['value']
+                );
             }
         }
-        
-        foreach ( $this->gf->getOrderBy() as $column => $type ){
-            $items->orderBy($column, $type);
-        }       
+
+        foreach ($this->gf->getOrderBy() as $column => $type) {
+            $items->orderBy(
+                $column,
+                $type
+            );
+        }
 
         $this->template->items      = $items->fetchAll();
         $this->template->title      = $this->getTitleOnDefault();
-        $this->template->countItems = $count; 
+        $this->template->countItems = $count;
     }
 
     /**
@@ -225,7 +262,8 @@ abstract class CrudPresenter extends ManagerPresenter
                 $this->error('Parameter id is not numeric.');
             }
 
-            $item = $this->getManager()->getById($id);
+            $item = $this->getManager()
+                ->getById($id);
 
             if (!$item) {
                 $this->error('Item #' . $id . ' not found.');
@@ -233,14 +271,13 @@ abstract class CrudPresenter extends ManagerPresenter
 
             $this['editForm']->setDefaults($item);
 
-            $this->template->item = $item;
+            $this->template->item  = $item;
             $this->template->title = $this->getTitleOnEdit();
         } else {
             $this->template->title = $this->getTitleOnAdd();
-            $this->template->item = [];
+            $this->template->item  = [];
 
             $this['editForm']->setDefaults([]);
         }
     }
-
 }

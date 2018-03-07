@@ -12,7 +12,6 @@ use Nette\Utils\ArrayHash;
  */
 class ThanksManager extends Crud\CrudManager
 {
-
     /**
      * @var UsersManager $userManager
      */
@@ -25,7 +24,13 @@ class ThanksManager extends Crud\CrudManager
      */
     public function getThanksByForumId($forum_id)
     {
-        return $this->dibi->select('*')->from($this->getTable())->where('[thank_forum_id] = %i', $forum_id)->fetchAll();
+        return $this->dibi->select('*')
+            ->from($this->getTable())
+            ->where(
+                '[thank_forum_id] = %i',
+                $forum_id
+            )
+            ->fetchAll();
     }
 
     /**
@@ -35,7 +40,13 @@ class ThanksManager extends Crud\CrudManager
      */
     public function getThanksByTopicId($topic_id)
     {
-        return $this->dibi->select('*')->from($this->getTable())->where('[thank_topic_id] = %i', $topic_id)->fetchAll();
+        return $this->dibi->select('*')
+            ->from($this->getTable())
+            ->where(
+                '[thank_topic_id] = %i',
+                $topic_id
+            )
+            ->fetchAll();
     }
 
     /**
@@ -45,7 +56,13 @@ class ThanksManager extends Crud\CrudManager
      */
     public function getThanksByUserId($user_id)
     {
-        return $this->dibi->select('*')->from($this->getTable())->where('[thank_user_id] = %i', $user_id)->fetchAll();
+        return $this->dibi->select('*')
+            ->from($this->getTable())
+            ->where(
+                '[thank_user_id] = %i',
+                $user_id
+            )
+            ->fetchAll();
     }
 
     /**
@@ -56,13 +73,18 @@ class ThanksManager extends Crud\CrudManager
     public function getThanksWithUserInTopic($topic_id)
     {
         return $this->dibi->select('*')
-                          ->from($this->getTable())
-                          ->as('t')
-                          ->innerJoin(self::USERS_TABLE)
-                          ->as('u')
-                          ->on('[u.user_id] = [t.thank_user_id]')
-                          ->where('[t.thank_topic_id] = %i', $topic_id)
-                          ->fetchAll();
+            ->from($this->getTable())
+            ->as('t')
+            ->innerJoin(self::USERS_TABLE)
+            ->as('u')
+            ->on(
+                '[u.user_id] = [t.thank_user_id]'
+            )
+            ->where(
+                '[t.thank_topic_id] = %i',
+                $topic_id
+            )
+            ->fetchAll();
     }
 
     /**
@@ -75,11 +97,20 @@ class ThanksManager extends Crud\CrudManager
     public function canUserThank($forum_id, $topic_id, $user_id)
     {
         return !$this->dibi->select('1')
-                           ->from(self::THANKS_TABLE)
-                           ->where('[thank_forum_id] = %i', $forum_id)
-                           ->where('[thank_topic_id] = %i', $topic_id)
-                           ->where('[thank_user_id] = %i', $user_id)
-                           ->fetch();
+            ->from(self::THANKS_TABLE)
+            ->where(
+                '[thank_forum_id] = %i',
+                $forum_id
+            )
+            ->where(
+                '[thank_topic_id] = %i',
+                $topic_id
+            )
+            ->where(
+                '[thank_user_id] = %i',
+                $user_id
+            )
+            ->fetch();
     }
 
     /**
@@ -89,7 +120,10 @@ class ThanksManager extends Crud\CrudManager
      */
     public function add(ArrayHash $item_data)
     {
-        $this->userManager->update($item_data->thank_user_id, ArrayHash::from(['user_thank_count%sql' => 'user_thank_count + 1']));
+        $this->userManager->update(
+            $item_data->thank_user_id,
+            ArrayHash::from(['user_thank_count%sql' => 'user_thank_count + 1'])
+        );
 
         parent::add($item_data);
     }
@@ -101,7 +135,12 @@ class ThanksManager extends Crud\CrudManager
      */
     public function deleteByTopicId($topic_id)
     {
-        return $this->dibi->delete($this->getTable())->where('[thank_topic_id] = %i', $topic_id)->execute();
+        return $this->dibi->delete($this->getTable())
+            ->where(
+                '[thank_topic_id] = %i',
+                $topic_id
+            )
+            ->execute();
     }
 
     /**
@@ -111,5 +150,4 @@ class ThanksManager extends Crud\CrudManager
     {
         $this->userManager = $userManager;
     }
-
 }

@@ -4,85 +4,85 @@
 *}
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
+<head>
+    <meta charset="utf-8">
 
-        <title>{ifset title}{include title|stripHtml} | {/ifset}Nette Sandbox</title>
+    <title>{ifset title}{include title|stripHtml} | {/ifset}Nette Sandbox</title>
 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{$basePath}/css/style.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{$basePath}/css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
 
-    <body>
+<body>
 
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark mb-1">
             <div class="container-fluid">
                 <ul class="navbar-nav navbar-left">
 
-                    {if $user->isLoggedIn()} 
+            {if $user->isLoggedIn()}
 
-                        <li class="nav-item {if $presenter->getName() ==='Admin:Index'}active{/if}">
-                            <a class="nav-link" href="{link Index:default}">{_menu_index}</a>
-                        </li>
-                        <li class="nav-item {if $presenter->getName() ==='Admin:Forum'}active{/if}">
-                            <a class="nav-link" href="{link Forum:default}">{_menu_forums}<a>
-                                    </li>
-                                    <li class="nav-item {if $presenter->getName() ==='Admin:Category'}active{/if}">
-                                        <a class="nav-link" href="{link Category:default}">{_menu_categories}</a>
-                                    </li>
-                                    <li class="nav-item {if $presenter->getName() ==='Admin:User'}active{/if}">
-                                        <a class="nav-link" href="{link User:default}">{_menu_users}</a>
-                                    </li>
-                                    <li class="nav-item {if $presenter->getName() ==='Admin:Cache'}active{/if}">
-                                        <a class="nav-link" href="{link Cache:default}">{_menu_cache}</a>
-                                    </li>
-                                    <li class="nav-item {if $presenter->getName() ==='Admin:Language'}active{/if}">
-                                        <a class="nav-link" href="{link Language:default}">{_menu_languages}</a>
-                                    </li>
-                                    <li class="nav-item {if $presenter->getName() ==='Admin:Group'}active{/if}">
-                                        <a class="nav-link" href="{link Group:default}">{_menu_groups}</a>
-                                    </li>
-                                    <li class="nav-item {if $presenter->getName() ==='Admin:Rank'}active{/if}">
-                                        <a class="nav-link" href="{link Rank:default}">{_menu_ranks}</a>
-                                    </li>
-                                    <li class="nav-item {if $presenter->getName() ==='Admin:Report'}active{/if}">
-                                        <a class="nav-link" href="{link Report:default}">{_menu_reports}</a>
-                                    </li>
-                                {else}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{link Login:default}">Login</a>
-                                    </li>
-                                {/if}
-                                </ul>
+                <li class="nav-item {if $presenter->getName() ==='Admin:Index'}active{/if}">
+                    <a class="nav-link" href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="nav-item {if $presenter->getName() ==='Admin:Forum'}active{/if}">
+                    <a class="nav-link" href="{link Forum:default}">{_menu_forums}<a>
+                </li>
+                <li class="nav-item {if $presenter->getName() ==='Admin:Category'}active{/if}">
+                    <a class="nav-link" href="{link Category:default}">{_menu_categories}</a>
+                </li>
+                <li class="nav-item {if $presenter->getName() ==='Admin:User'}active{/if}">
+                    <a class="nav-link" href="{link User:default}">{_menu_users}</a>
+                </li>
+                <li class="nav-item {if $presenter->getName() ==='Admin:Cache'}active{/if}">
+                    <a class="nav-link" href="{link Cache:default}">{_menu_cache}</a>
+                </li>
+                <li class="nav-item {if $presenter->getName() ==='Admin:Language'}active{/if}">
+                    <a class="nav-link" href="{link Language:default}">{_menu_languages}</a>
+                </li>
+                <li class="nav-item {if $presenter->getName() ==='Admin:Group'}active{/if}">
+                    <a class="nav-link" href="{link Group:default}">{_menu_groups}</a>
+                </li>
+                <li class="nav-item {if $presenter->getName() ==='Admin:Rank'}active{/if}">
+                    <a class="nav-link" href="{link Rank:default}">{_menu_ranks}</a>
+                </li>
+                <li class="nav-item {if $presenter->getName() ==='Admin:Report'}active{/if}">
+                    <a class="nav-link" href="{link Report:default}">{_menu_reports}</a>
+                </li>
+            {else}
+                <li class="nav-item">
+                    <a class="nav-link" href="{link Login:default}">Login</a>
+                </li>
+            {/if}
+        </ul>
 
-                                <ul class="navbar-nav navbar-right">
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{link :Forum:Index:default}">{_menu_forum}</a>
-                                    </li>
-                                </ul>
-                                </div>
-                                </nav>             
+        <ul class="navbar-nav navbar-right">
+            <li class="nav-item">
+                <a class="nav-link" href="{link :Forum:Index:default}">{_menu_forum}</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
-                                <div class="col-sm-4 main">
-                                    {foreach $flashes as $flash}
-                                        <div class="alert alert-{$flash->type}">{$flash->message}</div>
-                                    {/foreach}
-                                </div>
+<div class="col-sm-4 main">
+    {foreach $flashes as $flash}
+        <div class="alert alert-{$flash->type}">{$flash->message}</div>
+    {/foreach}
+</div>
 
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        {include content} 
-                                    </div>
-                                </div>    
+<div class="container-fluid">
+    <div class="row">
+        {include content}
+    </div>
+</div>
 
-                                {block scripts}
-                                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-                                <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-                                <script src="https://nette.github.io/resources/js/netteForms.min.js"></script>
-                                <script src="{$basePath}/js/main.js"></script>
-                                <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
-                                <script defer src="{$basePath}/js/live-form-validation.js"></script>
-                                {/block}
-                                </body>
-                                </html>
+{block scripts}
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://nette.github.io/resources/js/netteForms.min.js"></script>
+    <script src="{$basePath}/js/main.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script defer src="{$basePath}/js/live-form-validation.js"></script>
+{/block}
+</body>
+</html>

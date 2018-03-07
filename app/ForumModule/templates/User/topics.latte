@@ -1,57 +1,57 @@
 {block content}
-<div class="col-sm-12">
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{link User:profile $presenter->getParameter('user_id')}">{_menu_user}</a>
-            </li>
-            <li class="breadcrumb-item active">{_menu_topics}</li>
-        </ol>
-    </div>     
-    
-    <div class="float-right">
-        {control paginator}
-    </div>
-</div>
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{link User:profile $presenter->getParameter('user_id')}">{_menu_user}</a>
+                </li>
+                <li class="breadcrumb-item active">{_menu_topics}</li>
+            </ol>
+        </div>
 
-<div class="col-sm-12 main">
-    <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
-        <thead>
-            <tr>
-                <th>{_topic_id}</th>
-                <th>{_topic_name}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {foreach $topics as $topic}
-                <tr>
-                    <td>
-                        <a href="{link Post:all, $topic->topic_forum_id, $topic->topic_id}">{$topic->topic_id}</a>
-                    </td>
-                    <td>{$topic->topic_name}</td>
-                </tr>
-            {/foreach}
-        </tbody>
-    </table>
-</div>
-<div class="col-sm-12">
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{link User:profile $presenter->getParameter('user_id')}">{_menu_user}</a>
-            </li>
-            <li class="breadcrumb-item active">{_menu_topics}</li>
-        </ol>
-    </div>     
-    
-    <div class="float-right">
-        {control paginator}
+        <div class="float-right">
+            {control paginator}
+        </div>
     </div>
-</div>
+
+    <div class="col-sm-12 main">
+        <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+            <thead>
+                <tr>
+                    <th>{_topic_id}</th>
+                    <th>{_topic_name}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {foreach $topics as $topic}
+                    <tr>
+                        <td>
+                            <a href="{link Post:all, $topic->topic_forum_id, $topic->topic_id}">{$topic->topic_id}</a>
+                        </td>
+                        <td>{$topic->topic_name}</td>
+                    </tr>
+                {/foreach}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{link User:profile $presenter->getParameter('user_id')}">{_menu_user}</a>
+                </li>
+                <li class="breadcrumb-item active">{_menu_topics}</li>
+            </ol>
+        </div>
+
+        <div class="float-right">
+            {control paginator}
+        </div>
+    </div>
 {/block}

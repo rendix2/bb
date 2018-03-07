@@ -13,17 +13,14 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      *
      */
     const FLASH_MESSAGE_SUCCESS = 'success';
-
     /**
      *
      */
     const FLASH_MESSAGE_DANGER = 'danger';
-
     /**
      *
      */
     const FLASH_MESSAGE_WARNING = 'warning';
-
     /**
      *
      */
@@ -36,5 +33,4 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     {
         parent::startup();
     }
-    
 }

@@ -13,7 +13,6 @@ use App\Models\UsersManager;
  */
 class LanguagePresenter extends Base\AdminPresenter
 {
-
     /**
      * @var UsersManager $userManager
      */
@@ -55,9 +54,12 @@ class LanguagePresenter extends Base\AdminPresenter
         $form = $this->getBootStrapForm();
         $form->setTranslator($this->getAdminTranslator());
 
-        $form->addText('lang_name', 'Language name:')->setRequired();
+        $form->addText(
+            'lang_name',
+            'Language name:'
+        )
+            ->setRequired();
 
         return $this->addSubmitB($form);
     }
-
 }

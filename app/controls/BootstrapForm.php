@@ -35,7 +35,6 @@ class BootstrapForm extends Form
      * @api
      */
     private $columnCount;
-
     /**
      * type of column
      *
@@ -43,7 +42,6 @@ class BootstrapForm extends Form
      * @api
      */
     private $columnType;
-
     /**
      * columns in row
      * like sm-8 ...
@@ -66,7 +64,10 @@ class BootstrapForm extends Form
      */
     public function __construct($columnCount = 6, $columnType = 'sm', $labelColumnCount = 7, IContainer $parent = null, $name = null)
     {
-        parent::__construct($parent, $name);
+        parent::__construct(
+            $parent,
+            $name
+        );
         $this->addProtection('Try it again.');
 
         $this->columnCount      = $columnCount;
@@ -94,7 +95,10 @@ class BootstrapForm extends Form
      */
     public function addCheckbox($name, $caption = null)
     {
-        return $this[$name] = new MyCheckBox($name, $caption);
+        return $this[$name] = new MyCheckBox(
+            $name,
+            $caption
+        );
     }
 
     /**
@@ -108,7 +112,15 @@ class BootstrapForm extends Form
      */
     public function addEmail($name, $label = null)
     {
-        return parent::addEmail($name, $label)->setType(Form::EMAIL)->addRule(Form::EMAIL, 'Not a valid email');
+        return parent::addEmail(
+            $name,
+            $label
+        )
+            ->setType(Form::EMAIL)
+            ->addRule(
+                Form::EMAIL,
+                'Not a valid email'
+            );
     }
 
     /**
@@ -122,7 +134,12 @@ class BootstrapForm extends Form
      */
     public function addFloat($name, $label = null)
     {
-        return $this->addText($name, $label)->setRequired(false)->addRule(Form::FLOAT);
+        return $this->addText(
+            $name,
+            $label
+        )
+            ->setRequired(false)
+            ->addRule(Form::FLOAT);
     }
 
     /**
@@ -139,7 +156,16 @@ class BootstrapForm extends Form
      */
     public function addTextAreaHtml($name, $label = null, $cols = null, $rows = null)
     {
-        return $this->addTextArea($name, $label, $cols, $rows)->setAttribute('class', 'mceEditor');
+        return $this->addTextArea(
+            $name,
+            $label,
+            $cols,
+            $rows
+        )
+            ->setAttribute(
+                'class',
+                'mceEditor'
+            );
     }
 
     /**
@@ -161,25 +187,36 @@ class BootstrapForm extends Form
         $renderer->wrappers['label']['']                 = '';
 
         // make form and controls compatible with Twitter Bootstrap
-        $this->getElementPrototype()->class('form-horizontal');
+        $this->getElementPrototype()
+            ->class('form-horizontal');
 
         foreach ($this->getControls() as $control) {
-
             // add some class for label!;
             $control->getLabelPrototype()
-                    ->setAttribute('class', 'control-label col-' . $this->columnType . '-' . $this->labelColumnCount);
+                ->setAttribute(
+                    'class',
+                    'control-label col-' . $this->columnType . '-' . $this->labelColumnCount
+                );
 
             if ($control instanceof Button) {
-                if ($control->getControlPrototype()->getAttribute('class') === null) {
-                    $control->getControlPrototype()->addClass('btn btn-primary');
+                if ($control->getControlPrototype()
+                        ->getAttribute('class') === null) {
+                    $control->getControlPrototype()
+                        ->addClass('btn btn-primary');
                 }
             } elseif ($control instanceof TextBase || $control instanceof SelectBox || $control instanceof MultiSelectBox) {
-                $control->getControlPrototype()->addClass('form-control');
+                $control->getControlPrototype()
+                    ->addClass('form-control');
             } elseif ($control instanceof CheckboxList || $control instanceof RadioList) {
                 // add class with pt-0 for checkbox
                 $control->getLabelPrototype()
-                        ->setAttribute('class', 'control-label col-' . $this->columnType . '-' . $this->labelColumnCount . ' pt-0');
-                $control->getSeparatorPrototype()->setName('div')->addClass($control->getControlPrototype()->type);
+                    ->setAttribute(
+                        'class',
+                        'control-label col-' . $this->columnType . '-' . $this->labelColumnCount . ' pt-0'
+                    );
+                $control->getSeparatorPrototype()
+                    ->setName('div')
+                    ->addClass($control->getControlPrototype()->type);
             }
         }
     }
@@ -194,5 +231,4 @@ class BootstrapForm extends Form
         parent::beforeRender();
         $this->useBootStrap();
     }
-
 }

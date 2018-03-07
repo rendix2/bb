@@ -16,26 +16,32 @@ use SplFileInfo;
  *
  * @author rendi
  */
-abstract class Manager extends Tables {
+abstract class Manager extends Tables
+{
 
     /**
-     * 
+     *
      * @var Connection $dibi dibi
      */
     protected $dibi;
 
     /**
-     * 
+     *
      * @param Connection $dibi
      */
-    public function __construct(Connection $dibi) {
-        $this->dibi = $dibi;        
+    public function __construct(Connection $dibi)
+    {
+        $this->dibi = $dibi;
     }
 
-    public function getDibi() {
+    /**
+     * @return Connection
+     */
+    public function getDibi()
+    {
         return $this->dibi;
     }
-    
+
     /**
      * returns extension of file
      *
@@ -50,7 +56,7 @@ abstract class Manager extends Tables {
 
         return $file->getExtension();
     }
-    
+
     /**
      * this method returns random string
      *
@@ -59,7 +65,15 @@ abstract class Manager extends Tables {
      */
     public static function getRandomString()
     {
-        return mb_substr(md5(uniqid(mt_rand(), true)), 0, 15); // php.vrana.cz
+        return mb_substr(
+            md5(
+                uniqid(
+                    mt_rand(),
+                    true
+                )
+            ),
+            0,
+            15
+        ); // php.vrana.cz
     }
-        
 }

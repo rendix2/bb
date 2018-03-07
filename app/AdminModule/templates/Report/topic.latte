@@ -1,33 +1,33 @@
 {block content}
 
-<div class="col-sm-12">     
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{link Report:default}">Report</a>
-            </li>
-            <li class="breadcrumb-item">{$topic->topic_name}</li>
-        </ol>
-    </div> 
-</div>
-        
-{include reportTable.latte}      
-        
-<div class="col-sm-12">     
-    <div class="float-left">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{link Index:default}">{_menu_index}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{link Report:default}">Report</a>
-            </li>
-            <li class="breadcrumb-item">{$topic->topic_name}</li>
-        </ol>
-    </div> 
-</div>
-        
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{link Report:default}">Report</a>
+                </li>
+                <li class="breadcrumb-item">{$topic->topic_name}</li>
+            </ol>
+        </div>
+    </div>
+
+    {include reportTable.latte}
+
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{link Report:default}">Report</a>
+                </li>
+                <li class="breadcrumb-item">{$topic->topic_name}</li>
+            </ol>
+        </div>
+    </div>
+
 {/block}
