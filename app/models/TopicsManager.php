@@ -135,6 +135,7 @@ class TopicsManager extends Crud\CrudManager
         $values->topic_name     = $item_data->post_title;
         $values->topic_user_id  = $item_data->post_user_id;
         $values->topic_forum_id = $item_data->post_forum_id;
+        $values->topic_add_time = $item_data->post_add_time;
 
         unset($values->post_title);
         unset($values->post_text);

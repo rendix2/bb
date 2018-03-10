@@ -69,6 +69,32 @@ abstract class MNManager extends Manager
             )
             ->fetchAll();
     }
+    
+    /**
+     * @param int $left_id
+     *
+     * @return array
+     */
+    public function getByLeftJoinedFluent($left_id)
+    {
+        $aliasL = self::createAlias($this->left->getTable());
+        $aliasR = self::createAlias($this->right->getTable());
+
+        return $this->dibi->select($aliasR . '.*')
+            ->from($this->table)
+            ->as('relation')
+            ->innerJoin(
+                $this->right->getTable()
+            )
+            ->as($aliasR)
+            ->on(
+                $aliasR . '.' . $this->right->getPrimaryKey() . ' = [relation.' . $this->right->getPrimaryKey() . ']'
+            )
+            ->where(
+                '[relation.' . $this->left->getPrimaryKey() . '] = %i',
+                $left_id
+            );
+    }    
 
     /**
      * @param int $left_id
@@ -131,6 +157,32 @@ abstract class MNManager extends Manager
             )
             ->fetchAll();
     }
+    
+    /**
+     * @param int $right_id
+     *
+     * @return array
+     */
+    public function getByRightJoinedFluent($right_id)
+    {
+        $aliasL = self::createAlias($this->left->getTable());
+        $aliasR = self::createAlias($this->right->getTable());
+
+        return $this->dibi->select($aliasL . '.*')
+            ->from($this->table)
+            ->as('relation')
+            ->innerJoin(
+                $this->left->getTable()
+            )
+            ->as($aliasL)
+            ->on(
+                $aliasL . '.' . $this->left->getPrimaryKey() . ' = [relation.' . $this->left->getPrimaryKey() . ']'
+            )
+            ->where(
+                '[relation.' . $this->right->getPrimaryKey() . '] = %i',
+                $right_id
+            );
+    }    
 
     /**
      * @param int $right_id

@@ -478,7 +478,7 @@ class UserPresenter extends Base\ForumPresenter
     /**
      * @param int $user_id
      */
-    public function renderWatches($user_id)
+    public function renderWatches($user_id, $page = 1)
     {
         if (!is_numeric($user_id)) {
             $this->error('Parameter is not numeric.');
@@ -493,17 +493,28 @@ class UserPresenter extends Base\ForumPresenter
                 self::FLASH_MESSAGE_DANGER
             );
         }
+        
+        $watches = $this->topicWatchManager->getByRightJoinedFluent($user_id);
+        
+        $pag    = new PaginatorControl(
+            $watches,
+            15,
+            5,
+            $page
+        );
+        $this->addComponent(
+            $pag,
+            'paginator'
+        );
 
-        $watches = $this->topicWatchManager->getByRightJoined($user_id);
-
-        if (!$watches) {
+        if (!$pag->getCount()) {
             $this->flashMessage(
-                'User is not watching any topic.',
+                'User have no awcthes.',
                 self::FLASH_MESSAGE_WARNING
             );
-        }
-
-        $this->template->watches = $watches;
+        }        
+           
+        $this->template->watches = $watches->fetchAll();
     }
 
     /**
