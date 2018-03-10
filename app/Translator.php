@@ -64,6 +64,10 @@ class Translator implements ITranslator
      */
     public function translate($message, $count = null)
     {
+        if ( $message === null ){
+            return '';
+        }
+        
         if (!array_key_exists(
             $message,
             $this->tr

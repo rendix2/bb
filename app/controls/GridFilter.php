@@ -66,6 +66,8 @@ class GridFilter extends Control
      * @var Session $session
      */
     private $session;
+    
+    private $translator;
 
     /**
      * GridFilter constructor.
@@ -77,6 +79,10 @@ class GridFilter extends Control
         $this->form    = new BootstrapForm();
         $this->type    = [];
         $this->orderBy = [];
+    }
+    
+    public function setTranslator(\Nette\Localization\ITranslator $translator){
+        $this->translator = $translator;
     }
 
     /**
@@ -105,7 +111,6 @@ class GridFilter extends Control
      */
     public function getWhere()
     {
-
         if ($this->whereColumns) {
             return $this->whereColumns;
         } else {
@@ -311,6 +316,7 @@ class GridFilter extends Control
     public function render()
     {
         $template = $this->template->setFile(__DIR__ . '/templates/gridFilter.latte');
+        $template->setTranslator($this->translator);
 
         foreach ($this->type as $column => $value) {
             $this['gridFilter']->setDefaults([$column => $this->session->getSection($column)->value]);
@@ -342,8 +348,9 @@ class GridFilter extends Control
         ];
         $this->form->addSubmit(
             'send',
-            'SEND'
+            'Send'
         );
+        $this->form->setTranslator($this->translator);
 
         return $this->form;
     }

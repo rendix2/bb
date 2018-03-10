@@ -199,34 +199,36 @@ class UserPresenter extends Base\AdminPresenter
         parent::startup();
 
         if ($this->getAction() == 'default') {
+            $this->gf->setTranslator($this->getAdminTranslator());
+            
             $this->gf->addFilter(
                 'user_id',
-                'User ID',
+                'user_id',
                 GridFilter::INT_EQUAL
             );
             $this->gf->addFilter(
                 'user_name',
-                'User name',
+                'user_name',
                 GridFilter::TEXT_LIKE
             );
             $this->gf->addFilter(
                 'user_post_count',
-                'Post count',
+                'user_post_count',
                 GridFilter::FROM_TO_INT
             );
             $this->gf->addFilter(
                 'user_topic_count',
-                'Topic count',
+                'user_topic_count',
                 GridFilter::FROM_TO_INT
             );
             $this->gf->addFilter(
                 'user_thank_count',
-                'Thank count',
+                'user_thank_count',
                 GridFilter::FROM_TO_INT
             );
             $this->gf->addFilter(
-                '',
-                '',
+                null,
+                null,
                 GridFilter::NOTHING
             );
 

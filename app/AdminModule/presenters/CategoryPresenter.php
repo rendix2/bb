@@ -47,19 +47,21 @@ class CategoryPresenter extends Base\AdminPresenter
         parent::startup();
 
         if ($this->getAction() == 'default') {
+            $this->gf->setTranslator($this->getAdminTranslator());
+            
             $this->gf->addFilter(
                 'category_id',
-                'Category ID',
+                'category_id',
                 GridFilter::INT_EQUAL
             );
             $this->gf->addFilter(
                 'category_name',
-                'Category name',
+                'category_name',
                 GridFilter::TEXT_LIKE
             );
             $this->gf->addFilter(
-                '',
-                '',
+                null,
+                null    ,
                 GridFilter::NOTHING
             );
 

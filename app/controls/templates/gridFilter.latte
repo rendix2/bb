@@ -11,23 +11,23 @@
                 {continueIf true}                    
             {/if}
 
-            <th>{$val['text']}
+            <th>{_$val['text']}
                 {if $val['type'] != 'empty'} 
-                    {var $p = $params}
+                    {var $p       = $params}
                     {var $destroy = $params}
-                    {var $name2 = $gf->checkFTI($name)}
+                    {var $name2   = $gf->checkFTI($name)}
 
                     {if $gf->getParameter('sort_'.$name2) == 'ASC'}                    
                         {var $p['sort_'.$name2] = 'DESC'}
-                        <a href="{$gf->link('this', $p)}">Radit DESC</a>
+                        <a href="{$gf->link('this', $p)}">{_sort_desc}</a>
                     {else}{* if $gf->getParameter('sort_'.$name2) == 'DESC'} *}
                         {var $p['sort_'.$name2] = 'ASC'}
-                        <a href="{$gf->link('this', $p)}">Radit ASC</a>                
+                        <a href="{$gf->link('this', $p)}">{_sort_asc}</a>                
                     {/if}
 
                     {if isset($destroy['sort_'.$name2]) && $destroy['sort_'.$name2] != null}
                         {var $destroy['sort_'.$name2] = null}
-                        <a href="{$gf->link('this', $destroy)}">Zrušit</a>
+                        <a href="{$gf->link('this', $destroy)}">{_Cancel}</a>
                     {/if}
                 {/if}
             </th>
@@ -44,7 +44,7 @@
 
             {if $fti == true}
                 {var $fti = false}
-                {continueIf  true}
+                {continueIf true}
             {/if}
 
             {if $val['type'] == 'FTI' && preg_match('#_Xfrom$#', $name) }

@@ -141,25 +141,19 @@ final class ForumPresenter extends Base\ForumPresenter
 
         $this->template->forum = $forum;
     }
+    
+    public function renderSearchForum($forum_id){
+        
+    }
 
-    /**
-     * @param int $forum_id
-     */
-    public function renderTopics($forum_id)
-    {
-        if (!is_numeric($forum_id)) {
-            $this->error('Parameter is not numeric');
-        }
-
-        $forum = $this->getManager()
-            ->getById($forum_id);
-
-        if (!$forum) {
-            $this->error('Forum not found');
-        }
-
-        $this->template->topics = $this->getManager()
-            ->getTopics($forum_id)
-            ->fetchAll();
+    protected function createComponentSearchInForumForm(){
+         $form = new \App\Controls\BootstrapForm();
+         $form->onSuccess[] = [$this, 'searchInForumFormSuccess'];
+         
+         return $form;
+    }
+    
+    public function searchInForumFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values){
+        
     }
 }

@@ -205,19 +205,20 @@ class GroupPresenter extends Base\AdminPresenter
         parent::startup();
 
         if ($this->getAction() == 'default') {
+            $this->gf->setTranslator($this->getAdminTranslator());
             $this->gf->addFilter(
                 'group_id',
-                'Group ID',
+                'group_id',
                 GridFilter::INT_EQUAL
             );
             $this->gf->addFilter(
                 'group_name',
-                'Group name',
+                'group_name',
                 GridFilter::TEXT_LIKE
             );
             $this->gf->addFilter(
-                '',
-                '',
+                null,
+                null,
                 GridFilter::NOTHING
             );
 

@@ -84,21 +84,23 @@ class ForumPresenter extends Base\AdminPresenter
     public function startup()
     {
         parent::startup();
-
+        
         if ($this->getAction() == 'default') {
+            $this->gf->setTranslator($this->getAdminTranslator());
+            
             $this->gf->addFilter(
                 'forum_id',
-                'Forum ID',
+                'forum_id',
                 GridFilter::INT_EQUAL
             );
             $this->gf->addFilter(
                 'forum_name',
-                'Forum name',
+                'forum_name',
                 GridFilter::TEXT_LIKE
             );
             $this->gf->addFilter(
-                '',
-                '',
+                null,
+                null,
                 GridFilter::NOTHING
             );
 
