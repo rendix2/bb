@@ -29,6 +29,10 @@ class LoginPresenter extends BasePresenter
      * @var SessionsManager $sessionManager
      */
     private $sessionManager;
+    
+    private $appDir;
+    
+    
 
     /**
      * LoginPresenter constructor.
@@ -48,6 +52,10 @@ class LoginPresenter extends BasePresenter
     public function injectSessionManager(SessionsManager $sessionManager)
     {
         $this->sessionManager = $sessionManager;
+    }
+    
+    public function injectAppDir(\App\Controls\AppDir $appDir){
+        $this->appDir = $appDir;
     }
 
     /**
@@ -99,7 +107,19 @@ class LoginPresenter extends BasePresenter
             ->setAuthenticator($this->authenticator);
     }
 
-    /**
+    public function beforeRender() {
+        parent::beforeRender();
+        
+                $this->template->setTranslator(new \App\Translator(
+            $this->appDir,
+            'Forum',
+            $this->getUser()
+                ->getIdentity()
+                ->getData()['lang_file_name']
+        ));
+    }
+
+        /**
      * @return BootstrapForm
      */
     protected function createComponentLoginForm()

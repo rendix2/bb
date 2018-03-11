@@ -9,7 +9,7 @@
                 <li class="breadcrumb-item">
                     <a href="{link Group:default}">{_menu_groups}</a>
                 </li>
-                <li class="breadcrumb-item">{$item->group_name}</li>
+                <li class="breadcrumb-item">{if $presenter->getParameter('id')}{$item->group_name}{else}{_group_new}{/if}</li>
             </ol>
         </div>
     </div>
@@ -118,7 +118,7 @@
                 <li class="breadcrumb-item">
                     <a href="{link Group:default}">{_menu_groups}</a>
                 </li>
-                <li class="breadcrumb-item">{$item->group_name}</li>
+                <li class="breadcrumb-item">{if $presenter->getParameter('id')}{$item->group_name}{else}{_group_new}{/if}</li>
             </ol>
         </div>
     </div>

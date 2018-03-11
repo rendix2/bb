@@ -9,7 +9,8 @@
                 <li class="breadcrumb-item">
                     <a href="{link User:default}">{_menu_users}</a>
                 </li>
-                <li class="breadcrumb-item">{$item->user_name}</li>
+                {dump $item}
+                <li class="breadcrumb-item">{if $presenter->getParameter('id')}{$item->user_name}{else}{_user_new}{/if}</li>
             </ol>
         </div>
     </div>
@@ -147,7 +148,7 @@
                 <li class="breadcrumb-item">
                     <a href="{link User:default}">{_menu_users}</a>
                 </li>
-                <li class="breadcrumb-item">{$item->user_name}</li>
+                <li class="breadcrumb-item">{if $presenter->getParameter('id')}{$item->user_name}{else}{_user_new}{/if}</li>
             </ol>
         </div>
     </div>

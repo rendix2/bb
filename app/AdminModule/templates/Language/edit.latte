@@ -9,7 +9,7 @@
                 <li class="breadcrumb-item">
                     <a href="{link Language:default}">{_menu_languages}</a>
                 </li>
-                <li class="breadcrumb-item">{$item->lang_name}</li>
+                <li class="breadcrumb-item">{if $presenter->getParameter('id')}{$item->lang_name}{else}{_lang_new}{/if}</li>
             </ol>
         </div>
     </div>
@@ -44,7 +44,7 @@
                 <li class="breadcrumb-item">
                     <a href="{link Language:default}">{_menu_languages}</a>
                 </li>
-                <li class="breadcrumb-item">{$item->lang_name}</li>
+                <li class="breadcrumb-item">{if $presenter->getParameter('id')}{$item->lang_name}{else}{_lang_new}{/if}</li>
             </ol>
         </div>
     </div>

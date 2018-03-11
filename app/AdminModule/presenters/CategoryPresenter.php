@@ -73,22 +73,6 @@ class CategoryPresenter extends Base\AdminPresenter
     }
 
     /**
-     *
-     */
-    public function renderDefault()
-    {
-        parent::renderDefault();
-        Debugger::barDump(
-            $this->gf->getWhere(),
-            'WHERE'
-        );
-        Debugger::barDump(
-            $this->gf->getOrderBy(),
-            'ORDER BY'
-        );
-    }
-
-    /**
      * @param int|null $id
      */
     public function renderEdit($id = null)
