@@ -22,10 +22,17 @@ class CachePresenter extends BasePresenter
      * @var ITranslator $translator
      */
     private $translator;
+    
     /**
      * @var AppDir $appDir
      */
     private $appDir;
+    
+    /**
+     *
+     * @var \Nette\Caching\IStorage $cache 
+     */
+    private $cache;
 
     /**
      * @param AppDir $appDir
@@ -34,6 +41,11 @@ class CachePresenter extends BasePresenter
     {
         $this->appDir = $appDir;
     }
+    
+    public function injectCache(\Nette\Caching\IStorage $storage)
+    {
+        $this->cache = new \Nette\Caching\Cache($storage);
+    }
 
     /**
      * @param Form      $form
@@ -41,6 +53,9 @@ class CachePresenter extends BasePresenter
      */
     public function success(Form $form, ArrayHash $values)
     {
+        $this->cache->clean([\Nette\Caching\Cache::ALL => \Nette\Caching\Cache::ALL]);
+        $this->flashMessage('Cache was deleted.', self::FLASH_MESSAGE_SUCCESS);
+        $this->redirect('this');
     }
 
     /**
