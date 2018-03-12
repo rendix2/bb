@@ -25,6 +25,8 @@ class UsersManager extends Crud\CrudManager
      *
      */
     const NOT_UPLOADED = -5;
+    
+    private $avatar;
 
     /**
      * @param string $email
@@ -213,7 +215,7 @@ class UsersManager extends Crud\CrudManager
      * @param int    $id
      * @param string $wwwDir
      */
-    public function deletePreviousRankFile($id, $wwwDir)
+    public function deletePreviousAvatarFile($id, $wwwDir)
     {
         $user      = $this->getById($id);
         $separator = DIRECTORY_SEPARATOR;
@@ -238,6 +240,10 @@ class UsersManager extends Crud\CrudManager
             )
             ->fetchAll();
     }
+        
+    public function injectAvatars(\App\Controls\Avatars $avatar){
+        $this->avatar = $avatar;
+    }
 
     /**
      * @param FileUpload $file
@@ -248,8 +254,20 @@ class UsersManager extends Crud\CrudManager
      */
     public function moveAvatar(FileUpload $file, $id, $wwwDir)
     {
-        if ($file->ok) {
-            $this->deletePreviousRankFile(
+        if ($file->ok) {                   
+            if ( $file->getSize() > $this->avatar->getMaxFileSize() ) {
+                throw new \Nette\InvalidArgumentException('File is too big. Max enabled file size is: '.$this->avatar->getMaxFileSize() );
+            }
+                                   
+            if ( $file->getImageSize()[0] > $this->avatar->getMaxWidth() ){
+                throw new \Nette\InvalidArgumentException('Image width is too big. Max enabled dith is: '.$this->avatar->getMaxWidth());
+            }
+            
+            if ( $file->getImageSize()[1] > $this->avatar->getMaxHeight() ){
+                throw new \Nette\InvalidArgumentException('Image height is too big. Max enabled height is: '.$this->avatar->getMaxHeight());
+            }
+            
+            $this->deletePreviousAvatarFile(
                 $id,
                 $wwwDir
             );

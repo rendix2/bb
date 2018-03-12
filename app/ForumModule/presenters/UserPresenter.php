@@ -60,6 +60,8 @@ class UserPresenter extends Base\ForumPresenter
      * @var ThanksManager $thanksManager
      */
     private $thanksManager;
+    
+    private $avatar;
 
     /**
      * UserPresenter constructor.
@@ -81,17 +83,20 @@ class UserPresenter extends Base\ForumPresenter
     public function editUserFormSuccess(Form $form, ArrayHash $values)
     {
         $user = $this->getUser();
-        $move = $this->getManager()
-            ->moveAvatar(
-                $values->user_avatar,
-                $this->getUser()
-                    ->getId(),
-                $this->wwwDir->wwwDir
+        
+        try {
+            $move = $this->getManager()
+                    ->moveAvatar(
+                    $values->user_avatar, $this->getUser()
+                    ->getId(), $this->wwwDir->wwwDir
             );
-
-        if ($move !== UsersManager::NOT_UPLOADED) {
-            $values->user_avatar = $move;
-        } else {
+            if ($move !== UsersManager::NOT_UPLOADED) {
+                $values->user_avatar = $move;
+            } else {
+                unset($values->user_avatar);
+            }
+        } catch (\Nette\InvalidArgumentException $e) {
+            $this->flashMessage($e->getMessage());
             unset($values->user_avatar);
         }
 
@@ -127,6 +132,10 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function editUserOnValidate(Form $form, ArrayHash $values)
     {
+    }
+    
+    public function injectAvatar(\App\Controls\Avatars $avatar){
+        $this->avatar = $avatar;
     }
 
     /**
@@ -561,7 +570,9 @@ class UserPresenter extends Base\ForumPresenter
         $form->addUpload(
             'user_avatar',
             'User avatar:'
-        );
+        )->setAttribute('title', 'Max width: '.$this->avatar->getMaxWidth().'px, max height: '.$this->avatar->getMaxHeight().'px')
+                ->setRequired(false)
+                ->addRule(Form::IMAGE, 'user_avatar_file_rule');
         $form->addSubmit(
             'send',
             'Send'

@@ -1,7 +1,23 @@
 {block content}
-    <div class="col-sm-12 main">
-        <span>Count of logged in users: {$countLogged}</span>
+    <div class="col-sm-2">
+        <div class="btn btn-primary">Celková velikost
+            <span class="badge badge-light"> {$dirSize|bytes}</span>
+        </div>
+    </div>
+                    
+    <div class="col-sm-2">
+        <div class="btn btn-primary">Počet avatarů
+            <span class="badge badge-light"> {$avatarCount}</span>
+        </div>
+    </div>   
+            
+    <div class="col-sm-2">
+        <div class="btn btn-primary">Online users
+            <span class="badge badge-light"> {$countLogged}</span>
+        </div>
+    </div>
 
+    <div class="col-sm-12 main mt-3">       
         {if $countLogged <= $maxLogged}
             <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
                 <thead>
@@ -29,4 +45,7 @@
         {/if}
 
     </div>
+    
+
+
 {/block}

@@ -8,10 +8,25 @@ parameters:
         password:  ""
     defaultLanguage: czech
     avatars:
-        dir: %appDir%/avatars
+        dir: %wwwDir%\avatars
+        maxWidth: 1000
+        maxHeight: 1000        
+        maxFileSize: 5242880
+        enabledExtension:
+            - jpg
+            - jpeg
+            - png
+            - gif
+    ranks:
+        dir: %wwwDir%\ranks
         maxHeight: 200
         maxWidth: 50
         maxFileSize: 5120
+        enabledExtension:
+            - jpg
+            - jpeg
+            - png
+            - gif
 
 application:
 	errorPresenter: Error
@@ -115,6 +130,8 @@ services:
         class: App\Controls\WwwDir(%wwwDir%)
     Appir:
         class: App\Controls\AppDir(%appDir%)
+    Avatars:
+        class: App\Controls\Avatars(%avatars%)
 
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22

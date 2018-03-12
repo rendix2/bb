@@ -26,6 +26,8 @@ class IndexPresenter extends BasePresenter
      * @var SessionsManager $sessionsManager
      */
     private $sessionsManager;
+    
+    private $avatar;
 
     /**
      * @param AppDir $appDir
@@ -42,6 +44,10 @@ class IndexPresenter extends BasePresenter
     {
         $this->sessionsManager = $sessionManager;
     }
+    
+    public function injectAvatars(\App\Controls\Avatars $avatar){        
+        $this->avatar = $avatar;
+    }    
 
     /**
      *
@@ -102,5 +108,8 @@ class IndexPresenter extends BasePresenter
         $this->template->countLogged = $count;
         $this->template->maxLogged   = self::MAX_LOGGED_IN_USERS_TO_SHOW;
         $this->template->loggedUsers = $loggedUsers;
+        $this->template->dirSize     = $this->avatar->getDirSize();
+        $this->template->avatarCount = $this->avatar->getCountOfAvatars();        
+        
     }
 }
