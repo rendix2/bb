@@ -6,6 +6,12 @@ parameters:
     databases:
         username:  "root"
         password:  ""
+    defaultLanguage: czech
+    avatars:
+        dir: %appDir%/avatars
+        maxHeight: 200
+        maxWidth: 50
+        maxFileSize: 5120
 
 application:
 	errorPresenter: Error
