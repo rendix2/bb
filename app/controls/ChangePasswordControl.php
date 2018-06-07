@@ -19,7 +19,7 @@ use Nette\Utils\ArrayHash;
 class ChangePasswordControl extends Control
 {
     /**
-     *
+     * @var int
      */
     const MIN_LENGTH = 7;
 
@@ -75,11 +75,11 @@ class ChangePasswordControl extends Control
     public function changePasswordValidate(Form $form, ArrayHash $values)
     {
         if (!$values->user_password) {
-            $form->addError('Empty password');
+            $form->addError('Empty password.');
         }
 
         if (!$this->user->isInRole('admin') && !$values->user_last_password) {
-            $form->addError('Empty last password');
+            $form->addError('Empty last password.');
         }
 
         $user = $this->userManager->getById($this->user->getId());
@@ -89,7 +89,7 @@ class ChangePasswordControl extends Control
         }
 
         if (!$this->user->isInRole('admin') && !Passwords::verify($values->user_last_password, $user->user_password)) {
-            $form->addError('Last password is incorrect');
+            $form->addError('Last password is incorrect.');
         }
 
         if (mb_strlen($values->user_password) < self::MIN_LENGTH) {
@@ -126,14 +126,8 @@ class ChangePasswordControl extends Control
         $form->addPassword('user_password', 'User password:')->setRequired(true);
         $form->addPassword('user_password_check', 'User password for check:')->setRequired(true);
         $form->addSubmit('send', 'Change password');
-        $form->onSuccess[] = [
-            $this,
-            'changePasswordSuccess'
-        ];
-        $form->onValidate[] = [
-            $this,
-            'changePasswordValidate'
-        ];
+        $form->onSuccess[] = [$this, 'changePasswordSuccess'];
+        $form->onValidate[] = [$this, 'changePasswordValidate'];
 
         return $form;
     }

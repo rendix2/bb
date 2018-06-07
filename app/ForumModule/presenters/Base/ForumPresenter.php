@@ -93,15 +93,14 @@ abstract class ForumPresenter extends ManagerPresenter
     {
         parent::startup();
 
+        $user = $this->getUser();
+        
         $this->forumTranslator = new Translator(
             $this->appDir,
             'Forum',
-            $this->getUser()
-                ->getIdentity()
-                ->getData()['lang_file_name']
+            $user->getIdentity()->getData()['lang_file_name']
         );
-        $this->getUser()
-            ->setAuthorizator($this->authorizator->getAcl());
+        $user->setAuthorizator($this->authorizator->getAcl());
     }
 
     /**

@@ -65,15 +65,6 @@ abstract class Manager extends Tables
      */
     public static function getRandomString()
     {
-        return mb_substr(
-            md5(
-                uniqid(
-                    mt_rand(),
-                    true
-                )
-            ),
-            0,
-            15
-        ); // php.vrana.cz
+        return mb_substr(md5(uniqid(mt_rand(), true)), 0, 15); // php.vrana.cz
     }
 }

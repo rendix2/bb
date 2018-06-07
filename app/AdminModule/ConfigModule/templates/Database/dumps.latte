@@ -1,0 +1,9 @@
+{block content}
+
+<ul>
+{foreach $sqls as $name => $sql}
+    <li>
+        <a href="{link :Admin:Config:Database:downloadDump, $sql->getFilename()}">{$sql->getFilename()}</a> <a href="{link :Admin:Config:Database:deleteDump, $sql->getFilename()}">Delete</a>
+    </li>
+{/foreach}
+</ul>

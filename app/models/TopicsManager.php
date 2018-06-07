@@ -66,9 +66,9 @@ class TopicsManager extends Crud\CrudManager
      */
     public function getLastTopic()
     {
-        return $this->dibi->query(
-            'SELECT * FROM [' . self::TOPICS_TABLE . '] WHERE [topic_id] = (SELECT MAX(topic_id) FROM [' . self::TOPICS_TABLE . '])'
-        )->fetch();
+        return $this->dibi
+                ->query('SELECT * FROM [' . self::TOPICS_TABLE . '] WHERE [topic_id] = (SELECT MAX(topic_id) FROM [' . self::TOPICS_TABLE . '])')
+                ->fetch();
     }
 
     /**
@@ -78,11 +78,9 @@ class TopicsManager extends Crud\CrudManager
      */
     public function getLastTopicByForumId($forum_id)
     {
-        return $this->dibi->query(
-            'SELECT * FROM [' . self::TOPICS_TABLE . '] WHERE [topic_id] = ( SELECT MAX(topic_id) FROM [' . self::TOPICS_TABLE . '] WHERE [topic_forum_id] = %i )',
-            $forum_id
-        )
-            ->fetch();
+        return $this->dibi
+                ->query('SELECT * FROM [' . self::TOPICS_TABLE . '] WHERE [topic_id] = ( SELECT MAX(topic_id) FROM [' . self::TOPICS_TABLE . '] WHERE [topic_forum_id] = %i )', $forum_id)
+                ->fetch();
     }
 
     /**
@@ -93,30 +91,17 @@ class TopicsManager extends Crud\CrudManager
      */
     public function getNewerTopics($forum_id, $topic_time)
     {
-        $cache  = new Cache(
-            $this->storage,
-            $this->getTable()
-        );
+        $cache  = new Cache($this->storage, $this->getTable());
         $key    = $forum_id . '-' . $topic_time;
         $cached = $cache->load($key);
 
         if (!isset($cached)) {
-            $cache->save(
-                $key,
+            $cache->save($key,
                 $cached = $this->dibi->select('*')
                     ->from($this->getTable())
-                    ->where(
-                        '[topic_forum_id] = %i',
-                        $forum_id
-                    )
-                    ->where(
-                        '[topic_add_time] > %i',
-                        $topic_time
-                    )
-                    ->fetchAll(),
-                [
-                    Cache::EXPIRE => '2 hours',
-                ]
+                    ->where('[topic_forum_id] = %i', $forum_id)
+                    ->where('[topic_add_time] > %i', $topic_time)
+                    ->fetchAll(), [Cache::EXPIRE => '2 hours',]
             );
         }
 
@@ -151,16 +136,11 @@ class TopicsManager extends Crud\CrudManager
             $this->userManager,
             self::TOPIC_WATCH_TABLE
         );
-        $this->topicWatchManager->add(
-            [$values->topic_user_id],
-            $topic_id
-        );
+        $this->topicWatchManager->add([$values->topic_user_id], $topic_id);
 
         $item_data->post_topic_id = $topic_id;
         $this->postManager->add($item_data);
-        $this->userManager->update(
-            $values->topic_user_id,
-            ArrayHash::from(
+        $this->userManager->update($values->topic_user_id, ArrayHash::from(
                 [
                     'user_topic_count%sql' => 'user_topic_count + 1',
                     'user_watch_count%sql' => 'user_watch_count + 1'
@@ -199,25 +179,16 @@ class TopicsManager extends Crud\CrudManager
         }
          */
 
-        $fullCheck = $this->topicWatchManager->fullCheck(
-            $topic_id,
-            $topic->topic_user_id
-        );
+        $fullCheck = $this->topicWatchManager->fullCheck($topic_id, $topic->topic_user_id);
 
         $watch = [];
 
         if ($fullCheck) {
-            $this->topicWatchManager->fullDelete(
-                $topic_id,
-                $topic->topic_user_id
-            );
+            $this->topicWatchManager->fullDelete($topic_id, $topic->topic_user_id);
             $watch = ['user_watch_count%sql' => 'user_watch_count-1'];
         }
 
-        $this->userManager->update(
-            $topic->topic_user_id,
-            ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1'] + $watch)
-        );
+        $this->userManager->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1'] + $watch));
 
         $posts = $this->postManager->getPostsByTopicId($topic_id)->fetchAll();
 
@@ -239,10 +210,7 @@ class TopicsManager extends Crud\CrudManager
     {
         return $this->dibi->select('*')
             ->from($this->getTable())
-            ->where(
-                'MATCH([topic_name]) AGAINST (%s IN BOOLEAN MODE)',
-                $topic_name
-            )
+            ->where('MATCH([topic_name]) AGAINST (%s IN BOOLEAN MODE)', $topic_name)
             ->fetchAll();
     }
 
@@ -276,10 +244,6 @@ class TopicsManager extends Crud\CrudManager
     public function injectUserManager(UsersManager $userManager)
     {
         $this->userManager       = $userManager;
-        $this->topicWatchManager = new TopicWatchManager(
-            $this->dibi,
-            $this,
-            $userManager
-        );
+        $this->topicWatchManager = new TopicWatchManager($this->dibi, $this, $userManager);
     }
 }

@@ -30,9 +30,7 @@ class ReportsManager extends Crud\CrudManager
             ->on('report_user_id = u.user_id')
             ->leftJoin(self::POSTS_TABLES)
             ->as('p')
-            ->on(
-                'report_post_id = p.post_id'
-            );
+            ->on('report_post_id = p.post_id');
     }
 
     /**
@@ -42,10 +40,8 @@ class ReportsManager extends Crud\CrudManager
      */
     public function getByForumId($forum_id)
     {
-        return $this->getAllFluent()->where(
-            '[report_forum_id] = %i',
-            $forum_id
-        );
+        return $this->getAllFluent()
+                ->where('[report_forum_id] = %i', $forum_id);
     }
 
     /**
@@ -55,10 +51,8 @@ class ReportsManager extends Crud\CrudManager
      */
     public function getByTopicId($topic_id)
     {
-        return $this->getAllFluent()->where(
-            '[report_topic_id] = %i',
-            $topic_id
-        );
+        return $this->getAllFluent()
+                ->where('[report_topic_id] = %i',$topic_id);
     }
 
     /**
@@ -68,9 +62,7 @@ class ReportsManager extends Crud\CrudManager
      */
     public function getByUserId($user_id)
     {
-        return $this->getAllFluent()->where(
-            '[report_user_id] = %i',
-            $user_id
-        );
+        return $this->getAllFluent()
+                ->where('[report_user_id] = %i', $user_id);
     }
 }

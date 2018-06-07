@@ -15,25 +15,27 @@ use Nette\Utils\ArrayHash;
 class GridFilter extends Control
 {
     /**
-     *
+     * @var string
      */
     const TEXT_EQUAL = 'teq';
+    
     /**
-     *
+     * @var string
      */
     const TEXT_LIKE = 'tl';
+    
     /**
-     *
+     * @var string
      */
     const INT_EQUAL = 'i';
 
     /**
-     *
+     * @var string
      */
     const NOTHING = 'empty';
 
     /**
-     *
+     * @var string
      */
     const FROM_TO_INT = 'FTI';
 
@@ -67,6 +69,10 @@ class GridFilter extends Control
      */
     private $session;
     
+    /**
+     *
+     * @var type \Nette\Localization\ITranslator $translator
+     */
     private $translator;
 
     /**
@@ -81,7 +87,8 @@ class GridFilter extends Control
         $this->orderBy = [];
     }
     
-    public function setTranslator(\Nette\Localization\ITranslator $translator){
+    public function setTranslator(\Nette\Localization\ITranslator $translator)
+    {
         $this->translator = $translator;
     }
 
@@ -93,11 +100,7 @@ class GridFilter extends Control
         $orderBy = [];
 
         foreach ($this->getParameters() as $param => $value) {
-            $param = str_replace(
-                'sort_',
-                '',
-                $param
-            );
+            $param = str_replace('sort_', '', $param);
             $param = $this->checkFTI($param);
 
             $orderBy[$param] = ($value === 'ASC' || $value === 'DESC') ? $value : null;
@@ -118,11 +121,7 @@ class GridFilter extends Control
             $where = [];
 
             foreach ($this->type as $col => $val) {
-                if (($val['strint'] == '%i' && is_numeric(
-                            $this->session->getSection($col)->value
-                        )) || ($val['strint'] == '%s' && is_string(
-                            $this->session->getSection($col)->value
-                        ) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
+                if (($val['strint'] == '%i' && is_numeric($this->session->getSection($col)->value)) || ($val['strint'] == '%s' && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
                     $columnName = $this->checkFTI($col);
 
                     if ($val['operator'] == 'LIKE') {
@@ -156,10 +155,7 @@ class GridFilter extends Control
     {
         switch ($type) {
             case self::TEXT_EQUAL:
-                $this->form->addText(
-                    $columnName,
-                    $text
-                );
+                $this->form->addText($columnName, $text);
                 $this->type[$columnName] = [
                     'type'     => $type,
                     'text'     => $text,
@@ -168,10 +164,7 @@ class GridFilter extends Control
                 ];
                 break;
             case self::TEXT_LIKE:
-                $this->form->addText(
-                    $columnName,
-                    $text
-                );
+                $this->form->addText($columnName, $text);
                 $this->type[$columnName] = [
                     'type'     => $type,
                     'text'     => $text,
@@ -180,10 +173,7 @@ class GridFilter extends Control
                 ];
                 break;
             case self::INT_EQUAL:
-                $this->form->addText(
-                    $columnName,
-                    $text
-                )
+                $this->form->addText($columnName, $text)
                     ->setRequired(false)
                     ->addRule(Form::INTEGER);
                 $this->type[$columnName] = [
@@ -202,30 +192,16 @@ class GridFilter extends Control
                 ];
                 break;
             case self::FROM_TO_INT:
-                $this->form->addText(
-                    $columnName . '_Xfrom',
-                    $text
-                )
+                $this->form->addText($columnName . '_Xfrom', $text)
                     ->setRequired(false)
                     ->addRule(Form::INTEGER)
-                    ->setAttribute(
-                        'placeholder',
-                        'From'
-                    )
-                    ->setAttribute(
-                        'class',
-                        'mb-1'
-                    );
-                $this->form->addText(
-                    $columnName . '_Xto',
-                    $text
-                )
+                    ->setAttribute('placeholder', 'From')
+                    ->setAttribute('class', 'mb-1');
+                
+                $this->form->addText($columnName . '_Xto', $text)
                     ->setRequired(false)
                     ->addRule(Form::INTEGER)
-                    ->setAttribute(
-                        'placeholder',
-                        'To'
-                    );
+                    ->setAttribute('placeholder', 'To');
                 $this->type[$columnName . '_Xfrom'] = [
                     'type'     => $type,
                     'text'     => $text,
@@ -251,26 +227,12 @@ class GridFilter extends Control
     {
         $columnName = $name;
 
-        if (preg_match(
-            '#_Xfrom$#',
-            $name
-        )) {
-            $columnName = str_replace(
-                '_Xfrom',
-                '',
-                $name
-            );
+        if (preg_match('#_Xfrom$#', $name)) {
+            $columnName = str_replace('_Xfrom', '', $name);
         }
 
-        if (preg_match(
-            '#_Xto$#',
-            $name
-        )) {
-            $columnName = str_replace(
-                '_Xto',
-                '',
-                $name
-            );
+        if (preg_match('#_Xto$#', $name)) {
+            $columnName = str_replace('_Xto', '', $name);
         }
 
         return $columnName;
@@ -337,19 +299,9 @@ class GridFilter extends Control
     protected function createComponentGridFilter()
     {
         $this->form->setAction(
-            $this->link(
-                'this',
-                $this->getParameters()
-            )
-        );
-        $this->form->onSuccess[] = [
-            $this,
-            'success'
-        ];
-        $this->form->addSubmit(
-            'send',
-            'Send'
-        );
+            $this->link('this', $this->getParameters()));
+        $this->form->onSuccess[] = [$this, 'success'];
+        $this->form->addSubmit('send', 'Send');
         $this->form->setTranslator($this->translator);
 
         return $this->form;

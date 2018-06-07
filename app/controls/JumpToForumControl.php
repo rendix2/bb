@@ -61,20 +61,10 @@ class JumpToForumControl extends Control
     {
         $form = new BootstrapForm();
 
-        $form->addSelect(
-            'forum_id',
-            null,
-            $this->forumManager->getAllPairsCached('forum_name')
-        );
-        $form->addSubmit(
-            'send',
-            'Redirect'
-        );
+        $form->addSelect('forum_id', null, $this->forumManager->getAllPairsCached('forum_name'));
+        $form->addSubmit('send', 'Redirect');
 
-        $form->onSuccess[] = [
-            $this,
-            'jumpToForumSuccess'
-        ];
+        $form->onSuccess[] = [$this, 'jumpToForumSuccess'];
 
         return $form;
     }

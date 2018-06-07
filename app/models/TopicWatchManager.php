@@ -27,11 +27,6 @@ class TopicWatchManager extends MNManager
      */
     public function __construct(Connection $dibi, TopicsManager $left, UsersManager $right, $tableName = self::TOPIC_WATCH_TABLE)
     {
-        parent::__construct(
-            $dibi,
-            $left,
-            $right,
-            $tableName
-        );
+        parent::__construct($dibi, $left, $right,$tableName);
     }
 }

@@ -20,14 +20,8 @@ class CategoriesManager extends Crud\CrudManager
     {
         return $this->dibi->select('*')
             ->from($this->getTable())
-            ->where(
-                '[category_active] = %i',
-                1
-            )
-            ->orderBy(
-                'category_order',
-                dibi::ASC
-            )
+            ->where('[category_active] = %i', 1)
+            ->orderBy('category_order', dibi::ASC)
             ->fetchAll();
     }
 
@@ -37,17 +31,11 @@ class CategoriesManager extends Crud\CrudManager
     public function getActiveCategoriesCached()
     {
         $key    = 'ActiveCategories';
-        $cache  = new Cache(
-            $this->getStorage(),
-            $this->getTable()
-        );
+        $cache  = new Cache($this->getStorage(), $this->getTable());
         $cached = $cache->load($key);
 
         if (!$cached) {
-            $cache->save(
-                $key,
-                $cached = $this->getActiveCategories()
-            );
+            $cache->save($key, $cached = $this->getActiveCategories());
         }
 
         return $cached;
@@ -65,13 +53,8 @@ class CategoriesManager extends Crud\CrudManager
             ->as('c')
             ->leftJoin(self::FORUM_TABLE)
             ->as('f')
-            ->on(
-                '[f.forum_category_id] = [c.category_id]'
-            )
-            ->where(
-                '[f.forum_id] = %i',
-                $forum_id
-            )
+            ->on('[f.forum_category_id] = [c.category_id]')
+            ->where('[f.forum_id] = %i', $forum_id)
             ->fetch();
     }
 

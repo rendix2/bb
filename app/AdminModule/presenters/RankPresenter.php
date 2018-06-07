@@ -3,6 +3,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\Controls\BootStrapForm;
+use App\Controls\GridFilter;
 use App\Controls\WwwDir;
 use App\Models\RanksManager;
 use Nette\Application\UI\Form;
@@ -17,9 +18,10 @@ use Nette\Utils\ArrayHash;
 class RankPresenter extends Base\AdminPresenter
 {
     /**
-     *
+     * @var int
      */
     const N = -1;
+    
     /**
      * @var
      */
@@ -33,6 +35,21 @@ class RankPresenter extends Base\AdminPresenter
     public function __construct(RanksManager $manager)
     {
         parent::__construct($manager);
+    }
+    
+    public function startup()
+    {
+        parent::startup();
+        
+        if ($this->getAction() == 'default') {
+            $this->gf->setTranslator($this->getAdminTranslator());
+            
+            $this->gf->addFilter('rank_id', 'rank_id', GridFilter::INT_EQUAL);
+            $this->gf->addFilter('rank_name','rank_name',GridFilter::TEXT_LIKE);
+            $this->gf->addFilter(null, null, GridFilter::NOTHING);
+
+            $this->addComponent($this->gf, 'gridFilter');
+        }
     }
 
     /**
@@ -54,10 +71,7 @@ class RankPresenter extends Base\AdminPresenter
             unset($values->rank_file);
         }
 
-        parent::editFormSuccess(
-            $form,
-            $values
-        );
+        parent::editFormSuccess($form, $values);
     }
 
     /**
@@ -100,32 +114,13 @@ class RankPresenter extends Base\AdminPresenter
     {
         $form = $this->getBootStrapForm();
         $form->setTranslator($this->getAdminTranslator());
-        $form->addText(
-            'rank_name',
-            'Rank name:'
-        )
-            ->setRequired(true);
-        $form->addInteger(
-            'rank_from',
-            'Rank from:'
-        );
-        $form->addInteger(
-            'rank_to',
-            'Rank to:'
-        );
-        $form->addUpload(
-            'rank_file',
-            'Rank file:'
-        );
-        $form->addCheckbox(
-            'rank_special',
-            'Rank special:'
-        );
+        $form->addText('rank_name', 'Rank name:')->setRequired(true);
+        $form->addInteger('rank_from', 'Rank from:');
+        $form->addInteger('rank_to', 'Rank to:');
+        $form->addUpload('rank_file', 'Rank file:');
+        $form->addCheckbox('rank_special', 'Rank special:');
 
-        $form->onValidate[] = [
-            $this,
-            'onValidate'
-        ];
+        $form->onValidate[] = [$this, 'onValidate'];
 
         return $this->addSubmitB($form);
     }

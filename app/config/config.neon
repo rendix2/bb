@@ -27,6 +27,41 @@ parameters:
             - jpeg
             - png
             - gif
+    topics:
+        pagination:
+            itemsPerPage: 25
+            itemsArountPagination: 5
+        cache:
+            lastTopic: 1 hour
+            totalTopics: 1hour
+            primaryKey: 10day
+    posts:
+        pagination:
+            itemsPerPage: 25
+            itemsArountPagination: 5
+        cache:
+            totalPosts: 1 hour
+            primaryKey: 10day
+        minLength: 5 # int or null
+        maxLength: 100000 # int or null
+    users:
+        cache:
+            lastUser: 1 hour
+            totalUser: 1 hour
+            primaryKey: 10day
+        canChangeUserName: false
+        neededLogin: true
+        minUserNameLength: 3
+    search:
+        minLength: 3
+
+mail:
+    smtp: true
+    host: smtp.gmail.com
+    username: username@gmail.com
+    password: "password"
+    secure: ssl
+    timeout: 1000
 
 application:
 	errorPresenter: Error
@@ -37,14 +72,6 @@ application:
 session:
         expiration: 14 days
         autoStart: true # výchozí hodnota je 'smart'
-
-
-#database:
-#	dsn: 'mysql:host=127.0.0.1;dbname=test'
-#	user:
-#	password:
-#	options:
-#   		lazy: yes
 
 services:
     router: App\RouterFactory::createRouter
@@ -132,6 +159,8 @@ services:
         class: App\Controls\AppDir(%appDir%)
     Avatars:
         class: App\Controls\Avatars(%avatars%)
+    TempDir:
+        class: App\Controls\TempDir(%tempDir%)
 
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22

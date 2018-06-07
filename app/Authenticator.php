@@ -18,7 +18,7 @@ use Nette\Utils\ArrayHash;
 class Authenticator implements IAuthenticator
 {
     /**
-     *
+     * @var array
      */
     const ROLES
         = [
@@ -28,6 +28,7 @@ class Authenticator implements IAuthenticator
             4 => 'juniorAdmin',
             5 => 'admin'
         ];
+    
     /**
      * @var UsersManager $userManager
      */
@@ -72,26 +73,19 @@ class Authenticator implements IAuthenticator
             throw new AuthenticationException('User account is not active.');
         }
 
-        if (!Passwords::verify(
-            $userPassword,
-            $userData->user_password
-        )) {
+        if (!Passwords::verify($userPassword, $userData->user_password)) {
             throw new AuthenticationException('Password is incorrect.');
         }
 
-        $this->userManager->update(
-            $userData->user_id,
-            ArrayHash::from(['user_last_login_time' => time()])
-        );
-
-        return new Identity(
-            $userData->user_id,
-            self::ROLES[$userData->user_role_id],
+        $this->userManager->update($userData->user_id, ArrayHash::from(['user_last_login_time' => time()]));
+        
+        $data =
             [
                 'user_name'            => $userData->user_name,
                 'lang_file_name'       => $langData->lang_file_name,
                 'user_last_login_time' => $userData->user_last_login_time
-            ]
-        );
+            ];
+
+        return new Identity($userData->user_id, self::ROLES[$userData->user_role_id], $data);
     }
 }

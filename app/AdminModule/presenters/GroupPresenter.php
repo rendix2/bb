@@ -22,10 +22,12 @@ class GroupPresenter extends Base\AdminPresenter
      * @var Users2GroupsManager $users2Groups
      */
     private $users2Groups;
+    
     /**
      * @var Forums2GroupsManager $forums2groups
      */
     private $forums2groups;
+    
     /**
      * @var ForumsManager $forumsManager
      */
@@ -51,34 +53,13 @@ class GroupPresenter extends Base\AdminPresenter
             $form::DATA_TEXT,
             'post_add[]'
         );
-        $post_edit    = $form->getHttpData(
-            $form::DATA_TEXT,
-            'post_edit[]'
-        );
-        $post_delete  = $form->getHttpData(
-            $form::DATA_TEXT,
-            'post_delete[]'
-        );
-        $topic_add    = $form->getHttpData(
-            $form::DATA_TEXT,
-            'topic_add[]'
-        );
-        $topic_edit   = $form->getHttpData(
-            $form::DATA_TEXT,
-            'topic_edit[]'
-        );
-        $topic_delete = $form->getHttpData(
-            $form::DATA_TEXT,
-            'topic_delete[]'
-        );
-        $forum_id     = $form->getHttpData(
-            $form::DATA_TEXT,
-            'forum_id[]'
-        );
-        $topic_thank  = $form->getHttpData(
-            $form::DATA_TEXT,
-            'topic_thank[]'
-        );
+        $post_edit    = $form->getHttpData($form::DATA_TEXT, 'post_edit[]');
+        $post_delete  = $form->getHttpData($form::DATA_TEXT, 'post_delete[]');
+        $topic_add    = $form->getHttpData($form::DATA_TEXT, 'topic_add[]');
+        $topic_edit   = $form->getHttpData($form::DATA_TEXT, 'topic_edit[]');
+        $topic_delete = $form->getHttpData($form::DATA_TEXT, 'topic_delete[]');
+        $forum_id     = $form->getHttpData($form::DATA_TEXT, 'forum_id[]');
+        $topic_thank  = $form->getHttpData($form::DATA_TEXT, 'topic_thank[]');
 
         /**
          * @var int $count count
@@ -96,63 +77,18 @@ class GroupPresenter extends Base\AdminPresenter
         }
 
         $data = [
-            'post_add'     => $this->map(
-                array_pad(
-                    $post_add,
-                    $count + 1,
-                    0
-                )
-            ),
-            'post_edit'    => $this->map(
-                array_pad(
-                    $post_edit,
-                    $count + 1,
-                    0
-                )
-            ),
-            'post_delete'  => $this->map(
-                array_pad(
-                    $post_delete,
-                    $count + 1,
-                    0
-                )
-            ),
-            'topic_add'    => $this->map(
-                array_pad(
-                    $topic_add,
-                    $count + 1,
-                    0
-                )
-            ),
-            'topic_edit'   => $this->map(
-                array_pad(
-                    $topic_edit,
-                    $count + 1,
-                    0
-                )
-            ),
-            'topic_delete' => $this->map(
-                array_pad(
-                    $topic_delete,
-                    $count + 1,
-                    0
-                )
-            ),
-            'topic_thank'  => $this->map(
-                array_pad(
-                    $topic_thank,
-                    $count + 1,
-                    0
-                )
-            ),
+            'post_add'     => $this->map(array_pad($post_add, $count + 1, 0)),
+            'post_edit'    => $this->map(array_pad($post_edit, $count + 1, 0)),
+            'post_delete'  => $this->map(array_pad($post_delete, $count + 1, 0)),
+            'topic_add'    => $this->map(array_pad($topic_add, $count + 1, 0 )),
+            'topic_edit'   => $this->map(array_pad($topic_edit, $count + 1, 0)),
+            'topic_delete' => $this->map(array_pad($topic_delete, $count + 1, 0)),
+            'topic_thank'  => $this->map(array_pad($topic_thank, $count + 1, 0)),
             'forum_id'     => $forums,
             'group_id'     => $groups
         ];
 
-        $this->forums2groups->addForums2group(
-            $group_id,
-            $data
-        );
+        $this->forums2groups->addForums2group($group_id, $data);
     }
 
     /**
@@ -190,6 +126,7 @@ class GroupPresenter extends Base\AdminPresenter
 
         foreach ($this->forumsManager->getAllCached() as $value) {
             $result[$value->forum_id] = false;
+            
             foreach ($data as $value2) {
                 if ($value->forum_id == $value2) {
                     $result[$value->forum_id] = true;
@@ -206,26 +143,11 @@ class GroupPresenter extends Base\AdminPresenter
 
         if ($this->getAction() == 'default') {
             $this->gf->setTranslator($this->getAdminTranslator());
-            $this->gf->addFilter(
-                'group_id',
-                'group_id',
-                GridFilter::INT_EQUAL
-            );
-            $this->gf->addFilter(
-                'group_name',
-                'group_name',
-                GridFilter::TEXT_LIKE
-            );
-            $this->gf->addFilter(
-                null,
-                null,
-                GridFilter::NOTHING
-            );
+            $this->gf->addFilter('group_id', 'group_id', GridFilter::INT_EQUAL);
+            $this->gf->addFilter('group_name','group_name', GridFilter::TEXT_LIKE);
+            $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
-            $this->addComponent(
-                $this->gf,
-                'gridFilter'
-            );
+            $this->addComponent($this->gf, 'gridFilter');
         }
     }
 
@@ -237,10 +159,7 @@ class GroupPresenter extends Base\AdminPresenter
         parent::renderEdit($id);
 
         $this->template->countOfUsers = $this->users2Groups->getCountByRight($id);
-        $this->template->forums       = $this->forumsManager->createForums(
-            $this->forumsManager->getAll(),
-            0
-        );
+        $this->template->forums       = $this->forumsManager->createForums($this->forumsManager->getAll(), 0);
 
         $data   = [];
         $forums = $this->forums2groups->getByRightAll($id);
@@ -266,10 +185,7 @@ class GroupPresenter extends Base\AdminPresenter
         $form = $this->getBootStrapForm();
         $form->setTranslator($this->getAdminTranslator());
 
-        $form->addText(
-            'group_name',
-            'Group name:'
-        )
+        $form->addText('group_name', 'Group name:' )
             ->setRequired(true);
 
         return $this->addSubmitB($form);
@@ -282,14 +198,8 @@ class GroupPresenter extends Base\AdminPresenter
     {
         $form = new BootstrapForm();
         $form->setTranslator($this->getAdminTranslator());
-        $form->addSubmit(
-            'send',
-            'Send'
-        );
-        $form->onSuccess[] = [
-            $this,
-            'forumsSuccess'
-        ];
+        $form->addSubmit('send', 'Send');
+        $form->onSuccess[] = [$this, 'forumsSuccess'];
 
         return $form;
     }

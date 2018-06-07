@@ -7,6 +7,7 @@ use App\Models\ForumsManager;
 use App\Models\ReportsManager;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
+use App\Controls\GridFilter;
 
 /**
  * Description of ReportPresenter
@@ -20,10 +21,12 @@ class ReportPresenter extends Base\AdminPresenter
      * @var UsersManager $userManager
      */
     private $userManager;
+    
     /**
      * @var ForumsManager $forumManager
      */
     private $forumManager;
+    
     /**
      * @var TopicsManager $topicManager
      */
@@ -37,6 +40,24 @@ class ReportPresenter extends Base\AdminPresenter
     public function __construct(ReportsManager $manager)
     {
         parent::__construct($manager);
+    }
+    
+    public function startup(){
+        parent::startup();
+        
+        if ($this->getAction() == 'default') {
+            $this->gf->setTranslator($this->getAdminTranslator());
+            
+            $this->gf->addFilter('report_id', 'report_id', GridFilter::INT_EQUAL);
+            $this->gf->addFilter('report_time','report_time',GridFilter::TEXT_LIKE);
+            $this->gf->addFilter('user_name', 'report_user', GridFilter::TEXT_LIKE);
+            $this->gf->addFilter('forum_name', 'report_forum', GridFilter::TEXT_LIKE);
+            $this->gf->addFilter('topic_name', 'report_topic', GridFilter::TEXT_LIKE);
+            $this->gf->addFilter('post_title', 'report_post', GridFilter::TEXT_LIKE);         
+            $this->gf->addFilter(null, null, GridFilter::NOTHING);
+
+            $this->addComponent($this->gf, 'gridFilter');
+        }
     }
 
     /**
@@ -64,85 +85,18 @@ class ReportPresenter extends Base\AdminPresenter
     }
 
     /**
-     * @param int $forum_id forum_id
-     */
-    public function renderForum($forum_id)
-    {
-        if (!is_numeric($forum_id)) {
-            $this->error('Parameter is not numeric.');
-        }
-
-        $forum = $this->forumManager->getById($forum_id);
-
-        if (!$forum) {
-            $this->error('Forums does not exists.');
-        }
-
-        $items                 = $this->getManager()
-            ->getByForumId($forum_id);
-        $this->template->items = $items->fetchAll();
-        $this->template->forum = $forum;
-    }
-
-    /**
-     * @param int $topic_id topic_id
-     */
-    public function renderTopic($topic_id)
-    {
-        if (!is_numeric($topic_id)) {
-            $this->error('Parameter is not numeric.');
-        }
-
-        $topic = $this->topicManager->getById($topic_id);
-
-        if (!$topic) {
-            $this->error('Topic does not exist.');
-        }
-
-        $items = $this->getManager()
-            ->getByTopicId($topic_id);
-
-        $this->template->items = $items->fetchAll();
-        $this->template->topic = $topic;
-    }
-
-    /**
-     * @param int $user_id user_id
-     */
-    public function renderUser($user_id)
-    {
-        if (!is_numeric($user_id)) {
-            $this->error('Parameter is not numeric.');
-        }
-
-        $user = $this->userManager->getById($user_id);
-
-        if (!$user) {
-            $this->error('User does not exist.');
-        }
-
-        $items = $this->getManager()
-            ->getByUserId($user_id);
-
-        $this->template->items    = $items->fetchAll();
-        $this->template->userData = $user;
-    }
-
-    /**
      * @return BootStrapForm
      */
     protected function createComponentEditForm()
     {
-        $form = $this->getBootStrapForm();
-        $form->setTranslator($this->getAdminTranslator());
-        $form->addSelect(
-            'report_status',
-            'Report status:',
-            [
+        $values = [
                 0 => 'Added',
                 1 => 'Fixed'
-            ]
-        );
+            ];
+        
+        $form = $this->getBootStrapForm();
+        $form->setTranslator($this->getAdminTranslator());
+        $form->addSelect('report_status', 'Report status:', $values);
 
         return $this->addSubmitB($form);
     }

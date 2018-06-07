@@ -9,16 +9,31 @@ namespace App\Controls;
  */
 class Avatars {
     
+    /**
+     * @var string
+     */
     const DIR = 'dir';
     
+    /**
+     * @var string
+     */
     const MAX_HEIGHT = 'maxHeight';
-    
+
+    /**
+     * @var string
+     */
     const MAX_WIDTH = 'maxWidth';
     
+    /**
+     * @var string
+     */
     const MAX_FILE_SIZE = 'maxFileSize';
     
+    /**
+     * @var string
+     */
     const ENABLED_EXTENSIONS = 'enabledExtension';
-    
+        
     private $avatars;
     
     public function __construct($avatars)
@@ -51,7 +66,8 @@ class Avatars {
         return $this->avatars[self::ENABLED_EXTENSIONS];
     } 
     
-    public function getDirSize(){
+    public function getDirSize()
+    {
         $size = 0;               
         $exts = [];
         
@@ -66,7 +82,8 @@ class Avatars {
         return $size;
     }
     
-    public function getCountOfAvatars(){
+    public function getCountOfAvatars()
+    {
         $exts = [];
         
         foreach ( $this->getEnabledExtensions() as $ext ){

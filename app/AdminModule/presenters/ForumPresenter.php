@@ -22,14 +22,17 @@ class ForumPresenter extends Base\AdminPresenter
      * @var CategoriesManager $categoryManager
      */
     private $categoryManager;
+    
     /**
      * @var UsersManager $userManager
      */
     private $userManager;
+    
     /**
      * @var TopicsManager $topicManager
      */
     private $topicManager;
+    
     /**
      *
      * @var PostsManager $postManager
@@ -88,26 +91,11 @@ class ForumPresenter extends Base\AdminPresenter
         if ($this->getAction() == 'default') {
             $this->gf->setTranslator($this->getAdminTranslator());
             
-            $this->gf->addFilter(
-                'forum_id',
-                'forum_id',
-                GridFilter::INT_EQUAL
-            );
-            $this->gf->addFilter(
-                'forum_name',
-                'forum_name',
-                GridFilter::TEXT_LIKE
-            );
-            $this->gf->addFilter(
-                null,
-                null,
-                GridFilter::NOTHING
-            );
+            $this->gf->addFilter('forum_id', 'forum_id', GridFilter::INT_EQUAL);
+            $this->gf->addFilter('forum_name', 'forum_name', GridFilter::TEXT_LIKE);
+            $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
-            $this->addComponent(
-                $this->gf,
-                'gridFilter'
-            );
+            $this->addComponent($this->gf, 'gridFilter');
         }
     }
 
@@ -121,8 +109,7 @@ class ForumPresenter extends Base\AdminPresenter
                 $this->error('Param id is not numeric.');
             }
 
-            $item = $this->getManager()
-                ->getById($id);
+            $item = $this->getManager()->getById($id);
 
             if (!$item) {
                 $this->error('Item #' . $id . ' not found.');
@@ -131,26 +118,16 @@ class ForumPresenter extends Base\AdminPresenter
             $this['editForm']->setDefaults($item);
 
             $subForums = $this->getManager()
-                ->createForums(
-                    $this->getManager()
-                        ->getForumsByForumParentId($id),
-                    intval($id)
-                );
+                ->createForums($this->getManager()->getForumsByForumParentId($id), intval($id));
 
             if (!$subForums) {
-                $this->flashMessage(
-                    'No sub forums.',
-                    self::FLASH_MESSAGE_WARNING
-                );
+                $this->flashMessage('No sub forums.', self::FLASH_MESSAGE_WARNING);
             }
 
             $lastTopic = $this->topicManager->getLastTopicByForumId($id);
 
             if (!$lastTopic) {
-                $this->flashMessage(
-                    'No last topic',
-                    self::FLASH_MESSAGE_WARNING
-                );
+                $this->flashMessage('No last topic', self::FLASH_MESSAGE_WARNING);
             }
 
             $lastPost = $this->postManager->getLastPostByForumId($id);
@@ -188,65 +165,28 @@ class ForumPresenter extends Base\AdminPresenter
         $form->setTranslator($this->getAdminTranslator());
 
         $form->addGroup('forum');
-        $form->addText(
-            'forum_name',
-            'Forum name:'
-        )
+        $form->addText('forum_name', 'Forum name:')
             ->setRequired(true);
-        $form->addText(
-            'forum_description',
-            'Forum description:'
-        )
+        
+        $form->addText('forum_description', 'Forum description:')
             ->setRequired(true);
-        $form->addSelect(
-            'forum_category_id',
-            'Forum category:',
-            $this->categoryManager->getAllPairsCached('category_name')
-        )
+        
+        $form->addSelect('forum_category_id', 'Forum category:', $this->categoryManager->getAllPairsCached('category_name'))
             ->setRequired(true)
             ->setTranslator(null);
-        $form->addTextArea(
-            'forum_rules',
-            'Forum rules:'
-        );
-        $form->addCheckbox(
-            'forum_active',
-            'Forum active:'
-        );
-        $form->addCheckbox(
-            'forum_fast_reply',
-            'Forum enable fast reply:'
-        );
+        
+        $form->addTextArea('forum_rules', 'Forum rules:');
+        $form->addCheckbox('forum_active', 'Forum active:');
+        $form->addCheckbox('forum_fast_reply', 'Forum enable fast reply:');
 
         $form->addGroup('user');
-        $form->addCheckbox(
-            'forum_thank',
-            'Forum thank:'
-        );
-        $form->addCheckbox(
-            'forum_post_add',
-            'Forum add post:'
-        );
-        $form->addCheckbox(
-            'forum_post_delete',
-            'Forum post delete:'
-        );
-        $form->addCheckbox(
-            'forum_post_update',
-            'Forum post update:'
-        );
-        $form->addCheckbox(
-            'forum_topic_add',
-            'Forum topic add:'
-        );
-        $form->addCheckbox(
-            'forum_topic_update',
-            'Forum topic update:'
-        );
-        $form->addCheckbox(
-            'forum_topic_delete',
-            'Forum delete topic:'
-        );
+        $form->addCheckbox('forum_thank', 'Forum thank:');
+        $form->addCheckbox('forum_post_add', 'Forum add post:');
+        $form->addCheckbox('forum_post_delete', 'Forum post delete:');
+        $form->addCheckbox('forum_post_update', 'Forum post update:');
+        $form->addCheckbox('forum_topic_add', 'Forum topic add:');
+        $form->addCheckbox('forum_topic_update', 'Forum topic update:');
+        $form->addCheckbox('forum_topic_delete', 'Forum delete topic:');
 
         return $this->addSubmitB($form);
     }

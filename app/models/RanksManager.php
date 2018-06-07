@@ -13,12 +13,12 @@ use Nette\Utils\FileSystem;
 class RanksManager extends Crud\CrudManager
 {
     /**
-     *
+     * @var string
      */
     const RANK_FOLDER = 'ranks';
 
     /**
-     *
+     * @var int
      */
     const NOT_UPLOADED = -5;
 
@@ -46,10 +46,7 @@ class RanksManager extends Crud\CrudManager
     public function moveRank(FileUpload $file, $id, $wwwDir)
     {
         if ($file->ok) {
-            $this->deletePreviousRankFile(
-                $id,
-                $wwwDir
-            );
+            $this->deletePreviousRankFile($id, $wwwDir);
 
             $extension = self::getFileExtension($file->name);
             $hash      = self::getRandomString();

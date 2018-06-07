@@ -98,10 +98,7 @@ class IndexPresenter extends Base\ForumPresenter
      */
     public function injectCache(IStorage $storage)
     {
-        $this->cache = new Cache(
-            $storage,
-            'BBIndex'
-        );
+        $this->cache = new Cache($storage, 'BBIndex');
     }
 
     /**
@@ -149,20 +146,13 @@ class IndexPresenter extends Base\ForumPresenter
      */
     public function renderCategory($category_id)
     {
-        $forums = $this->getManager()
-            ->getForumByCategoryId($category_id);
+        $forums = $this->getManager()->getForumByCategoryId($category_id);
 
         if (!$forums) {
-            $this->flashMessage(
-                'No forums in this category.',
-                self::FLASH_MESSAGE_DANGER
-            );
+            $this->flashMessage('No forums in this category.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $this->template->forums = $this->forumsManager->createForums(
-            $forums,
-            0
-        );
+        $this->template->forums = $this->forumsManager->createForums($forums, 0);
     }
 
     /**
@@ -172,26 +162,18 @@ class IndexPresenter extends Base\ForumPresenter
     {
         $categories      = $this->categoriesManager->getActiveCategoriesCached();
         $result          = [];
-        $last_login_time = $this->getUser()
-                               ->getIdentity()
-                               ->getData()['user_last_login_time'];
+        $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
 
         foreach ($categories as $category) {
-            $forums = $this->getManager()
-                ->getForumsFirstLevel($category->category_id);
+            $forums = $this->getManager()->getForumsFirstLevel($category->category_id);
 
             foreach ($forums as $forum) {
                 $forum->hasNewPosts  = count(
-                    $this->postManger->getNewerPosts(
-                        $forum->forum_id,
-                        $last_login_time
-                    )
+                    $this->postManger->getNewerPosts($forum->forum_id, $last_login_time)
                 );
+                
                 $forum->hasNewTopics = count(
-                    $this->topicManager->getNewerTopics(
-                        $forum->forum_id,
-                        $last_login_time
-                    )
+                    $this->topicManager->getNewerTopics($forum->forum_id, $last_login_time)
                 );
             }
 

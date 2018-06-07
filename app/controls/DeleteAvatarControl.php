@@ -23,14 +23,17 @@ class DeleteAvatarControl extends Control
      * @var UsersManager $userManager
      */
     private $userManager;
+    
     /**
      * @var \App\Controls\WwwDir $container
      */
     private $wwwDir;
+    
     /**
      * @var User $user
      */
     private $user;
+    
     /**
      * @var ITranslator $translator
      */
@@ -96,10 +99,7 @@ class DeleteAvatarControl extends Control
 
         $form->addCheckbox('delete_avatar', 'Delete avatar');
         $form->addSubmit('send', 'Delete avatar');
-        $form->onSuccess[] = [
-            $this,
-            'deleteAvatarSuccess'
-        ];
+        $form->onSuccess[] = [$this,'deleteAvatarSuccess'];
 
         return $form;
     }

@@ -21,10 +21,6 @@ class Users2ForumsManager extends MNManager
      */
     public function __construct(Connection $dibi, UsersManager $left, ForumsManager $right)
     {
-        parent::__construct(
-            $dibi,
-            $left,
-            $right
-        );
+        parent::__construct($dibi, $left, $right);
     }
 }

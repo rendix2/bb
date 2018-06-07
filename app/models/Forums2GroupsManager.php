@@ -27,11 +27,7 @@ class Forums2GroupsManager extends MNManager
      */
     public function __construct(Connection $dibi, ForumsManager $left, GroupsManager $right)
     {
-        parent::__construct(
-            $dibi,
-            $left,
-            $right
-        );
+        parent::__construct($dibi, $left, $right);
     }
 
     /**
@@ -41,9 +37,6 @@ class Forums2GroupsManager extends MNManager
     public function addForums2group($group_id, array $data)
     {
         $this->deleteByRight($group_id);
-        $this->dibi->query(
-            'INSERT INTO [' . $this->getTable() . '] %m',
-            $data
-        );
+        $this->dibi->query('INSERT INTO [' . $this->getTable() . '] %m', $data);
     }
 }

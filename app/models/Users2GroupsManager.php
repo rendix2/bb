@@ -21,10 +21,6 @@ class Users2GroupsManager extends MNManager
      */
     public function __construct(Connection $dibi, UsersManager $left, GroupsManager $right)
     {
-        parent::__construct(
-            $dibi,
-            $left,
-            $right
-        );
+        parent::__construct($dibi, $left, $right);
     }
 }

@@ -20,14 +20,17 @@ class PostsManager extends Crud\CrudManager
      * @var TopicWatchManager $topicWatchManager
      */
     public $topicWatchManager;
+    
     /**
      * @var TopicsManager $topicsManager
      */
     private $topicsManager;
+    
     /**
      * @var ForumsManager $forumManager
      */
     private $forumManager;
+    
     /**
      * @var UsersManager $userManager
      */
@@ -42,10 +45,7 @@ class PostsManager extends Crud\CrudManager
     {
         return $this->dibi->select('COUNT(post_id)')
             ->from($this->getTable())
-            ->where(
-                '[post_category_id] = %i',
-                $category_id
-            )
+            ->where('[post_category_id] = %i', $category_id)
             ->fetchSingle();
     }
 
@@ -56,10 +56,11 @@ class PostsManager extends Crud\CrudManager
      */
     public function getCountOfPostsInForum($forum_id)
     {
-        return $this->dibi->select('COUNT(post_id)')->from($this->getTable())->where(
-            '[post_forum_id] = %i',
-            $forum_id
-        )->fetchSingle();
+        return $this->dibi
+                ->select('COUNT(post_id)')
+                ->from($this->getTable())
+                ->where('[post_forum_id] = %i', $forum_id)
+                ->fetchSingle();
     }
 
     /**
@@ -69,10 +70,11 @@ class PostsManager extends Crud\CrudManager
      */
     public function getCountOfPostsInTopic($topic_id)
     {
-        return $this->dibi->select('COUNT(post_id)')->from($this->getTable())->where(
-            '[post_topic_id] = %i',
-            $topic_id
-        )->fetchSingle();
+        return $this->dibi
+                ->select('COUNT(post_id)')
+                ->from($this->getTable())
+                ->where('[post_topic_id] = %i', $topic_id)
+                ->fetchSingle();
     }
 
     /**
@@ -82,14 +84,12 @@ class PostsManager extends Crud\CrudManager
      */
     public function getCountOfUsersByTopicId($topic_id)
     {
-        return $this->dibi->select('count(post_user_id) as post_count, post_user_id')
-            ->from($this->getTable())
-            ->where(
-                '[post_topic_id] = %i',
-                $topic_id
-            )
-            ->groupBy('post_user_id')
-            ->fetchAll();
+        return $this->dibi
+                ->select('count(post_user_id) as post_count, post_user_id')
+                ->from($this->getTable())
+                ->where('[post_topic_id] = %i', $topic_id)
+                ->groupBy('post_user_id')
+                ->fetchAll();
     }
 
     /**
@@ -120,10 +120,8 @@ class PostsManager extends Crud\CrudManager
      */
     public function getLastPostByForumId($forum_id)
     {
-        return $this->dibi->query(
-            'SELECT * FROM [' . self::POSTS_TABLES . '] WHERE [post_id] = ( SELECT MAX(post_id) FROM [' . self::POSTS_TABLES . '] WHERE [post_forum_id] = %i )',
-            $forum_id
-        )->fetch();
+        return $this->dibi->query('SELECT * FROM [' . self::POSTS_TABLES . '] WHERE [post_id] = ( SELECT MAX(post_id) FROM [' . self::POSTS_TABLES . '] WHERE [post_forum_id] = %i )', $forum_id)
+                ->fetch();
     }
 
     /**
@@ -147,26 +145,16 @@ class PostsManager extends Crud\CrudManager
      */
     public function getNewerPosts($forum_id, $post_time)
     {
-        $cache  = new Cache(
-            $this->storage,
-            $this->getTable()
-        );
+        $cache  = new Cache($this->storage,$this->getTable());
         $key    = $forum_id . '-' . $post_time;
         $cached = $cache->load($key);
 
         if (!isset($cached)) {
-            $cache->save(
-                $key,
+            $cache->save($key,
                 $cached = $this->dibi->select('*')
                     ->from($this->getTable())
-                    ->where(
-                        '[post_forum_id] = %i',
-                        $forum_id
-                    )
-                    ->where(
-                        '[post_add_time] > %i',
-                        $post_time
-                    )
+                    ->where('[post_forum_id] = %i', $forum_id)
+                    ->where('[post_add_time] > %i', $post_time)
                     ->fetchAll(),
                 [
                     Cache::EXPIRE => '2 hours',
@@ -189,13 +177,8 @@ class PostsManager extends Crud\CrudManager
             ->as('p')
             ->innerJoin(self::USERS_TABLE)
             ->as('u')
-            ->on(
-                '[p.post_user_id] = [u.user_id]'
-            )
-            ->where(
-                '[post_topic_id] = %i',
-                $topic_id
-            );
+            ->on('[p.post_user_id] = [u.user_id]')
+            ->where('[post_topic_id] = %i', $topic_id);
     }
 
     /**
@@ -234,18 +217,12 @@ class PostsManager extends Crud\CrudManager
             ArrayHash::from(['topic_post_count%sql' => 'topic_post_count+1'])
         );
 
-        $topicWatching = $this->topicWatchManager->fullCheck(
-            $item_data->post_topic_id,
-            $user_id
-        );
+        $topicWatching = $this->topicWatchManager->fullCheck($item_data->post_topic_id, $user_id);
 
         $watch = [];
 
         if (!$topicWatching) {
-            $this->topicWatchManager->add(
-                [$user_id],
-                $item_data->post_topic_id
-            );
+            $this->topicWatchManager->add([$user_id],$item_data->post_topic_id);
             $watch = ['user_watch_count%sql' => 'user_watch_count + 1'];
         }
 
@@ -280,15 +257,9 @@ class PostsManager extends Crud\CrudManager
 
         foreach ($postCount as $ps) {
             if ($ps->post_count === 1 || $ps->post_count === 0) {
-                $check = $this->topicWatchManager->fullCheck(
-                    $post->post_topic_id,
-                    $ps->post_user_id
-                );
+                $check = $this->topicWatchManager->fullCheck($post->post_topic_id,$ps->post_user_id);
 
-                $this->topicWatchManager->fullDelete(
-                    $post->post_topic_id,
-                    $post->post_user_id
-                );
+                $this->topicWatchManager->fullDelete($post->post_topic_id, $post->post_user_id);
             }
         }
 
@@ -302,10 +273,7 @@ class PostsManager extends Crud\CrudManager
      */
     public function deleteByTopicId($topic_id)
     {
-        return $this->dibi->delete($this->getTable())->where(
-            '[post_topic_id] = %i',
-            $topic_id
-        )->execute();
+        return $this->dibi->delete($this->getTable())->where('[post_topic_id] = %i', $topic_id)->execute();
     }
 
     /**
@@ -320,13 +288,8 @@ class PostsManager extends Crud\CrudManager
             ->as('p')
             ->leftJoin(self::TOPICS_TABLE)
             ->as('t')
-            ->on(
-                '[p.post_topic_id] = [t.topic_id]'
-            )
-            ->where(
-                'MATCH([p.post_title],[p.post_text]) AGAINST(%s IN BOOLEAN MODE)',
-                $post_text
-            )
+            ->on('[p.post_topic_id] = [t.topic_id]')
+            ->where('MATCH([p.post_title],[p.post_text]) AGAINST(%s IN BOOLEAN MODE)', $post_text)
             ->fetchAll();
     }
 }

@@ -66,7 +66,7 @@
                 {if $paginator->page <= $paginator->getLastPage() - $arround - 1 }
                     <li class="page-item">
                         <a href="{$presenter->link($link, $params + ['page' => $paginator->getLastPage()])}"
-                           aria-label="Last class="page-link">
+                           aria-label="Last" class="page-link">
                             <span aria-hidden="true">
                                 <i class="fa fa-fast-forward"></i>
                             </span>

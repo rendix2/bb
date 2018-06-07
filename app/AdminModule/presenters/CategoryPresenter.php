@@ -26,9 +26,24 @@ class CategoryPresenter extends Base\AdminPresenter
      * @param CategoriesManager $manager
      * @param GridFilter        $gf
      */
-    public function __construct(CategoriesManager $manager, GridFilter $gf)
+    public function __construct(CategoriesManager $manager, GridFilter $gf, \Nette\Mail\IMailer $mailer)
     {
+                Debugger::barDump($mailer, 'Mailer');   
+        
+                /*
+        $bbMail = new \App\Controls\BBMailer($mailer);
+        
+        $bbMail->addRecepients(['rendix2@seznam.cz']);
+        $bbMail->setSubject('Test');
+        $bbMail->setText('awdwadwa');
+        $bbMail->send(); 
+                 * 
+                 */ 
+        
+        
         parent::__construct($manager);
+        
+      
     }
 
     /**
@@ -49,26 +64,11 @@ class CategoryPresenter extends Base\AdminPresenter
         if ($this->getAction() == 'default') {
             $this->gf->setTranslator($this->getAdminTranslator());
             
-            $this->gf->addFilter(
-                'category_id',
-                'category_id',
-                GridFilter::INT_EQUAL
-            );
-            $this->gf->addFilter(
-                'category_name',
-                'category_name',
-                GridFilter::TEXT_LIKE
-            );
-            $this->gf->addFilter(
-                null,
-                null    ,
-                GridFilter::NOTHING
-            );
+            $this->gf->addFilter('category_id', 'category_id', GridFilter::INT_EQUAL);
+            $this->gf->addFilter('category_name','category_name',GridFilter::TEXT_LIKE);
+            $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
-            $this->addComponent(
-                $this->gf,
-                'gridFilter'
-            );
+            $this->addComponent($this->gf, 'gridFilter');
         }
     }
 
@@ -82,8 +82,7 @@ class CategoryPresenter extends Base\AdminPresenter
                 $this->error('Param id is not numeric.');
             }
 
-            $item = $this->getManager()
-                ->getById($id);
+            $item = $this->getManager()->getById($id);
 
             if (!$item) {
                 $this->error('Item #' . $id . ' not found.');
@@ -97,10 +96,7 @@ class CategoryPresenter extends Base\AdminPresenter
             );
 
             if (!$forums) {
-                $this->flashMessage(
-                    'No forums in this category.',
-                    self::FLASH_MESSAGE_WARNING
-                );
+                $this->flashMessage('No forums in this category.', self::FLASH_MESSAGE_WARNING);
             }
 
             $this->template->item   = $item;
@@ -123,16 +119,8 @@ class CategoryPresenter extends Base\AdminPresenter
 
         $form->setTranslator($this->getAdminTranslator());
 
-        $form->addText(
-            'category_name',
-            'Category name:'
-        )
-            ->setRequired(true);
-
-        $form->addCheckbox(
-            'category_active',
-            'Category active:'
-        );
+        $form->addText('category_name', 'Category name:')->setRequired(true);
+        $form->addCheckbox('category_active', 'Category active:');
 
         return $this->addSubmitB($form);
     }

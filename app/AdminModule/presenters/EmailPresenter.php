@@ -13,6 +13,7 @@ namespace App\AdminModule\Presenters;
  *
  * @author rendi
  */
-class EmailPresenter {
+class EmailPresenter
+{
     //put your code here
 }

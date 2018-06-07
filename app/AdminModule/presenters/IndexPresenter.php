@@ -18,10 +18,12 @@ class IndexPresenter extends BasePresenter
      *
      */
     const MAX_LOGGED_IN_USERS_TO_SHOW = 200;
+    
     /**
      * @var AppDir $appDir
      */
     private $appDir;
+    
     /**
      * @var SessionsManager $sessionsManager
      */
@@ -45,7 +47,12 @@ class IndexPresenter extends BasePresenter
         $this->sessionsManager = $sessionManager;
     }
     
-    public function injectAvatars(\App\Controls\Avatars $avatar){        
+    /**
+     * 
+     * @param \App\Controls\Avatars $avatar
+     */
+    public function injectAvatars(\App\Controls\Avatars $avatar)
+    {        
         $this->avatar = $avatar;
     }    
 
@@ -66,11 +73,7 @@ class IndexPresenter extends BasePresenter
             $this->error('You are not admin.');
         }
 
-        $lang_name = $this->getUser()
-                         ->getIdentity()
-                         ->getData()['lang_file_name'];
-
-        //$this->adminTranslator = new Translator($this->appDir,'Admin', $lang_name);
+        $lang_name = $user->getIdentity()->getData()['lang_file_name'];
     }
 
     /**
@@ -79,17 +82,14 @@ class IndexPresenter extends BasePresenter
     public function beforeRender()
     {
         parent::beforeRender();
+        
         $lang_name = $this->getUser()
                          ->getIdentity()
                          ->getData()['lang_file_name'];
 
-        $this->template->setTranslator(
-            new Translator(
-                $this->appDir,
-                'admin',
-                $lang_name
-            )
-        );
+         $translator = new Translator($this->appDir, 'admin', $lang_name);
+        
+        $this->template->setTranslator($translator);
     }
 
     /**
@@ -109,7 +109,6 @@ class IndexPresenter extends BasePresenter
         $this->template->maxLogged   = self::MAX_LOGGED_IN_USERS_TO_SHOW;
         $this->template->loggedUsers = $loggedUsers;
         $this->template->dirSize     = $this->avatar->getDirSize();
-        $this->template->avatarCount = $this->avatar->getCountOfAvatars();        
-        
+        $this->template->avatarCount = $this->avatar->getCountOfAvatars();                
     }
 }

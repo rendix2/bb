@@ -62,8 +62,7 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->error('Parameter is not numeric');
         }
 
-        $forum = $this->getManager()
-            ->getById($forum_id);
+        $forum = $this->getManager()->getById($forum_id);
 
         if (!$forum) {
             $this->error('Forum not exists.');
@@ -73,15 +72,8 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->error('Forum is not active.');
         }
 
-        if (!$this->getUser()
-            ->isAllowed(
-                $forum_id,
-                'forum_view'
-            )) {
-            $this->error(
-                'Not allowed.',
-                IResponse::S403_FORBIDDEN
-            );
+        if (!$this->getUser()->isAllowed($forum_id, 'forum_view')) {
+            $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
         }
 
         $category = $this->categoryManager->getByForumId($forum_id);
@@ -94,25 +86,13 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->error('Category is not active.');
         }
 
-        $topics    = $this->getManager()
-            ->getTopics($forum_id);
-        $paginator = new PaginatorControl(
-            $topics,
-            10,
-            5,
-            $page
-        );
+        $topics    = $this->getManager()->getTopics($forum_id);
+        $paginator = new PaginatorControl($topics, 10, 5, $page);
 
-        $this->addComponent(
-            $paginator,
-            'paginator'
-        );
+        $this->addComponent($paginator, 'paginator');
 
         if (!$paginator->getCount()) {
-            $this->flashMessage(
-                'No topics.',
-                self::FLASH_MESSAGE_DANGER
-            );
+            $this->flashMessage('No topics.', self::FLASH_MESSAGE_DANGER);
         }
 
         $this->template->forum       = $forum;
@@ -132,8 +112,7 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->error('Parameter is not numeric');
         }
 
-        $forum = $this->getManager()
-            ->getById($forum_id);
+        $forum = $this->getManager()->getById($forum_id);
 
         if (!$forum) {
             $this->error('Forum not found');
@@ -142,18 +121,21 @@ final class ForumPresenter extends Base\ForumPresenter
         $this->template->forum = $forum;
     }
     
-    public function renderSearchForum($forum_id){
+    public function renderSearchForum($forum_id)
+    {
         
     }
 
-    protected function createComponentSearchInForumForm(){
+    protected function createComponentSearchInForumForm()
+    {
          $form = new \App\Controls\BootstrapForm();
          $form->onSuccess[] = [$this, 'searchInForumFormSuccess'];
          
          return $form;
     }
     
-    public function searchInForumFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values){
+    public function searchInForumFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
+    {
         
     }
 }

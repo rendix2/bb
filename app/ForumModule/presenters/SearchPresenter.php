@@ -46,19 +46,9 @@ class SearchPresenter extends Base\ForumPresenter
 
         $form->setTranslator($this->getForumTranslator());
 
-        $form->addText(
-            'search_post',
-            'Post'
-        )
-            ->setRequired('Please enter some in post');
-        $form->addSubmit(
-            'send_post',
-            'Search post'
-        );
-        $form->onSuccess[] = [
-            $this,
-            'searchPostFormSuccess'
-        ];
+        $form->addText('search_post', 'Post')->setRequired('Please enter some in post');
+        $form->addSubmit('send_post', 'Search post');
+        $form->onSuccess[] = [$this, 'searchPostFormSuccess'];
 
         return $form;
     }
@@ -71,19 +61,9 @@ class SearchPresenter extends Base\ForumPresenter
         $form = new BootstrapForm();
         $form->setTranslator($this->getForumTranslator());
 
-        $form->addText(
-            'search_topic',
-            'Topic'
-        )
-            ->setRequired('Please enter some in topic');
-        $form->addSubmit(
-            'send_topic',
-            'Search topic'
-        );
-        $form->onSuccess[] = [
-            $this,
-            'searchTopicFormSuccess'
-        ];
+        $form->addText('search_topic', 'Topic')->setRequired('Please enter some in topic');
+        $form->addSubmit('send_topic', 'Search topic');
+        $form->onSuccess[] = [$this, 'searchTopicFormSuccess'];
 
         return $form;
     }
@@ -97,19 +77,9 @@ class SearchPresenter extends Base\ForumPresenter
 
         $form->setTranslator($this->getForumTranslator());
 
-        $form->addText(
-            'search_user',
-            'User'
-        )
-            ->setRequired('Please enter name.');
-        $form->addSubmit(
-            'send_user',
-            'Search user'
-        );
-        $form->onSuccess[] = [
-            $this,
-            'searchUserFormSuccess'
-        ];
+        $form->addText('search_user', 'User')->setRequired('Please enter name.');
+        $form->addSubmit('send_user', 'Search user');
+        $form->onSuccess[] = [$this, 'searchUserFormSuccess'];
 
         return $form;
     }
@@ -136,10 +106,7 @@ class SearchPresenter extends Base\ForumPresenter
      */
     public function searchPostFormSuccess(Form $form, ArrayHash $values)
     {
-        $this->redirect(
-            'Search:postResults',
-            $values->search_post
-        );
+        $this->redirect('Search:postResults', $values->search_post);
     }
 
     /**
@@ -148,10 +115,7 @@ class SearchPresenter extends Base\ForumPresenter
      */
     public function searchTopicFormSuccess(Form $form, ArrayHash $values)
     {
-        $this->redirect(
-            'Search:topicResults',
-            $values->search_topic
-        );
+        $this->redirect('Search:topicResults', $values->search_topic);
     }
 
     /**
@@ -160,10 +124,7 @@ class SearchPresenter extends Base\ForumPresenter
      */
     public function searchUserFormSuccess(Form $form, ArrayHash $values)
     {
-        $this->redirect(
-            'Search:userResults',
-            $values->search_user
-        );
+        $this->redirect('Search:userResults', $values->search_user);
     }
 
     /**
@@ -183,10 +144,7 @@ class SearchPresenter extends Base\ForumPresenter
         $this['searchPostForm']->setDefaults(['search_post' => $q]);
 
         if (!$result) {
-            $this->flashMessage(
-                'Post was not found.',
-                self::FLASH_MESSAGE_WARNING
-            );
+            $this->flashMessage('Post was not found.', self::FLASH_MESSAGE_WARNING);
             $result = [];
         }
 
@@ -203,10 +161,7 @@ class SearchPresenter extends Base\ForumPresenter
         $this['searchTopicForm']->setDefaults(['search_topic' => $q]);
 
         if (!$result) {
-            $this->flashMessage(
-                'Topics was not found.',
-                self::FLASH_MESSAGE_WARNING
-            );
+            $this->flashMessage('Topics was not found.', self::FLASH_MESSAGE_WARNING);
             $result = [];
         }
 
@@ -218,16 +173,12 @@ class SearchPresenter extends Base\ForumPresenter
      */
     public function renderUserResults($q)
     {
-        $result = $this->getManager()
-            ->findUsersByUserName($q);
+        $result = $this->getManager()->findUsersByUserName($q);
 
         $this['searchUserForm']->setDefaults(['search_user' => $q]);
 
         if (!$result) {
-            $this->flashMessage(
-                'User was not found.',
-                self::FLASH_MESSAGE_WARNING
-            );
+            $this->flashMessage('User was not found.', self::FLASH_MESSAGE_WARNING);
             $result = [];
         }
 

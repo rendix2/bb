@@ -71,10 +71,7 @@ class CachePresenter extends BasePresenter
             if ($user->logoutReason === IUserStorage::INACTIVITY) {
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
             }
-            $this->redirect(
-                'Login:default',
-                ['backlink' => $this->storeRequest()]
-            );
+            $this->redirect('Login:default', ['backlink' => $this->storeRequest()]);
         }
     }
 
@@ -103,16 +100,9 @@ class CachePresenter extends BasePresenter
     {
         $form = new BootstrapForm();
         $form->setTranslator($this->translator);
-        $form->addSubmit(
-            'Delete_all',
-            'Delete all cache'
-        );
+        $form->addSubmit('Delete_all', 'Delete all cache');
 
-        $form->onSuccess[] = [
-            $this,
-            'success'
-        ];
-
+        $form->onSuccess[] = [$this, 'success'];
 
         return $form;
     }

@@ -85,11 +85,8 @@ class UserPresenter extends Base\ForumPresenter
         $user = $this->getUser();
         
         try {
-            $move = $this->getManager()
-                    ->moveAvatar(
-                    $values->user_avatar, $this->getUser()
-                    ->getId(), $this->wwwDir->wwwDir
-            );
+            $move = $this->getManager()->moveAvatar($values->user_avatar, $user->getId(), $this->wwwDir->wwwDir);
+            
             if ($move !== UsersManager::NOT_UPLOADED) {
                 $values->user_avatar = $move;
             } else {
@@ -101,26 +98,15 @@ class UserPresenter extends Base\ForumPresenter
         }
 
         if ($user->isLoggedIn()) {
-            $result = $this->getManager()
-                ->update(
-                    $user->getId(),
-                    $values
-                );
+            $result = $this->getManager()->update($user->getId(), $values);
         } else {
-            $result = $this->getManager()
-                ->add($values);
+            $result = $this->getManager()->add($values);
         }
 
         if ($result) {
-            $this->flashMessage(
-                'User saved.',
-                self::FLASH_MESSAGE_SUCCESS
-            );
+            $this->flashMessage('User saved.', self::FLASH_MESSAGE_SUCCESS);
         } else {
-            $this->flashMessage(
-                'Nothing to change.',
-                self::FLASH_MESSAGE_INFO
-            );
+            $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
         }
 
         $this->redirect('User:edit');
@@ -134,7 +120,8 @@ class UserPresenter extends Base\ForumPresenter
     {
     }
     
-    public function injectAvatar(\App\Controls\Avatars $avatar){
+    public function injectAvatar(\App\Controls\Avatars $avatar)
+    {
         $this->avatar = $avatar;
     }
 
@@ -192,21 +179,14 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function resetPasswordFormSuccess(Form $form, ArrayHash $values)
     {
-        $found_mail = $this->getManager()
-            ->getByEmail($values->user_email);
+        $found_mail = $this->getManager()->getByEmail($values->user_email);
 
         if ($found_mail) {
             // send mail!
 
-            $this->flashMessage(
-                'Email was sent.',
-                self::FLASH_MESSAGE_SUCCESS
-            );
+            $this->flashMessage('Email was sent.', self::FLASH_MESSAGE_SUCCESS);
         } else {
-            $this->flashMessage(
-                'User mail was not found!',
-                self::FLASH_MESSAGE_DANGER
-            );
+            $this->flashMessage('User mail was not found!',self::FLASH_MESSAGE_DANGER);
         }
     }
 
@@ -220,10 +200,7 @@ class UserPresenter extends Base\ForumPresenter
         if (!$this->getUser()
             ->isLoggedIn()) {
             $can = $this->getManager()
-                ->canBeActivated(
-                    $user_id,
-                    $key
-                );
+                ->canBeActivated($user_id, $key);
 
             if ($can) {
                 $this->getManager()
@@ -236,22 +213,13 @@ class UserPresenter extends Base\ForumPresenter
                             ]
                         )
                     );
-                $this->flashMessage(
-                    'You have been activated.',
-                    self::FLASH_MESSAGE_SUCCESS
-                );
+                $this->flashMessage('You have been activated.', self::FLASH_MESSAGE_SUCCESS);
                 $this->redirect('Login:default');
             } else {
-                $this->flashMessage(
-                    'You cannot be activated.',
-                    self::FLASH_MESSAGE_DANGER
-                );
+                $this->flashMessage('You cannot be activated.', self::FLASH_MESSAGE_DANGER);
             }
         } else {
-            $this->flashMessage(
-                'You are logged in!',
-                self::FLASH_MESSAGE_DANGER
-            );
+            $this->flashMessage('You are logged in!', self::FLASH_MESSAGE_DANGER);
         }
     }
 
@@ -268,18 +236,10 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function actionLogout()
     {
-        $this->getSessionManager()
-            ->deleteBySessionId(
-                $this->getSession()
-                    ->getId()
-            );
-        $this->getUser()
-            ->logout();
+        $this->getSessionManager()->deleteBySessionId($this->getSession()->getId());
+        $this->getUser()->logout();
 
-        $this->flashMessage(
-            'Successfully logged out. ',
-            self::FLASH_MESSAGE_SUCCESS
-        );
+        $this->flashMessage('Successfully logged out. ', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('Index:default');
     }
 
@@ -300,11 +260,7 @@ class UserPresenter extends Base\ForumPresenter
         $userData = [];
 
         if ($user->isLoggedIn()) {
-            $userData = $this->getManager()
-                ->getById(
-                    $this->getUser()
-                        ->getId()
-                );
+            $userData = $this->getManager()->getById($user->getId());
         }
 
         $this['editUserForm']->setDefaults($userData);
@@ -331,34 +287,18 @@ class UserPresenter extends Base\ForumPresenter
             $this->error('Parameter is not numeric.');
         }
 
-        $user = $this->getManager()
-            ->getById($user_id);
+        $user = $this->getManager()->getById($user_id);
 
         if (!$user) {
-            $this->flashMessage(
-                'User does not exists.',
-                self::FLASH_MESSAGE_DANGER
-            );
+            $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $posts = $this->getManager()
-            ->getPosts($user_id);
-        $pag   = new PaginatorControl(
-            $posts,
-            15,
-            5,
-            $page
-        );
-        $this->addComponent(
-            $pag,
-            'paginator'
-        );
+        $posts = $this->getManager()->getPosts($user_id);
+        $pag   = new PaginatorControl($posts, 15, 5, $page);
+        $this->addComponent($pag, 'paginator');
 
         if (!$pag->getCount()) {
-            $this->flashMessage(
-                'User have no posts',
-                self::FLASH_MESSAGE_WARNING
-            );
+            $this->flashMessage('User have no posts', self::FLASH_MESSAGE_WARNING);
         }
 
         $this->template->posts = $posts->fetchAll();
@@ -373,8 +313,7 @@ class UserPresenter extends Base\ForumPresenter
             $this->error('Parameter is not numeric');
         }
 
-        $userData = $this->getManager()
-            ->getById($user_id);
+        $userData = $this->getManager()->getById($user_id);
 
         if (!$userData) {
             $this->error('User not found.');
@@ -408,34 +347,18 @@ class UserPresenter extends Base\ForumPresenter
             $this->error('Parameter is not numeric.');
         }
 
-        $user = $this->getManager()
-            ->getById($user_id);
+        $user = $this->getManager()->getById($user_id);
 
         if (!$user) {
-            $this->flashMessage(
-                'User does not exists.',
-                self::FLASH_MESSAGE_DANGER
-            );
+            $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $thanks = $this->getManager()
-            ->getThanks($user_id);
-        $pag    = new PaginatorControl(
-            $thanks,
-            15,
-            5,
-            $page
-        );
-        $this->addComponent(
-            $pag,
-            'paginator'
-        );
+        $thanks = $this->getManager()->getThanks($user_id);
+        $pag    = new PaginatorControl($thanks, 15, 5, $page);
+        $this->addComponent($pag, 'paginator');
 
         if (!$pag->getCount()) {
-            $this->flashMessage(
-                'User have no thanks.',
-                self::FLASH_MESSAGE_WARNING
-            );
+            $this->flashMessage('User have no thanks.', self::FLASH_MESSAGE_WARNING);
         }
 
         $this->template->thanks = $thanks->fetchAll();
@@ -451,34 +374,18 @@ class UserPresenter extends Base\ForumPresenter
             $this->error('Parameter is not numeric.');
         }
 
-        $user = $this->getManager()
-            ->getById($user_id);
+        $user = $this->getManager()->getById($user_id);
 
         if (!$user) {
-            $this->flashMessage(
-                'User does not exists.',
-                self::FLASH_MESSAGE_DANGER
-            );
+            $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $topics = $this->getManager()
-            ->getTopics($user_id);
-        $pag    = new PaginatorControl(
-            $topics,
-            15,
-            5,
-            $page
-        );
-        $this->addComponent(
-            $pag,
-            'paginator'
-        );
+        $topics = $this->getManager()->getTopics($user_id);
+        $pag    = new PaginatorControl($topics, 15, 5, $page);
+        $this->addComponent($pag, 'paginator');
 
         if (!$pag->getCount()) {
-            $this->flashMessage(
-                'User have no topics.',
-                self::FLASH_MESSAGE_WARNING
-            );
+            $this->flashMessage('User have no topics.', self::FLASH_MESSAGE_WARNING);
         }
 
         $this->template->topics = $topics->fetchAll();
@@ -493,37 +400,36 @@ class UserPresenter extends Base\ForumPresenter
             $this->error('Parameter is not numeric.');
         }
 
-        $user = $this->getManager()
-            ->getById($user_id);
+        $user = $this->getManager()->getById($user_id);
 
         if (!$user) {
-            $this->flashMessage(
-                'User does not exists.',
-                self::FLASH_MESSAGE_DANGER
-            );
+            $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
         }
         
         $watches = $this->topicWatchManager->getByRightJoinedFluent($user_id);
         
-        $pag    = new PaginatorControl(
-            $watches,
-            15,
-            5,
-            $page
-        );
-        $this->addComponent(
-            $pag,
-            'paginator'
-        );
+        $pag    = new PaginatorControl($watches, 15, 5, $page);
+        $this->addComponent($pag, 'paginator');
 
         if (!$pag->getCount()) {
-            $this->flashMessage(
-                'User have no awcthes.',
-                self::FLASH_MESSAGE_WARNING
-            );
+            $this->flashMessage('User have no awcthes.', self::FLASH_MESSAGE_WARNING);
         }        
            
         $this->template->watches = $watches->fetchAll();
+    }
+    
+    public function renderList($page)
+    {
+        $users = $this->getManager()->getAllFluent();
+        
+        $pag = new PaginatorControl($users, 15, 5, $page);
+        $this->addComponent($pag, 'paginator');   
+        
+        if (!$pag->getCount()) {
+            $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);
+        }
+        
+        $this->template->users = $users;
     }
 
     /**

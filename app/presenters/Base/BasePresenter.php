@@ -10,19 +10,22 @@ use Nette;
 abstract class BasePresenter extends Nette\Application\UI\Presenter
 {
     /**
-     *
+     * @var string
      */
     const FLASH_MESSAGE_SUCCESS = 'success';
+    
     /**
-     *
+     * @var string
      */
     const FLASH_MESSAGE_DANGER = 'danger';
+    
     /**
-     *
+     * @var string
      */
     const FLASH_MESSAGE_WARNING = 'warning';
+    
     /**
-     *
+     * @var string
      */
     const FLASH_MESSAGE_INFO = 'info';
 
@@ -31,6 +34,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      */
     public function startup()
     {
-        parent::startup();
+        parent::startup();        
     }
 }

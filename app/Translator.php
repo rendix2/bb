@@ -40,10 +40,7 @@ class Translator implements ITranslator
         $this->module = $module;
         $this->lang   = $lang;
         $separator    = DIRECTORY_SEPARATOR;
-
-        $this->tr = parse_ini_file(
-            $appDir->appDir . $separator . $this->module . 'Module' . $separator . 'languages' . $separator . $this->lang . '.ini'
-        );
+        $this->tr     = parse_ini_file($appDir->appDir . $separator . $this->module . 'Module' . $separator . 'languages' . $separator . $this->lang . '.ini');
     }
 
     /**
@@ -57,8 +54,8 @@ class Translator implements ITranslator
     }
 
     /**
-     * @param      $message
-     * @param null $count
+     * @param string $message
+     * @param null   $count
      *
      * @return mixed
      */
@@ -68,13 +65,8 @@ class Translator implements ITranslator
             return '';
         }
         
-        if (!array_key_exists(
-            $message,
-            $this->tr
-        )) {
-            throw new InvalidArgumentException(
-                "'{$message}'" . ' in language ' . $this->lang . ' in ' . $this->module . ' is missing.'
-            );
+        if (!array_key_exists($message, $this->tr)) {
+            throw new InvalidArgumentException("'{$message}'" . ' in language ' . $this->lang . ' in ' . $this->module . ' is missing.');
         }
 
         return $this->tr[$message];

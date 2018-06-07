@@ -74,14 +74,9 @@ class PaginatorControl extends Control
         $this->paginator->setPage($page);
 
         $this->data = $data;
-        $this->setCount(
-            $table,
-            $where,
-            $alias
-        );
+        $this->setCount($table, $where, $alias);
         $this->paginator->setItemCount($this->count);
-        $data->limit($this->paginator->getLength())
-            ->offset($this->paginator->getOffset());
+        $data->limit($this->paginator->getLength())->offset($this->paginator->getOffset());
     }
 
     /**
@@ -130,37 +125,19 @@ class PaginatorControl extends Control
     final private function setCount($table, $where, $alias)
     {
         if ($table !== null && $where !== null) {
-            $query = dibi::select('COUNT(*)')
-                ->from($table);
+            $query = dibi::select('COUNT(*)')->from($table);
 
             if ($alias !== '') {
                 $query->as($alias);
             }
 
             if ($where) {
-                $where = explode(
-                    ' AND ',
-                    $where
-                );
+                $where = explode(' AND ', $where);
 
                 // adding alias :)
                 foreach ($where as &$whereItem) {
-                    if (!substr(
-                            $alias . '.',
-                            0,
-                            2
-                        ) && !preg_match(
-                            '#^`' . $alias . '`\.#',
-                            $whereItem
-                        ) && !preg_match(
-                            '#^' . $alias . '\.#',
-                            $whereItem
-                        )) {
-
-                        $explodedWhereItem = explode(
-                            ' ',
-                            $whereItem
-                        );
+                    if (!substr($alias . '.', 0, 2) && !preg_match('#^`' . $alias . '`\.#', $whereItem) && !preg_match('#^' . $alias . '\.#', $whereItem)) {
+                        $explodedWhereItem = explode(' ', $whereItem);
 
                         $count  = count($explodedWhereItem);
                         $result = '';
@@ -173,10 +150,7 @@ class PaginatorControl extends Control
                     }
                 }
 
-                $where = implode(
-                    ' AND ',
-                    $where
-                );
+                $where = implode(' AND ', $where);
 
                 if ($where) {
                     $query->where($where);
@@ -210,9 +184,7 @@ class PaginatorControl extends Control
 
         // some black magic to make nicer paginator
         $left                = $this->paginator->page - $this->itemsAround >= 1 ? $this->getPaginator()->page - $this->itemsAround : 1; // start
-        $right               = $this->paginator->page + $this->itemsAround <= $this->getPaginator()
-            ->getPageCount() ? $this->getPaginator()->page + $this->itemsAround : $this->getPaginator()
-            ->getPageCount(); // end
+        $right               = $this->paginator->page + $this->itemsAround <= $this->getPaginator()->getPageCount() ? $this->getPaginator()->page + $this->itemsAround : $this->getPaginator()->getPageCount(); // end
         $template->arround   = $this->itemsAround;
         $template->paginator = $this->paginator;
         $template->left      = $left;
