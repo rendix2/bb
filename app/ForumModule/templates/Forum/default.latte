@@ -14,7 +14,7 @@
         {/if}
     </div>
 
-    <div class="col-sm-12 main">
+    <div class="col-sm-12">
         <div class="float-left">
             {if $parentForum}
                 Parent Forum: <a href="{link Forum:default, $parentForum->forum_id}">{$parentForum->forum_name}</a>
@@ -41,6 +41,14 @@
                 <li class="breadcrumb-item"><a href="{link Index:default}">{_menu_index}</a></li>
                 <li class="breadcrumb-item">{_menu_forum}</li>
             </ol>
+            {form searchInForumForm}
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        {input search_form}
+                        </div>            
+                    {input submit}
+                </div>                               
+            {/form}                 
         </div>
         <div class="float-right">
             <a href="{link Forum:rules, $presenter->getParameter('forum_id')}">{_rules}</a>
@@ -80,7 +88,7 @@
         </table>
     </div>
 
-    <div class="col-sm-12 main">
+    <div class="col-sm-12">
         <div class="float-left">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
@@ -88,6 +96,14 @@
                 </li>
                 <li class="breadcrumb-item">{_menu_forum}</li>
             </ol>
+            {form searchInForumForm}
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        {input search_form}
+                        </div>            
+                    {input submit}
+                </div>                               
+            {/form}             
         </div>
         <div class="float-right">
             {control paginator}

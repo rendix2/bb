@@ -2,6 +2,7 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Controls\BootstrapForm;
 use App\Controls\PaginatorControl;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
@@ -56,8 +57,9 @@ final class ForumPresenter extends Base\ForumPresenter
      * @param int $forum_id
      * @param int $page
      */
-    public function renderDefault($forum_id, $page = 1)
+    public function renderDefault($forum_id, $page = 1, $q = null)
     {
+        
         if (!is_numeric($forum_id)) {
             $this->error('Parameter is not numeric');
         }
@@ -94,6 +96,11 @@ final class ForumPresenter extends Base\ForumPresenter
         if (!$paginator->getCount()) {
             $this->flashMessage('No topics.', self::FLASH_MESSAGE_DANGER);
         }
+        
+        if ($q) {
+            $topics = $topics->where('topic_id IN ( SELECT post_topic_id FROM posts WHERE MATCH(post_title, post_text) AGAINST (%s IN BOOLEAN MODE) AND post_forum_id = %i) OR MATCH(topic_name) AGAINST (%s IN BOOLEAN MODE)', $q, $forum_id, $q);                               
+            $this['searchInForumForm']->setDefaults(['search_form' => $q]);
+        }
 
         $this->template->forum       = $forum;
         $this->template->topics      = $topics->fetchAll();
@@ -128,7 +135,9 @@ final class ForumPresenter extends Base\ForumPresenter
 
     protected function createComponentSearchInForumForm()
     {
-         $form = new \App\Controls\BootstrapForm();
+         $form = new BootstrapForm();
+         $form->addText('search_form', 'Search forum:');
+         $form->addSubmit('submit', 'Search');
          $form->onSuccess[] = [$this, 'searchInForumFormSuccess'];
          
          return $form;
@@ -136,6 +145,6 @@ final class ForumPresenter extends Base\ForumPresenter
     
     public function searchInForumFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
     {
-        
+        $this->redirect('Forum:default', $this->getParameter('forum_id'), $this->getParameter('page'), $values->search_form);
     }
 }
