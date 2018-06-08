@@ -109,6 +109,11 @@ class CategoryPresenter extends Base\AdminPresenter
             $this['editForm']->setDefaults([]);
         }
     }
+    
+    public function handleReorder()
+    {
+        // todo
+    }
 
     /**
      * @return BootStrapForm

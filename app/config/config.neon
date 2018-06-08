@@ -9,8 +9,8 @@ parameters:
     defaultLanguage: czech
     avatars:
         dir: %wwwDir%\avatars
-        maxWidth: 1000
-        maxHeight: 1000        
+        maxWidth: 2000
+        maxHeight: 2000        
         maxFileSize: 5242880
         enabledExtension:
             - jpg

@@ -64,9 +64,18 @@ class Avatars {
     public function getEnabledExtensions()
     {
         return $this->avatars[self::ENABLED_EXTENSIONS];
-    } 
+    }
     
-    public function getDirSize()
+    /**
+     * 
+     * @return \SplFileInfo
+     */
+    public function getSPLDir()
+    {
+        return new \SplFileInfo($this->getDir());
+    }
+
+        public function getDirSize()
     {
         $size = 0;               
         $exts = [];

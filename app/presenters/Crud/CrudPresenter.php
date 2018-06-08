@@ -185,7 +185,7 @@ abstract class CrudPresenter extends ManagerPresenter
     /**
      *
      */
-    public function renderDefault()
+    public function renderDefault($page = 1)
     {
         $items = $this->getManager()->getAllFluent();
 
@@ -193,21 +193,22 @@ abstract class CrudPresenter extends ManagerPresenter
             if (isset($where['value'])) {
                 $items->where('[' . $where['column'] . '] ' . $where['type'] . ' ' . $where['strint'], $where['value']);
             }
-        }
-        
-        $count = count($items);
-
-        if (!$count) {
-            $this->flashMessage('No items.', self::FLASH_MESSAGE_WARNING);
-        }        
+        }             
 
         foreach ($this->gf->getOrderBy() as $column => $type) {
             $items->orderBy($column, $type);
         }
-
+        
+        $paginator = new \App\Controls\PaginatorControl($items, 20, 5 , $page);       
+        $this->addComponent($paginator, 'paginator');
+        
+        if (!$paginator->getCount()) {
+            $this->flashMessage('No '.$this->getTitle(), self::FLASH_MESSAGE_DANGER);
+        }
+         
         $this->template->items      = $items->fetchAll();
         $this->template->title      = $this->getTitleOnDefault();
-        $this->template->countItems = $count;
+        $this->template->countItems = $paginator->getCount();
     }
 
     /**

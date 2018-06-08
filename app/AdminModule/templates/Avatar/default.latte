@@ -1,0 +1,19 @@
+{block content}
+<div class="col-sm-12 mt-3">
+    <div class="float-left">
+        <span>{$avatarsSize|bytes}</span>
+    </div>
+    <div class="float-right">
+        {control paginator}
+    </div>
+</div>
+
+<div class="col-sm-12 main">
+    {foreach $avatars as $avatar}
+        <div class="col-sm-5 mb-3 {if $iterator->counter % 2}float-left{else}float-right{/if}">
+        <img src="{$basePath}/{$avatarsDir}/{$avatar->user_avatar}" class="img-thumbnail img-fluid" alt="{$avatar->user_name}" title="{$avatar->user_name}">
+        <a href="{link deleteAvatar!, $avatar->user_id, $avatar->user_avatar}">Smazat</a>
+        </div>
+    {/foreach}
+</div>
+{/block}

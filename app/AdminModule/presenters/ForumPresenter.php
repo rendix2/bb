@@ -98,6 +98,11 @@ class ForumPresenter extends Base\AdminPresenter
             $this->addComponent($this->gf, 'gridFilter');
         }
     }
+    
+    public function handleReorder()
+    {
+        // todo
+    }
 
     /**
      * @param int|null $id
