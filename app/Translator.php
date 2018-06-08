@@ -58,10 +58,11 @@ class Translator implements ITranslator
      * @param null   $count
      *
      * @return mixed
+     * @throws InvalidArgumentException
      */
     public function translate($message, $count = null)
     {
-        if ( $message === null ){
+        if ($message === null) {
             return '';
         }
         

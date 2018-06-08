@@ -54,8 +54,9 @@ final class ForumPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param int $forum_id
-     * @param int $page
+     * @param int  $forum_id
+     * @param int  $page
+     * @param string|null $q
      */
     public function renderDefault($forum_id, $page = 1, $q = null)
     {

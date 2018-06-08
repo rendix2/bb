@@ -10,6 +10,7 @@ namespace App\Models;
 
 use App\Models\Crud\CrudManager;
 use Dibi\Connection;
+use Dibi\Fluent;
 use Dibi\Result;
 
 /**
@@ -72,7 +73,7 @@ abstract class MNManager extends Manager
     /**
      * @param int $left_id
      *
-     * @return array
+     * @return Fluent
      */
     public function getByLeftJoinedFluent($left_id)
     {
@@ -86,7 +87,7 @@ abstract class MNManager extends Manager
             ->as($aliasR)
             ->on($aliasR . '.' . $this->right->getPrimaryKey() . ' = [relation.' . $this->right->getPrimaryKey() . ']')
             ->where('[relation.' . $this->left->getPrimaryKey() . '] = %i', $left_id);
-    }    
+    }
 
     /**
      * @param int $left_id
@@ -137,7 +138,7 @@ abstract class MNManager extends Manager
     /**
      * @param int $right_id
      *
-     * @return array
+     * @return Fluent
      */
     public function getByRightJoinedFluent($right_id)
     {
@@ -151,7 +152,7 @@ abstract class MNManager extends Manager
             ->as($aliasL)
             ->on($aliasL . '.' . $this->left->getPrimaryKey() . ' = [relation.' . $this->left->getPrimaryKey() . ']')
             ->where('[relation.' . $this->right->getPrimaryKey() . '] = %i', $right_id);
-    }    
+    }
 
     /**
      * @param int $right_id

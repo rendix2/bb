@@ -393,6 +393,7 @@ class UserPresenter extends Base\ForumPresenter
 
     /**
      * @param int $user_id
+     * @param int $page
      */
     public function renderWatches($user_id, $page = 1)
     {
@@ -413,7 +414,7 @@ class UserPresenter extends Base\ForumPresenter
 
         if (!$pag->getCount()) {
             $this->flashMessage('User have no awcthes.', self::FLASH_MESSAGE_WARNING);
-        }        
+        }
            
         $this->template->watches = $watches->fetchAll();
     }

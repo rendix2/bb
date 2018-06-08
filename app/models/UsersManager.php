@@ -6,6 +6,7 @@ use Dibi\Fluent;
 use Dibi\Result;
 use Dibi\Row;
 use Nette\Http\FileUpload;
+use Nette\InvalidArgumentException;
 use Nette\Utils\FileSystem;
 
 /**
@@ -247,20 +248,21 @@ class UsersManager extends Crud\CrudManager
      * @param string     $wwwDir
      *
      * @return string
+     * @throws InvalidArgumentException
      */
     public function moveAvatar(FileUpload $file, $id, $wwwDir)
     {
-        if ($file->ok) {                   
-            if ( $file->getSize() > $this->avatar->getMaxFileSize() ) {
-                throw new \Nette\InvalidArgumentException('File is too big. Max enabled file size is: '.$this->avatar->getMaxFileSize() );
+        if ($file->ok) {
+            if ($file->getSize() > $this->avatar->getMaxFileSize()) {
+                throw new InvalidArgumentException('File is too big. Max enabled file size is: '.$this->avatar->getMaxFileSize() );
             }
                                    
-            if ( $file->getImageSize()[0] > $this->avatar->getMaxWidth() ){
-                throw new \Nette\InvalidArgumentException('Image width is too big. Max enabled dith is: '.$this->avatar->getMaxWidth());
+            if ($file->getImageSize()[0] > $this->avatar->getMaxWidth()) {
+                throw new InvalidArgumentException('Image width is too big. Max enabled dith is: '.$this->avatar->getMaxWidth());
             }
             
-            if ( $file->getImageSize()[1] > $this->avatar->getMaxHeight() ){
-                throw new \Nette\InvalidArgumentException('Image height is too big. Max enabled height is: '.$this->avatar->getMaxHeight());
+            if ($file->getImageSize()[1] > $this->avatar->getMaxHeight()) {
+                throw new InvalidArgumentException('Image height is too big. Max enabled height is: '.$this->avatar->getMaxHeight());
             }
             
             $this->deletePreviousAvatarFile($id, $wwwDir);

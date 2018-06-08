@@ -2,7 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\Controls\BootStrapForm;
+use App\Controls\BootstrapForm;
 use App\Models\ForumsManager;
 use App\Models\ReportsManager;
 use App\Models\TopicsManager;
