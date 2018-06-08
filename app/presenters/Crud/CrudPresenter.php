@@ -2,7 +2,7 @@
 
 namespace App\Presenters\crud;
 
-use App\Controls\BootStrapForm;
+use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\Crud\CrudManager;
 use App\Presenters\Base\ManagerPresenter;

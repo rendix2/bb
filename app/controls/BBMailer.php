@@ -31,14 +31,14 @@ class BBMailer
     
     public function __construct(\Nette\Mail\IMailer $mailer)
     {       
-        $this->mailer  = $mailer;                       
+        $this->mailer  = $mailer;
         $this->message = new \Nette\Mail\Message();
         $this->message->setFrom('a@a.a');
     }
     
     public function addRecepients(array $recepients)
     {
-        foreach ( $recepients as $recepient ) {
+        foreach ($recepients as $recepient) {
             $this->message->addTo($recepient);
         }
         
@@ -68,7 +68,7 @@ class BBMailer
     }
     
     public function send()
-    {        
+    {
 //        $smtp       = new \Nette\Mail\SmtpMailer($config);
 //        $sendMailer = new \Nette\Mail\SendmailMailer();
        
@@ -77,7 +77,7 @@ class BBMailer
 //            $smtp,
             $this->mailer
         ]);
-        $mailer->send($this->message);                           
+        $mailer->send($this->message);
         
         
         //$this->mailer->send($this->message);

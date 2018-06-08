@@ -56,7 +56,7 @@ class Checkbox extends NetteCheckbox
      *
      * @param null $caption
      *
-     * @return void
+     * @return string
      */
     public function getLabel($caption = null)
     {

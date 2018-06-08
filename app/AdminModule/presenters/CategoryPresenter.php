@@ -2,7 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\Controls\BootStrapForm;
+use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
@@ -28,22 +28,20 @@ class CategoryPresenter extends Base\AdminPresenter
      */
     public function __construct(CategoriesManager $manager, GridFilter $gf, \Nette\Mail\IMailer $mailer)
     {
-                Debugger::barDump($mailer, 'Mailer');   
+                Debugger::barDump($mailer, 'Mailer');
         
                 /*
         $bbMail = new \App\Controls\BBMailer($mailer);
-        
+
         $bbMail->addRecepients(['rendix2@seznam.cz']);
         $bbMail->setSubject('Test');
         $bbMail->setText('awdwadwa');
-        $bbMail->send(); 
+        $bbMail->send();
                  * 
-                 */ 
+                 */
         
         
         parent::__construct($manager);
-        
-      
     }
 
     /**
@@ -65,7 +63,7 @@ class CategoryPresenter extends Base\AdminPresenter
             $this->gf->setTranslator($this->getAdminTranslator());
             
             $this->gf->addFilter('category_id', 'category_id', GridFilter::INT_EQUAL);
-            $this->gf->addFilter('category_name','category_name',GridFilter::TEXT_LIKE);
+            $this->gf->addFilter('category_name', 'category_name', GridFilter::TEXT_LIKE);
             $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
             $this->addComponent($this->gf, 'gridFilter');

@@ -107,18 +107,18 @@ class LoginPresenter extends BasePresenter
             ->setAuthenticator($this->authenticator);
     }
 
-    public function beforeRender() {
+    public function beforeRender()
+    {
         parent::beforeRender();
         
-        if ( $this->getUser()->isLoggedIn() ){
-                $this->template->setTranslator(new \App\Translator(
-            $this->appDir,
-            'Forum',
-            $this->getUser()->getIdentity()->getData()['lang_file_name']
-        ));              
-        } else {
+        if ($this->getUser()->isLoggedIn()) {
             $this->template->setTranslator(new \App\Translator(
-            $this->appDir,'Forum','czech'));    
+                $this->appDir,
+                'Forum',
+                $this->getUser()->getIdentity()->getData()['lang_file_name']
+            ));
+        } else {
+            $this->template->setTranslator(new \App\Translator($this->appDir, 'Forum', 'czech'));
         }
     }
 

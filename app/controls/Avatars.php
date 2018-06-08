@@ -2,6 +2,8 @@
 
 namespace App\Controls;
 
+use Nette\Utils\Finder;
+
 /**
  * Description of Avatars
  *
@@ -77,15 +79,15 @@ class Avatars {
 
         public function getDirSize()
     {
-        $size = 0;               
+        $size = 0;
         $exts = [];
         
-        foreach ( $this->getEnabledExtensions() as $ext ){
+        foreach ($this->getEnabledExtensions() as $ext) {
             $exts[] = '*.'.$ext;
         }
         
-        foreach (\Nette\Utils\Finder::findFiles($exts)->in($this->getDir()) as $file) {
-            $size += $file->getSize();          
+        foreach (Finder::findFiles($exts)->in($this->getDir()) as $file) {
+            $size += $file->getSize();
         }
         
         return $size;
@@ -95,10 +97,10 @@ class Avatars {
     {
         $exts = [];
         
-        foreach ( $this->getEnabledExtensions() as $ext ){
+        foreach ($this->getEnabledExtensions() as $ext) {
             $exts[] = '*.'.$ext;
-        }        
+        }
         
-        return count(\Nette\Utils\Finder::findFiles($exts)->in($this->getDir()));
+        return count(Finder::findFiles($exts)->in($this->getDir()));
     }
 }
