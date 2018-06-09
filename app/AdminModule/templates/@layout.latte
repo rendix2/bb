@@ -35,7 +35,10 @@
                     </li>
                     <li class="nav-item {if $presenter->getName() === 'Admin:Avatar'}active{/if}">
                         <a class="nav-link" href="{link :Admin:Avatar:default}">{_menu_avatar}</a>
-                    </li>                    
+                    </li>    
+                    <li class="nav-item {if $presenter->getName() === 'Admin:Email'}active{/if}">
+                        <a class="nav-link" href="{link :Admin:Email:default}">{_menu_email}</a>
+                    </li>                     
                     <li class="nav-item {if $presenter->getName() === 'Admin:Cache'}active{/if}">
                         <a class="nav-link" href="{link :Admin:Cache:default}">{_menu_cache}</a>
                     </li>

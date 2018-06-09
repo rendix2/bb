@@ -27,13 +27,27 @@ class BBMailer
      * @var \Nette\Mail\IMailer $smtp
      */
     private $mailer;
+    
+    /**
+     *
+     * @var array $recepients;
+     */
+    private $recepients;
+    
+    /**
+     *
+     * @var \App\Models\MailsManager $manager
+     */
+    private $manager;
 
     
-    public function __construct(\Nette\Mail\IMailer $mailer)
+    public function __construct(\Nette\Mail\IMailer $mailer, \App\Models\MailsManager $manager)
     {       
         $this->mailer  = $mailer;
         $this->message = new \Nette\Mail\Message();
         $this->message->setFrom('a@a.a');
+        
+        $this->manager = $manager;
     }
     
     public function addRecepients(array $recepients)
@@ -41,6 +55,8 @@ class BBMailer
         foreach ($recepients as $recepient) {
             $this->message->addTo($recepient);
         }
+        
+        $this->recepients = $recepients;
         
         return $this;
     }
@@ -73,6 +89,8 @@ class BBMailer
 //        $sendMailer = new \Nette\Mail\SendmailMailer();
        
         
+        $this->saveMailHistory();
+        
         $mailer = new \Nette\Mail\FallbackMailer([
 //            $smtp,
             $this->mailer
@@ -81,5 +99,19 @@ class BBMailer
         
         
         //$this->mailer->send($this->message);
+    }
+    
+    private function saveMailHistory()
+    {
+        $item_data = [
+            'mail_text'    => $this->message->getBody(),
+            'mail_subject' => $this->message->getSubject(),
+            'mail_to'      => implode(', ', $this->recepients),
+            'mail_from'    => $this->message->getFrom(),
+            'mail_time'    => time()
+        
+        ];
+        
+        $this->manager->add(\Nette\Utils\ArrayHash::from($item_data));
     }
 }

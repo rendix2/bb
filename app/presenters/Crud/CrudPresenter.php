@@ -18,6 +18,9 @@ use Tracy\Debugger;
  */
 abstract class CrudPresenter extends ManagerPresenter
 {
+    const ITEMS_PER_PAGE = 20;
+
+
     /**
      *
      */
@@ -199,7 +202,7 @@ abstract class CrudPresenter extends ManagerPresenter
             $items->orderBy($column, $type);
         }
         
-        $paginator = new \App\Controls\PaginatorControl($items, 20, 5 , $page);       
+        $paginator = new \App\Controls\PaginatorControl($items, static::ITEMS_PER_PAGE, 5 , $page);       
         $this->addComponent($paginator, 'paginator');
         
         if (!$paginator->getCount()) {

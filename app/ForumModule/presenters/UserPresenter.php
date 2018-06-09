@@ -432,6 +432,11 @@ class UserPresenter extends Base\ForumPresenter
         
         $this->template->users = $users;
     }
+    
+    public function renderRegister()
+    {
+        // todo
+    }
 
     /**
      * @return ChangePasswordControl

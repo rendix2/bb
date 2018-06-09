@@ -1,0 +1,22 @@
+{block content}
+    <div class="col-sm-8 main">
+        <div class="card">
+            <div class="card-header">{_mail_header}</div>
+            <div class="card-block p-3">
+                {control editForm}
+            </div>            
+        </div>
+    </div>
+    <div class="col-sm-4 ">
+        <div class="card">
+            <div class="card-header">{_mail_to}</div>
+            <div class="card-block p-3">
+                {$item->mail_to}
+            </div>            
+        </div>
+    </div>            
+                
+            
+            
+                
+{/block}            

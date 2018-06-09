@@ -128,13 +128,13 @@ services:
     Forums2GroupsManager: 
         factory: App\Models\Forums2GroupsManager
         inject: yes
-    Group2User:
+    Group2UserManager:
         factory: App\Models\Users2GroupsManager
         inject: yes
-    Users2Forums:
+    Users2ForumsManager:
         factory: App\Models\Users2ForumsManager
         inject: yes
-    TopicWatch:
+    TopicWatchManager:
         factory: App\Models\TopicWatchManager
         inject: yes
     ReportManager:
@@ -149,6 +149,10 @@ services:
                 - factory
     GridFilter:
         factory: App\Controls\GridFilter
+        setup:
+                - factory
+    EmailManager:
+        factory: \App\Models\MailsManager
         setup:
                 - factory
     authenticator: App\Authenticator
