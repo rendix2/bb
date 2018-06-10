@@ -77,7 +77,7 @@ class Avatars {
         return new \SplFileInfo($this->getDir());
     }
 
-        public function getDirSize()
+    public function getDirSize()
     {
         $size = 0;
         $exts = [];

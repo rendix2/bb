@@ -53,21 +53,22 @@ class EmailPresenter extends Base\AdminPresenter
     
     protected function createComponentEditForm() {
        $form = $this->getBootStrapForm();
+       $form->setTranslator($this->getAdminTranslator());
        
-       $form->addText('mail_subject', 'Subject:')->setDisabled();
-       $form->addTextArea('mail_text', 'Email:')->setDisabled();
+       $form->addText('mail_subject', 'mail_subject:')->setDisabled();
+       $form->addTextArea('mail_text', 'mail_text:')->setDisabled();
               
        return $form;
     }    
 
     protected function createComponentSendForm() {
        $form = $this->getBootStrapForm();
+       $form->setTranslator($this->getAdminTranslator());
        
-       $form->addText('email_subject', 'Subject:')->setRequired(true);
-       $form->addTextArea('email_text', 'Email:')->setRequired(true);
-       $form->addSubmit('send', 'Send mail');
+       $form->addText('mail_subject', 'mail_subject:')->setRequired(true);
+       $form->addTextArea('mail_text', 'mail_text:')->setRequired(true);
+       $form->addSubmit('send', 'mail_send');
               
-       $form->addSubmit('Send', 'Send');
        $form->onSuccess[] = [$this, 'sendFormSuccess'];
        
        return $form;

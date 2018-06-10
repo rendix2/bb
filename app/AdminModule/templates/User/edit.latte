@@ -97,7 +97,7 @@
         <div class="row">
             <div class="col-sm-4">
                 <div class="card h-100">
-                    <div class="card-header">{_menu_group}</div>
+                    <div class="card-header">{_menu_group} (člen)</div>
                     <div class="card-block p-3">
                         <h2>Groups</h2>
                         {form groupFrom}
@@ -119,7 +119,7 @@
 
             <div class="col-sm-4">
                 <div class="card h-100">
-                    <div class="card-header">{_menu_forums}</div>
+                    <div class="card-header">{_menu_forums} (práva)</div>
                     <div class="card-block p-3">
                         <h2>Forums</h2>
                         {form forumsForm}
@@ -146,6 +146,36 @@
                     </div>
                 </div>
             </div>
+                    
+            <div class="col-sm-4">
+                <div class="card h-100">
+                    <div class="card-header">{_forum_moderator}</div>
+                    <div class="card-block p-3">
+                            <h2>Forums</h2>
+                        {form moderatorsForm}
+                            {block moderators}
+                                <ul>
+                                    {foreach $forums as $forum}
+                                        <li>
+                                            <label>
+                                                <input type="checkbox" name="moderators[]" value="{$forum->forum_id}"
+                                                       {if in_array($forum->forum_id, $myModerators)}checked="checked"{/if}>
+                                                {$forum->forum_name}
+                                            </label>
+                                        </li>
+
+                                        {if is_array($forum['childs'])}
+                                            {include moderators, forums => $forum['childs']}
+                                        {/if}
+                                    {/foreach}
+                                </ul>
+                            {/block}
+
+                            {input send_moderator}
+                        {/form}
+                    </div>
+                </div>
+            </div>                    
         </div>
     </div>
 

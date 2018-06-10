@@ -155,17 +155,22 @@ services:
         factory: \App\Models\MailsManager
         setup:
                 - factory
+    ModeratorsManager:
+        factory: \App\Models\ModeratorsManager
+        inject: yes
     authenticator: App\Authenticator
     authorizator: App\Authorizator
     WwwDir:
         class: App\Controls\WwwDir(%wwwDir%)
-    Appir:
+    AppDir:
         class: App\Controls\AppDir(%appDir%)
-    Avatars:
+    AvatarsDir:
         class: App\Controls\Avatars(%avatars%)
     TempDir:
         class: App\Controls\TempDir(%tempDir%)
-
+    CacheDir:
+        class: App\Controls\CacheDir(%tempDir%/cache)
+        
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22
 

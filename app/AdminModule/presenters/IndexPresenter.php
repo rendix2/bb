@@ -29,7 +29,22 @@ class IndexPresenter extends BasePresenter
      */
     private $sessionsManager;
     
+    /**
+     *
+     * @var \App\Controls\Avatars $avatar 
+     */
     private $avatar;
+    
+    
+    /**
+     * @var \App\Controls\CacheDir $cacheDir
+     */
+    private $cacheDir;
+    
+    public function injectCacheDir(\App\Controls\CacheDir $cacheDir)
+    {
+        $this->cacheDir = $cacheDir;
+    }
 
     /**
      * @param AppDir $appDir
@@ -105,10 +120,11 @@ class IndexPresenter extends BasePresenter
             $loggedUsers = null;
         }
 
-        $this->template->countLogged = $count;
-        $this->template->maxLogged   = self::MAX_LOGGED_IN_USERS_TO_SHOW;
-        $this->template->loggedUsers = $loggedUsers;
-        $this->template->dirSize     = $this->avatar->getDirSize();
-        $this->template->avatarCount = $this->avatar->getCountOfAvatars();                
+        $this->template->countLogged   = $count;
+        $this->template->maxLogged     = self::MAX_LOGGED_IN_USERS_TO_SHOW;
+        $this->template->loggedUsers   = $loggedUsers;
+        $this->template->avatarDirSize = $this->avatar->getDirSize();
+        $this->template->avatarCount   = $this->avatar->getCountOfAvatars();     
+        $this->template->cacheDirSize  = $this->cacheDir->getDirSize();
     }
 }

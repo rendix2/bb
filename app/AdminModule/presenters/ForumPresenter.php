@@ -38,6 +38,11 @@ class ForumPresenter extends Base\AdminPresenter
      * @var PostsManager $postManager
      */
     private $postManager;
+    
+    /**
+     * @var \App\Models\ModeratorsManager $moderatorsManager
+     */
+    private $moderatorsManager;
 
     /**
      * ForumPresenter constructor.
@@ -79,6 +84,11 @@ class ForumPresenter extends Base\AdminPresenter
     public function injectUserManager(UsersManager $userManager)
     {
         $this->userManager = $userManager;
+    }
+    
+    public function injectModeratorsManager(\App\Models\ModeratorsManager $moderatorsManager)
+    {
+        $this->moderatorsManager = $moderatorsManager;
     }
 
     /**
@@ -142,16 +152,22 @@ class ForumPresenter extends Base\AdminPresenter
             } else {
                 $userData = false;
             }
+            
+            $moderators = $this->moderatorsManager->getByRightJoined($id);
+            
+            \Tracy\Debugger::barDump($moderators);
 
-            $this->template->topicData = $lastTopic;
-            $this->template->lastPost  = $lastPost;
-            $this->template->userData  = $userData;
-            $this->template->item      = $item;
-            $this->template->title     = $this->getTitleOnEdit();
-            $this->template->forums    = $subForums;
+            $this->template->topicData  = $lastTopic;
+            $this->template->lastPost   = $lastPost;
+            $this->template->userData   = $userData;
+            $this->template->item       = $item;
+            $this->template->title      = $this->getTitleOnEdit();
+            $this->template->forums     = $subForums;
+            $this->template->moderators = $moderators;
         } else {
-            $this->template->title  = $this->getTitleOnAdd();
-            $this->template->forums = [];
+            $this->template->title      = $this->getTitleOnAdd();
+            $this->template->forums     = [];
+            $this->template->moderators = [];
 
             //            $this->template->item = \Nette\Utils\ArrayHash::from(['forum_topic_count' =>null, 'forum_last_post_id' => null, 'forum_last_post_user_id' => null]);
             //            $this->template->topicData = [];

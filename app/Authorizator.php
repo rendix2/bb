@@ -32,6 +32,12 @@ class Authorizator
      * @var UsersManager $userManager
      */
     private $userManager;
+    
+    /**
+     *
+     * @var \App\Models\ModeratorsManager $moderatorsManager
+     */
+    private $moderatorsManager;
 
     /**
      * Authorizator constructor.
@@ -40,12 +46,13 @@ class Authorizator
      * @param User                 $user
      * @param UsersManager         $userManager
      */
-    public function __construct(Models\ForumsManager $forumsManager, User $user, UsersManager $userManager)
+    public function __construct(Models\ForumsManager $forumsManager, User $user, UsersManager $userManager, \App\Models\ModeratorsManager $moderatorsManager)
     {
-        $this->acl          = new Permission();
-        $this->forumManager = $forumsManager;
-        $this->user         = $user;
-        $this->userManager  = $userManager;
+        $this->acl               = new Permission();
+        $this->forumManager      = $forumsManager;
+        $this->user              = $user;
+        $this->userManager       = $userManager;
+        $this->moderatorsManager = $moderatorsManager;
 
         $this->defineRoles();
         $this->defineResources();
@@ -70,9 +77,9 @@ class Authorizator
         $this->acl->deny('guest', Permission::ALL, 'post_delete');
 
         // moderator
-        $this->acl->allow('moderator', Permission::ALL, 'post_delete');
-        $this->acl->allow('moderator', Permission::ALL, 'post_update');
-        $this->acl->allow('moderator', Permission::ALL, 'topic_thank');
+        //$this->acl->allow('moderator', Permission::ALL, 'post_delete');
+        //$this->acl->allow('moderator', Permission::ALL, 'post_update');
+        //$this->acl->allow('moderator', Permission::ALL, 'topic_thank');
     }
 
     /**
@@ -80,11 +87,37 @@ class Authorizator
      */
     private function defineResources()
     {
+        
+        // adds all resources
         foreach ($this->forumManager->getAllCached() as $forum) {
             $this->acl->addResource("" . $forum->forum_id);
-
+        }
+        
+        foreach ($this->forumManager->getAllCached() as $forum) {
+                $this->acl->deny('guest', '' . $forum->forum_id, Permission::ALL);
             $this->acl->allow('guest',"" . $forum->forum_id, 'forum_view');
+        }
+        
+        if ($this->user->isInRole('admin')) {
+            foreach ($this->forumManager->getAllCached() as $forum) {
+                $this->acl->allow('admin', "" . $forum->forum_id);
+            }
+        }
+                
+        if ($this->user->isInRole('moderator')) {
+            $moderators = $this->moderatorsManager->getByLeftPairs($this->user->getId());
+        
+            foreach ($this->forumManager->getAllCached() as $forum) {
+                if (in_array($forum->forum_id, $moderators)) {
+                    $this->acl->allow('moderator', '' . $forum->forum_id, Permission::ALL);
+                } else {
+                    $this->acl->deny('moderator', '' . $forum->forum_id);  
+                }
+            }
+        }           
+        
 
+        foreach ($this->forumManager->getAllCached() as $forum) {
             if ($forum->forum_thank) {
                 $this->acl->allow('registered', "" . $forum->forum_id, 'topic_thank');
             }
@@ -113,7 +146,7 @@ class Authorizator
                 $this->acl->allow('registered', "" . $forum->forum_id, 'fast_reply');
             }
         }
-
+             
         foreach ($this->userManager->getForumsPermissionsByUserThroughGroup($this->user->getId()) as $perm) {
             if ($perm->topic_thank) {
                 $this->acl->allow('registered', "" . $perm->forum_id, 'topic_thank');
@@ -149,12 +182,6 @@ class Authorizator
                 $this->acl->allow('registered', "" . $perm->forum_id, 'topic_delete');
             } else {
                 $this->acl->deny('registered', "" . $perm->forum_id, 'topic_delete');
-            }
-        }
-
-        if ($this->user->isInRole('admin')) {
-            foreach ($this->forumManager->getAllCached() as $forum) {
-                $this->acl->allow('admin', "" . $forum->forum_id, Permission::ALL);
             }
         }
     }

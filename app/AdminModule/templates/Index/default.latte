@@ -1,7 +1,7 @@
 {block content}
     <div class="col-sm-2">
-        <div class="btn btn-primary">Celková velikost
-            <span class="badge badge-light"> {$dirSize|bytes}</span>
+        <div class="btn btn-primary">Celková velikost avatarů
+            <span class="badge badge-light"> {$avatarDirSize|bytes}</span>
         </div>
     </div>
                     
@@ -16,6 +16,12 @@
             <span class="badge badge-light"> {$countLogged}</span>
         </div>
     </div>
+        
+    <div class="col-sm-2">
+        <div class="btn btn-primary">Cache dir size
+            <span class="badge badge-light"> {$cacheDirSize|bytes}</span>
+        </div>
+    </div>        
 
     <div class="col-sm-12 main mt-3">       
         {if $countLogged <= $maxLogged}

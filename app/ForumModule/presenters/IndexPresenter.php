@@ -74,6 +74,12 @@ class IndexPresenter extends Base\ForumPresenter
      * @var CategoriesManager $categoriesManager
      */
     private $categoriesManager;
+    
+    /**
+     *
+     * @var \App\Models\ModeratorsManager $moderatorManager;
+     */
+    private $moderatorManager;
 
     /**
      * IndexPresenter constructor.
@@ -140,6 +146,10 @@ class IndexPresenter extends Base\ForumPresenter
     {
         $this->userManager = $userManager;
     }
+    
+    public function injectModeratorsManager(\App\Models\ModeratorsManager $moderatorsManager){
+        $this->moderatorManager = $moderatorsManager;
+    }
 
     /**
      * @param int $category_id
@@ -163,11 +173,16 @@ class IndexPresenter extends Base\ForumPresenter
         $categories      = $this->categoriesManager->getActiveCategoriesCached();
         $result          = [];
         $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
-
+        
+      
         foreach ($categories as $category) {
-            $forums = $this->getManager()->getForumsFirstLevel($category->category_id);
+            $category->forums = [];
+            $forums           = $this->getManager()->getForumsFirstLevel($category->category_id);
 
             foreach ($forums as $forum) {
+                $category->forums[$forum->forum_id] = $forum;                
+                $forum->moderators                  = [];
+                
                 $forum->hasNewPosts  = count(
                     $this->postManger->getNewerPosts($forum->forum_id, $last_login_time)
                 );
@@ -175,10 +190,17 @@ class IndexPresenter extends Base\ForumPresenter
                 $forum->hasNewTopics = count(
                     $this->topicManager->getNewerTopics($forum->forum_id, $last_login_time)
                 );
+                
+                $moderators = $this->moderatorManager->getByRightJoined($forum->forum_id);
+                                              
+                foreach ($moderators as $moderator){                      
+                    unset($moderator->user_password);
+                     
+                    $result['cats'][$category->category_id] = $category;
+                    $result['cats'][$category->category_id]->forums[$forum->forum_id] = $forum;
+                    $result['cats'][$category->category_id]->forums[$forum->forum_id]->moderators[$moderator->user_id] = $moderator;                    
+                }                                  
             }
-
-            $result[$category->category_id]['category'] = $category;
-            $result[$category->category_id]['forum']    = $forums;
         }
 
         $cachedLastUser = $this->getCache()

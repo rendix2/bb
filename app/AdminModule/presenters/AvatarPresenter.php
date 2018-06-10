@@ -42,6 +42,7 @@ class AvatarPresenter extends Base\AdminPresenter
         $this->template->avatarsSize = $this->avatarsDir->getDirSize();
         $this->template->avatarsDir  = $this->avatarsDir->getSPLDir()->getBasename();
         $this->template->avatars     = $avatars->fetchAll();
+        $this->template->countItems  = $paginator->getCount();
     }
     
     public function handleDeleteAvatar($user_id, $avatar_name)

@@ -53,6 +53,12 @@ class UserPresenter extends Base\AdminPresenter
      * @var WwwDir $wwwDir
      */
     private $wwwDir;
+    
+    /**
+     *
+     * @var \App\Models\ModeratorsManager $moderatorsManager
+     */
+    private $moderatorsManager;
 
     /**
      * UserPresenter constructor.
@@ -83,11 +89,24 @@ class UserPresenter extends Base\AdminPresenter
     public function createComponentForumsForm()
     {
         $form = new BootstrapForm();
+        $form->setTranslator($this->getAdminTranslator());
 
         $form->addSubmit('send_forum',  'Send');
         $form->onSuccess[] = [$this, 'forumsSuccess'];
+;
+        return $form;
+    }
+    
+    public function createComponentModeratorsForm()
+    {
+        $form = new BootstrapForm();
+        $form->setTranslator($this->getAdminTranslator());
+        
+        $form->addSubmit('send_moderator', 'Send');
+        $form->onSuccess[] = [$this, 'moderatorsSuccess'];
 
         return $form;
+        
     }
 
     /**
@@ -100,6 +119,22 @@ class UserPresenter extends Base\AdminPresenter
         $user_id = $this->getParameter('id');
 
         $this->users2Forums->addByLeft((int) $user_id, array_values($forums));
+        $this->flashMessage('Forums saved.', self::FLASH_MESSAGE_SUCCESS);
+        $this->redirect('User:edit', $user_id);
+    }
+    
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */    
+    public function moderatorsSuccess(Form $form, ArrayHash $values)
+    {
+        $moderators  = $form->getHttpData($form::DATA_TEXT, 'moderators[]');
+        $user_id = $this->getParameter('id');
+        
+        \Tracy\Debugger::barDump($moderators, '$moderators');       
+
+        $this->moderatorsManager->addByLeft((int) $user_id, array_values($moderators));
         $this->flashMessage('Forums saved.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('User:edit', $user_id);
     }
@@ -165,6 +200,11 @@ class UserPresenter extends Base\AdminPresenter
     {
         $this->wwwDir = $wwwDir;
     }
+    
+    public function injectModeratorsManager(\App\Models\ModeratorsManager $moderatorsManager)
+    {
+        $this->moderatorsManager = $moderatorsManager;
+    }
 
     /**
      *
@@ -199,6 +239,8 @@ class UserPresenter extends Base\AdminPresenter
 
         $this->template->forums   = $this->forumsManager->createForums($this->forumsManager->getAllCached(), 0);
         $this->template->myForums = array_values($this->users2Forums->getByLeftPairs($id));
+        
+        $this->template->myModerators = $this->moderatorsManager->getByLeftPairs($id);
     }
 
     /**
@@ -241,6 +283,7 @@ class UserPresenter extends Base\AdminPresenter
     protected function createComponentGroupFrom()
     {
         $form = new BootstrapForm();
+        $form->setTranslator($this->getAdminTranslator());
 
         $form->addSubmit('send_group', 'Send');
         $form->onSuccess[] = [$this, 'groupSuccess'];

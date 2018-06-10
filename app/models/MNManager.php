@@ -236,18 +236,22 @@ abstract class MNManager extends Manager
      * @param int|null $left_id
      * @param int|null $right_id
      *
-     * @return Result|int
+     * @return Result|int|void
      */
     public function add(array $values, $left_id = null, $right_id = null)
     {
+        if (!count($values)){
+            return ;
+        }
+        
         $data = [];
 
         foreach ($values as $value) {
             $data[$this->left->getPrimaryKey()][]  = $left_id !== null ? (int)$left_id : (int)$value;
             $data[$this->right->getPrimaryKey()][] = $right_id !== null ? (int)$right_id : (int)$value;
         }
-
-        return $this->dibi->query('INSERT INTO [' . $this->table . '] %m', $data);
+                
+            return $this->dibi->query('INSERT INTO [' . $this->table . '] %m', $data);
     }
 
     /**
@@ -337,5 +341,15 @@ abstract class MNManager extends Manager
             ->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)
             ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)
             ->execute();
+    }
+    
+    public function getAll()
+    {
+        return $this->getAllFluent()->fetchAll();
+    }
+    
+    public function getAllFluent()
+    {
+        return $this->dibi->select('*')->from($this->table);
     }
 }
