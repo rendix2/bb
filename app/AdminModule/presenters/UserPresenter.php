@@ -221,6 +221,7 @@ class UserPresenter extends Base\AdminPresenter
             $this->gf->addFilter('user_post_count', 'user_post_count', GridFilter::FROM_TO_INT);
             $this->gf->addFilter('user_topic_count', 'user_topic_count', GridFilter::FROM_TO_INT);
             $this->gf->addFilter('user_thank_count', 'user_thank_count', GridFilter::FROM_TO_INT);
+            $this->gf->addFilter('user_role_id', 'user_role_id', GridFilter::CHECKBOX_LIST, [5 => 'Admin', '4' => 'juniorAdmin']);
             $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
             $this->addComponent($this->gf, 'gridFilter');

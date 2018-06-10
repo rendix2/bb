@@ -38,6 +38,11 @@ class GridFilter extends Control
      * @var string
      */
     const FROM_TO_INT = 'FTI';
+    
+    /**
+     * @var string
+     */
+    const CHECKBOX_LIST = 'ch';
 
     /**
      * @var array $whereColumns
@@ -121,17 +126,27 @@ class GridFilter extends Control
             $where = [];
 
             foreach ($this->type as $col => $val) {
-                if (($val['strint'] == '%i' && is_numeric($this->session->getSection($col)->value)) || ($val['strint'] == '%s' && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
+                if ( $val['strint'] === '%in'  || ($val['strint'] === '%i' && is_numeric($this->session->getSection($col)->value)) || ($val['strint'] === '%s' && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
                     $columnName = $this->checkFTI($col);
 
-                    if ($val['operator'] == 'LIKE') {
+                    if ($val['operator'] === 'LIKE') {
                         $where[] = [
                             'column' => $columnName,
                             'type'   => $val['operator'],
                             'value'  => '%' . $this->session->getSection($col)->value . '%',
                             'strint' => $val['strint']
                         ];
-                    } else {
+                    } elseif ($val['operator'] === 'IN') {   
+                        if (count($this->session->getSection($col)->value)){
+                            $where[] = [
+                                'column' => $columnName,
+                                'type'   => $val['operator'],
+                                'value'  => $this->session->getSection($col)->value,
+                                'strint' => $val['strint']
+                            ];
+                        }
+                    }
+                    else {
                         $where[] = [
                             'column' => $columnName,
                             'type'   => $val['operator'],
@@ -141,7 +156,7 @@ class GridFilter extends Control
                     }
                 }
             }
-
+            
             return $where;
         }
     }
@@ -151,7 +166,7 @@ class GridFilter extends Control
      * @param $text
      * @param $type
      */
-    public function addFilter($columnName, $text, $type)
+    public function addFilter($columnName, $text, $type, $data = [])
     {
         switch ($type) {
             case self::TEXT_EQUAL:
@@ -215,6 +230,16 @@ class GridFilter extends Control
                     'strint'   => '%i'
                 ];
                 break;
+            case self::CHECKBOX_LIST:
+                $this->form->addCheckboxList($columnName, $text, $data)->setTranslator(null);
+                
+                $this->type[$columnName] = [
+                    'type'     => $type,
+                    'text'     => $text,
+                    'operator' => 'IN',
+                    'strint'   => '%in'
+                ];
+                break;
         }
     }
 
@@ -258,15 +283,24 @@ class GridFilter extends Control
             if ((isset($values[$name])) && $name != self::NOTHING) {
                 $section        = $this->session->getSection($name);
                 $section->value = $values[$name];
-
-                $where[] = [
-                    'column' => $name,
-                    'type'   => $type['operator'],
-                    'value'  => "'" . $values[$name] . "'",
-                ];
+               
+                
+                if ($type['operator'] === 'IN'){                
+                    $where[] = [
+                        'column' => $name,
+                        'type'   => $type['operator'],
+                        'value'  => "'" . implode(', ', $values[$name]) . "'",
+                    ];                    
+                } else {                
+                    $where[] = [
+                        'column' => $name,
+                        'type'   => $type['operator'],
+                        'value'  => "'" . $values[$name] . "'",
+                    ];
+                }
             }
         }
-
+        
         $this->whereColumns = $where;
 
         $this->redirect('this');
@@ -279,8 +313,12 @@ class GridFilter extends Control
     {
         $template = $this->template->setFile(__DIR__ . '/templates/gridFilter.latte');
         $template->setTranslator($this->translator);
+        
+        
 
         foreach ($this->type as $column => $value) {
+            //unset($this->session->getSection($column)->value);
+            
             $this['gridFilter']->setDefaults([$column => $this->session->getSection($column)->value]);
         }
 

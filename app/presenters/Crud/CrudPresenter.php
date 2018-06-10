@@ -191,7 +191,7 @@ abstract class CrudPresenter extends ManagerPresenter
     public function renderDefault($page = 1)
     {
         $items = $this->getManager()->getAllFluent();
-
+       
         foreach ($this->gf->getWhere() as $where) {
             if (isset($where['value'])) {
                 $items->where('[' . $where['column'] . '] ' . $where['type'] . ' ' . $where['strint'], $where['value']);
