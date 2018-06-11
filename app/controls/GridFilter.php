@@ -126,37 +126,18 @@ class GridFilter extends Control
             $where = [];
 
             foreach ($this->type as $col => $val) {
-                if ( $val['strint'] === '%in'  || ($val['strint'] === '%i' && is_numeric($this->session->getSection($col)->value)) || ($val['strint'] === '%s' && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
+                if ( ($val['strint'] === '%in'  && count($this->session->getSection($col)->value)) || ($val['strint'] == '%i' && is_numeric($this->session->getSection($col)->value)) || ( ($val['strint'] == '%s' || $val['strint'] == '%~like~')  && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
                     $columnName = $this->checkFTI($col);
 
-                    if ($val['operator'] === 'LIKE') {
-                        $where[] = [
-                            'column' => $columnName,
-                            'type'   => $val['operator'],
-                            'value'  => '%' . $this->session->getSection($col)->value . '%',
-                            'strint' => $val['strint']
-                        ];
-                    } elseif ($val['operator'] === 'IN') {   
-                        if (count($this->session->getSection($col)->value)){
-                            $where[] = [
-                                'column' => $columnName,
-                                'type'   => $val['operator'],
-                                'value'  => $this->session->getSection($col)->value,
-                                'strint' => $val['strint']
-                            ];
-                        }
-                    }
-                    else {
-                        $where[] = [
-                            'column' => $columnName,
-                            'type'   => $val['operator'],
-                            'value'  => $this->session->getSection($col)->value,
-                            'strint' => $val['strint']
-                        ];
-                    }
+                    $where[] = [
+                        'column' => $columnName,
+                        'type'   => $val['operator'],
+                        'value'  => $this->session->getSection($col)->value,
+                        'strint' => $val['strint']
+                    ];
                 }
             }
-            
+             
             return $where;
         }
     }
@@ -184,7 +165,7 @@ class GridFilter extends Control
                     'type'     => $type,
                     'text'     => $text,
                     'operator' => 'LIKE',
-                    'strint'   => '%s'
+                    'strint'   => '%~like~'
                 ];
                 break;
             case self::INT_EQUAL:
