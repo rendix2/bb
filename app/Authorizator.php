@@ -33,6 +33,9 @@ class Authorizator
      */
     private $userManager;
     
+    const ROLES = [ 1 => 'guest', 2 => 'registered', 3 => 'moderator', 4 => 'juniorAdmin', 5 => 'Admin'];
+
+
     /**
      *
      * @var \App\Models\ModeratorsManager $moderatorsManager

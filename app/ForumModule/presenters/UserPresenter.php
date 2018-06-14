@@ -346,6 +346,7 @@ class UserPresenter extends Base\ForumPresenter
         $this->template->watchTotalCount = $this->topicWatchManager->getCount();
         $this->template->userData        = $userData;
         $this->template->rank            = $rankUser;
+        $this->template->roles           = \App\Authorizator::ROLES;
     }
 
     /**
