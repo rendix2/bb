@@ -73,6 +73,23 @@
             </div>
         </div>
     {/if}
+    
+    {if count($moderatorForums)}
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">{_user_moderator}</div>
+                <div class="card-block">
+                    <ul>
+                    {foreach $moderatorForums as $moderatorForum}
+                        <li>
+                            <a href="{link Forum:default, $moderatorForum->forum_id}">{$moderatorForum->forum_name}</a>
+                        </li>
+                    {/foreach}
+                    <ul>
+                </div>
+            </div>
+        </div>        
+    {/if}
 
     <div class="col-sm-12 mt-3">
         <div class="float-left">

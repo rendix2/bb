@@ -26,5 +26,8 @@ class ReportPresenter extends ModeratorPresenter
      */
     protected function createComponentEditForm()
     {
+        $form = new \App\Controls\BootstrapForm();
+        
+        return $form;
     }
 }

@@ -50,6 +50,8 @@ parameters:
             totalUser: 1 hour
             primaryKey: 10day
         canChangeUserName: false
+        canDelete: false
+        canDeletePostCount: false
         neededLogin: true
         minUserNameLength: 3
     search:
@@ -157,6 +159,12 @@ services:
                 - factory
     ModeratorsManager:
         factory: \App\Models\ModeratorsManager
+        inject: yes
+    FaqManager:
+        factory: \App\Models\FaqManager
+        inject: yes
+    BanManager:
+        factory: \App\Models\BanManager
         inject: yes
     authenticator: App\Authenticator
     authorizator: App\Authorizator

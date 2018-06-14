@@ -62,6 +62,11 @@ class UserPresenter extends Base\ForumPresenter
     private $thanksManager;
     
     private $avatar;
+    
+    /**
+     * @var \App\Models\ModeratorsManager $moderatorsManager
+     */
+    private $moderatorsManager;
 
     /**
      * UserPresenter constructor.
@@ -171,6 +176,11 @@ class UserPresenter extends Base\ForumPresenter
     public function injectWwwDir(WwwDir $wwwDir)
     {
         $this->wwwDir = $wwwDir;
+    }
+    
+    public function injectModeratorsManager(\App\Models\ModeratorsManager $moderatorsManager)
+    {
+        $this->moderatorsManager = $moderatorsManager;
     }
 
     /**
@@ -328,7 +338,8 @@ class UserPresenter extends Base\ForumPresenter
                 break;
             }
         }
-
+        
+        $this->template->moderatorForums = $this->moderatorsManager->getByLeftJoined($user_id);
         $this->template->thankCount      = $this->thanksManager->getCountCached();
         $this->template->topicCount      = $this->topicManager->getCountCached();
         $this->template->postCount       = $this->postManager->getCountCached();
@@ -430,9 +441,48 @@ class UserPresenter extends Base\ForumPresenter
             $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);
         }
         
+        $this->template->type  = 1;
         $this->template->users = $users;
     }
     
+    public function renderModeratorList($page)
+    {
+        $this->template->setFile(__DIR__.'/../templates/User/list.latte');
+        
+                $users = $this->getManager()
+                ->getAllFluent()
+                ->where('[user_role_id] = %i', 3);
+        
+        $pag = new PaginatorControl($users, 15, 5, $page);
+        $this->addComponent($pag, 'paginator');   
+        
+        if (!$pag->getCount()) {
+            $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);
+        }
+        
+        $this->template->type  = 3;
+        $this->template->users = $users;
+    }
+    
+    public function renderAdminList($page)
+    {
+                $this->template->setFile(__DIR__.'/../templates/User/list.latte');
+        
+        $users = $this->getManager()
+                ->getAllFluent()
+                ->where('[user_role_id] = %i', 5);
+        
+        $pag = new PaginatorControl($users, 15, 5, $page);
+        $this->addComponent($pag, 'paginator');   
+        
+        if (!$pag->getCount()) {
+            $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);
+        }
+        
+        $this->template->type  = 5;
+        $this->template->users = $users; 
+    }
+
     public function renderRegister()
     {
         // todo
