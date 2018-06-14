@@ -536,6 +536,7 @@ class UserPresenter extends Base\ForumPresenter
         )->setAttribute('title', 'Max width: '.$this->avatar->getMaxWidth().'px, max height: '.$this->avatar->getMaxHeight().'px')
                 ->setRequired(false)
                 ->addRule(Form::IMAGE, 'user_avatar_file_rule');
+        $form->addTextArea('user_signature', 'User signature:');
         $form->addSubmit(
             'send',
             'Send'
