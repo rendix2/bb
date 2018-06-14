@@ -95,10 +95,14 @@ class BBMailer
 //            $smtp,
             $this->mailer
         ]);
-        $mailer->send($this->message);
         
-        
-        //$this->mailer->send($this->message);
+        try{
+            $mailer->send($this->message);
+            
+            return true;
+        } catch ( Exception $e){
+            return false;
+        }       
     }
     
     private function saveMailHistory()

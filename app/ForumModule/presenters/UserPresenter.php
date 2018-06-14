@@ -25,7 +25,6 @@ use Nette\Utils\ArrayHash;
  */
 class UserPresenter extends Base\ForumPresenter
 {
-
     /**
      * @var LanguagesManager $languageManager
      */
@@ -61,12 +60,23 @@ class UserPresenter extends Base\ForumPresenter
      */
     private $thanksManager;
     
+    /**
+     * @var \App\Controls\Avatars $avatar 
+     */
     private $avatar;
     
     /**
      * @var \App\Models\ModeratorsManager $moderatorsManager
      */
     private $moderatorsManager;
+    
+    /**
+     *
+     * @var \Nette\Mail\IMailer $mailer 
+     */
+    private $mailer;
+    
+    private $mailManager;
 
     /**
      * UserPresenter constructor.
@@ -74,55 +84,13 @@ class UserPresenter extends Base\ForumPresenter
      * @param UsersManager     $manager
      * @param LanguagesManager $languageManager
      */
-    public function __construct(UsersManager $manager, LanguagesManager $languageManager)
+    public function __construct(UsersManager $manager, LanguagesManager $languageManager, \Nette\Mail\IMailer $mailer, \App\Models\MailsManager $mailManager)
     {
         parent::__construct($manager);
 
         $this->languageManager = $languageManager;
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function editUserFormSuccess(Form $form, ArrayHash $values)
-    {
-        $user = $this->getUser();
-        
-        try {
-            $move = $this->getManager()->moveAvatar($values->user_avatar, $user->getId(), $this->wwwDir->wwwDir);
-            
-            if ($move !== UsersManager::NOT_UPLOADED) {
-                $values->user_avatar = $move;
-            } else {
-                unset($values->user_avatar);
-            }
-        } catch (\Nette\InvalidArgumentException $e) {
-            $this->flashMessage($e->getMessage());
-            unset($values->user_avatar);
-        }
-
-        if ($user->isLoggedIn()) {
-            $result = $this->getManager()->update($user->getId(), $values);
-        } else {
-            $result = $this->getManager()->add($values);
-        }
-
-        if ($result) {
-            $this->flashMessage('User saved.', self::FLASH_MESSAGE_SUCCESS);
-        } else {
-            $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
-        }
-
-        $this->redirect('User:edit');
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function editUserOnValidate(Form $form, ArrayHash $values)
-    {
+        $this->mailer          = $mailer;
+        $this->mailManager     = $mailManager;
     }
     
     public function injectAvatar(\App\Controls\Avatars $avatar)
@@ -181,23 +149,6 @@ class UserPresenter extends Base\ForumPresenter
     public function injectModeratorsManager(\App\Models\ModeratorsManager $moderatorsManager)
     {
         $this->moderatorsManager = $moderatorsManager;
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function resetPasswordFormSuccess(Form $form, ArrayHash $values)
-    {
-        $found_mail = $this->getManager()->getByEmail($values->user_email);
-
-        if ($found_mail) {
-            // send mail!
-
-            $this->flashMessage('Email was sent.', self::FLASH_MESSAGE_SUCCESS);
-        } else {
-            $this->flashMessage('User mail was not found!',self::FLASH_MESSAGE_DANGER);
-        }
     }
 
     /**
@@ -488,6 +439,24 @@ class UserPresenter extends Base\ForumPresenter
     {
         // todo
     }
+    
+    public function renderSendMailToAdmin()
+    {
+        // 
+    }
+    
+    protected function createComponentSendMailToAdmin()
+    {
+        $form = $this->getBootStrapForm();
+        
+        $form->addText('mail_subject', 'Mail subject:')->setRequired('Subject is required.');
+        $form->addTextArea('mail_text', 'Mail text:', null, 10)->setRequired('Text is required.');
+        
+        $form->addSubmit('send', 'Send mail');
+        $form->onSuccess[] = [$this, 'sendMailToAdminSuccess'];
+        
+        return $form;
+    }
 
     /**
      * @return ChangePasswordControl
@@ -574,5 +543,91 @@ class UserPresenter extends Base\ForumPresenter
         ];
 
         return $form;
+    }
+    
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function editUserFormSuccess(Form $form, ArrayHash $values)
+    {
+        $user = $this->getUser();
+        
+        try {
+            $move = $this->getManager()->moveAvatar($values->user_avatar, $user->getId(), $this->wwwDir->wwwDir);
+            
+            if ($move !== UsersManager::NOT_UPLOADED) {
+                $values->user_avatar = $move;
+            } else {
+                unset($values->user_avatar);
+            }
+        } catch (\Nette\InvalidArgumentException $e) {
+            $this->flashMessage($e->getMessage());
+            unset($values->user_avatar);
+        }
+
+        if ($user->isLoggedIn()) {
+            $result = $this->getManager()->update($user->getId(), $values);
+        } else {
+            $result = $this->getManager()->add($values);
+        }
+
+        if ($result) {
+            $this->flashMessage('User saved.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
+        }
+
+        $this->redirect('User:edit');
+    }
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function editUserOnValidate(Form $form, ArrayHash $values)
+    {
+    }  
+    
+        /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function resetPasswordFormSuccess(Form $form, ArrayHash $values)
+    {
+        $found_mail = $this->getManager()->getByEmail($values->user_email);
+
+        if ($found_mail) {
+            // send mail!
+
+            $this->flashMessage('Email was sent.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('User mail was not found!',self::FLASH_MESSAGE_DANGER);
+        }
+    }
+    
+    public function sendMailToAdminSuccess(Form $form, ArrayHash $values)
+    {
+        $admins = $this->getManager()->getAllFluent()->where('[user_role_id] = %i', 5)->fetchAll();
+        
+        $adminsMails = [];
+        
+        foreach ($admins as $admin){
+            $adminsMails[] = $admin->user_email;
+        }
+                
+        $mailer = new \App\Controls\BBMailer($this->mailer, $this->mailManager);
+        $mailer->addRecepients($adminsMails);
+        $mailer->setSubject($values->mail_subject);
+        $mailer->setText($values->mail_text);
+        $res = $mailer->send();
+        
+        if ($res){
+            $this->flashMessage('Mail sent.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('Mail was not sent.', self::FLASH_MESSAGE_DANGER);
+        }
+        
+        $this->redirect('this');
     }
 }
