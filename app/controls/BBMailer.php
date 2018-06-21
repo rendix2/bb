@@ -8,6 +8,10 @@
 
 namespace App\Controls;
 
+use App\Models\MailsManager;
+use Latte\Engine;
+use Nette\Mail\IMailer;
+
 /**
  * Description of BBMailer
  *
@@ -18,13 +22,13 @@ class BBMailer
     
     /**
      *
-     * @var Nette\Mail\Message $message
+     * @var \Nette\Mail\Message $message
      */
     private $message;
     
     /**
      *
-     * @var \Nette\Mail\IMailer $smtp
+     * @var IMailer $smtp
      */
     private $mailer;
     
@@ -36,20 +40,41 @@ class BBMailer
     
     /**
      *
-     * @var \App\Models\MailsManager $manager
+     * @var MailsManager $manager
      */
     private $manager;
 
-    
-    public function __construct(\Nette\Mail\IMailer $mailer, \App\Models\MailsManager $manager)
-    {       
+    /**
+     * BBMailer constructor.
+     *
+     * @param IMailer      $mailer
+     * @param MailsManager $manager
+     */
+    /**
+     * BBMailer constructor.
+     *
+     * @param IMailer      $mailer
+     * @param MailsManager $manager
+     */
+    public function __construct(IMailer $mailer, MailsManager $manager)
+    {
         $this->mailer  = $mailer;
         $this->message = new \Nette\Mail\Message();
         $this->message->setFrom('a@a.a');
         
         $this->manager = $manager;
     }
-    
+
+    /**
+     * @param array $recepients
+     *
+     * @return $this
+     */
+    /**
+     * @param array $recepients
+     *
+     * @return $this
+     */
     public function addRecepients(array $recepients)
     {
         foreach ($recepients as $recepient) {
@@ -60,7 +85,17 @@ class BBMailer
         
         return $this;
     }
-    
+
+    /**
+     * @param $subject
+     *
+     * @return $this
+     */
+    /**
+     * @param $subject
+     *
+     * @return $this
+     */
     public function setSubject($subject)
     {
         $this->message->setSubject($subject);
@@ -68,10 +103,22 @@ class BBMailer
         return $this;
     }
 
+    /**
+     * @param      $input
+     * @param null $variables
+     *
+     * @return $this
+     */
+    /**
+     * @param      $input
+     * @param null $variables
+     *
+     * @return $this
+     */
     public function setText($input, $variables = null)
     {
         if (file_exists($input)) {
-            $latte = new Latte\Engine;
+            $latte = new Engine();
 
             $latte->setTempDirectory(__DIR__.'/..temp/');
             
@@ -82,7 +129,10 @@ class BBMailer
         
         return $this;
     }
-    
+
+    /**
+     *
+     */
     public function send()
     {
 //        $smtp       = new \Nette\Mail\SmtpMailer($config);
@@ -96,15 +146,18 @@ class BBMailer
             $this->mailer
         ]);
         
-        try{
+        try {
             $mailer->send($this->message);
             
             return true;
-        } catch ( Exception $e){
+        } catch (\Exception $e) {
             return false;
-        }       
+        }
     }
-    
+
+    /**
+     *
+     */
     private function saveMailHistory()
     {
         $item_data = [

@@ -13,12 +13,17 @@ namespace App\Controls;
  *
  * @author rendi
  */
-class TempDir {
-    
+class TempDir
+{
     public $tempDir;
-    
-    public function __construct($tempDir) {
+
+    /**
+     * TempDir constructor.
+     *
+     * @param $tempDir
+     */
+    public function __construct($tempDir)
+    {
         $this->tempDir = $tempDir;
     }
-    
 }

@@ -3,6 +3,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\Authenticator;
+use App\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Controls\ChangePasswordControl;
 use App\Controls\DeleteAvatarControl;
@@ -11,6 +12,7 @@ use App\Controls\WwwDir;
 use App\Models\ForumsManager;
 use App\Models\GroupsManager;
 use App\Models\LanguagesManager;
+use App\Models\ModeratorsManager;
 use App\Models\Users2ForumsManager;
 use App\Models\Users2GroupsManager;
 use App\Models\UsersManager;
@@ -56,7 +58,7 @@ class UserPresenter extends Base\AdminPresenter
     
     /**
      *
-     * @var \App\Models\ModeratorsManager $moderatorsManager
+     * @var ModeratorsManager $moderatorsManager
      */
     private $moderatorsManager;
 
@@ -91,12 +93,17 @@ class UserPresenter extends Base\AdminPresenter
         $form = new BootstrapForm();
         $form->setTranslator($this->getAdminTranslator());
 
-        $form->addSubmit('send_forum',  'Send');
+        $form->addSubmit('send_forum', 'Send');
         $form->onSuccess[] = [$this, 'forumsSuccess'];
-;
         return $form;
     }
-    
+
+    /**
+     * @return BootstrapForm
+     */
+    /**
+     * @return BootstrapForm
+     */
     public function createComponentModeratorsForm()
     {
         $form = new BootstrapForm();
@@ -106,7 +113,6 @@ class UserPresenter extends Base\AdminPresenter
         $form->onSuccess[] = [$this, 'moderatorsSuccess'];
 
         return $form;
-        
     }
 
     /**
@@ -126,13 +132,13 @@ class UserPresenter extends Base\AdminPresenter
     /**
      * @param Form      $form
      * @param ArrayHash $values
-     */    
+     */
     public function moderatorsSuccess(Form $form, ArrayHash $values)
     {
         $moderators  = $form->getHttpData($form::DATA_TEXT, 'moderators[]');
         $user_id = $this->getParameter('id');
         
-        \Tracy\Debugger::barDump($moderators, '$moderators');       
+        \Tracy\Debugger::barDump($moderators, '$moderators');
 
         $this->moderatorsManager->addByLeft((int) $user_id, array_values($moderators));
         $this->flashMessage('Forums saved.', self::FLASH_MESSAGE_SUCCESS);
@@ -200,8 +206,14 @@ class UserPresenter extends Base\AdminPresenter
     {
         $this->wwwDir = $wwwDir;
     }
-    
-    public function injectModeratorsManager(\App\Models\ModeratorsManager $moderatorsManager)
+
+    /**
+     * @param ModeratorsManager $moderatorsManager
+     */
+    /**
+     * @param ModeratorsManager $moderatorsManager
+     */
+    public function injectModeratorsManager(ModeratorsManager $moderatorsManager)
     {
         $this->moderatorsManager = $moderatorsManager;
     }
@@ -213,7 +225,7 @@ class UserPresenter extends Base\AdminPresenter
     {
         parent::startup();
 
-        if ($this->getAction() == 'default') {
+        if ($this->getAction() === 'default') {
             $this->gf->setTranslator($this->getAdminTranslator());
             
             $this->gf->addFilter('user_id', 'user_id', GridFilter::INT_EQUAL);
@@ -221,7 +233,7 @@ class UserPresenter extends Base\AdminPresenter
             $this->gf->addFilter('user_post_count', 'user_post_count', GridFilter::FROM_TO_INT);
             $this->gf->addFilter('user_topic_count', 'user_topic_count', GridFilter::FROM_TO_INT);
             $this->gf->addFilter('user_thank_count', 'user_thank_count', GridFilter::FROM_TO_INT);
-            $this->gf->addFilter('user_role_id', 'user_role_id', GridFilter::CHECKBOX_LIST, \App\Authorizator::ROLES);
+            $this->gf->addFilter('user_role_id', 'user_role_id', GridFilter::CHECKBOX_LIST, Authorizator::ROLES);
             $this->gf->addFilter('user_active', 'user_active', GridFilter::CHECKBOX_LIST, [0 => 'Not active', 1 =>'Active']);
             $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
@@ -269,7 +281,7 @@ class UserPresenter extends Base\AdminPresenter
         $form->addText('user_name', 'User name:')->setRequired(true);
         $form->addEmail('user_email', 'User mail:')->setRequired(true);
         $form->addGroup('user_settings');
-        $form->addSelect('user_role_id', 'User role:',Authenticator::ROLES);
+        $form->addSelect('user_role_id', 'User role:', Authenticator::ROLES);
         $form->addSelect('user_lang_id', 'User language:', $this->languagesManager->getAllPairsCached('lang_name'));
         $form->addTextArea('user_signature', 'User signature:');
         //$form->addUpload('user_avatar', 'User avatar:');

@@ -320,7 +320,7 @@ class PostPresenter extends Base\ForumPresenter
      */
     public function actionStartWatchTopic($forum_id, $topic_id, $page)
     {
-        $user_id = $this->getUser()->getId();        
+        $user_id = $this->getUser()->getId();
         $res     = $this->topicWatchManager->addByLeft($topic_id, [$user_id]);
 
         if ($res) {

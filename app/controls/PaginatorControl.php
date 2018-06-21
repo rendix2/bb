@@ -62,8 +62,15 @@ class PaginatorControl extends Control
      *
      * @api
      */
-    public function __construct(Fluent $data, $itemsPerPage, $itemsAround, $page, $where = null, $table = null, $alias = null)
-    {
+    public function __construct(
+        Fluent $data,
+        $itemsPerPage,
+        $itemsAround,
+        $page,
+        $where = null,
+        $table = null,
+        $alias = null
+    ) {
         parent::__construct();
 
         $this->itemsPerPage = $itemsPerPage;
@@ -122,7 +129,7 @@ class PaginatorControl extends Control
      *
      * @api
      */
-    final private function setCount($table, $where, $alias)
+    private function setCount($table, $where, $alias)
     {
         if ($table !== null && $where !== null) {
             $query = dibi::select('COUNT(*)')->from($table);
@@ -188,7 +195,7 @@ class PaginatorControl extends Control
         $template->arround   = $this->itemsAround;
         $template->paginator = $this->paginator;
         $template->left      = $left;
-        $template->right     = ($left == 1 && $this->paginator->getPageCount() > $this->itemsAround) ? $this->itemsAround * 2 + 1 : $right;
+        $template->right     = $left === 1 && $this->paginator->getPageCount() > $this->itemsAround ? $this->itemsAround * 2 + 1 : $right;
 
         // render now!
         $template->render();

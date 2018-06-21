@@ -50,11 +50,6 @@ class GridFilter extends Control
     private $whereColumns;
 
     /**
-     * @var int $limit
-     */
-    private $limit = 100;
-
-    /**
      * @var BootstrapForm $form
      */
     private $form;
@@ -76,7 +71,7 @@ class GridFilter extends Control
     
     /**
      *
-     * @var type \Nette\Localization\ITranslator $translator
+     * @var \Nette\Localization\ITranslator $translator
      */
     private $translator;
 
@@ -126,7 +121,7 @@ class GridFilter extends Control
             $where = [];
 
             foreach ($this->type as $col => $val) {
-                if ( ($val['strint'] === '%in'  && count($this->session->getSection($col)->value)) || ($val['strint'] == '%i' && is_numeric($this->session->getSection($col)->value)) || ( ($val['strint'] == '%s' || $val['strint'] == '%~like~')  && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
+                if ( ($val['strint'] === '%in'  && count($this->session->getSection($col)->value)) || ($val['strint'] == '%i' && is_numeric($this->session->getSection($col)->value)) || ( ($val['strint'] == '%s' || $val['strint'] == '%~like~') && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
                     $columnName = $this->checkFTI($col);
 
                     $where[] = [
@@ -137,17 +132,20 @@ class GridFilter extends Control
                     ];
                 }
             }
-             
+
             return $where;
         }
     }
 
     /**
-     * @param $columnName
-     * @param $text
-     * @param $type
+     * adds filter
+     *
+     * @param string $columnName
+     * @param string $text
+     * @param string $type
+     * @param array  $data
      */
-    public function addFilter($columnName, $text, $type, $data = [])
+    public function addFilter($columnName, $text, $type, array $data = [])
     {
         switch ($type) {
             case self::TEXT_EQUAL:
@@ -261,18 +259,17 @@ class GridFilter extends Control
         $where = [];
 
         foreach ($this->type as $name => $type) {
-            if ((isset($values[$name])) && $name != self::NOTHING) {
+            if (isset($values[$name]) && $name !== self::NOTHING) {
                 $section        = $this->session->getSection($name);
                 $section->value = $values[$name];
-               
-                
-                if ($type['operator'] === 'IN'){                
+
+                if ($type['operator'] === 'IN') {
                     $where[] = [
                         'column' => $name,
                         'type'   => $type['operator'],
                         'value'  => "'" . implode(', ', $values[$name]) . "'",
-                    ];                    
-                } else {                
+                    ];
+                } else {
                     $where[] = [
                         'column' => $name,
                         'type'   => $type['operator'],
@@ -318,7 +315,8 @@ class GridFilter extends Control
     protected function createComponentGridFilter()
     {
         $this->form->setAction(
-            $this->link('this', $this->getParameters()));
+            $this->link('this', $this->getParameters())
+        );
         $this->form->onSuccess[] = [$this, 'success'];
         $this->form->addSubmit('send', 'Send');
         $this->form->setTranslator($this->translator);

@@ -8,6 +8,7 @@ use App\Controls\DeleteAvatarControl;
 use App\Controls\PaginatorControl;
 use App\Controls\WwwDir;
 use App\Models\LanguagesManager;
+use App\Models\MailsManager;
 use App\Models\PostsManager;
 use App\Models\RanksManager;
 use App\Models\ThanksManager;
@@ -15,6 +16,7 @@ use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
 use App\Models\UsersManager;
 use Nette\Application\UI\Form;
+use Nette\Mail\IMailer;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -61,7 +63,7 @@ class UserPresenter extends Base\ForumPresenter
     private $thanksManager;
     
     /**
-     * @var \App\Controls\Avatars $avatar 
+     * @var \App\Controls\Avatars $avatar
      */
     private $avatar;
     
@@ -72,7 +74,7 @@ class UserPresenter extends Base\ForumPresenter
     
     /**
      *
-     * @var \Nette\Mail\IMailer $mailer 
+     * @var IMailer $mailer
      */
     private $mailer;
     
@@ -84,15 +86,22 @@ class UserPresenter extends Base\ForumPresenter
      * @param UsersManager     $manager
      * @param LanguagesManager $languageManager
      */
-    public function __construct(UsersManager $manager, LanguagesManager $languageManager, \Nette\Mail\IMailer $mailer, \App\Models\MailsManager $mailManager)
-    {
+    public function __construct(
+        UsersManager $manager,
+        LanguagesManager $languageManager,
+        IMailer $mailer,
+        MailsManager $mailManager
+    ) {
         parent::__construct($manager);
 
         $this->languageManager = $languageManager;
         $this->mailer          = $mailer;
         $this->mailManager     = $mailManager;
     }
-    
+
+    /**
+     * @param \App\Controls\Avatars $avatar
+     */
     public function injectAvatar(\App\Controls\Avatars $avatar)
     {
         $this->avatar = $avatar;
@@ -381,13 +390,16 @@ class UserPresenter extends Base\ForumPresenter
            
         $this->template->watches = $watches->fetchAll();
     }
-    
+
+    /**
+     * @param $page
+     */
     public function renderList($page)
     {
         $users = $this->getManager()->getAllFluent();
         
         $pag = new PaginatorControl($users, 15, 5, $page);
-        $this->addComponent($pag, 'paginator');   
+        $this->addComponent($pag, 'paginator');
         
         if (!$pag->getCount()) {
             $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);
@@ -406,7 +418,7 @@ class UserPresenter extends Base\ForumPresenter
                 ->where('[user_role_id] = %i', 3);
         
         $pag = new PaginatorControl($users, 15, 5, $page);
-        $this->addComponent($pag, 'paginator');   
+        $this->addComponent($pag, 'paginator');
         
         if (!$pag->getCount()) {
             $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);
@@ -425,14 +437,14 @@ class UserPresenter extends Base\ForumPresenter
                 ->where('[user_role_id] = %i', 5);
         
         $pag = new PaginatorControl($users, 15, 5, $page);
-        $this->addComponent($pag, 'paginator');   
+        $this->addComponent($pag, 'paginator');
         
         if (!$pag->getCount()) {
             $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);
         }
         
         $this->template->type  = 5;
-        $this->template->users = $users; 
+        $this->template->users = $users;
     }
 
     public function renderRegister()
@@ -442,7 +454,7 @@ class UserPresenter extends Base\ForumPresenter
     
     public function renderSendMailToAdmin()
     {
-        // 
+        // TODO
     }
     
     protected function createComponentRegisterUser()
@@ -603,7 +615,7 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function editUserOnValidate(Form $form, ArrayHash $values)
     {
-    }  
+    }
     
     public function  registerOnValidate(Form $form, ArrayHash $values)
     {
@@ -623,7 +635,7 @@ class UserPresenter extends Base\ForumPresenter
 
             $this->flashMessage('Email was sent.', self::FLASH_MESSAGE_SUCCESS);
         } else {
-            $this->flashMessage('User mail was not found!',self::FLASH_MESSAGE_DANGER);
+            $this->flashMessage('User mail was not found!', self::FLASH_MESSAGE_DANGER);
         }
     }
     
@@ -638,7 +650,7 @@ class UserPresenter extends Base\ForumPresenter
         
         $adminsMails = [];
         
-        foreach ($admins as $admin){
+        foreach ($admins as $admin) {
             $adminsMails[] = $admin->user_email;
         }
                 
@@ -648,7 +660,7 @@ class UserPresenter extends Base\ForumPresenter
         $mailer->setText($values->mail_text);
         $res = $mailer->send();
         
-        if ($res){
+        if ($res) {
             $this->flashMessage('Mail sent.', self::FLASH_MESSAGE_SUCCESS);
         } else {
             $this->flashMessage('Mail was not sent.', self::FLASH_MESSAGE_DANGER);

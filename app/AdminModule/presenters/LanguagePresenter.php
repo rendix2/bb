@@ -29,14 +29,15 @@ class LanguagePresenter extends Base\AdminPresenter
         parent::__construct($manager);
     }
     
-    public function startup() {
+    public function startup()
+    {
         parent::startup();
         
-        if ($this->getAction() == 'default') {
+        if ($this->getAction() === 'default') {
             $this->gf->setTranslator($this->getAdminTranslator());
             
             $this->gf->addFilter('lang_id', 'lang_id', GridFilter::INT_EQUAL);
-            $this->gf->addFilter('lang_name','lang_name',GridFilter::TEXT_LIKE);
+            $this->gf->addFilter('lang_name', 'lang_name', GridFilter::TEXT_LIKE);
             $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
             $this->addComponent($this->gf, 'gridFilter');

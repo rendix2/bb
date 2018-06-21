@@ -72,7 +72,7 @@ abstract class ManagerPresenter extends BasePresenter
         $user = $this->getUser();
 
         if ($user->isLoggedIn()) {
-            $this->sessionManager->updateByUserId($user->getId(),ArrayHash::from(['session_last_activity' => time()]));
+            $this->sessionManager->updateByUserId($user->getId(), ArrayHash::from(['session_last_activity' => time()]));
         } else {
             if ($user->logoutReason === IUserStorage::INACTIVITY) {
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');

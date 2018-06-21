@@ -3,6 +3,8 @@
 namespace App\AdminModule\Presenters;
 
 use App\Controls\AppDir;
+use App\Controls\Avatars;
+use App\Controls\CacheDir;
 use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
 use App\Translator;
@@ -31,17 +33,20 @@ class IndexPresenter extends BasePresenter
     
     /**
      *
-     * @var \App\Controls\Avatars $avatar 
+     * @var Avatars $avatar
      */
     private $avatar;
     
     
     /**
-     * @var \App\Controls\CacheDir $cacheDir
+     * @var CacheDir $cacheDir
      */
     private $cacheDir;
-    
-    public function injectCacheDir(\App\Controls\CacheDir $cacheDir)
+
+    /**
+     * @param CacheDir $cacheDir
+     */
+    public function injectCacheDir(CacheDir $cacheDir)
     {
         $this->cacheDir = $cacheDir;
     }
@@ -63,13 +68,13 @@ class IndexPresenter extends BasePresenter
     }
     
     /**
-     * 
-     * @param \App\Controls\Avatars $avatar
+     *
+     * @param Avatars $avatar
      */
-    public function injectAvatars(\App\Controls\Avatars $avatar)
-    {        
+    public function injectAvatars(Avatars $avatar)
+    {
         $this->avatar = $avatar;
-    }    
+    }
 
     /**
      *
@@ -124,7 +129,7 @@ class IndexPresenter extends BasePresenter
         $this->template->maxLogged     = self::MAX_LOGGED_IN_USERS_TO_SHOW;
         $this->template->loggedUsers   = $loggedUsers;
         $this->template->avatarDirSize = $this->avatar->getDirSize();
-        $this->template->avatarCount   = $this->avatar->getCountOfAvatars();     
+        $this->template->avatarCount   = $this->avatar->getCountOfAvatars();
         $this->template->cacheDirSize  = $this->cacheDir->getDirSize();
     }
 }

@@ -8,7 +8,6 @@
 
 namespace App\Models;
 
-use Dibi\Connection;
 use Dibi\Result;
 use Dibi\Row;
 use Nette\Caching\Cache;
@@ -53,15 +52,6 @@ class TopicsManager extends Crud\CrudManager
     private $topicWatchManager;
 
     /**
-     *
-     * @param Connection $dibi
-     */
-    public function __construct(Connection $dibi)
-    {
-        parent::__construct($dibi);
-    }
-
-    /**
      * @return Row|false
      */
     public function getLastTopic()
@@ -96,12 +86,14 @@ class TopicsManager extends Crud\CrudManager
         $cached = $cache->load($key);
 
         if (!isset($cached)) {
-            $cache->save($key,
+            $cache->save(
+                $key,
                 $cached = $this->dibi->select('*')
                     ->from($this->getTable())
                     ->where('[topic_forum_id] = %i', $forum_id)
                     ->where('[topic_add_time] > %i', $topic_time)
-                    ->fetchAll(), [Cache::EXPIRE => '2 hours',]
+                    ->fetchAll(),
+                [Cache::EXPIRE => '2 hours']
             );
         }
 
@@ -122,11 +114,13 @@ class TopicsManager extends Crud\CrudManager
         $values->topic_forum_id = $item_data->post_forum_id;
         $values->topic_add_time = $item_data->post_add_time;
 
-        unset($values->post_title);
-        unset($values->post_text);
-        unset($values->post_add_time);
-        unset($values->post_user_id);
-        unset($values->post_forum_id);
+        unset(
+            $values->post_title,
+            $values->post_text,
+            $values->post_add_time,
+            $values->post_user_id,
+            $values->post_forum_id
+        );
 
         $topic_id = parent::add($values);
 
@@ -141,12 +135,11 @@ class TopicsManager extends Crud\CrudManager
         $item_data->post_topic_id = $topic_id;
         $this->postManager->add($item_data);
         $this->userManager->update($values->topic_user_id, ArrayHash::from(
-                [
+            [
                     'user_topic_count%sql' => 'user_topic_count + 1',
                     'user_watch_count%sql' => 'user_watch_count + 1'
-                ]
-            )
-        );
+            ]
+        ));
 
         return $topic_id;
     }

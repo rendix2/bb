@@ -3,6 +3,7 @@
 namespace App\AdminModule\ConfigModule\Presenters;
 
 use App\Controls\AppDir;
+use App\Controls\Avatars;
 use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
 use App\Translator;
@@ -28,7 +29,10 @@ class IndexPresenter extends BasePresenter
      * @var SessionsManager $sessionsManager
      */
     private $sessionsManager;
-    
+
+    /**
+     * @var Avatars $avatar
+     */
     private $avatar;
 
     /**
@@ -48,13 +52,13 @@ class IndexPresenter extends BasePresenter
     }
     
     /**
-     * 
-     * @param \App\Controls\Avatars $avatar
+     *
+     * @param Avatars $avatar
      */
-    public function injectAvatars(\App\Controls\Avatars $avatar)
-    {        
+    public function injectAvatars(Avatars $avatar)
+    {
         $this->avatar = $avatar;
-    }    
+    }
 
     /**
      *
@@ -108,6 +112,6 @@ class IndexPresenter extends BasePresenter
         $this->template->maxLogged   = self::MAX_LOGGED_IN_USERS_TO_SHOW;
         $this->template->loggedUsers = $loggedUsers;
         $this->template->dirSize     = $this->avatar->getDirSize();
-        $this->template->avatarCount = $this->avatar->getCountOfAvatars();                
+        $this->template->avatarCount = $this->avatar->getCountOfAvatars();
     }
 }

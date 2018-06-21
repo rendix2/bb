@@ -24,10 +24,12 @@ class CacheDir
         $size = 0;
         
         foreach (Finder::findFiles('*')->from($this->cacheDir) as $file) {
+            /**
+             * @var \SplFileInfo $file
+             */
             $size += $file->getSize();
         }
         
         return $size;
     }
-    
 }

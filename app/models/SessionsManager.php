@@ -65,7 +65,7 @@ class SessionsManager extends Crud\CrudManager
     public function updateBySessionsKey($session_key, ArrayHash $session_data)
     {
         $this->dibi
-                ->update($this->getTable(),$session_data)
+                ->update($this->getTable(), $session_data)
                 ->where('[session_key] = %s', $session_key)
                 ->execute();
     }
@@ -78,8 +78,7 @@ class SessionsManager extends Crud\CrudManager
     {
         $this->dibi
                 ->update($this->getTable(), $session_data)
-                ->where('[session_user_id] = %i',$user_id)
+                ->where('[session_user_id] = %i', $user_id)
                 ->execute();
     }
-
 }

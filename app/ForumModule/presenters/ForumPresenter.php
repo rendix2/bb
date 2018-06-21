@@ -7,7 +7,9 @@ use App\Controls\PaginatorControl;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Models\TopicsManager;
+use Nette\Application\UI\Form;
 use Nette\Http\IResponse;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of ForumPresenter
@@ -127,12 +129,17 @@ final class ForumPresenter extends Base\ForumPresenter
 
         $this->template->forum = $forum;
     }
-    
+
+    /**
+     * @param $forum_id
+     */
     public function renderSearchForum($forum_id)
     {
-        
     }
 
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentSearchInForumForm()
     {
          $form = new BootstrapForm();
@@ -142,9 +149,18 @@ final class ForumPresenter extends Base\ForumPresenter
          
          return $form;
     }
-    
-    public function searchInForumFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function searchInForumFormSuccess(Form $form, ArrayHash $values)
     {
-        $this->redirect('Forum:default', $this->getParameter('forum_id'), $this->getParameter('page'), $values->search_form);
+        $this->redirect(
+            'Forum:default',
+            $this->getParameter('forum_id'),
+            $this->getParameter('page'),
+            $values->search_form
+        );
     }
 }

@@ -3,6 +3,7 @@
 namespace App\ForumModule\Presenters;
 
 use App\Authenticator;
+use App\Controls\AppDir;
 use App\Controls\BootstrapForm;
 use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
@@ -53,8 +54,12 @@ class LoginPresenter extends BasePresenter
     {
         $this->sessionManager = $sessionManager;
     }
-    
-    public function injectAppDir(\App\Controls\AppDir $appDir){
+
+    /**
+     * @param AppDir $appDir
+     */
+    public function injectAppDir(AppDir $appDir)
+    {
         $this->appDir = $appDir;
     }
 

@@ -85,7 +85,10 @@ class ForumPresenter extends Base\AdminPresenter
     {
         $this->userManager = $userManager;
     }
-    
+
+    /**
+     * @param \App\Models\ModeratorsManager $moderatorsManager
+     */
     public function injectModeratorsManager(\App\Models\ModeratorsManager $moderatorsManager)
     {
         $this->moderatorsManager = $moderatorsManager;
@@ -98,7 +101,7 @@ class ForumPresenter extends Base\AdminPresenter
     {
         parent::startup();
         
-        if ($this->getAction() == 'default') {
+        if ($this->getAction() === 'default') {
             $this->gf->setTranslator($this->getAdminTranslator());
             
             $this->gf->addFilter('forum_id', 'forum_id', GridFilter::INT_EQUAL);
@@ -133,7 +136,7 @@ class ForumPresenter extends Base\AdminPresenter
             $this['editForm']->setDefaults($item);
 
             $subForums = $this->getManager()
-                ->createForums($this->getManager()->getForumsByForumParentId($id), intval($id));
+                ->createForums($this->getManager()->getForumsByForumParentId($id), (int)$id);
 
             if (!$subForums) {
                 $this->flashMessage('No sub forums.', self::FLASH_MESSAGE_WARNING);
@@ -192,7 +195,11 @@ class ForumPresenter extends Base\AdminPresenter
         $form->addText('forum_description', 'Forum description:')
             ->setRequired(true);
         
-        $form->addSelect('forum_category_id', 'Forum category:', $this->categoryManager->getAllPairsCached('category_name'))
+        $form->addSelect(
+            'forum_category_id',
+            'Forum category:',
+            $this->categoryManager->getAllPairsCached('category_name')
+        )
             ->setRequired(true)
             ->setTranslator(null);
         
