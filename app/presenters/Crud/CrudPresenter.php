@@ -4,11 +4,11 @@ namespace App\Presenters\crud;
 
 use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
+use App\Controls\PaginatorControl;
 use App\Models\Crud\CrudManager;
 use App\Presenters\Base\ManagerPresenter;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
 
 /**
  * Description of CrudPresenter
@@ -60,7 +60,7 @@ abstract class CrudPresenter extends ManagerPresenter
         $count = count($name);
         $name  = $name[$count - 1];
 
-        return $this->title ? $this->title : $name;
+        return $this->title ?: $name;
     }
 
     /**
@@ -113,11 +113,11 @@ abstract class CrudPresenter extends ManagerPresenter
     }
 
     /**
-     * @param BootStrapForm $form
+     * @param BootstrapForm $form
      *
-     * @return BootStrapForm
+     * @return BootstrapForm
      */
-    protected function addSubmitB(BootStrapForm $form)
+    protected function addSubmitB(BootstrapForm $form)
     {
         $form->addSubmit('Send', 'Send');
         $form->onSuccess[] = [$this, 'editFormSuccess'];
@@ -196,13 +196,13 @@ abstract class CrudPresenter extends ManagerPresenter
             if (isset($where['value'])) {
                 $items->where('[' . $where['column'] . '] ' . $where['type'] . ' ' . $where['strint'], $where['value']);
             }
-        }             
+        }
 
         foreach ($this->gf->getOrderBy() as $column => $type) {
             $items->orderBy($column, $type);
         }
         
-        $paginator = new \App\Controls\PaginatorControl($items, static::ITEMS_PER_PAGE, 5 , $page);       
+        $paginator = new PaginatorControl($items, static::ITEMS_PER_PAGE, 5, $page);
         $this->addComponent($paginator, 'paginator');
         
         if (!$paginator->getCount()) {
@@ -242,3 +242,4 @@ abstract class CrudPresenter extends ManagerPresenter
         }
     }
 }
+

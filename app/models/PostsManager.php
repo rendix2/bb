@@ -257,7 +257,7 @@ class PostsManager extends Crud\CrudManager
 
         foreach ($postCount as $ps) {
             if ($ps->post_count === 1 || $ps->post_count === 0) {
-                $check = $this->topicWatchManager->fullCheck($post->post_topic_id,$ps->post_user_id);
+                $check = $this->topicWatchManager->fullCheck($post->post_topic_id, $ps->post_user_id);
 
                 $this->topicWatchManager->fullDelete($post->post_topic_id, $post->post_user_id);
             }

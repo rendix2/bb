@@ -53,15 +53,6 @@ class TopicsManager extends Crud\CrudManager
     private $topicWatchManager;
 
     /**
-     *
-     * @param Connection $dibi
-     */
-    public function __construct(Connection $dibi)
-    {
-        parent::__construct($dibi);
-    }
-
-    /**
      * @return Row|false
      */
     public function getLastTopic()

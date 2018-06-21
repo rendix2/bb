@@ -11,6 +11,7 @@ use App\Controls\WwwDir;
 use App\Models\ForumsManager;
 use App\Models\GroupsManager;
 use App\Models\LanguagesManager;
+use App\Models\ModeratorsManager;
 use App\Models\Users2ForumsManager;
 use App\Models\Users2GroupsManager;
 use App\Models\UsersManager;
@@ -56,7 +57,7 @@ class UserPresenter extends Base\AdminPresenter
     
     /**
      *
-     * @var \App\Models\ModeratorsManager $moderatorsManager
+     * @var ModeratorsManager $moderatorsManager
      */
     private $moderatorsManager;
 
@@ -91,12 +92,17 @@ class UserPresenter extends Base\AdminPresenter
         $form = new BootstrapForm();
         $form->setTranslator($this->getAdminTranslator());
 
-        $form->addSubmit('send_forum',  'Send');
+        $form->addSubmit('send_forum', 'Send');
         $form->onSuccess[] = [$this, 'forumsSuccess'];
-;
         return $form;
     }
-    
+
+    /**
+     * @return BootstrapForm
+     */
+    /**
+     * @return BootstrapForm
+     */
     public function createComponentModeratorsForm()
     {
         $form = new BootstrapForm();
@@ -106,7 +112,6 @@ class UserPresenter extends Base\AdminPresenter
         $form->onSuccess[] = [$this, 'moderatorsSuccess'];
 
         return $form;
-        
     }
 
     /**
@@ -126,13 +131,13 @@ class UserPresenter extends Base\AdminPresenter
     /**
      * @param Form      $form
      * @param ArrayHash $values
-     */    
+     */
     public function moderatorsSuccess(Form $form, ArrayHash $values)
     {
         $moderators  = $form->getHttpData($form::DATA_TEXT, 'moderators[]');
         $user_id = $this->getParameter('id');
         
-        \Tracy\Debugger::barDump($moderators, '$moderators');       
+        \Tracy\Debugger::barDump($moderators, '$moderators');
 
         $this->moderatorsManager->addByLeft((int) $user_id, array_values($moderators));
         $this->flashMessage('Forums saved.', self::FLASH_MESSAGE_SUCCESS);
@@ -200,8 +205,14 @@ class UserPresenter extends Base\AdminPresenter
     {
         $this->wwwDir = $wwwDir;
     }
-    
-    public function injectModeratorsManager(\App\Models\ModeratorsManager $moderatorsManager)
+
+    /**
+     * @param ModeratorsManager $moderatorsManager
+     */
+    /**
+     * @param ModeratorsManager $moderatorsManager
+     */
+    public function injectModeratorsManager(ModeratorsManager $moderatorsManager)
     {
         $this->moderatorsManager = $moderatorsManager;
     }

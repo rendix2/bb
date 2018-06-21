@@ -2,7 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\Controls\BootStrapForm;
+use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Controls\WwwDir;
 use App\Models\RanksManager;
@@ -41,11 +41,11 @@ class RankPresenter extends Base\AdminPresenter
     {
         parent::startup();
         
-        if ($this->getAction() == 'default') {
+        if ($this->getAction() === 'default') {
             $this->gf->setTranslator($this->getAdminTranslator());
             
             $this->gf->addFilter('rank_id', 'rank_id', GridFilter::INT_EQUAL);
-            $this->gf->addFilter('rank_name','rank_name',GridFilter::TEXT_LIKE);
+            $this->gf->addFilter('rank_name', 'rank_name', GridFilter::TEXT_LIKE);
             $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
             $this->addComponent($this->gf, 'gridFilter');
@@ -108,7 +108,7 @@ class RankPresenter extends Base\AdminPresenter
     }
 
     /**
-     * @return BootStrapForm
+     * @return BootstrapForm
      */
     protected function createComponentEditForm()
     {

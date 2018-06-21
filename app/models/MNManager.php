@@ -240,8 +240,8 @@ abstract class MNManager extends Manager
      */
     public function add(array $values, $left_id = null, $right_id = null)
     {
-        if (!count($values)){
-            return ;
+        if (!count($values)) {
+            return NAN;
         }
         
         $data = [];
@@ -342,12 +342,24 @@ abstract class MNManager extends Manager
             ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)
             ->execute();
     }
-    
+
+    /**
+     * @return array
+     */
+    /**
+     * @return array
+     */
     public function getAll()
     {
         return $this->getAllFluent()->fetchAll();
     }
-    
+
+    /**
+     * @return Fluent
+     */
+    /**
+     * @return Fluent
+     */
     public function getAllFluent()
     {
         return $this->dibi->select('*')->from($this->table);

@@ -119,7 +119,10 @@ class UserPresenter extends Base\ForumPresenter
     public function editUserOnValidate(Form $form, ArrayHash $values)
     {
     }
-    
+
+    /**
+     * @param \App\Controls\Avatars $avatar
+     */
     public function injectAvatar(\App\Controls\Avatars $avatar)
     {
         $this->avatar = $avatar;
@@ -418,13 +421,16 @@ class UserPresenter extends Base\ForumPresenter
            
         $this->template->watches = $watches->fetchAll();
     }
-    
+
+    /**
+     * @param $page
+     */
     public function renderList($page)
     {
         $users = $this->getManager()->getAllFluent();
         
         $pag = new PaginatorControl($users, 15, 5, $page);
-        $this->addComponent($pag, 'paginator');   
+        $this->addComponent($pag, 'paginator');
         
         if (!$pag->getCount()) {
             $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);

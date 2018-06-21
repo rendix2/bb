@@ -9,8 +9,8 @@ use Nette\Utils\Finder;
  *
  * @author rendi
  */
-class Avatars {
-    
+class Avatars
+{
     /**
      * @var string
      */

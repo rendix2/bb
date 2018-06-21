@@ -5,6 +5,7 @@ namespace App\ForumModule\Presenters;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Models\IndexManager;
+use App\Models\ModeratorsManager;
 use App\Models\PostsManager;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
@@ -77,7 +78,7 @@ class IndexPresenter extends Base\ForumPresenter
     
     /**
      *
-     * @var \App\Models\ModeratorsManager $moderatorManager;
+     * @var ModeratorsManager $moderatorManager;
      */
     private $moderatorManager;
 
@@ -146,8 +147,12 @@ class IndexPresenter extends Base\ForumPresenter
     {
         $this->userManager = $userManager;
     }
-    
-    public function injectModeratorsManager(\App\Models\ModeratorsManager $moderatorsManager){
+
+    /**
+     * @param ModeratorsManager $moderatorsManager
+     */
+    public function injectModeratorsManager(ModeratorsManager $moderatorsManager)
+    {
         $this->moderatorManager = $moderatorsManager;
     }
 
@@ -180,7 +185,7 @@ class IndexPresenter extends Base\ForumPresenter
             $forums           = $this->getManager()->getForumsFirstLevel($category->category_id);
 
             foreach ($forums as $forum) {
-                $category->forums[$forum->forum_id] = $forum;                
+                $category->forums[$forum->forum_id] = $forum;
                 $forum->moderators                  = [];
                 
                 $forum->hasNewPosts  = count(
@@ -193,13 +198,13 @@ class IndexPresenter extends Base\ForumPresenter
                 
                 $moderators = $this->moderatorManager->getByRightJoined($forum->forum_id);
                                               
-                foreach ($moderators as $moderator){                      
+                foreach ($moderators as $moderator) {
                     unset($moderator->user_password);
                      
                     $result['cats'][$category->category_id] = $category;
                     $result['cats'][$category->category_id]->forums[$forum->forum_id] = $forum;
-                    $result['cats'][$category->category_id]->forums[$forum->forum_id]->moderators[$moderator->user_id] = $moderator;                    
-                }                                  
+                    $result['cats'][$category->category_id]->forums[$forum->forum_id]->moderators[$moderator->user_id] = $moderator;
+                }
             }
         }
 

@@ -85,7 +85,10 @@ class ForumPresenter extends Base\AdminPresenter
     {
         $this->userManager = $userManager;
     }
-    
+
+    /**
+     * @param \App\Models\ModeratorsManager $moderatorsManager
+     */
     public function injectModeratorsManager(\App\Models\ModeratorsManager $moderatorsManager)
     {
         $this->moderatorsManager = $moderatorsManager;
@@ -133,7 +136,7 @@ class ForumPresenter extends Base\AdminPresenter
             $this['editForm']->setDefaults($item);
 
             $subForums = $this->getManager()
-                ->createForums($this->getManager()->getForumsByForumParentId($id), intval($id));
+                ->createForums($this->getManager()->getForumsByForumParentId($id), (int)$id);
 
             if (!$subForums) {
                 $this->flashMessage('No sub forums.', self::FLASH_MESSAGE_WARNING);

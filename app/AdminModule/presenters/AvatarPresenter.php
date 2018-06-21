@@ -2,35 +2,48 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Controls\Avatars;
 use App\Controls\PaginatorControl;
+use App\Models\UsersManager;
 
 /**
  * Description of AvatarPresenter
  *
  * @author rendi
- * @method \App\Models\UsersManager getManager()
+ * @method UsersManager getManager()
  */
 class AvatarPresenter extends Base\AdminPresenter
 {
     /**
      *
-     * @var \App\Controls\Avatars $avatarsDir
+     * @var Avatars $avatarsDir
      */
     private $avatarsDir;
-    
-    public function __construct(\App\Models\UsersManager $manager)
+
+    /**
+     * AvatarPresenter constructor.
+     *
+     * @param UsersManager $manager
+     */
+    public function __construct(UsersManager $manager)
     {
         parent::__construct($manager);
     }
-    
-    public function injectAvatarsDir(\App\Controls\Avatars $avatars)
+
+    /**
+     * @param Avatars $avatars
+     */
+    public function injectAvatarsDir(Avatars $avatars)
     {
         $this->avatarsDir = $avatars;
     }
 
+    /**
+     * @param int $page
+     */
     public function renderDefault($page = 1)
     {
-        $avatars   = $this->getManager()->getAllFluent()->where('user_avatar IS NOT NULL');       
+        $avatars   = $this->getManager()->getAllFluent()->where('user_avatar IS NOT NULL');
         $paginator = new PaginatorControl($avatars, 2, 5, $page);
 
         $this->addComponent($paginator, 'paginator');
@@ -44,9 +57,13 @@ class AvatarPresenter extends Base\AdminPresenter
         $this->template->avatars     = $avatars->fetchAll();
         $this->template->countItems  = $paginator->getCount();
     }
-    
+
+    /**
+     * @param $user_id
+     * @param $avatar_name
+     */
     public function handleDeleteAvatar($user_id, $avatar_name)
-    {        
+    {
         \Nette\Utils\FileSystem::delete($this->avatarsDir->getDir() . DIRECTORY_SEPARATOR . $avatar_name);
         
         $this->getManager()->update($user_id, \Nette\Utils\ArrayHash::from(['user_avatar' => null]));
@@ -57,7 +74,12 @@ class AvatarPresenter extends Base\AdminPresenter
     }
 
         //put your code here
-    protected function createComponentEditForm() {
+
+    /**
+     * @return mixed|null
+     */
+    protected function createComponentEditForm()
+    {
         return null;
     }
 }

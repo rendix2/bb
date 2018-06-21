@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\ModeratorsManager;
 use App\Models\UsersManager;
 use Nette\Security\Permission;
 use Nette\Security\User;
@@ -35,7 +36,7 @@ class Authorizator
     
     /**
      *
-     * @var \App\Models\ModeratorsManager $moderatorsManager
+     * @var ModeratorsManager $moderatorsManager
      */
     private $moderatorsManager;
 
@@ -46,7 +47,7 @@ class Authorizator
      * @param User                 $user
      * @param UsersManager         $userManager
      */
-    public function __construct(Models\ForumsManager $forumsManager, User $user, UsersManager $userManager, \App\Models\ModeratorsManager $moderatorsManager)
+    public function __construct(Models\ForumsManager $forumsManager, User $user, UsersManager $userManager, ModeratorsManager $moderatorsManager)
     {
         $this->acl               = new Permission();
         $this->forumManager      = $forumsManager;
@@ -95,7 +96,7 @@ class Authorizator
         
         foreach ($this->forumManager->getAllCached() as $forum) {
                 $this->acl->deny('guest', '' . $forum->forum_id, Permission::ALL);
-            $this->acl->allow('guest',"" . $forum->forum_id, 'forum_view');
+            $this->acl->allow('guest', "" . $forum->forum_id, 'forum_view');
         }
         
         if ($this->user->isInRole('admin')) {
@@ -111,10 +112,10 @@ class Authorizator
                 if (in_array($forum->forum_id, $moderators)) {
                     $this->acl->allow('moderator', '' . $forum->forum_id, Permission::ALL);
                 } else {
-                    $this->acl->deny('moderator', '' . $forum->forum_id);  
+                    $this->acl->deny('moderator', '' . $forum->forum_id);
                 }
             }
-        }           
+        }
         
 
         foreach ($this->forumManager->getAllCached() as $forum) {

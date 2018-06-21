@@ -62,8 +62,15 @@ class PaginatorControl extends Control
      *
      * @api
      */
-    public function __construct(Fluent $data, $itemsPerPage, $itemsAround, $page, $where = null, $table = null, $alias = null)
-    {
+    public function __construct(
+        Fluent $data,
+        $itemsPerPage,
+        $itemsAround,
+        $page,
+        $where = null,
+        $table = null,
+        $alias = null
+    ) {
         parent::__construct();
 
         $this->itemsPerPage = $itemsPerPage;

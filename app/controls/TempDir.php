@@ -16,7 +16,12 @@ namespace App\Controls;
 class TempDir {
     
     public $tempDir;
-    
+
+    /**
+     * TempDir constructor.
+     *
+     * @param $tempDir
+     */
     public function __construct($tempDir) {
         $this->tempDir = $tempDir;
     }

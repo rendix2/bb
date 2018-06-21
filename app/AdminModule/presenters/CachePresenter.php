@@ -41,7 +41,10 @@ class CachePresenter extends BasePresenter
     {
         $this->appDir = $appDir;
     }
-    
+
+    /**
+     * @param \Nette\Caching\IStorage $storage
+     */
     public function injectCache(\Nette\Caching\IStorage $storage)
     {
         $this->cache = new \Nette\Caching\Cache($storage);
@@ -107,3 +110,4 @@ class CachePresenter extends BasePresenter
         return $form;
     }
 }
+

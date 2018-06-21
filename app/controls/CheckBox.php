@@ -12,7 +12,7 @@ use Nette\Utils\Html;
  *
  * @property Rule $rules Description
  */
-class Checkbox extends NetteCheckbox
+class CheckBox extends NetteCheckbox
 {
     /** @var Html  wrapper element template */
     private $wrapper;

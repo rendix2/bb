@@ -236,7 +236,10 @@ class UsersManager extends Crud\CrudManager
             ->where('[user_name] LIKE %~like~', $user_name)
             ->fetchAll();
     }
-        
+
+    /**
+     * @param \App\Controls\Avatars $avatar
+     */
     public function injectAvatars(\App\Controls\Avatars $avatar)
     {
         $this->avatar = $avatar;
