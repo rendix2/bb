@@ -157,6 +157,11 @@ final class ForumPresenter extends Base\ForumPresenter
      */
     public function searchInForumFormSuccess(Form $form, ArrayHash $values)
     {
-        $this->redirect('Forum:default', $this->getParameter('forum_id'), $this->getParameter('page'), $values->search_form);
+        $this->redirect(
+            'Forum:default',
+            $this->getParameter('forum_id'),
+            $this->getParameter('page'),
+            $values->search_form
+        );
     }
 }

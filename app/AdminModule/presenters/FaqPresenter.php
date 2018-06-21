@@ -2,6 +2,8 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Models\FaqManager;
+
 /**
  * Description of FaqPresenter
  *
@@ -9,13 +11,12 @@ namespace App\AdminModule\Presenters;
  */
 class FaqPresenter extends Base\AdminPresenter
 {
-    
-    public function __construct(\App\Models\FaqManager $manager) {
+    public function __construct(FaqManager $manager)
+    {
         parent::__construct($manager);
     }
 
-    protected function createComponentEditForm() {
-        
+    protected function createComponentEditForm()
+    {
     }
-
 }

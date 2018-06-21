@@ -195,7 +195,11 @@ class ForumPresenter extends Base\AdminPresenter
         $form->addText('forum_description', 'Forum description:')
             ->setRequired(true);
         
-        $form->addSelect('forum_category_id', 'Forum category:', $this->categoryManager->getAllPairsCached('category_name'))
+        $form->addSelect(
+            'forum_category_id',
+            'Forum category:',
+            $this->categoryManager->getAllPairsCached('category_name')
+        )
             ->setRequired(true)
             ->setTranslator(null);
         

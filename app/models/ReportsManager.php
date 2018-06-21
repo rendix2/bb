@@ -52,7 +52,7 @@ class ReportsManager extends Crud\CrudManager
     public function getByTopicId($topic_id)
     {
         return $this->getAllFluent()
-                ->where('[report_topic_id] = %i',$topic_id);
+                ->where('[report_topic_id] = %i', $topic_id);
     }
 
     /**

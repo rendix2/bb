@@ -66,9 +66,12 @@ class DatabasePresenter extends AdminPresenter
                
         $time = time();
         
-        $exporter = new Mysqldump('mysql:host='.$config['host'].';dbname='.$config['database'], $config['username'], $config['password']);
+        $exporter = new Mysqldump(
+            'mysql:host='.$config['host'].';dbname='.$config['database'],
+            $config['username'],
+            $config['password']
+        );
         $exporter->start($this->tempDir->tempDir.'/dumps/dump-'.$time.'.sql');
-        
         $exporter = null;
         
         $this->sendResponse(new FileResponse($this->tempDir->tempDir.'/dumps/dump-'.$time.'.sql'));

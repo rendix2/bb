@@ -121,7 +121,7 @@ class GridFilter extends Control
             $where = [];
 
             foreach ($this->type as $col => $val) {
-                if ( ($val['strint'] === '%in'  && count($this->session->getSection($col)->value)) || ($val['strint'] == '%i' && is_numeric($this->session->getSection($col)->value)) || ( ($val['strint'] == '%s' || $val['strint'] == '%~like~')  && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
+                if ( ($val['strint'] === '%in'  && count($this->session->getSection($col)->value)) || ($val['strint'] == '%i' && is_numeric($this->session->getSection($col)->value)) || ( ($val['strint'] == '%s' || $val['strint'] == '%~like~') && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
                     $columnName = $this->checkFTI($col);
 
                     $where[] = [

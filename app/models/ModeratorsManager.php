@@ -8,6 +8,8 @@
 
 namespace App\Models;
 
+use Dibi\Connection;
+
 /**
  * Description of ModeratorsManager
  *
@@ -18,12 +20,13 @@ class ModeratorsManager extends MNManager
     /**
      * ModeratorsManager constructor.
      *
-     * @param \Dibi\Connection $dibi
+     * @param Connection $dibi
      * @param UsersManager     $left
      * @param ForumsManager    $right
      * @param string           $tableName
      */
-    public function __construct(\Dibi\Connection $dibi, UsersManager $left, ForumsManager $right, $tableName = 'moderators') {
+    public function __construct(Connection $dibi, UsersManager $left, ForumsManager $right, $tableName = 'moderators')
+    {
         parent::__construct($dibi, $left, $right, $tableName);
     }
 }

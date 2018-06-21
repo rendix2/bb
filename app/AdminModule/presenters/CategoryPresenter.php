@@ -26,21 +26,8 @@ class CategoryPresenter extends Base\AdminPresenter
      * @param CategoriesManager $manager
      * @param GridFilter        $gf
      */
-    public function __construct(CategoriesManager $manager, GridFilter $gf, \Nette\Mail\IMailer $mailer)
+    public function __construct(CategoriesManager $manager, GridFilter $gf)
     {
-                Debugger::barDump($mailer, 'Mailer');
-        
-                /*
-        $bbMail = new \App\Controls\BBMailer($mailer);
-
-        $bbMail->addRecepients(['rendix2@seznam.cz']);
-        $bbMail->setSubject('Test');
-        $bbMail->setText('awdwadwa');
-        $bbMail->send();
-                 * 
-                 */
-        
-        
         parent::__construct($manager);
     }
 

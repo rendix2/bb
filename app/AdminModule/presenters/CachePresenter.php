@@ -7,6 +7,8 @@ use App\Controls\BootstrapForm;
 use App\Presenters\Base\BasePresenter;
 use App\Translator;
 use Nette\Application\UI\Form;
+use Nette\Caching\Cache;
+use Nette\Caching\IStorage;
 use Nette\Localization\ITranslator;
 use Nette\Security\IUserStorage;
 use Nette\Utils\ArrayHash;
@@ -30,7 +32,7 @@ class CachePresenter extends BasePresenter
     
     /**
      *
-     * @var \Nette\Caching\IStorage $cache 
+     * @var IStorage $cache
      */
     private $cache;
 
@@ -43,11 +45,11 @@ class CachePresenter extends BasePresenter
     }
 
     /**
-     * @param \Nette\Caching\IStorage $storage
+     * @param IStorage $storage
      */
-    public function injectCache(\Nette\Caching\IStorage $storage)
+    public function injectCache(IStorage $storage)
     {
-        $this->cache = new \Nette\Caching\Cache($storage);
+        $this->cache = new Cache($storage);
     }
 
     /**
@@ -56,7 +58,7 @@ class CachePresenter extends BasePresenter
      */
     public function success(Form $form, ArrayHash $values)
     {
-        $this->cache->clean([\Nette\Caching\Cache::ALL => \Nette\Caching\Cache::ALL]);
+        $this->cache->clean([Cache::ALL => Cache::ALL]);
         $this->flashMessage('Cache was deleted.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('this');
     }

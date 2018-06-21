@@ -242,4 +242,3 @@ abstract class CrudPresenter extends ManagerPresenter
         }
     }
 }
-

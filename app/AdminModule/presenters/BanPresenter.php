@@ -30,5 +30,4 @@ class BanPresenter extends Base\AdminPresenter
         
         return $form;
     }
-
 }

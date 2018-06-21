@@ -86,12 +86,14 @@ class TopicsManager extends Crud\CrudManager
         $cached = $cache->load($key);
 
         if (!isset($cached)) {
-            $cache->save($key,
+            $cache->save(
+                $key,
                 $cached = $this->dibi->select('*')
                     ->from($this->getTable())
                     ->where('[topic_forum_id] = %i', $forum_id)
                     ->where('[topic_add_time] > %i', $topic_time)
-                    ->fetchAll(), [Cache::EXPIRE => '2 hours',]
+                    ->fetchAll(),
+                [Cache::EXPIRE => '2 hours']
             );
         }
 

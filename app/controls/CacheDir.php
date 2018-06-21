@@ -32,5 +32,4 @@ class CacheDir
         
         return $size;
     }
-    
 }
