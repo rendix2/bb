@@ -60,7 +60,6 @@ final class ForumPresenter extends Base\ForumPresenter
      */
     public function renderDefault($forum_id, $page = 1, $q = null)
     {
-        
         if (!is_numeric($forum_id)) {
             $this->error('Parameter is not numeric');
         }

@@ -25,7 +25,7 @@ use Nette\Utils\ArrayHash;
  */
 class UserPresenter extends Base\ForumPresenter
 {
-    /**
+     /**
      * @var LanguagesManager $languageManager
      */
     private $languageManager;
@@ -77,7 +77,7 @@ class UserPresenter extends Base\ForumPresenter
     private $mailer;
     
     private $mailManager;
-
+    
     /**
      * UserPresenter constructor.
      *
@@ -150,7 +150,7 @@ class UserPresenter extends Base\ForumPresenter
     {
         $this->moderatorsManager = $moderatorsManager;
     }
-
+    
     /**
      * @param int    $user_id
      * @param string $key
@@ -237,7 +237,7 @@ class UserPresenter extends Base\ForumPresenter
         // give mail and send on that mail mail with info how to change it
         // give link to reset this action if owner of account don't ask to reset pass
     }
-
+    
     /**
      * @param int $user_id
      * @param int $page
@@ -445,6 +445,22 @@ class UserPresenter extends Base\ForumPresenter
         // 
     }
     
+    protected function createComponentRegisterUser()
+    {
+        $form = new BootstrapForm();
+        $form->addText('user_name', 'User name:');
+        $form->addPassword('user_password', 'User password:');
+        $form->addPassword('user_password2', 'User password for check:');
+        $form->addEmail('user_email', 'User email:');
+        $form->addSelect('user_lang_id', 'User lang:', $this->languageManager->getAllPairsCached('lang_name'));        
+        $form->addSubmit('send', 'User register');
+        
+        $form->onValidate[] = [$this, 'registerOnValidate'];
+        $form->onSuccess[]  = [$this, 'registerUserSuccess'];
+        
+        return $form;
+    }
+
     protected function createComponentSendMailToAdmin()
     {
         $form = $this->getBootStrapForm();
@@ -589,7 +605,12 @@ class UserPresenter extends Base\ForumPresenter
     {
     }  
     
-        /**
+    public function  registerOnValidate(Form $form, ArrayHash $values)
+    {
+        
+    }
+    
+    /**
      * @param Form      $form
      * @param ArrayHash $values
      */
@@ -606,6 +627,11 @@ class UserPresenter extends Base\ForumPresenter
         }
     }
     
+    /**
+     * 
+     * @param Form $form
+     * @param ArrayHash $values
+     */
     public function sendMailToAdminSuccess(Form $form, ArrayHash $values)
     {
         $admins = $this->getManager()->getAllFluent()->where('[user_role_id] = %i', 5)->fetchAll();
@@ -629,5 +655,15 @@ class UserPresenter extends Base\ForumPresenter
         }
         
         $this->redirect('this');
+    }
+       
+    /**
+     * 
+     * @param Form $form
+     * @param ArrayHash $values
+     */
+    public function registerUserSuccess(Form $form, ArrayHash $values)
+    {
+        
     }
 }

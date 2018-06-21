@@ -56,10 +56,10 @@ class Authorizator
         $this->user              = $user;
         $this->userManager       = $userManager;
         $this->moderatorsManager = $moderatorsManager;
-
-        $this->defineRoles();
+    
+        $this->defineRoles();       
         $this->defineResources();
-        $this->definePrivilegies();
+        $this->definePrivilegies();   
     }
 
     /**
