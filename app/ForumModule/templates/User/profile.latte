@@ -23,6 +23,7 @@
                     <th>{_user_topic_count}</th>
                     <th>{_user_thank_count}</th>
                     <th>{_user_watch_count}</th>
+                    <th>{_user_role}</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,6 +44,8 @@
                     <td>
                         {if $watchTotalCount}<a
                             href="{link User:watches $userData->user_id}">{$userData->user_watch_count}</a>/{$watchTotalCount} ({($userData->user_watch_count/$watchTotalCount)*100|number:2})%{/if}
+                    </td>
+                    <td>{$roles[$userData->user_role_id]}</td>
                 </tr>
             </tbody>
         </table>
@@ -72,6 +75,23 @@
                 </div>
             </div>
         </div>
+    {/if}
+    
+    {if count($moderatorForums)}
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">{_user_moderator}</div>
+                <div class="card-block">
+                    <ul>
+                    {foreach $moderatorForums as $moderatorForum}
+                        <li>
+                            <a href="{link Forum:default, $moderatorForum->forum_id}">{$moderatorForum->forum_name}</a>
+                        </li>
+                    {/foreach}
+                    <ul>
+                </div>
+            </div>
+        </div>        
     {/if}
 
     <div class="col-sm-12 mt-3">

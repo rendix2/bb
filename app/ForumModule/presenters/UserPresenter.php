@@ -25,7 +25,6 @@ use Nette\Utils\ArrayHash;
  */
 class UserPresenter extends Base\ForumPresenter
 {
-
     /**
      * @var LanguagesManager $languageManager
      */
@@ -61,7 +60,23 @@ class UserPresenter extends Base\ForumPresenter
      */
     private $thanksManager;
     
+    /**
+     * @var \App\Controls\Avatars $avatar 
+     */
     private $avatar;
+    
+    /**
+     * @var \App\Models\ModeratorsManager $moderatorsManager
+     */
+    private $moderatorsManager;
+    
+    /**
+     *
+     * @var \Nette\Mail\IMailer $mailer 
+     */
+    private $mailer;
+    
+    private $mailManager;
 
     /**
      * UserPresenter constructor.
@@ -69,55 +84,13 @@ class UserPresenter extends Base\ForumPresenter
      * @param UsersManager     $manager
      * @param LanguagesManager $languageManager
      */
-    public function __construct(UsersManager $manager, LanguagesManager $languageManager)
+    public function __construct(UsersManager $manager, LanguagesManager $languageManager, \Nette\Mail\IMailer $mailer, \App\Models\MailsManager $mailManager)
     {
         parent::__construct($manager);
 
         $this->languageManager = $languageManager;
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function editUserFormSuccess(Form $form, ArrayHash $values)
-    {
-        $user = $this->getUser();
-        
-        try {
-            $move = $this->getManager()->moveAvatar($values->user_avatar, $user->getId(), $this->wwwDir->wwwDir);
-            
-            if ($move !== UsersManager::NOT_UPLOADED) {
-                $values->user_avatar = $move;
-            } else {
-                unset($values->user_avatar);
-            }
-        } catch (\Nette\InvalidArgumentException $e) {
-            $this->flashMessage($e->getMessage());
-            unset($values->user_avatar);
-        }
-
-        if ($user->isLoggedIn()) {
-            $result = $this->getManager()->update($user->getId(), $values);
-        } else {
-            $result = $this->getManager()->add($values);
-        }
-
-        if ($result) {
-            $this->flashMessage('User saved.', self::FLASH_MESSAGE_SUCCESS);
-        } else {
-            $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
-        }
-
-        $this->redirect('User:edit');
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function editUserOnValidate(Form $form, ArrayHash $values)
-    {
+        $this->mailer          = $mailer;
+        $this->mailManager     = $mailManager;
     }
 
     /**
@@ -175,22 +148,10 @@ class UserPresenter extends Base\ForumPresenter
     {
         $this->wwwDir = $wwwDir;
     }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function resetPasswordFormSuccess(Form $form, ArrayHash $values)
+    
+    public function injectModeratorsManager(\App\Models\ModeratorsManager $moderatorsManager)
     {
-        $found_mail = $this->getManager()->getByEmail($values->user_email);
-
-        if ($found_mail) {
-            // send mail!
-
-            $this->flashMessage('Email was sent.', self::FLASH_MESSAGE_SUCCESS);
-        } else {
-            $this->flashMessage('User mail was not found!',self::FLASH_MESSAGE_DANGER);
-        }
+        $this->moderatorsManager = $moderatorsManager;
     }
 
     /**
@@ -331,13 +292,15 @@ class UserPresenter extends Base\ForumPresenter
                 break;
             }
         }
-
+        
+        $this->template->moderatorForums = $this->moderatorsManager->getByLeftJoined($user_id);
         $this->template->thankCount      = $this->thanksManager->getCountCached();
         $this->template->topicCount      = $this->topicManager->getCountCached();
         $this->template->postCount       = $this->postManager->getCountCached();
         $this->template->watchTotalCount = $this->topicWatchManager->getCount();
         $this->template->userData        = $userData;
         $this->template->rank            = $rankUser;
+        $this->template->roles           = \App\Authorizator::ROLES;
     }
 
     /**
@@ -436,12 +399,69 @@ class UserPresenter extends Base\ForumPresenter
             $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);
         }
         
+        $this->template->type  = 1;
         $this->template->users = $users;
     }
     
+    public function renderModeratorList($page)
+    {
+        $this->template->setFile(__DIR__.'/../templates/User/list.latte');
+        
+                $users = $this->getManager()
+                ->getAllFluent()
+                ->where('[user_role_id] = %i', 3);
+        
+        $pag = new PaginatorControl($users, 15, 5, $page);
+        $this->addComponent($pag, 'paginator');   
+        
+        if (!$pag->getCount()) {
+            $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);
+        }
+        
+        $this->template->type  = 3;
+        $this->template->users = $users;
+    }
+    
+    public function renderAdminList($page)
+    {
+                $this->template->setFile(__DIR__.'/../templates/User/list.latte');
+        
+        $users = $this->getManager()
+                ->getAllFluent()
+                ->where('[user_role_id] = %i', 5);
+        
+        $pag = new PaginatorControl($users, 15, 5, $page);
+        $this->addComponent($pag, 'paginator');   
+        
+        if (!$pag->getCount()) {
+            $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);
+        }
+        
+        $this->template->type  = 5;
+        $this->template->users = $users; 
+    }
+
     public function renderRegister()
     {
         // todo
+    }
+    
+    public function renderSendMailToAdmin()
+    {
+        // 
+    }
+    
+    protected function createComponentSendMailToAdmin()
+    {
+        $form = $this->getBootStrapForm();
+        
+        $form->addText('mail_subject', 'Mail subject:')->setRequired('Subject is required.');
+        $form->addTextArea('mail_text', 'Mail text:', null, 10)->setRequired('Text is required.');
+        
+        $form->addSubmit('send', 'Send mail');
+        $form->onSuccess[] = [$this, 'sendMailToAdminSuccess'];
+        
+        return $form;
     }
 
     /**
@@ -491,6 +511,7 @@ class UserPresenter extends Base\ForumPresenter
         )->setAttribute('title', 'Max width: '.$this->avatar->getMaxWidth().'px, max height: '.$this->avatar->getMaxHeight().'px')
                 ->setRequired(false)
                 ->addRule(Form::IMAGE, 'user_avatar_file_rule');
+        $form->addTextArea('user_signature', 'User signature:');
         $form->addSubmit(
             'send',
             'Send'
@@ -528,5 +549,91 @@ class UserPresenter extends Base\ForumPresenter
         ];
 
         return $form;
+    }
+    
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function editUserFormSuccess(Form $form, ArrayHash $values)
+    {
+        $user = $this->getUser();
+        
+        try {
+            $move = $this->getManager()->moveAvatar($values->user_avatar, $user->getId(), $this->wwwDir->wwwDir);
+            
+            if ($move !== UsersManager::NOT_UPLOADED) {
+                $values->user_avatar = $move;
+            } else {
+                unset($values->user_avatar);
+            }
+        } catch (\Nette\InvalidArgumentException $e) {
+            $this->flashMessage($e->getMessage());
+            unset($values->user_avatar);
+        }
+
+        if ($user->isLoggedIn()) {
+            $result = $this->getManager()->update($user->getId(), $values);
+        } else {
+            $result = $this->getManager()->add($values);
+        }
+
+        if ($result) {
+            $this->flashMessage('User saved.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
+        }
+
+        $this->redirect('User:edit');
+    }
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function editUserOnValidate(Form $form, ArrayHash $values)
+    {
+    }  
+    
+        /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function resetPasswordFormSuccess(Form $form, ArrayHash $values)
+    {
+        $found_mail = $this->getManager()->getByEmail($values->user_email);
+
+        if ($found_mail) {
+            // send mail!
+
+            $this->flashMessage('Email was sent.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('User mail was not found!',self::FLASH_MESSAGE_DANGER);
+        }
+    }
+    
+    public function sendMailToAdminSuccess(Form $form, ArrayHash $values)
+    {
+        $admins = $this->getManager()->getAllFluent()->where('[user_role_id] = %i', 5)->fetchAll();
+        
+        $adminsMails = [];
+        
+        foreach ($admins as $admin){
+            $adminsMails[] = $admin->user_email;
+        }
+                
+        $mailer = new \App\Controls\BBMailer($this->mailer, $this->mailManager);
+        $mailer->addRecepients($adminsMails);
+        $mailer->setSubject($values->mail_subject);
+        $mailer->setText($values->mail_text);
+        $res = $mailer->send();
+        
+        if ($res){
+            $this->flashMessage('Mail sent.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('Mail was not sent.', self::FLASH_MESSAGE_DANGER);
+        }
+        
+        $this->redirect('this');
     }
 }

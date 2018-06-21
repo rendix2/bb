@@ -5,7 +5,13 @@
                 <li class="breadcrumb-item">
                     <a href="{link Index:default}">{_menu_index}</a>
                 </li>
+                {if $type === 1}
                 <li class="breadcrumb-item">{_menu_users}</li>
+                {elseif $type === 3}
+                <li class="breadcrumb-item">{_menu_moderators}</li>
+                {elseif $type === 5}
+                <li class="breadcrumb-item">{_menu_admins}</li></a>
+                {/if}
             </ol>
         </div>
 
@@ -13,6 +19,21 @@
             {control paginator}
         </div>
     </div>
+        
+    <div class="col-sm-12">
+        {if $type !== 1}
+        <a href="{link User:List}">{_menu_users}</a>
+        {/if}
+        {if $type !== 3}
+        <a href="{link User:moderatorList}">{_menu_moderators}</a>
+        {/if}
+        {if $type !== 5}
+        <a href="{link User:adminList}">{_menu_admins}</a>
+        {/if}
+        
+        <a href="{link User:SendMailToAdmin}">{_user_admin_contact}</a>
+    </div>
+        
     <div class="col-sm-12 main">
         <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
             <thead>
@@ -35,13 +56,34 @@
             </tbody>
         </table>
     </div>
+            
+    <div class="col-sm-12">
+        {if $type !== 1}
+        <a href="{link User:List}">{_menu_users}</a>
+        {/if}
+        {if $type !== 3}
+        <a href="{link User:moderatorList}">{_menu_moderators}</a>
+        {/if}
+        {if $type !== 5}
+        <a href="{link User:adminList}">{_menu_admins}</a>
+        {/if}
+        
+        <a href="{link User:SendMailToAdmin}">{_user_admin_contact}</a>
+    </div>            
+            
     <div class="col-sm-12">
         <div class="float-left">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                     <a href="{link Index:default}">{_menu_index}</a>
                 </li>
+                {if $type === 1}
                 <li class="breadcrumb-item">{_menu_users}</li>
+                {elseif $type === 3}
+                <li class="breadcrumb-item">{_menu_moderators}</li>
+                {elseif $type === 5}
+                <li class="breadcrumb-item">{_menu_admins}</li></a>
+                {/if}
             </ol>
         </div>
 

@@ -61,6 +61,13 @@ class PostPresenter extends Base\ForumPresenter
      * @var ReportsManager $
      */
     private $reportManager;
+   
+    /**
+     *
+     * @var \Nette\Http\Request $httpRequest
+     */
+    private $httpRequest;
+   
 
     /**
      * @param PostsManager $manager
@@ -92,13 +99,15 @@ class PostPresenter extends Base\ForumPresenter
         if ($post_id) {
             $values['post_edit_count%sql'] = 'post_edit_count + 1';
             $values->post_last_edit_time   = time();
+            $values->post_edit_user_ip     = $this->httpRequest->getRemoteAddress();
 
             $result = $this->getManager()->update($post_id, $values);
         } else {
-            $values->post_forum_id = $forum_id;
-            $values->post_user_id  = $user_id;
-            $values->post_topic_id = $topic_id;
-            $values->post_add_time = time();
+            $values->post_forum_id    = $forum_id;
+            $values->post_user_id     = $user_id;
+            $values->post_topic_id    = $topic_id;
+            $values->post_add_time    = time();
+            $values->post_add_user_ip = $this->httpRequest->getRemoteAddress();
 
             $result = $this->getManager()->add($values);
         }
@@ -209,6 +218,11 @@ class PostPresenter extends Base\ForumPresenter
     public function injectUsersManager(UsersManager $usersManager)
     {
         $this->userManager = $usersManager;
+    }
+    
+    public function injectHttpReuqest(\Nette\Http\Request $httpRequest)
+    {
+        $this->httpRequest = $httpRequest;
     }
 
     /**

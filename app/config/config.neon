@@ -4,9 +4,9 @@
 #
 parameters:
     databases:
-        username:  "root"
-        password:  ""
-    defaultLanguage: czech
+        username: "root"
+        password: ""
+    defaultLanguage: "czech"
     avatars:
         dir: %wwwDir%\avatars
         maxWidth: 2000
@@ -35,6 +35,7 @@ parameters:
             lastTopic: 1 hour
             totalTopics: 1hour
             primaryKey: 10day
+        logViews: false
     posts:
         pagination:
             itemsPerPage: 25
@@ -50,6 +51,8 @@ parameters:
             totalUser: 1 hour
             primaryKey: 10day
         canChangeUserName: false
+        canDelete: false
+        canDeletePostCount: false
         neededLogin: true
         minUserNameLength: 3
     search:
@@ -157,6 +160,12 @@ services:
                 - factory
     ModeratorsManager:
         factory: \App\Models\ModeratorsManager
+        inject: yes
+    FaqManager:
+        factory: \App\Models\FaqManager
+        inject: yes
+    BanManager:
+        factory: \App\Models\BanManager
         inject: yes
     authenticator: App\Authenticator
     authorizator: App\Authorizator

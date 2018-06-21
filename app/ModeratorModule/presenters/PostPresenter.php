@@ -26,5 +26,16 @@ class PostPresenter extends ModeratorPresenter
      */
     protected function createComponentEditForm()
     {
+        $form = new \App\Controls\BootstrapForm();
+        
+        $form->addTextArea('post_text', 'Post:');
+        $form->addSubmit('send', 'Save');
+        
+        return $this->addSubmitB($form);
+    }
+    
+    public function editFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
+    {
+        
     }
 }
