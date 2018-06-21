@@ -16,6 +16,7 @@ use App\Models\UsersManager;
 use dibi;
 use Nette\Application\UI\Form;
 use Nette\Http\IResponse;
+use Nette\Http\Request;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -29,46 +30,52 @@ class PostPresenter extends Base\ForumPresenter
 
     /**
      * @var UsersManager $userManager
+     * @inject
      */
-    private $userManager;
+    public $userManager;
 
     /**
      * @var ForumsManager $forumManager
+     * @inject
      */
-    private $forumManager;
+    public $forumManager;
 
     /**
      * @var ThanksManager $thanksManager
+     * @inject
      */
-    private $thanksManager;
+    public $thanksManager;
 
     /**
      * @var TopicsManager $topicsManager
+     * @inject
      */
-    private $topicsManager;
+    public $topicsManager;
 
     /**
      * @var RanksManager $rankManager
+     * @inject
      */
-    private $rankManager;
+    public $rankManager;
 
     /**
      * @var TopicWatchManager $topicWatchManager
+     * @inject
      */
-    private $topicWatchManager;
+    public $topicWatchManager;
 
     /**
-     * @var ReportsManager $
+     * @var ReportsManager $reportManager
      */
-    private $reportManager;
+    public $reportManager;
    
     /**
      *
-     * @var \Nette\Http\Request $httpRequest
+     * @var Request $httpRequest
+     * @inject
      */
-    private $httpRequest;
+    public $httpRequest;
    
-
     /**
      * @param PostsManager $manager
      */
@@ -162,67 +169,6 @@ class PostPresenter extends Base\ForumPresenter
         }
 
         $this->redirect('Post:all', $forum_id, $topic_id, $page);
-    }
-
-    /**
-     * @param ForumsManager $forumsManager
-     */
-    public function injectForumsManager(ForumsManager $forumsManager)
-    {
-        $this->forumManager = $forumsManager;
-    }
-
-    /**
-     * @param RanksManager $rankManager
-     */
-    public function injectRanksManager(RanksManager $rankManager)
-    {
-        $this->rankManager = $rankManager;
-    }
-
-    /**
-     * @param ReportsManager $reportManager
-     */
-    public function injectReportManager(ReportsManager $reportManager)
-    {
-        $this->reportManager = $reportManager;
-    }
-
-    /**
-     * @param ThanksManager $thanksManager
-     */
-    public function injectThanksManager(ThanksManager $thanksManager)
-    {
-        $this->thanksManager = $thanksManager;
-    }
-
-    /**
-     * @param TopicsManager $topicsManager
-     */
-    public function injectTopicsManager(TopicsManager $topicsManager)
-    {
-        $this->topicsManager = $topicsManager;
-    }
-
-    /**
-     * @param TopicWatchManager $topicWatchManager
-     */
-    public function injectTopicsWatchManager(TopicWatchManager $topicWatchManager)
-    {
-        $this->topicWatchManager = $topicWatchManager;
-    }
-
-    /**
-     * @param UsersManager $usersManager
-     */
-    public function injectUsersManager(UsersManager $usersManager)
-    {
-        $this->userManager = $usersManager;
-    }
-    
-    public function injectHttpReuqest(\Nette\Http\Request $httpRequest)
-    {
-        $this->httpRequest = $httpRequest;
     }
 
     /**
@@ -511,7 +457,7 @@ class PostPresenter extends Base\ForumPresenter
      */
     public function renderWatchers($topic_id)
     {
-        $this->template->watchers = $this->topicWatchManager->getByLeftJoined($topic_id);
+        $this->template->watchers = $this->topicWatchManager->getAllJoinedByLeft($topic_id);
     }
 
     /**

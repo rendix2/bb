@@ -19,13 +19,15 @@ class SearchPresenter extends Base\ForumPresenter
 {
     /**
      * @var TopicsManager $topicsManager
+     * @inject
      */
-    private $topicsManager;
+    public $topicsManager;
 
     /**
      * @var PostsManager $postsManager
+     * @inject
      */
-    private $postsManager;
+    public $postsManager;
 
     /**
      * SearchPresenter constructor.
@@ -82,22 +84,6 @@ class SearchPresenter extends Base\ForumPresenter
         $form->onSuccess[] = [$this, 'searchUserFormSuccess'];
 
         return $form;
-    }
-
-    /**
-     * @param PostsManager $postsManager
-     */
-    public function injectPostsManager(PostsManager $postsManager)
-    {
-        $this->postsManager = $postsManager;
-    }
-
-    /**
-     * @param TopicsManager $topicsManager
-     */
-    public function injectTopicsManager(TopicsManager $topicsManager)
-    {
-        $this->topicsManager = $topicsManager;
     }
 
     /**

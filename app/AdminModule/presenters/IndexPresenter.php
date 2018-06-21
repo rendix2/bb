@@ -23,58 +23,28 @@ class IndexPresenter extends BasePresenter
     
     /**
      * @var AppDir $appDir
+     * @inject
      */
-    private $appDir;
+    public $appDir;
     
     /**
      * @var SessionsManager $sessionsManager
+     * @inject
      */
-    private $sessionsManager;
+    public $sessionsManager;
     
     /**
      *
      * @var Avatars $avatar
+     * @inject
      */
-    private $avatar;
-    
+    public $avatar;
     
     /**
      * @var CacheDir $cacheDir
+     * @inject
      */
-    private $cacheDir;
-
-    /**
-     * @param CacheDir $cacheDir
-     */
-    public function injectCacheDir(CacheDir $cacheDir)
-    {
-        $this->cacheDir = $cacheDir;
-    }
-
-    /**
-     * @param AppDir $appDir
-     */
-    public function injectAppDir(AppDir $appDir)
-    {
-        $this->appDir = $appDir;
-    }
-
-    /**
-     * @param SessionsManager $sessionManager
-     */
-    public function injectSessionManager(SessionsManager $sessionManager)
-    {
-        $this->sessionsManager = $sessionManager;
-    }
-    
-    /**
-     *
-     * @param Avatars $avatar
-     */
-    public function injectAvatars(Avatars $avatar)
-    {
-        $this->avatar = $avatar;
-    }
+    public $cacheDir;
 
     /**
      *

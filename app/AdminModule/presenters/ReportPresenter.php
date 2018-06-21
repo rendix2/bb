@@ -18,21 +18,6 @@ use App\Controls\GridFilter;
 class ReportPresenter extends Base\AdminPresenter
 {
     /**
-     * @var UsersManager $userManager
-     */
-    private $userManager;
-    
-    /**
-     * @var ForumsManager $forumManager
-     */
-    private $forumManager;
-    
-    /**
-     * @var TopicsManager $topicManager
-     */
-    private $topicManager;
-
-    /**
      * ReportPresenter constructor.
      *
      * @param ReportsManager $manager
@@ -58,30 +43,6 @@ class ReportPresenter extends Base\AdminPresenter
 
             $this->addComponent($this->gf, 'gridFilter');
         }
-    }
-
-    /**
-     * @param ForumsManager $forumManager
-     */
-    public function injectForumManager(ForumsManager $forumManager)
-    {
-        $this->forumManager = $forumManager;
-    }
-
-    /**
-     * @param TopicsManager $topicManager
-     */
-    public function injectTopicManager(TopicsManager $topicManager)
-    {
-        $this->topicManager = $topicManager;
-    }
-
-    /**
-     * @param UsersManager $userManager
-     */
-    public function injectUserManager(UsersManager $userManager)
-    {
-        $this->userManager = $userManager;
     }
 
     /**

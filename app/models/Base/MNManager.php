@@ -51,17 +51,20 @@ abstract class MNManager extends Manager
         }
     }
 
-    /**
+    public function getAllFLuentByLeft($left_id)
+    {
+        return $this->getAllFluent()
+            ->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id);
+    }
+
+        /**
      * @param int $left_id
      *
      * @return array
      */
-    public function getByLeftAll($left_id)
+    public function getAllByLeft($left_id)
     {
-        return $this->dibi->select('*')
-            ->from($this->table)
-            ->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)
-            ->fetchAll();
+        return $this->getAllFLuentByLeft($left_id)->fetchAll();
     }
     
     /**
@@ -69,7 +72,7 @@ abstract class MNManager extends Manager
      *
      * @return Fluent
      */
-    public function getByLeftJoinedFluent($left_id)
+    public function getFluentJoinedByLeft($left_id)
     {
         $aliasR = self::createAlias($this->right->getTable());
 
@@ -87,11 +90,9 @@ abstract class MNManager extends Manager
      *
      * @return array
      */
-    public function getByLeftJoined($left_id)
+    public function getAllJoinedByLeft($left_id)
     {
-        $aliasR = self::createAlias($this->right->getTable());
-
-        return $this->getByLeftJoinedFluent()->fetchAll();
+        return $this->getFluentJoinedByLeft($left_id)->fetchAll();
     }
 
     /**
@@ -99,12 +100,21 @@ abstract class MNManager extends Manager
      *
      * @return array
      */
-    public function getByLeftPairs($left_id)
+    public function getPairsByLeft($left_id)
     {
-        return $this->dibi->select($this->right->getPrimaryKey())
-            ->from($this->table)
-            ->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)
+        return $this->getAllFLuentByLeft($left_id)
             ->fetchPairs(null, $this->right->getPrimaryKey());
+    }
+    
+        /**
+     * @param int $right_id
+     *
+     * @return Fluent
+     */
+    public function getAllFluentByRight($right_id)
+    {
+        return $this->getAllFluent()
+            ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id);
     }
 
     /**
@@ -112,12 +122,9 @@ abstract class MNManager extends Manager
      *
      * @return array
      */
-    public function getByRightAll($right_id)
+    public function getAllByRight($right_id)
     {
-        return $this->dibi->select('*')
-            ->from($this->table)
-            ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)
-            ->fetchAll();
+        return $this->getAllFluentByRight($right_id)->fetchAll();
     }
     
     /**
@@ -125,7 +132,7 @@ abstract class MNManager extends Manager
      *
      * @return Fluent
      */
-    public function getByRightJoinedFluent($right_id)
+    public function getFluentJoinedByRight($right_id)
     {
         $aliasL = self::createAlias($this->left->getTable());
 
@@ -143,19 +150,22 @@ abstract class MNManager extends Manager
      *
      * @return array
      */
-    public function getByRightJoined($right_id)
+    public function getAllJoinedByRight($right_id)
     {
-        $aliasL = self::createAlias($this->left->getTable());
-
-        return $this->dibi->select($aliasL . '.*')
-            ->from($this->table)
-            ->as('relation')
-            ->innerJoin($this->left->getTable())
-            ->as($aliasL)
-            ->on($aliasL . '.' . $this->left->getPrimaryKey() . ' = [relation.' . $this->left->getPrimaryKey() . ']')
-            ->where('[relation.' . $this->right->getPrimaryKey() . '] = %i', $right_id)
+        return $this->getFluentJoinedByRight($right_id)
             ->fetchAll();
     }
+    
+    /**
+     * @param int $right_id
+     *
+     * @return array
+     */
+    public function getPairsByRight($right_id)
+    {
+        return $this->getFluentJoinedByRight($right_id)
+            ->fetchPairs(null, $this->left->getPrimaryKey());
+    }    
 
     /**
      * @param int $left_id
@@ -187,29 +197,19 @@ abstract class MNManager extends Manager
             ->fetchAll();
     }
 
-    /**
-     * @param int $right_id
-     *
-     * @return array
-     */
-    public function getByRightPairs($right_id)
+    private function getCountFluent()
     {
         return $this->dibi
-            ->select($this->left->getPrimaryKey())
-            ->from($this->table)
-            ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)
-            ->fetchPairs(null, $this->left->getPrimaryKey());
+            ->select('COUNT(*)')
+            ->from($this->table);
     }
 
-    /**
+        /**
      * @return int
      */
     public function getCount()
     {
-        return $this->dibi
-            ->select('COUNT(*)')
-            ->from($this->table)
-            ->fetchSingle();
+        return $this->getCountFluent()->fetchSingle();
     }
 
     /**
@@ -219,10 +219,8 @@ abstract class MNManager extends Manager
      */
     public function getCountByLeft($left_id)
     {
-        return $this->dibi
-            ->select('COUNT(*)')
-            ->from($this->table)
-            ->where($this->left->getPrimaryKey() . ' = %i', $left_id)
+        return $this->getCountFluent()
+            ->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)
             ->fetchSingle();
     }
 
@@ -233,10 +231,8 @@ abstract class MNManager extends Manager
      */
     public function getCountByRight($right_id)
     {
-        return $this->dibi
-            ->select('COUNT(*)')
-            ->from($this->table)
-            ->where($this->right->getPrimaryKey() . ' = %i', $right_id)
+        return $this->getCountFluent()
+            ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)
             ->fetchSingle();
     }
 
@@ -268,7 +264,7 @@ abstract class MNManager extends Manager
             $data[$this->right->getPrimaryKey()][] = $right_id !== null ? (int)$right_id : (int)$value;
         }
                 
-            return $this->dibi->query('INSERT INTO [' . $this->table . '] %m', $data);
+        return $this->dibi->query('INSERT INTO [' . $this->table . '] %m', $data);
     }
 
     /**
@@ -334,6 +330,8 @@ abstract class MNManager extends Manager
     }
 
     /**
+     * checks if relations exists
+     * 
      * @param int $left_id
      * @param int $right_id
      *
@@ -350,6 +348,8 @@ abstract class MNManager extends Manager
     }
 
     /**
+     * deletes relation
+     * 
      * @param int $left_id
      * @param int $right_id
      *
@@ -365,14 +365,14 @@ abstract class MNManager extends Manager
     }
 
     /**
-     * @return array
-     */
-    /**
+     * returns all table
+     * 
      * @return array
      */
     public function getAll()
     {
-        return $this->getAllFluent()->fetchAll();
+        return $this->getAllFluent()
+                ->fetchAll();
     }
 
     /**
@@ -383,6 +383,8 @@ abstract class MNManager extends Manager
      */
     public function getAllFluent()
     {
-        return $this->dibi->select('*')->from($this->table);
+        return $this->dibi
+                ->select('*')
+                ->from($this->table);
     }
 }

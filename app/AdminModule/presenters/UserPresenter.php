@@ -28,39 +28,47 @@ class UserPresenter extends Base\AdminPresenter
 {
     /**
      * @var LanguagesManager $languagesManager
+     * @inject
      */
-    private $languagesManager;
+    public $languagesManager;
     
     /**
      * @var Users2GroupsManager $group2User
+     * @inject
      */
-    private $group2User;
+    public $group2UserManager;
     
     /**
      * @var GroupsManager $groupManager
+     * @inject
      */
-    private $groupManager;
+    public $groupManager;
     
     /**
      * @var ForumsManager $forumsManager
+     * @inject
      */
-    private $forumsManager;
+    public $forumsManager;
     
     /**
      * @var Users2ForumsManager $users2Forums
+     * @inject
      */
-    private $users2Forums;
+    public $users2Forums;
     
     /**
      * @var WwwDir $wwwDir
+     * @inject
      */
-    private $wwwDir;
+    public $wwwDir;
     
     /**
-     *
+     * moderators manager
+     * 
      * @var ModeratorsManager $moderatorsManager
+     * @inject
      */
-    private $moderatorsManager;
+    public $moderatorsManager;
 
     /**
      * UserPresenter constructor.
@@ -154,68 +162,9 @@ class UserPresenter extends Base\AdminPresenter
         $groups  = $form->getHttpData($form::DATA_TEXT, 'group[]');
         $user_id = $this->getParameter('id');
 
-        $this->group2User->addByLeft((int) $user_id, array_values($groups));
+        $this->group2UserManager->addByLeft((int) $user_id, array_values($groups));
         $this->flashMessage('Groups saved.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('User:edit', $user_id);
-    }
-
-    /**
-     * @param ForumsManager $forumsManager
-     */
-    public function injectForumsManager(ForumsManager $forumsManager)
-    {
-        $this->forumsManager = $forumsManager;
-    }
-
-    /**
-     * @param Users2GroupsManager $group2User
-     */
-    public function injectGroup2UserManager(Users2GroupsManager $group2User)
-    {
-        $this->group2User = $group2User;
-    }
-
-    /**
-     * @param GroupsManager $groupManager
-     */
-    public function injectGroupManager(GroupsManager $groupManager)
-    {
-        $this->groupManager = $groupManager;
-    }
-
-    /**
-     * @param LanguagesManager $languagesManager
-     */
-    public function injectLanguagesManager(LanguagesManager $languagesManager)
-    {
-        $this->languagesManager = $languagesManager;
-    }
-
-    /**
-     * @param Users2ForumsManager $users2Forums
-     */
-    public function injectUsers2ForumsManager(Users2ForumsManager $users2Forums)
-    {
-        $this->users2Forums = $users2Forums;
-    }
-
-    /**
-     * @param WwwDir $wwwDir
-     */
-    public function injectWwwDir(WwwDir $wwwDir)
-    {
-        $this->wwwDir = $wwwDir;
-    }
-
-    /**
-     * @param ModeratorsManager $moderatorsManager
-     */
-    /**
-     * @param ModeratorsManager $moderatorsManager
-     */
-    public function injectModeratorsManager(ModeratorsManager $moderatorsManager)
-    {
-        $this->moderatorsManager = $moderatorsManager;
     }
 
     /**
@@ -249,12 +198,12 @@ class UserPresenter extends Base\AdminPresenter
         parent::renderEdit($id);
 
         $this->template->groups   = $this->groupManager->getAllCached();
-        $this->template->myGroups = array_values($this->group2User->getByLeftPairs($id));
+        $this->template->myGroups = array_values($this->group2UserManager->getPairsByLeft($id));
 
         $this->template->forums   = $this->forumsManager->createForums($this->forumsManager->getAllCached(), 0);
-        $this->template->myForums = array_values($this->users2Forums->getByLeftPairs($id));
+        $this->template->myForums = array_values($this->users2Forums->getPairsByLeft($id));
         
-        $this->template->myModerators = $this->moderatorsManager->getByLeftPairs($id);
+        $this->template->myModerators = $this->moderatorsManager->getPairsByLeft($id);
     }
 
     /**

@@ -23,9 +23,10 @@ class RankPresenter extends Base\AdminPresenter
     const N = -1;
     
     /**
-     * @var
+     * @var WwwDir $wwwDir
+     * @inject
      */
-    private $wwwDir;
+    public $wwwDir;
 
     /**
      * RankPresenter constructor.
@@ -72,14 +73,6 @@ class RankPresenter extends Base\AdminPresenter
         }
 
         parent::editFormSuccess($form, $values);
-    }
-
-    /**
-     * @param WwwDir $wwwDir
-     */
-    public function injectWwwDir(WwwDir $wwwDir)
-    {
-        $this->wwwDir = $wwwDir;
     }
 
     /**

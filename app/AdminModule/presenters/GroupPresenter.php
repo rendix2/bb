@@ -20,18 +20,21 @@ class GroupPresenter extends Base\AdminPresenter
 {
     /**
      * @var Users2GroupsManager $users2Groups
+     * @inject
      */
-    private $users2Groups;
+    public $users2GroupsManager;
     
     /**
      * @var Forums2GroupsManager $forums2groups
+     * @inject
      */
-    private $forums2groups;
+    public $forums2groupsManager;
     
     /**
      * @var ForumsManager $forumsManager
+     * @inject
      */
-    private $forumsManager;
+    public $forumsManager;
 
     /**
      * GroupPresenter constructor.
@@ -88,31 +91,7 @@ class GroupPresenter extends Base\AdminPresenter
             'group_id'     => $groups
         ];
 
-        $this->forums2groups->addForums2group($group_id, $data);
-    }
-
-    /**
-     * @param Forums2GroupsManager $forums2Groups
-     */
-    public function injectForums2Groups(Forums2GroupsManager $forums2Groups)
-    {
-        $this->forums2groups = $forums2Groups;
-    }
-
-    /**
-     * @param ForumsManager $forumsManager
-     */
-    public function injectForumsManager(ForumsManager $forumsManager)
-    {
-        $this->forumsManager = $forumsManager;
-    }
-
-    /**
-     * @param Users2GroupsManager $users2Groups
-     */
-    public function injectUsers2Groups(Users2GroupsManager $users2Groups)
-    {
-        $this->users2Groups = $users2Groups;
+        $this->forums2groupsManager->addForums2group($group_id, $data);
     }
 
     /**
@@ -158,11 +137,11 @@ class GroupPresenter extends Base\AdminPresenter
     {
         parent::renderEdit($id);
 
-        $this->template->countOfUsers = $this->users2Groups->getCountByRight($id);
+        $this->template->countOfUsers = $this->users2GroupsManager->getCountByRight($id);
         $this->template->forums       = $this->forumsManager->createForums($this->forumsManager->getAll(), 0);
 
         $data   = [];
-        $forums = $this->forums2groups->getByRightAll($id);
+        $forums = $this->forums2groupsManager->getAllByRight($id);
 
         foreach ($forums as $permission) {
             $data[$permission->forum_id]['post_add']     = $permission->post_add;

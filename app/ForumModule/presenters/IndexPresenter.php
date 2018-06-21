@@ -20,29 +20,28 @@ use Nette\Caching\IStorage;
  */
 class IndexPresenter extends Base\ForumPresenter
 {
-
     /**
-     *
+     * @var string
      */
     const CACHE_KEY_LAST_USER = 'lastUser';
 
     /**
-     *
+     * @var string
      */
     const CACHE_KEY_TOTAL_USERS = 'totalUsers';
 
     /**
-     *
+     * @var string
      */
     const CACHE_KEY_TOTAL_TOPICS = 'totalTopics';
 
     /**
-     *
+     * @var string
      */
     const CACHE_KEY_TOTAL_POSTS = 'totalPosts';
 
     /**
-     *
+     * @var string
      */
     const CACHE_KEY_LAST_TOPIC = 'lastTopic';
 
@@ -53,34 +52,40 @@ class IndexPresenter extends Base\ForumPresenter
 
     /**
      * @var ForumsManager $forumsManager
+     * @inject
      */
-    private $forumsManager;
+    public $forumsManager;
 
     /**
      * @var TopicsManager $topicManager
+     * @inject
      */
-    private $topicManager;
+    public $topicManager;
 
     /**
      * @var PostsManager $postManger
+     * @inject
      */
-    private $postManger;
+    public $postManger;
 
     /**
      * @var UsersManager $userManager
+     * @inject
      */
-    private $userManager;
+    public $userManager;
 
     /**
      * @var CategoriesManager $categoriesManager
+     * @inject
      */
-    private $categoriesManager;
+    public $categoriesManager;
     
     /**
      *
-     * @var ModeratorsManager $moderatorManager;
+     * @var ModeratorsManager $moderatorManager
+     * @inject
      */
-    private $moderatorManager;
+    public $moderatorManager;
 
     /**
      * IndexPresenter constructor.
@@ -108,53 +113,6 @@ class IndexPresenter extends Base\ForumPresenter
         $this->cache = new Cache($storage, 'BBIndex');
     }
 
-    /**
-     * @param CategoriesManager $categoriesManager
-     */
-    public function injectCategoriesManager(CategoriesManager $categoriesManager)
-    {
-        $this->categoriesManager = $categoriesManager;
-    }
-
-    /**
-     * @param ForumsManager $forumsManager
-     */
-    public function injectForumManager(ForumsManager $forumsManager)
-    {
-        $this->forumsManager = $forumsManager;
-    }
-
-    /**
-     * @param PostsManager $postManager
-     */
-    public function injectPostManager(PostsManager $postManager)
-    {
-        $this->postManger = $postManager;
-    }
-
-    /**
-     * @param TopicsManager $topicManager
-     */
-    public function injectTopicManager(TopicsManager $topicManager)
-    {
-        $this->topicManager = $topicManager;
-    }
-
-    /**
-     * @param UsersManager $userManager
-     */
-    public function injectUserManager(UsersManager $userManager)
-    {
-        $this->userManager = $userManager;
-    }
-
-    /**
-     * @param ModeratorsManager $moderatorsManager
-     */
-    public function injectModeratorsManager(ModeratorsManager $moderatorsManager)
-    {
-        $this->moderatorManager = $moderatorsManager;
-    }
 
     /**
      * @param int $category_id
@@ -196,7 +154,7 @@ class IndexPresenter extends Base\ForumPresenter
                     $this->topicManager->getNewerTopics($forum->forum_id, $last_login_time)
                 );
                 
-                $moderators = $this->moderatorManager->getByRightJoined($forum->forum_id);
+                $moderators = $this->moderatorManager->getAllJoinedByRight($forum->forum_id);
                                               
                 foreach ($moderators as $moderator) {
                     unset($moderator->user_password);

@@ -22,13 +22,15 @@ final class ForumPresenter extends Base\ForumPresenter
 
     /**
      * @var CategoriesManager $categoryManager
+     * @inject
      */
-    private $categoryManager;
+    public $categoryManager;
 
     /**
      * @var TopicsManager $topicManager
+     * @inject
      */
-    private $topicManager;
+    public $topicManager;
 
     /**
      *
@@ -37,22 +39,6 @@ final class ForumPresenter extends Base\ForumPresenter
     public function __construct(ForumsManager $manager)
     {
         parent::__construct($manager);
-    }
-
-    /**
-     * @param CategoriesManager $categoryManager
-     */
-    public function injectCategoryManager(CategoriesManager $categoryManager)
-    {
-        $this->categoryManager = $categoryManager;
-    }
-
-    /**
-     * @param TopicsManager $topicManager
-     */
-    public function injectTopicManager(TopicsManager $topicManager)
-    {
-        $this->topicManager = $topicManager;
     }
 
     /**

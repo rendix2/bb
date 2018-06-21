@@ -18,16 +18,16 @@ use Nette\Utils\Finder;
  */
 class DatabasePresenter extends AdminPresenter
 {
+    /**
+     *
+     * @var TempDir $tempDir7
+     * @inject 
+     */
     private $tempDir;
     
     public function __construct(UsersManager $manager)
     {
         parent::__construct($manager);
-    }
-    
-    public function injectTempDir(TempDir $tempDir)
-    {
-        $this->tempDir = $tempDir;
     }
 
     protected function createComponentEditForm()

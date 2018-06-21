@@ -17,8 +17,9 @@ class CategoryPresenter extends Base\AdminPresenter
 {
     /**
      * @var ForumsManager $forumsManager
+     * @inject
      */
-    private $forumsManager;
+    public $forumsManager;
 
     /**
      * CategoryPresenter constructor.
@@ -29,14 +30,6 @@ class CategoryPresenter extends Base\AdminPresenter
     public function __construct(CategoriesManager $manager, GridFilter $gf)
     {
         parent::__construct($manager);
-    }
-
-    /**
-     * @param ForumsManager $forumsManager
-     */
-    public function injectForumsManager(ForumsManager $forumsManager)
-    {
-        $this->forumsManager = $forumsManager;
     }
 
     /**

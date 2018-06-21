@@ -16,6 +16,7 @@ class LanguagePresenter extends Base\AdminPresenter
 {
     /**
      * @var UsersManager $userManager
+     * @inject
      */
     private $userManager;
 
@@ -42,14 +43,6 @@ class LanguagePresenter extends Base\AdminPresenter
 
             $this->addComponent($this->gf, 'gridFilter');
         }
-    }
-
-    /**
-     * @param UsersManager $userManager
-     */
-    public function injectUserManager(UsersManager $userManager)
-    {
-        $this->userManager = $userManager;
     }
 
     /**

@@ -9,6 +9,7 @@ use App\Models\ForumsManager;
 use App\Models\PostsManager;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
+use App\Models\ModeratorsManager;
 
 /**
  * Description of ForumPresenter
@@ -19,30 +20,42 @@ use App\Models\UsersManager;
 class ForumPresenter extends Base\AdminPresenter
 {
     /**
+     * category manager
+     * 
      * @var CategoriesManager $categoryManager
+     * @inject
      */
-    private $categoryManager;
+    public $categoryManager;
     
     /**
+     * user manager
+     * 
      * @var UsersManager $userManager
+     * @inject
      */
-    private $userManager;
+    public $userManager;
     
     /**
+     * topic manager
+     * 
      * @var TopicsManager $topicManager
+     * @inject
      */
-    private $topicManager;
+    public $topicManager;
     
     /**
-     *
+     * post mananager
+     * 
      * @var PostsManager $postManager
+     * @inject
      */
-    private $postManager;
+    public $postManager;
     
     /**
-     * @var \App\Models\ModeratorsManager $moderatorsManager
+     * @var ModeratorsManager $moderatorsManager
+     * @inject
      */
-    private $moderatorsManager;
+    public $moderatorsManager;
 
     /**
      * ForumPresenter constructor.
@@ -52,46 +65,6 @@ class ForumPresenter extends Base\AdminPresenter
     public function __construct(ForumsManager $manager)
     {
         parent::__construct($manager);
-    }
-
-    /**
-     * @param CategoriesManager $categoryManager
-     */
-    public function injectCategoryManager(CategoriesManager $categoryManager)
-    {
-        $this->categoryManager = $categoryManager;
-    }
-
-    /**
-     * @param PostsManager $postManager
-     */
-    public function injectPostManager(PostsManager $postManager)
-    {
-        $this->postManager = $postManager;
-    }
-
-    /**
-     * @param TopicsManager $topicManager
-     */
-    public function injectTopicManager(TopicsManager $topicManager)
-    {
-        $this->topicManager = $topicManager;
-    }
-
-    /**
-     * @param UsersManager $userManager
-     */
-    public function injectUserManager(UsersManager $userManager)
-    {
-        $this->userManager = $userManager;
-    }
-
-    /**
-     * @param \App\Models\ModeratorsManager $moderatorsManager
-     */
-    public function injectModeratorsManager(\App\Models\ModeratorsManager $moderatorsManager)
-    {
-        $this->moderatorsManager = $moderatorsManager;
     }
 
     /**
@@ -156,7 +129,7 @@ class ForumPresenter extends Base\AdminPresenter
                 $userData = false;
             }
             
-            $moderators = $this->moderatorsManager->getByRightJoined($id);
+            $moderators = $this->moderatorsManager->getAllJoinedByRight($id);
             
             \Tracy\Debugger::barDump($moderators);
 

@@ -15,15 +15,19 @@ use Nette\Utils\ArrayHash;
 abstract class ManagerPresenter extends BasePresenter
 {
     /**
-     *
+     * manager
+     * 
      * @var Manager $manager
      */
     private $manager;
     
     /**
+     * session manager
+     * 
      * @var SessionsManager $sessionManager
+     * @inject
      */
-    private $sessionManager;
+    public $sessionManager;
 
     /**
      *
@@ -39,27 +43,10 @@ abstract class ManagerPresenter extends BasePresenter
     /**
      *
      * @return Manager $manager
-     *
      */
     protected function getManager()
     {
         return $this->manager;
-    }
-
-    /**
-     * @return SessionsManager
-     */
-    public function getSessionManager()
-    {
-        return $this->sessionManager;
-    }
-
-    /**
-     * @param SessionsManager $sessionManager
-     */
-    public function injectSessionsManager(SessionsManager $sessionManager)
-    {
-        $this->sessionManager = $sessionManager;
     }
 
     /**

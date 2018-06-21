@@ -29,48 +29,57 @@ class UserPresenter extends Base\ForumPresenter
 {
      /**
      * @var LanguagesManager $languageManager
+     * @inject
      */
-    private $languageManager;
+    public $languageManager;
 
     /**
      * @var RanksManager $rankManager
+     * @inject
      */
-    private $rankManager;
+    public $rankManager;
 
     /**
      * @var WwwDir $wwwDir
+     * @inject
      */
-    private $wwwDir;
+    public $wwwDir;
 
     /**
      * @var TopicWatchManager $topicWatchManager
+     * @inject
      */
-    private $topicWatchManager;
+    public $topicWatchManager;
 
     /**
      * @var TopicsManager $topicManager
+     * @inject
      */
-    private $topicManager;
+    public $topicManager;
 
     /**
      * @var PostsManager $postManager
+     * @inject
      */
-    private $postManager;
+    public $postManager;
 
     /**
      * @var ThanksManager $thanksManager
+     * @inject
      */
-    private $thanksManager;
+    public $thanksManager;
     
     /**
      * @var \App\Controls\Avatars $avatar
+     * @inject
      */
-    private $avatar;
+    public $avatar;
     
     /**
      * @var \App\Models\ModeratorsManager $moderatorsManager
+     * @inject
      */
-    private $moderatorsManager;
+     public $moderatorsManager;
     
     /**
      *
@@ -78,86 +87,21 @@ class UserPresenter extends Base\ForumPresenter
      */
     private $mailer;
     
-    private $mailManager;
+    /**
+     * @var MailsManager $mailManager
+     * @inject
+     */
+    public $mailManager;
     
     /**
      * UserPresenter constructor.
      *
      * @param UsersManager     $manager
-     * @param LanguagesManager $languageManager
      */
-    public function __construct(
-        UsersManager $manager,
-        LanguagesManager $languageManager,
-        IMailer $mailer,
-        MailsManager $mailManager
-    ) {
+    public function __construct(UsersManager $manager, IMailer $mailer) {
         parent::__construct($manager);
-
-        $this->languageManager = $languageManager;
+        
         $this->mailer          = $mailer;
-        $this->mailManager     = $mailManager;
-    }
-
-    /**
-     * @param \App\Controls\Avatars $avatar
-     */
-    public function injectAvatar(\App\Controls\Avatars $avatar)
-    {
-        $this->avatar = $avatar;
-    }
-
-    /**
-     * @param PostsManager $postManager
-     */
-    public function injectPostManager(PostsManager $postManager)
-    {
-        $this->postManager = $postManager;
-    }
-
-    /**
-     * @param RanksManager $rankManager
-     */
-    public function injectRankManager(RanksManager $rankManager)
-    {
-        $this->rankManager = $rankManager;
-    }
-
-    /**
-     * @param ThanksManager $thanksManager
-     */
-    public function injectThankManager(ThanksManager $thanksManager)
-    {
-        $this->thanksManager = $thanksManager;
-    }
-
-    /**
-     * @param TopicsManager $topicManager
-     */
-    public function injectTopicManager(TopicsManager $topicManager)
-    {
-        $this->topicManager = $topicManager;
-    }
-
-    /**
-     * @param TopicWatchManager $topicWatchManager
-     */
-    public function injectTopicWatchManager(TopicWatchManager $topicWatchManager)
-    {
-        $this->topicWatchManager = $topicWatchManager;
-    }
-
-    /**
-     * @param WwwDir $wwwDir
-     */
-    public function injectWwwDir(WwwDir $wwwDir)
-    {
-        $this->wwwDir = $wwwDir;
-    }
-    
-    public function injectModeratorsManager(\App\Models\ModeratorsManager $moderatorsManager)
-    {
-        $this->moderatorsManager = $moderatorsManager;
     }
     
     /**
@@ -206,7 +150,7 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function actionLogout()
     {
-        $this->getSessionManager()->deleteBySessionId($this->getSession()->getId());
+        $this->sessionManager->deleteBySessionId($this->getSession()->getId());
         $this->getUser()->logout();
 
         $this->flashMessage('Successfully logged out. ', self::FLASH_MESSAGE_SUCCESS);
@@ -299,7 +243,7 @@ class UserPresenter extends Base\ForumPresenter
             }
         }
         
-        $this->template->moderatorForums = $this->moderatorsManager->getByLeftJoined($user_id);
+        $this->template->moderatorForums = $this->moderatorsManager->getAllJoinedByLeft($user_id);
         $this->template->thankCount      = $this->thanksManager->getCountCached();
         $this->template->topicCount      = $this->topicManager->getCountCached();
         $this->template->postCount       = $this->postManager->getCountCached();
@@ -379,7 +323,7 @@ class UserPresenter extends Base\ForumPresenter
             $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
         }
         
-        $watches = $this->topicWatchManager->getByRightJoinedFluent($user_id);
+        $watches = $this->topicWatchManager->getFluentJoinedByRight($user_id);
         
         $pag    = new PaginatorControl($watches, 15, 5, $page);
         $this->addComponent($pag, 'paginator');

@@ -20,9 +20,8 @@ abstract class CrudPresenter extends ManagerPresenter
 {
     const ITEMS_PER_PAGE = 20;
 
-
     /**
-     *
+     * @var string
      */
     const CACHE_KEY_PRIMARY_KEY = 'BBPrimaryKeys';
     

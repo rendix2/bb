@@ -104,14 +104,8 @@ class BBMailer
     }
 
     /**
-     * @param      $input
-     * @param null $variables
-     *
-     * @return $this
-     */
-    /**
-     * @param      $input
-     * @param null $variables
+     * @param string $input
+     * @param null|mixed   $variables
      *
      * @return $this
      */

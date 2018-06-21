@@ -27,9 +27,10 @@ abstract class AdminPresenter extends CrudPresenter
     private $bootStrapForm;
     
     /**
-     * @var AppDir $appDir
+     * @var AppDir $appDir 
+     * @inject
      */
-    private $appDir;
+    public $appDir;
 
     /**
      * AdminPresenter constructor.
@@ -59,15 +60,7 @@ abstract class AdminPresenter extends CrudPresenter
     {
         return $this->bootStrapForm;
     }
-
-    /**
-     * @param AppDir $appDir
-     */
-    public function injectAppDir(AppDir $appDir)
-    {
-        $this->appDir = $appDir;
-    }
-
+   
     /**
      *
      */

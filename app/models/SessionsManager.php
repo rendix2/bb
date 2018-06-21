@@ -26,7 +26,8 @@ class SessionsManager extends Crud\CrudManager
      */
     public function getLoggedUsers()
     {
-        return $this->dibi->select('')
+        return $this->dibi
+                ->select('')
                 ->distinct('session_user_id, user_id, user_name, session_from, session_last_activity')
                 ->from($this->getTable())
                 ->as('s')

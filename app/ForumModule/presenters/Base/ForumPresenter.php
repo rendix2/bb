@@ -29,17 +29,19 @@ abstract class ForumPresenter extends ManagerPresenter
      *
      * @var BootstrapForm $bootStrapForm
      */
-    private $bootStrapForm;
+    public $bootStrapForm;
 
     /**
      * @var Authorizator $authorizator
+     * @inject
      */
-    private $authorizator;
+    public $authorizator;
 
     /**
      * @var AppDir $appDir
+     * @inject
      */
-    private $appDir;
+    public $appDir;
 
     /**
      * ForumPresenter constructor.
@@ -68,22 +70,6 @@ abstract class ForumPresenter extends ManagerPresenter
     public function getForumTranslator()
     {
         return $this->forumTranslator;
-    }
-
-    /**
-     * @param AppDir $appDir
-     */
-    public function injectAppDir(AppDir $appDir)
-    {
-        $this->appDir = $appDir;
-    }
-
-    /**
-     * @param Authorizator $authorizator
-     */
-    public function injectAuthorizator(Authorizator $authorizator)
-    {
-        $this->authorizator = $authorizator;
     }
 
     /**

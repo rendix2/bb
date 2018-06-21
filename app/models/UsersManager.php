@@ -123,7 +123,8 @@ class UsersManager extends Crud\CrudManager
      */
     public function getForumsPermissionsByUserThroughGroup($user_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+                ->select('*')
                 ->from(self::USERS2GROUPS_TABLE)
                 ->as('ug')
                 ->innerJoin(self::FORUMS2GROUPS_TABLE)
@@ -196,7 +197,7 @@ class UsersManager extends Crud\CrudManager
         return $this->dibi->select('1')
             ->from($this->getTable())
             ->where('[' . $this->getPrimaryKey() . '] = %i', $user_id)
-            ->where('user_activation_key')
+            ->where('[user_activation_key] = %s', $key)
             ->where('[user_active] = %i', 0)
             ->fetchSingle();
     }
@@ -234,7 +235,8 @@ class UsersManager extends Crud\CrudManager
      */
     public function findUsersByUserName($user_name)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->getTable())
             ->where('[user_name] LIKE %~like~', $user_name)
             ->fetchAll();

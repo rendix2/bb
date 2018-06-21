@@ -75,7 +75,8 @@ abstract class CrudManager extends Manager
      */
     public function getAll()
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->table)
             ->fetchAll();
     }
@@ -110,7 +111,8 @@ abstract class CrudManager extends Manager
      */
     public function getAllFluent()
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->table);
     }
 
@@ -121,7 +123,8 @@ abstract class CrudManager extends Manager
      */
     public function getAllPairs($second)
     {
-        return $this->dibi->select($this->getPrimaryKey() . ', ' . $second)
+        return $this->dibi
+            ->select($this->getPrimaryKey() . ', ' . $second)
             ->from($this->getTable())
             ->fetchPairs($this->getPrimaryKey(), $second);
     }
@@ -157,7 +160,8 @@ abstract class CrudManager extends Manager
      */
     public function getById($item_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->table)
             ->where('[' . $this->primaryKey . '] = %i', $item_id)
             ->fetch();
@@ -170,7 +174,8 @@ abstract class CrudManager extends Manager
      */
     public function getByIds(array $item_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->table)
             ->where('[' . $this->primaryKey . '] IN %in', $item_id)
             ->fetchAll();
@@ -189,7 +194,8 @@ abstract class CrudManager extends Manager
      */
     public function getCount()
     {
-        return $this->dibi->select('COUNT(*)')
+        return $this->dibi
+            ->select('COUNT(*)')
             ->from($this->table)
             ->fetchSingle();
     }
@@ -206,9 +212,7 @@ abstract class CrudManager extends Manager
             $cache->save(
                 self::CACHE_COUNT_KEY,
                 $cached = $this->getCount(),
-                [
-                    Cache::EXPIRE => '24 hours',
-                ]
+                [Cache::EXPIRE => '24 hours']
             );
         }
 
@@ -242,7 +246,8 @@ abstract class CrudManager extends Manager
         $cachedPrimaryKey = $this->cache->load('primaryKey_' . $this->table);
 
         if (!$cachedPrimaryKey) {
-            $data = $this->dibi->select('COLUMN_NAME')
+            $data = $this->dibi
+                ->select('COLUMN_NAME')
                 ->from('information_schema.COLUMNS')
                 ->where('[TABLE_NAME] = %s', $this->table)
                 ->where('[COLUMN_KEY] = %s', 'PRI')
@@ -287,7 +292,8 @@ abstract class CrudManager extends Manager
      */
     public function add(ArrayHash $item_data)
     {
-        return $this->dibi->insert($this->table, $item_data)
+        return $this->dibi
+            ->insert($this->table, $item_data)
             ->execute(dibi::IDENTIFIER);
     }
 
@@ -298,7 +304,8 @@ abstract class CrudManager extends Manager
      */
     public function delete($item_id)
     {
-        return $this->dibi->delete($this->table)
+        return $this->dibi
+            ->delete($this->table)
             ->where('[' . $this->primaryKey . '] = %i', $item_id)
             ->execute(dibi::AFFECTED_ROWS);
     }
@@ -319,7 +326,8 @@ abstract class CrudManager extends Manager
      */
     public function deleteMulti(array $item_id)
     {
-        return $this->dibi->delete($this->table)
+        return $this->dibi
+            ->delete($this->table)
             ->where('[' . $this->primaryKey . '] IN %in', $item_id)
             ->execute(dibi::AFFECTED_ROWS);
     }
@@ -356,7 +364,8 @@ abstract class CrudManager extends Manager
      */
     public function updateMulti(array $item_id, ArrayHash $item_data)
     {
-        return $this->dibi->update($this->table, $item_data)
+        return $this->dibi
+            ->update($this->table, $item_data)
             ->where('[' . $this->primaryKey . '] IN %in', $item_id)
             ->execute(dibi::AFFECTED_ROWS);
     }

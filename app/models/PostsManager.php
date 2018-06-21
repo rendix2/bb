@@ -43,7 +43,8 @@ class PostsManager extends Crud\CrudManager
      */
     public function getCountOfPostsInCategory($category_id)
     {
-        return $this->dibi->select('COUNT(post_id)')
+        return $this->dibi
+            ->select('COUNT(post_id)')
             ->from($this->getTable())
             ->where('[post_category_id] = %i', $category_id)
             ->fetchSingle();
@@ -173,7 +174,8 @@ class PostsManager extends Crud\CrudManager
      */
     public function getPostsByTopicId($topic_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->getTable())
             ->as('p')
             ->innerJoin(self::USERS_TABLE)
@@ -274,7 +276,10 @@ class PostsManager extends Crud\CrudManager
      */
     public function deleteByTopicId($topic_id)
     {
-        return $this->dibi->delete($this->getTable())->where('[post_topic_id] = %i', $topic_id)->execute();
+        return $this->dibi
+                ->delete($this->getTable())
+                ->where('[post_topic_id] = %i', $topic_id)
+                ->execute();
     }
 
     /**
@@ -284,7 +289,8 @@ class PostsManager extends Crud\CrudManager
      */
     public function findPosts($post_text)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->getTable())
             ->as('p')
             ->leftJoin(self::TOPICS_TABLE)

@@ -109,7 +109,7 @@ class Authorizator
         }
                 
         if ($this->user->isInRole('moderator')) {
-            $moderators = $this->moderatorsManager->getByLeftPairs($this->user->getId());
+            $moderators = $this->moderatorsManager->getPairsByLeft($this->user->getId());
         
             foreach ($this->forumManager->getAllCached() as $forum) {
                 if (in_array($forum->forum_id, $moderators, true)) {

@@ -24,7 +24,8 @@ class ThanksManager extends Crud\CrudManager
      */
     public function getThanksByForumId($forum_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->getTable())
             ->where('[thank_forum_id] = %i', $forum_id)
             ->fetchAll();
@@ -37,7 +38,8 @@ class ThanksManager extends Crud\CrudManager
      */
     public function getThanksByTopicId($topic_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->getTable())
             ->where('[thank_topic_id] = %i', $topic_id)
             ->fetchAll();
@@ -50,7 +52,8 @@ class ThanksManager extends Crud\CrudManager
      */
     public function getThanksByUserId($user_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->getTable())
             ->where('[thank_user_id] = %i', $user_id)
             ->fetchAll();
@@ -63,7 +66,8 @@ class ThanksManager extends Crud\CrudManager
      */
     public function getThanksWithUserInTopic($topic_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->getTable())
             ->as('t')
             ->innerJoin(self::USERS_TABLE)
@@ -82,7 +86,8 @@ class ThanksManager extends Crud\CrudManager
      */
     public function canUserThank($forum_id, $topic_id, $user_id)
     {
-        return !$this->dibi->select('1')
+        return !$this->dibi
+            ->select('1')
             ->from(self::THANKS_TABLE)
             ->where('[thank_forum_id] = %i', $forum_id)
             ->where('[thank_topic_id] = %i', $topic_id)
@@ -109,7 +114,8 @@ class ThanksManager extends Crud\CrudManager
      */
     public function deleteByTopicId($topic_id)
     {
-        return $this->dibi->delete($this->getTable())
+        return $this->dibi
+            ->delete($this->getTable())
             ->where('[thank_topic_id] = %i', $topic_id)
             ->execute();
     }

@@ -23,12 +23,13 @@ class CachePresenter extends BasePresenter
     /**
      * @var ITranslator $translator
      */
-    private $translator;
+    public $translator;
     
     /**
      * @var AppDir $appDir
+     * @inject
      */
-    private $appDir;
+    public $appDir;
     
     /**
      *
@@ -36,13 +37,6 @@ class CachePresenter extends BasePresenter
      */
     private $cache;
 
-    /**
-     * @param AppDir $appDir
-     */
-    public function injectAppDir(AppDir $appDir)
-    {
-        $this->appDir = $appDir;
-    }
 
     /**
      * @param IStorage $storage

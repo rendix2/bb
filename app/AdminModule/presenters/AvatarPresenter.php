@@ -17,8 +17,9 @@ class AvatarPresenter extends Base\AdminPresenter
     /**
      *
      * @var Avatars $avatarsDir
+     * @inject
      */
-    private $avatarsDir;
+    public $avatarsDir;
 
     /**
      * AvatarPresenter constructor.
@@ -28,14 +29,6 @@ class AvatarPresenter extends Base\AdminPresenter
     public function __construct(UsersManager $manager)
     {
         parent::__construct($manager);
-    }
-
-    /**
-     * @param Avatars $avatars
-     */
-    public function injectAvatarsDir(Avatars $avatars)
-    {
-        $this->avatarsDir = $avatars;
     }
 
     /**

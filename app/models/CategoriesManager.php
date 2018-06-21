@@ -18,7 +18,8 @@ class CategoriesManager extends Crud\CrudManager
      */
     public function getActiveCategories()
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->getTable())
             ->where('[category_active] = %i', 1)
             ->orderBy('category_order', dibi::ASC)
@@ -48,7 +49,8 @@ class CategoriesManager extends Crud\CrudManager
      */
     public function getByForumId($forum_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->getTable())
             ->as('c')
             ->leftJoin(self::FORUM_TABLE)

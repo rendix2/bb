@@ -22,18 +22,24 @@ class LoginPresenter extends BasePresenter
      * @persistent
      */
     public $backlink = '';
+    
     /**
      * @var Authenticator $authenticator
      */
     private $authenticator;
+    
     /**
      * @var SessionsManager $sessionManager
+     * @inject
      */
-    private $sessionManager;
+    public $sessionManager;
     
-    private $appDir;
-    
-    
+    /**
+     *
+     * @var AppDir $appDir
+     * @inject
+     */
+    public $appDir;
 
     /**
      * LoginPresenter constructor.
@@ -45,22 +51,6 @@ class LoginPresenter extends BasePresenter
         parent::__construct();
 
         $this->authenticator = $authenticator;
-    }
-
-    /**
-     * @param SessionsManager $sessionManager
-     */
-    public function injectSessionManager(SessionsManager $sessionManager)
-    {
-        $this->sessionManager = $sessionManager;
-    }
-
-    /**
-     * @param AppDir $appDir
-     */
-    public function injectAppDir(AppDir $appDir)
-    {
-        $this->appDir = $appDir;
     }
 
     /**
@@ -78,10 +68,8 @@ class LoginPresenter extends BasePresenter
             $this->sessionManager->add(
                 ArrayHash::from(
                     [
-                        'session_key'     => $this->getSession()
-                            ->getId(),
-                        'session_user_id' => $this->getUser()
-                            ->getId(),
+                        'session_key'     => $this->getSession()->getId(),
+                        'session_user_id' => $this->getUser()->getId(),
                         'session_from'    => time()
                     ]
                 )
@@ -134,14 +122,8 @@ class LoginPresenter extends BasePresenter
     {
         $form = new BootstrapForm();
 
-        $form->addText(
-            'user_name',
-            'Login:'
-        );
-        $form->addPassword(
-            'user_password',
-            'Password:'
-        );
+        $form->addText('user_name', 'Login:');
+        $form->addPassword('user_password', 'Password:');
         $form->addSubmit('send');
         $form->onSuccess[] = [
             $this,
