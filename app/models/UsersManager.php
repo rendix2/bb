@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Controls\Avatars;
 use Dibi\Fluent;
 use Dibi\Result;
 use Dibi\Row;
@@ -26,7 +27,9 @@ class UsersManager extends Crud\CrudManager
      * @var int
      */
     const NOT_UPLOADED = -5;
-    
+    /**
+     * @var Avatars $avatar
+     */
     private $avatar;
 
     /**
@@ -238,9 +241,9 @@ class UsersManager extends Crud\CrudManager
     }
 
     /**
-     * @param \App\Controls\Avatars $avatar
+     * @param Avatars $avatar
      */
-    public function injectAvatars(\App\Controls\Avatars $avatar)
+    public function injectAvatars(Avatars $avatar)
     {
         $this->avatar = $avatar;
     }
@@ -257,11 +260,11 @@ class UsersManager extends Crud\CrudManager
     {
         if ($file->ok) {
             if ($file->getSize() > $this->avatar->getMaxFileSize()) {
-                throw new InvalidArgumentException('File is too big. Max enabled file size is: '.$this->avatar->getMaxFileSize() );
+                throw new InvalidArgumentException('File is too big. Max enabled file size is: '.$this->avatar->getMaxFileSize());
             }
                                    
             if ($file->getImageSize()[0] > $this->avatar->getMaxWidth()) {
-                throw new InvalidArgumentException('Image width is too big. Max enabled dith is: '.$this->avatar->getMaxWidth());
+                throw new InvalidArgumentException('Image width is too big. Max enabled width is: ' .$this->avatar->getMaxWidth());
             }
             
             if ($file->getImageSize()[1] > $this->avatar->getMaxHeight()) {

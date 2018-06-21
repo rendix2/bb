@@ -2,6 +2,7 @@
 
 namespace App\ModeratorModule;
 
+use App\Controls\BootstrapForm;
 use App\Models\ReportsManager;
 
 /**
@@ -26,7 +27,7 @@ class ReportPresenter extends ModeratorPresenter
      */
     protected function createComponentEditForm()
     {
-        $form = new \App\Controls\BootstrapForm();
+        $form = new BootstrapForm();
         
         return $form;
     }

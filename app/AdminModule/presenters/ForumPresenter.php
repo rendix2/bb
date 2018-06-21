@@ -101,7 +101,7 @@ class ForumPresenter extends Base\AdminPresenter
     {
         parent::startup();
         
-        if ($this->getAction() == 'default') {
+        if ($this->getAction() === 'default') {
             $this->gf->setTranslator($this->getAdminTranslator());
             
             $this->gf->addFilter('forum_id', 'forum_id', GridFilter::INT_EQUAL);

@@ -33,7 +33,7 @@ class LanguagePresenter extends Base\AdminPresenter
     {
         parent::startup();
         
-        if ($this->getAction() == 'default') {
+        if ($this->getAction() === 'default') {
             $this->gf->setTranslator($this->getAdminTranslator());
             
             $this->gf->addFilter('lang_id', 'lang_id', GridFilter::INT_EQUAL);

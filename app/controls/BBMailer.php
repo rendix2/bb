@@ -146,13 +146,13 @@ class BBMailer
             $this->mailer
         ]);
         
-        try{
+        try {
             $mailer->send($this->message);
             
             return true;
-        } catch ( Exception $e){
+        } catch (\Exception $e) {
             return false;
-        }       
+        }
     }
 
     /**

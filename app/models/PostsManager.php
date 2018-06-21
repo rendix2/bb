@@ -145,12 +145,13 @@ class PostsManager extends Crud\CrudManager
      */
     public function getNewerPosts($forum_id, $post_time)
     {
-        $cache  = new Cache($this->storage,$this->getTable());
+        $cache  = new Cache($this->storage, $this->getTable());
         $key    = $forum_id . '-' . $post_time;
         $cached = $cache->load($key);
 
         if (!isset($cached)) {
-            $cache->save($key,
+            $cache->save(
+                $key,
                 $cached = $this->dibi->select('*')
                     ->from($this->getTable())
                     ->where('[post_forum_id] = %i', $forum_id)

@@ -80,7 +80,7 @@ class GroupPresenter extends Base\AdminPresenter
             'post_add'     => $this->map(array_pad($post_add, $count + 1, 0)),
             'post_edit'    => $this->map(array_pad($post_edit, $count + 1, 0)),
             'post_delete'  => $this->map(array_pad($post_delete, $count + 1, 0)),
-            'topic_add'    => $this->map(array_pad($topic_add, $count + 1, 0 )),
+            'topic_add'    => $this->map(array_pad($topic_add, $count + 1, 0)),
             'topic_edit'   => $this->map(array_pad($topic_edit, $count + 1, 0)),
             'topic_delete' => $this->map(array_pad($topic_delete, $count + 1, 0)),
             'topic_thank'  => $this->map(array_pad($topic_thank, $count + 1, 0)),
@@ -128,7 +128,7 @@ class GroupPresenter extends Base\AdminPresenter
             $result[$value->forum_id] = false;
             
             foreach ($data as $value2) {
-                if ($value->forum_id == $value2) {
+                if ($value->forum_id === $value2) {
                     $result[$value->forum_id] = true;
                 }
             }
@@ -141,10 +141,10 @@ class GroupPresenter extends Base\AdminPresenter
     {
         parent::startup();
 
-        if ($this->getAction() == 'default') {
+        if ($this->getAction() === 'default') {
             $this->gf->setTranslator($this->getAdminTranslator());
             $this->gf->addFilter('group_id', 'group_id', GridFilter::INT_EQUAL);
-            $this->gf->addFilter('group_name','group_name', GridFilter::TEXT_LIKE);
+            $this->gf->addFilter('group_name', 'group_name', GridFilter::TEXT_LIKE);
             $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
             $this->addComponent($this->gf, 'gridFilter');
@@ -185,7 +185,7 @@ class GroupPresenter extends Base\AdminPresenter
         $form = $this->getBootStrapForm();
         $form->setTranslator($this->getAdminTranslator());
 
-        $form->addText('group_name', 'Group name:' )
+        $form->addText('group_name', 'Group name:')
             ->setRequired(true);
 
         return $this->addSubmitB($form);

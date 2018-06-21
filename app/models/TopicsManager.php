@@ -8,7 +8,6 @@
 
 namespace App\Models;
 
-use Dibi\Connection;
 use Dibi\Result;
 use Dibi\Row;
 use Nette\Caching\Cache;
@@ -113,11 +112,13 @@ class TopicsManager extends Crud\CrudManager
         $values->topic_forum_id = $item_data->post_forum_id;
         $values->topic_add_time = $item_data->post_add_time;
 
-        unset($values->post_title);
-        unset($values->post_text);
-        unset($values->post_add_time);
-        unset($values->post_user_id);
-        unset($values->post_forum_id);
+        unset(
+            $values->post_title,
+            $values->post_text,
+            $values->post_add_time,
+            $values->post_user_id,
+            $values->post_forum_id
+        );
 
         $topic_id = parent::add($values);
 
@@ -132,12 +133,11 @@ class TopicsManager extends Crud\CrudManager
         $item_data->post_topic_id = $topic_id;
         $this->postManager->add($item_data);
         $this->userManager->update($values->topic_user_id, ArrayHash::from(
-                [
+            [
                     'user_topic_count%sql' => 'user_topic_count + 1',
                     'user_watch_count%sql' => 'user_watch_count + 1'
-                ]
-            )
-        );
+            ]
+        ));
 
         return $topic_id;
     }

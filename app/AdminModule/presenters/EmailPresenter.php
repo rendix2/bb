@@ -12,8 +12,11 @@ use App\Controls\BBMailer;
 use App\Controls\GridFilter;
 use App\Models\MailsManager;
 use App\Models\UsersManager;
+use Nette\Application\UI\Form;
 use Nette\InvalidArgumentException;
+use Nette\Mail\FallbackMailerException;
 use Nette\Mail\IMailer;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of EmailPresenter
@@ -53,7 +56,7 @@ class EmailPresenter extends Base\AdminPresenter
     {
         parent::startup();
 
-        if ($this->getAction() == 'default') {
+        if ($this->getAction() === 'default') {
             $this->gf->setTranslator($this->getAdminTranslator());
 
             $this->gf->addFilter('mail_id', 'mail_id', GridFilter::INT_EQUAL);
@@ -89,7 +92,7 @@ class EmailPresenter extends Base\AdminPresenter
         return $form;
     }
 
-    public function sendFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
+    public function sendFormSuccess(Form $form, ArrayHash $values)
     {
         $users      = $this->usersManager->getAll();
         $usersMails = [];
