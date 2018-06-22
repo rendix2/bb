@@ -33,10 +33,9 @@ class CachePresenter extends BasePresenter
     
     /**
      *
-     * @var IStorage $cache
+     * @var Cache $cache
      */
     private $cache;
-
 
     /**
      * @param IStorage $storage
@@ -47,18 +46,7 @@ class CachePresenter extends BasePresenter
     }
 
     /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function success(Form $form, ArrayHash $values)
-    {
-        $this->cache->clean([Cache::ALL => Cache::ALL]);
-        $this->flashMessage('Cache was deleted.', self::FLASH_MESSAGE_SUCCESS);
-        $this->redirect('this');
-    }
-
-    /**
-     *
+     * cache startup
      */
     public function startup()
     {
@@ -75,7 +63,7 @@ class CachePresenter extends BasePresenter
     }
 
     /**
-     *
+     * cache before render
      */
     public function beforeRender()
     {
@@ -93,6 +81,8 @@ class CachePresenter extends BasePresenter
     }
 
     /**
+     * creates form to delete all cache
+     * 
      * @return BootstrapForm
      */
     protected function createComponentEditForm()
@@ -105,5 +95,18 @@ class CachePresenter extends BasePresenter
 
         return $form;
     }
+    
+    /**
+     * deletes ALL cache
+     * 
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function success(Form $form, ArrayHash $values)
+    {
+        $this->cache->clean([Cache::ALL => Cache::ALL]);
+        $this->flashMessage('Cache was deleted.', self::FLASH_MESSAGE_SUCCESS);
+        $this->redirect('this');
+    }    
 }
 

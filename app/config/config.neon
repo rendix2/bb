@@ -167,6 +167,12 @@ services:
     BanManager:
         factory: \App\Models\BanManager
         inject: yes
+    SmiliesManager:
+        factory: \App\Models\SmiliesManager
+        inject: yes
+    PMManager:
+        factory: \App\Models\PMManager
+        inject: yes
     authenticator: App\Authenticator
     authorizator: App\Authorizator
     WwwDir:
