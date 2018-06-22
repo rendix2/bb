@@ -23,7 +23,7 @@ class DatabasePresenter extends AdminPresenter
      * @var TempDir $tempDir7
      * @inject 
      */
-    private $tempDir;
+    public $tempDir;
     
     public function __construct(UsersManager $manager)
     {

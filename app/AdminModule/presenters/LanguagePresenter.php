@@ -18,7 +18,7 @@ class LanguagePresenter extends Base\AdminPresenter
      * @var UsersManager $userManager
      * @inject
      */
-    private $userManager;
+    public $userManager;
 
     /**
      * LanguagePresenter constructor.
