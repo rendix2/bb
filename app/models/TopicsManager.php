@@ -81,14 +81,14 @@ class TopicsManager extends Crud\CrudManager
      */
     public function getNewerTopics($forum_id, $topic_time)
     {
-        $cache  = new Cache($this->storage, $this->getTable());
         $key    = $forum_id . '-' . $topic_time;
-        $cached = $cache->load($key);
+        $cached = $this->managerCache->load($key);
 
         if (!isset($cached)) {
-            $cache->save(
+            $this->managerCache->save(
                 $key,
-                $cached = $this->dibi->select('*')
+                $cached = $this->dibi
+                    ->select('*')
                     ->from($this->getTable())
                     ->where('[topic_forum_id] = %i', $forum_id)
                     ->where('[topic_add_time] > %i', $topic_time)

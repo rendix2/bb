@@ -32,11 +32,10 @@ class CategoriesManager extends Crud\CrudManager
     public function getActiveCategoriesCached()
     {
         $key    = 'ActiveCategories';
-        $cache  = new Cache($this->getStorage(), $this->getTable());
-        $cached = $cache->load($key);
+        $cached = $this->managerCache->load($key);
 
         if (!$cached) {
-            $cache->save($key, $cached = $this->getActiveCategories());
+            $this->managerCache->save($key, $cached = $this->getActiveCategories());
         }
 
         return $cached;

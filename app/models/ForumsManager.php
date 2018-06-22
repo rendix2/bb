@@ -19,7 +19,8 @@ class ForumsManager extends Crud\CrudManager
      */
     public function getForumsByCategoryId($category_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->getTable())
             ->where('[forum_category_id] = %i', $category_id)
             ->fetchAll();
@@ -32,7 +33,8 @@ class ForumsManager extends Crud\CrudManager
      */
     public function getForumsByForumParentId($forum_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->getTable())
             ->where('[forum_parent_id] = %i', $forum_id)
             ->fetchAll();
@@ -45,7 +47,8 @@ class ForumsManager extends Crud\CrudManager
      */
     public function getParentForumByForumId($forum_id)
     {
-        return $this->dibi->select('f2.*')
+        return $this->dibi
+            ->select('f2.*')
             ->from($this->getTable())
             ->as('f1')
             ->innerJoin($this->getTable())
@@ -62,7 +65,8 @@ class ForumsManager extends Crud\CrudManager
      */
     public function getTopics($forum_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from(self::TOPICS_TABLE)
             ->as('t')
             ->leftJoin(self::USERS_TABLE)

@@ -39,11 +39,6 @@ abstract class CrudManager extends Manager
     const CACHE_PAIRS = 'pairs';
 
     /**
-     * @var IStorage $storage
-     */
-    public $storage;
-
-    /**
      * @var string $table
      */
     private $table;
@@ -52,11 +47,11 @@ abstract class CrudManager extends Manager
      * @var string $primaryKey
      */
     private $primaryKey;
-
+    
     /**
      * @var Cache $cache
      */
-    private $cache;
+    protected $managerCache;
 
     /**
      * CrudManager constructor.
@@ -86,20 +81,13 @@ abstract class CrudManager extends Manager
      */
     public function getAllCached()
     {
-        $cache = new Cache(
-            $this->getStorage(),
-            $this->getTable()
-        );
-
-        $cached = $cache->load(self::CACHE_ALL_KEY);
+        $cached = $this->managerCache->load(self::CACHE_ALL_KEY);
 
         if (!$cached) {
-            $cache->save(
+            $this->managerCache->save(
                 self::CACHE_ALL_KEY,
                 $cached = $this->getAll(),
-                [
-                    Cache::EXPIRE => '24 hours',
-                ]
+                [Cache::EXPIRE => '24 hours']
             );
         }
 
@@ -136,12 +124,10 @@ abstract class CrudManager extends Manager
      */
     public function getAllPairsCached($second)
     {
-        $cache = new Cache($this->getStorage(), $this->getTable());
-
-        $cached = $cache->load(self::CACHE_PAIRS);
+        $cached = $this->managerCache->load(self::CACHE_PAIRS);
 
         if (!$cached) {
-            $cache->save(
+            $this->managerCache->save(
                 self::CACHE_PAIRS,
                 $cached = $this->getAllPairs($second),
                 [
@@ -182,14 +168,6 @@ abstract class CrudManager extends Manager
     }
 
     /**
-     * @return Cache
-     */
-    public function getCache()
-    {
-        return $this->cache;
-    }
-
-    /**
      * @return string
      */
     public function getCount()
@@ -205,11 +183,10 @@ abstract class CrudManager extends Manager
      */
     public function getCountCached()
     {
-        $cache  = new Cache($this->getStorage(), $this->getTable());
-        $cached = $cache->load(self::CACHE_COUNT_KEY);
+        $cached = $this->managerCache->load(self::CACHE_COUNT_KEY);
 
         if (!$cached) {
-            $cache->save(
+            $this->managerCache->save(
                 self::CACHE_COUNT_KEY,
                 $cached = $this->getCount(),
                 [Cache::EXPIRE => '24 hours']
@@ -243,7 +220,7 @@ abstract class CrudManager extends Manager
      */
     private function getPrimaryKeyQuery()
     {
-        $cachedPrimaryKey = $this->cache->load('primaryKey_' . $this->table);
+        $cachedPrimaryKey = $this->managerCache->load('primaryKey_' . $this->table);
 
         if (!$cachedPrimaryKey) {
             $data = $this->dibi
@@ -257,7 +234,7 @@ abstract class CrudManager extends Manager
                 Debugger::log('Primary key of table:' . $this->table . ' was not found!', ILogger::CRITICAL);
             }
 
-            $this->cache->save(
+            $this->managerCache->save(
                 'primaryKey_' . $this->table,
                 $cachedPrimaryKey = $data,
                 [
@@ -267,14 +244,6 @@ abstract class CrudManager extends Manager
         }
 
         return $cachedPrimaryKey;
-    }
-
-    /**
-     * @return IStorage
-     */
-    public function getStorage()
-    {
-        return $this->storage;
     }
 
     /**
@@ -314,9 +283,8 @@ abstract class CrudManager extends Manager
      *
      */
     public function deleteCache()
-    {
-        $cache = new Cache($this->getStorage(), $this->getTable());
-        $cache->remove(self::CACHE_ALL_KEY);
+    {        
+        $this->managerCache->remove(self::CACHE_ALL_KEY);
     }
 
     /**
@@ -337,9 +305,8 @@ abstract class CrudManager extends Manager
      */
     public function factory(IStorage $storage)
     {
-        $this->cache      = new Cache($storage, CrudPresenter::CACHE_KEY_PRIMARY_KEY);
-        $this->primaryKey = $this->getPrimaryKeyQuery();
-        $this->storage    = $storage;
+        $this->managerCache    = new Cache($storage, $this->getTable());
+        $this->primaryKey      = $this->getPrimaryKeyQuery();
     }
 
     /**

@@ -146,14 +146,14 @@ class PostsManager extends Crud\CrudManager
      */
     public function getNewerPosts($forum_id, $post_time)
     {
-        $cache  = new Cache($this->storage, $this->getTable());
         $key    = $forum_id . '-' . $post_time;
-        $cached = $cache->load($key);
+        $cached = $this->managerCache->load($key);
 
         if (!isset($cached)) {
-            $cache->save(
+            $this->managerCache->save(
                 $key,
-                $cached = $this->dibi->select('*')
+                $cached = $this->dibi
+                    ->select('*')
                     ->from($this->getTable())
                     ->where('[post_forum_id] = %i', $forum_id)
                     ->where('[post_add_time] > %i', $post_time)
@@ -190,12 +190,12 @@ class PostsManager extends Crud\CrudManager
     public function set()
     {
         $this->userManager = new UsersManager($this->dibi);
-        $this->userManager->factory($this->getStorage());
+        //$this->userManager->factory($this->getStorage());
         $this->topicsManager = new TopicsManager($this->dibi);
-        $this->topicsManager->factory($this->getStorage());
+        //$this->topicsManager->factory($this->getStorage());
         $this->topicsManager->injectUserManager($this->userManager);
         $this->forumManager = new ForumsManager($this->dibi);
-        $this->forumManager->factory($this->getStorage());
+        //$this->forumManager->factory($this->getStorage());
         $this->topicWatchManager = new TopicWatchManager(
             $this->dibi,
             $this->topicsManager,
