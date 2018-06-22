@@ -71,7 +71,7 @@ abstract class AdminPresenter extends CrudPresenter
         $user = $this->getUser();
 
         if (!$user->isLoggedIn()) {
-            $this->error('You are not logged in.');
+            $this->redirect(':Admin:Login:default');
         }
 
         if (!$user->isInRole('admin')) {
