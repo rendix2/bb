@@ -31,6 +31,12 @@ final class ForumPresenter extends Base\ForumPresenter
      * @inject
      */
     public $topicManager;
+    
+    /**
+     * @var \App\Controls\TopicsSetting $topicSetting
+     * @inject
+     */
+    public $topicSetting;    
 
     /**
      *
@@ -90,6 +96,7 @@ final class ForumPresenter extends Base\ForumPresenter
             $this['searchInForumForm']->setDefaults(['search_form' => $q]);
         }
 
+        $this->template->logViews    = $this->topicSetting->canLogView();
         $this->template->forum       = $forum;
         $this->template->topics      = $topics->fetchAll();
         $this->template->subForums   = $this->getManager()

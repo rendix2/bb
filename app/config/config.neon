@@ -35,7 +35,7 @@ parameters:
             lastTopic: 1 hour
             totalTopics: 1hour
             primaryKey: 10day
-        logViews: false
+        logViews: true
     posts:
         pagination:
             itemsPerPage: 25
@@ -179,6 +179,8 @@ services:
         class: App\Controls\TempDir(%tempDir%)
     CacheDir:
         class: App\Controls\CacheDir(%tempDir%/cache)
+    TopicSetting:
+        class: App\Controls\TopicsSetting(%topics%)
         
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22

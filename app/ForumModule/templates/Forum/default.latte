@@ -60,6 +60,9 @@
                     <th>{_topic_name}</th>
                     <th>{_topic_author}</th>
                     <th>{_topic_post_count}</th>
+                    {if $logViews}
+                    <th>{_topic_count_views}</th>
+                    {/if}
                     <th></th>
                     {foreach $topics as $topic}
                 <tr>
@@ -74,6 +77,9 @@
                         <a href="{link User:profile, $topic->user_id}">{$topic->user_name}</a>
                     </td>
                     <td>{$topic->topic_post_count}</td>
+                    {if $logViews}
+                        <td>{$topic->topic_view_count}</td>
+                    {/if}                    
                     <td>
                         {if $user->getId() === $topic->topic_user_id}
                             <a href="{link Post:deleteTopic, $presenter->getParameter('forum_id'), $topic->topic_id, $presenter->getParameter('page')}"

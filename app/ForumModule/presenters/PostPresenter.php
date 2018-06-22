@@ -75,7 +75,13 @@ class PostPresenter extends Base\ForumPresenter
      * @inject
      */
     public $httpRequest;
-   
+    
+    /**
+     * @var \App\Controls\TopicsSetting $topicSetting
+     * @inject
+     */
+    public $topicSetting;
+
     /**
      * @param PostsManager $manager
      */
@@ -346,6 +352,10 @@ class PostPresenter extends Base\ForumPresenter
         }
 
         $data = $this->getManager()->getPostsByTopicId($topic_id);
+
+        if ($this->topicSetting->canLogView()) {
+            $this->topicsManager->update($topic_id, ArrayHash::from(['topic_view_count%sql' => 'topic_view_count + 1']));
+        }
 
         $pagination = new PaginatorControl($data, 10, 5, $page);
         $this->addComponent($pagination, 'paginator');
