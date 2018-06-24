@@ -20,11 +20,7 @@ abstract class AdminPresenter extends CrudPresenter
      * @var ITranslator $adminTranslator
      */
     private $adminTranslator;
-    
-    /**
-     * @var BootstrapForm $bootStrapForm
-     */
-    private $bootStrapForm;
+
     
     /**
      * @var \App\Services\TranslatorFactory $translatorFactory
@@ -40,8 +36,6 @@ abstract class AdminPresenter extends CrudPresenter
     public function __construct(CrudManager $manager)
     {
         parent::__construct($manager);
-
-        $this->bootStrapForm = new BootstrapForm();
     }
 
     /**
@@ -50,15 +44,6 @@ abstract class AdminPresenter extends CrudPresenter
     public function getAdminTranslator()
     {
         return $this->adminTranslator;
-    }
-
-    /**
-     *
-     * @return BootstrapForm
-     */
-    public function getBootstrapForm()
-    {
-        return $this->bootStrapForm;
     }
    
     /**

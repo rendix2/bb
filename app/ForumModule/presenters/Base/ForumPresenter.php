@@ -25,13 +25,6 @@ abstract class ForumPresenter extends ManagerPresenter
     private $forumTranslator;
 
     /**
-     * Bootstrap form
-     *
-     * @var BootstrapForm $bootStrapForm
-     */
-    public $bootStrapForm;
-
-    /**
      * @var Authorizator $authorizator
      * @inject
      */
@@ -51,17 +44,6 @@ abstract class ForumPresenter extends ManagerPresenter
     public function __construct(Manager $manager)
     {
         parent::__construct($manager);
-
-        $this->bootStrapForm = new BootstrapForm();
-    }
-
-    /**
-     *
-     * @return BootstrapForm
-     */
-    public function getBootstrapForm()
-    {
-        return $this->bootStrapForm;
     }
 
     /**

@@ -34,6 +34,11 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      * @inject
      */
     public $banManager;
+      
+    /**
+     * @var BootstrapForm $bootStrapForm
+     */
+    private $bootstrapForm;    
     
     /**
      * @var \Nette\Http\Request $httpRequest
@@ -41,7 +46,13 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      */
     public $httpRequest;
     
-    public function startup() {
+    public function __construct() {
+        parent::__construct();
+        
+        $this->bootstrapForm = self::createBootstrapForm();
+    }
+
+        public function startup() {
         parent::startup();
         
         $bans = $this->banManager->getAllCached();     
@@ -64,4 +75,13 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     {
         return new \App\Controls\BootstrapForm();
     }
+    
+    /**
+     *
+     * @return BootstrapForm
+     */
+    public function getBootstrapForm()
+    {
+        return $this->bootstrapForm;
+    }    
 }

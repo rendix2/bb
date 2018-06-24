@@ -53,7 +53,7 @@ class RegisterPresenter extends \App\Presenters\Base\BasePresenter
         return $form;
     }
 
-    public function  registerOnValidate(Form $form, ArrayHash $values)
+    public function registerOnValidate(Form $form, ArrayHash $values)
     {
         
     }
