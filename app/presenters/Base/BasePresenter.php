@@ -35,14 +35,27 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      */
     public $banManager;
     
+    /**
+     * @var \Nette\Http\Request $httpRequest
+     * @inject
+     */
+    public $httpRequest;
+    
     public function startup() {
         parent::startup();
         
-        $bans = $this->banManager->getAllCached();
+        $bans = $this->banManager->getAllCached();     
+        $identity = $this->getUser()->getIdentity();
         
         foreach($bans as $ban) {
-            if ($ban->ban_email === 'a@a.cz'){
-                $this->error('Banned', Nette\Http\IResponse::S403_FORBIDDEN);
+            if ($identity && $this->getUser()->isLoggedIn()) {
+                if ($ban->ban_email === $identity->getData()['user_email'] || $ban->ban_user_name === $identity->getData()['user_name']) {
+                    $this->error('Banned', Nette\Http\IResponse::S403_FORBIDDEN);
+                }               
+            }
+
+            if ($ban->ban_ip === $this->httpRequest->getRemoteAddress()) {
+                $this->error('Banned', Nette\Http\IResponse::S403_FORBIDDEN);  
             }
         }
     }
