@@ -83,7 +83,7 @@ abstract class CrudManager extends Manager
     {
         $cached = $this->managerCache->load(self::CACHE_ALL_KEY);
 
-        if (!$cached) {
+        if ($cached === null) {
             $this->managerCache->save(
                 self::CACHE_ALL_KEY,
                 $cached = $this->getAll(),
@@ -126,7 +126,7 @@ abstract class CrudManager extends Manager
     {
         $cached = $this->managerCache->load(self::CACHE_PAIRS);
 
-        if (!$cached) {
+        if ($cached === null) {
             $this->managerCache->save(
                 self::CACHE_PAIRS,
                 $cached = $this->getAllPairs($second),
@@ -185,7 +185,7 @@ abstract class CrudManager extends Manager
     {
         $cached = $this->managerCache->load(self::CACHE_COUNT_KEY);
 
-        if (!$cached) {
+        if ($cached === null) {
             $this->managerCache->save(
                 self::CACHE_COUNT_KEY,
                 $cached = $this->getCount(),
@@ -222,7 +222,7 @@ abstract class CrudManager extends Manager
     {
         $cachedPrimaryKey = $this->managerCache->load('primaryKey_' . $this->table);
 
-        if (!$cachedPrimaryKey) {
+        if ($cachedPrimaryKey === null) {
             $data = $this->dibi
                 ->select('COLUMN_NAME')
                 ->from('information_schema.COLUMNS')

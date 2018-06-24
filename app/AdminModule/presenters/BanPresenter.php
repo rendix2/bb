@@ -9,7 +9,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\Controls\BootstrapForm;
-use App\Models\BanManager;
+use App\Models\BansManager;
 
 /**
  * Description of BanPresenter
@@ -19,7 +19,7 @@ use App\Models\BanManager;
 class BanPresenter extends Base\AdminPresenter
 {
     
-    public function __construct(BanManager $manager)
+    public function __construct(BansManager $manager)
     {
         parent::__construct($manager);
     }

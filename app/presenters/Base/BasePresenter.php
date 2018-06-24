@@ -28,5 +28,23 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      * @var string
      */
     const FLASH_MESSAGE_INFO = 'info';
+    
+    /**
+     * @var \App\Models\BansManager $banManager 
+     * @inject
+     */
+    public $banManager;
+    
+    public function startup() {
+        parent::startup();
+        
+        $bans = $this->banManager->getAllCached();
+        
+        foreach($bans as $ban) {
+            if ($ban->ban_email === 'a@a.cz'){
+                $this->error('Banned', Nette\Http\IResponse::S403_FORBIDDEN);
+            }
+        }
+    }
 
 }

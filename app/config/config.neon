@@ -165,8 +165,10 @@ services:
         factory: \App\Models\FaqManager
         inject: yes
     BanManager:
-        factory: \App\Models\BanManager
+        factory: \App\Models\BansManager
         inject: yes
+        setup:
+                - factory
     SmiliesManager:
         factory: \App\Models\SmiliesManager
         inject: yes
