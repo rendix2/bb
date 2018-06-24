@@ -69,7 +69,7 @@ class EmailPresenter extends Base\AdminPresenter
 
     protected function createComponentEditForm()
     {
-        $form = $this->getBootStrapForm();
+        $form = $this->getBootstrapForm();
         $form->setTranslator($this->getAdminTranslator());
 
         $form->addText('mail_subject', 'mail_subject:')->setDisabled();
@@ -80,7 +80,7 @@ class EmailPresenter extends Base\AdminPresenter
 
     protected function createComponentSendForm()
     {
-        $form = $this->getBootStrapForm();
+        $form = $this->getBootstrapForm();
         $form->setTranslator($this->getAdminTranslator());
 
         $form->addText('mail_subject', 'mail_subject:')->setRequired(true);

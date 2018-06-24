@@ -189,6 +189,8 @@ services:
         class: App\Controls\CacheDir(%tempDir%/cache)
     TopicSetting:
         class: App\Controls\TopicsSetting(%topics%)
+    TranslatorFactory:
+        class: App\Services\TranslatorFactory
         
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22

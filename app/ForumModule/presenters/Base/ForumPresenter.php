@@ -36,12 +36,12 @@ abstract class ForumPresenter extends ManagerPresenter
      * @inject
      */
     public $authorizator;
-
+    
     /**
-     * @var AppDir $appDir
+     * @var \App\Services\TranslatorFactory $translatorFactory
      * @inject
      */
-    public $appDir;
+    public $translatorFactory;
 
     /**
      * ForumPresenter constructor.
@@ -59,7 +59,7 @@ abstract class ForumPresenter extends ManagerPresenter
      *
      * @return BootstrapForm
      */
-    public function getBootStrapForm()
+    public function getBootstrapForm()
     {
         return $this->bootStrapForm;
     }
@@ -78,15 +78,9 @@ abstract class ForumPresenter extends ManagerPresenter
     public function startup()
     {
         parent::startup();
-
-        $user = $this->getUser();
         
-        $this->forumTranslator = new Translator(
-            $this->appDir,
-            'Forum',
-            $user->getIdentity()->getData()['lang_file_name']
-        );
-        $user->setAuthorizator($this->authorizator->getAcl());
+        $this->forumTranslator = $this->translatorFactory->forumTranslatorFactory();
+        $this->getUser()->setAuthorizator($this->authorizator->getAcl());
     }
 
     /**

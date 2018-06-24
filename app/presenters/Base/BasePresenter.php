@@ -59,5 +59,9 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             }
         }
     }
-
+    
+    public static function createBootstrapForm()
+    {
+        return new \App\Controls\BootstrapForm();
+    }
 }

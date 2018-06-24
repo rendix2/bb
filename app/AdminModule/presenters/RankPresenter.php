@@ -105,7 +105,7 @@ class RankPresenter extends Base\AdminPresenter
      */
     protected function createComponentEditForm()
     {
-        $form = $this->getBootStrapForm();
+        $form = $this->getBootstrapForm();
         $form->setTranslator($this->getAdminTranslator());
         $form->addText('rank_name', 'Rank name:')->setRequired(true);
         $form->addInteger('rank_from', 'Rank from:');

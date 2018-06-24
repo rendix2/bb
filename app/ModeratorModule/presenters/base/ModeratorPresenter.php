@@ -3,6 +3,7 @@
 namespace App\ModeratorModule;
 
 use App\Presenters\crud\CrudPresenter;
+use Nette\Localization\ITranslator;
 
 /**
  * Description of ModeratorPresenter
@@ -11,7 +12,22 @@ use App\Presenters\crud\CrudPresenter;
  */
 abstract class ModeratorPresenter extends CrudPresenter
 {
-    //put your code here
+    /**
+     *
+     * @var ITranslator $adminTranslator
+     */
+    private $translator;
+    
+    /**
+     * @var \App\Services\TranslatorFactory $translatorFactory
+     * @inject
+     */
+    public $translatorFactory;
+
+    public function getTranslator()
+    {
+        return $this->translator;
+    }
 
     public function startup()
     {
@@ -21,12 +37,14 @@ abstract class ModeratorPresenter extends CrudPresenter
             ->isInRole('moderator')) {
             $this->error('You are not in moderator role!s');
         }
+        
+        $this->translator = $this->translatorFactory->forumTranslatorFactory();
     }
 
     public function beforeRender()
     {
         parent::beforeRender();
 
-        $this->template->setTranslator();
+        $this->template->setTranslator($this->translator);
     }
 }

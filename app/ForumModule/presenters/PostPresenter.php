@@ -499,7 +499,7 @@ class PostPresenter extends Base\ForumPresenter
      */
     protected function createComponentFastReply()
     {
-        $form = $this->getBootStrapForm();
+        $form = $this->getBootstrapForm();
 
         $form->addGroup('Fast reply');
         $form->addTextArea('post_text');
@@ -515,7 +515,7 @@ class PostPresenter extends Base\ForumPresenter
      */
     protected function createComponentReportForm()
     {
-        $form = $this->getBootStrapForm();
+        $form = $this->getBootstrapForm();
         $form->setTranslator($this->getForumTranslator());
 
         $form->addTextArea('report_text', 'Report text:');

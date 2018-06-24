@@ -161,7 +161,7 @@ class GroupPresenter extends Base\AdminPresenter
      */
     protected function createComponentEditForm()
     {
-        $form = $this->getBootStrapForm();
+        $form = $this->getBootstrapForm();
         $form->setTranslator($this->getAdminTranslator());
 
         $form->addText('group_name', 'Group name:')

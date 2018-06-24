@@ -98,10 +98,11 @@ class UserPresenter extends Base\ForumPresenter
      *
      * @param UsersManager     $manager
      */
-    public function __construct(UsersManager $manager, IMailer $mailer) {
+    public function __construct(UsersManager $manager, IMailer $mailer)
+    {
         parent::__construct($manager);
         
-        $this->mailer          = $mailer;
+        $this->mailer = $mailer;
     }
     
     /**
@@ -400,26 +401,10 @@ class UserPresenter extends Base\ForumPresenter
     {
         // TODO
     }
-    
-    protected function createComponentRegisterUser()
-    {
-        $form = new BootstrapForm();
-        $form->addText('user_name', 'User name:');
-        $form->addPassword('user_password', 'User password:');
-        $form->addPassword('user_password2', 'User password for check:');
-        $form->addEmail('user_email', 'User email:');
-        $form->addSelect('user_lang_id', 'User lang:', $this->languageManager->getAllPairsCached('lang_name'));        
-        $form->addSubmit('send', 'User register');
-        
-        $form->onValidate[] = [$this, 'registerOnValidate'];
-        $form->onSuccess[]  = [$this, 'registerUserSuccess'];
-        
-        return $form;
-    }
 
     protected function createComponentSendMailToAdmin()
     {
-        $form = $this->getBootStrapForm();
+        $form = $this->getBootstrapForm();
         
         $form->addText('mail_subject', 'Mail subject:')->setRequired('Subject is required.');
         $form->addTextArea('mail_text', 'Mail text:', null, 10)->setRequired('Text is required.');
@@ -460,7 +445,7 @@ class UserPresenter extends Base\ForumPresenter
      */
     protected function createComponentEditUserForm()
     {
-        $form = $this->getBootStrapForm();
+        $form = $this->getBootstrapForm();
         $form->setTranslator($this->getForumTranslator());
         $form->addText(
             'user_name',
@@ -500,7 +485,7 @@ class UserPresenter extends Base\ForumPresenter
      */
     protected function createComponentResetPasswordForm()
     {
-        $form = $this->getBootStrapForm();
+        $form = $this->getBootstrapForm();
         $form->addEmail(
             'user_email',
             'User email:'
@@ -561,11 +546,6 @@ class UserPresenter extends Base\ForumPresenter
     {
     }
     
-    public function  registerOnValidate(Form $form, ArrayHash $values)
-    {
-        
-    }
-    
     /**
      * @param Form      $form
      * @param ArrayHash $values
@@ -611,15 +591,5 @@ class UserPresenter extends Base\ForumPresenter
         }
         
         $this->redirect('this');
-    }
-       
-    /**
-     * 
-     * @param Form $form
-     * @param ArrayHash $values
-     */
-    public function registerUserSuccess(Form $form, ArrayHash $values)
-    {
-        
     }
 }

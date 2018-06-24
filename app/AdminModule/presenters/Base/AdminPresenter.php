@@ -27,10 +27,10 @@ abstract class AdminPresenter extends CrudPresenter
     private $bootStrapForm;
     
     /**
-     * @var AppDir $appDir 
+     * @var \App\Services\TranslatorFactory $translatorFactory
      * @inject
      */
-    public $appDir;
+    public $translatorFactory;
 
     /**
      * AdminPresenter constructor.
@@ -56,7 +56,7 @@ abstract class AdminPresenter extends CrudPresenter
      *
      * @return BootstrapForm
      */
-    public function getBootStrapForm()
+    public function getBootstrapForm()
     {
         return $this->bootStrapForm;
     }
@@ -78,13 +78,7 @@ abstract class AdminPresenter extends CrudPresenter
             $this->error('You are not admin.');
         }
 
-        $lang_name = $user->getIdentity()->getData()['lang_file_name'];
-
-        $this->adminTranslator = new Translator(
-            $this->appDir,
-            'Admin',
-            $lang_name
-        );
+        $this->adminTranslator = $this->translatorFactory->adminTranslatorFactory();
     }
 
     /**
