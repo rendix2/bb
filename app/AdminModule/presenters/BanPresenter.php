@@ -10,6 +10,7 @@ namespace App\AdminModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Models\BansManager;
+use App\Controls\GridFilter;
 
 /**
  * Description of BanPresenter
@@ -24,9 +25,32 @@ class BanPresenter extends Base\AdminPresenter
         parent::__construct($manager);
     }
 
-    protected function createComponentEditForm()
+    public function startup() {
+        parent::startup();
+        
+        if ($this->getAction() === 'default') {
+            $this->gf->setTranslator($this->getAdminTranslator());
+            
+            $this->gf->addFilter('ban_id', 'ban_id', GridFilter::INT_EQUAL);
+            $this->gf->addFilter('ban_user_name', 'ban_user_name', GridFilter::TEXT_LIKE);
+            $this->gf->addFilter('ban_email', 'ban_email', GridFilter::TEXT_LIKE);
+            $this->gf->addFilter('ban_ip', 'ban_ip', GridFilter::TEXT_LIKE);
+            $this->gf->addFilter(null, null, GridFilter::NOTHING);
+
+            $this->addComponent($this->gf, 'gridFilter');
+        }           
+    }
+
+        protected function createComponentEditForm()
     {
-        $form = new BootstrapForm();
+        $form = $this->getBootstrapForm();
+        $form->setTranslator($this->getAdminTranslator());
+        
+        $form->addText('ban_user_name', 'User name:');
+        $form->addText('ban_email', 'User mail:');
+        $form->addText('ban_ip', 'User IP:');
+        
+        $form = $this->addSubmitB($form);
         
         return $form;
     }

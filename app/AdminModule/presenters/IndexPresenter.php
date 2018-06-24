@@ -17,15 +17,9 @@ use App\Translator;
 class IndexPresenter extends BasePresenter
 {
     /**
-     *
+     * @var int
      */
     const MAX_LOGGED_IN_USERS_TO_SHOW = 200;
-    
-    /**
-     * @var AppDir $appDir
-     * @inject
-     */
-    public $appDir;
     
     /**
      * @var SessionsManager $sessionsManager
@@ -45,9 +39,15 @@ class IndexPresenter extends BasePresenter
      * @inject
      */
     public $cacheDir;
+    
+    /**
+     * @var \App\Services\TranslatorFactory $translatorFactory
+     * @inject
+     */
+    public $translatorFactory;
 
     /**
-     *
+     * start up function
      */
     public function startup()
     {
@@ -62,8 +62,6 @@ class IndexPresenter extends BasePresenter
         if (!$user->isInRole('admin')) {
             $this->error('You are not admin.');
         }
-
-        $lang_name = $user->getIdentity()->getData()['lang_file_name'];
     }
 
     /**
@@ -73,11 +71,7 @@ class IndexPresenter extends BasePresenter
     {
         parent::beforeRender();
         
-        $lang_name = $this->getUser()
-                         ->getIdentity()
-                         ->getData()['lang_file_name'];
-
-         $translator = new Translator($this->appDir, 'admin', $lang_name);
+        $translator = $this->translatorFactory->adminTranslatorFactory();
         
         $this->template->setTranslator($translator);
     }

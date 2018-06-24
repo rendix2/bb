@@ -15,12 +15,11 @@ class LoginPresenter extends \App\Presenters\Base\ManagerPresenter
      */
     public $translator;
 
-
     public function __construct(\App\Models\UsersManager $manager, \App\Controls\AppDir $appDir)
     {
         parent::__construct($manager);
         
-        $this->translator = new \App\Translator($appDir, 'admin', 'czech');
+        $this->translator = $this->translatorFactory->adminTranslatorFactory();
     }
     
     public function startup()

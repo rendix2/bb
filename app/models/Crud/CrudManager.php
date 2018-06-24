@@ -20,7 +20,7 @@ use Tracy\ILogger;
  *
  * @author rendi
  */
-abstract class CrudManager extends Manager
+abstract class CrudManager extends Manager implements ICrudManager
 {
 
     /**

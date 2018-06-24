@@ -18,7 +18,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendi
  */
-class CachePresenter extends BasePresenter
+class CachePresenter extends Base\AdminPresenter
 {
     /**
      * @var ITranslator $translator
@@ -36,6 +36,10 @@ class CachePresenter extends BasePresenter
      * @var Cache $cache
      */
     private $cache;
+    
+    public function __construct(\App\Models\CacheManager $manager) {
+        parent::__construct($manager);
+    }
 
     /**
      * @param IStorage $storage
@@ -69,15 +73,8 @@ class CachePresenter extends BasePresenter
     {
         parent::beforeRender();
 
-        $this->template->setTranslator(
-            $this->translator = new Translator(
-                $this->appDir,
-                'Admin',
-                $this->getUser()
-                    ->getIdentity()
-                    ->getData()['lang_file_name']
-            )
-        );
+        $this->translator = $this->translatorFactory->adminTranslatorFactory();
+        $this->template->setTranslator($this->translator);
     }
 
     /**

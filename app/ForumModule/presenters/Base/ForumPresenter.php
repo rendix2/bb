@@ -29,12 +29,6 @@ abstract class ForumPresenter extends ManagerPresenter
      * @inject
      */
     public $authorizator;
-    
-    /**
-     * @var \App\Services\TranslatorFactory $translatorFactory
-     * @inject
-     */
-    public $translatorFactory;
 
     /**
      * ForumPresenter constructor.

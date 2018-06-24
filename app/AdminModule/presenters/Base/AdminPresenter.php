@@ -21,13 +21,6 @@ abstract class AdminPresenter extends CrudPresenter
      */
     private $adminTranslator;
 
-    
-    /**
-     * @var \App\Services\TranslatorFactory $translatorFactory
-     * @inject
-     */
-    public $translatorFactory;
-
     /**
      * AdminPresenter constructor.
      *

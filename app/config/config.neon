@@ -172,6 +172,9 @@ services:
     SmiliesManager:
         factory: \App\Models\SmiliesManager
         inject: yes
+    CacheManager:
+        factory: \App\Models\CacheManager
+        inject: yes
     PMManager:
         factory: \App\Models\PMManager
         inject: yes

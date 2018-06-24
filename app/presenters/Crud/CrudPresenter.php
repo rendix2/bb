@@ -18,6 +18,14 @@ use Nette\Utils\ArrayHash;
  */
 abstract class CrudPresenter extends ManagerPresenter
 {
+    /**
+     * @var string
+     */
+    const FORM_NAME = 'editForm';
+    
+    /**
+     * @var string
+     */
     const ITEMS_PER_PAGE = 20;
 
     /**
@@ -229,7 +237,7 @@ abstract class CrudPresenter extends ManagerPresenter
                 $this->error('Item #' . $id . ' not found.');
             }
 
-            $this['editForm']->setDefaults($item);
+            $this[self::FORM_NAME]->setDefaults($item);
 
             $this->template->item  = $item;
             $this->template->title = $this->getTitleOnEdit();
@@ -237,7 +245,7 @@ abstract class CrudPresenter extends ManagerPresenter
             $this->template->title = $this->getTitleOnAdd();
             $this->template->item  = [];
 
-            $this['editForm']->setDefaults([]);
+            $this[self::FORM_NAME]->setDefaults([]);
         }
     }
 }

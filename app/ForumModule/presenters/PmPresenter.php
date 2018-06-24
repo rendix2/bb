@@ -14,7 +14,13 @@ class PmPresenter extends \App\Presenters\crud\CrudPresenter
     }
 
     protected function createComponentEditForm() {
-        $form = new \App\Controls\BootstrapForm();
+        $form = self::createBootstrapForm();
+        
+        $form->addHidden('pm_to_user_id');
+        $form->addHidden('pm_from_user_id');
+        $form->addText('pm_subject', 'Subject:');
+        $form->addText('pm_user_name', 'User name:');
+        $form->addTextArea('pm_text', 'Text:');
         
         return $form;
     }

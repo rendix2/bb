@@ -2,21 +2,23 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Models\SmiliesManager;
+
 /**
  * Description of SmiliesPresenter
  *
  * @author rendi
  */
-class SmiliesPresenter extends \App\Presenters\crud\CrudPresenter
+class SmiliesPresenter extends Base\AdminPresenter
 {
-    public function __construct(\App\Models\SmiliesManager $manager)
+    public function __construct(SmiliesManager $manager)
     {
         parent::__construct($manager);
     }
 
     protected function createComponentEditForm()
     {
-        $form = new \App\Controls\BootstrapForm();
+        $form = new $this->getBootstrapForm();
         
         return $form;
     }

@@ -36,7 +36,7 @@ class AvatarPresenter extends Base\AdminPresenter
      */
     public function renderDefault($page = 1)
     {
-        $avatars   = $this->getManager()->getAllFluent()->where('user_avatar IS NOT NULL');
+        $avatars   = $this->getManager()->getAllFluent()->where('[user_avatar] IS NOT NULL');
         $paginator = new PaginatorControl($avatars, 2, 5, $page);
 
         $this->addComponent($paginator, 'paginator');

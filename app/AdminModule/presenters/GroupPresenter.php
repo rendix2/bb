@@ -52,10 +52,7 @@ class GroupPresenter extends Base\AdminPresenter
      */
     public function forumsSuccess(Form $form, ArrayHash $values)
     {
-        $post_add     = $form->getHttpData(
-            $form::DATA_TEXT,
-            'post_add[]'
-        );
+        $post_add     = $form->getHttpData($form::DATA_TEXT,'post_add[]');
         $post_edit    = $form->getHttpData($form::DATA_TEXT, 'post_edit[]');
         $post_delete  = $form->getHttpData($form::DATA_TEXT, 'post_delete[]');
         $topic_add    = $form->getHttpData($form::DATA_TEXT, 'topic_add[]');

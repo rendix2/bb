@@ -66,7 +66,7 @@ class CategoryPresenter extends Base\AdminPresenter
                 $this->error('Item #' . $id . ' not found.');
             }
 
-            $this['editForm']->setDefaults($item);
+            $this[self::FORM_NAME]->setDefaults($item);
 
             $forums = $this->forumsManager->createForums(
                 $this->forumsManager->getForumsByCategoryId($id),
@@ -84,7 +84,7 @@ class CategoryPresenter extends Base\AdminPresenter
             $this->template->title  = $this->getTitleOnAdd();
             $this->template->forums = [];
 
-            $this['editForm']->setDefaults([]);
+            $this[self::FORM_NAME]->setDefaults([]);
         }
     }
     

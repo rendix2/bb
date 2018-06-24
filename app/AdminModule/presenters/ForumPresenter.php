@@ -106,7 +106,7 @@ class ForumPresenter extends Base\AdminPresenter
                 $this->error('Item #' . $id . ' not found.');
             }
 
-            $this['editForm']->setDefaults($item);
+            $this[self::FORM_NAME]->setDefaults($item);
 
             $subForums = $this->getManager()
                 ->createForums($this->getManager()->getForumsByForumParentId($id), (int)$id);
@@ -130,8 +130,6 @@ class ForumPresenter extends Base\AdminPresenter
             }
             
             $moderators = $this->moderatorsManager->getAllJoinedByRight($id);
-            
-            \Tracy\Debugger::barDump($moderators);
 
             $this->template->topicData  = $lastTopic;
             $this->template->lastPost   = $lastPost;
@@ -144,11 +142,7 @@ class ForumPresenter extends Base\AdminPresenter
             $this->template->title      = $this->getTitleOnAdd();
             $this->template->forums     = [];
             $this->template->moderators = [];
-
-            //            $this->template->item = \Nette\Utils\ArrayHash::from(['forum_topic_count' =>null, 'forum_last_post_id' => null, 'forum_last_post_user_id' => null]);
-            //            $this->template->topicData = [];
-            //            $this->template->userData = \Nette\Utils\ArrayHash::from(['user_name' => null]);
-            $this['editForm']->setDefaults([]);
+            $this[self::FORM_NAME]->setDefaults([]);
         }
     }
 

@@ -3,6 +3,7 @@
 namespace App\Presenters\Base;
 
 use Nette;
+use App\Controls\BootstrapForm;
 
 /**
  * Base presenter for all application presenters.
@@ -46,15 +47,49 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      */
     public $httpRequest;
     
-    public function __construct() {
+    /**
+     * @var \App\Services\TranslatorFactory $translatorFactory
+     * @inject
+     */
+    public $translatorFactory;
+    
+    public function __construct()
+    {
         parent::__construct();
         
         $this->bootstrapForm = self::createBootstrapForm();
     }
 
-        public function startup() {
+    public function startup()
+    {
         parent::startup();
         
+        $this->banUser();
+    }
+    
+    /**
+     * create BootstrapForm
+     * 
+     * @return \App\Controls\BootstrapForm
+     */
+    public static function createBootstrapForm()
+    {
+        return new \App\Controls\BootstrapForm();
+    }
+    
+    /**
+     * @return BootstrapForm
+     */
+    public function getBootstrapForm()
+    {
+        return $this->bootstrapForm;
+    }
+    
+    /**
+     * ban user
+     */
+    private function banUser()
+    {
         $bans = $this->banManager->getAllCached();     
         $identity = $this->getUser()->getIdentity();
         
@@ -68,20 +103,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             if ($ban->ban_ip === $this->httpRequest->getRemoteAddress()) {
                 $this->error('Banned', Nette\Http\IResponse::S403_FORBIDDEN);  
             }
-        }
+        }        
     }
-    
-    public static function createBootstrapForm()
-    {
-        return new \App\Controls\BootstrapForm();
-    }
-    
-    /**
-     *
-     * @return BootstrapForm
-     */
-    public function getBootstrapForm()
-    {
-        return $this->bootstrapForm;
-    }    
 }
