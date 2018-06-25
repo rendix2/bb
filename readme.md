@@ -1,4 +1,4 @@
-Nette Sandbox test
+Nette Sandbox test2
 =============
 
 This is a simple pre-packaged and pre-configured application using the [Nette](https://nette.org)
