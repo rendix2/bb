@@ -33,7 +33,8 @@
         "dibi/dibi": "^3.1",
         "ifsnop/mysqldump-php": "2.*",
         "nextras/mail-panel": "^2.3",
-        "netpromotion/profiler": "^1.3"
+        "netpromotion/profiler": "^1.3",
+        "stefangabos/zebra_mptt": "^2.3"
     },
     "require-dev": {
         "nette/tester": "^2.0"

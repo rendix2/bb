@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "17205842e101b4273b85bf7967cc155c",
+    "content-hash": "f6881e2b1d5ea4edb8d22680df25395d",
     "packages": [
         {
             "name": "dibi/dibi",
@@ -1449,6 +1449,53 @@
             "description": "Singleton pattern for PHP",
             "homepage": "https://github.com/petrknap/php-singleton",
             "time": "2016-09-22T07:59:18+00:00"
+        },
+        {
+            "name": "stefangabos/zebra_mptt",
+            "version": "2.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stefangabos/Zebra_Mptt.git",
+                "reference": "9b197fc3311b1ec73bdbd4fc329a6009ecd617ce"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stefangabos/Zebra_Mptt/zipball/9b197fc3311b1ec73bdbd4fc329a6009ecd617ce",
+                "reference": "9b197fc3311b1ec73bdbd4fc329a6009ecd617ce",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "Zebra_Mptt.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Stefan Gabos",
+                    "email": "contact@stefangabos.ro",
+                    "homepage": "https://github.com/stefangabos/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP library providing an implementation of the modified preorder tree traversal algorithm",
+            "homepage": "https://github.com/stefangabos/Zebra_Mptt",
+            "keywords": [
+                "MPTT",
+                "modified",
+                "php",
+                "preorder",
+                "traversal",
+                "tree"
+            ],
+            "time": "2017-05-20T20:27:09+00:00"
         },
         {
             "name": "tracy/tracy",

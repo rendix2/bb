@@ -13,7 +13,14 @@ use Nette\Caching\Cache;
  */
 class CategoriesManager extends Crud\CrudManager
 {
-    /**
+    private $mptt;
+    
+    public function __construct()
+    {
+        $this->mptt = new \Zebra_Mptt($this->dibi, $this->getTable(), $this->getPrimaryKey(), 'category_name', 'category_left', 'category_right', 'category_parent_id');
+    }
+
+        /**
      * @return array
      */
     public function getActiveCategories()
@@ -64,5 +71,12 @@ class CategoriesManager extends Crud\CrudManager
      */
     public function move()
     {
+        //$this->mptt->move(1, 2);
+        //$this->mptt->add(0, 'TEST CAT');
+        //$this->mptt->add(0, 'cat 2');
+        //$this->mptt->add(0, 'CAT 3');
+        
+        //$this->mptt->move(1, 2);
+        \Tracy\Debugger::barDump($this->mptt->get_tree());
     }
 }
