@@ -181,7 +181,8 @@ class UsersManager extends Crud\CrudManager
      */
     public function getTopics($user_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+                ->select('*')
                 ->from(self::TOPICS_TABLE)
                 ->where('[topic_user_id] = %i', $user_id);
     }
@@ -194,7 +195,8 @@ class UsersManager extends Crud\CrudManager
      */
     public function canBeActivated($user_id, $key)
     {
-        return $this->dibi->select('1')
+        return $this->dibi
+            ->select('1')
             ->from($this->getTable())
             ->where('[' . $this->getPrimaryKey() . '] = %i', $user_id)
             ->where('[user_activation_key] = %s', $key)
@@ -240,6 +242,20 @@ class UsersManager extends Crud\CrudManager
             ->from($this->getTable())
             ->where('[user_name] LIKE %~like~', $user_name)
             ->fetchAll();
+    }
+    
+    /**
+     * 
+     * @param string $user_name
+     * @return bool
+     */
+    public function findUserByUserName($user_name)
+    {
+        return $this->dibi
+            ->select('')
+            ->from($this->getTable())
+            ->where('[user_name] = %s', $user_name)
+            ->fetchSingle() === 1;        
     }
 
     /**

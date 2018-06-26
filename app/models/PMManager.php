@@ -7,6 +7,7 @@ namespace App\Models;
  *
  * @author rendi
  */
-class PMManager extends Crud\CrudManager {
+class PMManager extends Crud\CrudManager
+{
 
 }

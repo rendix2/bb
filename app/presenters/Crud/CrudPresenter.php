@@ -215,7 +215,7 @@ abstract class CrudPresenter extends ManagerPresenter
         if (!$paginator->getCount()) {
             $this->flashMessage('No '.$this->getTitle(), self::FLASH_MESSAGE_DANGER);
         }
-         
+       
         $this->template->items      = $items->fetchAll();
         $this->template->title      = $this->getTitleOnDefault();
         $this->template->countItems = $paginator->getCount();

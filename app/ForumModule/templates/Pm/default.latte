@@ -1,0 +1,87 @@
+{block content}
+
+    <div class="col-sm-12">
+        <div class="float-left">
+            <h1>{*{_forum}: {$forum->forum_name}*}</h1>
+        </div>
+        {if $user->isAllowed($presenter->getParameter('forum_id'), 'topic_add')}
+            <div class="float-right">
+                <a class="btn btn-primary" href="{link Post:editTopic, $presenter->getParameter('forum_id')}">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    {_topic_add_new}
+                </a>
+            </div>
+        {/if}
+    </div>
+
+    <div class="col-sm-12">
+        <div class="float-right">
+            {control paginator}
+        </div>
+    </div>
+
+    <div class="col-sm-12 main">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{link Index:default}">{_menu_index}</a></li>
+                <li class="breadcrumb-item">{_menu_forum}</li>
+            </ol>                
+        </div>
+        <div class="float-right">
+            <a href="{link Forum:rules, $presenter->getParameter('forum_id')}">{_rules}</a>
+        </div>
+        <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+            <thead>
+                <tr>
+                    <th>{_topic_id}</th>
+                    <th>{_topic_name}</th>
+                    <th>{_topic_author}</th>
+                    <th>{_topic_post_count}</th>
+                    {if $logViews}
+                    <th>{_topic_count_views}</th>
+                    {/if}
+                    <th></th>
+                    {foreach $topics as $topic}
+                <tr>
+                    <td>
+                        <a href="{link Post:editTopic, $presenter->getParameter('forum_id'), $topic->topic_id}">{$topic->topic_id}</a>
+                        {if $topic->topic_locked}<span class="badge badge-secondary">Locked</span>{/if}
+                    </td>
+                    <td>
+                        <a href="{link Post:all, $presenter->getParameter('forum_id'), $topic->topic_id}">{$topic->topic_name}</a>
+                    </td>
+                    <td>
+                        <a href="{link User:profile, $topic->user_id}">{$topic->user_name}</a>
+                    </td>
+                    <td>{$topic->topic_post_count}</td>
+                    {if $logViews}
+                        <td>{$topic->topic_view_count}</td>
+                    {/if}                    
+                    <td>
+                        {if $user->getId() === $topic->topic_user_id}
+                            <a href="{link Post:deleteTopic, $presenter->getParameter('forum_id'), $topic->topic_id, $presenter->getParameter('page')}"
+                               class="btn btn-danger btn-fa-only" title="Delete topic"><i class="fa fa-remove"
+                                                                                          aria-hidden="true"></i></a>
+                        {/if}
+                        <a href="{link Post:reportTopic, $presenter->getParameter('forum_id'), $topic->topic_id}">Report
+                            topic</a>
+                    </td>
+                </tr>
+                {/foreach}
+        </table>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="float-left">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{link Index:default}">{_menu_index}</a>
+                </li>
+                <li class="breadcrumb-item">{_menu_forum}</li>
+            </ol>             
+        </div>
+        <div class="float-right">
+            {control paginator}
+        </div>
+    </div>
+{/block}

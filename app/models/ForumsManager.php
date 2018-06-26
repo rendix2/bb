@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Dibi\Fluent;
 use Dibi\Row;
+use Dibi\Connection;
 
 /**
  * Description of ForumManager
@@ -12,6 +13,18 @@ use Dibi\Row;
  */
 class ForumsManager extends Crud\CrudManager
 {
+    /**
+     * @var \Zebra_Mptt $mptt
+     */
+    private $mptt;
+    
+    public function __construct(Connection $dibi)
+    {
+        parent::__construct($dibi);
+        
+        $this->mptt = new \Zebra_Mptt($dibi, $this->getTable(), $this->getPrimaryKey(), 'forum_name', 'forum_left', 'forum_right', 'forump_parent_id');
+    }
+    
     /**
      * @param int $category_id
      *

@@ -337,7 +337,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $page
+     * @param int $page
      */
     public function renderList($page)
     {
@@ -502,6 +502,50 @@ class UserPresenter extends Base\ForumPresenter
         return $form;
     }
     
+    /**
+     * 
+     * @return BootstrapForm
+     */
+    protected function createComponentChangeUserNameForm()
+    {
+        $form = self::createBootstrapForm();
+        
+        $form->addText('user_name', 'User name:');
+        $form->addSubmit('send', 'Change user name');
+        $form->onValidate[] = [$this, 'changeUserNameOnValidate'];
+        $form->onSuccess[]  = [$this, 'changeUserNameSuccess'];
+        
+        return $form;
+    }
+    
+    /**
+     * 
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function changeUserNameOnValidate(Form $form, ArrayHash $values)
+    {
+        if (count($this->getManager()->findUserByUserName($values->user_name))) {
+            $form->addError('User already exists.');
+        }
+    }
+    
+    /**
+     * 
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function changeUserNameSuccess(Form $form, ArrayHash $values)
+    {
+        $result = $this->getManager()->update($user->getId(), $values);
+        
+        if ($result) {
+            $this->flashMessage('User name was changed.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
+        }
+    }
+
     /**
      * @param Form      $form
      * @param ArrayHash $values

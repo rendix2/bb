@@ -14,6 +14,9 @@ use Dibi\Connection;
  */
 class CategoriesManager extends Crud\CrudManager
 {
+    /**
+     * @var \Zebra_Mptt $mptt
+     */
     private $mptt;
     
     public function __construct(Connection $dibi)

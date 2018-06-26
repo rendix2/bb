@@ -201,7 +201,8 @@ class TopicsManager extends Crud\CrudManager
      */
     public function findTopicsByTopicName($topic_name)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+            ->select('*')
             ->from($this->getTable())
             ->where('MATCH([topic_name]) AGAINST (%s IN BOOLEAN MODE)', $topic_name)
             ->fetchAll();
