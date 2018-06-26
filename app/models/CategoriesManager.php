@@ -5,6 +5,7 @@ namespace App\Models;
 use dibi;
 use Dibi\Row;
 use Nette\Caching\Cache;
+use Dibi\Connection;
 
 /**
  * Class CategoriesManager
@@ -15,9 +16,11 @@ class CategoriesManager extends Crud\CrudManager
 {
     private $mptt;
     
-    public function __construct()
+    public function __construct(Connection $dibi)
     {
-        $this->mptt = new \Zebra_Mptt($this->dibi, $this->getTable(), $this->getPrimaryKey(), 'category_name', 'category_left', 'category_right', 'category_parent_id');
+        parent::__construct($dibi);
+        
+        $this->mptt = new \Zebra_Mptt($dibi, $this->getTable(), $this->getPrimaryKey(), 'category_name', 'category_left', 'category_right', 'category_parent_id');
     }
 
         /**

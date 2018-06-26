@@ -2,6 +2,8 @@
 
 namespace App\AdminModule\Presenters;
 
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of LoginPresenter
  *
@@ -9,6 +11,12 @@ namespace App\AdminModule\Presenters;
  */
 class LoginPresenter extends \App\Presenters\Base\ManagerPresenter
 {
+    /**
+     * @persistent
+     * @var string $backlink
+     */
+    public $backlink = '';
+    
     /**
      *
      * @var \App\Translator $translator
@@ -18,13 +26,13 @@ class LoginPresenter extends \App\Presenters\Base\ManagerPresenter
     public function __construct(\App\Models\UsersManager $manager, \App\Controls\AppDir $appDir)
     {
         parent::__construct($manager);
-        
-        $this->translator = $this->translatorFactory->adminTranslatorFactory();
     }
     
     public function startup()
     {
         parent::startup();
+        
+                $this->translator = $this->translatorFactory->adminTranslatorFactory();
         
         $this->template->setTranslator($this->translator);
     }
@@ -45,5 +53,39 @@ class LoginPresenter extends \App\Presenters\Base\ManagerPresenter
     public function adminLoginFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
     {
         // check if user is admin    
+        
+        try {
+            $user = $this->getUser();
+            $user->login(
+                $values->user_name,
+                $values->user_password
+            );
+            
+            if (!$this->getUser()->isInRole(\App\Authenticator::ROLES[5])) {
+              throw new \Nette\Security\AuthenticationException('You are not admin.');  
+            }
+            
+            $this->sessionManager->add(
+                ArrayHash::from(
+                    [
+                        'session_key'     => $this->getSession()->getId(),
+                        'session_user_id' => $this->getUser()->getId(),
+                        'session_from'    => time()
+                    ]
+                )
+            );
+            $user->setExpiration('1 hour');
+            $this->flashMessage(
+                'Successfully admin logged in.',
+                self::FLASH_MESSAGE_SUCCESS
+            );
+            $this->restoreRequest($this->backlink);
+            $this->redirect('Index:default');
+        } catch (AuthenticationException $e) {
+            $this->flashMessage(
+                $e->getMessage(),
+                self::FLASH_MESSAGE_DANGER
+            );
+        }
     }
 }
