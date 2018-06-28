@@ -60,7 +60,12 @@ class ChangePasswordControl extends Control
      */
     public function changePasswordSuccess(Form $form, ArrayHash $values)
     {
-        $result = $this->userManager->update($this->user->getId(), ArrayHash::from(['user_password' => Passwords::hash($values->user_password)]));
+        $result = $this->userManager->update(
+            $this->user->getId(),
+            ArrayHash::from(
+                ['user_password' => Passwords::hash($values->user_password)]
+            )
+        );
 
         if ($result) {
             $this->presenter->flashMessage('Password changed.', BasePresenter::FLASH_MESSAGE_SUCCESS);
@@ -78,7 +83,7 @@ class ChangePasswordControl extends Control
             $form->addError('Empty password.');
         }
 
-        if (!$this->user->isInRole('admin') && !$values->user_last_password) {
+        if (!$values->user_last_password && !$this->user->isInRole('admin')) {
             $form->addError('Empty last password.');
         }
 

@@ -139,7 +139,8 @@ class UsersManager extends Crud\CrudManager
      */
     public function getLastUser()
     {
-        return $this->dibi->query('SELECT * FROM [' . self::USERS_TABLE . '] WHERE [user_id] = (SELECT MAX(user_id) FROM [' . self::USERS_TABLE . '])')
+        return $this->dibi
+            ->query('SELECT * FROM [' . self::USERS_TABLE . '] WHERE [user_id] = (SELECT MAX(user_id) FROM [' . self::USERS_TABLE . '])')
                 ->fetch();
     }
 
@@ -194,7 +195,8 @@ class UsersManager extends Crud\CrudManager
      */
     public function canBeActivated($user_id, $key)
     {
-        return $this->dibi->select('1')
+        return $this->dibi
+            ->select('1')
             ->from($this->getTable())
             ->where('[' . $this->getPrimaryKey() . '] = %i', $user_id)
             ->where('[user_activation_key] = %s', $key)

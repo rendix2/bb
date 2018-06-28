@@ -193,7 +193,7 @@ abstract class CrudPresenter extends ManagerPresenter
     }
 
     /**
-     *
+     * @param int $page
      */
     public function renderDefault($page = 1)
     {

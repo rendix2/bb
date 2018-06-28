@@ -36,7 +36,11 @@ class PostPresenter extends ModeratorPresenter
         
         return $this->addSubmitB($form);
     }
-    
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
     public function editFormSuccess(Form $form, ArrayHash $values)
     {
     }

@@ -64,7 +64,7 @@ class UserPresenter extends Base\AdminPresenter
     
     /**
      * moderators manager
-     * 
+     *
      * @var ModeratorsManager $moderatorsManager
      * @inject
      */
@@ -205,7 +205,7 @@ class UserPresenter extends Base\AdminPresenter
         $form->onSuccess[] = [$this, 'moderatorsSuccess'];
 
         return $form;
-    } 
+    }
     
     /**
      * @param Form      $form
@@ -249,5 +249,5 @@ class UserPresenter extends Base\AdminPresenter
         $this->group2UserManager->addByLeft((int) $user_id, array_values($groups));
         $this->flashMessage('Groups saved.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('User:edit', $user_id);
-    }    
+    }
 }

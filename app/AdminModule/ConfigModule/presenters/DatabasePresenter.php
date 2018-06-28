@@ -21,19 +21,30 @@ class DatabasePresenter extends AdminPresenter
     /**
      *
      * @var TempDir $tempDir7
-     * @inject 
+     * @inject
      */
     public $tempDir;
-    
+
+    /**
+     * DatabasePresenter constructor.
+     *
+     * @param UsersManager $manager
+     */
     public function __construct(UsersManager $manager)
     {
         parent::__construct($manager);
     }
 
+    /**
+     * @return mixed|void
+     */
     protected function createComponentEditForm()
     {
     }
-    
+
+    /**
+     *
+     */
     public function renderDumps()
     {
         $sqls = Finder::findFiles('*.sql')->in($this->tempDir->tempDir.'/dumps');
@@ -44,18 +55,27 @@ class DatabasePresenter extends AdminPresenter
         
         $this->template->sqls = $sqls;
     }
-    
+
+    /**
+     * @param string $name
+     */
     public function actionDeleteDump($name)
     {
         FileSystem::delete($this->tempDir->tempDir.'/dumps/'.$name);
         $this->redirect(':Admin:Config:Database:dumps');
     }
-    
+
+    /**
+     * @param $name
+     */
     public function actionDownloadDump($name)
     {
         $this->sendResponse(new FileResponse($this->tempDir->tempDir.'/dumps/'.$name));
     }
 
+    /**
+     *
+     */
     public function actionExportDatabase()
     {
         $config = $this->getManager()->getDibi()->getConfig();

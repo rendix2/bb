@@ -11,14 +11,22 @@ use App\Models\SmiliesManager;
  */
 class SmiliesPresenter extends Base\AdminPresenter
 {
+    /**
+     * SmiliesPresenter constructor.
+     *
+     * @param SmiliesManager $manager
+     */
     public function __construct(SmiliesManager $manager)
     {
         parent::__construct($manager);
     }
 
+    /**
+     * @return mixed
+     */
     protected function createComponentEditForm()
     {
-        $form = new $this->getBootstrapForm();
+        $form = $this->getBootstrapForm();
         
         return $form;
     }

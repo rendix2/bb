@@ -11,11 +11,19 @@ use App\Models\FaqManager;
  */
 class FaqPresenter extends Base\AdminPresenter
 {
+    /**
+     * FaqPresenter constructor.
+     *
+     * @param FaqManager $manager
+     */
     public function __construct(FaqManager $manager)
     {
         parent::__construct($manager);
     }
 
+    /**
+     * @return mixed|void
+     */
     protected function createComponentEditForm()
     {
     }

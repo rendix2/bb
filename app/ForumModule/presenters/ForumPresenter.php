@@ -4,6 +4,7 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Controls\PaginatorControl;
+use App\Controls\TopicsSetting;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Models\TopicsManager;
@@ -33,10 +34,10 @@ final class ForumPresenter extends Base\ForumPresenter
     public $topicManager;
     
     /**
-     * @var \App\Controls\TopicsSetting $topicSetting
+     * @var TopicsSetting $topicSetting
      * @inject
      */
-    public $topicSetting;    
+    public $topicSetting;
 
     /**
      *
@@ -124,7 +125,7 @@ final class ForumPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $forum_id
+     * @param int $forum_id
      */
     public function renderSearchForum($forum_id)
     {

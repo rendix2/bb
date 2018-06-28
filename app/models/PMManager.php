@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
+
 /**
  * Description of PMManager
  *
  * @author rendi
  */
-class PMManager extends Crud\CrudManager {
+class PMManager extends CrudManager
+{
 
 }

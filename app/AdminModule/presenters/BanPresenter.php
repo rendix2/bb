@@ -19,13 +19,21 @@ use App\Controls\GridFilter;
  */
 class BanPresenter extends Base\AdminPresenter
 {
-    
+    /**
+     * BanPresenter constructor.
+     *
+     * @param BansManager $manager
+     */
     public function __construct(BansManager $manager)
     {
         parent::__construct($manager);
     }
 
-    public function startup() {
+    /**
+     *
+     */
+    public function startup()
+    {
         parent::startup();
         
         if ($this->getAction() === 'default') {
@@ -38,10 +46,13 @@ class BanPresenter extends Base\AdminPresenter
             $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
             $this->addComponent($this->gf, 'gridFilter');
-        }           
+        }
     }
 
-        protected function createComponentEditForm()
+    /**
+     * @return BootstrapForm|mixed
+     */
+    protected function createComponentEditForm()
     {
         $form = $this->getBootstrapForm();
         $form->setTranslator($this->getAdminTranslator());

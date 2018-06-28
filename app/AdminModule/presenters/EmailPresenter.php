@@ -9,6 +9,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\Controls\BBMailer;
+use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\MailsManager;
 use App\Models\UsersManager;
@@ -52,6 +53,9 @@ class EmailPresenter extends Base\AdminPresenter
         $this->usersManager = $usersManager;
     }
 
+    /**
+     *
+     */
     public function startup()
     {
         parent::startup();
@@ -67,6 +71,9 @@ class EmailPresenter extends Base\AdminPresenter
         }
     }
 
+    /**
+     * @return BootstrapForm|mixed
+     */
     protected function createComponentEditForm()
     {
         $form = $this->getBootstrapForm();
@@ -78,6 +85,9 @@ class EmailPresenter extends Base\AdminPresenter
         return $form;
     }
 
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentSendForm()
     {
         $form = $this->getBootstrapForm();
@@ -92,6 +102,10 @@ class EmailPresenter extends Base\AdminPresenter
         return $form;
     }
 
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
     public function sendFormSuccess(Form $form, ArrayHash $values)
     {
         $users      = $this->usersManager->getAll();

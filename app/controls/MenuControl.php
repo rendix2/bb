@@ -8,15 +8,16 @@
 
 namespace App\Controls;
 
+use Nette\Application\UI\Control;
+
 /**
  * Description of MenuCotrol
  *
  * @author rendi
  */
-class MenuCotrol extends \Nette\Application\UI\Control
+class MenuControl extends Control
 {
     public function render()
     {
-        
     }
 }
