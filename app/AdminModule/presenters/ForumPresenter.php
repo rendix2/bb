@@ -21,7 +21,7 @@ class ForumPresenter extends Base\AdminPresenter
 {
     /**
      * category manager
-     * 
+     *
      * @var CategoriesManager $categoryManager
      * @inject
      */
@@ -29,7 +29,7 @@ class ForumPresenter extends Base\AdminPresenter
     
     /**
      * user manager
-     * 
+     *
      * @var UsersManager $userManager
      * @inject
      */
@@ -37,7 +37,7 @@ class ForumPresenter extends Base\AdminPresenter
     
     /**
      * topic manager
-     * 
+     *
      * @var TopicsManager $topicManager
      * @inject
      */
@@ -45,7 +45,7 @@ class ForumPresenter extends Base\AdminPresenter
     
     /**
      * post mananager
-     * 
+     *
      * @var PostsManager $postManager
      * @inject
      */

@@ -16,14 +16,14 @@ abstract class ManagerPresenter extends BasePresenter
 {
     /**
      * manager
-     * 
+     *
      * @var Manager $manager
      */
     private $manager;
     
     /**
      * session manager
-     * 
+     *
      * @var SessionsManager $sessionManager
      * @inject
      */

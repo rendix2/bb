@@ -8,6 +8,8 @@
 
 namespace App\Controls;
 
+use App\Models\PMManager;
+
 /**
  * Description of PmControl
  *
@@ -17,7 +19,7 @@ class PmControl extends \Nette\Application\UI\Control
 {
     /**
      *
-     * @var \App\Models\PMManager $pmManager
+     * @var PMManager $pmManager
      * @inject
      */
     public $pmManager;
@@ -29,7 +31,5 @@ class PmControl extends \Nette\Application\UI\Control
     
     public function render()
     {
-        
     }
-    
 }

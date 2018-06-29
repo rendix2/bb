@@ -24,6 +24,9 @@ abstract class ModeratorPresenter extends CrudPresenter
      */
     public $translatorFactory;
 
+    /**
+     * @return ITranslator
+     */
     public function getTranslator()
     {
         return $this->translator;

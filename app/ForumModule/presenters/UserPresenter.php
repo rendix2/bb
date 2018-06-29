@@ -9,6 +9,7 @@ use App\Controls\PaginatorControl;
 use App\Controls\WwwDir;
 use App\Models\LanguagesManager;
 use App\Models\MailsManager;
+use App\Models\ModeratorsManager;
 use App\Models\PostsManager;
 use App\Models\RanksManager;
 use App\Models\ThanksManager;
@@ -76,7 +77,7 @@ class UserPresenter extends Base\ForumPresenter
     public $avatar;
     
     /**
-     * @var \App\Models\ModeratorsManager $moderatorsManager
+     * @var ModeratorsManager $moderatorsManager
      * @inject
      */
      public $moderatorsManager;
@@ -92,11 +93,12 @@ class UserPresenter extends Base\ForumPresenter
      * @inject
      */
     public $mailManager;
-    
+
     /**
      * UserPresenter constructor.
      *
-     * @param UsersManager     $manager
+     * @param UsersManager $manager
+     * @param IMailer      $mailer
      */
     public function __construct(UsersManager $manager, IMailer $mailer)
     {
@@ -353,7 +355,10 @@ class UserPresenter extends Base\ForumPresenter
         $this->template->type  = 1;
         $this->template->users = $users;
     }
-    
+
+    /**
+     * @param $page
+     */
     public function renderModeratorList($page)
     {
         $this->template->setFile(__DIR__.'/../templates/User/list.latte');
@@ -372,7 +377,10 @@ class UserPresenter extends Base\ForumPresenter
         $this->template->type  = 3;
         $this->template->users = $users;
     }
-    
+
+    /**
+     * @param $page
+     */
     public function renderAdminList($page)
     {
                 $this->template->setFile(__DIR__.'/../templates/User/list.latte');
@@ -402,6 +410,9 @@ class UserPresenter extends Base\ForumPresenter
         // TODO
     }
 
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentSendMailToAdmin()
     {
         $form = $this->getBootstrapForm();
@@ -608,7 +619,7 @@ class UserPresenter extends Base\ForumPresenter
     }
     
     /**
-     * 
+     *
      * @param Form $form
      * @param ArrayHash $values
      */

@@ -11,14 +11,24 @@ use Nette\Utils\Finder;
  */
 class CacheDir
 {
-
+    /**
+     * @var CacheDir $cacheDir
+     */
     public $cacheDir;
-    
+
+    /**
+     * CacheDir constructor.
+     *
+     * @param $cacheDir
+     */
     public function __construct($cacheDir)
     {
         $this->cacheDir = $cacheDir;
     }
-    
+
+    /**
+     * @return int
+     */
     public function getDirSize()
     {
         $size = 0;

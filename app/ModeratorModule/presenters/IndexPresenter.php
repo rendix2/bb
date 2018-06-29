@@ -12,9 +12,13 @@ use App\Models\PostsManager;
  */
 class IndexPresenter extends ForumPresenter
 {
+    /**
+     * IndexPresenter constructor.
+     *
+     * @param PostsManager $manager
+     */
     public function __construct(PostsManager $manager)
     {
         parent::__construct($manager);
     }
 }
-

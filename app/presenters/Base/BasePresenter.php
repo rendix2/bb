@@ -2,8 +2,12 @@
 
 namespace App\Presenters\Base;
 
+use App\Models\BansManager;
+use App\Services\TranslatorFactory;
 use Nette;
 use App\Controls\BootstrapForm;
+use Nette\Http\IResponse;
+use Nette\Http\Request;
 
 /**
  * Base presenter for all application presenters.
@@ -31,7 +35,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     const FLASH_MESSAGE_INFO = 'info';
     
     /**
-     * @var \App\Models\BansManager $banManager 
+     * @var BansManager $banManager
      * @inject
      */
     public $banManager;
@@ -39,20 +43,23 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     /**
      * @var BootstrapForm $bootStrapForm
      */
-    private $bootstrapForm;    
+    private $bootstrapForm;
     
     /**
-     * @var \Nette\Http\Request $httpRequest
+     * @var Request $httpRequest
      * @inject
      */
     public $httpRequest;
     
     /**
-     * @var \App\Services\TranslatorFactory $translatorFactory
+     * @var TranslatorFactory $translatorFactory
      * @inject
      */
     public $translatorFactory;
-    
+
+    /**
+     * BasePresenter constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -60,6 +67,9 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         $this->bootstrapForm = self::createBootstrapForm();
     }
 
+    /**
+     *
+     */
     public function startup()
     {
         parent::startup();
@@ -69,12 +79,12 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     
     /**
      * create BootstrapForm
-     * 
-     * @return \App\Controls\BootstrapForm
+     *
+     * @return BootstrapForm
      */
     public static function createBootstrapForm()
     {
-        return new \App\Controls\BootstrapForm();
+        return new BootstrapForm();
     }
     
     /**
@@ -90,19 +100,19 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      */
     private function banUser()
     {
-        $bans = $this->banManager->getAllCached();     
+        $bans     = $this->banManager->getAllCached();
         $identity = $this->getUser()->getIdentity();
         
-        foreach($bans as $ban) {
+        foreach ($bans as $ban) {
             if ($identity && $this->getUser()->isLoggedIn()) {
                 if ($ban->ban_email === $identity->getData()['user_email'] || $ban->ban_user_name === $identity->getData()['user_name']) {
-                    $this->error('Banned', Nette\Http\IResponse::S403_FORBIDDEN);
-                }               
+                    $this->error('Banned', IResponse::S403_FORBIDDEN);
+                }
             }
 
             if ($ban->ban_ip === $this->httpRequest->getRemoteAddress()) {
-                $this->error('Banned', Nette\Http\IResponse::S403_FORBIDDEN);  
+                $this->error('Banned', IResponse::S403_FORBIDDEN);
             }
-        }        
+        }
     }
 }

@@ -27,7 +27,8 @@ class ReportPresenter extends Base\AdminPresenter
         parent::__construct($manager);
     }
     
-    public function startup(){
+    public function startup()
+    {
         parent::startup();
         
         if ($this->getAction() === 'default') {

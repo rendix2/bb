@@ -4,6 +4,7 @@ namespace App\AdminModule\Presenters;
 
 use App\Controls\AppDir;
 use App\Controls\BootstrapForm;
+use App\Models\CacheManager;
 use App\Presenters\Base\BasePresenter;
 use App\Translator;
 use Nette\Application\UI\Form;
@@ -36,8 +37,14 @@ class CachePresenter extends Base\AdminPresenter
      * @var Cache $cache
      */
     private $cache;
-    
-    public function __construct(\App\Models\CacheManager $manager) {
+
+    /**
+     * CachePresenter constructor.
+     *
+     * @param CacheManager $manager
+     */
+    public function __construct(CacheManager $manager)
+    {
         parent::__construct($manager);
     }
 
@@ -79,7 +86,7 @@ class CachePresenter extends Base\AdminPresenter
 
     /**
      * creates form to delete all cache
-     * 
+     *
      * @return BootstrapForm
      */
     protected function createComponentEditForm()
@@ -95,7 +102,7 @@ class CachePresenter extends Base\AdminPresenter
     
     /**
      * deletes ALL cache
-     * 
+     *
      * @param Form      $form
      * @param ArrayHash $values
      */
@@ -104,6 +111,5 @@ class CachePresenter extends Base\AdminPresenter
         $this->cache->clean([Cache::ALL => Cache::ALL]);
         $this->flashMessage('Cache was deleted.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('this');
-    }    
+    }
 }
-

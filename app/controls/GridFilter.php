@@ -5,6 +5,7 @@ namespace App\Controls;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Http\Session;
+use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -60,18 +61,13 @@ class GridFilter extends Control
     private $type;
 
     /**
-     * @var array $orderBy
-     */
-    private $orderBy;
-
-    /**
      * @var Session $session
      */
     private $session;
     
     /**
      *
-     * @var \Nette\Localization\ITranslator $translator
+     * @var ITranslator $translator
      */
     private $translator;
 
@@ -84,10 +80,12 @@ class GridFilter extends Control
 
         $this->form    = new BootstrapForm();
         $this->type    = [];
-        $this->orderBy = [];
     }
-    
-    public function setTranslator(\Nette\Localization\ITranslator $translator)
+
+    /**
+     * @param ITranslator $translator
+     */
+    public function setTranslator(ITranslator $translator)
     {
         $this->translator = $translator;
     }
@@ -121,7 +119,8 @@ class GridFilter extends Control
             $where = [];
 
             foreach ($this->type as $col => $val) {
-                if ( ($val['strint'] === '%in'  && count($this->session->getSection($col)->value)) || ($val['strint'] == '%i' && is_numeric($this->session->getSection($col)->value)) || ( ($val['strint'] == '%s' || $val['strint'] == '%~like~') && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
+                if ( ($val['strint'] === '%in'  && count($this->session->getSection($col)->value)) || ($val['strint']
+                        === '%i' && is_numeric($this->session->getSection($col)->value)) || ( ($val['strint'] === '%s' || $val['strint'] == '%~like~') && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
                     $columnName = $this->checkFTI($col);
 
                     $where[] = [

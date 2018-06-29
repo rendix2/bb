@@ -133,7 +133,7 @@ class IndexPresenter extends Base\ForumPresenter
      */
     public function renderDefault()
     {
-        $categories      = $this->categoriesManager->getActiveCategoriesCached();        
+        $categories      = $this->categoriesManager->getActiveCategoriesCached();
         $result          = [];
         $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
         

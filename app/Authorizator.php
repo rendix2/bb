@@ -49,6 +49,7 @@ class Authorizator
      * @param Models\ForumsManager $forumsManager
      * @param User                 $user
      * @param UsersManager         $userManager
+     * @param ModeratorsManager    $moderatorsManager
      */
     public function __construct(Models\ForumsManager $forumsManager, User $user, UsersManager $userManager, ModeratorsManager $moderatorsManager)
     {
@@ -99,12 +100,12 @@ class Authorizator
         
         foreach ($this->forumManager->getAllCached() as $forum) {
                 $this->acl->deny('guest', '' . $forum->forum_id, Permission::ALL);
-            $this->acl->allow('guest', "" . $forum->forum_id, 'forum_view');
+            $this->acl->allow('guest', '' . $forum->forum_id, 'forum_view');
         }
         
         if ($this->user->isInRole('admin')) {
             foreach ($this->forumManager->getAllCached() as $forum) {
-                $this->acl->allow('admin', "" . $forum->forum_id);
+                $this->acl->allow('admin', '' . $forum->forum_id);
             }
         }
                 

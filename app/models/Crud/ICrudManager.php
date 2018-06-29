@@ -20,32 +20,67 @@ use Tracy\ILogger;
  *
  * @author rendi
  */
-interface ICrudManager {
+interface ICrudManager
+{
+    /**
+     * ICrudManager constructor.
+     *
+     * @param Connection $dibi
+     */
+    public function __construct(Connection $dibi);
 
-    public function __construct(\Dibi\Connection $dibi);
-    
+    /**
+     * @return Row[]
+     */
     public function getAll();
-    
+
+    /**
+     * @return mixed
+     */
     public function getAllCached();
-    
+
+    /**
+     * @return Fluent
+     */
     public function getAllFluent();
-    
+
+    /**
+     * @param string $second
+     *
+     * @return mixed
+     */
     public function getAllPairs($second);
-    
+
+    /**
+     * @param string $second
+     *
+     * @return mixed
+     */
     public function getAllPairsCached($second);
-            
+
+    /**
+     * @param int $item_id
+     *
+     * @return mixed
+     */
     public function getById($item_id);
-    
+
+    /**
+     * @param array $item_id
+     *
+     * @return mixed
+     */
     public function getByIds(array $item_id);
-    
-     public function getCount();
+
+    /**
+     * @return mixed
+     */
+    public function getCount();
      
     /**
      * @return string
      */
     public function getCountCached();
-
-    /**
 
     /**
      * @return string

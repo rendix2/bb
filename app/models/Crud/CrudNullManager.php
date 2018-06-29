@@ -24,45 +24,85 @@ use Tracy\ILogger;
  */
 class CrudNullManager extends CrudManager implements ICrudManager
 {
+    /**
+     * @var Connection $connection
+     */
     private $connection;
-    
-    public function __construct(\Dibi\Connection $dibi)
+
+    /**
+     * CrudNullManager constructor.
+     *
+     * @param Connection $dibi
+     */
+    public function __construct(Connection $dibi)
     {
         $this->connection = $dibi;
     }
-    
+
+    /**
+     * @return array|void
+     */
     public function getAll()
     {
-        
-    }    
-    
-    public function getAllCached()
-    {        
     }
-    
+
+    /**
+     * @return array|mixed|void
+     */
+    public function getAllCached()
+    {
+    }
+
+    /**
+     * @return Fluent
+     */
     public function getAllFluent()
     {
         return $this->connection->select('1');
     }
-    
-    public function getAllPairs($second){
-        
+
+    /**
+     * @param string $second
+     *
+     * @return array|void
+     */
+    public function getAllPairs($second)
+    {
     }
-    
-    public function getAllPairsCached($second){
-        
+
+    /**
+     * @param string $second
+     *
+     * @return array|mixed|void
+     */
+    public function getAllPairsCached($second)
+    {
     }
-            
+
+    /**
+     * @param int $item_id
+     *
+     * @return Row|false|void
+     */
     public function getById($item_id)
     {
     }
-    
+
+    /**
+     * @param array $item_id
+     *
+     * @return array|void
+     */
     public function getByIds(array $item_id)
-    {       
+    {
     }
-    
-     public function getCount(){         
-     }
+
+    /**
+     * @return string|void
+     */
+    public function getCount()
+    {
+    }
      
  /**
      * @return string
@@ -121,7 +161,7 @@ class CrudNullManager extends CrudManager implements ICrudManager
      *
      */
     public function deleteCache()
-    {        
+    {
     }
 
     /**
@@ -152,5 +192,5 @@ class CrudNullManager extends CrudManager implements ICrudManager
      */
     public function updateMulti(array $item_id, ArrayHash $item_data)
     {
-    }     
+    }
 }

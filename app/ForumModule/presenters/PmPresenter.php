@@ -2,14 +2,23 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Controls\BootstrapForm;
+use App\Models\PMManager;
+use App\Presenters\crud\CrudPresenter;
+
 /**
  * Description of PmPresenter
  *
  * @author rendi
  */
-class PmPresenter extends Base\ForumPresenter
+class PmPresenter extends CrudPresenter
 {
-    public function __construct(\App\Models\PMManager $manager)
+    /**
+     * PmPresenter constructor.
+     *
+     * @param PMManager $manager
+     */
+    public function __construct(PMManager $manager)
     {
         parent::__construct($manager);
     }
@@ -30,6 +39,9 @@ class PmPresenter extends Base\ForumPresenter
         }           
     }    
 
+    /**
+     * @return BootstrapForm|
+     */
     protected function createComponentEditForm()
     {
         $form = self::createBootstrapForm();
@@ -42,5 +54,4 @@ class PmPresenter extends Base\ForumPresenter
                
         return $form;
     }
-
 }

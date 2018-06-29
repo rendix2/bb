@@ -51,6 +51,11 @@ abstract class MNManager extends Manager
         }
     }
 
+    /**
+     * @param $left_id
+     *
+     * @return Fluent
+     */
     public function getAllFLuentByLeft($left_id)
     {
         return $this->getAllFluent()
@@ -165,7 +170,7 @@ abstract class MNManager extends Manager
     {
         return $this->getFluentJoinedByRight($right_id)
             ->fetchPairs(null, $this->left->getPrimaryKey());
-    }    
+    }
 
     /**
      * @param int $left_id
@@ -197,6 +202,9 @@ abstract class MNManager extends Manager
             ->fetchAll();
     }
 
+    /**
+     * @return Fluent
+     */
     private function getCountFluent()
     {
         return $this->dibi
@@ -331,7 +339,7 @@ abstract class MNManager extends Manager
 
     /**
      * checks if relations exists
-     * 
+     *
      * @param int $left_id
      * @param int $right_id
      *
@@ -349,7 +357,7 @@ abstract class MNManager extends Manager
 
     /**
      * deletes relation
-     * 
+     *
      * @param int $left_id
      * @param int $right_id
      *
@@ -366,7 +374,7 @@ abstract class MNManager extends Manager
 
     /**
      * returns all table
-     * 
+
      * @return array
      */
     public function getAll()

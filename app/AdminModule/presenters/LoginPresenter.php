@@ -2,6 +2,8 @@
 
 namespace App\AdminModule\Presenters;
 
+use Nette\Application\UI\Form;
+use Nette\Security\AuthenticationException;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -23,6 +25,12 @@ class LoginPresenter extends \App\Presenters\Base\ManagerPresenter
      */
     public $translator;
 
+    /**
+     * LoginPresenter constructor.
+     *
+     * @param \App\Models\UsersManager $manager
+     * @param \App\Controls\AppDir     $appDir
+     */
     public function __construct(\App\Models\UsersManager $manager, \App\Controls\AppDir $appDir)
     {
         parent::__construct($manager);
@@ -37,6 +45,9 @@ class LoginPresenter extends \App\Presenters\Base\ManagerPresenter
         $this->template->setTranslator($this->translator);
     }
 
+    /**
+     * @return \App\Controls\BootstrapForm
+     */
     protected function createComponentAdminLoginForm()
     {
         $form = new \App\Controls\BootstrapForm();
@@ -49,11 +60,16 @@ class LoginPresenter extends \App\Presenters\Base\ManagerPresenter
         
         return $form;
     }
-    
-    public function adminLoginFormSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
+
+    /**
+     * @param Form $form
+     * @param ArrayHash                  $values
+     *
+     * @throws AuthenticationException
+     */
+    public function adminLoginFormSuccess(Form $form, ArrayHash $values)
     {
-        // check if user is admin    
-        
+        // check if user is admin
         try {
             $user = $this->getUser();
             $user->login(
@@ -62,7 +78,7 @@ class LoginPresenter extends \App\Presenters\Base\ManagerPresenter
             );
             
             if (!$this->getUser()->isInRole(\App\Authenticator::ROLES[5])) {
-              throw new \Nette\Security\AuthenticationException('You are not admin.');  
+              throw new AuthenticationException('You are not admin.');
             }
             
             $this->sessionManager->add(

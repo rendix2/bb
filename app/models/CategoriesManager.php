@@ -6,6 +6,7 @@ use dibi;
 use Dibi\Row;
 use Nette\Caching\Cache;
 use Dibi\Connection;
+use Zebra_Mptt;
 
 /**
  * Class CategoriesManager
@@ -15,15 +16,32 @@ use Dibi\Connection;
 class CategoriesManager extends Crud\CrudManager
 {
     /**
+<<<<<<< HEAD
      * @var \Zebra_Mptt $mptt
+=======
+     * @var Zebra_Mptt $mptt
+>>>>>>> origin/master
      */
     private $mptt;
-    
+
+    /**
+     * CategoriesManager constructor.
+     *
+     * @param Connection $dibi
+     */
     public function __construct(Connection $dibi)
     {
         parent::__construct($dibi);
         
-        $this->mptt = new \Zebra_Mptt($dibi, $this->getTable(), $this->getPrimaryKey(), 'category_name', 'category_left', 'category_right', 'category_parent_id');
+        $this->mptt = new Zebra_Mptt(
+            $dibi,
+            $this->getTable(),
+            $this->getPrimaryKey(),
+            'category_name',
+            'category_left',
+            'category_right',
+            'category_parent_id'
+        );
     }
 
         /**

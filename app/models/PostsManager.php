@@ -225,7 +225,7 @@ class PostsManager extends Crud\CrudManager
         $watch = [];
 
         if (!$topicWatching) {
-            $this->topicWatchManager->add([$user_id],$item_data->post_topic_id);
+            $this->topicWatchManager->add([$user_id], $item_data->post_topic_id);
             $watch = ['user_watch_count%sql' => 'user_watch_count + 1'];
         }
 
