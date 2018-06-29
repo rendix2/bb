@@ -1,20 +1,61 @@
+-- phpMyAdmin SQL Dump
+-- version 4.7.4
+-- https://www.phpmyadmin.net/
+--
+-- Počítač: 127.0.0.1
+-- Vytvořeno: Pát 29. čen 2018, 21:05
+-- Verze serveru: 10.1.30-MariaDB
+-- Verze PHP: 5.6.33
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Databáze: `bb`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `bans`
+--
+
+CREATE TABLE `bans` (
+  `ban_id` int(11) NOT NULL COMMENT 'ban id',
+  `ban_email` varchar(255) NOT NULL COMMENT 'banned email',
+  `ban_ip` varchar(255) NOT NULL COMMENT 'banned ip',
+  `ban_user_name` varchar(255) NOT NULL COMMENT 'banned user name'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `categories`
+--
 
 CREATE TABLE `categories` (
   `category_id` int(11) NOT NULL COMMENT 'category id',
   `category_name` varchar(255) NOT NULL COMMENT 'category name',
   `category_order` int(11) NOT NULL COMMENT 'order of categories',
   `category_parent_id` int(11) DEFAULT NULL COMMENT 'parent of category',
-  `category_active` tinyint(1) NOT NULL COMMENT 'is category active?'
+  `category_active` tinyint(1) NOT NULL COMMENT 'is category active?',
+  `category_left` int(11) NOT NULL COMMENT 'mptt_left',
+  `category_right` int(11) NOT NULL COMMENT 'mptt_right'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `categories` (`category_id`, `category_name`, `category_order`, `category_parent_id`, `category_active`) VALUES
-(1, 'TEST CAT', 1, 0, 1),
-(2, 'cat 2', 2, 0, 1),
-(3, 'CAT 3', 3, 0, 1);
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `forums`
+--
 
 CREATE TABLE `forums` (
   `forum_id` int(11) NOT NULL COMMENT 'forum id',
@@ -24,28 +65,109 @@ CREATE TABLE `forums` (
   `forum_active` int(11) NOT NULL COMMENT 'is forum active?',
   `forum_parent_id` int(11) NOT NULL COMMENT 'parent of forum',
   `forum_order` int(11) NOT NULL COMMENT 'order of forum',
-  `forum_last_topic_id` int(11) NOT NULL COMMENT 'last topic',
-  `forum_last_post_id` int(11) NOT NULL COMMENT 'id of last post in this forum',
-  `forum_last_post_user_id` int(11) NOT NULL COMMENT 'id of user who add lastet pst',
-  `forum_thank` tinyint(1) NOT NULL COMMENT 'forum can thank?'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `forum_thank` tinyint(1) NOT NULL COMMENT 'forum can thank?',
+  `forum_topic_count` int(11) NOT NULL COMMENT 'topic count',
+  `forum_post_add` tinyint(1) NOT NULL COMMENT 'can add posts',
+  `forum_post_delete` tinyint(1) NOT NULL COMMENT 'can delete posts by self',
+  `forum_post_update` tinyint(1) NOT NULL COMMENT 'can post update',
+  `forum_topic_add` tinyint(1) NOT NULL COMMENT 'can add topic',
+  `forum_topic_update` tinyint(1) NOT NULL COMMENT 'can update topic',
+  `forum_topic_delete` tinyint(1) NOT NULL COMMENT 'can delete topic',
+  `forum_fast_reply` int(11) NOT NULL COMMENT 'can add fast reply (post)',
+  `forum_rules` text NOT NULL COMMENT 'rules of forum',
+  `forum_left` int(255) NOT NULL COMMENT 'mptt_left',
+  `forum_right` int(255) NOT NULL COMMENT 'mptt_right'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `forums` (`forum_id`, `forum_category_id`, `forum_name`, `forum_description`, `forum_active`, `forum_parent_id`, `forum_order`, `forum_last_topic_id`, `forum_last_post_id`, `forum_last_post_user_id`, `forum_thank`) VALUES
-(1, 2, 'TEST FORUM', 'pepiúawdaw', 1, 0, 0, 0, 0, 0, 1),
-(2, 1, 'FORUM 2, cat 1 ', '13435', 1, 0, 0, 35, 84, 1, 0),
-(3, 2, 'FORUC 1, cat2', '35', 1, 0, 0, 32, 62, 1, 0),
-(4, 2, 'Forum 2', 'Forum 2', 1, 3, 0, 0, 66, 1, 0),
-(5, 1, 'SUB FORUM test1', '135', 1, 2, 1, 34, 65, 1, 1);
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `forums2groups`
+--
+
+CREATE TABLE `forums2groups` (
+  `id` int(11) NOT NULL,
+  `forum_id` int(11) NOT NULL COMMENT 'forum id',
+  `group_id` int(11) NOT NULL COMMENT 'group id',
+  `post_add` tinyint(1) NOT NULL COMMENT 'can add post',
+  `post_edit` tinyint(1) NOT NULL COMMENT 'can edit post',
+  `post_delete` tinyint(1) NOT NULL COMMENT 'can delete post',
+  `topic_add` tinyint(1) NOT NULL COMMENT 'can add topic',
+  `topic_edit` tinyint(1) NOT NULL COMMENT 'can edit topic',
+  `topic_delete` tinyint(1) NOT NULL COMMENT 'can delete topic',
+  `topic_thank` tinyint(1) NOT NULL COMMENT 'can thank topic'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='say which group has access into forum';
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `groups`
+--
+
+CREATE TABLE `groups` (
+  `group_id` int(11) NOT NULL COMMENT 'group id',
+  `group_name` varchar(255) NOT NULL COMMENT 'group name'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='groups';
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `languages`
+--
 
 CREATE TABLE `languages` (
   `lang_id` int(11) NOT NULL COMMENT 'lang id',
   `lang_name` varchar(255) NOT NULL COMMENT 'lang name',
-  `lang_file_name` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `lang_file_name` varchar(255) NOT NULL COMMENT 'name of lang file'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='languages';
 
-INSERT INTO `languages` (`lang_id`, `lang_name`, `lang_file_name`) VALUES
-(1, 'English', 'english'),
-(2, 'Čeština', 'czech');
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `mails`
+--
+
+CREATE TABLE `mails` (
+  `mail_id` int(11) NOT NULL COMMENT 'mail id',
+  `mail_from` varchar(255) DEFAULT NULL COMMENT 'mail from',
+  `mail_to` text NOT NULL COMMENT 'mail recepients',
+  `mail_subject` varchar(255) NOT NULL COMMENT 'mail suibject',
+  `mail_time` int(11) NOT NULL COMMENT 'mail sent time',
+  `mail_text` text NOT NULL COMMENT 'mail text'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='history of sent mails';
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `moderators`
+--
+
+CREATE TABLE `moderators` (
+  `moderator_id` int(11) NOT NULL COMMENT 'moderator id',
+  `user_id` int(11) NOT NULL COMMENT 'user id',
+  `forum_id` int(11) NOT NULL COMMENT 'forum id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='moderators of forum';
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `pm`
+--
+
+CREATE TABLE `pm` (
+  `pm_id` int(255) NOT NULL COMMENT 'pm id',
+  `pm_user_id_from` int(255) NOT NULL COMMENT 'pm user id from',
+  `pm_user_id_to` int(255) NOT NULL COMMENT 'pm user id to',
+  `pm_subject` varchar(255) NOT NULL COMMENT 'pm subject',
+  `pm_text` text NOT NULL COMMENT 'pm text',
+  `pm_status` enum('sent','unread','read','') NOT NULL COMMENT 'pm status'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='private messages';
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `posts`
+--
 
 CREATE TABLE `posts` (
   `post_id` int(11) NOT NULL COMMENT 'post id',
@@ -56,82 +178,64 @@ CREATE TABLE `posts` (
   `post_title` varchar(255) NOT NULL COMMENT 'post title',
   `post_text` text NOT NULL COMMENT 'post text',
   `post_add_time` int(11) NOT NULL COMMENT 'time of add this post',
+  `post_add_user_ip` varchar(255) NOT NULL COMMENT 'ip  address of poster',
+  `post_edit_user_ip` varchar(255) NOT NULL,
   `post_edit_count` int(11) NOT NULL COMMENT 'count of editations',
-  `post_last_edit_time` int(11) NOT NULL COMMENT 'time of last edit'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `post_last_edit_time` int(11) NOT NULL COMMENT 'time of last edit',
+  `post_locked` tinyint(1) NOT NULL COMMENT 'locked post - could not be edited'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='posts';
 
-INSERT INTO `posts` (`post_id`, `post_topic_id`, `post_forum_id`, `post_user_id`, `post_forum_category_id`, `post_title`, `post_text`, `post_add_time`, `post_edit_count`, `post_last_edit_time`) VALUES
-(2, 0, 2, 0, 0, 'N|EW', 'nEWSWWW', 0, 0, 0),
-(3, 0, 2, 0, 0, 'N|EW', 'nEWSWWW', 0, 0, 0),
-(5, 8, 2, 0, 0, 'TEST LAST TOPIC', 'sadawdawdaw', 0, 0, 0),
-(6, 8, 0, 1, 1, 'dawdwawdwa', 'wqdawdawdawd', 0, 0, 0),
-(7, 0, 2, 0, 0, 'UUUUUUUUUUUu', 'UUUUUUUUUUUUUUUU', 0, 0, 0),
-(8, 0, 2, 0, 0, 'UUUUUUUUUUUu', 'UUUUUUUUUUUUUUUU', 0, 0, 0),
-(9, 0, 2, 0, 0, 'PPPPPPPPPPPp', 'PPPPPPPPPPPPPPP', 0, 0, 0),
-(10, 0, 2, 1, 0, 'LKKK', 'KKKK', 0, 0, 0),
-(11, 0, 2, 1, 0, 'LKKK', 'KJKKK2', 0, 0, 0),
-(12, 13, 2, 1, 0, 'CCCCCCCCCC', 'CCCCCCCCCCCCCCCCCC', 0, 0, 0),
-(14, 0, 2, 1, 0, 'awdaw', 'wadwadawdawdaw', 0, 0, 0),
-(15, 0, 2, 1, 0, 'sssssssss', 'sssssssssssssss', 0, 0, 0),
-(17, 8, 2, 1, 0, 'awdawdwa', 'awdawdawdawdawdfawdfawd', 0, 0, 0),
-(18, 8, 2, 1, 0, 'awdawd', 'wdawdawdaw', 0, 0, 0),
-(19, 8, 2, 1, 0, '', 'ddddddddddddd', 0, 0, 0),
-(20, 8, 2, 1, 0, 'awdawd', '45\nawwd\nae', 0, 0, 0),
-(21, 8, 2, 1, 0, 'awdwa', 'qdawdaewdawd', 0, 0, 0),
-(24, 15, 2, 1, 0, 'f', 'f', 0, 0, 0),
-(31, 20, 2, 1, 0, 'awdawd', 'wdadawd\n', 0, 0, 0),
-(34, 22, 4, 1, 0, 'prvni téma', 'prvni téma', 0, 0, 0),
-(35, 22, 4, 1, 0, 'druhy post', 'druhy post', 0, 0, 0),
-(36, 22, 4, 1, 0, 'zzzzzzzzzzz', 'z', 0, 0, 0),
-(37, 22, 4, 1, 0, 'ssssss', 'adawdaw', 0, 0, 0),
-(38, 22, 4, 1, 0, 'zzz', 'zz', 0, 0, 0),
-(39, 22, 4, 1, 0, 'awdw', 'qwwdwad', 0, 0, 0),
-(40, 23, 2, 1, 0, 'adaw', 'QDAWDWA', 0, 0, 0),
-(41, 24, 2, 1, 0, 'adaw', 'QDAWDWA', 0, 0, 0),
-(44, 26, 2, 1, 0, 'awd', 'wwadawdawdwdadwd', 0, 0, 0),
-(45, 26, 2, 1, 0, 'ssssssssss', 'wsdadaw', 0, 0, 0),
-(46, 26, 2, 1, 0, 'awd', 'wad', 0, 0, 0),
-(47, 26, 2, 1, 0, 'awdaw', 'wqdawdaw', 0, 0, 0),
-(50, 28, 2, 1, 0, 'awdwa', 'wdwadw', 1517262574, 0, 0),
-(51, 29, 2, 1, 0, 'awd', 'awda', 1517265770, 0, 0),
-(53, 30, 2, 1, 0, 'awdwa', 'wadwd\n', 1517266244, 0, 0),
-(57, 5, 2, 2, 0, 'DWA', 'ASasassssssssssdsc', 1517331108, 4, 1517348008),
-(58, 5, 2, 1, 0, 'saf', 'wafafswa', 1517331116, 0, 0),
-(59, 23, 2, 1, 0, 'awd', 'awdwad', 1517336059, 0, 0),
-(60, 23, 2, 1, 0, 'awdawdw', 'awadaw', 1517336069, 0, 0),
-(61, 23, 2, 1, 0, 'awdaw', 'qhlhjkawdaw', 1517336253, 1, 1517336260),
-(62, 32, 3, 1, 0, 'awdaw', 'asawd', 1517341976, 0, 0),
-(63, 33, 2, 1, 0, 'wwef+weafa;', 'afwa', 1517347734, 0, 0),
-(65, 34, 5, 1, 0, 'awdwa', 'awwad', 1517354011, 0, 0),
-(66, 22, 4, 1, 0, 'awdawdaw', 'awdawdwadawdwdddddddddddddddd', 1517432134, 0, 0),
-(67, 35, 2, 1, 0, 'adaw', 'awwdaw', 1517737194, 0, 0),
-(68, 23, 2, 1, 0, 'awd', 'awdwawd', 1517781806, 0, 0),
-(69, 23, 2, 1, 0, 'sdaw;', 'awdwa', 1517781815, 0, 0),
-(70, 23, 2, 1, 0, 'awdwd', 'sda', 1517781822, 0, 0),
-(71, 23, 2, 1, 0, 'awd', 'awdwd', 1517781827, 0, 0),
-(72, 23, 2, 1, 0, 'awdw', 'awdw', 1517781833, 0, 0),
-(73, 23, 2, 1, 0, 'awd', 'adwa', 1517781838, 0, 0),
-(74, 23, 2, 1, 0, 'awdwa', 'wadwd', 1517781845, 0, 0),
-(75, 23, 2, 1, 0, 'awdwa', 'wadaw', 1517939870, 0, 0),
-(76, 23, 2, 1, 0, 'awd', 'wada', 1517939876, 0, 0),
-(77, 23, 2, 1, 0, 'awd', 'awdw', 1517939880, 0, 0),
-(78, 23, 2, 1, 0, 'awdaw', 'awdawdaw', 1517939886, 0, 0),
-(79, 23, 2, 1, 0, 'awd', 'awdawd', 1517939891, 0, 0),
-(80, 23, 2, 1, 0, 'awdwa', 'wawdadwa', 1517939897, 0, 0),
-(81, 23, 2, 1, 0, 'awd', 'wawdw', 1517939901, 0, 0),
-(82, 23, 2, 1, 0, 'awdw', 'wadawd', 1517939905, 0, 0),
-(83, 23, 2, 1, 0, 'awdw', 'waawd', 1517939910, 0, 0),
-(84, 23, 2, 1, 0, 'awdwa', 'wadw', 1517939914, 0, 0);
+-- --------------------------------------------------------
 
-CREATE TABLE `roles` (
-  `role_id` int(11) NOT NULL COMMENT 'role id',
-  `role_name` varchar(255) NOT NULL COMMENT 'role  name'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+--
+-- Struktura tabulky `ranks`
+--
 
-INSERT INTO `roles` (`role_id`, `role_name`) VALUES
-(1, 'Admin'),
-(10, 'Moderator'),
-(12, 'awd');
+CREATE TABLE `ranks` (
+  `rank_id` int(11) NOT NULL COMMENT 'rank id',
+  `rank_name` varchar(255) NOT NULL COMMENT 'rank name',
+  `rank_file` varchar(255) DEFAULT NULL COMMENT 'file name of rank image',
+  `rank_from` int(11) DEFAULT NULL COMMENT 'rank from number of posts',
+  `rank_to` int(11) DEFAULT NULL COMMENT 'rank to number of posts',
+  `rank_special` tinyint(1) NOT NULL COMMENT 'is rank special? (no using rank_to and rank_from)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ranks';
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `reports`
+--
+
+CREATE TABLE `reports` (
+  `report_id` int(11) NOT NULL COMMENT 'report id',
+  `report_user_id` int(11) NOT NULL COMMENT 'reporter user id',
+  `report_forum_id` int(11) NOT NULL COMMENT 'report forum id',
+  `report_topic_id` int(11) NOT NULL COMMENT 'reported topic id',
+  `report_post_id` int(11) DEFAULT NULL COMMENT 'reported post id',
+  `report_text` text NOT NULL COMMENT 'reports text',
+  `report_time` int(11) NOT NULL COMMENT 'report time',
+  `report_status` int(11) NOT NULL COMMENT 'report status'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='reports';
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `sessions`
+--
+
+CREATE TABLE `sessions` (
+  `session_id` int(11) NOT NULL COMMENT 'session id for this table',
+  `session_user_id` int(11) NOT NULL COMMENT 'user id',
+  `session_key` varchar(255) NOT NULL COMMENT 'session id generated by php',
+  `session_from` int(11) NOT NULL COMMENT 'when session started',
+  `session_last_activity` int(11) NOT NULL COMMENT 'when was last page reload'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='sessions';
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `thanks`
+--
 
 CREATE TABLE `thanks` (
   `thank_id` int(11) NOT NULL COMMENT 'thank id',
@@ -140,32 +244,13 @@ CREATE TABLE `thanks` (
   `thank_user_id` int(11) NOT NULL COMMENT 'user id',
   `thank_time` int(11) NOT NULL COMMENT 'thank time',
   `thank_user_ip` varchar(100) NOT NULL COMMENT 'user IP'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='tanks for topics';
 
-INSERT INTO `thanks` (`thank_id`, `thank_forum_id`, `thank_topic_id`, `thank_user_id`, `thank_time`, `thank_user_ip`) VALUES
-(1, 2, 12, 1, 1517345498, ''),
-(2, 2, 5, 1, 1517345899, ''),
-(3, 2, 7, 1, 1517345901, ''),
-(4, 2, 8, 1, 1517345903, ''),
-(5, 2, 9, 1, 1517345906, ''),
-(6, 2, 10, 1, 1517345910, ''),
-(7, 2, 11, 1, 1517345912, ''),
-(8, 2, 13, 1, 1517345923, ''),
-(9, 2, 14, 1, 1517345935, ''),
-(10, 2, 15, 1, 1517345938, ''),
-(11, 2, 17, 1, 1517345942, ''),
-(12, 2, 20, 1, 1517345945, ''),
-(13, 2, 23, 1, 1517345951, ''),
-(14, 2, 24, 1, 1517345953, ''),
-(15, 2, 25, 1, 1517345956, ''),
-(16, 2, 26, 1, 1517345958, ''),
-(17, 2, 27, 1, 1517345961, ''),
-(18, 2, 28, 1, 1517345965, ''),
-(19, 2, 29, 1, 1517345967, ''),
-(20, 2, 33, 1, 1517347739, ''),
-(21, 5, 34, 1, 1517354002, ''),
-(22, 3, 32, 1, 1517433191, ''),
-(23, 2, 35, 1, 1517737200, '');
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `topics`
+--
 
 CREATE TABLE `topics` (
   `topic_id` int(11) NOT NULL COMMENT ' topic id',
@@ -175,30 +260,27 @@ CREATE TABLE `topics` (
   `topic_name` varchar(255) NOT NULL COMMENT 'topic name',
   `topic_post_count` int(11) NOT NULL COMMENT 'count of posts in topic',
   `topic_add_time` int(11) NOT NULL COMMENT 'time of add this topic',
-  `topic_last_post_id` int(11) NOT NULL COMMENT 'id of last post',
-  `topic_last_post_user_id` int(11) NOT NULL COMMENT 'id of user who add add last post in topic'
+  `topic_locked` tinyint(1) NOT NULL COMMENT 'is topic locked?',
+  `topic_view_count` int(11) NOT NULL COMMENT 'count of view topic'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `topics_watch`
+--
+
+CREATE TABLE `topics_watch` (
+  `id` int(11) NOT NULL,
+  `topic_id` int(11) NOT NULL COMMENT 'topic id',
+  `user_id` int(11) NOT NULL COMMENT 'user id'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `topics` (`topic_id`, `topic_user_id`, `topic_forum_id`, `topic_forum_category_id`, `topic_name`, `topic_post_count`, `topic_add_time`, `topic_last_post_id`, `topic_last_post_user_id`) VALUES
-(5, 2, 2, 0, 'N|EW', 2, 0, 58, 1),
-(8, 4165, 2, 0, 'TEST LAST TOPIC', 2, 0, 0, 0),
-(9, 8, 2, 0, 'PPPPPPPPPPPp', 1, 0, 0, 0),
-(11, 5453, 2, 0, 'LKKK', 1, 0, 0, 0),
-(13, 7, 2, 0, 'CCCCCCCCCC', 1, 0, 0, 0),
-(15, 54, 2, 0, 'f', 1, 0, 0, 0),
-(20, 35, 2, 0, 'awdawd', 1, 0, 0, 0),
-(22, 1, 4, 0, 'prvni téma', 7, 0, 66, 1),
-(23, 4, 2, 0, 'adaw', 21, 0, 84, 1),
-(24, 545, 2, 0, 'adaw', 1, 0, 0, 1),
-(26, 6, 2, 0, 'awd', 4, 1517261449, 47, 1),
-(28, 345, 2, 0, 'awdwa', 1, 1517262574, 50, 1),
-(29, 1, 2, 0, 'awd', 2, 1517265770, 52, 1),
-(30, 3535, 2, 0, 'awdwa', 1, 1517266244, 53, 1),
-(31, 35, 3, 0, 'awdaw', 1, 1517341948, 0, 1),
-(32, 3, 3, 0, 'awdaw', 1, 1517341976, 62, 1),
-(33, 1, 2, 0, 'wwef+weafa;', 1, 1517347734, 63, 1),
-(34, 1, 5, 0, 'awdw', 2, 1517353999, 65, 1),
-(35, 1, 2, 0, 'adaw', 1, 1517737194, 67, 1);
+-- --------------------------------------------------------
+
+--
+-- Struktura tabulky `users`
+--
 
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL COMMENT 'user id',
@@ -210,86 +292,311 @@ CREATE TABLE `users` (
   `user_post_count` int(11) NOT NULL COMMENT 'count of users posts',
   `user_topic_count` int(11) NOT NULL COMMENT 'count of users topics',
   `user_thank_count` int(11) NOT NULL COMMENT 'count of thanks',
+  `user_watch_count` int(11) NOT NULL COMMENT 'count of watched topics',
   `user_lang_id` int(11) NOT NULL COMMENT 'lang_id',
-  `user_role_id` int(11) NOT NULL
+  `user_role_id` int(11) NOT NULL COMMENT 'role id',
+  `user_avatar` varchar(512) DEFAULT NULL COMMENT 'file name of users avatar',
+  `user_register_time` int(11) NOT NULL COMMENT 'time when users registration was done',
+  `user_last_login_time` int(11) NOT NULL COMMENT 'user last login time'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `users` (`user_id`, `user_name`, `user_password`, `user_email`, `user_signature`, `user_active`, `user_post_count`, `user_topic_count`, `user_thank_count`, `user_lang_id`, `user_role_id`) VALUES
-(1, 'user', '$2y$10$cLkcR5WvfrG6DqmYBi0AT./TXWQKNiIYNYCaCRwUrwonByKuVYcsq', 'user@user.com', '', 1, 0, 0, 0, 2, 1);
+-- --------------------------------------------------------
 
-CREATE TABLE `users2roles` (
+--
+-- Struktura tabulky `users2forums`
+--
+
+CREATE TABLE `users2forums` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL COMMENT 'user id',
-  `role_id` int(11) NOT NULL COMMENT 'role id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `forum_id` int(11) NOT NULL COMMENT 'forum id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='says who can into which forum';
 
-INSERT INTO `users2roles` (`id`, `user_id`, `role_id`) VALUES
-(0, 1, 1);
+-- --------------------------------------------------------
 
+--
+-- Struktura tabulky `users2groups`
+--
+
+CREATE TABLE `users2groups` (
+  `id` int(11) NOT NULL COMMENT 'users2groups id',
+  `group_id` int(11) NOT NULL COMMENT 'group id',
+  `user_id` int(11) NOT NULL COMMENT 'user id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='says members of group';
+
+--
+-- Klíče pro exportované tabulky
+--
+
+--
+-- Klíče pro tabulku `bans`
+--
+ALTER TABLE `bans`
+  ADD PRIMARY KEY (`ban_id`);
+
+--
+-- Klíče pro tabulku `categories`
+--
 ALTER TABLE `categories`
-  ADD PRIMARY KEY (`category_id`);
+  ADD PRIMARY KEY (`category_id`),
+  ADD KEY `category_parent_id` (`category_parent_id`),
+  ADD KEY `category_left` (`category_left`);
 
+--
+-- Klíče pro tabulku `forums`
+--
 ALTER TABLE `forums`
   ADD PRIMARY KEY (`forum_id`),
   ADD KEY `forum_category_id` (`forum_category_id`),
-  ADD KEY `forum_parent_id` (`forum_parent_id`);
+  ADD KEY `forum_parent_id` (`forum_parent_id`),
+  ADD KEY `forum_left` (`forum_left`);
 
+--
+-- Klíče pro tabulku `forums2groups`
+--
+ALTER TABLE `forums2groups`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `forum_id_2_group_id` (`forum_id`,`group_id`) USING BTREE,
+  ADD KEY `forum_id` (`forum_id`),
+  ADD KEY `group_id` (`group_id`);
+
+--
+-- Klíče pro tabulku `groups`
+--
+ALTER TABLE `groups`
+  ADD PRIMARY KEY (`group_id`);
+
+--
+-- Klíče pro tabulku `languages`
+--
 ALTER TABLE `languages`
   ADD PRIMARY KEY (`lang_id`);
 
+--
+-- Klíče pro tabulku `mails`
+--
+ALTER TABLE `mails`
+  ADD PRIMARY KEY (`mail_id`);
+
+--
+-- Klíče pro tabulku `moderators`
+--
+ALTER TABLE `moderators`
+  ADD PRIMARY KEY (`moderator_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `forum_id` (`forum_id`);
+
+--
+-- Klíče pro tabulku `pm`
+--
+ALTER TABLE `pm`
+  ADD PRIMARY KEY (`pm_id`),
+  ADD KEY `pm_user_id_from` (`pm_user_id_from`),
+  ADD KEY `pm_user_id_to` (`pm_user_id_to`);
+
+--
+-- Klíče pro tabulku `posts`
+--
 ALTER TABLE `posts`
   ADD PRIMARY KEY (`post_id`),
   ADD KEY `post_topic_id` (`post_topic_id`),
   ADD KEY `post_forum_id` (`post_forum_id`),
   ADD KEY `post_user_id` (`post_user_id`),
-  ADD KEY `post_forum_category_id` (`post_forum_category_id`);
+  ADD KEY `post_forum_category_id` (`post_forum_category_id`),
+  ADD KEY `post_topic_id_2` (`post_topic_id`,`post_forum_id`);
 ALTER TABLE `posts` ADD FULLTEXT KEY `post_title_text` (`post_title`,`post_text`);
 
-ALTER TABLE `roles`
-  ADD PRIMARY KEY (`role_id`);
+--
+-- Klíče pro tabulku `ranks`
+--
+ALTER TABLE `ranks`
+  ADD PRIMARY KEY (`rank_id`);
 
+--
+-- Klíče pro tabulku `reports`
+--
+ALTER TABLE `reports`
+  ADD PRIMARY KEY (`report_id`);
+
+--
+-- Klíče pro tabulku `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`session_id`),
+  ADD KEY `session_user_id` (`session_user_id`),
+  ADD KEY `session_key` (`session_key`);
+
+--
+-- Klíče pro tabulku `thanks`
+--
 ALTER TABLE `thanks`
   ADD PRIMARY KEY (`thank_id`),
   ADD KEY `thank_forum_id` (`thank_forum_id`),
   ADD KEY `thank_topic_id` (`thank_topic_id`),
   ADD KEY `thank_user_id` (`thank_user_id`);
 
+--
+-- Klíče pro tabulku `topics`
+--
 ALTER TABLE `topics`
   ADD PRIMARY KEY (`topic_id`),
   ADD KEY `topic_user_id` (`topic_user_id`),
-  ADD KEY `topic_forum_id` (`topic_forum_id`),
-  ADD KEY `topic_last_post_id` (`topic_last_post_id`),
-  ADD KEY `topic_last_post_user_id` (`topic_last_post_user_id`);
+  ADD KEY `topic_forum_id` (`topic_forum_id`);
 ALTER TABLE `topics` ADD FULLTEXT KEY `topic_name` (`topic_name`);
 
+--
+-- Klíče pro tabulku `topics_watch`
+--
+ALTER TABLE `topics_watch`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `topic_id` (`topic_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `topic_id_2` (`topic_id`,`user_id`);
+
+--
+-- Klíče pro tabulku `users`
+--
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `user_name` (`user_name`);
 
-ALTER TABLE `users2roles`
-  ADD PRIMARY KEY (`id`);
+--
+-- Klíče pro tabulku `users2forums`
+--
+ALTER TABLE `users2forums`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `forum_id` (`forum_id`),
+  ADD KEY `user_id_2` (`user_id`,`forum_id`);
 
+--
+-- Klíče pro tabulku `users2groups`
+--
+ALTER TABLE `users2groups`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `group_id` (`group_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `group_id_2` (`group_id`,`user_id`);
+
+--
+-- AUTO_INCREMENT pro tabulky
+--
+
+--
+-- AUTO_INCREMENT pro tabulku `bans`
+--
+ALTER TABLE `bans`
+  MODIFY `ban_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ban id', AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pro tabulku `categories`
+--
 ALTER TABLE `categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'category id', AUTO_INCREMENT=5;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'category id', AUTO_INCREMENT=4;
 
+--
+-- AUTO_INCREMENT pro tabulku `forums`
+--
 ALTER TABLE `forums`
-  MODIFY `forum_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'forum id', AUTO_INCREMENT=7;
+  MODIFY `forum_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'forum id', AUTO_INCREMENT=10;
 
+--
+-- AUTO_INCREMENT pro tabulku `forums2groups`
+--
+ALTER TABLE `forums2groups`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+
+--
+-- AUTO_INCREMENT pro tabulku `groups`
+--
+ALTER TABLE `groups`
+  MODIFY `group_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'group id', AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pro tabulku `languages`
+--
 ALTER TABLE `languages`
   MODIFY `lang_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'lang id', AUTO_INCREMENT=3;
 
+--
+-- AUTO_INCREMENT pro tabulku `mails`
+--
+ALTER TABLE `mails`
+  MODIFY `mail_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'mail id', AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT pro tabulku `moderators`
+--
+ALTER TABLE `moderators`
+  MODIFY `moderator_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'moderator id', AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT pro tabulku `pm`
+--
+ALTER TABLE `pm`
+  MODIFY `pm_id` int(255) NOT NULL AUTO_INCREMENT COMMENT 'pm id';
+
+--
+-- AUTO_INCREMENT pro tabulku `posts`
+--
 ALTER TABLE `posts`
-  MODIFY `post_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'post id', AUTO_INCREMENT=85;
+  MODIFY `post_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'post id', AUTO_INCREMENT=7;
 
-ALTER TABLE `roles`
-  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'role id', AUTO_INCREMENT=13;
+--
+-- AUTO_INCREMENT pro tabulku `ranks`
+--
+ALTER TABLE `ranks`
+  MODIFY `rank_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'rank id', AUTO_INCREMENT=7;
 
+--
+-- AUTO_INCREMENT pro tabulku `reports`
+--
+ALTER TABLE `reports`
+  MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'report id', AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT pro tabulku `sessions`
+--
+ALTER TABLE `sessions`
+  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'session id for this table', AUTO_INCREMENT=110;
+
+--
+-- AUTO_INCREMENT pro tabulku `thanks`
+--
 ALTER TABLE `thanks`
-  MODIFY `thank_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'thank id', AUTO_INCREMENT=24;
+  MODIFY `thank_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'thank id', AUTO_INCREMENT=6;
 
+--
+-- AUTO_INCREMENT pro tabulku `topics`
+--
 ALTER TABLE `topics`
-  MODIFY `topic_id` int(11) NOT NULL AUTO_INCREMENT COMMENT ' topic id', AUTO_INCREMENT=36;
+  MODIFY `topic_id` int(11) NOT NULL AUTO_INCREMENT COMMENT ' topic id', AUTO_INCREMENT=3;
 
+--
+-- AUTO_INCREMENT pro tabulku `topics_watch`
+--
+ALTER TABLE `topics_watch`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT pro tabulku `users`
+--
 ALTER TABLE `users`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'user id', AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pro tabulku `users2forums`
+--
+ALTER TABLE `users2forums`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pro tabulku `users2groups`
+--
+ALTER TABLE `users2groups`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'users2groups id', AUTO_INCREMENT=78;
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

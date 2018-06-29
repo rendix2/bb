@@ -12,10 +12,15 @@ use Nette\Utils\ArrayHash;
  */
 class RegisterPresenter extends \App\Presenters\Base\BasePresenter
 {
+    /**
+     * @var \Nette\Localization\ITranslator $translator 
+     */
     private $translator;   
     
+    /**
+     * @var \App\Models\LanguagesManager $languageManager 
+     */
     private $languageManager;
-
 
     public function __construct(\App\Models\LanguagesManager $languageManger)
     {
