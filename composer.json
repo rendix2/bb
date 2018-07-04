@@ -23,17 +23,18 @@
         "nette/finder": "^2.4.1",
         "nette/forms": "^2.4.6",
         "nette/http": "^2.4.7",
-        "nette/mail": "^2.4.3",
+        "nette/mail": "2.4.5",
         "nette/robot-loader": "^2.4.3",
-        "nette/security": "^2.4.2",
+        "nette/security": "^2.4.3",
         "nette/utils": "^2.4.8",
-        "latte/latte": "^2.4.6",
-        "tracy/tracy": "^2.4.10",
-        "dibi/dibi": "3.2.2",
+        "latte/latte": "^2.4.8",
+        "tracy/tracy": "^2.5.1",
+        "dibi/dibi": "^3.2",
         "ifsnop/mysqldump-php": "2.*",
         "nextras/mail-panel": "^2.3",
         "netpromotion/profiler": "^1.3",
-        "rendix2/Zebra_Mptt": "dev-master"
+        "rendix2/Zebra_Mptt": "dev-master",
+        "dg/composer-cleaner": "^2.0"
     },    
     "repositories": [
         {

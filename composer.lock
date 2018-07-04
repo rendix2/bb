@@ -1,11 +1,57 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "800b072f26689dd64872115bfa7efe21",
+    "content-hash": "b4cb950e9f75d14608a8a8d9eae31e25",
     "packages": [
+        {
+            "name": "dg/composer-cleaner",
+            "version": "v2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dg/composer-cleaner.git",
+                "reference": "41db7585dc9f2f345020931c76091dd3936df930"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dg/composer-cleaner/zipball/41db7585dc9f2f345020931c76091dd3936df930",
+                "reference": "41db7585dc9f2f345020931c76091dd3936df930",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "nette/tester": "^1.7"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "DG\\ComposerCleaner\\Plugin"
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "David Grudl",
+                    "homepage": "https://davidgrudl.com"
+                }
+            ],
+            "description": "Victor The Cleaner: removes unnecessary files from vendor directory.",
+            "keywords": [
+                "composer"
+            ],
+            "time": "2017-09-20T12:41:46+00:00"
+        },
         {
             "name": "dibi/dibi",
             "version": "v3.2.2",
@@ -75,16 +121,16 @@
         },
         {
             "name": "ifsnop/mysqldump-php",
-            "version": "v2.4",
+            "version": "v2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ifsnop/mysqldump-php.git",
-                "reference": "2a633b3da5db1e5bdc39c1b71c697ef197c39eeb"
+                "reference": "8d063449981e3f7bd28a3a083842e21a24d1f4af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ifsnop/mysqldump-php/zipball/2a633b3da5db1e5bdc39c1b71c697ef197c39eeb",
-                "reference": "2a633b3da5db1e5bdc39c1b71c697ef197c39eeb",
+                "url": "https://api.github.com/repos/ifsnop/mysqldump-php/zipball/8d063449981e3f7bd28a3a083842e21a24d1f4af",
+                "reference": "8d063449981e3f7bd28a3a083842e21a24d1f4af",
                 "shasum": ""
             },
             "require": {
@@ -123,7 +169,7 @@
                 "pdo",
                 "sqlite"
             ],
-            "time": "2018-03-07T22:27:23+00:00"
+            "time": "2018-06-30T19:40:05+00:00"
         },
         {
             "name": "latte/latte",
