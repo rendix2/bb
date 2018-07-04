@@ -54,7 +54,7 @@
                     <li class="nav-item {if $presenter->getName() === 'Admin:Report'}active{/if}">
                         <a class="nav-link" href="{link :Admin:Report:default}">{_menu_reports}</a>
                     </li>
-                    <li class="nav-item {if $presenter->getName() === 'Ban:Report'}active{/if}">
+                    <li class="nav-item {if $presenter->getName() === 'Admin:Ban'}active{/if}">
                         <a class="nav-link" href="{link :Admin:Ban:default}">{_menu_bans}</a>
                     </li>                    
                     <li class="nav-item dropdown {if $presenter->getName() === 'Admin:Config' || $presenter->getName() === 'Admin:Config:Database'}active{/if}" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">

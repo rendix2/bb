@@ -55,14 +55,11 @@ class BanPresenter extends Base\AdminPresenter
     protected function createComponentEditForm()
     {
         $form = $this->getBootstrapForm();
-        $form->setTranslator($this->getAdminTranslator());
         
         $form->addText('ban_user_name', 'User name:');
         $form->addText('ban_email', 'User mail:');
         $form->addText('ban_ip', 'User IP:');
         
-        $form = $this->addSubmitB($form);
-        
-        return $form;
+       return $this->addSubmitB($form);
     }
 }

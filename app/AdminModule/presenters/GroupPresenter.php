@@ -159,7 +159,6 @@ class GroupPresenter extends Base\AdminPresenter
     protected function createComponentEditForm()
     {
         $form = $this->getBootstrapForm();
-        $form->setTranslator($this->getAdminTranslator());
 
         $form->addText('group_name', 'Group name:')
             ->setRequired(true);
@@ -172,8 +171,7 @@ class GroupPresenter extends Base\AdminPresenter
      */
     protected function createComponentForumsForm()
     {
-        $form = new BootstrapForm();
-        $form->setTranslator($this->getAdminTranslator());
+        $form = $this->createBootstrapForm();
         $form->addSubmit('send', 'Send');
         $form->onSuccess[] = [$this, 'forumsSuccess'];
 

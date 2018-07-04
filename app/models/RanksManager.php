@@ -21,39 +21,33 @@ class RanksManager extends Crud\CrudManager
      * @var int
      */
     const NOT_UPLOADED = -5;
-
+    
     /**
-     * @param int    $id
-     * @param string $wwwDir
+     * @var \App\Controls\Ranks $ranks
+     * @inject
      */
-    public function deletePreviousRankFile($id, $wwwDir)
-    {
-        $rank      = $this->getById($id);
-        $separator = DIRECTORY_SEPARATOR;
-
-        if ($rank) {
-            FileSystem::delete($wwwDir . $separator . self::RANK_FOLDER . $separator . $rank->rank_file);
-        }
-    }
+    public $ranks;
 
     /**
      * @param FileUpload $file
      * @param int        $id
-     * @param string     $wwwDir
      *
      * @return string
      */
-    public function moveRank(FileUpload $file, $id, $wwwDir)
+    public function moveRank(FileUpload $file, $id)
     {
         if ($file->ok) {
-            $this->deletePreviousRankFile($id, $wwwDir);
+            $rank = $this->getById($id);
+
+            if ($rank) {
+                FileSystem::delete($this->ranks->getDir() . DIRECTORY_SEPARATOR . $rank->rank_file);
+            }
 
             $extension = self::getFileExtension($file->name);
             $hash      = self::getRandomString();
-            $separator = DIRECTORY_SEPARATOR;
             $name      = $hash . '.' . $extension;
 
-            $file->move($wwwDir . $separator . self::RANK_FOLDER . $separator . $name);
+            $file->move($this->ranks->getDir() . DIRECTORY_SEPARATOR . $name);
 
             return $name;
         } else {

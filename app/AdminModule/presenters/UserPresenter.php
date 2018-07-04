@@ -8,7 +8,6 @@ use App\Controls\BootstrapForm;
 use App\Controls\ChangePasswordControl;
 use App\Controls\DeleteAvatarControl;
 use App\Controls\GridFilter;
-use App\Controls\WwwDir;
 use App\Models\ForumsManager;
 use App\Models\GroupsManager;
 use App\Models\LanguagesManager;
@@ -57,11 +56,17 @@ class UserPresenter extends Base\AdminPresenter
     public $users2Forums;
     
     /**
-     * @var WwwDir $wwwDir
+     * @var \App\Controls\Avatars $avatar
      * @inject
      */
-    public $wwwDir;
+    public $avatar;
     
+    /**
+     *
+     * @var \App\Controls\Ranks $rank
+     */
+    public $rank;
+
     /**
      * moderators manager
      *
@@ -117,6 +122,9 @@ class UserPresenter extends Base\AdminPresenter
         $this->template->myForums = array_values($this->users2Forums->getPairsByLeft($id));
         
         $this->template->myModerators = $this->moderatorsManager->getPairsByLeft($id);
+        
+        $this->template->avatarsDir = $this->avatar->getTemplateDir();     
+        $this->template->ranksDir   = $this->rank->getTemplateDir();  
     }
 
     /**
@@ -137,7 +145,6 @@ class UserPresenter extends Base\AdminPresenter
     protected function createComponentEditForm()
     {
         $form = $this->getBootstrapForm();
-        $form->setTranslator($this->getAdminTranslator());
 
         $form->addGroup('user_data');
         $form->addText('user_name', 'User name:')->setRequired(true);
@@ -158,8 +165,7 @@ class UserPresenter extends Base\AdminPresenter
      */
     protected function createComponentGroupFrom()
     {
-        $form = new BootstrapForm();
-        $form->setTranslator($this->getAdminTranslator());
+        $form = $this->createBootstrapForm();
 
         $form->addSubmit('send_group', 'Send');
         $form->onSuccess[] = [$this, 'groupSuccess'];
@@ -174,7 +180,7 @@ class UserPresenter extends Base\AdminPresenter
     {
         return new DeleteAvatarControl(
             $this->getManager(),
-            $this->wwwDir,
+            $this->avatar,
             $this->getUser(),
             $this->getAdminTranslator()
         );
@@ -186,7 +192,6 @@ class UserPresenter extends Base\AdminPresenter
     public function createComponentForumsForm()
     {
         $form = self::createBootstrapForm();
-        $form->setTranslator($this->getAdminTranslator());
 
         $form->addSubmit('send_forum', 'Send');
         $form->onSuccess[] = [$this, 'forumsSuccess'];
@@ -199,7 +204,6 @@ class UserPresenter extends Base\AdminPresenter
     public function createComponentModeratorsForm()
     {
         $form = self::createBootstrapForm();
-        $form->setTranslator($this->getAdminTranslator());
         
         $form->addSubmit('send_moderator', 'Send');
         $form->onSuccess[] = [$this, 'moderatorsSuccess'];

@@ -3,11 +3,9 @@
 namespace App\ForumModule\Presenters\Base;
 
 use App\Authorizator;
-use App\Controls\AppDir;
 use App\Controls\BootstrapForm;
 use App\Models\Manager;
 use App\Presenters\Base\ManagerPresenter;
-use App\Translator;
 use Nette\Localization\ITranslator;
 
 /**
@@ -47,6 +45,39 @@ abstract class ForumPresenter extends ManagerPresenter
     {
         return $this->forumTranslator;
     }
+    
+    /**
+     * 
+     * @return BootstrapForm
+     */
+    public function createBootstrapForm()
+    {
+        $bf = BootstrapForm::create();
+        $bf->setTranslator($this->getForumTranslator());
+        
+        return $bf;
+    }
+
+    /**
+     * 
+     * @return BootstrapForm
+     */    
+    public function getBootstrapForm()
+    {
+        $bf = parent::getBootstrapForm();
+        $bf->setTranslator($this->getForumTranslator());
+        
+        return $bf;
+    }
+
+    public function checkRequirements($element)
+    {
+        $user = $this->getUser();
+        
+        $user->getStorage()->setNamespace('frontend');
+        
+        parent::checkRequirements($element);     
+    }    
 
     /**
      *

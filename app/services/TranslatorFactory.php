@@ -27,6 +27,11 @@ class TranslatorFactory
      * @var AppDir $appDir
      */
     private $appDir;
+    
+    /**
+     * @var \App\Controls\DefaultLanguage $defaultLanguage
+     */
+    private $defaultLanguage;
 
     /**
      * TranslatorFactory constructor.
@@ -34,16 +39,17 @@ class TranslatorFactory
      * @param User $user
      * @param AppDir $appDir
      */
-    public function __construct(User $user, AppDir $appDir)
+    public function __construct(User $user, AppDir $appDir, \App\Controls\DefaultLanguage $defaultLanguage)
     {
-        $this->user = $user;
-        $this->appDir = $appDir;
+        $this->user            = $user;
+        $this->appDir          = $appDir;
+        $this->defaultLanguage = $defaultLanguage;
         
         $this->setLang();
     }
 
     /**
-     *
+     * sets default lang
      */
     private function setLang()
     {
@@ -53,7 +59,7 @@ class TranslatorFactory
         if ($identity) {
             $lang = $identity->getData()['lang_file_name'];
         } else {
-            $lang = 'czech';
+            $lang = $this->defaultLanguage->getDefaultLanguage();
         }
         
         $this->lang = $lang;

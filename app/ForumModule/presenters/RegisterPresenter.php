@@ -51,7 +51,8 @@ class RegisterPresenter extends BasePresenter
      */
     protected function createComponentRegisterUser()
     {
-        $form = new BootstrapForm();
+        $form = $this->getBootstrapForm();
+        
         $form->addText('user_name', 'User name:');
         $form->addPassword('user_password', 'User password:');
         $form->addPassword('user_password2', 'User password for check:');

@@ -81,6 +81,13 @@ class PostPresenter extends Base\ForumPresenter
      * @inject
      */
     public $topicSetting;
+    
+    /**
+     *
+     * @var \App\Controls\Avatars $avatar
+     * @inject
+     */
+    public $avatar;
 
     /**
      * @param PostsManager $manager
@@ -112,7 +119,7 @@ class PostPresenter extends Base\ForumPresenter
         if ($post_id) {
             $values['post_edit_count%sql'] = 'post_edit_count + 1';
             $values->post_last_edit_time   = time();
-            $values->post_edit_user_ip     = $this->httpRequest->getRemoteAddress();
+            $values->post_edit_user_ip     = $this->getHttpRequest()->getRemoteAddress();
 
             $result = $this->getManager()->update($post_id, $values);
         } else {
@@ -120,7 +127,7 @@ class PostPresenter extends Base\ForumPresenter
             $values->post_user_id     = $user_id;
             $values->post_topic_id    = $topic_id;
             $values->post_add_time    = time();
-            $values->post_add_user_ip = $this->httpRequest->getRemoteAddress();
+            $values->post_add_user_ip = $this->getHttpRequest()->getRemoteAddress();
 
             $result = $this->getManager()->add($values);
         }
@@ -367,6 +374,7 @@ class PostPresenter extends Base\ForumPresenter
 
         $user_id = $this->getUser()->getId();
 
+        $this->template->avatarsDir = $this->avatar->getTemplateDir();        
         $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $user_id);
         $this->template->ranks      = $this->rankManager->getAllCached();
         $this->template->posts      = $data->orderBy('post_id', dibi::DESC)->fetchAll();
@@ -516,7 +524,6 @@ class PostPresenter extends Base\ForumPresenter
     protected function createComponentReportForm()
     {
         $form = $this->getBootstrapForm();
-        $form->setTranslator($this->getForumTranslator());
 
         $form->addTextArea('report_text', 'Report text:');
         $form->addSubmit('send', 'Send');

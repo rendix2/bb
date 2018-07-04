@@ -8,7 +8,8 @@ parameters:
         password: ""
     defaultLanguage: "czech"
     avatars:
-        dir: %wwwDir%\avatars
+        relativeDir: /avatars
+        dir: %wwwDir%%avatars.relativeDir%
         maxWidth: 2000
         maxHeight: 2000        
         maxFileSize: 5242880
@@ -18,7 +19,8 @@ parameters:
             - png
             - gif
     ranks:
-        dir: %wwwDir%\ranks
+        relativeDir: /ranks
+        dir: %wwwDir%%ranks.relativeDir%
         maxHeight: 200
         maxWidth: 50
         maxFileSize: 5120
@@ -33,8 +35,8 @@ parameters:
             itemsArountPagination: 5
         cache:
             lastTopic: 1 hour
-            totalTopics: 1hour
-            primaryKey: 10day
+            totalTopics: 1 hour
+            primaryKey: 10 day
         logViews: true
     posts:
         pagination:
@@ -42,14 +44,14 @@ parameters:
             itemsArountPagination: 5
         cache:
             totalPosts: 1 hour
-            primaryKey: 10day
+            primaryKey: 10 day
         minLength: 5 # int or null
         maxLength: 100000 # int or null
     users:
         cache:
             lastUser: 1 hour
             totalUser: 1 hour
-            primaryKey: 10day
+            primaryKey: 10 day
         canChangeUserName: false
         canDelete: false
         canDeletePostCount: false
@@ -70,8 +72,6 @@ application:
 	errorPresenter: Error
 	mapping:
 		*: App\*Module\Presenters\*Presenter
-
-
 session:
         expiration: 14 days
         autoStart: true # výchozí hodnota je 'smart'
@@ -178,14 +178,18 @@ services:
     PMManager:
         factory: \App\Models\PMManager
         inject: yes
-    authenticator: App\Authenticator
-    authorizator: App\Authorizator
+    Authenticator:
+        class: App\Authenticator
+    Authorizator:
+        class: App\Authorizator
     WwwDir:
         class: App\Controls\WwwDir(%wwwDir%)
     AppDir:
         class: App\Controls\AppDir(%appDir%)
-    AvatarsDir:
+    Avatars:
         class: App\Controls\Avatars(%avatars%)
+    Ranks:
+        class: App\Controls\Ranks(%ranks%)
     TempDir:
         class: App\Controls\TempDir(%tempDir%)
     CacheDir:
@@ -194,6 +198,11 @@ services:
         class: App\Controls\TopicsSetting(%topics%)
     TranslatorFactory:
         class: App\Services\TranslatorFactory
+    PremissionFactory:
+        class: App\Authorization\PermissionFactory
+    - App\Authorization\Authorizator(@App\Authorization\PermissionFactory::create())
+    DefaultLanguage:
+        class: App\Controls\DefaultLanguage(%defaultLanguage%)
         
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22

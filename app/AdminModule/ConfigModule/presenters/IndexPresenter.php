@@ -21,12 +21,6 @@ class IndexPresenter extends BasePresenter
     const MAX_LOGGED_IN_USERS_TO_SHOW = 200;
     
     /**
-     * @var AppDir $appDir
-     * @inject
-     */
-    public $appDir;
-    
-    /**
      * @var SessionsManager $sessionsManager
      * @inject
      */
@@ -64,13 +58,8 @@ class IndexPresenter extends BasePresenter
     public function beforeRender()
     {
         parent::beforeRender();
-        $lang_name = $this->getUser()
-                         ->getIdentity()
-                         ->getData()['lang_file_name'];
-
-         $translator = new Translator($this->appDir, 'admin', $lang_name);
         
-        $this->template->setTranslator($translator);
+        $this->template->setTranslator($this->translatorFactory->adminTranslatorFactory());
     }
 
     /**
@@ -90,6 +79,6 @@ class IndexPresenter extends BasePresenter
         $this->template->maxLogged   = self::MAX_LOGGED_IN_USERS_TO_SHOW;
         $this->template->loggedUsers = $loggedUsers;
         $this->template->dirSize     = $this->avatar->getDirSize();
-        $this->template->avatarCount = $this->avatar->getCountOfAvatars();
+        $this->template->avatarCount = $this->avatar->getImageCount();
     }
 }

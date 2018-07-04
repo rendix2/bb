@@ -61,7 +61,6 @@ class LanguagePresenter extends Base\AdminPresenter
     protected function createComponentEditForm()
     {
         $form = $this->getBootstrapForm();
-        $form->setTranslator($this->getAdminTranslator());
 
         $form->addText('lang_name', 'Language name:')->setRequired();
 

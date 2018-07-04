@@ -4,7 +4,6 @@ namespace App\AdminModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
-use App\Controls\WwwDir;
 use App\Models\RanksManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -23,10 +22,10 @@ class RankPresenter extends Base\AdminPresenter
     const N = -1;
     
     /**
-     * @var WwwDir $wwwDir
+     * @var \App\Controls\Ranks $ranks
      * @inject
      */
-    public $wwwDir;
+    public $ranks;
 
     /**
      * RankPresenter constructor.
@@ -52,27 +51,30 @@ class RankPresenter extends Base\AdminPresenter
             $this->addComponent($this->gf, 'gridFilter');
         }
     }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function editFormSuccess(Form $form, ArrayHash $values)
+    
+    public function renderEdit($id = null)
     {
-        $move = $this->getManager()
-            ->moveRank(
-                $values->rank_file,
-                $this->getParameter('id'),
-                $this->wwwDir->wwwDir
-            );
+        parent::renderEdit($id);
+        
+        $this->template->ranksDir = $this->ranks->getTemplateDir();
+    }
 
-        if ($move !== RanksManager::NOT_UPLOADED) {
-            $values->rank_file = $move;
-        } else {
-            unset($values->rank_file);
-        }
+        /**
+     * @return BootstrapForm
+     */
+    protected function createComponentEditForm()
+    {
+        $form = $this->getBootstrapForm();
+        
+        $form->addText('rank_name', 'Rank name:')->setRequired(true);
+        $form->addInteger('rank_from', 'Rank from:');
+        $form->addInteger('rank_to', 'Rank to:');
+        $form->addUpload('rank_file', 'Rank file:');
+        $form->addCheckbox('rank_special', 'Rank special:');
 
-        parent::editFormSuccess($form, $values);
+        $form->onValidate[] = [$this, 'onValidate'];
+
+        return $this->addSubmitB($form);
     }
 
     /**
@@ -98,23 +100,26 @@ class RankPresenter extends Base\AdminPresenter
                 $form->addError('From and to should not to be same.');
             }
         }
-    }
+    }    
 
     /**
-     * @return BootstrapForm
+     * @param Form      $form
+     * @param ArrayHash $values
      */
-    protected function createComponentEditForm()
+    public function editFormSuccess(Form $form, ArrayHash $values)
     {
-        $form = $this->getBootstrapForm();
-        $form->setTranslator($this->getAdminTranslator());
-        $form->addText('rank_name', 'Rank name:')->setRequired(true);
-        $form->addInteger('rank_from', 'Rank from:');
-        $form->addInteger('rank_to', 'Rank to:');
-        $form->addUpload('rank_file', 'Rank file:');
-        $form->addCheckbox('rank_special', 'Rank special:');
+        $move = $this->getManager()
+            ->moveRank(
+                $values->rank_file,
+                $this->getParameter('id')
+            );
 
-        $form->onValidate[] = [$this, 'onValidate'];
+        if ($move !== RanksManager::NOT_UPLOADED) {
+            $values->rank_file = $move;
+        } else {
+            unset($values->rank_file);
+        }
 
-        return $this->addSubmitB($form);
+        parent::editFormSuccess($form, $values);
     }
 }

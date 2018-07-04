@@ -136,7 +136,7 @@ final class ForumPresenter extends Base\ForumPresenter
      */
     protected function createComponentSearchInForumForm()
     {
-         $form = new BootstrapForm();
+         $form = $this->createBootstrapForm();
          $form->addText('search_form', 'Search forum:');
          $form->addSubmit('submit', 'Search');
          $form->onSuccess[] = [$this, 'searchInForumFormSuccess'];

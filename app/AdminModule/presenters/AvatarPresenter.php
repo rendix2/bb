@@ -5,6 +5,8 @@ namespace App\AdminModule\Presenters;
 use App\Controls\Avatars;
 use App\Controls\PaginatorControl;
 use App\Models\UsersManager;
+use Nette\Utils\ArrayHash;
+use Nette\Utils\FileSystem;
 
 /**
  * Description of AvatarPresenter
@@ -52,21 +54,19 @@ class AvatarPresenter extends Base\AdminPresenter
     }
 
     /**
-     * @param $user_id
-     * @param $avatar_name
+     * @param int    $user_id
+     * @param string $avatar_name
      */
     public function handleDeleteAvatar($user_id, $avatar_name)
     {
-        \Nette\Utils\FileSystem::delete($this->avatarsDir->getDir() . DIRECTORY_SEPARATOR . $avatar_name);
+        FileSystem::delete($this->avatarsDir->getDir() . DIRECTORY_SEPARATOR . $avatar_name);
         
-        $this->getManager()->update($user_id, \Nette\Utils\ArrayHash::from(['user_avatar' => null]));
+        $this->getManager()->update($user_id, ArrayHash::from(['user_avatar' => null]));
         
         $this->flashMessage('Avatar was deleted.', self::FLASH_MESSAGE_SUCCESS);
         
         $this->redirect('this');
     }
-
-        //put your code here
 
     /**
      * @return mixed|null

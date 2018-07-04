@@ -5,6 +5,7 @@ namespace App\ForumModule\Presenters;
 use App\Controls\BootstrapForm;
 use App\Models\PMManager;
 use App\Presenters\crud\CrudPresenter;
+use App\Controls\GridFilter;
 
 /**
  * Description of PmPresenter
@@ -12,7 +13,13 @@ use App\Presenters\crud\CrudPresenter;
  * @author rendi
  */
 class PmPresenter extends CrudPresenter
-{
+{    
+    /**
+     * @var \App\Authorizator $authorizator
+     * @inject
+     */
+    public $authorizator;
+    
     /**
      * PmPresenter constructor.
      *
@@ -26,8 +33,10 @@ class PmPresenter extends CrudPresenter
     public function startup() {
         parent::startup();
         
+        $translator = $this->translatorFactory->forumTranslatorFactory();
+        
         if ($this->getAction() === 'default') {
-            $this->gf->setTranslator($this->getAdminTranslator());
+            $this->gf->setTranslator($translator);
             
             $this->gf->addFilter('ban_id', 'ban_id', GridFilter::INT_EQUAL);
             $this->gf->addFilter('ban_user_name', 'ban_user_name', GridFilter::TEXT_LIKE);
@@ -36,7 +45,10 @@ class PmPresenter extends CrudPresenter
             $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
             $this->addComponent($this->gf, 'gridFilter');
-        }           
+        }  
+        
+        $this->template->setTranslator($translator);
+        $this->getUser()->setAuthorizator($this->authorizator->getAcl());
     }    
 
     /**

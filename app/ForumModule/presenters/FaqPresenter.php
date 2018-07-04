@@ -28,7 +28,7 @@ class FaqPresenter extends CrudPresenter
      */
     protected function createComponentEditForm()
     {
-        $form = new BootstrapForm();
+        $form = $this->getBootstrapForm();
 
         return $form;
     }

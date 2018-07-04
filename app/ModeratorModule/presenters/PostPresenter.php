@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ModeratorModule;
+namespace App\ModeratorModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Models\PostsManager;
@@ -12,7 +12,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendi
  */
-class PostPresenter extends ModeratorPresenter
+class PostPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresenter
 {
     /**
      * PostPresenter constructor.

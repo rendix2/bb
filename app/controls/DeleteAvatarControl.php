@@ -25,11 +25,6 @@ class DeleteAvatarControl extends Control
     private $userManager;
     
     /**
-     * @var \App\Controls\WwwDir $container
-     */
-    private $wwwDir;
-    
-    /**
      * @var User $user
      */
     private $user;
@@ -38,50 +33,32 @@ class DeleteAvatarControl extends Control
      * @var ITranslator $translator
      */
     private $translator;
-
+    
+    /**
+     * @var \App\Controls\Avatars $avatars
+     */
+    public $avatars;
 
     /**
      * DeleteAvatarControl constructor.
      *
      * @param UsersManager $userManager
-     * @param WwwDir       $wwwDir
+     * @param Avatars      $avatars
      * @param User         $user
      * @param ITranslator  $translator
      */
-    public function __construct(UsersManager $userManager, WwwDir $wwwDir, User $user, ITranslator $translator)
+    public function __construct(UsersManager $userManager, Avatars $avatars, User $user, ITranslator $translator)
     {
         parent::__construct();
 
         $this->userManager = $userManager;
-        $this->wwwDir      = $wwwDir;
+        $this->avatars     = $avatars;
         $this->user        = $user;
         $this->translator  = $translator;
     }
 
     /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function deleteAvatarSuccess(Form $form, ArrayHash $values)
-    {
-        if (isset($values->delete_avatar) && $values->delete_avatar === true) {
-            $user = $this->userManager->getById($this->user->getId());
-
-            if ($user->user_avatar) {
-                $separator = DIRECTORY_SEPARATOR;
-
-                $path = $this->wwwDir->wwwDir . $separator . 'avatars' . $separator . $user->user_avatar;
-
-                FileSystem::delete($path);
-                $this->userManager->update($user->user_id, ArrayHash::from(['user_avatar' => null]));
-                $this->flashMessage('Avatar was deleted.', BasePresenter::FLASH_MESSAGE_SUCCESS);
-                $this->redirect('this');
-            }
-        }
-    }
-
-    /**
-     *
+     * renders avatars delete control
      */
     public function render()
     {
@@ -103,4 +80,24 @@ class DeleteAvatarControl extends Control
 
         return $form;
     }
+    
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function deleteAvatarSuccess(Form $form, ArrayHash $values)
+    {
+        if (isset($values->delete_avatar) && $values->delete_avatar === true) {
+            $user = $this->userManager->getById($this->user->getId());
+
+            if ($user->user_avatar) {
+                $path = $this->avatars->getDir() . DIRECTORY_SEPARATOR . $user->user_avatar;
+
+                FileSystem::delete($path);
+                $this->userManager->update($user->user_id, ArrayHash::from(['user_avatar' => null]));
+                $this->flashMessage('Avatar was deleted.', BasePresenter::FLASH_MESSAGE_SUCCESS);
+                $this->redirect('this');
+            }
+        }
+    }    
 }

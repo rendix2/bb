@@ -2,11 +2,9 @@
 
 namespace App\AdminModule\Presenters\Base;
 
-use App\Controls\AppDir;
 use App\Controls\BootstrapForm;
 use App\Models\Crud\CrudManager;
 use App\Presenters\crud\CrudPresenter;
-use App\Translator;
 use Nette\Localization\ITranslator;
 
 /**
@@ -31,14 +29,21 @@ abstract class AdminPresenter extends CrudPresenter
         parent::__construct($manager);
     }
 
-    /**
-     * @return ITranslator
-     */
-    public function getAdminTranslator()
+    public function checkRequirements($element)
     {
-        return $this->adminTranslator;
+        $this->getUser()->getStorage()->setNamespace('beckend'); 
+        
+        parent::checkRequirements($element);
+
+        if (!$this->getUser()->isLoggedIn() && $this->getName() !== 'Login') {
+            $this->redirect(':Admin:Login:default');
+        }
+
+        if (!$this->getUser()->isInRole('admin')) {
+            $this->error('You are not admin.');
+        }        
     }
-   
+
     /**
      *
      */
@@ -46,17 +51,7 @@ abstract class AdminPresenter extends CrudPresenter
     {
         parent::startup();
 
-        $user = $this->getUser();
-
-        if (!$user->isLoggedIn()) {
-            $this->redirect(':Admin:Login:default');
-        }
-
-        if (!$user->isInRole('admin')) {
-            $this->error('You are not admin.');
-        }
-
-        $this->adminTranslator = $this->translatorFactory->adminTranslatorFactory();
+        $this->adminTranslator = $this->translatorFactory->adminTranslatorFactory();              
     }
 
     /**
@@ -68,4 +63,33 @@ abstract class AdminPresenter extends CrudPresenter
 
         $this->template->setTranslator($this->adminTranslator);
     }
+    
+    /**
+     * @return ITranslator
+     */
+    public function getAdminTranslator()
+    {
+        return $this->adminTranslator;
+    }
+    
+    /**
+     * 
+     * @return BootstrapForm
+     */
+    public function getBootstrapForm() {
+        $bf = parent::getBootstrapForm();
+        $bf->setTranslator($this->getAdminTranslator());
+        
+        return $bf;
+    }  
+    /**
+     * 
+     * @return BootstrapForm
+     */
+    public function createBootstrapForm() {
+        $bf = BootstrapForm::create();
+        $bf->setTranslator($this->getAdminTranslator());
+        
+        return $bf;
+    }    
 }

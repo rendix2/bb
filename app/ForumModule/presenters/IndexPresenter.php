@@ -96,9 +96,9 @@ class IndexPresenter extends Base\ForumPresenter
     {
         parent::__construct($manager);
     }
-
+    
     /**
-     * @return mixed
+     * @return Cache
      */
     public function getCache()
     {
@@ -112,7 +112,6 @@ class IndexPresenter extends Base\ForumPresenter
     {
         $this->cache = new Cache($storage, 'BBIndex');
     }
-
 
     /**
      * @param int $category_id
@@ -129,7 +128,7 @@ class IndexPresenter extends Base\ForumPresenter
     }
 
     /**
-     *
+     * renders index page
      */
     public function renderDefault()
     {
@@ -194,8 +193,7 @@ class IndexPresenter extends Base\ForumPresenter
                 );
         }
 
-        $this->template->mostPostsUser = $this->getManager()
-            ->getUserWithMostPosts();
+        $this->template->mostPostsUser = $this->getManager()->getUserWithMostPosts();
         $this->template->lastTopic     = $cachedLastTopic;
         $this->template->lastUser      = $cachedLastUser;
         $this->template->totalUsers    = $this->userManager->getCountCached();

@@ -26,5 +26,7 @@ class FaqPresenter extends Base\AdminPresenter
      */
     protected function createComponentEditForm()
     {
+        return $form = $this->getBootstrapForm();
+        
     }
 }

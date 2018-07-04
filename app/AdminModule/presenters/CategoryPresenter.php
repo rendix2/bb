@@ -100,8 +100,6 @@ class CategoryPresenter extends Base\AdminPresenter
     {
         $form = $this->getBootstrapForm();
 
-        $form->setTranslator($this->getAdminTranslator());
-
         $form->addText('category_name', 'Category name:')->setRequired(true);
         $form->addCheckbox('category_active', 'Category active:');
 

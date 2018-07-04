@@ -19,16 +19,13 @@ class UsersManager extends Crud\CrudManager
 {
 
     /**
-     * @vat string
-     */
-    const AVATAR_FOLDER = 'avatars';
-
-    /**
      * @var int
      */
     const NOT_UPLOADED = -5;
+    
     /**
      * @var Avatars $avatar
+     * @inject
      */
     private $avatar;
 
@@ -218,20 +215,6 @@ class UsersManager extends Crud\CrudManager
     }
 
     /**
-     * @param int    $id
-     * @param string $wwwDir
-     */
-    public function deletePreviousAvatarFile($id, $wwwDir)
-    {
-        $user      = $this->getById($id);
-        $separator = DIRECTORY_SEPARATOR;
-
-        if ($user) {
-            FileSystem::delete($wwwDir . $separator . self::AVATAR_FOLDER . $separator . $user->user_avatar);
-        }
-    }
-
-    /**
      * @param string $user_name
      *
      * @return array
@@ -260,22 +243,13 @@ class UsersManager extends Crud\CrudManager
     }
 
     /**
-     * @param Avatars $avatar
-     */
-    public function injectAvatars(Avatars $avatar)
-    {
-        $this->avatar = $avatar;
-    }
-
-    /**
      * @param FileUpload $file
-     * @param int        $id
-     * @param string     $wwwDir
+     * @param int        $user_id
      *
      * @return string
      * @throws InvalidArgumentException
      */
-    public function moveAvatar(FileUpload $file, $id, $wwwDir)
+    public function moveAvatar(FileUpload $file, $user_id)
     {
         if ($file->ok) {
             if ($file->getSize() > $this->avatar->getMaxFileSize()) {
@@ -290,14 +264,17 @@ class UsersManager extends Crud\CrudManager
                 throw new InvalidArgumentException('Image height is too big. Max enabled height is: '.$this->avatar->getMaxHeight());
             }
             
-            $this->deletePreviousAvatarFile($id, $wwwDir);
+            $user = $this->getById($user_id);
+
+            if ($user) {
+                FileSystem::delete($this->avatar->getDir() . DIRECTORY_SEPARATOR . $user->user_avatar);
+            }
 
             $extension = self::getFileExtension($file->name);
             $hash      = self::getRandomString();
-            $separator = DIRECTORY_SEPARATOR;
             $name      = $hash . '.' . $extension;
 
-            $file->move($wwwDir . $separator . 'avatars' . $separator . $name);
+            $file->move($this->avatar->getDir() . DIRECTORY_SEPARATOR . $name);
 
             return $name;
         } else {

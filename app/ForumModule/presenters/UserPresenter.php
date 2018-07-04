@@ -6,7 +6,6 @@ use App\Controls\BootstrapForm;
 use App\Controls\ChangePasswordControl;
 use App\Controls\DeleteAvatarControl;
 use App\Controls\PaginatorControl;
-use App\Controls\WwwDir;
 use App\Models\LanguagesManager;
 use App\Models\MailsManager;
 use App\Models\ModeratorsManager;
@@ -41,12 +40,6 @@ class UserPresenter extends Base\ForumPresenter
     public $rankManager;
 
     /**
-     * @var WwwDir $wwwDir
-     * @inject
-     */
-    public $wwwDir;
-
-    /**
      * @var TopicWatchManager $topicWatchManager
      * @inject
      */
@@ -75,6 +68,12 @@ class UserPresenter extends Base\ForumPresenter
      * @inject
      */
     public $avatar;
+    
+    /**
+     * @var \App\Controls\Ranks $rank
+     * @inject
+     */
+    public $rank;
     
     /**
      * @var ModeratorsManager $moderatorsManager
@@ -154,7 +153,7 @@ class UserPresenter extends Base\ForumPresenter
     public function actionLogout()
     {
         $this->sessionManager->deleteBySessionId($this->getSession()->getId());
-        $this->getUser()->logout();
+        $this->getUser()->logout(true);
 
         $this->flashMessage('Successfully logged out. ', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('Index:default');
@@ -181,8 +180,9 @@ class UserPresenter extends Base\ForumPresenter
         }
 
         $this['editUserForm']->setDefaults($userData);
-
-        $this->template->item = $userData;
+       
+        $this->template->avatarsDir = $this->avatar->getTemplateDir();
+        $this->template->item       = $userData;
     }
 
     /**
@@ -246,6 +246,8 @@ class UserPresenter extends Base\ForumPresenter
             }
         }
         
+        $this->template->ranksDir        = $this->rank->getTemplateDir();
+        $this->template->avatarsDir      = $this->avatar->getTemplateDir();        
         $this->template->moderatorForums = $this->moderatorsManager->getAllJoinedByLeft($user_id);
         $this->template->thankCount      = $this->thanksManager->getCountCached();
         $this->template->topicCount      = $this->topicManager->getCountCached();
@@ -357,7 +359,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $page
+     * @param int $page
      */
     public function renderModeratorList($page)
     {
@@ -379,7 +381,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $page
+     * @param int $page
      */
     public function renderAdminList($page)
     {
@@ -445,7 +447,7 @@ class UserPresenter extends Base\ForumPresenter
     {
         return new DeleteAvatarControl(
             $this->getManager(),
-            $this->wwwDir,
+            $this->avatar,
             $this->getUser(),
             $this->getForumTranslator()
         );
@@ -566,7 +568,7 @@ class UserPresenter extends Base\ForumPresenter
         $user = $this->getUser();
         
         try {
-            $move = $this->getManager()->moveAvatar($values->user_avatar, $user->getId(), $this->wwwDir->wwwDir);
+            $move = $this->getManager()->moveAvatar($values->user_avatar, $user->getId());
             
             if ($move !== UsersManager::NOT_UPLOADED) {
                 $values->user_avatar = $move;

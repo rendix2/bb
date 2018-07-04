@@ -2,12 +2,10 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\Controls\AppDir;
 use App\Controls\Avatars;
 use App\Controls\CacheDir;
 use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
-use App\Translator;
 
 /**
  * Description of IndexPresenter
@@ -39,41 +37,31 @@ class IndexPresenter extends BasePresenter
      * @inject
      */
     public $cacheDir;
-    
-    /**
-     * @var \App\Services\TranslatorFactory $translatorFactory
-     * @inject
-     */
-    public $translatorFactory;
 
-    /**
-     * start up function
-     */
-    public function startup()
+    public function checkRequirements($element)
     {
-        parent::startup();
+        $this->getUser()->getStorage()->setNamespace('beckend'); 
+        
+        parent::checkRequirements($element);
 
-        $user = $this->getUser();
-
-        if (!$user->isLoggedIn()) {
+        if (!$this->getUser()->isLoggedIn()) {
             $this->redirect(':Admin:Login:default');
         }
 
-        if (!$user->isInRole('admin')) {
+        if (!$this->getUser()->isInRole('admin')) {
             $this->error('You are not admin.');
         }
     }
 
     /**
-     *
+     * before render
+     * sets translator
      */
     public function beforeRender()
     {
         parent::beforeRender();
         
-        $translator = $this->translatorFactory->adminTranslatorFactory();
-        
-        $this->template->setTranslator($translator);
+        $this->template->setTranslator($this->translatorFactory->adminTranslatorFactory());
     }
 
     /**
@@ -93,7 +81,7 @@ class IndexPresenter extends BasePresenter
         $this->template->maxLogged     = self::MAX_LOGGED_IN_USERS_TO_SHOW;
         $this->template->loggedUsers   = $loggedUsers;
         $this->template->avatarDirSize = $this->avatar->getDirSize();
-        $this->template->avatarCount   = $this->avatar->getCountOfAvatars();
+        $this->template->avatarCount   = $this->avatar->getImageCount();
         $this->template->cacheDirSize  = $this->cacheDir->getDirSize();
     }
 }

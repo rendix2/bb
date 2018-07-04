@@ -153,8 +153,6 @@ class ForumPresenter extends Base\AdminPresenter
     {
         $form = $this->getBootstrapForm();
 
-        $form->setTranslator($this->getAdminTranslator());
-
         $form->addGroup('forum');
         $form->addText('forum_name', 'Forum name:')
             ->setRequired(true);

@@ -56,7 +56,7 @@
             <div class="card">
                 <div class="card-header">{_user_avatar}</div>
                 <div class="card-block">
-                    <img src="{$basePath}/avatars/{$userData->user_avatar}" class="img-fluid"
+                    <img src="{$basePath}{$avatarsDir}/{$userData->user_avatar}" class="img-fluid"
                          alt="{$userData->user_name}" title="{$userData->user_name}">
                 </div>
             </div>
@@ -69,7 +69,7 @@
                 <div class="card-header">{_user_rank}</div>
                 <div class="card-block">
                     {if $rank->rank_file}
-                        <img src="{$basePath}/ranks/{$rank->rank_file}" class="img-fluid" alt="{$rank->rank_name}"
+                        <img src="{$basePath}{$ranksDir}/{$rank->rank_file}" class="img-fluid" alt="{$rank->rank_name}"
                              title="{$rank->rank_name}">
                     {/if}
                 </div>

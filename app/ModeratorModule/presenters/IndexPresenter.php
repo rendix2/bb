@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ModeratorModule;
+namespace App\ModeratorModule\Presenters;
 
 use App\ForumModule\Presenters\Base\ForumPresenter;
 use App\Models\PostsManager;
@@ -10,7 +10,7 @@ use App\Models\PostsManager;
  *
  * @author rendi
  */
-class IndexPresenter extends ForumPresenter
+class IndexPresenter extends \App\Presenters\Base\BasePresenter
 {
     /**
      * IndexPresenter constructor.

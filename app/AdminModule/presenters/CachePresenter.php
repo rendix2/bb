@@ -21,16 +21,6 @@ use Nette\Utils\ArrayHash;
  */
 class CachePresenter extends Base\AdminPresenter
 {
-    /**
-     * @var ITranslator $translator
-     */
-    public $translator;
-    
-    /**
-     * @var AppDir $appDir
-     * @inject
-     */
-    public $appDir;
     
     /**
      *
@@ -80,8 +70,7 @@ class CachePresenter extends Base\AdminPresenter
     {
         parent::beforeRender();
 
-        $this->translator = $this->translatorFactory->adminTranslatorFactory();
-        $this->template->setTranslator($this->translator);
+        $this->template->setTranslator($this->$this->translatorFactory->adminTranslatorFactory());
     }
 
     /**
@@ -91,8 +80,7 @@ class CachePresenter extends Base\AdminPresenter
      */
     protected function createComponentEditForm()
     {
-        $form = new BootstrapForm();
-        $form->setTranslator($this->translator);
+        $form = $this->getBootstrapForm();
         $form->addSubmit('Delete_all', 'Delete all cache');
 
         $form->onSuccess[] = [$this, 'success'];

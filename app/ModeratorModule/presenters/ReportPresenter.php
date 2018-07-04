@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ModeratorModule;
+namespace App\ModeratorModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Models\ReportsManager;
@@ -10,7 +10,7 @@ use App\Models\ReportsManager;
  *
  * @author rendi
  */
-class ReportPresenter extends ModeratorPresenter
+class ReportPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresenter
 {
     /**
      * ReportPresenter constructor.

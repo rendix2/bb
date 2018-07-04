@@ -75,7 +75,12 @@ class BootstrapForm extends Form
         $this->labelColumnCount = $labelColumnCount;
     }
 
-    /**
+    public static function create()
+    {
+        return new BootstrapForm();
+    }
+
+        /**
      * BootstrapForm destruct.
      *
      * @api

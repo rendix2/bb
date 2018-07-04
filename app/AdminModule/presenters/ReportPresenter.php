@@ -57,7 +57,7 @@ class ReportPresenter extends Base\AdminPresenter
             ];
         
         $form = $this->getBootstrapForm();
-        $form->setTranslator($this->getAdminTranslator());
+        
         $form->addSelect('report_status', 'Report status:', $values);
 
         return $this->addSubmitB($form);

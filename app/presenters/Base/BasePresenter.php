@@ -44,13 +44,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      * @var BootstrapForm $bootStrapForm
      */
     private $bootstrapForm;
-    
-    /**
-     * @var Request $httpRequest
-     * @inject
-     */
-    public $httpRequest;
-    
+
     /**
      * @var TranslatorFactory $translatorFactory
      * @inject
@@ -64,7 +58,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     {
         parent::__construct();
         
-        $this->bootstrapForm = self::createBootstrapForm();
+        $this->bootstrapForm = BootstrapForm::create();
     }
 
     /**
@@ -73,7 +67,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     public function startup()
     {
         parent::startup();
-        
+      
         $this->banUser();
     }
     
@@ -82,7 +76,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      *
      * @return BootstrapForm
      */
-    public static function createBootstrapForm()
+    public function createBootstrapForm()
     {
         return new BootstrapForm();
     }
@@ -110,7 +104,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
                 }
             }
 
-            if ($ban->ban_ip === $this->httpRequest->getRemoteAddress()) {
+            if ($ban->ban_ip === $this->getHttpRequest()->getRemoteAddress()) {
                 $this->error('Banned', IResponse::S403_FORBIDDEN);
             }
         }

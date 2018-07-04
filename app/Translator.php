@@ -67,7 +67,7 @@ class Translator implements ITranslator
         }
         
         if (!array_key_exists($message, $this->tr)) {
-            throw new InvalidArgumentException("'{$message}'" . ' in language ' . $this->lang . ' in ' . $this->module . ' is missing.');
+            throw new InvalidArgumentException("'{$message}'" . ' in language ' . $this->lang . ' in ' . $this->module . 'Module is missing.');
         }
 
         return $this->tr[$message];

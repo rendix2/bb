@@ -3,7 +3,6 @@
 namespace App\ForumModule\Presenters;
 
 use App\Authenticator;
-use App\Controls\AppDir;
 use App\Controls\BootstrapForm;
 use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
@@ -20,6 +19,7 @@ class LoginPresenter extends BasePresenter
 {
     /**
      * @persistent
+     * @var string $backlink
      */
     public $backlink = '';
     
@@ -33,13 +33,6 @@ class LoginPresenter extends BasePresenter
      * @inject
      */
     public $sessionManager;
-    
-    /**
-     *
-     * @var AppDir $appDir
-     * @inject
-     */
-    public $appDir;
 
     /**
      * LoginPresenter constructor.
@@ -51,6 +44,39 @@ class LoginPresenter extends BasePresenter
         parent::__construct();
 
         $this->authenticator = $authenticator;
+    }
+    
+    /**
+     * 
+     * @param mixed $element
+     */
+    public function checkRequirements($element)
+    {       
+        $this->getUser()->getStorage()->setNamespace('frontend');
+        
+        parent::checkRequirements($element);
+    }
+    
+    /**
+     * start up method
+     * sets Authenticator
+     */
+    public function startup()
+    {
+        parent::startup();
+
+        $this->getUser()->setAuthenticator($this->authenticator);
+    }    
+    
+    /**
+     * before render method
+     * sets translator
+     */
+    public function beforeRender()
+    {
+        parent::beforeRender();
+
+        $this->template->setTranslator($this->translatorFactory->forumTranslatorFactory());
     }
 
     /**
@@ -90,37 +116,12 @@ class LoginPresenter extends BasePresenter
     }
 
     /**
-     *
-     */
-    public function startup()
-    {
-        parent::startup();
-
-        $this->getUser()
-            ->setAuthenticator($this->authenticator);
-    }
-
-    public function beforeRender()
-    {
-        parent::beforeRender();
-        
-        if ($this->getUser()->isLoggedIn()) {
-            $this->template->setTranslator(new \App\Translator(
-                $this->appDir,
-                'Forum',
-                $this->getUser()->getIdentity()->getData()['lang_file_name']
-            ));
-        } else {
-            $this->template->setTranslator(new \App\Translator($this->appDir, 'Forum', 'czech'));
-        }
-    }
-
-        /**
      * @return BootstrapForm
      */
     protected function createComponentLoginForm()
     {
-        $form = new BootstrapForm();
+        $form = $this->getBootstrapForm();
+        $form->setTranslator($this->translatorFactory->forumTranslatorFactory());
 
         $form->addText('user_name', 'Login:');
         $form->addPassword('user_password', 'Password:');

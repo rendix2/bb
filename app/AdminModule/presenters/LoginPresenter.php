@@ -5,13 +5,15 @@ namespace App\AdminModule\Presenters;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
 use Nette\Utils\ArrayHash;
+use App\Models\UsersManager;
+use App\Models\SessionsManager;
 
 /**
  * Description of LoginPresenter
  *
  * @author rendi
  */
-class LoginPresenter extends \App\Presenters\Base\ManagerPresenter
+class LoginPresenter extends \App\Presenters\Base\BasePresenter
 {
     /**
      * @persistent
@@ -24,24 +26,37 @@ class LoginPresenter extends \App\Presenters\Base\ManagerPresenter
      * @var \App\Translator $translator
      */
     public $translator;
+    
+    /**
+     * session manager
+     *
+     * @var SessionsManager $sessionManager
+     * @inject
+     */
+    public $sessionManager;    
 
     /**
      * LoginPresenter constructor.
      *
-     * @param \App\Models\UsersManager $manager
-     * @param \App\Controls\AppDir     $appDir
+     * @param UsersManager $manager
      */
-    public function __construct(\App\Models\UsersManager $manager, \App\Controls\AppDir $appDir)
+    public function __construct(UsersManager $manager)
     {
         parent::__construct($manager);
     }
     
+    public function checkRequirements($element)
+    {
+        $this->getUser()->getStorage()->setNamespace('beckend'); 
+        
+        parent::checkRequirements($element);       
+    }
+
     public function startup()
     {
         parent::startup();
         
-                $this->translator = $this->translatorFactory->adminTranslatorFactory();
-        
+        $this->translator = $this->translatorFactory->adminTranslatorFactory();
         $this->template->setTranslator($this->translator);
     }
 
@@ -50,7 +65,7 @@ class LoginPresenter extends \App\Presenters\Base\ManagerPresenter
      */
     protected function createComponentAdminLoginForm()
     {
-        $form = new \App\Controls\BootstrapForm();
+        $form = $this->getBootstrapForm();
         $form->setTranslator($this->translator);
         
         $form->addText('user_name', 'Login:');
@@ -62,8 +77,8 @@ class LoginPresenter extends \App\Presenters\Base\ManagerPresenter
     }
 
     /**
-     * @param Form $form
-     * @param ArrayHash                  $values
+     * @param Form      $form
+     * @param ArrayHash $values
      *
      * @throws AuthenticationException
      */
@@ -96,7 +111,7 @@ class LoginPresenter extends \App\Presenters\Base\ManagerPresenter
                 self::FLASH_MESSAGE_SUCCESS
             );
             $this->restoreRequest($this->backlink);
-            $this->redirect('Index:default');
+            $this->redirect(':Admin:Index:default');
         } catch (AuthenticationException $e) {
             $this->flashMessage(
                 $e->getMessage(),
