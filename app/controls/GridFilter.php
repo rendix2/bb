@@ -248,6 +248,15 @@ class GridFilter extends Control
 
         return $columnName;
     }
+    
+    public function handleReset()
+    {        
+        foreach ( $this->type as $name => $type) {
+            unset($this->session->getSection($name)->value);
+        }
+        
+        $this->whereColumns = [];
+    }
 
     /**
      * renders grid filter
@@ -257,9 +266,7 @@ class GridFilter extends Control
         $template = $this->template->setFile(__DIR__ . '/templates/gridFilter/gridFilter.latte');
         $template->setTranslator($this->translator);
 
-        foreach ($this->type as $column => $value) {
-            //unset($this->session->getSection($column)->value);
-            
+        foreach ($this->type as $column => $value) {            
             $this['gridFilter']->setDefaults([$column => $this->session->getSection($column)->value]);
         }
 
@@ -283,6 +290,12 @@ class GridFilter extends Control
         $template->filters = $this->getWhere();
         
         $template->render();
+    }
+    
+    public function renderReset()
+    {
+        $this->template->setFile(__DIR__ . '/templates/gridFilter/reset.latte');        
+        $this->template->render();
     }
 
     /**

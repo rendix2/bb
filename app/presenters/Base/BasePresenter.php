@@ -7,13 +7,14 @@ use App\Services\TranslatorFactory;
 use Nette;
 use App\Controls\BootstrapForm;
 use Nette\Http\IResponse;
-use Nette\Http\Request;
 
 /**
  * Base presenter for all application presenters.
  */
 abstract class BasePresenter extends Nette\Application\UI\Presenter
 {
+    use \Nextras\Application\UI\SecuredLinksPresenterTrait;
+    
     /**
      * @var string
      */

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use dibi;
 use Dibi\Fluent;
 use Dibi\Row;
 use Nette\Caching\Cache;

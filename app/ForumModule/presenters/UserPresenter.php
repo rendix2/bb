@@ -454,7 +454,7 @@ class UserPresenter extends Base\ForumPresenter
     protected function createComponentEditUserForm()
     {
         $form = $this->getBootstrapForm();
-        $form->setTranslator($this->getForumTranslator());
+
         $form->addText(
             'user_name',
             'User name:'
@@ -545,7 +545,7 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function changeUserNameSuccess(Form $form, ArrayHash $values)
     {
-        $result = $this->getManager()->update($user->getId(), $values);
+        $result = $this->getManager()->update($this->getUser()->getId(), $values);
         
         if ($result) {
             $this->flashMessage('User name was changed.', self::FLASH_MESSAGE_SUCCESS);

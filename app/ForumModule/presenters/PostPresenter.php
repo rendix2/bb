@@ -12,11 +12,9 @@ use App\Models\ReportsManager;
 use App\Models\ThanksManager;
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
-use App\Models\UsersManager;
 use dibi;
 use Nette\Application\UI\Form;
 use Nette\Http\IResponse;
-use Nette\Http\Request;
 use Nette\Utils\ArrayHash;
 
 /**

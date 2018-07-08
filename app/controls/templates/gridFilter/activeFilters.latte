@@ -1,3 +1,7 @@
 {block content}
-
+<br><span>Used filters:</span><br>
+    
+    {foreach $filters as $filter}
+        <span class="badge badge-primary">{_$filter['column']}</span>
+    {/foreach}
 {/block}
