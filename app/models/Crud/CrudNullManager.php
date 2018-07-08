@@ -34,7 +34,7 @@ class CrudNullManager extends CrudManager implements ICrudManager
      *
      * @param Connection $dibi
      */
-    public function __construct(Connection $dibi)
+    public function __construct(Connection $dibi, IStorage $storage)
     {
         $this->connection = $dibi;
     }

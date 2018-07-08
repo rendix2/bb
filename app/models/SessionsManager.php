@@ -18,7 +18,7 @@ class SessionsManager extends Crud\CrudManager
     public function getCountOfLoggedUsers()
     {
         return $this->dibi
-            ->query('SELECT count(DISTINCT session_user_id) FROM [' . $this->getTable() . ']')
+            ->query('SELECT COUNT(DISTINCT session_user_id) FROM [' . $this->getTable() . ']')
             ->fetchSingle();
     }
 
@@ -41,7 +41,7 @@ class SessionsManager extends Crud\CrudManager
     /**
      * @param int $session_id
      */
-    public function deleteBySessionId($session_id)
+    public function deleteBySession($session_id)
     {
         $this->dibi
                 ->delete($this->getTable())
@@ -52,7 +52,7 @@ class SessionsManager extends Crud\CrudManager
     /**
      * @param int $user_id
      */
-    public function deleteByUserId($user_id)
+    public function deleteByUser($user_id)
     {
         $this->dibi
                 ->delete($this->getTable())
@@ -76,7 +76,7 @@ class SessionsManager extends Crud\CrudManager
      * @param                        $user_id
      * @param ArrayHash              $session_data
      */
-    public function updateByUserId($user_id, ArrayHash $session_data)
+    public function updateByUser($user_id, ArrayHash $session_data)
     {
         $this->dibi
                 ->update($this->getTable(), $session_data)

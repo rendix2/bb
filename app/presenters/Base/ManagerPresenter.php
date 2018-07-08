@@ -59,11 +59,11 @@ abstract class ManagerPresenter extends BasePresenter
         $user = $this->getUser();
 
         if ($user->isLoggedIn()) {
-            $this->sessionManager->updateByUserId($user->getId(), ArrayHash::from(['session_last_activity' => time()]));
+            $this->sessionManager->updateByUser($user->getId(), ArrayHash::from(['session_last_activity' => time()]));
         } else {
             if ($user->logoutReason === IUserStorage::INACTIVITY) {
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
-                $this->sessionManager->deleteBySessionId($this->getSession()->getId());
+                $this->sessionManager->deleteBySession($this->getSession()->getId());
             }
             $this->redirect(':Forum:Login:default', ['backlink' => $this->storeRequest()]);
         }

@@ -13,11 +13,6 @@ use Nette\Utils\FileSystem;
 class RanksManager extends Crud\CrudManager
 {
     /**
-     * @var string
-     */
-    const RANK_FOLDER = 'ranks';
-
-    /**
      * @var int
      */
     const NOT_UPLOADED = -5;

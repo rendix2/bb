@@ -27,7 +27,7 @@ interface ICrudManager
      *
      * @param Connection $dibi
      */
-    public function __construct(Connection $dibi);
+    public function __construct(Connection $dibi, IStorage $storage);
 
     /**
      * @return Row[]

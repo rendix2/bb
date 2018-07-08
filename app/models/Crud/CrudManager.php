@@ -3,7 +3,6 @@
 namespace App\Models\Crud;
 
 use App\Models\Manager;
-use App\Presenters\crud\CrudPresenter;
 use dibi;
 use Dibi\Connection;
 use Dibi\Fluent;
@@ -22,7 +21,6 @@ use Tracy\ILogger;
  */
 abstract class CrudManager extends Manager implements ICrudManager
 {
-
     /**
      * @var string
      */
@@ -52,17 +50,25 @@ abstract class CrudManager extends Manager implements ICrudManager
      * @var Cache $cache
      */
     protected $managerCache;
+    
+    /**
+     * @var IStorage $storage
+     */
+    protected $storage;
 
     /**
      * CrudManager constructor.
      *
      * @param Connection $dibi
      */
-    public function __construct(Connection $dibi)
+    public function __construct(Connection $dibi, IStorage $storage)
     {
         parent::__construct($dibi);
 
-        $this->table = $this->getNameOfTableFromClass();
+        $this->storage         = $storage;
+        $this->table           = $this->getNameOfTableFromClass();
+        $this->managerCache    = new Cache($storage, $this->getTable());
+        $this->primaryKey      = $this->getPrimaryKeyQuery();        
     }
 
     /**
@@ -156,7 +162,7 @@ abstract class CrudManager extends Manager implements ICrudManager
     /**
      * @param array $item_id
      *
-     * @return array
+     * @return Row[]
      */
     public function getByIds(array $item_id)
     {
@@ -168,7 +174,7 @@ abstract class CrudManager extends Manager implements ICrudManager
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getCount()
     {
@@ -179,7 +185,7 @@ abstract class CrudManager extends Manager implements ICrudManager
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getCountCached()
     {
@@ -298,15 +304,6 @@ abstract class CrudManager extends Manager implements ICrudManager
             ->delete($this->table)
             ->where('[' . $this->primaryKey . '] IN %in', $item_id)
             ->execute(dibi::AFFECTED_ROWS);
-    }
-
-    /**
-     * @param IStorage $storage
-     */
-    public function factory(IStorage $storage)
-    {
-        $this->managerCache    = new Cache($storage, $this->getTable());
-        $this->primaryKey      = $this->getPrimaryKeyQuery();
     }
 
     /**

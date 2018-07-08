@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Controls;
 
 use App\Models\PMManager;
@@ -20,13 +14,14 @@ class PmControl extends \Nette\Application\UI\Control
     /**
      *
      * @var PMManager $pmManager
-     * @inject
      */
-    public $pmManager;
+    private $pmManager;
     
-    public function __construct()
+    public function __construct(PMManager $pmManager)
     {
         parent::__construct();
+        
+        $this->pmManager = $pmManager;
     }
     
     public function render()

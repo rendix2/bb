@@ -20,7 +20,7 @@ class CategoryPresenter extends Base\AdminPresenter
      * @inject
      */
     public $forumsManager;
-
+    
     /**
      * CategoryPresenter constructor.
      *
@@ -69,7 +69,7 @@ class CategoryPresenter extends Base\AdminPresenter
             $this[self::FORM_NAME]->setDefaults($item);
 
             $forums = $this->forumsManager->createForums(
-                $this->forumsManager->getForumsByCategoryId($id),
+                $this->forumsManager->getByCategory($id)->fetchAll(),
                 0
             );
 

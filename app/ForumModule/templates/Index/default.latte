@@ -2,6 +2,8 @@
 
     <div class="col-sm-12 main">
         <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+            {dump $data}
+            
             {foreach $data['cats'] as $category_id => $cat_values}
                 <tr>
                     <td>

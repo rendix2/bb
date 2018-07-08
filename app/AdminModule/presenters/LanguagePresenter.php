@@ -52,7 +52,7 @@ class LanguagePresenter extends Base\AdminPresenter
     {
         parent::renderEdit($id);
 
-        $this->template->countOfUsers = $this->userManager->getCountByLangId($id);
+        $this->template->countOfUsers = $this->userManager->getCountByLang($id);
     }
 
     /**

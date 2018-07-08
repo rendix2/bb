@@ -31,17 +31,11 @@ class PostPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresen
     {
         $form = new BootstrapForm();
         
+        $form->addText('post_title', 'Post title:');
         $form->addTextArea('post_text', 'Post:');
+        $form->addCheckbox('post_locked', 'Post locked:');
         $form->addSubmit('send', 'Save');
         
         return $this->addSubmitB($form);
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function editFormSuccess(Form $form, ArrayHash $values)
-    {
     }
 }

@@ -4,6 +4,7 @@ namespace App\Controls;
 
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
+use App\Controls\Users;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
@@ -18,10 +19,6 @@ use Nette\Utils\ArrayHash;
  */
 class ChangePasswordControl extends Control
 {
-    /**
-     * @var int
-     */
-    const MIN_LENGTH = 7;
 
     /**
      * @var UsersManager $userManager
@@ -34,9 +31,18 @@ class ChangePasswordControl extends Control
     private $translator;
 
     /**
+     * nette user
+     * 
      * @var User $user
      */
     private $user;
+    
+    /**
+     * user config from neon
+     *
+     * @var Users $users 
+     */
+    private $users;
 
     /**
      * ChangePasswordControl constructor.
@@ -45,39 +51,51 @@ class ChangePasswordControl extends Control
      * @param ITranslator  $translator
      * @param User         $user
      */
-    public function __construct(UsersManager $userManager, ITranslator $translator, User $user)
+    public function __construct(UsersManager $userManager, ITranslator $translator, User $user, Users $users)
     {
         parent::__construct();
 
         $this->userManager = $userManager;
         $this->translator  = $translator;
         $this->user        = $user;
+        $this->users       = $users;
     }
-
+    
     /**
-     * @param Form      $form
-     * @param ArrayHash $values
+     * renders control
      */
-    public function changePasswordSuccess(Form $form, ArrayHash $values)
+    public function render()
     {
-        $result = $this->userManager->update(
-            $this->user->getId(),
-            ArrayHash::from(
-                ['user_password' => Passwords::hash($values->user_password)]
-            )
-        );
+        $this->template->setFile(__DIR__ . '/templates/changePassword/changePassword.latte');
+        $this->template->render();
+    }  
+    
+    /**
+     * @return BootstrapForm
+     */
+    protected function createComponentChangePasswordForm()
+    {
+        $form = BootstrapForm::create();
+        $form->addGroup('Password');
 
-        if ($result) {
-            $this->presenter->flashMessage('Password changed.', BasePresenter::FLASH_MESSAGE_SUCCESS);
-            $this->presenter->redirect('this');
+        if (!$this->user->isInRole('admin')) {
+            $form->addPassword('user_last_password', 'User last password:')->setRequired(true);
         }
-    }
+
+        $form->addPassword('user_password', 'User password:')->setRequired(true);
+        $form->addPassword('user_password_check', 'User password for check:')->setRequired(true);
+        $form->addSubmit('send', 'Change password');
+        $form->onSuccess[] = [$this, 'changePasswordSuccess'];
+        $form->onValidate[] = [$this, 'changePasswordOnValidate'];
+
+        return $form;
+    }    
 
     /**
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function changePasswordValidate(Form $form, ArrayHash $values)
+    public function changePasswordOnValidate(Form $form, ArrayHash $values)
     {
         if (!$values->user_password) {
             $form->addError('Empty password.');
@@ -97,7 +115,7 @@ class ChangePasswordControl extends Control
             $form->addError('Last password is incorrect.');
         }
 
-        if (mb_strlen($values->user_password) < self::MIN_LENGTH) {
+        if (mb_strlen($values->user_password) <= $this->users->getUser()['minUserPasswordLength']) {
             $form->addError('Password is not long enough.');
         }
 
@@ -107,33 +125,21 @@ class ChangePasswordControl extends Control
     }
 
     /**
-     *
+     * @param Form      $form
+     * @param ArrayHash $values
      */
-    public function render()
+    public function changePasswordSuccess(Form $form, ArrayHash $values)
     {
-        $this->template->setFile(__DIR__ . '/templates/changePassword/changePassword.latte');
-        $this->template->render();
-    }
+        $result = $this->userManager->update(
+            $this->user->getId(),
+            ArrayHash::from(
+                ['user_password' => Passwords::hash($values->user_password)]
+            )
+        );
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentChangePasswordForm()
-    {
-        $form = new BootstrapForm();
-        $form->setTranslator($this->translator);
-        $form->addGroup('Password');
-
-        if (!$this->user->isInRole('admin')) {
-            $form->addPassword('user_last_password', 'User last password:')->setRequired(true);
+        if ($result) {
+            $this->presenter->flashMessage('Password changed.', BasePresenter::FLASH_MESSAGE_SUCCESS);
+            $this->presenter->redirect('this');
         }
-
-        $form->addPassword('user_password', 'User password:')->setRequired(true);
-        $form->addPassword('user_password_check', 'User password for check:')->setRequired(true);
-        $form->addSubmit('send', 'Change password');
-        $form->onSuccess[] = [$this, 'changePasswordSuccess'];
-        $form->onValidate[] = [$this, 'changePasswordValidate'];
-
-        return $form;
     }
 }

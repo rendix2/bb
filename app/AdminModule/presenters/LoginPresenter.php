@@ -34,17 +34,11 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter
      * @inject
      */
     public $sessionManager;    
-
-    /**
-     * LoginPresenter constructor.
-     *
-     * @param UsersManager $manager
-     */
-    public function __construct(UsersManager $manager)
-    {
-        parent::__construct($manager);
-    }
     
+    /**
+     * 
+     * @param type $element
+     */
     public function checkRequirements($element)
     {
         $this->getUser()->getStorage()->setNamespace('beckend'); 
@@ -52,6 +46,9 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter
         parent::checkRequirements($element);       
     }
 
+    /**
+     * startup method
+     */
     public function startup()
     {
         parent::startup();
@@ -66,7 +63,6 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter
     protected function createComponentAdminLoginForm()
     {
         $form = $this->getBootstrapForm();
-        $form->setTranslator($this->translator);
         
         $form->addText('user_name', 'Login:');
         $form->addPassword('user_password', 'Password:');

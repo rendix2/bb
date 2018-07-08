@@ -23,7 +23,7 @@ class TopicWatchManager extends MNManager
      * @param Connection    $dibi
      * @param TopicsManager $left
      * @param UsersManager  $right
-     * @param null|string   $tableName
+     * @param string   $tableName
      */
     public function __construct(
         Connection $dibi,

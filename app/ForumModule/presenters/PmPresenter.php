@@ -63,7 +63,7 @@ class PmPresenter extends CrudPresenter
         $form->addText('pm_subject', 'Subject:');
         $form->addText('pm_user_name', 'User name:');
         $form->addTextArea('pm_text', 'Text:');
-               
-        return $form;
+        
+        return $this->addSubmitB($form);
     }
 }

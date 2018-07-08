@@ -172,6 +172,7 @@ class GroupPresenter extends Base\AdminPresenter
     protected function createComponentForumsForm()
     {
         $form = $this->createBootstrapForm();
+        
         $form->addSubmit('send', 'Send');
         $form->onSuccess[] = [$this, 'forumsSuccess'];
 

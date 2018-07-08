@@ -7,7 +7,6 @@ use App\Controls\ChangePasswordControl;
 use App\Controls\DeleteAvatarControl;
 use App\Controls\PaginatorControl;
 use App\Models\LanguagesManager;
-use App\Models\MailsManager;
 use App\Models\ModeratorsManager;
 use App\Models\PostsManager;
 use App\Models\RanksManager;
@@ -16,7 +15,6 @@ use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
 use App\Models\UsersManager;
 use Nette\Application\UI\Form;
-use Nette\Mail\IMailer;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -80,30 +78,36 @@ class UserPresenter extends Base\ForumPresenter
      * @inject
      */
      public $moderatorsManager;
+
+    /**
+     *
+     * @var \App\Controls\BBMailer $bbMailer
+     * @inject
+     */
+    public $bbMailer;
     
     /**
      *
-     * @var IMailer $mailer
-     */
-    private $mailer;
-    
-    /**
-     * @var MailsManager $mailManager
+     * @var \App\Services\ChangePasswordFactory $changePasswordFactory
      * @inject
      */
-    public $mailManager;
+    public $changePasswordFactory;
+    
+    /**
+     *
+     * @var \App\Services\DeleteAvatarFactory $deleteAvatarFactory
+     * @inject
+     */
+    public $deleteAvatarFactory;    
 
     /**
      * UserPresenter constructor.
      *
      * @param UsersManager $manager
-     * @param IMailer      $mailer
      */
-    public function __construct(UsersManager $manager, IMailer $mailer)
+    public function __construct(UsersManager $manager)
     {
         parent::__construct($manager);
-        
-        $this->mailer = $mailer;
     }
     
     /**
@@ -152,7 +156,7 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function actionLogout()
     {
-        $this->sessionManager->deleteBySessionId($this->getSession()->getId());
+        $this->sessionManager->deleteBySession($this->getSession()->getId());
         $this->getUser()->logout(true);
 
         $this->flashMessage('Successfully logged out. ', self::FLASH_MESSAGE_SUCCESS);
@@ -210,7 +214,7 @@ class UserPresenter extends Base\ForumPresenter
             $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $posts = $this->getManager()->getPosts($user_id);
+        $posts = $this->postManager->getByUser($user_id);
         $pag   = new PaginatorControl($posts, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
 
@@ -274,7 +278,7 @@ class UserPresenter extends Base\ForumPresenter
             $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $thanks = $this->getManager()->getThanks($user_id);
+        $thanks = $this->thanksManager->getThanks($user_id);
         $pag    = new PaginatorControl($thanks, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
 
@@ -301,7 +305,7 @@ class UserPresenter extends Base\ForumPresenter
             $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $topics = $this->getManager()->getTopics($user_id);
+        $topics = $this->topicManager->getFLuentByUser($user_id);
         $pag    = new PaginatorControl($topics, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
 
@@ -433,11 +437,7 @@ class UserPresenter extends Base\ForumPresenter
      */
     protected function createComponentChangePasswordControl()
     {
-        return new ChangePasswordControl(
-            $this->getManager(),
-            $this->getForumTranslator(),
-            $this->getUser()
-        );
+        return $this->changePasswordFactory->getForum();
     }
 
     /**
@@ -445,12 +445,7 @@ class UserPresenter extends Base\ForumPresenter
      */
     protected function createComponentDeleteAvatar()
     {
-        return new DeleteAvatarControl(
-            $this->getManager(),
-            $this->avatar,
-            $this->getUser(),
-            $this->getForumTranslator()
-        );
+        return $this->deleteAvatarFactory->getForum();
     }
 
     /**
@@ -538,7 +533,7 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function changeUserNameOnValidate(Form $form, ArrayHash $values)
     {
-        if (count($this->getManager()->findUserByUserName($values->user_name))) {
+        if (count($this->getManager()->getByUserName($values->user_name))) {
             $form->addError('User already exists.');
         }
     }
@@ -627,19 +622,24 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function sendMailToAdminSuccess(Form $form, ArrayHash $values)
     {
-        $admins = $this->getManager()->getAllFluent()->where('[user_role_id] = %i', 5)->fetchAll();
+        $admins = $this->getManager()
+                ->getAllFluent()
+                ->where('[user_role_id] = %i', 5)
+                ->fetchAll();
         
         $adminsMails = [];
         
         foreach ($admins as $admin) {
             $adminsMails[] = $admin->user_email;
         }
-                
-        $mailer = new \App\Controls\BBMailer($this->mailer, $this->mailManager);
-        $mailer->addRecepients($adminsMails);
-        $mailer->setSubject($values->mail_subject);
-        $mailer->setText($values->mail_text);
-        $res = $mailer->send();
+
+        \Tracy\Debugger::barDump($adminsMails);
+        \Tracy\Debugger::barDump($admins);
+        
+        $this->bbMailer->addRecepients($adminsMails);
+        $this->bbMailer->setSubject($values->mail_subject);
+        $this->bbMailer->setText($values->mail_text);
+        $res = $this->bbMailer->send();
         
         if ($res) {
             $this->flashMessage('Mail sent.', self::FLASH_MESSAGE_SUCCESS);

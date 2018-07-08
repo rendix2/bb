@@ -5,7 +5,7 @@ namespace App\Controls;
 /**
  * Description of Avatars
  *
- * @author rendi
+ * @author rendix2
  */
 final class Avatars extends ImageDir
 {

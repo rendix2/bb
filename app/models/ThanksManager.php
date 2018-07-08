@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Dibi\Result;
-use Nette\Utils\ArrayHash;
 
 /**
  * Description of ThanksManager
@@ -13,16 +12,11 @@ use Nette\Utils\ArrayHash;
 class ThanksManager extends Crud\CrudManager
 {
     /**
-     * @var UsersManager $userManager
-     */
-    private $userManager;
-
-    /**
      * @param int $forum_id
      *
-     * @return array
+     * @return Row[[]
      */
-    public function getThanksByForumId($forum_id)
+    public function getThanksByForum($forum_id)
     {
         return $this->dibi
             ->select('*')
@@ -34,9 +28,9 @@ class ThanksManager extends Crud\CrudManager
     /**
      * @param int $topic_id
      *
-     * @return array
+     * @return Row[]
      */
-    public function getThanksByTopicId($topic_id)
+    public function getThanksByTopic($topic_id)
     {
         return $this->dibi
             ->select('*')
@@ -48,9 +42,9 @@ class ThanksManager extends Crud\CrudManager
     /**
      * @param int $user_id
      *
-     * @return array
+     * @return Row[]
      */
-    public function getThanksByUserId($user_id)
+    public function getThanksByUser($user_id)
     {
         return $this->dibi
             ->select('*')
@@ -62,7 +56,7 @@ class ThanksManager extends Crud\CrudManager
     /**
      * @param int $topic_id
      *
-     * @return array
+     * @return Row[]
      */
     public function getThanksWithUserInTopic($topic_id)
     {
@@ -76,6 +70,23 @@ class ThanksManager extends Crud\CrudManager
             ->where('[t.thank_topic_id] = %i', $topic_id)
             ->fetchAll();
     }
+    
+    /**
+     * @param int $user_id
+     *
+     * @return Fluent
+     */
+    public function getThanks($user_id)
+    {
+        return $this->dibi
+                ->select('*')
+                ->from($this->getTable())
+                ->as('th')
+                ->innerJoin(self::TOPICS_TABLE)
+                ->as('to')
+                ->on('[th.thank_topic_id] = [to.topic_id]')
+                ->where('[th.thank_user_id] = %i', $user_id);
+    }    
 
     /**
      * @param int $forum_id
@@ -88,7 +99,7 @@ class ThanksManager extends Crud\CrudManager
     {
         return !$this->dibi
             ->select('1')
-            ->from(self::THANKS_TABLE)
+            ->from($this->getTable())
             ->where('[thank_forum_id] = %i', $forum_id)
             ->where('[thank_topic_id] = %i', $topic_id)
             ->where('[thank_user_id] = %i', $user_id)
@@ -96,35 +107,28 @@ class ThanksManager extends Crud\CrudManager
     }
 
     /**
-     * @param ArrayHash $item_data
-     *
-     * @return Result|int|void
-     */
-    public function add(ArrayHash $item_data)
-    {
-        $this->userManager->update($item_data->thank_user_id, ArrayHash::from(['user_thank_count%sql' => 'user_thank_count + 1']));
-
-        parent::add($item_data);
-    }
-
-    /**
      * @param int $topic_id
      *
      * @return Result|int
      */
-    public function deleteByTopicId($topic_id)
+    public function deleteByTopic($topic_id)
     {
         return $this->dibi
             ->delete($this->getTable())
             ->where('[thank_topic_id] = %i', $topic_id)
             ->execute();
     }
-
+    
     /**
-     * @param UsersManager $userManager
+     * @param int $user_id
+     *
+     * @return Result|int
      */
-    public function injectUserManager(UsersManager $userManager)
+    public function deleteByUser($user_id)
     {
-        $this->userManager = $userManager;
-    }
+        return $this->dibi
+            ->delete($this->getTable())
+            ->where('[thank_user_id] = %i', $user_id)
+            ->execute();
+    }    
 }

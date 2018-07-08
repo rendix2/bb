@@ -14,6 +14,12 @@ use Nette\Security\User;
  */
 class Authorizator
 {
+
+    /**
+     * @var \App\Models\Users2GroupsManager $users2GroupsManager
+     */
+    private $users2GroupsManager;
+
     /**
      * @var Permission $acl
      */
@@ -44,20 +50,21 @@ class Authorizator
     private $moderatorsManager;
 
     /**
-     * Authorizator constructor.
-     *
-     * @param Models\ForumsManager $forumsManager
-     * @param User                 $user
-     * @param UsersManager         $userManager
-     * @param ModeratorsManager    $moderatorsManager
+     * 
+     * @param \App\Models\ForumsManager $forumsManager
+     * @param User $user
+     * @param UsersManager $userManager
+     * @param ModeratorsManager $moderatorsManager
+     * @param \App\Models\Users2GroupsManager $users2GroupsManager
      */
-    public function __construct(Models\ForumsManager $forumsManager, User $user, UsersManager $userManager, ModeratorsManager $moderatorsManager)
+    public function __construct(Models\ForumsManager $forumsManager, User $user, UsersManager $userManager, ModeratorsManager $moderatorsManager, \App\Models\Users2GroupsManager $users2GroupsManager)
     {
         $this->acl               = new Permission();
         $this->forumManager      = $forumsManager;
         $this->user              = $user;
         $this->userManager       = $userManager;
         $this->moderatorsManager = $moderatorsManager;
+        $this->users2GroupsManager = $users2GroupsManager;        
     
         $this->defineRoles();       
         $this->defineResources();
@@ -152,7 +159,7 @@ class Authorizator
             }
         }
              
-        foreach ($this->userManager->getForumsPermissionsByUserThroughGroup($this->user->getId()) as $perm) {
+        foreach ($this->users2GroupsManager->getForumsPermissionsByUserThroughGroup($this->user->getId()) as $perm) {
             if ($perm->topic_thank) {
                 $this->acl->allow('registered', '' . $perm->forum_id, 'topic_thank');
             } else {

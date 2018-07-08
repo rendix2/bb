@@ -16,7 +16,7 @@ use App\Translator;
 class IndexPresenter extends BasePresenter
 {
     /**
-     *
+     * @var int
      */
     const MAX_LOGGED_IN_USERS_TO_SHOW = 200;
     
@@ -31,25 +31,24 @@ class IndexPresenter extends BasePresenter
      * @inject
      */
     public $avatar;
-
+   
     /**
-     *
+     * 
+     * @param type $element
      */
-    public function startup()
+    public function checkRequirements($element)
     {
-        parent::startup();
+        $this->getUser()->getStorage()->setNamespace('beckend'); 
+        
+        parent::checkRequirements($element);
 
-        $user = $this->getUser();
-
-        if (!$user->isLoggedIn()) {
+        if (!$this->getUser()->isLoggedIn()) {
             $this->error('You are not logged in.');
         }
 
-        if (!$user->isInRole('admin')) {
+        if (!$this->getUser()->isInRole('admin')) {
             $this->error('You are not admin.');
         }
-
-        $lang_name = $user->getIdentity()->getData()['lang_file_name'];
     }
 
     /**

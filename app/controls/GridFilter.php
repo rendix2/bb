@@ -78,7 +78,7 @@ class GridFilter extends Control
     {
         parent::__construct();
 
-        $this->form    = new BootstrapForm();
+        $this->form    = BootstrapForm::create();
         $this->type    = [];
     }
 
@@ -89,6 +89,14 @@ class GridFilter extends Control
     {
         $this->translator = $translator;
     }
+
+    /**
+     * @param Session $session
+     */
+    public function factory(Session $session)
+    {
+        $this->session = $session;
+    }    
 
     /**
      * @return array
@@ -222,7 +230,7 @@ class GridFilter extends Control
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @return mixed
      */
@@ -242,13 +250,56 @@ class GridFilter extends Control
     }
 
     /**
-     * @param Session $session
+     * renders grid filter
      */
-    public function factory(Session $session)
+    public function render()
     {
-        $this->session = $session;
+        $template = $this->template->setFile(__DIR__ . '/templates/gridFilter/gridFilter.latte');
+        $template->setTranslator($this->translator);
+
+        foreach ($this->type as $column => $value) {
+            //unset($this->session->getSection($column)->value);
+            
+            $this['gridFilter']->setDefaults([$column => $this->session->getSection($column)->value]);
+        }
+
+        $template->type = $this->type;
+        $template->gf   = $this;
+
+        // TODO params is var of template class
+        $template->params = $this->getParameters();
+
+        $template->render();
+    }
+    
+    /**
+     * renders active filters
+     */
+    public function renderActiveFilters()
+    {
+        $template = $this->template->setFile(__DIR__ . '/templates/gridFilter/activeFilters.latte');
+        $template->setTranslator($this->translator);
+        
+        $template->filters = $this->getWhere();
+        
+        $template->render();
     }
 
+    /**
+     * @return BootstrapForm
+     */
+    protected function createComponentGridFilter()
+    {
+        $this->form->setAction(
+            $this->link('this', $this->getParameters())
+        );
+        $this->form->onSuccess[] = [$this, 'success'];
+        $this->form->addSubmit('send', 'Send');
+        $this->form->setTranslator($this->translator);
+
+        return $this->form;
+    }
+    
     /**
      * @param Form      $form
      * @param ArrayHash $values
@@ -281,45 +332,5 @@ class GridFilter extends Control
         $this->whereColumns = $where;
 
         $this->redirect('this');
-    }
-
-    /**
-     *
-     */
-    public function render()
-    {
-        $template = $this->template->setFile(__DIR__ . '/templates/gridFilter.latte');
-        $template->setTranslator($this->translator);
-        
-        
-
-        foreach ($this->type as $column => $value) {
-            //unset($this->session->getSection($column)->value);
-            
-            $this['gridFilter']->setDefaults([$column => $this->session->getSection($column)->value]);
-        }
-
-        $template->type = $this->type;
-        $template->gf   = $this;
-
-        // TODO params is var of template class
-        $template->params = $this->getParameters();
-
-        $template->render();
-    }
-
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentGridFilter()
-    {
-        $this->form->setAction(
-            $this->link('this', $this->getParameters())
-        );
-        $this->form->onSuccess[] = [$this, 'success'];
-        $this->form->addSubmit('send', 'Send');
-        $this->form->setTranslator($this->translator);
-
-        return $this->form;
-    }
+    }    
 }

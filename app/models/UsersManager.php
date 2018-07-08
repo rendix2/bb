@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Controls\Avatars;
 use Dibi\Fluent;
-use Dibi\Result;
 use Dibi\Row;
 use Nette\Http\FileUpload;
 use Nette\InvalidArgumentException;
@@ -27,28 +26,14 @@ class UsersManager extends Crud\CrudManager
      * @var Avatars $avatar
      * @inject
      */
-    private $avatar;
-
-    /**
-     * @param string $email
-     *
-     * @return mixed
-     */
-    public function getByEmail($email)
-    {
-        return $this->dibi
-                ->select('1')
-                ->from($this->getTable())
-                ->where('[user_email] = %s', $email)
-                ->fetchSingle();
-    }
+    public $avatar;
 
     /**
      * @param int $lang_id
      *
-     * @return array
+     * @return Row[]
      */
-    public function getByLangId($lang_id)
+    public function getByLang($lang_id)
     {
         return $this->dibi
                 ->select('*')
@@ -74,9 +59,9 @@ class UsersManager extends Crud\CrudManager
     /**
      * @param int $role_id
      *
-     * @return array
+     * @return Row[]
      */
-    public function getByRoleId($role_id)
+    public function getByRole($role_id)
     {
         return $this->dibi
                 ->select('*')
@@ -90,7 +75,7 @@ class UsersManager extends Crud\CrudManager
      *
      * @return int
      */
-    public function getCountByLangId($lang_id)
+    public function getCountByLang($lang_id)
     {
         return $this->dibi
             ->select('COUNT(*)')
@@ -104,7 +89,7 @@ class UsersManager extends Crud\CrudManager
      *
      * @return int
      */
-    public function getCountByRoleId($role_id)
+    public function getCountByRole($role_id)
     {
         return $this->dibi
                 ->select('COUNT(*)')
@@ -114,75 +99,13 @@ class UsersManager extends Crud\CrudManager
     }
 
     /**
-     * @param int $user_id
-     *
-     * @return array
-     */
-    public function getForumsPermissionsByUserThroughGroup($user_id)
-    {
-        return $this->dibi
-                ->select('*')
-                ->from(self::USERS2GROUPS_TABLE)
-                ->as('ug')
-                ->innerJoin(self::FORUMS2GROUPS_TABLE)
-                ->as('fg')
-                ->on('[ug.group_id] = [fg.group_id]')
-                ->where('[ug.user_id] = %i', $user_id)
-                ->fetchAll();
-    }
-
-    /**
      * @return Row|false
      */
     public function getLastUser()
     {
         return $this->dibi
-            ->query('SELECT * FROM [' . self::USERS_TABLE . '] WHERE [user_id] = (SELECT MAX(user_id) FROM [' . self::USERS_TABLE . '])')
+            ->query('SELECT * FROM [' . $this->getTable() . '] WHERE [user_id] = (SELECT MAX(user_id) FROM [' . $this->getTable() . '])')
                 ->fetch();
-    }
-
-    /**
-     * @param int $user_id
-     *
-     * @return Fluent
-     */
-    public function getPosts($user_id)
-    {
-        return $this->dibi
-                ->select('*')
-                ->from(self::POSTS_TABLES)
-                ->where('[post_user_id] = %i', $user_id);
-    }
-
-
-    /**
-     * @param int $user_id
-     *
-     * @return Fluent
-     */
-    public function getThanks($user_id)
-    {
-        return $this->dibi
-                ->select('*')
-                ->from(self::THANKS_TABLE)
-                ->as('th')
-                ->innerJoin(self::TOPICS_TABLE)
-                ->as('to')
-                ->on('[th.thank_topic_id] = [to.topic_id]')
-                ->where('[th.thank_user_id] = %i', $user_id);
-    }
-
-    /**
-     * @param int $user_id
-     *
-     * @return Fluent
-     */
-    public function getTopics($user_id)
-    {
-        return $this->dibi
-                ->select('*')
-                ->from(self::TOPICS_TABLE)
-                ->where('[topic_user_id] = %i', $user_id);
     }
 
     /**
@@ -203,23 +126,11 @@ class UsersManager extends Crud\CrudManager
     }
 
     /**
-     * @param int $item_id
-     *
-     * @return Result|int|void
-     */
-    public function delete($item_id)
-    {
-        parent::delete($item_id);
-
-        // TODO
-    }
-
-    /**
      * @param string $user_name
      *
-     * @return array
+     * @return Row[]
      */
-    public function findUsersByUserName($user_name)
+    public function findLikeByUserName($user_name)
     {
         return $this->dibi
             ->select('*')
@@ -231,15 +142,46 @@ class UsersManager extends Crud\CrudManager
     /**
      * 
      * @param string $user_name
+     * 
      * @return bool
      */
-    public function findUserByUserName($user_name)
+    public function getByUserName($user_name)
     {
         return $this->dibi
             ->select('')
             ->from($this->getTable())
             ->where('[user_name] = %s', $user_name)
             ->fetchSingle() === 1;        
+    }
+    
+    /**
+     * 
+     * @param string $email
+     * 
+     * @return Row[]
+     */
+    public function getByEmail($email)
+    {
+        return $this->dibi
+                ->select('*')
+                ->from($this->getTable())
+                ->where('[user_email] = %s', $email)
+                ->fetchAll();        
+    }
+    
+    /**
+     * 
+     * @param array $emails
+     * 
+     * @return Row[]
+     */
+    public function getByEmails(array $emails)
+    {
+        return $this->dibi
+                ->select('*')
+                ->from($this->getTable())
+                ->where('[user_email] IN %in', $emails)
+                ->fetchAll();
     }
 
     /**

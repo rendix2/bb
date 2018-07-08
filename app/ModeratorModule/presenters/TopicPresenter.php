@@ -21,14 +21,20 @@ class TopicPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPrese
     {
         parent::__construct($manager);
     }
-
+    
     /**
-     *
+     * 
+     * @return BootstrapForm
      */
     protected function createComponentEditForm()
     {
-        $form = new BootstrapForm();
+        $form = BootstrapForm::create();
         
-        return $form;
+        $form->addText('topic_user_id', 'Topic user:');
+        $form->addText('topic_forum_id', 'Topic forum');
+        $form->addText('topic_name', 'Topic name:');
+        $form->addCheckbox('topic_locked', 'Topic locked:');
+
+        return $this->addSubmitB($form);
     }
 }

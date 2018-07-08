@@ -73,7 +73,7 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
         }
 
-        $category = $this->categoryManager->getByForumId($forum_id);
+        $category = $this->categoryManager->getByForum($forum_id);
 
         if (!$category) {
             $this->error('Not existing category.');
@@ -83,7 +83,7 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->error('Category is not active.');
         }
 
-        $topics    = $this->getManager()->getTopics($forum_id);
+        $topics    = $this->topicManager->getFluentJoinedUsersByForum($forum_id);
         $paginator = new PaginatorControl($topics, 10, 5, $page);
 
         $this->addComponent($paginator, 'paginator');
@@ -101,7 +101,7 @@ final class ForumPresenter extends Base\ForumPresenter
         $this->template->forum       = $forum;
         $this->template->topics      = $topics->fetchAll();
         $this->template->subForums   = $this->getManager()
-            ->getForumsByForumParentId($forum_id);
+            ->getByParent($forum_id);
         $this->template->parentForum = $this->getManager()
             ->getParentForumByForumId($forum_id);
     }

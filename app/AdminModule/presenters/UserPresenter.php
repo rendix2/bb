@@ -64,6 +64,7 @@ class UserPresenter extends Base\AdminPresenter
     /**
      *
      * @var \App\Controls\Ranks $rank
+     * @inject
      */
     public $rank;
 
@@ -76,6 +77,20 @@ class UserPresenter extends Base\AdminPresenter
     public $moderatorsManager;
 
     /**
+     *
+     * @var \App\Services\ChangePasswordFactory $changePasswordFactory
+     * @inject
+     */
+    public $changePasswordFactory;  
+    
+    /**
+     *
+     * @var \App\Services\DeleteAvatarFactory $deleteAvatarFactory
+     * @inject
+     */
+    public $deleteAvatarFactory;
+
+        /**
      * UserPresenter constructor.
      *
      * @param UsersManager $manager
@@ -132,11 +147,7 @@ class UserPresenter extends Base\AdminPresenter
      */
     protected function createComponentChangePasswordControl()
     {
-        return new ChangePasswordControl(
-            $this->getManager(),
-            $this->getAdminTranslator(),
-            $this->getUser()
-        );
+        return $this->changePasswordFactory->getAdmin();
     }
 
     /**
@@ -178,12 +189,7 @@ class UserPresenter extends Base\AdminPresenter
      */
     public function createComponentDeleteAvatar()
     {
-        return new DeleteAvatarControl(
-            $this->getManager(),
-            $this->avatar,
-            $this->getUser(),
-            $this->getAdminTranslator()
-        );
+        return $this->deleteAvatarFactory->getAdmin();
     }
 
     /**
@@ -233,8 +239,6 @@ class UserPresenter extends Base\AdminPresenter
     {
         $moderators  = $form->getHttpData($form::DATA_TEXT, 'moderators[]');
         $user_id = $this->getParameter('id');
-        
-        \Tracy\Debugger::barDump($moderators, '$moderators');
 
         $this->moderatorsManager->addByLeft((int) $user_id, array_values($moderators));
         $this->flashMessage('Forums saved.', self::FLASH_MESSAGE_SUCCESS);

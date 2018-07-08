@@ -1,25 +1,19 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Controls;
 
 use App\Models\MailsManager;
+use App\Controls\Email;
 use Latte\Engine;
 use Nette\Mail\IMailer;
 
 /**
  * Description of BBMailer
  *
- * @author rendi
+ * @author rendix2
  */
 class BBMailer
-{
-    
+{  
     /**
      *
      * @var \Nette\Mail\Message $message
@@ -43,6 +37,17 @@ class BBMailer
      * @var MailsManager $manager
      */
     private $manager;
+    
+    /**
+     * @var \App\Models\Mails2UsersManager $mails2users;
+     */
+    private $mails2users;
+    
+    /**
+     *
+     * @var \App\Models\UsersManager $usersManager
+     */
+    private $usersManager;
 
     /**
      * BBMailer constructor.
@@ -50,19 +55,21 @@ class BBMailer
      * @param IMailer      $mailer
      * @param MailsManager $manager
      */
-    /**
-     * BBMailer constructor.
-     *
-     * @param IMailer      $mailer
-     * @param MailsManager $manager
-     */
-    public function __construct(IMailer $mailer, MailsManager $manager)
-    {
+    public function __construct(
+            IMailer $mailer,
+            MailsManager $manager,
+            Email $email,
+            \App\Models\Mails2UsersManager $mails2users,
+            \App\Models\UsersManager $usersManager
+    ) {
         $this->mailer  = $mailer;
         $this->message = new \Nette\Mail\Message();
-        $this->message->setFrom('a@a.a');
+        $this->message->setFrom($email->getMail());
         
-        $this->manager = $manager;
+        $this->manager      = $manager;
+        $this->mails2users  = $mails2users;
+        $this->usersManager = $usersManager;
+        
     }
 
     /**
@@ -89,12 +96,7 @@ class BBMailer
     /**
      * @param $subject
      *
-     * @return $this
-     */
-    /**
-     * @param $subject
-     *
-     * @return $this
+     * @return \App\Controls\BBMailer
      */
     public function setSubject($subject)
     {
@@ -107,7 +109,7 @@ class BBMailer
      * @param string $input
      * @param null|mixed   $variables
      *
-     * @return $this
+     * @return \App\Controls\BBMailer
      */
     public function setText($input, $variables = null)
     {
@@ -157,12 +159,20 @@ class BBMailer
         $item_data = [
             'mail_text'    => $this->message->getBody(),
             'mail_subject' => $this->message->getSubject(),
-            'mail_to'      => implode(', ', $this->recepients),
             'mail_from'    => $this->message->getFrom(),
             'mail_time'    => time()
         
         ];
         
-        $this->manager->add(\Nette\Utils\ArrayHash::from($item_data));
+        $emails   = $this->usersManager->getByEmails($this->recepients);        
+        $email_id = $this->manager->add(\Nette\Utils\ArrayHash::from($item_data));
+        
+        $emailsArray = [];       
+        
+        foreach ($emails as $email) {
+            $emailsArray[] = $email->user_id;
+        }
+        
+        $this->mails2users->addByLeft($email_id, $emailsArray);
     }
 }

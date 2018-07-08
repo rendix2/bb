@@ -84,6 +84,9 @@ class RegisterPresenter extends BasePresenter
     {
     }
 
+    /**
+     * 
+     */
     public function renderDefault()
     {
     }

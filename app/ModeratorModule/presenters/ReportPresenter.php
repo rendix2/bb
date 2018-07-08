@@ -27,8 +27,10 @@ class ReportPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPres
      */
     protected function createComponentEditForm()
     {
-        $form = new BootstrapForm();
+        $form = BootstrapForm::create();
         
-        return $form;
+        $form->addTextArea('report_text', 'Report text:');
+        
+        return $this->addSubmitB($form);            
     }
 }

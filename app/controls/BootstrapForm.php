@@ -35,6 +35,7 @@ class BootstrapForm extends Form
      * @api
      */
     private $columnCount;
+    
     /**
      * type of column
      *
@@ -42,6 +43,7 @@ class BootstrapForm extends Form
      * @api
      */
     private $columnType;
+    
     /**
      * columns in row
      * like sm-8 ...

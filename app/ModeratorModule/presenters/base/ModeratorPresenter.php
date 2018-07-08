@@ -23,13 +23,19 @@ abstract class ModeratorPresenter extends CrudPresenter
      * @inject
      */
     public $authorizator;
-
+    
     /**
      * @return ITranslator
      */
     public function getTranslator()
     {
         return $this->translator;
+    }
+    
+    public function checkRequirements($element) {
+        parent::checkRequirements($element);
+        
+        $this->getUser()->getStorage()->setNamespace('frontend');
     }
 
     public function startup()

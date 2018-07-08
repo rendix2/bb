@@ -1,14 +1,7 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\AdminModule\Presenters;
 
-use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\MailsManager;
@@ -16,7 +9,6 @@ use App\Models\UsersManager;
 use Nette\Application\UI\Form;
 use Nette\InvalidArgumentException;
 use Nette\Mail\FallbackMailerException;
-use Nette\Mail\IMailer;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -28,28 +20,33 @@ class EmailPresenter extends Base\AdminPresenter
 {
     /**
      *
-     * @var IMailer $mailer
-     */
-    private $mailer;
-
-    /**
-     *
      * @var UsersManager $usersManager
      */
     private $usersManager;
+    
+    /**
+     * @var \App\Controls\BBMailer $bbMailer
+     * @inject
+     */
+    public $bbMailer;
+    
+    /**
+     *
+     * @var \App\Models\Mails2UsersManager $mail2UsersManager
+     * @inject
+     */
+    public $mail2UsersManager;
 
     /**
      * EmailPresenter constructor.
      *
      * @param MailsManager $manager
      * @param UsersManager $usersManager
-     * @param IMailer      $mailer
      */
-    public function __construct(MailsManager $manager, UsersManager $usersManager, IMailer $mailer)
+    public function __construct(MailsManager $manager, UsersManager $usersManager)
     {
         parent::__construct($manager);
 
-        $this->mailer       = $mailer;
         $this->usersManager = $usersManager;
     }
 
@@ -69,6 +66,13 @@ class EmailPresenter extends Base\AdminPresenter
 
             $this->addComponent($this->gf, 'gridFilter');
         }
+    }
+    
+    public function renderEdit($id = null)
+    {
+        parent::renderEdit($id);
+        
+        $this->template->emails = $this->mail2UsersManager->getAllJoinedByLeft($id);                
     }
 
     /**
@@ -91,7 +95,6 @@ class EmailPresenter extends Base\AdminPresenter
     protected function createComponentSendForm()
     {
         $form = $this->getBootstrapForm();
-        $form->setTranslator($this->getAdminTranslator());
 
         $form->addText('mail_subject', 'mail_subject:')->setRequired(true);
         $form->addTextArea('mail_text', 'mail_text:')->setRequired(true);
@@ -115,14 +118,12 @@ class EmailPresenter extends Base\AdminPresenter
             $usersMails[] = $user->user_email;
         }
 
-        $bbMailer = new BBMailer($this->mailer, $this->getManager());
-
-        $bbMailer->addRecepients($usersMails);
-        $bbMailer->setSubject($values->email_subject);
-        $bbMailer->setText($values->email_text);
+        $this->bbMailer->addRecepients($usersMails);
+        $this->bbMailer->setSubject($values->email_subject);
+        $this->bbMailer->setText($values->email_text);
 
         try {
-            $bbMailer->send();
+            $this->bbMailer->send();
 
             $this->flashMessage('Mails sent!', self::FLASH_MESSAGE_SUCCESS);
         } catch (InvalidArgumentException $e) {

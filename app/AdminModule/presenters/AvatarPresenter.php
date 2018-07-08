@@ -18,10 +18,10 @@ class AvatarPresenter extends Base\AdminPresenter
 {
     /**
      *
-     * @var Avatars $avatarsDir
+     * @var Avatars $avatars
      * @inject
      */
-    public $avatarsDir;
+    public $avatars;
 
     /**
      * AvatarPresenter constructor.
@@ -47,8 +47,8 @@ class AvatarPresenter extends Base\AdminPresenter
             $this->flashMessage('No avatars.', self::FLASH_MESSAGE_DANGER);
         }
                 
-        $this->template->avatarsSize = $this->avatarsDir->getDirSize();
-        $this->template->avatarsDir  = $this->avatarsDir->getSPLDir()->getBasename();
+        $this->template->avatarsSize = $this->avatars->getDirSize();
+        $this->template->avatarsDir  = $this->avatars->getSPLDir()->getBasename();
         $this->template->avatars     = $avatars->fetchAll();
         $this->template->countItems  = $paginator->getCount();
     }
@@ -59,7 +59,7 @@ class AvatarPresenter extends Base\AdminPresenter
      */
     public function handleDeleteAvatar($user_id, $avatar_name)
     {
-        FileSystem::delete($this->avatarsDir->getDir() . DIRECTORY_SEPARATOR . $avatar_name);
+        FileSystem::delete($this->avatars->getDir() . DIRECTORY_SEPARATOR . $avatar_name);
         
         $this->getManager()->update($user_id, ArrayHash::from(['user_avatar' => null]));
         

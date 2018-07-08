@@ -27,13 +27,6 @@ use Nette\Utils\ArrayHash;
  */
 class PostPresenter extends Base\ForumPresenter
 {
-
-    /**
-     * @var UsersManager $userManager
-     * @inject
-     */
-    public $userManager;
-
     /**
      * @var ForumsManager $forumManager
      * @inject
@@ -66,16 +59,10 @@ class PostPresenter extends Base\ForumPresenter
 
     /**
      * @var ReportsManager $reportManager
-     */
-    public $reportManager;
-   
-    /**
-     *
-     * @var Request $httpRequest
      * @inject
      */
-    public $httpRequest;
-    
+    public $reportManager;
+
     /**
      * @var \App\Controls\TopicsSetting $topicSetting
      * @inject
@@ -88,6 +75,33 @@ class PostPresenter extends Base\ForumPresenter
      * @inject
      */
     public $avatar;
+    
+    /**
+     *
+     * @var \App\Controls\BBMailer $bbMailer
+     * @inject
+     */
+    public $bbMailer;
+    
+    /**
+     * 
+     * @var \App\Models\PostFacade $postFacade
+     * @inject
+     */
+    public $postFacade;
+
+    /**
+     * 
+     * @var \App\Models\ThanksFacade $thanksFacade
+     * @inject
+     */
+    public $thanksFacade;
+    
+    /**
+     * @var \App\Models\TopicFacade $topicFacade
+     * @inject
+     */
+    public $topicFacade;
 
     /**
      * @param PostsManager $manager
@@ -96,138 +110,19 @@ class PostPresenter extends Base\ForumPresenter
     {
         parent::__construct($manager);
     }
-
-    /**
-     * @return JumpToForumControl
-     */
-    public function createComponentJumpToForum()
-    {
-        return new JumpToForumControl($this->forumManager);
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function editPostFormSuccess(Form $form, ArrayHash $values)
-    {
-        $forum_id = $this->getParameter('forum_id');
-        $post_id  = $this->getParameter('post_id');
-        $topic_id = $this->getParameter('topic_id');
-        $user_id  = $this->getUser()->getId();
-
-        if ($post_id) {
-            $values['post_edit_count%sql'] = 'post_edit_count + 1';
-            $values->post_last_edit_time   = time();
-            $values->post_edit_user_ip     = $this->getHttpRequest()->getRemoteAddress();
-
-            $result = $this->getManager()->update($post_id, $values);
-        } else {
-            $values->post_forum_id    = $forum_id;
-            $values->post_user_id     = $user_id;
-            $values->post_topic_id    = $topic_id;
-            $values->post_add_time    = time();
-            $values->post_add_user_ip = $this->getHttpRequest()->getRemoteAddress();
-
-            $result = $this->getManager()->add($values);
-        }
-
-        if ($result) {
-            $this->flashMessage('Post saved.', self::FLASH_MESSAGE_SUCCESS);
-        } else {
-            $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
-        }
-
-        $this->redirect('Post:all', $forum_id, $topic_id);
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function editTopicFormSuccess(Form $form, ArrayHash $values)
-    {
-        $forum_id = $this->getParameter('forum_id');
-        $topic_id = $this->getParameter('topic_id');
-        $user_id  = $this->getUser()->getId();
-
-        $values->post_add_time = time();
-        $values->post_user_id  = $user_id;
-        $values->post_forum_id = $forum_id;
-
-        $topic_id = $this->topicsManager->add($values);
-
-        $this->flashMessage('Topic saved.', self::FLASH_MESSAGE_SUCCESS);
-        $this->redirect('Post:all', $forum_id, $topic_id);
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function fastReplySuccess(Form $form, ArrayHash $values)
-    {
-        $forum_id = $this->getParameter('forum_id');
-        $topic_id = $this->getParameter('topic_id');
-        $page     = $this->getParameter('page');
-
-        $values->post_forum_id = $forum_id;
-        $values->post_topic_id = $topic_id;
-        $values->post_user_id  = $this->getUser()->getId();
-
-        $res = $this->getManager()->add($values);
-
-        if ($res) {
-            $this->flashMessage('Post was added.', self::FLASH_MESSAGE_SUCCESS);
-        }
-
-        $this->redirect('Post:all', $forum_id, $topic_id, $page);
-    }
-
+    
     /**
      * @return BootstrapForm
      */
     private function postForm()
     {
-        $form = new BootstrapForm();
-        $form->setTranslator($this->getForumTranslator());
+        $form = $this->getBootstrapForm();
 
         $form->addText('post_title', 'Title')->setRequired(true);
         $form->addTextArea('post_text', 'Text', 0, 15)->setRequired(true);
         $form->addSubmit('send', 'Send');
 
         return $form;
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function reportFormSuccess(Form $form, ArrayHash $values)
-    {
-        $forum_id = $this->getParameter('forum_id');
-        $topic_id = $this->getParameter('topic_id');
-        $post_id  = $this->getParameter('post_id');
-        $page     = $this->getParameter('page');
-        $user_id  = $this->getUser()->getId();
-
-        $values->report_forum_id = $forum_id;
-        $values->report_topic_id = $topic_id;
-        $values->report_post_id  = $post_id;
-        $values->report_user_id  = $user_id;
-        $values->report_time     = time();
-
-        $res = $this->reportManager->add($values);
-
-        if ($res) {
-            if ($post_id) {
-                $this->flashMessage('Post was reported.', self::FLASH_MESSAGE_SUCCESS);
-            } else {
-                $this->flashMessage('Topic was reported.', self::FLASH_MESSAGE_SUCCESS);
-            }
-        }
-
-        $this->redirect('Post:all', $forum_id, $topic_id, $page);
     }
 
     /**
@@ -249,9 +144,12 @@ class PostPresenter extends Base\ForumPresenter
             );
         }
 
-        $this->getManager()->delete($post_id);
+        $res = $this->postFacade->delete($post_id);
 
-        $this->flashMessage('Post deleted.', self::FLASH_MESSAGE_SUCCESS);
+        if ($res) {
+            $this->flashMessage('Post deleted.', self::FLASH_MESSAGE_SUCCESS);
+        }
+        
         $this->redirect('Post:all', $forum_id, $topic_id, $page);
     }
 
@@ -266,9 +164,12 @@ class PostPresenter extends Base\ForumPresenter
             $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
         }
 
-        $this->topicsManager->delete($topic_id);
+        $res = $this->topicFacade->delete($topic_id);
 
-        $this->flashMessage('Topic deleted.', self::FLASH_MESSAGE_SUCCESS);
+        if ($res) {
+            $this->flashMessage('Topic deleted.', self::FLASH_MESSAGE_SUCCESS);
+        }
+        
         $this->redirect('Forum:default', $forum_id, $page);
     }
 
@@ -325,9 +226,12 @@ class PostPresenter extends Base\ForumPresenter
             'thank_time'     => time()
         ];
 
-        $this->thanksManager->add(ArrayHash::from($data));
-
-        $this->flashMessage('Your thank to this topic!', self::FLASH_MESSAGE_SUCCESS);
+        $res = $this->thanksFacade->add(ArrayHash::from($data));
+        
+        if ($res) {
+            $this->flashMessage('Your thank to this topic!', self::FLASH_MESSAGE_SUCCESS);
+        }
+        
         $this->redirect('Post:all', $forum_id, $topic_id);
     }
 
@@ -358,7 +262,7 @@ class PostPresenter extends Base\ForumPresenter
             $this->error('Topic does not exist.');
         }
 
-        $data = $this->getManager()->getPostsByTopicId($topic_id);
+        $data = $this->getManager()->getByTopic($topic_id);
 
         if ($this->topicSetting->canLogView()) {
             $this->topicsManager->update($topic_id, ArrayHash::from(['topic_view_count%sql' => 'topic_view_count + 1']));
@@ -531,4 +435,144 @@ class PostPresenter extends Base\ForumPresenter
 
         return $form;
     }
+    
+    /**
+     * @return JumpToForumControl
+     */
+    public function createComponentJumpToForum()
+    {
+        return new JumpToForumControl($this->forumManager);
+    }    
+    
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function editPostFormSuccess(Form $form, ArrayHash $values)
+    {
+        $forum_id = $this->getParameter('forum_id');
+        $post_id  = $this->getParameter('post_id');
+        $topic_id = $this->getParameter('topic_id');
+        $user_id  = $this->getUser()->getId();
+
+        if ($post_id) {
+            $values['post_edit_count%sql'] = 'post_edit_count + 1';
+            $values->post_last_edit_time   = time();
+            $values->post_edit_user_ip     = $this->getHttpRequest()->getRemoteAddress();
+
+            $result = $this->getManager()->update($post_id, $values);
+        } else {
+            $values->post_forum_id    = $forum_id;
+            $values->post_user_id     = $user_id;
+            $values->post_topic_id    = $topic_id;
+            $values->post_add_time    = time();
+            $values->post_add_user_ip = $this->getHttpRequest()->getRemoteAddress();
+
+            $result = $this->postFacade->add($values);
+            
+            $emails = $this->topicWatchManager->getAllJoinedByLeft($topic_id);
+            
+            $emailsArray = [];
+            
+            foreach ($emails as $email) {
+                if ($this->getUser()->getIdentity()->getId() === $email->user_id) {
+                    continue;
+                }
+                
+                $emailsArray[] = $email->user_email;
+            }
+            
+            $this->bbMailer->addRecepients($emailsArray);
+            $this->bbMailer->setSubject('Topic watch');
+            $this->bbMailer->setText('Test');
+            $this->bbMailer->send();
+        }
+
+        if ($result) {
+            $this->flashMessage('Post saved.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
+        }
+
+        $this->redirect('Post:all', $forum_id, $topic_id);
+    }
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function editTopicFormSuccess(Form $form, ArrayHash $values)
+    {
+        $forum_id = $this->getParameter('forum_id');
+        $topic_id = $this->getParameter('topic_id');
+        $user_id  = $this->getUser()->getId();
+
+        $values->post_add_time = time();
+        $values->post_user_id  = $user_id;
+        $values->post_forum_id = $forum_id;
+        $values->post_add_user_ip = $this->getHttpRequest()->getRemoteAddress();
+
+        $topic_id = $this->topicFacade->add($values);
+
+        if ($topic_id) {
+            $this->flashMessage('Topic saved.', self::FLASH_MESSAGE_SUCCESS);
+        }
+        
+        $this->redirect('Post:all', $forum_id, $topic_id);
+    }
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function fastReplySuccess(Form $form, ArrayHash $values)
+    {
+        $forum_id = $this->getParameter('forum_id');
+        $topic_id = $this->getParameter('topic_id');
+        $page     = $this->getParameter('page');
+
+        $values->post_forum_id = $forum_id;
+        $values->post_topic_id = $topic_id;
+        $values->post_user_id  = $this->getUser()->getId();
+
+        $res = $this->postFacade->add($values);
+
+        if ($res) {
+            $this->flashMessage('Post was added.', self::FLASH_MESSAGE_SUCCESS);
+        }
+
+        $this->redirect('Post:all', $forum_id, $topic_id, $page);
+    }
+    
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function reportFormSuccess(Form $form, ArrayHash $values)
+    {
+        $forum_id = $this->getParameter('forum_id');
+        $topic_id = $this->getParameter('topic_id');
+        $post_id  = $this->getParameter('post_id');
+        $page     = $this->getParameter('page');
+        $user_id  = $this->getUser()->getId();
+
+        $values->report_forum_id = $forum_id;
+        $values->report_topic_id = $topic_id;
+        $values->report_post_id  = $post_id;
+        $values->report_user_id  = $user_id;
+        $values->report_time     = time();
+
+        $res = $this->reportManager->add($values);
+
+        if ($res) {
+            if ($post_id) {
+                $this->flashMessage('Post was reported.', self::FLASH_MESSAGE_SUCCESS);
+            } else {
+                $this->flashMessage('Topic was reported.', self::FLASH_MESSAGE_SUCCESS);
+            }
+        }
+
+        $this->redirect('Post:all', $forum_id, $topic_id, $page);
+    }    
 }

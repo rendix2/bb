@@ -71,7 +71,7 @@ class DeleteAvatarControl extends Control
      */
     protected function createComponentDeleteAvatar()
     {
-        $form = new BootstrapForm();
+        $form = BootstrapForm::create();
         $form->setTranslator($this->translator);
 
         $form->addCheckbox('delete_avatar', 'Delete avatar');

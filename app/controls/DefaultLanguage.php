@@ -9,14 +9,26 @@ namespace App\Controls;
  */
 class DefaultLanguage {
 
+    /**
+     *
+     * @var string $defaultLanguage
+     */
     private $defaultLanguage;
     
+    /**
+     * 
+     * @param string $defaultLanguage
+     */
     public function __construct($defaultLanguage)
     {
         $this->defaultLanguage = $defaultLanguage;
         
     }
     
+    /**
+     * 
+     * @return string
+     */
     public function getDefaultLanguage()
     {
         return $this->defaultLanguage;

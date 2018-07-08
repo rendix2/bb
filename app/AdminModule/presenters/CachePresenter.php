@@ -2,15 +2,11 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\Controls\AppDir;
 use App\Controls\BootstrapForm;
 use App\Models\CacheManager;
-use App\Presenters\Base\BasePresenter;
-use App\Translator;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
-use Nette\Localization\ITranslator;
 use Nette\Security\IUserStorage;
 use Nette\Utils\ArrayHash;
 
@@ -70,7 +66,7 @@ class CachePresenter extends Base\AdminPresenter
     {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->$this->translatorFactory->adminTranslatorFactory());
+        $this->template->setTranslator($this->translatorFactory->adminTranslatorFactory());
     }
 
     /**

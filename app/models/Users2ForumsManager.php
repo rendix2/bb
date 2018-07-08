@@ -11,7 +11,6 @@ use Dibi\Connection;
  */
 class Users2ForumsManager extends MNManager
 {
-
     /**
      * Users2ForumsManager constructor.
      *

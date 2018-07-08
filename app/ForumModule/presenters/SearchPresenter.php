@@ -44,9 +44,7 @@ class SearchPresenter extends Base\ForumPresenter
      */
     public function createComponentSearchPostForm()
     {
-        $form = new BootstrapForm();
-
-        $form->setTranslator($this->getForumTranslator());
+        $form = $this->createBootstrapForm();
 
         $form->addText('search_post', 'Post')->setRequired('Please enter some in post');
         $form->addSubmit('send_post', 'Search post');
@@ -60,8 +58,7 @@ class SearchPresenter extends Base\ForumPresenter
      */
     public function createComponentSearchTopicForm()
     {
-        $form = new BootstrapForm();
-        $form->setTranslator($this->getForumTranslator());
+        $form = $this->createBootstrapForm();
 
         $form->addText('search_topic', 'Topic')->setRequired('Please enter some in topic');
         $form->addSubmit('send_topic', 'Search topic');
@@ -75,9 +72,7 @@ class SearchPresenter extends Base\ForumPresenter
      */
     public function createComponentSearchUserForm()
     {
-        $form = new BootstrapForm();
-
-        $form->setTranslator($this->getForumTranslator());
+        $form = $this->createBootstrapForm();
 
         $form->addText('search_user', 'User')->setRequired('Please enter name.');
         $form->addSubmit('send_user', 'Search user');
@@ -142,7 +137,7 @@ class SearchPresenter extends Base\ForumPresenter
      */
     public function renderTopicResults($q)
     {
-        $result = $this->topicsManager->findTopicsByTopicName($q);
+        $result = $this->topicsManager->findByTopicName($q);
 
         $this['searchTopicForm']->setDefaults(['search_topic' => $q]);
 
@@ -159,7 +154,7 @@ class SearchPresenter extends Base\ForumPresenter
      */
     public function renderUserResults($q)
     {
-        $result = $this->getManager()->findUsersByUserName($q);
+        $result = $this->getManager()->findLikeByUserName($q);
 
         $this['searchUserForm']->setDefaults(['search_user' => $q]);
 

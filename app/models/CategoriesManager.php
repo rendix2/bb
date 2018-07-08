@@ -4,47 +4,43 @@ namespace App\Models;
 
 use dibi;
 use Dibi\Row;
-use Nette\Caching\Cache;
 use Dibi\Connection;
 use Zebra_Mptt;
+use Nette\Caching\IStorage;
 
 /**
  * Class CategoriesManager
  *
  * @package App\Models
  */
-class CategoriesManager extends Crud\CrudManager
+class CategoriesManager extends Crud\CrudManager implements MpttTable
 {
     /**
-<<<<<<< HEAD
      * @var \Zebra_Mptt $mptt
-=======
-     * @var Zebra_Mptt $mptt
->>>>>>> origin/master
      */
     private $mptt;
-
+   
     /**
      * CategoriesManager constructor.
      *
      * @param Connection $dibi
      */
-    public function __construct(Connection $dibi)
+    public function __construct(Connection $dibi, IStorage $storage)
     {
-        parent::__construct($dibi);
-        
+        parent::__construct($dibi, $storage);
+
         $this->mptt = new Zebra_Mptt(
             $dibi,
             $this->getTable(),
             $this->getPrimaryKey(),
-            'category_name',
-            'category_left',
-            'category_right',
-            'category_parent_id'
+            $this->getTitle(),
+            $this->getLeft(),
+            $this->getRight(),
+            $this->getParent()
         );
     }
-
-        /**
+    
+    /**
      * @return array
      */
     public function getActiveCategories()
@@ -77,7 +73,7 @@ class CategoriesManager extends Crud\CrudManager
      *
      * @return Row|false
      */
-    public function getByForumId($forum_id)
+    public function getByForum($forum_id)
     {
         return $this->dibi
             ->select('*')
@@ -102,5 +98,29 @@ class CategoriesManager extends Crud\CrudManager
         
         //$this->mptt->move(1, 2);
         \Tracy\Debugger::barDump($this->mptt->get_tree());
+    }
+
+    /**
+     * MpttTable interface
+     */
+    
+    public function getLeft()
+    {
+        return 'category_left';
+    }
+
+    public function getParent()
+    {
+        return 'category_parent_id';
+    }
+
+    public function getRight()
+    {
+        return 'category_right';
+    }
+
+    public function getTitle()
+    {
+        return 'category_name';
     }
 }

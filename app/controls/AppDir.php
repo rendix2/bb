@@ -3,14 +3,10 @@
 namespace App\Controls;
 
 /**
- * Description of AppDir
- *
- * @author rendi
- */
-/**
  * Class AppDir
  *
  * @package App\Controls
+ * @author rendix2
  */
 class AppDir
 {

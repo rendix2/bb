@@ -37,6 +37,9 @@ class RankPresenter extends Base\AdminPresenter
         parent::__construct($manager);
     }
     
+    /**
+     * startup method
+     */
     public function startup()
     {
         parent::startup();
@@ -52,6 +55,10 @@ class RankPresenter extends Base\AdminPresenter
         }
     }
     
+    /**
+     * 
+     * @param int $id
+     */
     public function renderEdit($id = null)
     {
         parent::renderEdit($id);

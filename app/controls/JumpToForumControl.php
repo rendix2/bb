@@ -32,20 +32,7 @@ class JumpToForumControl extends Control
     }
 
     /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function jumpToForumSuccess(Form $form, ArrayHash $values)
-    {
-        $this->getPresenter()
-            ->redirect(
-                ':Forum:Forum:default',
-                $values->forum_id
-            );
-    }
-
-    /**
-     *
+     * render jump to foorum
      */
     public function render()
     {
@@ -59,7 +46,7 @@ class JumpToForumControl extends Control
      */
     protected function createComponentJumpToForum()
     {
-        $form = new BootstrapForm();
+        $form = BootstrapForm::create();
 
         $form->addSelect('forum_id', null, $this->forumManager->getAllPairsCached('forum_name'));
         $form->addSubmit('send', 'Redirect');
@@ -68,4 +55,17 @@ class JumpToForumControl extends Control
 
         return $form;
     }
+    
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function jumpToForumSuccess(Form $form, ArrayHash $values)
+    {
+        $this->getPresenter()
+            ->redirect(
+                ':Forum:Forum:default',
+                $values->forum_id
+            );
+    }    
 }

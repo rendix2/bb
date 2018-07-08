@@ -11,7 +11,6 @@ use Dibi\Connection;
  */
 class Users2GroupsManager extends MNManager
 {
-
     /**
      * Users2GroupsManager constructor.
      *
@@ -22,5 +21,23 @@ class Users2GroupsManager extends MNManager
     public function __construct(Connection $dibi, UsersManager $left, GroupsManager $right)
     {
         parent::__construct($dibi, $left, $right);
+    }
+    
+    /**
+     * @param int $user_id
+     *
+     * @return Row[]
+     */
+    public function getForumsPermissionsByUserThroughGroup($user_id)
+    {
+        return $this->dibi
+                ->select('*')
+                ->from($this->getTable())
+                ->as('ug')
+                ->innerJoin(self::FORUMS2GROUPS_TABLE)
+                ->as('fg')
+                ->on('[ug.group_id] = [fg.group_id]')
+                ->where('[ug.user_id] = %i', $user_id)
+                ->fetchAll();
     }
 }

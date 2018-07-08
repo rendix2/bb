@@ -29,14 +29,6 @@ abstract class Manager extends Tables
     }
 
     /**
-     * @return Connection
-     */
-    public function getDibi()
-    {
-        return $this->dibi;
-    }
-
-    /**
      * returns extension of file
      *
      * @param string $fileName file name

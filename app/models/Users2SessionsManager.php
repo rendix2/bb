@@ -11,7 +11,6 @@ use Dibi\Connection;
  */
 class Users2SessionsManager extends MNManager
 {
-
     /**
      * Users2SessionsManager constructor.
      *

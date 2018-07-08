@@ -6,6 +6,7 @@ use App\Models\Crud\CrudManager;
 use Dibi\Connection;
 use Dibi\Fluent;
 use Dibi\Result;
+use Dibi\Row;
 
 /**
  * Description of MNManager
@@ -50,6 +51,24 @@ abstract class MNManager extends Manager
             $this->table = $tableName;
         }
     }
+    
+    /**
+     * @param string $tableName
+     *
+     * @return bool|string
+     */
+    private static function createAlias($tableName)
+    {
+        return mb_substr($tableName, 0, 1);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTable()
+    {
+        return $this->table;
+    }
 
     /**
      * @param $left_id
@@ -65,7 +84,7 @@ abstract class MNManager extends Manager
         /**
      * @param int $left_id
      *
-     * @return array
+     * @return Row[]
      */
     public function getAllByLeft($left_id)
     {
@@ -93,7 +112,7 @@ abstract class MNManager extends Manager
     /**
      * @param int $left_id
      *
-     * @return array
+     * @return Row[]
      */
     public function getAllJoinedByLeft($left_id)
     {
@@ -103,7 +122,7 @@ abstract class MNManager extends Manager
     /**
      * @param int $left_id
      *
-     * @return array
+     * @return Row[]
      */
     public function getPairsByLeft($left_id)
     {
@@ -125,7 +144,7 @@ abstract class MNManager extends Manager
     /**
      * @param int $right_id
      *
-     * @return array
+     * @return Row[]
      */
     public function getAllByRight($right_id)
     {
@@ -153,7 +172,7 @@ abstract class MNManager extends Manager
     /**
      * @param int $right_id
      *
-     * @return array
+     * @return Row[]
      */
     public function getAllJoinedByRight($right_id)
     {
@@ -164,7 +183,7 @@ abstract class MNManager extends Manager
     /**
      * @param int $right_id
      *
-     * @return array
+     * @return Row[]
      */
     public function getPairsByRight($right_id)
     {
@@ -176,7 +195,7 @@ abstract class MNManager extends Manager
      * @param int $left_id
      * @param int $right_id
      *
-     * @return array
+     * @return Row[]
      */
     public function getFullJoined($left_id, $right_id)
     {
@@ -223,7 +242,7 @@ abstract class MNManager extends Manager
     /**
      * @param int $left_id
      *
-     * @return mixed
+     * @return int
      */
     public function getCountByLeft($left_id)
     {
@@ -235,21 +254,13 @@ abstract class MNManager extends Manager
     /**
      * @param int $right_id
      *
-     * @return mixed
+     * @return int
      */
     public function getCountByRight($right_id)
     {
         return $this->getCountFluent()
             ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)
             ->fetchSingle();
-    }
-
-    /**
-     * @return string
-     */
-    public function getTable()
-    {
-        return $this->table;
     }
 
     /**
@@ -299,16 +310,6 @@ abstract class MNManager extends Manager
         $this->deleteByRight($right_id);
 
         return $this->add($values, null, $right_id);
-    }
-
-    /**
-     * @param string $tableName
-     *
-     * @return bool|string
-     */
-    private static function createAlias($tableName)
-    {
-        return mb_substr($tableName, 0, 1);
     }
 
     /**
@@ -375,7 +376,7 @@ abstract class MNManager extends Manager
     /**
      * returns all table
 
-     * @return array
+     * @return Row[]
      */
     public function getAll()
     {

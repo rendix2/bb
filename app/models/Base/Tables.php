@@ -20,7 +20,7 @@ class Tables
 
     const TOPICS_TABLE = self::PREFIX . 'topics';
 
-    const POSTS_TABLES = self::PREFIX . 'posts';
+    const POSTS_TABLE = self::PREFIX . 'posts';
 
     const ROLES_TABLE = self::PREFIX . 'roles';
 

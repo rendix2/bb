@@ -33,11 +33,11 @@ abstract class AuthenticatedPresenter extends BasePresenter
         $user = $this->getUser();
 
         if ($user->isLoggedIn()) {
-            $this->sessionsManager->updateByUserId($user->getId(), ArrayHash::from(['session_last_activity' => time()]));
+            $this->sessionsManager->updateByUser($user->getId(), ArrayHash::from(['session_last_activity' => time()]));
         } else {
             if ($user->logoutReason === IUserStorage::INACTIVITY) {
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
-                $this->sessionsManager->deleteBySessionId($this->getSession()->getId());
+                $this->sessionsManager->deleteBySession($this->getSession()->getId());
             }
             
             $this->redirect(':Forum:Login:default', ['backlink' => $this->storeRequest()]);

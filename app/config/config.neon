@@ -3,9 +3,11 @@
 # https://nette.org/security-warning
 #
 parameters:
-    databases:
+    database:
         username: "root"
         password: ""
+        host: localhost
+        databaseName: bb
     defaultLanguage: "czech"
     avatars:
         relativeDir: /avatars
@@ -57,8 +59,13 @@ parameters:
         canDeletePostCount: false
         neededLogin: true
         minUserNameLength: 3
+        minUserPasswordLength: 8
     search:
         minLength: 3
+    mail:
+        from: rendix2@seznam.cz
+        templateDir: %wwwDir%/controls/templates/emails
+    databaseBackupDir: %tempDir%/dumps        
 
 mail:
     smtp: true
@@ -75,109 +82,63 @@ application:
 session:
         expiration: 14 days
         autoStart: true # výchozí hodnota je 'smart'
+        savePath: "%tempDir%/sessions"
+        debugger: true
 
 services:
     router: App\RouterFactory::createRouter
     GroupsManager: 
-        factory: App\Models\GroupsManager
-        inject: yes
-        setup:
-                - factory                
-    IndexManager:
-        factory:  App\Models\IndexManager
-        #setup:
-        #        - factory
+        class: App\Models\GroupsManager        
     ForumsManager: 
-        factory: App\Models\ForumsManager
-        inject: yes
-        setup:
-                - factory
+        class: App\Models\ForumsManager
     PostsManager: 
-        factory: App\Models\PostsManager
-        inject: yes
-        setup:
-                - factory
-                - set
+        class: App\Models\PostsManager
     UsersManager: 
         factory: App\Models\UsersManager
         inject: yes
-        setup:
-                - factory
     ThanksManager: 
-        factory: App\Models\ThanksManager
-        inject: yes
-        setup:
-                - factory
+        class: App\Models\ThanksManager
     TopicsManager: 
-        factory: App\Models\TopicsManager
-        inject: yes
-        setup:
-            - factory
+        class: App\Models\TopicsManager
     CategoriesManager: 
-        factory: App\Models\CategoriesManager
-        inject: yes
-        setup:
-                - factory
+        class: App\Models\CategoriesManager
     RanksManager:
         factory: App\Models\RanksManager
         inject: yes
-        setup:
-                - factory
     LanaguagesManager:        
-        factory: App\Models\LanguagesManager
-        inject: yes
-        setup:
-                - factory
+        class: App\Models\LanguagesManager
     Forums2GroupsManager: 
-        factory: App\Models\Forums2GroupsManager
-        inject: yes
-    Group2UserManager:
-        factory: App\Models\Users2GroupsManager
-        inject: yes
+        class: App\Models\Forums2GroupsManager
+    Users2GroupManager:
+        class: App\Models\Users2GroupsManager
     Users2ForumsManager:
-        factory: App\Models\Users2ForumsManager
-        inject: yes
+        class: App\Models\Users2ForumsManager
+    Mails2UsersManager:
+        class: App\Models\Mails2UsersManager
     TopicWatchManager:
-        factory: App\Models\TopicWatchManager
-        inject: yes
+        class: App\Models\TopicWatchManager
     ReportManager:
-        factory: App\Models\ReportsManager
-        inject: yes
-        setup:
-                - factory
+        class: App\Models\ReportsManager
     SessionsManager:
-        factory: App\Models\SessionsManager
-        inject: yes
-        setup:
-                - factory
+        class: App\Models\SessionsManager
     GridFilter:
         factory: App\Controls\GridFilter
         setup:
-                - factory
+            - factory
     EmailManager:
-        factory: \App\Models\MailsManager
-        setup:
-                - factory
+        class: App\Models\MailsManager
     ModeratorsManager:
-        factory: \App\Models\ModeratorsManager
-        inject: yes
+        class: App\Models\ModeratorsManager
     FaqManager:
-        factory: \App\Models\FaqManager
-        inject: yes
+        class: App\Models\FaqManager
     BanManager:
-        factory: \App\Models\BansManager
-        inject: yes
-        setup:
-                - factory
+        class: App\Models\BansManager
     SmiliesManager:
-        factory: \App\Models\SmiliesManager
-        inject: yes
+        class: App\Models\SmiliesManager
     CacheManager:
-        factory: \App\Models\CacheManager
-        inject: yes
+        class: \App\Models\CacheManager
     PMManager:
-        factory: \App\Models\PMManager
-        inject: yes
+        class: \App\Models\PMManager
     Authenticator:
         class: App\Authenticator
     Authorizator:
@@ -203,6 +164,32 @@ services:
     - App\Authorization\Authorizator(@App\Authorization\PermissionFactory::create())
     DefaultLanguage:
         class: App\Controls\DefaultLanguage(%defaultLanguage%)
+    Email:
+        class: App\Controls\Email(%mail.from%)
+    BBMailer:
+        class: App\Controls\BBMailer
+    Users:
+        class: App\Controls\Users(%users%)
+    ChangePasswordFactory:
+        class: App\Services\ChangePasswordFactory
+    DeleteAvatarFactory:
+        class: App\Services\DeleteAvatarFactory
+    MysqlDumper:
+        class: Ifsnop\Mysqldump\Mysqldump('mysql:host=%database.host%;dbname=%database.databaseName%',%database.username%, %database.password%)
+    DatabaseBackupDir:
+        class: App\Config\DatabaseBackupDir(%databaseBackupDir%)
+    PostFacade:
+        class: App\Models\PostFacade
+    TopicFacade:
+        class: App\Models\TopicFacade
+    ForumFacade:
+        class: App\Models\ForumFacade
+    CategoryFacade:
+        class: App\Models\CategoryFacade
+    UserFacade:
+        class: App\Models\UserFacade
+    ThanksFacade:
+        class: App\Models\ThanksFacade
         
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22
@@ -210,9 +197,9 @@ extensions:
 dibi:
     driver: mysql
     port: 5433
-    database: bb
-    username: %databases.username%
-    password: %databases.password%
+    database: %database.databaseName%
+    username: %database.username%
+    password: %database.password%
     lazy: TRUE   
 
 di:

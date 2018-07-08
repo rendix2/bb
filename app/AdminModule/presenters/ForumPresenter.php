@@ -109,19 +109,19 @@ class ForumPresenter extends Base\AdminPresenter
             $this[self::FORM_NAME]->setDefaults($item);
 
             $subForums = $this->getManager()
-                ->createForums($this->getManager()->getForumsByForumParentId($id), (int)$id);
+                ->createForums($this->getManager()->getByParent($id), (int)$id);
 
             if (!$subForums) {
                 $this->flashMessage('No sub forums.', self::FLASH_MESSAGE_WARNING);
             }
 
-            $lastTopic = $this->topicManager->getLastTopicByForumId($id);
+            $lastTopic = $this->topicManager->getLastTopicByForum($id);
 
             if (!$lastTopic) {
                 $this->flashMessage('No last topic', self::FLASH_MESSAGE_WARNING);
             }
 
-            $lastPost = $this->postManager->getLastPostByForumId($id);
+            $lastPost = $this->postManager->getLastByForum($id);
 
             if ($lastPost) {
                 $userData = $this->userManager->getById($lastPost->post_user_id);

@@ -2,41 +2,48 @@
 
 namespace App\Models;
 
+use dibi;
 use Dibi\Fluent;
 use Dibi\Row;
 use Dibi\Connection;
+use Nette\Caching\IStorage;
 
 /**
  * Description of ForumManager
  *
  * @author rendi
  */
-class ForumsManager extends Crud\CrudManager
+class ForumsManager extends Crud\CrudManager implements MpttTable
 {
     /**
      * @var \Zebra_Mptt $mptt
      */
     private $mptt;
     
-    public function __construct(Connection $dibi)
+    public function __construct(Connection $dibi, \Nette\Caching\IStorage $storage)
     {
-        parent::__construct($dibi);
+        parent::__construct($dibi, $storage);
         
-        $this->mptt = new \Zebra_Mptt($dibi, $this->getTable(), $this->getPrimaryKey(), 'forum_name', 'forum_left', 'forum_right', 'forump_parent_id');
+        $this->mptt = new \Zebra_Mptt(
+            $dibi,
+            $this->getTable(),
+            $this->getPrimaryKey(),
+            $this->getTitle(),
+            $this->getLeft(),
+            $this->getRight(),
+            $this->getParent()
+        );
     }
     
     /**
      * @param int $category_id
      *
-     * @return array
+     * @return Fluent
      */
-    public function getForumsByCategoryId($category_id)
+    public function getByCategory($category_id)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
-            ->where('[forum_category_id] = %i', $category_id)
-            ->fetchAll();
+        return $this->getAllFluent()
+            ->where('[forum_category_id] = %i', $category_id);
     }
 
     /**
@@ -44,11 +51,9 @@ class ForumsManager extends Crud\CrudManager
      *
      * @return array
      */
-    public function getForumsByForumParentId($forum_id)
+    public function getByParent($forum_id)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->where('[forum_parent_id] = %i', $forum_id)
             ->fetchAll();
     }
@@ -70,23 +75,23 @@ class ForumsManager extends Crud\CrudManager
             ->where('[f1.forum_id] = %i', $forum_id)
             ->fetch();
     }
-
+    
     /**
-     * @param int $forum_id
+     * @param int $category_id
      *
-     * @return Fluent
+     * @return Row[]
      */
-    public function getTopics($forum_id)
+    public function getForumsFirstLevel($category_id)
     {
         return $this->dibi
             ->select('*')
-            ->from(self::TOPICS_TABLE)
-            ->as('t')
-            ->leftJoin(self::USERS_TABLE)
-            ->as('u')
-            ->on('[t.topic_user_id] = [u.user_id]')
-            ->where('[t.topic_forum_id] = %i', $forum_id);
-    }
+            ->from($this->getTable())
+            ->where('[forum_category_id] = %i', $category_id)
+            ->where('[forum_active] = %i', 1)
+            ->where('forum_parent_id = %i', 0)
+            ->orderBy('forum_order', dibi::ASC)
+            ->fetchAll();
+    }    
 
     /**
      * @param iterable $forums
@@ -110,11 +115,31 @@ class ForumsManager extends Crud\CrudManager
 
         return $result;
     }
-
+    
     /**
      *
      */
     public function move()
     {
+    }
+
+    public function getLeft()
+    {
+        return 'forum_left';
+    }
+
+    public function getParent()
+    {
+        return 'forum_parent_id';
+    }
+
+    public function getRight()
+    {
+        return 'forum_right';
+    }
+
+    public function getTitle()
+    {
+        return 'forum_name';
     }
 }

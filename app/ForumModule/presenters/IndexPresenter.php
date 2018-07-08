@@ -118,7 +118,10 @@ class IndexPresenter extends Base\ForumPresenter
      */
     public function renderCategory($category_id)
     {
-        $forums = $this->getManager()->getForumByCategoryId($category_id);
+        $forums = $this->forumsManager
+                ->getByCategory($category_id)
+                ->orderBy('forum_order', dibi::ASC)
+                ->fetchAll();
 
         if (!$forums) {
             $this->flashMessage('No forums in this category.', self::FLASH_MESSAGE_DANGER);
@@ -136,14 +139,18 @@ class IndexPresenter extends Base\ForumPresenter
         $result          = [];
         $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
         
+        \Tracy\Debugger::barDump($categories);
       
         foreach ($categories as $category) {
             $category->forums = [];
-            $forums           = $this->getManager()->getForumsFirstLevel($category->category_id);
+            $forums           = $this->forumsManager->getForumsFirstLevel($category->category_id);
+            
+            $result['cats'][$category->category_id] = $category;
 
             foreach ($forums as $forum) {
                 $category->forums[$forum->forum_id] = $forum;
                 $forum->moderators                  = [];
+                $result['cats'][$category->category_id]->forums[$forum->forum_id] = $forum;
                 
                 $forum->hasNewPosts  = count(
                     $this->postManger->getNewerPosts($forum->forum_id, $last_login_time)
@@ -158,12 +165,14 @@ class IndexPresenter extends Base\ForumPresenter
                 foreach ($moderators as $moderator) {
                     unset($moderator->user_password);
                      
-                    $result['cats'][$category->category_id] = $category;
-                    $result['cats'][$category->category_id]->forums[$forum->forum_id] = $forum;
+                    
+                    
                     $result['cats'][$category->category_id]->forums[$forum->forum_id]->moderators[$moderator->user_id] = $moderator;
                 }
             }
         }
+        
+        \Tracy\Debugger::barDump($result);
 
         $cachedLastUser = $this->getCache()
             ->load(self::CACHE_KEY_LAST_USER);
@@ -193,7 +202,7 @@ class IndexPresenter extends Base\ForumPresenter
                 );
         }
 
-        $this->template->mostPostsUser = $this->getManager()->getUserWithMostPosts();
+        $this->template->mostPostsUser = $this->postManger->getUserWithMostPosts();
         $this->template->lastTopic     = $cachedLastTopic;
         $this->template->lastUser      = $cachedLastUser;
         $this->template->totalUsers    = $this->userManager->getCountCached();

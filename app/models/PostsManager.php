@@ -3,10 +3,8 @@
 namespace App\Models;
 
 use Dibi\Fluent;
-use Dibi\Result;
 use Dibi\Row;
 use Nette\Caching\Cache;
-use Nette\Utils\ArrayHash;
 
 /**
  * Description of PostManager
@@ -14,34 +12,13 @@ use Nette\Utils\ArrayHash;
  * @author rendi
  */
 class PostsManager extends Crud\CrudManager
-{
-
-    /**
-     * @var TopicWatchManager $topicWatchManager
-     */
-    public $topicWatchManager;
-    
-    /**
-     * @var TopicsManager $topicsManager
-     */
-    private $topicsManager;
-    
-    /**
-     * @var ForumsManager $forumManager
-     */
-    private $forumManager;
-    
-    /**
-     * @var UsersManager $userManager
-     */
-    private $userManager;
-
+{   
     /**
      * @param int $category_id
      *
      * @return mixed
      */
-    public function getCountOfPostsInCategory($category_id)
+    public function getCountByCategory($category_id)
     {
         return $this->dibi
             ->select('COUNT(post_id)')
@@ -55,7 +32,7 @@ class PostsManager extends Crud\CrudManager
      *
      * @return mixed
      */
-    public function getCountOfPostsInForum($forum_id)
+    public function getCountByForum($forum_id)
     {
         return $this->dibi
                 ->select('COUNT(post_id)')
@@ -69,7 +46,7 @@ class PostsManager extends Crud\CrudManager
      *
      * @return mixed
      */
-    public function getCountOfPostsInTopic($topic_id)
+    public function getCountByTopic($topic_id)
     {
         return $this->dibi
                 ->select('COUNT(post_id)')
@@ -86,7 +63,7 @@ class PostsManager extends Crud\CrudManager
     public function getCountOfUsersByTopicId($topic_id)
     {
         return $this->dibi
-                ->select('count(post_user_id) as post_count, post_user_id')
+                ->select('COUNT(post_id) as post_count, post_user_id')
                 ->from($this->getTable())
                 ->where('[post_topic_id] = %i', $topic_id)
                 ->groupBy('post_user_id')
@@ -99,18 +76,12 @@ class PostsManager extends Crud\CrudManager
      *
      * @return mixed
      */
-    public function getCountPostByUserId($topic_id, $user_id)
+    public function getCountByUser($topic_id, $user_id)
     {
         return $this->dibi->select('COUNT(*)')
             ->from($this->getTable())
-            ->where(
-                '[post_topic_id] = %i',
-                $topic_id
-            )
-            ->where(
-                '[post_user_id] = %i',
-                $user_id
-            )
+            ->where('[post_topic_id] = %i', $topic_id)
+            ->where('[post_user_id] = %i', $user_id)
             ->fetchSingle();
     }
 
@@ -119,9 +90,9 @@ class PostsManager extends Crud\CrudManager
      *
      * @return Row|false
      */
-    public function getLastPostByForumId($forum_id)
+    public function getLastByForum($forum_id)
     {
-        return $this->dibi->query('SELECT * FROM [' . self::POSTS_TABLES . '] WHERE [post_id] = ( SELECT MAX(post_id) FROM [' . self::POSTS_TABLES . '] WHERE [post_forum_id] = %i )', $forum_id)
+        return $this->dibi->query('SELECT * FROM [' . $this->getTable() . '] WHERE [post_id] = ( SELECT MAX(post_id) FROM [' . $this->getTable() . '] WHERE [post_forum_id] = %i )', $forum_id)
                 ->fetch();
     }
 
@@ -130,10 +101,10 @@ class PostsManager extends Crud\CrudManager
      *
      * @return Row|false
      */
-    public function getLastPostByTopicId($topic_id)
+    public function getLastByTopic($topic_id)
     {
         return $this->dibi->query(
-            'SELECT * FROM [' . self::POSTS_TABLES . '] WHERE [post_id] = ( SELECT MAX(post_id) FROM [' . self::POSTS_TABLES . '] WHERE [post_topic_id] = %i )',
+            'SELECT * FROM [' . $this->getTable() . '] WHERE [post_id] = ( SELECT MAX(post_id) FROM [' . $this->getTable() . '] WHERE [post_topic_id] = %i )',
             $topic_id
         )->fetch();
     }
@@ -166,13 +137,29 @@ class PostsManager extends Crud\CrudManager
 
         return $cached;
     }
+    
+    /**
+     * @return Row|false
+     */
+    public function getUserWithMostPosts()
+    {
+        return $this->dibi
+                ->select('COUNT(p.post_id) as post_count, u.user_id, u.user_name')
+                ->from($this->getTable())
+                ->as('p')
+                ->innerJoin(self::USERS_TABLE)
+                ->as('u')
+                ->on('[p.post_user_id] = [u.user_id]')
+                ->groupBy('post_user_id', dibi::ASC)
+                ->fetch();
+    }    
 
     /**
      * @param int $topic_id
      *
      * @return Fluent
      */
-    public function getPostsByTopicId($topic_id)
+    public function getByTopic($topic_id)
     {
         return $this->dibi
             ->select('*')
@@ -184,103 +171,14 @@ class PostsManager extends Crud\CrudManager
             ->where('[post_topic_id] = %i', $topic_id);
     }
 
-    /**
-     *
-     */
-    public function set()
-    {
-        $this->userManager = new UsersManager($this->dibi);
-        //$this->userManager->factory($this->getStorage());
-        $this->topicsManager = new TopicsManager($this->dibi);
-        //$this->topicsManager->factory($this->getStorage());
-        $this->topicsManager->injectUserManager($this->userManager);
-        $this->forumManager = new ForumsManager($this->dibi);
-        //$this->forumManager->factory($this->getStorage());
-        $this->topicWatchManager = new TopicWatchManager(
-            $this->dibi,
-            $this->topicsManager,
-            $this->userManager
-        );
-        //$this->topicWatchManager->factory($this->getStorage());
-    }
-
-    /**
-     * @param ArrayHash $item_data
-     *
-     * @return Result|int
-     */
-    public function add(ArrayHash $item_data)
-    {
-        $post_id  = parent::add($item_data);
-        $user_id  = $item_data->post_user_id;
-        $forum_id = $item_data->post_forum_id;
-
-        $this->topicsManager->update(
-            $item_data->post_topic_id,
-            ArrayHash::from(['topic_post_count%sql' => 'topic_post_count+1'])
-        );
-
-        $topicWatching = $this->topicWatchManager->fullCheck($item_data->post_topic_id, $user_id);
-
-        $watch = [];
-
-        if (!$topicWatching) {
-            $this->topicWatchManager->add([$user_id], $item_data->post_topic_id);
-            $watch = ['user_watch_count%sql' => 'user_watch_count + 1'];
-        }
-
-        $this->userManager->update(
-            $user_id,
-            ArrayHash::from(['user_post_count%sql' => 'user_post_count + 1'] + $watch)
-        );
-
-        return $post_id;
-    }
-
-    /**
-     * @param int $item_id
-     *
-     * @return Result|int
-     */
-    public function delete($item_id)
-    {
-        $post = $this->getById($item_id);
-        $res  = parent::delete($item_id);
-
-        $this->userManager->update(
-            $post->post_user_id,
-            ArrayHash::from(['user_post_count%sql' => 'user_post_count - 1'])
-        );
-        $this->topicsManager->update(
-            $post->post_topic_id,
-            ArrayHash::from(['topic_post_count%sql' => 'topic_post_count-1'])
-        );
-
-        $postCount = $this->getCountOfUsersByTopicId($post->post_topic_id);
-
-        foreach ($postCount as $ps) {
-            if ($ps->post_count === 1 || $ps->post_count === 0) {
-                $check = $this->topicWatchManager->fullCheck($post->post_topic_id, $ps->post_user_id);
-
-                $this->topicWatchManager->fullDelete($post->post_topic_id, $post->post_user_id);
-            }
-        }
-
-        return $res;
-    }
-
-    /**
-     * @param int $topic_id
-     *
-     * @return Result|int
-     */
-    public function deleteByTopicId($topic_id)
+    public function getByUser($user_id)
     {
         return $this->dibi
-                ->delete($this->getTable())
-                ->where('[post_topic_id] = %i', $topic_id)
-                ->execute();
+                ->select('*')
+                ->from($this->getTable())
+                ->where('[post_user_id] = %i', $user_id);
     }
+     
 
     /**
      * @param string $post_text

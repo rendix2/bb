@@ -3,14 +3,10 @@
 namespace App\Controls;
 
 /**
- * Description of WwwDir
- *
- * @author rendi
- */
-/**
  * Class WwwDir
  *
  * @package App\Controls
+ * @author rendix2
  */
 class WwwDir
 {

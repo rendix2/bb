@@ -3,9 +3,7 @@
 namespace App\AdminModule\ConfigModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Controls\TempDir;
 use App\Models\UsersManager;
-use Ifsnop\Mysqldump\Mysqldump;
 use Nette\Application\Responses\FileResponse;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
@@ -20,10 +18,16 @@ class DatabasePresenter extends AdminPresenter
 {
     /**
      *
-     * @var TempDir $tempDir7
+     * @var \Ifsnop\Mysqldump\Mysqldump
      * @inject
      */
-    public $tempDir;
+    public $exporter;
+    
+    /**
+     * @var \App\Config\DatabaseBackupDir $databaseDir
+     * @inject
+     */
+    public $databaseDir;
 
     /**
      * DatabasePresenter constructor.
@@ -47,7 +51,7 @@ class DatabasePresenter extends AdminPresenter
      */
     public function renderDumps()
     {
-        $sqls = Finder::findFiles('*.sql')->in($this->tempDir->tempDir.'/dumps');
+        $sqls = Finder::findFiles('*.sql')->in($this->databaseDir->getDatabaseBackupDir());
         
         if (!count($sqls)) {
             $this->flashMessage('No files to download.', self::FLASH_MESSAGE_WARNING);
@@ -61,7 +65,7 @@ class DatabasePresenter extends AdminPresenter
      */
     public function actionDeleteDump($name)
     {
-        FileSystem::delete($this->tempDir->tempDir.'/dumps/'.$name);
+        FileSystem::delete($this->databaseDir . DIRECTORY_SEPARATOR . $name);
         $this->redirect(':Admin:Config:Database:dumps');
     }
 
@@ -70,30 +74,19 @@ class DatabasePresenter extends AdminPresenter
      */
     public function actionDownloadDump($name)
     {
-        $this->sendResponse(new FileResponse($this->tempDir->tempDir.'/dumps/'.$name));
+        $this->sendResponse(new FileResponse($this->databaseDir->getDatabaseBackupDir() . DIRECTORY_SEPARATOR . $name));
     }
 
     /**
      *
      */
     public function actionExportDatabase()
-    {
-        $config = $this->getManager()->getDibi()->getConfig();
-        
-        if ($config['host'] === null) {
-            $config['host'] = 'localhost';
-        }
-               
-        $time = time();
-        
-        $exporter = new Mysqldump(
-            'mysql:host='.$config['host'].';dbname='.$config['database'],
-            $config['username'],
-            $config['password']
-        );
-        $exporter->start($this->tempDir->tempDir.'/dumps/dump-'.$time.'.sql');
-        $exporter = null;
-        
-        $this->sendResponse(new FileResponse($this->tempDir->tempDir.'/dumps/dump-'.$time.'.sql'));
+    {              
+        $time = time();   
+        $path = $this->databaseDir->getDatabaseBackupDir() . DIRECTORY_SEPARATOR . 'dump-'.$time.'.sql';
+                
+        $this->exporter->start($path);
+
+        $this->sendResponse(new FileResponse($path));
     }
 }
