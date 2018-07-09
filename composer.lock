@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4b68ef37fb1cd709edb53b2fe660cbfa",
+    "content-hash": "e78717fb0a31013cc755d73e474958c5",
     "packages": [
         {
             "name": "dg/composer-cleaner",
@@ -1325,6 +1325,57 @@
                 "validation"
             ],
             "time": "2018-05-02T17:16:08+00:00"
+        },
+        {
+            "name": "nextras/datagrid",
+            "version": "v3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nextras/datagrid.git",
+                "reference": "ef541bfc36ce00fee40e6d38f66ecd770760abc7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nextras/datagrid/zipball/ef541bfc36ce00fee40e6d38f66ecd770760abc7",
+                "reference": "ef541bfc36ce00fee40e6d38f66ecd770760abc7",
+                "shasum": ""
+            },
+            "require": {
+                "latte/latte": "~2.4",
+                "nette/application": "~2.4",
+                "nette/component-model": "~2.3",
+                "nette/forms": "~2.4",
+                "nette/utils": "~2.4",
+                "php": ">=5.6"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nextras\\Datagrid\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nextras Community",
+                    "homepage": "https://github.com/nextras/forms/graphs/contributors"
+                }
+            ],
+            "description": "Datagrid component for Nette Framework.",
+            "keywords": [
+                "datagrid",
+                "nette",
+                "nextras"
+            ],
+            "time": "2018-02-20T14:59:52+00:00"
         },
         {
             "name": "nextras/mail-panel",

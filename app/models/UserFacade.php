@@ -115,8 +115,13 @@ class UserFacade
      */
     public function delete($item_id)
     {
+        $user = $this->usersManager->getById($item_id);
         
-        $posts = $this->postsManager->getByUser($item_id)->fetchAll();
+        if ($user && $user->user_avatar) {
+            $this->usersManager->removeAvatarFile($user->user_avatar);
+        }
+
+       $posts = $this->postsManager->getByUser($item_id)->fetchAll();
                 
         foreach ($posts as $post) {
             $this->postFacade->delete($post->post_id);

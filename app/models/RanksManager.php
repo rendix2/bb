@@ -34,8 +34,8 @@ class RanksManager extends Crud\CrudManager
         if ($file->ok) {
             $rank = $this->getById($id);
 
-            if ($rank) {
-                FileSystem::delete($this->ranks->getDir() . DIRECTORY_SEPARATOR . $rank->rank_file);
+            if ($rank && $rank->rank_file) {
+                $this->removeRankFile($rank->rank_file);
             }
 
             $extension = self::getFileExtension($file->name);
@@ -47,6 +47,21 @@ class RanksManager extends Crud\CrudManager
             return $name;
         } else {
             return self::NOT_UPLOADED;
+        }
+    }
+    
+    /**
+     * 
+     * @param type $rank_file
+     */
+    public function removeRankFile($rank_file)
+    {
+        try {
+            FileSystem::delete($this->ranks->getDir() . DIRECTORY_SEPARATOR . $rank_file);
+            
+            return true;
+        } catch (Nette\IOException $e) {
+            return false;
         }
     }
 }

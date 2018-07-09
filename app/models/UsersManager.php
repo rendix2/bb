@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Controls\Avatars;
-use Dibi\Fluent;
 use Dibi\Row;
 use Nette\Http\FileUpload;
 use Nette\InvalidArgumentException;
@@ -208,8 +207,8 @@ class UsersManager extends Crud\CrudManager
             
             $user = $this->getById($user_id);
 
-            if ($user) {
-                FileSystem::delete($this->avatar->getDir() . DIRECTORY_SEPARATOR . $user->user_avatar);
+            if ($user && $user->user_avatar) {
+                $this->removeAvatarFile($user->user_avatar);
             }
 
             $extension = self::getFileExtension($file->name);
@@ -222,5 +221,22 @@ class UsersManager extends Crud\CrudManager
         } else {
             return self::NOT_UPLOADED;
         }
+    }
+    
+    /**
+     * 
+     * @param string $avatar_file
+     * 
+     * @return bool success
+     */
+    public function removeAvatarFile($avatar_file)
+    {
+        try {
+            FileSystem::delete($this->avatar->getDir() . DIRECTORY_SEPARATOR . $avatar_file); 
+            
+            return true;
+        } catch (\Nette\IOException $e){
+            return false;
+        }        
     }
 }
