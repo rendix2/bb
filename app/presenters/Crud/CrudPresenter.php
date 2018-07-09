@@ -199,12 +199,8 @@ abstract class CrudPresenter extends ManagerPresenter
      */
     public function renderDefault($page = 1)
     {
-        \Tracy\Debugger::barDump('renderDefault');
+        $items = $this->getManager()->getAllFluent();
         
-        //$items = $this->getManager()->getAllFluent();
-        $items = $this->fluent ? : $this->getManager()->getAllFluent();
-       
-        /*
         foreach ($this->gf->getWhere() as $where) {
             if (isset($where['value'])) {
                 $items->where('[' . $where['column'] . '] ' . $where['type'] . ' ' . $where['strint'], $where['value']);
@@ -214,8 +210,6 @@ abstract class CrudPresenter extends ManagerPresenter
         foreach ($this->gf->getOrderBy() as $column => $type) {
             $items->orderBy($column, $type);
         }
-         *
-         */
         
         $paginator = new PaginatorControl($items, static::ITEMS_PER_PAGE, 5, $page);
         $this->addComponent($paginator, 'paginator');
@@ -229,38 +223,6 @@ abstract class CrudPresenter extends ManagerPresenter
         $this->template->countItems = $paginator->getCount();
     }
     
-    public function callback($filters, $order, Paginator $paginator = NULL)
-    {       
-        $this->fluent = $this->getManager()->getAllFluent();
-                
-        foreach ($filters as $filterName => $filterValue) {
-            if (is_numeric($filterValue)) {
-                $this->fluent->where('[' . $filterName . '] = %i', $filterValue);
-            } else if (is_string($filterValue)) {
-                $this->fluent->where('[' . $filterName . '] LIKE %~like~', $filterValue);
-            }
-        }
-        
-        if (count($order)){
-            $this->fluent->orderBy($order[0], $order[1]);
-        }
-        
-        if ($paginator) {
-            $this->fluent->limit($paginator->getItemsPerPage(), $paginator->getOffset());
-        }
-        
-        return $this->fluent->fetchAll();
-    }
-    
-    public function saveData(\Nette\Forms\Container $form)
-    {
-        $values = $form->getValues();
-        $primaryKey = $values[$this->getManager()->getPrimaryKey()];
-        unset($values[$this->getManager()->getPrimaryKey()]);
-        
-        $this->getManager()->update($primaryKey, ArrayHash::from($values));
-    }    
-
     /**
      * @param int|null $id
      */

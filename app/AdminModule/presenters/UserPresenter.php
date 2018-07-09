@@ -144,39 +144,6 @@ class UserPresenter extends Base\AdminPresenter
         $this->template->ranksDir   = $this->rank->getTemplateDir();  
     }
     
-    public function createComponentDataGrid()
-    {
-        $grid = new \Nextras\Datagrid\Datagrid();
-        $grid->setRowPrimaryKey('user_id');
-        $grid->setTranslator($this->getAdminTranslator());
-        
-        $grid->addColumn('user_id', 'user_id')->enableSort();
-        $grid->addColumn('user_name', 'user_name')->enableSort();
-        $grid->setDataSourceCallback([$this, 'callback']);
-        
-        $grid->setFilterFormFactory(function() {
-            $form = new Container();
-            $form->addText('user_id');
-            $form->addText('user_name');
-            return $form;
-        });
-        $grid->setEditFormFactory(function($row) {
-            $form = new Container();
-            $form->addText('user_id')->setRequired('You have to enter the first name');
-            $form->addText('user_name')->setRequired('You have to enter the last name.');
-            !$row ?: $form->setDefaults($row);
-            return $form;
-	});
-        
-        $grid->setEditFormCallback([$this, 'saveData']);
-        
-        $grid->addCellsTemplate(__DIR__ . '/../../../vendor/nextras/datagrid/bootstrap-style/@bootstrap3.datagrid.latte');
-        
-        return $grid;
-    }
-    
-
-
     /**
      * @return ChangePasswordControl
      */
