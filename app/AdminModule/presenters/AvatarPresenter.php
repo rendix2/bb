@@ -58,8 +58,8 @@ class AvatarPresenter extends Base\AdminPresenter
      * @param string $avatar_name
      */
     public function handleDeleteAvatar($user_id, $avatar_name)
-    {
-        FileSystem::delete($this->avatars->getDir() . DIRECTORY_SEPARATOR . $avatar_name);
+    {        
+        $this->getManager()->removeAvatarFile($avatar_name);
         
         $this->getManager()->update($user_id, ArrayHash::from(['user_avatar' => null]));
         
@@ -69,7 +69,7 @@ class AvatarPresenter extends Base\AdminPresenter
     }
 
     /**
-     * @return mixed|null
+     * @return null
      */
     protected function createComponentEditForm()
     {
