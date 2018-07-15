@@ -45,7 +45,7 @@ class ChangePasswordFactory
     /**
      * 
      * @param UsersManager $userManager
-     * @param ITranslator $translator
+     * @param TranslatorFactory $translatorFactory
      * @param User $user
      * @param Users $users
      */

@@ -110,4 +110,30 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             }
         }
     }
+    
+    protected function checkLoggedIn()
+    {
+        $identity = $this->getUser()->getIdentity();
+        
+        if (!$identity) {
+            return false;
+        }
+        
+        return $this->getUser()->isLoggedIn();
+    }
+
+    protected function checkUserLoggedIn()
+    {
+        return $this->checkAdminLoggedIn() && !in_array('guest', $this->getUser()->getRoles(), true);
+    }
+    
+    protected function checkJuniorAdminLoggedIn()
+    {
+        return $this->checkLoggedIn() && $this->getUser()->isInRole('juniorAdmin');
+    }
+
+    protected function checkAdminLoggedIn()
+    {
+        return $this->checkLoggedIn() && $this->getUser()->isInRole('admin');
+    }
 }

@@ -6,7 +6,6 @@ use App\Controls\Avatars;
 use App\Controls\PaginatorControl;
 use App\Models\UsersManager;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\FileSystem;
 
 /**
  * Description of AvatarPresenter

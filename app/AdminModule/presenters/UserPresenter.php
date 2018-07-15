@@ -18,8 +18,6 @@ use App\Models\UsersManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
-use Nette\Forms\Container;
-
 /**
  * Description of UserPresenter
  *

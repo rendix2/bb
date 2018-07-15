@@ -40,6 +40,12 @@ class PostFacade
      * @var ReportsManager $reportsManager
      */
     private $reportsManager;
+    
+    /**
+     *
+     * @var ForumsManager $forumsManager
+     */
+    private $forumsManager;
 
     /**
      * 
@@ -47,13 +53,14 @@ class PostFacade
      * @param \App\Models\TopicsManager     $topicsManager
      * @param \App\Models\TopicWatchManager $topicWatchManager
      */
-    public function __construct(PostsManager $postsManager, TopicsManager $topicsManager, TopicWatchManager $topicWatchManager, UsersManager $usersManager, ReportsManager $reportsManager)
+    public function __construct(PostsManager $postsManager, TopicsManager $topicsManager, TopicWatchManager $topicWatchManager, UsersManager $usersManager, ReportsManager $reportsManager, ForumsManager $forumsManager)
     {
         $this->postsManager      = $postsManager;
         $this->topicsManager     = $topicsManager;
         $this->topicWatchManager = $topicWatchManager;
         $this->usersManager      = $usersManager;
         $this->reportsManager    = $reportsManager;
+        $this->forumsManager     = $forumsManager;
     }
     
     public function add(ArrayHash $item_data)
@@ -64,7 +71,11 @@ class PostFacade
 
         $this->topicsManager->update(
             $item_data->post_topic_id,
-            ArrayHash::from(['topic_post_count%sql' => 'topic_post_count+1'])
+            ArrayHash::from([
+                'topic_post_count%sql' => 'topic_post_count + 1',
+                'topic_last_user_id'   => $user_id,
+                'topic_last_post_id'   => $post_id
+                ])
         );
 
         $topicWatching = $this->topicWatchManager->fullCheck($item_data->post_topic_id, $user_id);
@@ -80,13 +91,16 @@ class PostFacade
             $user_id,
             ArrayHash::from(['user_post_count%sql' => 'user_post_count + 1'] + $watch)
         );
+        
+        $this->forumsManager->update($forum_id, ArrayHash::from(['forum_post_count%sql' => 'forum_post_count + 1']));
 
         return $post_id;              
     }
     
     public function delete($item_id)
     {
-        $post = $this->postsManager->getById($item_id);
+        $post  = $this->postsManager->getById($item_id);
+        $topic = $this->topicsManager->getById($post->post_topic_id);
 
         $this->usersManager->update(
             $post->post_user_id,
@@ -113,7 +127,32 @@ class PostFacade
         }
         
         $this->reportsManager->deleteByPost($item_id);
+        $this->forumsManager->update(
+                $post->post_forum_id,
+                ArrayHash::from(['forum_post_count%sql' => 'forum_post_count - 1'])
+        );
+        
+        // recount last post info
+        $res       = $this->postsManager->delete($item_id);   
+        
+        // last post
+        if ($topic->topic_last_post_id === (int)$item_id && $topic->topic_first_post_id !== (int)$item_id) {
+            \Tracy\Debugger::barDump('posledni');
+            $last_post = $this->postsManager->getLastByTopic($post->post_topic_id);
+       
+            $this->topicsManager->update($post->post_topic_id, ArrayHash::from(['topic_last_post_id' => $last_post->post_id, 'topic_last_user_id' => $last_post->post_user_id]));
+        } elseif ($topic->topic_first_post_id === (int)$item_id && $topic->topic_last_post_id !== (int)$item_id) {
+            \Tracy\Debugger::barDump('prvni');
+            $first_post = $this->postsManager->getFirstByTopic($post->post_topic_id);
+       
+            $this->topicsManager->update($post->post_topic_id, ArrayHash::from(['topic_first_post_id' => $first_post->post_id, 'topic_first_user_id' => $first_post->post_user_id]));            
+        } elseif ($topic->topic_last_post_id === $topic->topic_first_post_id && $topic->topic_first_post_id === (int)$item_id) {
+            $this->forumsManager->update($post->post_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
+            $this->topicsManager->delete($topic->topic_id);
 
-        return $this->postsManager->delete($item_id);        
+            return 2;
+        }
+        
+        return $res;
     }
 }

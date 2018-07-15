@@ -55,18 +55,7 @@ class LoginPresenter extends BasePresenter
         $this->getUser()->getStorage()->setNamespace('frontend');
         
         parent::checkRequirements($element);
-    }
-    
-    /**
-     * start up method
-     * sets Authenticator
-     */
-    public function startup()
-    {
-        parent::startup();
-
-        $this->getUser()->setAuthenticator($this->authenticator);
-    }    
+    }   
     
     /**
      * before render method
@@ -87,6 +76,8 @@ class LoginPresenter extends BasePresenter
     {
         try {
             $user = $this->getUser();
+            $user->setAuthenticator($this->authenticator);
+
             $user->login(
                 $values->user_name,
                 $values->user_password

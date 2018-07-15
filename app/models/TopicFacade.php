@@ -43,6 +43,12 @@ class TopicFacade
     
     /**
      *
+     * @var ForumsManager $forumsManager
+     */
+    private $forumsManager;
+    
+    /**
+     *
      * @var PostFacade $postFacade
      */
     private $postFacade;
@@ -55,7 +61,7 @@ class TopicFacade
      * @param \App\Models\UsersManager $usersManager
      * @param \App\Models\ThanksManager $thanksManager
      */
-    public function __construct(TopicsManager $topicsManager, TopicWatchManager $topicWatchManager, PostsManager $postsManager, UsersManager $usersManager, ThanksManager $thanksManager, PostFacade $postFacade)
+    public function __construct(TopicsManager $topicsManager, TopicWatchManager $topicWatchManager, PostsManager $postsManager, UsersManager $usersManager, ThanksManager $thanksManager, ForumsManager $forumsManager, PostFacade $postFacade)
     {
         $this->topicsManager     = $topicsManager;
         $this->topicWatchManager = $topicWatchManager;
@@ -63,6 +69,7 @@ class TopicFacade
         $this->usersManager      = $usersManager;
         $this->thanksManager     = $thanksManager;
         $this->postFacade        = $postFacade;
+        $this->forumsManager     = $forumsManager;
     }
     
     /**
@@ -75,10 +82,12 @@ class TopicFacade
     {
         $values = clone $item_data;
 
-        $values->topic_name       = $item_data->post_title;
-        $values->topic_user_id    = $item_data->post_user_id;
-        $values->topic_forum_id   = $item_data->post_forum_id;
-        $values->topic_add_time   = $item_data->post_add_time;
+        $values->topic_name          = $item_data->post_title;
+        $values->topic_user_id       = $item_data->post_user_id;
+        $values->topic_forum_id      = $item_data->post_forum_id;
+        $values->topic_add_time      = $item_data->post_add_time;
+        $values->topic_first_user_id = $item_data->post_user_id;
+        $values->topic_last_user_id  = $item_data->post_user_id;
         //$values->post_add_user_ip = $item_data->post_add_user_ip;
 
         unset(
@@ -95,13 +104,17 @@ class TopicFacade
         $this->topicWatchManager->add([$values->topic_user_id], $topic_id);
 
         $item_data->post_topic_id = $topic_id;
-        $this->postFacade->add($item_data);
+        $post_id = $this->postFacade->add($item_data);
+        
+        $this->topicsManager->update($topic_id, ArrayHash::from(['topic_first_post_id' => $post_id, 'topic_last_post_id' => $post_id]));
         $this->usersManager->update($values->topic_user_id, ArrayHash::from(
             [
                     'user_topic_count%sql' => 'user_topic_count + 1',
                     'user_watch_count%sql' => 'user_watch_count + 1'
             ]
         ));
+        
+        $this->forumsManager->update($values->topic_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1']));
 
         return $topic_id;
     }
@@ -146,6 +159,8 @@ class TopicFacade
         foreach ($posts as $post) {
             $this->postFacade->delete($post->post_id);
         }
+        
+        $this->forumsManager->update($topic->topic_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
 
         return $this->topicsManager->delete($item_id);
     }

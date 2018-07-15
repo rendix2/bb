@@ -8,6 +8,7 @@ parameters:
         password: ""
         host: localhost
         databaseName: bb
+        dsn: 'mysql:host=%database.host%;dbname=%database.databaseName%'
     defaultLanguage: "czech"
     avatars:
         relativeDir: /avatars
@@ -80,10 +81,11 @@ application:
 	mapping:
 		*: App\*Module\Presenters\*Presenter
 session:
-        expiration: 14 days
-        autoStart: true # výchozí hodnota je 'smart'
-        savePath: "%tempDir%/sessions"
-        debugger: true
+    expiration: 14 days
+    autoStart: true # výchozí hodnota je 'smart'
+    savePath: "%tempDir%/sessions"
+    debugger: true
+    #cookieDomain: 'example.com'
 
 services:
     router: App\RouterFactory::createRouter
@@ -175,7 +177,7 @@ services:
     DeleteAvatarFactory:
         class: App\Services\DeleteAvatarFactory
     MysqlDumper:
-        class: Ifsnop\Mysqldump\Mysqldump('mysql:host=%database.host%;dbname=%database.databaseName%',%database.username%, %database.password%)
+        class: Ifsnop\Mysqldump\Mysqldump(%database.dsn%, %database.username%, %database.password%)
     DatabaseBackupDir:
         class: App\Config\DatabaseBackupDir(%databaseBackupDir%)
     PostFacade:
@@ -190,17 +192,21 @@ services:
         class: App\Models\UserFacade
     ThanksFacade:
         class: App\Models\ThanksFacade
+    nette.mailer:
+        class: Nette\Mail\IMailer
+        factory: Nextras\MailPanel\FileMailer(%tempDir%/mail-panel-mails)
         
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22
 
 dibi:
-    driver: mysql
+    driver: PDO
     port: 5433
     database: %database.databaseName%
     username: %database.username%
     password: %database.password%
-    lazy: TRUE   
+    lazy: TRUE
+    dsn: %database.dsn%
 
 di:
     debugger: true  # vypne DI panel v Debugger baru
@@ -208,3 +214,9 @@ di:
 tracy:
     maxLen: 500
     maxDepth: 10
+    strictMode: true
+    #scream: true
+    showBar: true
+    showLocation: true
+    bar:
+        - Nextras\MailPanel\MailPanel(%tempDir%/mail-panel-latte)

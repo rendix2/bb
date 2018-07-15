@@ -1379,30 +1379,34 @@
         },
         {
             "name": "nextras/mail-panel",
-            "version": "v2.3.1",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nextras/mail-panel.git",
-                "reference": "42208df6d60ba40c657e0ef7e9d73506680082c4"
+                "reference": "790008bcbb9df1de8254cdda920ac023909b6b59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nextras/mail-panel/zipball/42208df6d60ba40c657e0ef7e9d73506680082c4",
-                "reference": "42208df6d60ba40c657e0ef7e9d73506680082c4",
+                "url": "https://api.github.com/repos/nextras/mail-panel/zipball/790008bcbb9df1de8254cdda920ac023909b6b59",
+                "reference": "790008bcbb9df1de8254cdda920ac023909b6b59",
                 "shasum": ""
             },
             "require": {
-                "latte/latte": "~2.2",
-                "nette/http": "~2.2",
-                "nette/mail": "~2.3.1 || ~2.4",
-                "nette/utils": "~2.2",
-                "php": ">=5.3",
-                "tracy/tracy": "~2.3"
+                "latte/latte": "~2.4",
+                "nette/http": "~2.4",
+                "nette/mail": "~2.4",
+                "nette/utils": "~2.4",
+                "php": ">=5.6",
+                "tracy/tracy": "~2.4"
+            },
+            "require-dev": {
+                "phpstan/phpstan-nette": "~0.9",
+                "phpstan/phpstan-shim": "~0.9.1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -1437,7 +1441,7 @@
                 "mailing",
                 "mailpanel"
             ],
-            "time": "2016-06-08T09:45:07+00:00"
+            "time": "2017-12-12T09:07:26+00:00"
         },
         {
             "name": "nextras/secured-links",

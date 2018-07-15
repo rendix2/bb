@@ -63,20 +63,25 @@ class Authenticator implements IAuthenticator
         list($userName, $userPassword) = $credentials;
 
         $userData = $this->userManager->getByName($userName);
-        $langData = $this->languageManager->getById($userData->user_lang_id);
 
         if (!$userData) {
-            throw new AuthenticationException('User name not found.');
+            throw new AuthenticationException('User name not found.', IAuthenticator::IDENTITY_NOT_FOUND);
+        }
+        
+        $langData = $this->languageManager->getById($userData->user_lang_id);
+        
+        if (!$langData) {
+            throw new AuthenticationException('User account has set unknow language.', IAuthenticator::INVALID_CREDENTIAL);
         }
 
         if (!$userData->user_active) {
-            throw new AuthenticationException('User account is not active.');
+            throw new AuthenticationException('User account is not active.', IAuthenticator::INVALID_CREDENTIAL);
         }
 
         if (!Passwords::verify($userPassword, $userData->user_password)) {
-            throw new AuthenticationException('Password is incorrect.');
+            throw new AuthenticationException('Password is incorrect.', IAuthenticator::INVALID_CREDENTIAL);
         }
-
+               
         $this->userManager->update($userData->user_id, ArrayHash::from(['user_last_login_time' => time()]));
         
         $data =

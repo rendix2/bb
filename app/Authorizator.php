@@ -42,7 +42,6 @@ class Authorizator
     
     const ROLES = [ 1 => 'guest', 2 => 'registered', 3 => 'moderator', 4 => 'juniorAdmin', 5 => 'Admin'];
 
-
     /**
      *
      * @var ModeratorsManager $moderatorsManager
@@ -59,11 +58,11 @@ class Authorizator
      */
     public function __construct(Models\ForumsManager $forumsManager, User $user, UsersManager $userManager, ModeratorsManager $moderatorsManager, \App\Models\Users2GroupsManager $users2GroupsManager)
     {
-        $this->acl               = new Permission();
-        $this->forumManager      = $forumsManager;
-        $this->user              = $user;
-        $this->userManager       = $userManager;
-        $this->moderatorsManager = $moderatorsManager;
+        $this->acl                 = new Permission();
+        $this->forumManager        = $forumsManager;
+        $this->user                = $user;
+        $this->userManager         = $userManager;
+        $this->moderatorsManager   = $moderatorsManager;
         $this->users2GroupsManager = $users2GroupsManager;        
     
         $this->defineRoles();       
@@ -126,8 +125,7 @@ class Authorizator
                     $this->acl->deny('moderator', '' . $forum->forum_id);
                 }
             }
-        }
-        
+        }        
 
         foreach ($this->forumManager->getAllCached() as $forum) {
             if ($forum->forum_thank) {
@@ -158,7 +156,8 @@ class Authorizator
                 $this->acl->allow('registered', '' . $forum->forum_id, 'fast_reply');
             }
         }
-             
+        
+        /*
         foreach ($this->users2GroupsManager->getForumsPermissionsByUserThroughGroup($this->user->getId()) as $perm) {
             if ($perm->topic_thank) {
                 $this->acl->allow('registered', '' . $perm->forum_id, 'topic_thank');
@@ -196,6 +195,7 @@ class Authorizator
                 $this->acl->deny('registered', '' . $perm->forum_id, 'topic_delete');
             }
         }
+        */
     }
 
     /**

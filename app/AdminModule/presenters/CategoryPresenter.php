@@ -2,11 +2,9 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
-use Tracy\Debugger;
 
 /**
  * Description of CategoryPresenter

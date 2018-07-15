@@ -2,7 +2,6 @@
 
 namespace App\ModeratorModule\Presenters;
 
-use App\ForumModule\Presenters\Base\ForumPresenter;
 use App\Models\PostsManager;
 
 /**

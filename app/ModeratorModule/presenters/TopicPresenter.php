@@ -13,6 +13,12 @@ use App\Models\TopicsManager;
 class TopicPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresenter
 {
     /**
+     * @var \App\Models\ForumsManager $forumsManager
+     * @inject
+     */
+    public $forumsManager;
+
+    /**
      * TopicPresenter constructor.
      *
      * @param TopicsManager $manager
@@ -36,5 +42,37 @@ class TopicPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPrese
         $form->addCheckbox('topic_locked', 'Topic locked:');
 
         return $this->addSubmitB($form);
+    }
+    
+    protected function createComponentMoveTopic()
+    {
+        $form = BootstrapForm::create();
+        
+        $form->addSelect('topic_forum_id', 'Forum name:', $this->forumsManager->getAllPairsCached('forum_nane'));
+        $form->onSuccess[] = [$this, 'moveTopicSuccess'];
+        
+        return $form;
+    }
+    
+    public function moveTopicSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
+    {
+        $this->getManager()->update($this->getParameter('id'), $values);
+    }
+    
+    protected function createComponentChangeTopicAuthor()
+    {
+        $form = BootstrapForm::create();
+        
+        $form->addText('user_name', 'User name:');
+        $form->addSubmit('sned', 'Search');
+        
+        $form->onSuccess[] = [$this, 'changeTopicAuthorSuccess'];
+        
+        return $form;    
+    }
+    
+    public function changeTopicAuthorSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
+    {
+        
     }
 }

@@ -109,6 +109,19 @@ class PostsManager extends Crud\CrudManager
             $topic_id
         )->fetch();
     }
+    
+    /**
+     * @param int $topic_id
+     *
+     * @return Row|false
+     */
+    public function getFirstByTopic($topic_id)
+    {
+        return $this->dibi->query(
+            'SELECT * FROM [' . $this->getTable() . '] WHERE [post_id] = ( SELECT MIN(post_id) FROM [' . $this->getTable() . '] WHERE [post_topic_id] = %i )',
+            $topic_id
+        )->fetch();
+    }    
 
     /**
      * @param int $forum_id

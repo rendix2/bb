@@ -42,8 +42,6 @@ abstract class CrudPresenter extends ManagerPresenter
      * @var string $title
      */
     private $title;
-    
-    private $fluent;
 
     /**
      * @return mixed

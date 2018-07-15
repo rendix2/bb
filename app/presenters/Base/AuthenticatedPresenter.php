@@ -2,8 +2,6 @@
 
 namespace App\Presenters\Base;
 
-use App\Models\Manager;
-use App\Models\SessionsManager;
 use Nette\Security\IUserStorage;
 use Nette\Utils\ArrayHash;
 

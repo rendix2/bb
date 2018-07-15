@@ -144,11 +144,13 @@ class PostPresenter extends Base\ForumPresenter
 
         $res = $this->postFacade->delete($post_id);
 
-        if ($res) {
+        if ($res === 1) {
             $this->flashMessage('Post deleted.', self::FLASH_MESSAGE_SUCCESS);
-        }
-        
-        $this->redirect('Post:all', $forum_id, $topic_id, $page);
+            $this->redirect('Post:all', $forum_id, $topic_id, $page);
+        } elseif ($res === 2) {
+            $this->flashMessage('Topic deleted.', self::FLASH_MESSAGE_SUCCESS);
+            $this->redirect('Forum:default', $forum_id, $page);
+        }        
     }
 
     /**
@@ -279,7 +281,7 @@ class PostPresenter extends Base\ForumPresenter
         $this->template->avatarsDir = $this->avatar->getTemplateDir();        
         $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $user_id);
         $this->template->ranks      = $this->rankManager->getAllCached();
-        $this->template->posts      = $data->orderBy('post_id', dibi::DESC)->fetchAll();
+        $this->template->posts      = $data->orderBy('post_id', dibi::ASC)->fetchAll();
         $this->template->canThank   = $this->thanksManager->canUserThank($forum_id, $topic_id, $user_id);
         $this->template->thanks     = $this->thanksManager->getThanksWithUserInTopic($topic_id);
         $this->template->forum      = $forum;
@@ -480,10 +482,12 @@ class PostPresenter extends Base\ForumPresenter
                 $emailsArray[] = $email->user_email;
             }
             
-            $this->bbMailer->addRecepients($emailsArray);
-            $this->bbMailer->setSubject('Topic watch');
-            $this->bbMailer->setText('Test');
-            $this->bbMailer->send();
+            if (count($emailsArray)) {
+                $this->bbMailer->addRecepients($emailsArray);
+                $this->bbMailer->setSubject('Topic watch');
+                $this->bbMailer->setText('Test');
+                $this->bbMailer->send();
+            }
         }
 
         if ($result) {

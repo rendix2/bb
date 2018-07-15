@@ -134,6 +134,8 @@
                                     {if $user->isAllowed($presenter->getParameter('forum_id'), 'post_delete')}
                                         <a href="{link Post:deletePost, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id, $presenter->getParameter('page')}">{_post_delete}</a>
                                     {/if}
+                                    
+                                    <a href="{plink :Moderator:Post:edit $post->post_id}">{_moderate}</a>
                                 </div>
                             </div>
 
