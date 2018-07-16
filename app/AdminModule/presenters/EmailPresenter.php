@@ -2,10 +2,12 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\MailsManager;
 use App\Models\UsersManager;
+use App\Models\Mails2UsersManager;
 use Nette\Application\UI\Form;
 use Nette\InvalidArgumentException;
 use Nette\Mail\FallbackMailerException;
@@ -25,14 +27,14 @@ class EmailPresenter extends Base\AdminPresenter
     private $usersManager;
     
     /**
-     * @var \App\Controls\BBMailer $bbMailer
+     * @var BBMailer $bbMailer
      * @inject
      */
     public $bbMailer;
     
     /**
      *
-     * @var \App\Models\Mails2UsersManager $mail2UsersManager
+     * @var Mails2UsersManager $mail2UsersManager
      * @inject
      */
     public $mail2UsersManager;

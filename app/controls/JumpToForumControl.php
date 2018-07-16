@@ -36,7 +36,9 @@ class JumpToForumControl extends Control
      */
     public function render()
     {
-        $this->template->setFile(__DIR__ . '/templates/jumpToForum/jumpToForum.latte');
+        $sep = DIRECTORY_SEPARATOR;
+        
+        $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'jumpToForum' . $sep . 'jumpToForum.latte');
 
         $this->template->render();
     }

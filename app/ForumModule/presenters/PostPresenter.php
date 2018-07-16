@@ -12,6 +12,8 @@ use App\Models\ReportsManager;
 use App\Models\ThanksManager;
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
+use App\Settings\Avatars;
+use App\Settings\TopicsSetting;
 use dibi;
 use Nette\Application\UI\Form;
 use Nette\Http\IResponse;
@@ -62,14 +64,14 @@ class PostPresenter extends Base\ForumPresenter
     public $reportManager;
 
     /**
-     * @var \App\Controls\TopicsSetting $topicSetting
+     * @var TopicsSetting $topicSetting
      * @inject
      */
     public $topicSetting;
     
     /**
      *
-     * @var \App\Controls\Avatars $avatar
+     * @var Avatars $avatar
      * @inject
      */
     public $avatar;
@@ -145,10 +147,10 @@ class PostPresenter extends Base\ForumPresenter
         $res = $this->postFacade->delete($post_id);
 
         if ($res === 1) {
-            $this->flashMessage('Post deleted.', self::FLASH_MESSAGE_SUCCESS);
+            $this->flashMessage('Post was deleted.', self::FLASH_MESSAGE_SUCCESS);
             $this->redirect('Post:all', $forum_id, $topic_id, $page);
         } elseif ($res === 2) {
-            $this->flashMessage('Topic deleted.', self::FLASH_MESSAGE_SUCCESS);
+            $this->flashMessage('Topic was deleted.', self::FLASH_MESSAGE_SUCCESS);
             $this->redirect('Forum:default', $forum_id, $page);
         }        
     }
@@ -165,9 +167,9 @@ class PostPresenter extends Base\ForumPresenter
         }
 
         $res = $this->topicFacade->delete($topic_id);
-
+        
         if ($res) {
-            $this->flashMessage('Topic deleted.', self::FLASH_MESSAGE_SUCCESS);
+            $this->flashMessage('Topic was deleted.', self::FLASH_MESSAGE_SUCCESS);
         }
         
         $this->redirect('Forum:default', $forum_id, $page);
@@ -229,7 +231,7 @@ class PostPresenter extends Base\ForumPresenter
         $res = $this->thanksFacade->add(ArrayHash::from($data));
         
         if ($res) {
-            $this->flashMessage('Your thank to this topic!', self::FLASH_MESSAGE_SUCCESS);
+            $this->flashMessage('Your thank to this topic.', self::FLASH_MESSAGE_SUCCESS);
         }
         
         $this->redirect('Post:all', $forum_id, $topic_id);
@@ -379,7 +381,13 @@ class PostPresenter extends Base\ForumPresenter
      */
     public function renderWatchers($topic_id)
     {
-        $this->template->watchers = $this->topicWatchManager->getAllJoinedByLeft($topic_id);
+        $watchers = $this->topicWatchManager->getAllJoinedByLeft($topic_id);
+        
+        if (!$watchers) {
+            $this->flashMessage('No watchers.', self::FLASH_MESSAGE_WARNING);
+        }
+        
+        $this->template->watchers = $watchers;
     }
 
     /**
@@ -415,7 +423,7 @@ class PostPresenter extends Base\ForumPresenter
 
         $form->addGroup('Fast reply');
         $form->addTextArea('post_text');
-        $form->addSubmit('send', 'Save');
+        $form->addSubmit('send', 'Send');
 
         $form->onSuccess[] = [$this, 'fastReplySuccess'];
 
@@ -491,7 +499,7 @@ class PostPresenter extends Base\ForumPresenter
         }
 
         if ($result) {
-            $this->flashMessage('Post saved.', self::FLASH_MESSAGE_SUCCESS);
+            $this->flashMessage('Post was saved.', self::FLASH_MESSAGE_SUCCESS);
         } else {
             $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
         }
@@ -517,7 +525,7 @@ class PostPresenter extends Base\ForumPresenter
         $topic_id = $this->topicFacade->add($values);
 
         if ($topic_id) {
-            $this->flashMessage('Topic saved.', self::FLASH_MESSAGE_SUCCESS);
+            $this->flashMessage('Topic was saved.', self::FLASH_MESSAGE_SUCCESS);
         }
         
         $this->redirect('Post:all', $forum_id, $topic_id);

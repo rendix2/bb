@@ -24,7 +24,7 @@ class DatabasePresenter extends AdminPresenter
     public $exporter;
     
     /**
-     * @var \App\Config\DatabaseBackupDir $databaseDir
+     * @var \App\Settings\DatabaseBackupDir $databaseDir
      * @inject
      */
     public $databaseDir;

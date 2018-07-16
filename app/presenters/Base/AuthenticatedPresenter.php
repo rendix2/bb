@@ -21,7 +21,7 @@ abstract class AuthenticatedPresenter extends BasePresenter
      */
     public $sessionsManager;
 
-        /**
+    /**
      *
      */
     public function startup()
@@ -38,7 +38,7 @@ abstract class AuthenticatedPresenter extends BasePresenter
                 $this->sessionsManager->deleteBySession($this->getSession()->getId());
             }
             
-            $this->redirect(':Forum:Login:default', ['backlink' => $this->storeRequest()]);
+            $this->redirect(':Forum:Login:default', ['loginForm-backlink' => $this->storeRequest()]);
         }
     }
 }

@@ -155,7 +155,7 @@ abstract class CrudManager extends Manager implements ICrudManager
         return $this->dibi
             ->select('*')
             ->from($this->table)
-            ->where('[' . $this->primaryKey . '] = %i', $item_id)
+            ->where('%n = %i', $this->primaryKey, $item_id)
             ->fetch();
     }
 
@@ -169,7 +169,7 @@ abstract class CrudManager extends Manager implements ICrudManager
         return $this->dibi
             ->select('*')
             ->from($this->table)
-            ->where('[' . $this->primaryKey . '] IN %in', $item_id)
+            ->where('%n IN %in', $this->primaryKey, $item_id)
             ->fetchAll();
     }
 
@@ -281,8 +281,8 @@ abstract class CrudManager extends Manager implements ICrudManager
     {
         return $this->dibi
             ->delete($this->table)
-            ->where('[' . $this->primaryKey . '] = %i', $item_id)
-            ->execute(dibi::AFFECTED_ROWS);
+            ->where('%n = %i', $this->primaryKey,  $item_id)
+            ->execute();
     }
 
     /**
@@ -302,7 +302,7 @@ abstract class CrudManager extends Manager implements ICrudManager
     {
         return $this->dibi
             ->delete($this->table)
-            ->where('[' . $this->primaryKey . '] IN %in', $item_id)
+            ->where('[%n IN %in', $this->primaryKey,  $item_id)
             ->execute(dibi::AFFECTED_ROWS);
     }
 
@@ -316,7 +316,7 @@ abstract class CrudManager extends Manager implements ICrudManager
     {
         return $this->dibi
                 ->update($this->table, $item_data)
-                ->where('[' . $this->primaryKey . '] = %i', $item_id)
+                ->where('%n = %i', $this->primaryKey, $item_id)
                 ->execute(dibi::AFFECTED_ROWS);
     }
 
@@ -330,7 +330,7 @@ abstract class CrudManager extends Manager implements ICrudManager
     {
         return $this->dibi
             ->update($this->table, $item_data)
-            ->where('[' . $this->primaryKey . '] IN %in', $item_id)
+            ->where('%n IN %in', $this->primaryKey,  $item_id)
             ->execute(dibi::AFFECTED_ROWS);
     }
 }

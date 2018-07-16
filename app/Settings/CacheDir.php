@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controls;
+namespace App\Settings;
 
 use Nette\Utils\Finder;
 
@@ -24,6 +24,11 @@ class CacheDir
     public function __construct($cacheDir)
     {
         $this->cacheDir = $cacheDir;
+    }
+    
+    public function getCacheDir()
+    {
+        return $this->cacheDir;
     }
 
     /**

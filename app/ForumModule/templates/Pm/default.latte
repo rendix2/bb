@@ -53,12 +53,11 @@
                     <td>{$topic->topic_post_count}</td>                 
                     <td>
                         {if $user->getId() === $topic->topic_user_id}
-                            <a href="{link Post:deleteTopic, $presenter->getParameter('forum_id'), $topic->topic_id, $presenter->getParameter('page')}"
-                               class="btn btn-danger btn-fa-only" title="Delete topic"><i class="fa fa-remove"
-                                                                                          aria-hidden="true"></i></a>
+                            <a href="{link Post:deleteTopic, $presenter->getParameter('forum_id'), $topic->topic_id, $presenter->getParameter('page')}" class="btn btn-danger btn-fa-only" title="Delete topic">
+                                <i class="fa fa-remove" aria-hidden="true"></i>
+                            </a>
                         {/if}
-                        <a href="{link Post:reportTopic, $presenter->getParameter('forum_id'), $topic->topic_id}">Report
-                            topic</a>
+                        <a href="{link Post:reportTopic, $presenter->getParameter('forum_id'), $topic->topic_id}">{_report_topic}</a>
                     </td>
                 </tr>
                 {/foreach}

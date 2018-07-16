@@ -14,17 +14,17 @@
         </div>
     </div>
 
-            <div class="row col-sm-12">
-    <div class="col-sm-8 main">
-        <div class="card">
-            <div class="card-header">{_menu_forum}</div>
-            <div class="card-block p-3">
-                {control editForm}
+    <div class="row col-sm-12">
+        <div class="col-sm-8 main">
+            <div class="card">
+                <div class="card-header">{_menu_forum}</div>
+                <div class="card-block p-3">
+                    {control editForm}
+                </div>
             </div>
         </div>
-    </div>
             
-                {if $presenter->getParameter('id')}
+    {if $presenter->getParameter('id')}
         <div class="col-sm-4">
             <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
                 <thead>
@@ -43,7 +43,7 @@
             </table>
         </div>
     {/if} 
-            </div>
+    </div>
 
     <div class="col-sm-4 main">
         {block forums}
@@ -61,7 +61,6 @@
         {/block}
     </div>
      
-
     {if $presenter->getParameter('id')}
         <div class="col-sm-12 main">
             <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">

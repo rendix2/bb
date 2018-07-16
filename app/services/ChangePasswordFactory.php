@@ -3,14 +3,8 @@
 namespace App\Services;
 
 use App\Models\UsersManager;
-use App\Presenters\Base\BasePresenter;
-use App\Controls\Users;
-use Nette\Application\UI\Control;
-use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
-use Nette\Security\Passwords;
+use App\Settings\Users;
 use Nette\Security\User;
-use Nette\Utils\ArrayHash;
 
 /**
  * Description of ChangePasswordFactory
@@ -63,7 +57,7 @@ class ChangePasswordFactory
      */
     public function getForum()
     {
-        return new \App\Controls\ChangePasswordControl(
+        return new \App\Forms\ChangePasswordForm(
             $this->userManager,
             $this->translatorFactory->forumTranslatorFactory(),
             $this->user,
@@ -77,7 +71,7 @@ class ChangePasswordFactory
      */
     public function getAdmin()
     {
-        return new \App\Controls\ChangePasswordControl(
+        return new \App\Forms\ChangePasswordForm(
             $this->userManager,
             $this->translatorFactory->adminTranslatorFactory(),
             $this->user,

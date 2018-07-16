@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controls;
+namespace App\Settings;
 
 /**
  * Class AppDir
@@ -23,5 +23,10 @@ class AppDir
     public function __construct($appDir)
     {
         $this->appDir = $appDir;
+    }
+    
+    public function getAppDir() 
+    {
+        return $this->appDir;
     }
 }

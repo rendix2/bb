@@ -117,7 +117,7 @@ class ForumPresenter extends Base\AdminPresenter
             $lastTopic = $this->topicManager->getLastTopicByForum($id);
 
             if (!$lastTopic) {
-                $this->flashMessage('No last topic', self::FLASH_MESSAGE_WARNING);
+                $this->flashMessage('No last topic.', self::FLASH_MESSAGE_WARNING);
             }
 
             $lastPost = $this->postManager->getLastByForum($id);

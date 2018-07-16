@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Controls\AppDir;
+use App\Settings\AppDir;
 use Nette\InvalidArgumentException;
 use Nette\Localization\ITranslator;
 
@@ -65,7 +65,7 @@ class Translator implements ITranslator
         if ($message === null) {
             return '';
         }
-        
+              
         if (!array_key_exists($message, $this->tr)) {
             throw new InvalidArgumentException("'{$message}'" . ' in language ' . $this->lang . ' in ' . $this->module . 'Module is missing.');
         }

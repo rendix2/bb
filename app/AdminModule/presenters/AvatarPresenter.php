@@ -2,8 +2,8 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\Controls\Avatars;
 use App\Controls\PaginatorControl;
+use App\Settings\Avatars;
 use App\Models\UsersManager;
 use Nette\Utils\ArrayHash;
 

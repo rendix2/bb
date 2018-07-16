@@ -18,7 +18,9 @@ class MenuControl extends Control
     public function render()
     {        
         $template = $this->template;
+        $sep      = DIRECTORY_SEPARATOR;
         
-        $template->setFile(__DIR__ . '/templates/menu/menu.latte');
+        
+        $template->setFile(__DIR__ . $sep . 'templates' . $sep . 'menu' . $sep . 'menu.latte');
     }
 }

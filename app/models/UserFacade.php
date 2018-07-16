@@ -112,6 +112,8 @@ class UserFacade
     /**
      * 
      * @param ïnt $item_id user_id
+     * 
+     * @return bool
      */
     public function delete($item_id)
     {

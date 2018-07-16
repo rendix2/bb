@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use App\Controls\AppDir;
+use App\Settings\AppDir;
+use App\Settings\DefaultLanguage;
 use App\Translator;
 use Nette\Security\User;
 
@@ -29,7 +30,7 @@ class TranslatorFactory
     private $appDir;
     
     /**
-     * @var \App\Controls\DefaultLanguage $defaultLanguage
+     * @var DefaultLanguage $defaultLanguage
      */
     private $defaultLanguage;
 
@@ -39,7 +40,7 @@ class TranslatorFactory
      * @param User $user
      * @param AppDir $appDir
      */
-    public function __construct(User $user, AppDir $appDir, \App\Controls\DefaultLanguage $defaultLanguage)
+    public function __construct(User $user, AppDir $appDir, DefaultLanguage $defaultLanguage)
     {
         $this->user            = $user;
         $this->appDir          = $appDir;

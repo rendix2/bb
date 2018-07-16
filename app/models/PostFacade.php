@@ -133,25 +133,27 @@ class PostFacade
         );
         
         // recount last post info
-        $res       = $this->postsManager->delete($item_id);   
+        $res = $this->postsManager->delete($item_id);   
         
         // last post
         if ($topic->topic_last_post_id === (int)$item_id && $topic->topic_first_post_id !== (int)$item_id) {
-            \Tracy\Debugger::barDump('posledni');
             $last_post = $this->postsManager->getLastByTopic($post->post_topic_id);
        
             $this->topicsManager->update($post->post_topic_id, ArrayHash::from(['topic_last_post_id' => $last_post->post_id, 'topic_last_user_id' => $last_post->post_user_id]));
         } elseif ($topic->topic_first_post_id === (int)$item_id && $topic->topic_last_post_id !== (int)$item_id) {
-            \Tracy\Debugger::barDump('prvni');
             $first_post = $this->postsManager->getFirstByTopic($post->post_topic_id);
        
             $this->topicsManager->update($post->post_topic_id, ArrayHash::from(['topic_first_post_id' => $first_post->post_id, 'topic_first_user_id' => $first_post->post_user_id]));            
-        } elseif ($topic->topic_last_post_id === $topic->topic_first_post_id && $topic->topic_first_post_id === (int)$item_id) {
+        } 
+        /*
+         * elseif ($topic->topic_last_post_id === $topic->topic_first_post_id && $topic->topic_first_post_id === (int)$item_id) {
             $this->forumsManager->update($post->post_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
             $this->topicsManager->delete($topic->topic_id);
 
             return 2;
         }
+         *
+         */
         
         return $res;
     }

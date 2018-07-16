@@ -213,7 +213,7 @@ abstract class CrudPresenter extends ManagerPresenter
         $this->addComponent($paginator, 'paginator');
         
         if (!$paginator->getCount()) {
-            $this->flashMessage('No '.$this->getTitle(), self::FLASH_MESSAGE_DANGER);
+            $this->flashMessage('No '.$this->getTitle().'.', self::FLASH_MESSAGE_DANGER);
         }
        
         $this->template->items      = $items->fetchAll();
@@ -228,13 +228,13 @@ abstract class CrudPresenter extends ManagerPresenter
     {
         if ($id) {
             if (!is_numeric($id)) {
-                $this->error('Parameter id is not numeric.');
+                $this->error('Parameter $id of CrudPresenter::renderEdit($id) is not numeric.');
             }
 
             $item = $this->getManager()->getById($id);
 
             if (!$item) {
-                $this->error('Item #' . $id . ' not found.');
+                $this->error('Item $' . $this->getTitle() . '['.$id.'] was not found.');
             }
 
             $this[self::FORM_NAME]->setDefaults($item);

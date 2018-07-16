@@ -11,6 +11,7 @@ use App\Models\TopicsManager;
 use App\Models\UsersManager;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
+use dibi;
 
 /**
  * Description of IndexPresenter¨
@@ -73,11 +74,6 @@ class IndexPresenter extends Base\ForumPresenter
      * @inject
      */
     public $userManager;
-
-    /**
-     * @var CategoriesManager $categoriesManager
-     */
-    private $categoriesManager;
     
     /**
      *
@@ -137,8 +133,6 @@ class IndexPresenter extends Base\ForumPresenter
         $categories      = $this->getManager()->getActiveCategoriesCached();
         $result          = [];
         $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
-        
-        \Tracy\Debugger::barDump($categories);
       
         foreach ($categories as $category) {
             $category->forums = [];
@@ -170,8 +164,6 @@ class IndexPresenter extends Base\ForumPresenter
                 }
             }
         }
-        
-        \Tracy\Debugger::barDump($result);
 
         $cachedLastUser = $this->getCache()
             ->load(self::CACHE_KEY_LAST_USER);

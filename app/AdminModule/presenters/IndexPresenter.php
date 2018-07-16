@@ -2,8 +2,8 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\Controls\Avatars;
-use App\Controls\CacheDir;
+use App\Settings\Avatars;
+use App\Settings\CacheDir;
 use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
 
@@ -38,6 +38,10 @@ class IndexPresenter extends BasePresenter
      */
     public $cacheDir;
 
+    /**
+     * 
+     * @param type $element
+     */
     public function checkRequirements($element)
     {
         $this->getUser()->getStorage()->setNamespace('beckend'); 
@@ -84,4 +88,25 @@ class IndexPresenter extends BasePresenter
         $this->template->avatarCount   = $this->avatar->getImageCount();
         $this->template->cacheDirSize  = $this->cacheDir->getDirSize();
     }
+    
+    /**
+     * truncate sessions
+     */
+    public function actionDeleteSessions()
+    {
+        $res = $this->sessionsManager->truncateSessions();
+        
+        if ($res) {
+            $this->flashMessage('Sessions were deleted.', self::FLASH_MESSAGE_SUCCESS);
+        }
+        
+        $this->redirect('Index:default');
+    }
+    
+    public function actionLogout()
+    {
+        $this->user->logout(true);
+        $this->flashMessage('User was logged out.', self::FLASH_MESSAGE_SUCCESS);
+        $this->redirect(':Forum:Index:default');
+    }    
 }

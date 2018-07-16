@@ -78,7 +78,7 @@ abstract class MNManager extends Manager
     public function getAllFLuentByLeft($left_id)
     {
         return $this->getAllFluent()
-            ->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id);
+            ->where('%n = %i', $this->left->getPrimaryKey(), $left_id);
     }
 
         /**
@@ -138,7 +138,7 @@ abstract class MNManager extends Manager
     public function getAllFluentByRight($right_id)
     {
         return $this->getAllFluent()
-            ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id);
+            ->where('%n = %i', $this->right->getPrimaryKey(),  $right_id);
     }
 
     /**
@@ -247,7 +247,7 @@ abstract class MNManager extends Manager
     public function getCountByLeft($left_id)
     {
         return $this->getCountFluent()
-            ->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)
+            ->where('%n = %i', $this->left->getPrimaryKey(),  $left_id)
             ->fetchSingle();
     }
 
@@ -259,7 +259,7 @@ abstract class MNManager extends Manager
     public function getCountByRight($right_id)
     {
         return $this->getCountFluent()
-            ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)
+            ->where('%n = %i', $this->right->getPrimaryKey(), $right_id)
             ->fetchSingle();
     }
 
@@ -283,7 +283,7 @@ abstract class MNManager extends Manager
             $data[$this->right->getPrimaryKey()][] = $right_id !== null ? (int)$right_id : (int)$value;
         }
                 
-        return $this->dibi->query('INSERT INTO [' . $this->table . '] %m', $data);
+        return $this->dibi->query('INSERT INTO %n %m', $this->table, $data);
     }
 
     /**
@@ -321,7 +321,7 @@ abstract class MNManager extends Manager
     {
         return $this->dibi
             ->delete($this->table)
-            ->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)
+            ->where('%n = %i', $this->left->getPrimaryKey(), $left_id)
             ->execute();
     }
 
@@ -334,7 +334,7 @@ abstract class MNManager extends Manager
     {
         return $this->dibi
             ->delete($this->table)
-            ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)
+            ->where('%n = %i', $this->right->getPrimaryKey(), $right_id)
             ->execute();
     }
 
@@ -351,8 +351,8 @@ abstract class MNManager extends Manager
         return $this->dibi
                 ->select('1')
                 ->from($this->table)
-                ->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)
-                ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)
+                ->where('%n = %i', $this->left->getPrimaryKey(), $left_id)
+                ->where('%n = %i', $this->right->getPrimaryKey(),  $right_id)
                 ->fetchSingle() === 1;
     }
 
@@ -368,8 +368,8 @@ abstract class MNManager extends Manager
     {
         return $this->dibi
             ->delete($this->table)
-            ->where('[' . $this->left->getPrimaryKey() . '] = %i', $left_id)
-            ->where('[' . $this->right->getPrimaryKey() . '] = %i', $right_id)
+            ->where('%n = %i', $this->left->getPrimaryKey(), $left_id)
+            ->where('%n = %i', $this->right->getPrimaryKey(),  $right_id)
             ->execute();
     }
 

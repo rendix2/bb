@@ -47,51 +47,6 @@ class GroupPresenter extends Base\AdminPresenter
     }
 
     /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function forumsSuccess(Form $form, ArrayHash $values)
-    {
-        $post_add     = $form->getHttpData($form::DATA_TEXT, 'post_add[]');
-        $post_edit    = $form->getHttpData($form::DATA_TEXT, 'post_edit[]');
-        $post_delete  = $form->getHttpData($form::DATA_TEXT, 'post_delete[]');
-        $topic_add    = $form->getHttpData($form::DATA_TEXT, 'topic_add[]');
-        $topic_edit   = $form->getHttpData($form::DATA_TEXT, 'topic_edit[]');
-        $topic_delete = $form->getHttpData($form::DATA_TEXT, 'topic_delete[]');
-        $forum_id     = $form->getHttpData($form::DATA_TEXT, 'forum_id[]');
-        $topic_thank  = $form->getHttpData($form::DATA_TEXT, 'topic_thank[]');
-
-        /**
-         * @var int $count count
-         *
-         */
-        $count    = $this->forumsManager->getCount();
-        $group_id = $this->getParameter('id');
-
-        $groups = [];
-        $forums = [];
-
-        foreach ($this->forumsManager->getAllCached() as $forum) {
-            $forums[$forum->forum_id] = $forum->forum_id;
-            $groups[$forum->forum_id] = $group_id;
-        }
-
-        $data = [
-            'post_add'     => $this->map(array_pad($post_add, $count + 1, 0)),
-            'post_edit'    => $this->map(array_pad($post_edit, $count + 1, 0)),
-            'post_delete'  => $this->map(array_pad($post_delete, $count + 1, 0)),
-            'topic_add'    => $this->map(array_pad($topic_add, $count + 1, 0)),
-            'topic_edit'   => $this->map(array_pad($topic_edit, $count + 1, 0)),
-            'topic_delete' => $this->map(array_pad($topic_delete, $count + 1, 0)),
-            'topic_thank'  => $this->map(array_pad($topic_thank, $count + 1, 0)),
-            'forum_id'     => $forums,
-            'group_id'     => $groups
-        ];
-
-        $this->forums2groupsManager->addForums2group($group_id, $data);
-    }
-
-    /**
      * @param array $data
      *
      * @return array
@@ -104,7 +59,7 @@ class GroupPresenter extends Base\AdminPresenter
             $result[$value->forum_id] = false;
             
             foreach ($data as $value2) {
-                if ($value->forum_id === $value2) {
+                if ($value->forum_id === (int)$value2) {
                     $result[$value->forum_id] = true;
                 }
             }
@@ -178,4 +133,49 @@ class GroupPresenter extends Base\AdminPresenter
 
         return $form;
     }
+    
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function forumsSuccess(Form $form, ArrayHash $values)
+    {
+        $post_add     = $form->getHttpData($form::DATA_TEXT, 'post_add[]');
+        $post_edit    = $form->getHttpData($form::DATA_TEXT, 'post_edit[]');
+        $post_delete  = $form->getHttpData($form::DATA_TEXT, 'post_delete[]');
+        $topic_add    = $form->getHttpData($form::DATA_TEXT, 'topic_add[]');
+        $topic_edit   = $form->getHttpData($form::DATA_TEXT, 'topic_edit[]');
+        $topic_delete = $form->getHttpData($form::DATA_TEXT, 'topic_delete[]');
+        $forum_id     = $form->getHttpData($form::DATA_TEXT, 'forum_id[]');
+        $topic_thank  = $form->getHttpData($form::DATA_TEXT, 'topic_thank[]');
+        
+        /**
+         * @var int $count count
+         *
+         */
+        $count    = $this->forumsManager->getCount();
+        $group_id = $this->getParameter('id');
+
+        $groups = [];
+        $forums = [];
+
+        foreach ($this->forumsManager->getAllCached() as $forum) {
+            $forums[$forum->forum_id] = $forum->forum_id;
+            $groups[$forum->forum_id] = (int)$group_id;
+        }
+
+        $data = [
+            'post_add'     => $this->map(array_pad($post_add, $count + 1, 0)),
+            'post_edit'    => $this->map(array_pad($post_edit, $count + 1, 0)),
+            'post_delete'  => $this->map(array_pad($post_delete, $count + 1, 0)),
+            'topic_add'    => $this->map(array_pad($topic_add, $count + 1, 0)),
+            'topic_edit'   => $this->map(array_pad($topic_edit, $count + 1, 0)),
+            'topic_delete' => $this->map(array_pad($topic_delete, $count + 1, 0)),
+            'topic_thank'  => $this->map(array_pad($topic_thank, $count + 1, 0)),
+            'forum_id'     => $forums,
+            'group_id'     => $groups
+        ];
+
+        $this->forums2groupsManager->addForums2group($group_id, $data);
+    }    
 }

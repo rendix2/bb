@@ -65,7 +65,7 @@ abstract class ManagerPresenter extends BasePresenter
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
                 $this->sessionManager->deleteBySession($this->getSession()->getId());
             }
-            $this->redirect(':Forum:Login:default', ['backlink' => $this->storeRequest()]);
+            $this->redirect(':Forum:Login:default', ['loginForm-backlink' => $this->storeRequest()]);
         }
     }
 }

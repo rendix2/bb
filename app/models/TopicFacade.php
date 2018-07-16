@@ -150,7 +150,8 @@ class TopicFacade
         }
         // topics watches
 
-        $this->usersManager->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
+        $this->usersManager
+                ->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
 
         $posts = $this->postsManager
                 ->getByTopic($item_id)

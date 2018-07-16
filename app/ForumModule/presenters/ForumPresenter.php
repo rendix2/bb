@@ -4,7 +4,7 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Controls\PaginatorControl;
-use App\Controls\TopicsSetting;
+use App\Settings\TopicsSetting;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Models\TopicsManager;
@@ -41,6 +41,13 @@ final class ForumPresenter extends Base\ForumPresenter
 
     /**
      *
+     * @var \App\Models\ModeratorsManager $moderators
+     * @inject
+     */
+    public $moderators;
+
+    /**
+     *
      * @param ForumsManager $manager
      */
     public function __construct(ForumsManager $manager)
@@ -62,7 +69,7 @@ final class ForumPresenter extends Base\ForumPresenter
         $forum = $this->getManager()->getById($forum_id);
 
         if (!$forum) {
-            $this->error('Forum not exists.');
+            $this->error('Forum does not exist.');
         }
 
         if (!$forum->forum_active) {
@@ -96,14 +103,19 @@ final class ForumPresenter extends Base\ForumPresenter
             $topics = $topics->where('topic_id IN ( SELECT post_topic_id FROM posts WHERE MATCH(post_title, post_text) AGAINST (%s IN BOOLEAN MODE) AND post_forum_id = %i) OR MATCH(topic_name) AGAINST (%s IN BOOLEAN MODE)', $q, $forum_id, $q);                               
             $this['searchInForumForm']->setDefaults(['search_form' => $q]);
         }
+        
+        $moderators = $this->moderators->getAllJoinedByRight($forum_id);
+        
+        if (!$moderators) {
+            $this->flashMessage('No moderators in forum.', self::FLASH_MESSAGE_INFO);
+        }
 
         $this->template->logViews    = $this->topicSetting->canLogView();
         $this->template->forum       = $forum;
         $this->template->topics      = $topics->fetchAll();
-        $this->template->subForums   = $this->getManager()
-            ->getByParent($forum_id);
-        $this->template->parentForum = $this->getManager()
-            ->getParentForumByForumId($forum_id);
+        $this->template->subForums   = $this->getManager()->getByParent($forum_id);
+        $this->template->parentForum = $this->getManager()->getParentForumByForumId($forum_id);
+        $this->template->moderators  = $moderators;
     }
 
     /**

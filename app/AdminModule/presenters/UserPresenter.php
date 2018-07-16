@@ -5,7 +5,7 @@ namespace App\AdminModule\Presenters;
 use App\Authenticator;
 use App\Authorizator;
 use App\Controls\BootstrapForm;
-use App\Controls\ChangePasswordControl;
+use App\Forms\ChangePasswordForm;
 use App\Controls\DeleteAvatarControl;
 use App\Controls\GridFilter;
 use App\Models\ForumsManager;
@@ -15,6 +15,8 @@ use App\Models\ModeratorsManager;
 use App\Models\Users2ForumsManager;
 use App\Models\Users2GroupsManager;
 use App\Models\UsersManager;
+use App\Settings\Avatars;
+use App\Settings\Ranks;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -56,14 +58,14 @@ class UserPresenter extends Base\AdminPresenter
     public $users2Forums;
     
     /**
-     * @var \App\Controls\Avatars $avatar
+     * @var Avatars $avatar
      * @inject
      */
     public $avatar;
     
     /**
      *
-     * @var \App\Controls\Ranks $rank
+     * @var Ranks $rank
      * @inject
      */
     public $rank;

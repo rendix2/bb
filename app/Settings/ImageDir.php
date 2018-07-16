@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controls;
+namespace App\Settings;
 
 use Nette\Utils\Finder;
 use SplFileInfo;

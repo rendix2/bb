@@ -5,6 +5,7 @@ namespace App\AdminModule\Presenters;
 use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\RanksManager;
+use App\Settings\Ranks;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -22,7 +23,7 @@ class RankPresenter extends Base\AdminPresenter
     const N = -1;
     
     /**
-     * @var \App\Controls\Ranks $ranks
+     * @var Ranks $ranks
      * @inject
      */
     public $ranks;

@@ -8,7 +8,7 @@ parameters:
         password: ""
         host: localhost
         databaseName: bb
-        dsn: 'mysql:host=%database.host%;dbname=%database.databaseName%'
+        dsn: 'mysql:host=%database.host%;dbname=%database.databaseName%;charset=utf8'
     defaultLanguage: "czech"
     avatars:
         relativeDir: /avatars
@@ -146,40 +146,41 @@ services:
     Authorizator:
         class: App\Authorizator
     WwwDir:
-        class: App\Controls\WwwDir(%wwwDir%)
+        class: App\Settings\WwwDir(%wwwDir%)
     AppDir:
-        class: App\Controls\AppDir(%appDir%)
+        class: App\Settings\AppDir(%appDir%)
     Avatars:
-        class: App\Controls\Avatars(%avatars%)
+        class: App\Settings\Avatars(%avatars%)
     Ranks:
-        class: App\Controls\Ranks(%ranks%)
+        class: App\Settings\Ranks(%ranks%)
     TempDir:
-        class: App\Controls\TempDir(%tempDir%)
+        class: App\Settings\TempDir(%tempDir%)
     CacheDir:
-        class: App\Controls\CacheDir(%tempDir%/cache)
+        class: App\Settings\CacheDir(%tempDir%/cache)
     TopicSetting:
-        class: App\Controls\TopicsSetting(%topics%)
+        class: App\Settings\TopicsSetting(%topics%)
     TranslatorFactory:
         class: App\Services\TranslatorFactory
     PremissionFactory:
         class: App\Authorization\PermissionFactory
     - App\Authorization\Authorizator(@App\Authorization\PermissionFactory::create())
     DefaultLanguage:
-        class: App\Controls\DefaultLanguage(%defaultLanguage%)
+        class: App\Settings\DefaultLanguage(%defaultLanguage%)
     Email:
-        class: App\Controls\Email(%mail.from%)
+        class: App\Settings\Email(%mail.from%)
     BBMailer:
         class: App\Controls\BBMailer
     Users:
-        class: App\Controls\Users(%users%)
+        class: App\Settings\Users(%users%)
     ChangePasswordFactory:
         class: App\Services\ChangePasswordFactory
     DeleteAvatarFactory:
         class: App\Services\DeleteAvatarFactory
+    UserLoginFormFactory: App\Services\UserLoginFormFactory
     MysqlDumper:
         class: Ifsnop\Mysqldump\Mysqldump(%database.dsn%, %database.username%, %database.password%)
     DatabaseBackupDir:
-        class: App\Config\DatabaseBackupDir(%databaseBackupDir%)
+        class: App\Settings\DatabaseBackupDir(%databaseBackupDir%)
     PostFacade:
         class: App\Models\PostFacade
     TopicFacade:
@@ -200,7 +201,7 @@ extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22
 
 dibi:
-    driver: PDO
+    driver: PDO  
     port: 5433
     database: %database.databaseName%
     username: %database.username%

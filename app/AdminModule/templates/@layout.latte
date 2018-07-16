@@ -97,7 +97,7 @@
                         *}
                         
                         
-                    </li>                    
+                    </li>  
                 {else}
                     <li class="nav-item">
                         <a class="nav-link" href="{link :Admin:Login:default}">Login</a>
@@ -107,6 +107,9 @@
 
                 <ul class="navbar-nav navbar-right">
                     <li class="nav-item">
+                        <a class="nav-link" href="{link logout}">Logout</a>
+                    </li>                     
+                    <li class="nav-item">
                         <a class="nav-link" href="{link :Forum:Index:default}">{_menu_forum}</a>
                     </li>
                 </ul>            
@@ -115,7 +118,7 @@
             
         <div class="col-sm-4 main">
         {foreach $flashes as $flash}
-            <div class="alert alert-{$flash->type}">{$flash->message}</div>
+            <div class="alert alert-{$flash->type}">{_$flash->message}</div>
         {/foreach}
         </div>
 

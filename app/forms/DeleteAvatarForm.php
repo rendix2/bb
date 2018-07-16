@@ -1,22 +1,24 @@
 <?php
 
-namespace App\Controls;
+namespace App\Forms;
 
+use App\Controls\BootstrapForm;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
+use App\Settings\Avatars;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
 use Nette\Security\User;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\FileSystem;
+
 
 /**
  * Description of DeleteAvatarControl
  *
  * @author rendi
  */
-class DeleteAvatarControl extends Control
+class DeleteAvatarForm extends Control
 {
 
     /**
@@ -62,7 +64,10 @@ class DeleteAvatarControl extends Control
      */
     public function render()
     {
-        $this->template->setFile(__DIR__ . '/templates/deleteAvatar/deleteAvatar.latte');
+        $sep = DIRECTORY_SEPARATOR;
+        
+        $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'deleteAvatar' . $sep . 'deleteAvatar.latte');
+            
         $this->template->render();
     }
 

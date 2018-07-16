@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Config;
+namespace App\Settings;
 
 /**
  * Description of DatabaseBackupDir
@@ -16,7 +16,7 @@ class DatabaseBackupDir
     
     public function __construct($databaseBackupDir)
     {
-        $this->databaseBackupDir = $databaseBackupDir;;
+        $this->databaseBackupDir = $databaseBackupDir;
     }
     
     public function getDatabaseBackupDir()

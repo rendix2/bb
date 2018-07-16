@@ -19,7 +19,7 @@ class TopicsManager extends Crud\CrudManager
     public function getLastTopic()
     {
         return $this->dibi
-                ->query('SELECT * FROM [' . $this->getTable() . '] WHERE [topic_id] = (SELECT MAX(topic_id) FROM [' . $this->getTable() . '])')
+                ->query('SELECT * FROM %n WHERE [topic_id] = (SELECT MAX(topic_id) FROM %n)', $this->getTable(), $this->getTable())
                 ->fetch();
     }
 
@@ -31,7 +31,7 @@ class TopicsManager extends Crud\CrudManager
     public function getLastTopicByForum($forum_id)
     {
         return $this->dibi
-                ->query('SELECT * FROM [' . $this->getTable(). '] WHERE [topic_id] = ( SELECT MAX(topic_id) FROM [' . $this->getTable() . '] WHERE [topic_forum_id] = %i )', $forum_id)
+                ->query('SELECT * FROM %n WHERE [topic_id] = (SELECT MAX(topic_id) FROM %n WHERE [topic_forum_id] = %i)', $this->getTable(), $this->getTable(), $forum_id)
                 ->fetch();
     }
 

@@ -177,9 +177,10 @@ class PaginatorControl extends Control
      */
     final public function render()
     {
-        $template = $this->template;
+        $template = $this->template;        
+        $sep      = DIRECTORY_SEPARATOR;
 
-        $template->setFile(__DIR__ . '/templates/paginator/paginator.latte');
+        $template->setFile(__DIR__ . $sep . 'templates' . $sep . 'paginator' . $sep . 'paginator.latte');
 
         $presenter = $this->getPresenter();
         $params    = $presenter->getParameters();

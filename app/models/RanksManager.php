@@ -18,7 +18,7 @@ class RanksManager extends Crud\CrudManager
     const NOT_UPLOADED = -5;
     
     /**
-     * @var \App\Controls\Ranks $ranks
+     * @var \App\Settings\Ranks $ranks
      * @inject
      */
     public $ranks;

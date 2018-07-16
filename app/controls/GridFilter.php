@@ -263,7 +263,9 @@ class GridFilter extends Control
      */
     public function render()
     {
-        $template = $this->template->setFile(__DIR__ . '/templates/gridFilter/gridFilter.latte');
+        $sep = DIRECTORY_SEPARATOR;
+        
+        $template = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'gridFilter' . $sep . 'gridFilter.latte');
         $template->setTranslator($this->translator);
 
         foreach ($this->type as $column => $value) {            

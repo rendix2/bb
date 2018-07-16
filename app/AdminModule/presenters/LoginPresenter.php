@@ -32,8 +32,16 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter
      * @var SessionsManager $sessionManager
      * @inject
      */
-    public $sessionManager;    
+    public $sessionManager; 
     
+    /**
+     *
+     * @var \App\Services\UserLoginFormFactory $userLoginFormFactory
+     * @inject
+     */
+    public $userLoginFormFactory;
+
+
     /**
      * 
      * @param type $element
@@ -113,5 +121,10 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter
                 self::FLASH_MESSAGE_DANGER
             );
         }
+    }
+    
+    protected function createComponentLoginForm() 
+    {
+        return $this->userLoginFormFactory->create();
     }
 }

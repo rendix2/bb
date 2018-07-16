@@ -86,22 +86,22 @@
                             <div class="col-sm-12 mt-1">
                                 <div class="row">
                                     <div class="card mr-1">
-                                        <div class="card-header">Příspěvky</div>
+                                        <div class="card-header">{_Posts}</div>
                                         <div class="card-block p-1">{$post->user_post_count}</div>
                                     </div>
 
                                     <div class="card mr-1">
-                                        <div class="card-header">Témata</div>
+                                        <div class="card-header">{_Topics}</div>
                                         <div class="card-block p-1">{$post->user_topic_count}</div>
                                     </div>
 
                                     <div class="card mr-1">
-                                        <div class="card-header">Poděkování</div>
+                                        <div class="card-header">{_Thanks}</div>
                                         <div class="card-block p-1">{$post->user_thank_count}</div>
                                     </div>
 
                                     <div class="card mr-1">
-                                        <div class="card-header">Hodnost</div>
+                                        <div class="card-header">{_Rank}</div>
                                         <div class="card-block p-1">
                                             {if $rankUser}
                                                 {$rankUser->rank_name}
@@ -123,19 +123,19 @@
                                 </div>
                                 <div class="col-sm-3">
                                     {if $topic->topic_locked}
-                                        <span class="badge badge-secondary">Topic Locked</span>
+                                        <span class="badge badge-secondary">{_topic_locked}/span>
                                     {elseif $post->post_locked}
-                                        <span class="badge badge-secondary">Post Loced</span>
+                                        <span class="badge badge-secondary">{_post_locked}</span>
                                     {else}
-                                        <a href="{link Post:editPost, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id}">Edit</a>
+                                        <a href="{link Post:editPost, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id}" title="{_post_edit}"><i class="far fa-edit"></i></a>
                                     {/if}
-                                    <a href="{link Post:reportPost, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id, $presenter->getParameter('page')}">{_post_report}</a>
+                                    <a href="{link Post:reportPost, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id, $presenter->getParameter('page')}" title="{_post_report}"><i class="fas fa-exclamation"></i></a>
 
                                     {if $user->isAllowed($presenter->getParameter('forum_id'), 'post_delete')}
-                                        <a href="{link Post:deletePost, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id, $presenter->getParameter('page')}">{_post_delete}</a>
+                                        <a href="{link Post:deletePost, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id, $presenter->getParameter('page')}" title="{_post_delete}"><i class="fas fa-trash-alt"></i></a>
                                     {/if}
                                     
-                                    <a href="{plink :Moderator:Post:edit $post->post_id}">{_moderate}</a>
+                                    <a href="{plink :Moderator:Post:edit $post->post_id}" title="{_moderate}"><i class="fas fa-info"></i></a>
                                 </div>
                             </div>
 

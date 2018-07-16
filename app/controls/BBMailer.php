@@ -3,7 +3,7 @@
 namespace App\Controls;
 
 use App\Models\MailsManager;
-use App\Controls\Email;
+use App\Settings\Email;
 use Latte\Engine;
 use Nette\Mail\IMailer;
 

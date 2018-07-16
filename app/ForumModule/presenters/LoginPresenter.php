@@ -2,13 +2,9 @@
 
 namespace App\ForumModule\Presenters;
 
-use App\Authenticator;
-use App\Controls\BootstrapForm;
-use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
-use Nette\Application\UI\Form;
-use Nette\Security\AuthenticationException;
-use Nette\Utils\ArrayHash;
+use App\Services\UserLoginFormFactory;
+use App\Forms\UserLoginForm;
 
 /**
  * Description of LoginPresenter
@@ -18,33 +14,17 @@ use Nette\Utils\ArrayHash;
 class LoginPresenter extends BasePresenter
 {
     /**
-     * @persistent
      * @var string $backlink
+     * @persistent
      */
     public $backlink = '';
     
     /**
-     * @var Authenticator $authenticator
-     */
-    private $authenticator;
-    
-    /**
-     * @var SessionsManager $sessionManager
+     *
+     * @var UserLoginFormFactory $userLoginForm
      * @inject
      */
-    public $sessionManager;
-
-    /**
-     * LoginPresenter constructor.
-     *
-     * @param Authenticator $authenticator
-     */
-    public function __construct(Authenticator $authenticator)
-    {
-        parent::__construct();
-
-        $this->authenticator = $authenticator;
-    }
+    public $userLginForm;
     
     /**
      * 
@@ -67,61 +47,13 @@ class LoginPresenter extends BasePresenter
 
         $this->template->setTranslator($this->translatorFactory->forumTranslatorFactory());
     }
-
+    
     /**
-     * @param Form      $form
-     * @param ArrayHash $values
+     * 
+     * @return UserLoginForm
      */
-    public function loginForumSuccess(Form $form, ArrayHash $values)
+    public function createComponentLoginForm()
     {
-        try {
-            $user = $this->getUser();
-            $user->setAuthenticator($this->authenticator);
-
-            $user->login(
-                $values->user_name,
-                $values->user_password
-            );
-            $this->sessionManager->add(
-                ArrayHash::from(
-                    [
-                        'session_key'     => $this->getSession()->getId(),
-                        'session_user_id' => $this->getUser()->getId(),
-                        'session_from'    => time()
-                    ]
-                )
-            );
-            $user->setExpiration('1 hour');
-            $this->flashMessage(
-                'Successfully logged in.',
-                self::FLASH_MESSAGE_SUCCESS
-            );
-            $this->restoreRequest($this->backlink);
-            $this->redirect('Index:default');
-        } catch (AuthenticationException $e) {
-            $this->flashMessage(
-                $e->getMessage(),
-                self::FLASH_MESSAGE_DANGER
-            );
-        }
-    }
-
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentLoginForm()
-    {
-        $form = $this->getBootstrapForm();
-        $form->setTranslator($this->translatorFactory->forumTranslatorFactory());
-
-        $form->addText('user_name', 'Login:');
-        $form->addPassword('user_password', 'Password:');
-        $form->addSubmit('send');
-        $form->onSuccess[] = [
-            $this,
-            'loginForumSuccess'
-        ];
-
-        return $form;
+        return $this->userLginForm->create(); 
     }
 }

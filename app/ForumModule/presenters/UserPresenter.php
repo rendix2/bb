@@ -14,6 +14,9 @@ use App\Models\ThanksManager;
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
 use App\Models\UsersManager;
+use App\Settings\Avatars;
+use App\Settings\Ranks;
+
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -62,13 +65,13 @@ class UserPresenter extends Base\ForumPresenter
     public $thanksManager;
     
     /**
-     * @var \App\Controls\Avatars $avatar
+     * @var Avatars $avatar
      * @inject
      */
     public $avatar;
     
     /**
-     * @var \App\Controls\Ranks $rank
+     * @var Ranks $rank
      * @inject
      */
     public $rank;
@@ -159,7 +162,7 @@ class UserPresenter extends Base\ForumPresenter
         $this->sessionManager->deleteBySession($this->getSession()->getId());
         $this->getUser()->logout(true);
 
-        $this->flashMessage('Successfully logged out. ', self::FLASH_MESSAGE_SUCCESS);
+        $this->flashMessage('Successfully logged out.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('Index:default');
     }
 
@@ -219,7 +222,7 @@ class UserPresenter extends Base\ForumPresenter
         $this->addComponent($pag, 'paginator');
 
         if (!$pag->getCount()) {
-            $this->flashMessage('User have no posts', self::FLASH_MESSAGE_WARNING);
+            $this->flashMessage('User have no posts.', self::FLASH_MESSAGE_WARNING);
         }
 
         $this->template->posts = $posts->fetchAll();
@@ -582,7 +585,7 @@ class UserPresenter extends Base\ForumPresenter
         }
 
         if ($result) {
-            $this->flashMessage('User saved.', self::FLASH_MESSAGE_SUCCESS);
+            $this->flashMessage('User was saved.', self::FLASH_MESSAGE_SUCCESS);
         } else {
             $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
         }

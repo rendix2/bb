@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Controls\Avatars;
+use App\Settings\Avatars;
 use Dibi\Row;
 use Nette\Http\FileUpload;
 use Nette\InvalidArgumentException;
@@ -103,7 +103,7 @@ class UsersManager extends Crud\CrudManager
     public function getLastUser()
     {
         return $this->dibi
-            ->query('SELECT * FROM [' . $this->getTable() . '] WHERE [user_id] = (SELECT MAX(user_id) FROM [' . $this->getTable() . '])')
+            ->query('SELECT * FROM %n WHERE [user_id] = (SELECT MAX(user_id) FROM %n)', $this->getTable(), $this->getTable())
                 ->fetch();
     }
 

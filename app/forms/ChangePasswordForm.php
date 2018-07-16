@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Controls;
+namespace App\Forms;
 
+use App\Controls\BootstrapForm;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
-use App\Controls\Users;
+use App\Settings\Users;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
@@ -17,7 +18,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendi
  */
-class ChangePasswordControl extends Control
+class ChangePasswordForm extends Control
 {
 
     /**
@@ -66,7 +67,10 @@ class ChangePasswordControl extends Control
      */
     public function render()
     {
-        $this->template->setFile(__DIR__ . '/templates/changePassword/changePassword.latte');
+        $sep = DIRECTORY_SEPARATOR;
+        
+        $this->template->setFile(__DIR__ . $sep . 'templates'. $sep .'changePassword'.$sep.'changePassword.latte');
+            
         $this->template->render();
     }  
     
