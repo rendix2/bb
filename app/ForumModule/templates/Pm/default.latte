@@ -45,7 +45,7 @@
                         {if $topic->topic_locked}<span class="badge badge-secondary">Locked</span>{/if}
                     </td>
                     <td>
-                        <a href="{link Post:all, $presenter->getParameter('forum_id'), $topic->topic_id}">{$topic->topic_name}</a>
+                        <a href="{link Topic:default, $presenter->getParameter('forum_id'), $topic->topic_id}">{$topic->topic_name}</a>
                     </td>
                     <td>
                         <a href="{link User:profile, $topic->user_id}">{$topic->user_name}</a>

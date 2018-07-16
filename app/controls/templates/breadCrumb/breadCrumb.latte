@@ -1,0 +1,18 @@
+{block content}
+<ol class="breadcrumb">
+    {foreach $breadCrumb as $item}
+    <li class="breadcrumb-item">
+        
+        {if $iterator->last}
+        {_$item['text']}
+        {else}
+            {if isset($item['params'])}
+            <a href="{plink $item['link'], (expand) $item['params']}">{_$item['text']}</a>
+            {else}
+            <a href="{plink $item['link']}">{_$item['text']}</a>
+            {/if}
+        {/if}
+    </li>
+    {/foreach}
+</ol>
+{/block}

@@ -27,29 +27,12 @@ use Nette\Utils\ArrayHash;
  */
 class PostPresenter extends Base\ForumPresenter
 {
-    /**
-     * @var ForumsManager $forumManager
-     * @inject
-     */
-    public $forumManager;
-
-    /**
-     * @var ThanksManager $thanksManager
-     * @inject
-     */
-    public $thanksManager;
 
     /**
      * @var TopicsManager $topicsManager
      * @inject
      */
     public $topicsManager;
-
-    /**
-     * @var RanksManager $rankManager
-     * @inject
-     */
-    public $rankManager;
 
     /**
      * @var TopicWatchManager $topicWatchManager
@@ -62,19 +45,6 @@ class PostPresenter extends Base\ForumPresenter
      * @inject
      */
     public $reportManager;
-
-    /**
-     * @var TopicsSetting $topicSetting
-     * @inject
-     */
-    public $topicSetting;
-    
-    /**
-     *
-     * @var Avatars $avatar
-     * @inject
-     */
-    public $avatar;
     
     /**
      *
@@ -89,41 +59,14 @@ class PostPresenter extends Base\ForumPresenter
      * @inject
      */
     public $postFacade;
-
-    /**
-     * 
-     * @var \App\Models\ThanksFacade $thanksFacade
-     * @inject
-     */
-    public $thanksFacade;
     
-    /**
-     * @var \App\Models\TopicFacade $topicFacade
-     * @inject
-     */
-    public $topicFacade;
-
     /**
      * @param PostsManager $manager
      */
     public function __construct(PostsManager $manager)
     {
         parent::__construct($manager);
-    }
-    
-    /**
-     * @return BootstrapForm
-     */
-    private function postForm()
-    {
-        $form = $this->getBootstrapForm();
-
-        $form->addText('post_title', 'Title')->setRequired(true);
-        $form->addTextArea('post_text', 'Text', 0, 15)->setRequired(true);
-        $form->addSubmit('send', 'Send');
-
-        return $form;
-    }
+    }   
 
     /**
      * @param int $forum_id
@@ -131,7 +74,7 @@ class PostPresenter extends Base\ForumPresenter
      * @param int $post_id
      * @param int $page
      */
-    public function actionDeletePost($forum_id, $topic_id, $post_id, $page)
+    public function actionDelete($forum_id, $topic_id, $post_id, $page)
     {
         if (!$this->getUser()
             ->isAllowed(
@@ -148,146 +91,11 @@ class PostPresenter extends Base\ForumPresenter
 
         if ($res === 1) {
             $this->flashMessage('Post was deleted.', self::FLASH_MESSAGE_SUCCESS);
-            $this->redirect('Post:all', $forum_id, $topic_id, $page);
+            $this->redirect('Topic:default', $forum_id, $topic_id, $page);
         } elseif ($res === 2) {
             $this->flashMessage('Topic was deleted.', self::FLASH_MESSAGE_SUCCESS);
             $this->redirect('Forum:default', $forum_id, $page);
         }        
-    }
-
-    /**
-     * @param int $forum_id
-     * @param int $topic_id
-     * @param int $page
-     */
-    public function actionDeleteTopic($forum_id, $topic_id, $page)
-    {
-        if (!$this->getUser()->isAllowed($forum_id, 'topic_delete')) {
-            $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
-        }
-
-        $res = $this->topicFacade->delete($topic_id);
-        
-        if ($res) {
-            $this->flashMessage('Topic was deleted.', self::FLASH_MESSAGE_SUCCESS);
-        }
-        
-        $this->redirect('Forum:default', $forum_id, $page);
-    }
-
-    /**
-     * @param int $forum_id
-     * @param int $topic_id
-     * @param int $page
-     */
-    public function actionStartWatchTopic($forum_id, $topic_id, $page)
-    {
-        $user_id = $this->getUser()->getId();
-        $res     = $this->topicWatchManager->addByLeft($topic_id, [$user_id]);
-
-        if ($res) {
-            $this->flashMessage('You have start watching topic.', self::FLASH_MESSAGE_SUCCESS);
-        }
-
-        $this->redirect('Post:all', $forum_id, $topic_id, $page);
-    }
-
-    /**
-     * @param int $forum_id
-     * @param int $topic_id
-     * @param int $page
-     */
-    public function actionStopWatchTopic($forum_id, $topic_id, $page)
-    {
-        $user_id = $this->getUser()->getId();
-        $res = $this->topicWatchManager->fullDelete($topic_id, $user_id);
-
-        if ($res) {
-            $this->flashMessage('You have stop watching topic.', self::FLASH_MESSAGE_SUCCESS);
-        }
-
-        $this->redirect('Post:all', $forum_id, $topic_id, $page);
-    }
-
-    /**
-     * @param int $forum_id
-     * @param int $topic_id
-     */
-    public function actionThank($forum_id, $topic_id)
-    {
-        if (!$this->getUser()->isAllowed($forum_id, 'topic_thank')) {
-            $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
-        }
-
-        $user_id = $this->getUser()->getId();
-
-        $data = [
-            'thank_forum_id' => $forum_id,
-            'thank_topic_id' => $topic_id,
-            'thank_user_id'  => $user_id,
-            'thank_time'     => time()
-        ];
-
-        $res = $this->thanksFacade->add(ArrayHash::from($data));
-        
-        if ($res) {
-            $this->flashMessage('Your thank to this topic.', self::FLASH_MESSAGE_SUCCESS);
-        }
-        
-        $this->redirect('Post:all', $forum_id, $topic_id);
-    }
-
-    /**
-     * @param int $forum_id
-     * @param int $topic_id
-     * @param int $page
-     */
-    public function renderAll($forum_id, $topic_id, $page = 1)
-    {
-        if (!is_numeric($forum_id)) {
-            $this->error('Forum parameter is not numeric.');
-        }
-
-        $forum = $this->forumManager->getById($forum_id);
-
-        if (!$forum) {
-            $this->error('Forum does not exist.');
-        }
-
-        if (!is_numeric($topic_id)) {
-            $this->error('Topic parameter is not numeric.');
-        }
-
-        $topic = $this->topicsManager->getById($topic_id);
-
-        if (!$topic) {
-            $this->error('Topic does not exist.');
-        }
-
-        $data = $this->getManager()->getByTopic($topic_id);
-
-        if ($this->topicSetting->canLogView()) {
-            $this->topicsManager->update($topic_id, ArrayHash::from(['topic_view_count%sql' => 'topic_view_count + 1']));
-        }
-
-        $pagination = new PaginatorControl($data, 10, 5, $page);
-        $this->addComponent($pagination, 'paginator');
-
-        if (!$pagination->getCount()) {
-            $this->flashMessage('No posts.', self::FLASH_MESSAGE_WARNING);
-            $this->redirect('Forum:default', $forum_id);
-        }
-
-        $user_id = $this->getUser()->getId();
-
-        $this->template->avatarsDir = $this->avatar->getTemplateDir();        
-        $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $user_id);
-        $this->template->ranks      = $this->rankManager->getAllCached();
-        $this->template->posts      = $data->orderBy('post_id', dibi::ASC)->fetchAll();
-        $this->template->canThank   = $this->thanksManager->canUserThank($forum_id, $topic_id, $user_id);
-        $this->template->thanks     = $this->thanksManager->getThanksWithUserInTopic($topic_id);
-        $this->template->forum      = $forum;
-        $this->template->topic      = $topic;
     }
 
     /**
@@ -296,7 +104,7 @@ class PostPresenter extends Base\ForumPresenter
      * @param int $topic_id
      * @param int $post_id
      */
-    public function renderEditPost($forum_id, $topic_id, $post_id = null)
+    public function renderEdit($forum_id, $topic_id, $post_id = null)
     {
         if ($post_id === null) {
             if (!$this->getUser()->isAllowed($forum_id, 'post_add')) {
@@ -332,131 +140,36 @@ class PostPresenter extends Base\ForumPresenter
     }
 
     /**
-     *
-     * @param int $forum_id
-     * @param int $topic_id
-     */
-    public function renderEditTopic($forum_id, $topic_id = null)
-    {
-        if ($topic_id === null) {
-            if (!$this->getUser()->isAllowed($forum_id, 'topic_add')) {
-                $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
-            }
-        } else {
-            if (!$this->getUser()->isAllowed($forum_id, 'topic_edit')) {
-                $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
-            }
-        }
-
-        $topic = [];
-
-        if ($topic_id) {
-            $topic = $this->topicsManager->getById($topic_id);
-        }
-
-        $this['editTopicForm']->setDefaults($topic);
-    }
-
-    /**
      * @param int $forum_id
      * @param int $topic_id
      * @param int $post_id
      * @param int $page
      */
-    public function renderReportPost($forum_id, $topic_id, $post_id, $page)
+    public function renderReport($forum_id, $topic_id, $post_id, $page)
     {
-    }
-
-    /**
-     * @param int $forum_id
-     * @param int $topic_id
-     * @param int $page
-     */
-    public function renderReportTopic($forum_id, $topic_id, $page)
-    {
-    }
-
-    /**
-     * @param int $topic_id
-     */
-    public function renderWatchers($topic_id)
-    {
-        $watchers = $this->topicWatchManager->getAllJoinedByLeft($topic_id);
-        
-        if (!$watchers) {
-            $this->flashMessage('No watchers.', self::FLASH_MESSAGE_WARNING);
-        }
-        
-        $this->template->watchers = $watchers;
     }
 
     /**
      * @return BootstrapForm
      */
-    protected function createComponentEditPostForm()
+    protected function createComponentEditForm()
     {
-        $form = $this->postForm();
+        $form = $this->getBootstrapForm();
+
+        $form->addText('post_title', 'Title')->setRequired(true);
+        $form->addTextArea('post_text', 'Text', 0, 15)->setRequired(true);
+        $form->addSubmit('send', 'Send');
 
         $form->onSuccess[] = [$this, 'editPostFormSuccess'];
 
         return $form;
-    }
-
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentEditTopicForm()
-    {
-        $form = $this->postForm();
-
-        $form->onSuccess[] = [$this,'editTopicFormSuccess'];
-
-        return $form;
-    }
-
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentFastReply()
-    {
-        $form = $this->getBootstrapForm();
-
-        $form->addGroup('Fast reply');
-        $form->addTextArea('post_text');
-        $form->addSubmit('send', 'Send');
-
-        $form->onSuccess[] = [$this, 'fastReplySuccess'];
-
-        return $form;
-    }
-
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentReportForm()
-    {
-        $form = $this->getBootstrapForm();
-
-        $form->addTextArea('report_text', 'Report text:');
-        $form->addSubmit('send', 'Send');
-        $form->onSuccess[] = [$this, 'reportFormSuccess'];
-
-        return $form;
-    }
-    
-    /**
-     * @return JumpToForumControl
-     */
-    public function createComponentJumpToForum()
-    {
-        return new JumpToForumControl($this->forumManager);
-    }    
+    }      
     
     /**
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function editPostFormSuccess(Form $form, ArrayHash $values)
+    public function editFormSuccess(Form $form, ArrayHash $values)
     {
         $forum_id = $this->getParameter('forum_id');
         $post_id  = $this->getParameter('post_id');
@@ -504,57 +217,23 @@ class PostPresenter extends Base\ForumPresenter
             $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
         }
 
-        $this->redirect('Post:all', $forum_id, $topic_id);
-    }
+        $this->redirect('Topic:default', $forum_id, $topic_id);
+    }   
 
     /**
-     * @param Form      $form
-     * @param ArrayHash $values
+     * @return BootstrapForm
      */
-    public function editTopicFormSuccess(Form $form, ArrayHash $values)
+    protected function createComponentReportForm()
     {
-        $forum_id = $this->getParameter('forum_id');
-        $topic_id = $this->getParameter('topic_id');
-        $user_id  = $this->getUser()->getId();
+        $form = $this->getBootstrapForm();
 
-        $values->post_add_time = time();
-        $values->post_user_id  = $user_id;
-        $values->post_forum_id = $forum_id;
-        $values->post_add_user_ip = $this->getHttpRequest()->getRemoteAddress();
+        $form->addTextArea('report_text', 'Report text:');
+        $form->addSubmit('send', 'Send');
+        $form->onSuccess[] = [$this, 'reportFormSuccess'];
 
-        $topic_id = $this->topicFacade->add($values);
-
-        if ($topic_id) {
-            $this->flashMessage('Topic was saved.', self::FLASH_MESSAGE_SUCCESS);
-        }
-        
-        $this->redirect('Post:all', $forum_id, $topic_id);
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function fastReplySuccess(Form $form, ArrayHash $values)
-    {
-        $forum_id = $this->getParameter('forum_id');
-        $topic_id = $this->getParameter('topic_id');
-        $page     = $this->getParameter('page');
-
-        $values->post_forum_id = $forum_id;
-        $values->post_topic_id = $topic_id;
-        $values->post_user_id  = $this->getUser()->getId();
-
-        $res = $this->postFacade->add($values);
-
-        if ($res) {
-            $this->flashMessage('Post was added.', self::FLASH_MESSAGE_SUCCESS);
-        }
-
-        $this->redirect('Post:all', $forum_id, $topic_id, $page);
-    }
+        return $form;
+    }    
     
-
     /**
      * @param Form      $form
      * @param ArrayHash $values
@@ -583,6 +262,6 @@ class PostPresenter extends Base\ForumPresenter
             }
         }
 
-        $this->redirect('Post:all', $forum_id, $topic_id, $page);
+        $this->redirect('Topic:default', $forum_id, $topic_id, $page);
     }    
 }

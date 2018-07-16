@@ -62,7 +62,7 @@
                     <td>{$totalUsers}</td>
                     <td>
                         {if $lastTopic}
-                            <a href="{link Post:all, $lastTopic->topic_forum_id, $lastTopic->topic_id}" title="Přidáno: {$lastTopic->topic_add_time|date:'%d.%m.%Y %H:%M:%S'}">{$lastTopic->topic_name}</a>
+                            <a href="{link Topic:default, $lastTopic->topic_forum_id, $lastTopic->topic_id}" title="Přidáno: {$lastTopic->topic_add_time|date:'%d.%m.%Y %H:%M:%S'}">{$lastTopic->topic_name}</a>
                         {else}None
                         {/if}
                     </td>

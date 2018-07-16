@@ -33,7 +33,7 @@
                 {foreach $watches as $topic}
                     <tr>
                         <td>
-                            <a href="{link Post:all, $topic->topic_forum_id, $topic->topic_id}">{$topic->topic_id}</a>
+                            <a href="{link Topic:default, $topic->topic_forum_id, $topic->topic_id}">{$topic->topic_id}</a>
                         </td>
                         <td>{$topic->topic_name}</td>
                     </tr>

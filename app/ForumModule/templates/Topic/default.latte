@@ -8,7 +8,7 @@
         <div class="float-right">
             {if $user->isAllowed($presenter->getParameter('forum_id'), 'post_add') && !$topic->topic_locked }
                 <a class="btn btn-primary"
-                   href="{link Post:editPost $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">
+                   href="{link Post:edit $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     {_post_add}
                 </a>
@@ -16,7 +16,7 @@
 
             {if $user->isAllowed($presenter->getParameter('forum_id'), 'topic_thank') && $canThank}
                 <a class="btn btn-primary"
-                   href="{link Post:thank $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">
+                   href="{link Topic:thank $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     {_topic_thank}
                 </a>
@@ -40,17 +40,8 @@
 
     <div class="col-sm-12 main">
         <div class="float-left">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{link Index:default}">{_menu_index}</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{link Forum:default $presenter->getParameter('forum_id')}">{_menu_forum}</a>
-                </li>
-                <li class="breadcrumb-item">{_menu_topic}</li>
-            </ol>
-        </div>
-
+            {control breadCrumbAll}
+        </div>                           
         <div class="float-right">
             {control paginator}
         </div>
@@ -117,25 +108,35 @@
                     <div class="card h-100">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-sm-5"><h2>{$post->post_title}</h2></div>
+                                <div class="col-sm-5">
+                                    <h2>{$post->post_title}</h2>
+                                </div>
                                 <div class="col-sm-4">
                                     {$post->post_add_time|date:'%d.%m.%Y %H:%M:%S'}
                                 </div>
                                 <div class="col-sm-3">
                                     {if $topic->topic_locked}
-                                        <span class="badge badge-secondary">{_topic_locked}/span>
+                                        <span class="badge badge-secondary">{_topic_locked}</span>
                                     {elseif $post->post_locked}
                                         <span class="badge badge-secondary">{_post_locked}</span>
                                     {else}
-                                        <a href="{link Post:editPost, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id}" title="{_post_edit}"><i class="far fa-edit"></i></a>
+                                        <a href="{link Post:edit, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id}" title="{_post_edit}">
+                                            <i class="far fa-edit"></i>
+                                        </a>
                                     {/if}
-                                    <a href="{link Post:reportPost, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id, $presenter->getParameter('page')}" title="{_post_report}"><i class="fas fa-exclamation"></i></a>
+                                    <a href="{link Post:report, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id, $presenter->getParameter('page')}" title="{_post_report}">
+                                        <i class="fas fa-exclamation"></i>
+                                    </a>
 
                                     {if $user->isAllowed($presenter->getParameter('forum_id'), 'post_delete')}
-                                        <a href="{link Post:deletePost, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id, $presenter->getParameter('page')}" title="{_post_delete}"><i class="fas fa-trash-alt"></i></a>
+                                        <a href="{link Post:delete, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id, $presenter->getParameter('page')}" title="{_post_delete}">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
                                     {/if}
                                     
-                                    <a href="{plink :Moderator:Post:edit $post->post_id}" title="{_moderate}"><i class="fas fa-info"></i></a>
+                                    <a href="{plink :Moderator:Post:edit $post->post_id}" title="{_post_moderate}">
+                                        <i class="fas fa-info"></i>
+                                    </a>
                                 </div>
                             </div>
 
@@ -163,17 +164,8 @@
 
     <div class="col-sm-12">
         <div class="float-left">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{link Index:default}">{_menu_index}</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{link Forum:default $presenter->getParameter('forum_id')}">{_menu_forum}</a>
-                </li>
-                <li class="breadcrumb-item">{_menu_topic}</li>
-            </ol>
+            {control breadCrumbAll}
         </div>
-
         <div class="float-right">
             {control paginator}
         </div>
@@ -189,12 +181,12 @@
     <div class="col-sm-12">
         <div class="float-right">
             {if $topicWatch}
-                <a href="{link Post:stopWatchTopic $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $presenter->getParameter('page')}">{_topic_stop_watch}</a>
+                <a href="{link Topic:stopWatch $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $presenter->getParameter('page')}">{_topic_stop_watch}</a>
             {else}
-                <a href="{link Post:startWatchTopic $presenter->getParameter('forum_id'),$presenter->getParameter('topic_id'), $presenter->getParameter('page')}">{_topic_start_watch}</a>
+                <a href="{link Topic:startWatch $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $presenter->getParameter('page')}">{_topic_start_watch}</a>
             {/if}
 
-            <a href="{link Post:watchers, $presenter->getParameter('topic_id')}">{_topic_wacthers}</a>
+            <a href="{link Topic:watchers, $presenter->getParameter('topic_id')}">{_topic_wacthers}</a>
         </div>
     </div>
 {/block}

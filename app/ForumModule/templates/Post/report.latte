@@ -9,18 +9,18 @@
                     <a href="{link Forum:default $presenter->getParameter('forum_id')}">{_menu_forum}</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{link Post:all $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">{_menu_topic}</a>
+                    <a href="{link Topic:default $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">{_menu_topic}</a>
                 </li>
-                <li class="breadcrumb-item">{_menu_post}</li>
+                <li class="breadcrumb-item">{_report_post}</li>
             </ol>
         </div>
     </div>
 
-    <div class="col-sm-12 main">
+    <div class="col-sm-6 main">
         <div class="card">
-            <div class="card-header">{_menu_post}</div>
+            <div class="card-header">{_report}</div>
             <div class="card-block p-3">
-                {control editPostForm}
+                {control reportForm}
             </div>
         </div>
     </div>
@@ -35,9 +35,9 @@
                     <a href="{link Forum:default $presenter->getParameter('forum_id')}">{_menu_forum}</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{link Post:all $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">{_menu_topic}</a>
+                    <a href="{link Topic:default $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">{_menu_topic}</a>
                 </li>
-                <li class="breadcrumb-item">{_menu_post}</li>
+                <li class="breadcrumb-item">{_report_post}</li>
             </ol>
         </div>
     </div>

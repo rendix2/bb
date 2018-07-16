@@ -286,7 +286,9 @@ class GridFilter extends Control
      */
     public function renderActiveFilters()
     {
-        $template = $this->template->setFile(__DIR__ . '/templates/gridFilter/activeFilters.latte');
+        $sep = DIRECTORY_SEPARATOR;
+        
+        $template = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'gridFilter' . $sep . 'activeFilters.latte');
         $template->setTranslator($this->translator);
         
         $template->filters = $this->getWhere();
@@ -296,7 +298,9 @@ class GridFilter extends Control
     
     public function renderReset()
     {
-        $this->template->setFile(__DIR__ . '/templates/gridFilter/reset.latte');        
+        $sep = DIRECTORY_SEPARATOR;
+        
+        $this->template->setFile(__DIR__ . $sep . 'emplates' . $sep . 'gridFilter' . $sep . 'reset.latte');        
         $this->template->render();
     }
 

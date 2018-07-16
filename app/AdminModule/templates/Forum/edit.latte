@@ -77,7 +77,7 @@
                         <td>{$item->forum_topic_count}</td>
                         <td>
                             {if $topicData}
-                                <a href="{link :Forum:Post:all, $topicData->topic_forum_id, $topicData->topic_id}">{$topicData->topic_name}</a>
+                                <a href="{link :Forum:Topic:default, $topicData->topic_forum_id, $topicData->topic_id}">{$topicData->topic_name}</a>
                             {else}
                                 Empty
                             {/if}
