@@ -3,7 +3,7 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BootstrapForm;
-use App\Controls\JumpToForumControl;
+use App\Controls\TopicJumpToForumForm;
 use App\Controls\PaginatorControl;
 use App\Models\ForumsManager;
 use App\Models\PostsManager;
@@ -136,7 +136,7 @@ class PostPresenter extends Base\ForumPresenter
             }
         }
 
-        $this['editPostForm']->setDefaults($post);
+        $this['editForm']->setDefaults($post);
     }
 
     /**

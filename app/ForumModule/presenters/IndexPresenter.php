@@ -109,6 +109,8 @@ class IndexPresenter extends Base\ForumPresenter
     }
 
     /**
+     * renders categories
+     * 
      * @param int $category_id
      */
     public function renderCategory($category_id)

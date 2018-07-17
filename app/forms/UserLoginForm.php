@@ -49,7 +49,7 @@ class UserLoginForm extends \Nette\Application\UI\Control
     private $authenticator;
     
     /**
-     * @var Nette\Http\Session $session
+     * @var Session $session
      */
     private $session;
 
@@ -71,12 +71,7 @@ class UserLoginForm extends \Nette\Application\UI\Control
     
     public function render()
     {
-        $sep = DIRECTORY_SEPARATOR;
-        
-        $this->template->setFile(__DIR__ . $sep . 'templates'. $sep .'userLoginForm'.$sep.'userLoginForm.latte');
-        $this->template->setTranslator($this->translatorFactory->forumTranslatorFactory());
-            
-        $this->template->render();
+        $this['loginForm']->render();
     }
 
     /**

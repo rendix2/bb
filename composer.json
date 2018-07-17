@@ -36,7 +36,8 @@
         "rendix2/Zebra_Mptt": "dev-master",
         "dg/composer-cleaner": "^2.0",
         "nextras/secured-links": "^1.4",
-        "nextras/datagrid": "^3.0"
+        "nextras/datagrid": "^3.0",
+        "uestla/recaptcha-control": "^7.0"
     },    
     "repositories": [
         {

@@ -18,7 +18,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendi
  */
-class DeleteAvatarForm extends Control
+class UserDeleteAvatarForm extends Control
 {
 
     /**
@@ -64,11 +64,7 @@ class DeleteAvatarForm extends Control
      */
     public function render()
     {
-        $sep = DIRECTORY_SEPARATOR;
-        
-        $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'deleteAvatar' . $sep . 'deleteAvatar.latte');
-            
-        $this->template->render();
+        $this['deleteAvatar']->render();
     }
 
     /**

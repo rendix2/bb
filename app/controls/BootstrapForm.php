@@ -24,6 +24,7 @@ use Nette\Forms\Controls\TextBase;
  *
  * @package Controls\forms
  * @author  Tomáš Babický tomas.babicky@layoutmaschine.de
+ * @method type addReCaptcha($name, $label, $error) Description
  *
  */
 class BootstrapForm extends Form

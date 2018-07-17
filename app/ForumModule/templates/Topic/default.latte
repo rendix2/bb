@@ -34,6 +34,8 @@
                     <a href="{link User:profile, $thank->user_id}">{$thank->user_name}</a>
                     {if !$iterator->isLast()},{/if}
                 {/foreach}
+                
+                <a href="{link Topic:thanks $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">{_topic_thanks}</a>
             </div>
         </div>
     {/if}

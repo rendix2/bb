@@ -6,6 +6,9 @@ use App\Controls\BootstrapForm;
 use App\Controls\ChangePasswordControl;
 use App\Controls\DeleteAvatarControl;
 use App\Controls\PaginatorControl;
+use App\Forms\UserChangeUserNameForm;
+use App\Forms\SendMailToAdminForm;
+use App\Forms\UserResetPasswordForm;
 use App\Models\LanguagesManager;
 use App\Models\ModeratorsManager;
 use App\Models\PostsManager;
@@ -420,19 +423,11 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @return BootstrapForm
+     * @return SendMailToAdminForm
      */
     protected function createComponentSendMailToAdmin()
     {
-        $form = $this->getBootstrapForm();
-        
-        $form->addText('mail_subject', 'Mail subject:')->setRequired('Subject is required.');
-        $form->addTextArea('mail_text', 'Mail text:', null, 10)->setRequired('Text is required.');
-        
-        $form->addSubmit('send', 'Send mail');
-        $form->onSuccess[] = [$this, 'sendMailToAdminSuccess'];
-        
-        return $form;
+        return new SendMailToAdminForm($this->translatorFactory, $this->getManager(), $this->bbMailer);
     }
 
     /**
@@ -450,7 +445,24 @@ class UserPresenter extends Base\ForumPresenter
     {
         return $this->deleteAvatarFactory->getForum();
     }
-
+    
+    /**
+     * @return UserResetPasswordForm
+     */
+    protected function createComponentResetPasswordForm()
+    {
+        return new UserResetPasswordForm($this->translatorFactory, $this->getManager());
+    }
+    
+    /**
+     * 
+     * @return BootstrapForm
+     */
+    protected function createComponentChangeUserNameForm()
+    {
+        return new UserChangeUserNameForm($this->getManager(), $this->getUser());
+    }
+       
     /**
      * @return BootstrapForm
      */
@@ -490,73 +502,7 @@ class UserPresenter extends Base\ForumPresenter
 
         return $form;
     }
-
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentResetPasswordForm()
-    {
-        $form = $this->getBootstrapForm();
-        $form->addEmail(
-            'user_email',
-            'User email:'
-        );
-        $form->addSubmit(
-            'send',
-            'Reset'
-        );
-        $form->onSuccess[] = [
-            $this,
-            'resetPasswordFormSuccess'
-        ];
-
-        return $form;
-    }
     
-    /**
-     * 
-     * @return BootstrapForm
-     */
-    protected function createComponentChangeUserNameForm()
-    {
-        $form = self::createBootstrapForm();
-        
-        $form->addText('user_name', 'User name:');
-        $form->addSubmit('send', 'Change user name');
-        $form->onValidate[] = [$this, 'changeUserNameOnValidate'];
-        $form->onSuccess[]  = [$this, 'changeUserNameSuccess'];
-        
-        return $form;
-    }
-    
-    /**
-     * 
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function changeUserNameOnValidate(Form $form, ArrayHash $values)
-    {
-        if (count($this->getManager()->getByUserName($values->user_name))) {
-            $form->addError('User already exists.');
-        }
-    }
-    
-    /**
-     * 
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function changeUserNameSuccess(Form $form, ArrayHash $values)
-    {
-        $result = $this->getManager()->update($this->getUser()->getId(), $values);
-        
-        if ($result) {
-            $this->flashMessage('User name was changed.', self::FLASH_MESSAGE_SUCCESS);
-        } else {
-            $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
-        }
-    }
-
     /**
      * @param Form      $form
      * @param ArrayHash $values
@@ -591,65 +537,5 @@ class UserPresenter extends Base\ForumPresenter
         }
 
         $this->redirect('User:edit');
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function editUserOnValidate(Form $form, ArrayHash $values)
-    {
-    }
-    
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function resetPasswordFormSuccess(Form $form, ArrayHash $values)
-    {
-        $found_mail = $this->getManager()->getByEmail($values->user_email);
-
-        if ($found_mail) {
-            // send mail!
-
-            $this->flashMessage('Email was sent.', self::FLASH_MESSAGE_SUCCESS);
-        } else {
-            $this->flashMessage('User mail was not found!', self::FLASH_MESSAGE_DANGER);
-        }
-    }
-    
-    /**
-     *
-     * @param Form $form
-     * @param ArrayHash $values
-     */
-    public function sendMailToAdminSuccess(Form $form, ArrayHash $values)
-    {
-        $admins = $this->getManager()
-                ->getAllFluent()
-                ->where('[user_role_id] = %i', 5)
-                ->fetchAll();
-        
-        $adminsMails = [];
-        
-        foreach ($admins as $admin) {
-            $adminsMails[] = $admin->user_email;
-        }
-
-        \Tracy\Debugger::barDump($adminsMails);
-        \Tracy\Debugger::barDump($admins);
-        
-        $this->bbMailer->addRecepients($adminsMails);
-        $this->bbMailer->setSubject($values->mail_subject);
-        $this->bbMailer->setText($values->mail_text);
-        $res = $this->bbMailer->send();
-        
-        if ($res) {
-            $this->flashMessage('Mail sent.', self::FLASH_MESSAGE_SUCCESS);
-        } else {
-            $this->flashMessage('Mail was not sent.', self::FLASH_MESSAGE_DANGER);
-        }
-        
-        $this->redirect('this');
     }
 }

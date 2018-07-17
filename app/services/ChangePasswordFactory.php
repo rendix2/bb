@@ -57,7 +57,7 @@ class ChangePasswordFactory
      */
     public function getForum()
     {
-        return new \App\Forms\ChangePasswordForm(
+        return new \App\Forms\UserChangePasswordForm(
             $this->userManager,
             $this->translatorFactory->forumTranslatorFactory(),
             $this->user,
@@ -71,7 +71,7 @@ class ChangePasswordFactory
      */
     public function getAdmin()
     {
-        return new \App\Forms\ChangePasswordForm(
+        return new \App\Forms\UserChangePasswordForm(
             $this->userManager,
             $this->translatorFactory->adminTranslatorFactory(),
             $this->user,

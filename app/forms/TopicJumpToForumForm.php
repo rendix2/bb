@@ -12,7 +12,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendi
  */
-class JumpToForumControl extends Control
+class TopicJumpToForumForm extends Control
 {
     /**
      * @var ForumsManager $forumManager
@@ -35,12 +35,8 @@ class JumpToForumControl extends Control
      * render jump to foorum
      */
     public function render()
-    {
-        $sep = DIRECTORY_SEPARATOR;
-        
-        $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'jumpToForum' . $sep . 'jumpToForum.latte');
-
-        $this->template->render();
+    {       
+        $this['jumpToForum']->render();
     }
 
     /**
@@ -64,7 +60,7 @@ class JumpToForumControl extends Control
      */
     public function jumpToForumSuccess(Form $form, ArrayHash $values)
     {
-        $this->getPresenter()
+        $this->presenter
             ->redirect(
                 ':Forum:Forum:default',
                 $values->forum_id

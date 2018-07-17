@@ -1,0 +1,20 @@
+{block content}
+    {if $thanks}
+        <div class="col-sm-12">
+            <div class="float-left">
+
+                <span>{_user_who_thank}</span>
+                
+                <ul>
+
+                {foreach $thanks as $thank}
+                    <li>
+                        <a href="{link User:profile, $thank->user_id}">{$thank->user_name}</a>
+                    </li>
+                {/foreach}
+                
+                </ul>
+            </div>
+        </div>
+    {/if}
+{/block}

@@ -2,40 +2,50 @@
 
 namespace App\Forms;
 
+use App\Presenters\Base\BasePresenter;
+use App\Models\UsersManager;
+use Nette\Security\User;
+use \Nette\Application\UI\Control;
+
 /**
  * Description of ChangeUserNameForm
  *
  * @author rendi
  */
-class ChangeUserNameForm extends \Nette\Application\UI\Control
+class UserChangeUserNameForm extends Control
 {
     
     /**
      *
-     * @var \App\Models\UsersManager $usersManager 
+     * @var UsersManager $usersManager 
      */
     private $usersManager;
 
     /**
      *
-     * @var \Nette\Security\User $user
+     * @var User $user
      */
     private $user;
 
     /**
      * 
-     * @param \App\Models\UsersManager $usersManager
-     * @param \Nette\Security\User     $user
+     * @param UsersManager $usersManager
+     * @param User         $user
      */
-    public function __construct(\App\Models\UsersManager $usersManager, \Nette\Security\User $user)
+    public function __construct(UsersManager $usersManager,User $user)
     {
         parent::__construct();
         
         $this->usersManager = $usersManager;
         $this->user         = $user;
     }
+    
+    public function render()
+    {
+        $this['changeUserNameForm']->render();
+    }
 
-        /**
+    /**
      * 
      * @return BootstrapForm
      */
@@ -73,9 +83,9 @@ class ChangeUserNameForm extends \Nette\Application\UI\Control
         $result = $this->usersManager->update($this->user->getId(), $values);
         
         if ($result) {
-            $this->flashMessage('User name was changed.', self::FLASH_MESSAGE_SUCCESS);
+            $this->presenter->flashMessage('User name was changed.', BasePresenter::FLASH_MESSAGE_SUCCESS);
         } else {
-            $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
+            $this->presenter->flashMessage('Nothing to change.', BasePresenter::FLASH_MESSAGE_INFO);
         }
     }    
     

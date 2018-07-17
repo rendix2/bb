@@ -56,6 +56,8 @@ final class ForumPresenter extends Base\ForumPresenter
     }
 
     /**
+     * renders topics
+     * 
      * @param int  $forum_id
      * @param int  $page
      * @param string|null $q
@@ -119,6 +121,8 @@ final class ForumPresenter extends Base\ForumPresenter
     }
 
     /**
+     * renderes rules of forum
+     * 
      * @param int $forum_id
      */
     public function renderRules($forum_id)

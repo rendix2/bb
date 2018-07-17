@@ -2,22 +2,26 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Forms\TopicFastReplyForm;
 use App\Models\ForumsManager;
 use App\Models\PostsManager;
 use App\Models\RanksManager;
 use App\Models\TopicsManager;
 use App\Models\ThanksManager;
+use App\Models\PostFacade;
 use App\Models\TopicFacade;
-use App\Settings\TopicsSetting;
+use App\Models\ThanksFacade;
 use App\Models\TopicWatchManager;
 use App\Controls\BootstrapForm;
-use App\Controls\JumpToForumControl;
+use App\Controls\TopicJumpToForumForm;
 use App\Controls\PaginatorControl;
+use App\Controls\BreadCrumbControl;
+use App\Settings\TopicsSetting;
+use App\Settings\Avatars;
 use dibi;
 use Nette\Application\UI\Form;
 use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;
-use App\Settings\Avatars;
 
 /**
  * Description of TopicPresenter
@@ -82,7 +86,14 @@ class TopicPresenter extends Base\ForumPresenter
      * @var \App\Models\ThanksFacade $thanksFacade
      * @inject
      */
-    public $thanksFacade;    
+    public $thanksFacade;
+
+    /**
+     *
+     * @var PostFacade $postFacade
+     * @inject
+     */
+    public $postFacade;
 
     /**
      * 
@@ -176,6 +187,8 @@ class TopicPresenter extends Base\ForumPresenter
     }    
 
     /**
+     * renders posts in topic
+     * 
      * @param int $forum_id
      * @param int $topic_id
      * @param int $page
@@ -258,6 +271,22 @@ class TopicPresenter extends Base\ForumPresenter
     
     /**
      * 
+     * @param int $forum_id
+     * @param int $topic_id
+     */
+    public function renderThanks($forum_id, $topic_id)
+    {
+        $thanks = $this->thanksManager->getThanksWithUserInTopic($topic_id);
+        
+        if (!$thanks) {
+            $this->flashMessage('Topic has not any thanks.', self::FLASH_MESSAGE_INFO);
+        }
+        
+        $this->template->thanks = $thanks;
+    }
+
+    /**
+     * 
      * @return BootstrapForm
      */
     public function createComponentEditForm()
@@ -298,8 +327,7 @@ class TopicPresenter extends Base\ForumPresenter
     }    
      
     /**
-     * 
-     * @return \App\Controls\BreadCrumbControl
+     * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbAll()
     {
@@ -309,15 +337,15 @@ class TopicPresenter extends Base\ForumPresenter
             2 => ['text' => 'menu_topic']            
         ];
         
-        return new \App\Controls\BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
     
     /**
-     * @return JumpToForumControl
+     * @return TopicJumpToForumForm
      */
-    public function createComponentJumpToForum()
+    protected function createComponentJumpToForum()
     {
-        return new JumpToForumControl($this->forumsManager);
+        return new TopicJumpToForumForm($this->forumsManager);
     }     
 
     /**
@@ -325,38 +353,7 @@ class TopicPresenter extends Base\ForumPresenter
      */
     protected function createComponentFastReply()
     {
-        $form = $this->getBootstrapForm();
-
-        $form->addGroup('Fast reply');
-        $form->addTextArea('post_text');
-        $form->addSubmit('send', 'Send');
-
-        $form->onSuccess[] = [$this, 'fastReplySuccess'];
-
-        return $form;
-    }
-    
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function fastReplySuccess(Form $form, ArrayHash $values)
-    {
-        $forum_id = $this->getParameter('forum_id');
-        $topic_id = $this->getParameter('topic_id');
-        $page     = $this->getParameter('page');
-
-        $values->post_forum_id = $forum_id;
-        $values->post_topic_id = $topic_id;
-        $values->post_user_id  = $this->getUser()->getId();
-
-        $res = $this->postFacade->add($values);
-
-        if ($res) {
-            $this->flashMessage('Post was added.', self::FLASH_MESSAGE_SUCCESS);
-        }
-
-        $this->redirect('Topic:default', $forum_id, $topic_id, $page);
+        return new TopicFastReplyForm($this->translatorFactory, $this->getUser(), $this->postFacade);
     }
 
     /**

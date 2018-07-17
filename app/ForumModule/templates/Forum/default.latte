@@ -88,7 +88,7 @@
                         <td>{$topic->topic_view_count}</td>
                     {/if}                    
                     <td>
-                        <a href="{link Post:editTopic, $presenter->getParameter('forum_id'), $topic->topic_id}" title="{_topic_edit}">
+                        <a href="{link Topic:edit, $presenter->getParameter('forum_id'), $topic->topic_id}" title="{_topic_edit}">
                             <i class="far fa-edit"></i>
                         </a>
                         

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\UsersManager;
 use App\Settings\Avatars;
+use App\Forms\UserDeleteAvatarForm;
 use Nette\Security\User;
 
 /**
@@ -53,11 +54,11 @@ class DeleteAvatarFactory
 
     /**
      * 
-     * @return \App\Controls\DeleteAvatarControl
+     * @return UserDeleteAvatarForm
      */
     public function getForum()
     {
-        return new \App\Forms\DeleteAvatarForm(
+        return new UserDeleteAvatarForm(
             $this->userManager,
             $this->avatars,
             $this->user,
@@ -67,11 +68,11 @@ class DeleteAvatarFactory
     
     /**
      * 
-     * @return \App\Controls\DeleteAvatarControl
+     * @return UserDeleteAvatarForm
      */
     public function getAdmin()
     {
-        return new \App\Forms\DeleteAvatarForm(
+        return new UserDeleteAvatarForm(
             $this->userManager,
             $this->avatars,
             $this->user,

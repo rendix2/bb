@@ -199,6 +199,12 @@ services:
         
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22
+    recaptcha: ReCaptchaControl\DI\Extension
+
+recaptcha:
+    secretKey: ''
+    siteKey: ''
+    methodName: 'addReCaptcha'
 
 dibi:
     driver: PDO  

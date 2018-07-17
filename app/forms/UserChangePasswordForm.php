@@ -18,7 +18,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendi
  */
-class ChangePasswordForm extends Control
+class UserChangePasswordForm extends Control
 {
 
     /**
@@ -67,11 +67,7 @@ class ChangePasswordForm extends Control
      */
     public function render()
     {
-        $sep = DIRECTORY_SEPARATOR;
-        
-        $this->template->setFile(__DIR__ . $sep . 'templates'. $sep .'changePassword'.$sep.'changePassword.latte');
-            
-        $this->template->render();
+        $this['changePasswordForm']->render();
     }  
     
     /**
@@ -80,6 +76,7 @@ class ChangePasswordForm extends Control
     protected function createComponentChangePasswordForm()
     {
         $form = BootstrapForm::create();
+        $form->setTranslator($this->translator);
         $form->addGroup('Password');
 
         if (!$this->user->isInRole('admin')) {
