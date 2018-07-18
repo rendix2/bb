@@ -97,16 +97,20 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     {
         $bans     = $this->banManager->getAllCached();
         $identity = $this->getUser()->getIdentity();
+        $user     = $this->getUser();
         
-        foreach ($bans as $ban) {
-            if ($identity && $this->getUser()->isLoggedIn()) {
-                if ($ban->ban_email === $identity->getData()['user_email'] || $ban->ban_user_name === $identity->getData()['user_name']) {
+        // if not main admin or role is not admin, so you can not ban admin, if some problem....
+        if ($user->getId() !== 1 || !in_array(\App\Authorizator::ROLES[5], $this->getUser()->getRoles())) {
+            foreach ($bans as $ban) {
+                if ($identity && $this->getUser()->isLoggedIn()) {
+                    if ($ban->ban_email === $identity->getData()['user_email'] || $ban->ban_user_name === $identity->getData()['user_name']) {
+                        $this->error('Banned', IResponse::S403_FORBIDDEN);
+                    }
+                }
+
+                if ($ban->ban_ip === $this->getHttpRequest()->getRemoteAddress()) {
                     $this->error('Banned', IResponse::S403_FORBIDDEN);
                 }
-            }
-
-            if ($ban->ban_ip === $this->getHttpRequest()->getRemoteAddress()) {
-                $this->error('Banned', IResponse::S403_FORBIDDEN);
             }
         }
     }

@@ -72,6 +72,8 @@ class PostFacade
     
     public function add(ArrayHash $item_data)
     {
+        \Tracy\Debugger::barDump($item_data);
+        
         $post_id  = $this->postsManager->add($item_data);
         $user_id  = $item_data->post_user_id;
         $forum_id = $item_data->post_forum_id;
@@ -114,6 +116,8 @@ class PostFacade
     
     public function update($item_id, ArrayHash $item_data)
     {
+        \Tracy\Debugger::barDump($item_data);
+        
         $this->postsManager->update($item_id, $item_data);
         $this->postsHistoryManager->add(ArrayHash::from(
                 ['post_id'              => $item_id,

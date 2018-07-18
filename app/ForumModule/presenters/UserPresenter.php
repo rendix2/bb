@@ -116,6 +116,13 @@ class UserPresenter extends Base\ForumPresenter
      * @inject
      */
     public $favouriteUsersManager;
+    
+    /**
+     *
+     * @var \App\Settings\StartDay $startDay
+     * @inject
+     */
+    public $startDay;    
 
     /**
      * UserPresenter constructor.
@@ -291,6 +298,9 @@ class UserPresenter extends Base\ForumPresenter
             }
         }
         
+        $reg = \Nette\Utils\DateTime::from($userData->user_register_time);
+        $now = new \Nette\Utils\DateTime();  
+        
         $this->template->ranksDir        = $this->rank->getTemplateDir();
         $this->template->avatarsDir      = $this->avatar->getTemplateDir();        
         $this->template->moderatorForums = $this->moderatorsManager->getAllJoinedByLeft($user_id);
@@ -304,6 +314,7 @@ class UserPresenter extends Base\ForumPresenter
         $this->template->isFavourite     = $this->favouriteUsersManager->fullCheck($this->getUser()->getId(), $user_id);
         $this->template->item_id         = $user_id;
         $this->template->favourites      = $this->favouriteUsersManager->getAllJoinedByLeft($user_id);
+        $this->template->runningDays     = $reg->diff($now)->days;
     }
 
     /**

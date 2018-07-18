@@ -106,8 +106,9 @@ class RegisterPresenter extends BasePresenter
     public function registerUserSuccess(Form $form, ArrayHash $values)
     {
         unset($values->user_password2);
-        $values->user_password = \Nette\Security\Passwords::hash($values->user_password);
+        $values->user_password      = \Nette\Security\Passwords::hash($values->user_password);
         $values->user_register_time = time();
+        $values->user_role_id       = 1;
                 
         $res = $this->usersManager->add(ArrayHash::from($values));
         
