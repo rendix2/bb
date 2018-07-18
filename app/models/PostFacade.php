@@ -114,8 +114,6 @@ class PostFacade
     
     public function update($item_id, ArrayHash $item_data)
     {
-        \Tracy\Debugger::barDump($item_data);
-        
         $this->postsManager->update($item_id, $item_data);
         $this->postsHistoryManager->add(ArrayHash::from(
                 ['post_id'              => $item_id,
@@ -127,7 +125,7 @@ class PostFacade
                 ));
     }
 
-        public function delete($item_id)
+    public function delete($item_id)
     {
         $post  = $this->postsManager->getById($item_id);
         $topic = $this->topicsManager->getById($post->post_topic_id);

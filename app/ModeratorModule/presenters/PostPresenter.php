@@ -25,6 +25,13 @@ class PostPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresen
      * @inject
      */
     public $topicsManager;
+    
+    /**
+     *
+     * @var \App\Models\PostsHistoryManager $postsHistoryManager
+     * @inject
+     */
+    public $postsHistoryManager;
 
     /**
      * PostPresenter constructor.
@@ -34,6 +41,15 @@ class PostPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresen
     public function __construct(PostsManager $manager)
     {
         parent::__construct($manager);
+    }
+    
+    /**
+     * 
+     * @param int $post_id
+     */
+    public function renderHistory($post_id)
+    {
+        $this->template->posts = $this->postsHistoryManager->getJoinedByPost($post_id);
     }
 
     /**

@@ -125,6 +125,10 @@
                                         <a href="{link Post:edit, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id}" title="{_post_edit}">
                                             <i class="far fa-edit"></i>
                                         </a>
+                                            
+                                        <a href="{link Post:history, $post->post_id}" title="{_post_history}">
+                                            <i class="fas fa-history"></i>
+                                        </a>                                            
                                     {/if}
                                     <a href="{link Post:report, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id, $presenter->getParameter('page')}" title="{_post_report}">
                                         <i class="fas fa-exclamation"></i>

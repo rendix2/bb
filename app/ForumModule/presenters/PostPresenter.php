@@ -12,6 +12,7 @@ use App\Models\ReportsManager;
 use App\Models\ThanksManager;
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
+use App\Models\PostsHistoryManager;
 use App\Settings\Avatars;
 use App\Settings\TopicsSetting;
 use dibi;
@@ -60,6 +61,14 @@ class PostPresenter extends Base\ForumPresenter
      */
     public $postFacade;
     
+    /**
+     *
+     * @var PostsHistoryManager $postsHistoryManager
+     * @inject
+     */
+    public $postsHistoryManager;
+
+
     /**
      * @param PostsManager $manager
      */
@@ -148,6 +157,27 @@ class PostPresenter extends Base\ForumPresenter
     public function renderReport($forum_id, $topic_id, $post_id, $page)
     {
     }
+    
+    /**
+     * 
+     * @param int $post_id
+     */
+    public function renderHistory($post_id)
+    {
+        $user_id = $this->getUser()->getId();
+        
+        $post = $this->getManager()->getById($post_id);
+        
+        if (!$post) {
+            $this->error('Post was not found.');
+        }
+        
+        if ($post->post_user_id !== $user_id) {
+            $this->error('You are not author of post.');
+        }
+        
+        $this->template->posts = $this->postsHistoryManager->getJoinedByPost($post_id);
+    }
 
     /**
      * @return BootstrapForm
@@ -223,6 +253,11 @@ class PostPresenter extends Base\ForumPresenter
     }   
 
     /**
+     * 
+     * REPORT FORM
+     */
+    
+    /**
      * @return BootstrapForm
      */
     protected function createComponentReportForm()
@@ -266,4 +301,8 @@ class PostPresenter extends Base\ForumPresenter
 
         $this->redirect('Topic:default', $forum_id, $topic_id, $page);
     }    
+    
+    /**
+     * REPORT FORM
+     */
 }
