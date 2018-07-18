@@ -46,6 +46,12 @@ class PostFacade
      * @var ForumsManager $forumsManager
      */
     private $forumsManager;
+    
+    /**
+     *
+     * @var PostsHistoryManager $postsHistoryManager
+     */
+    private $postsHistoryManager;
 
     /**
      * 
@@ -53,14 +59,15 @@ class PostFacade
      * @param \App\Models\TopicsManager     $topicsManager
      * @param \App\Models\TopicWatchManager $topicWatchManager
      */
-    public function __construct(PostsManager $postsManager, TopicsManager $topicsManager, TopicWatchManager $topicWatchManager, UsersManager $usersManager, ReportsManager $reportsManager, ForumsManager $forumsManager)
+    public function __construct(PostsManager $postsManager, TopicsManager $topicsManager, TopicWatchManager $topicWatchManager, UsersManager $usersManager, ReportsManager $reportsManager, ForumsManager $forumsManager, PostsHistoryManager $postsHistoryManager)
     {
-        $this->postsManager      = $postsManager;
-        $this->topicsManager     = $topicsManager;
-        $this->topicWatchManager = $topicWatchManager;
-        $this->usersManager      = $usersManager;
-        $this->reportsManager    = $reportsManager;
-        $this->forumsManager     = $forumsManager;
+        $this->postsManager        = $postsManager;
+        $this->topicsManager       = $topicsManager;
+        $this->topicWatchManager   = $topicWatchManager;
+        $this->usersManager        = $usersManager;
+        $this->reportsManager      = $reportsManager;
+        $this->forumsManager       = $forumsManager;
+        $this->postsHistoryManager = $postsHistoryManager;
     }
     
     public function add(ArrayHash $item_data)
@@ -86,7 +93,15 @@ class PostFacade
             $this->topicWatchManager->add([$user_id], $item_data->post_topic_id);
             $watch = ['user_watch_count%sql' => 'user_watch_count + 1'];
         }
-
+        
+        $this->postsHistoryManager->add(ArrayHash::from(
+                ['post_id'              => $post_id,
+                    'post_user_id'      => $user_id,
+                    'post_title'        => $item_data->post_title,
+                    'post_text'         => $item_data->post_text,
+                    'post_history_time' => time()
+                ]
+                ));
         $this->usersManager->update(
             $user_id,
             ArrayHash::from(['user_post_count%sql' => 'user_post_count + 1'] + $watch)
@@ -97,7 +112,22 @@ class PostFacade
         return $post_id;              
     }
     
-    public function delete($item_id)
+    public function update($item_id, ArrayHash $item_data)
+    {
+        \Tracy\Debugger::barDump($item_data);
+        
+        $this->postsManager->update($item_id, $item_data);
+        $this->postsHistoryManager->add(ArrayHash::from(
+                ['post_id'              => $item_id,
+                    'post_user_id'      => $item_data->post_user_id,
+                    'post_title'        => $item_data->post_title,
+                    'post_text'         => $item_data->post_text,
+                    'post_history_time' => time()
+                ]
+                ));
+    }
+
+        public function delete($item_id)
     {
         $post  = $this->postsManager->getById($item_id);
         $topic = $this->topicsManager->getById($post->post_topic_id);
@@ -133,7 +163,9 @@ class PostFacade
         );
         
         // recount last post info
-        $res = $this->postsManager->delete($item_id);   
+        $res = $this->postsManager->delete($item_id);  
+        
+        $this->postsHistoryManager->deleteByPost($item_id);
         
         // last post
         if ($topic->topic_last_post_id === (int)$item_id && $topic->topic_first_post_id !== (int)$item_id) {

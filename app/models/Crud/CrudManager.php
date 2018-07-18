@@ -204,13 +204,15 @@ abstract class CrudManager extends Manager implements ICrudManager
 
     /**
      * @return string
+     * @see https://stackoverflow.com/questions/1993721/how-to-convert-camelcase-to-camel-case
      */
     private function getNameOfTableFromClass()
     {
-        $explodedName = explode('\\', str_replace('Manager', '', get_class($this)));
+        $className    = str_replace('Manager', '', get_class($this));                       
+        $explodedName = explode('\\', $className);
         $count        = count($explodedName);
 
-        return mb_strtolower($explodedName[$count - 1]);
+        return mb_strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $explodedName[$count - 1]));
     }
 
     /**

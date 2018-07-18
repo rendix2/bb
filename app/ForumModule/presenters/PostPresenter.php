@@ -160,7 +160,7 @@ class PostPresenter extends Base\ForumPresenter
         $form->addTextArea('post_text', 'Text', 0, 15)->setRequired(true);
         $form->addSubmit('send', 'Send');
 
-        $form->onSuccess[] = [$this, 'editPostFormSuccess'];
+        $form->onSuccess[] = [$this, 'editFormSuccess'];
 
         return $form;
     }      
@@ -180,8 +180,10 @@ class PostPresenter extends Base\ForumPresenter
             $values['post_edit_count%sql'] = 'post_edit_count + 1';
             $values->post_last_edit_time   = time();
             $values->post_edit_user_ip     = $this->getHttpRequest()->getRemoteAddress();
+            $values->post_user_id          = $user_id;            
 
-            $result = $this->getManager()->update($post_id, $values);
+            //$result = $this->getManager()->update($post_id, $values);
+            $result = $this->postFacade->update($post_id, $values);
         } else {
             $values->post_forum_id    = $forum_id;
             $values->post_user_id     = $user_id;

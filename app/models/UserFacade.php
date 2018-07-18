@@ -74,6 +74,13 @@ class UserFacade
      * @var UsersManager $usersManager
      */
     private $usersManager;
+    
+    /**
+     *
+     * @var type PostsHistoryManager $postsHistoryManager
+     * 
+     */
+    private $postsHistoryManager;
 
     /**
      * 
@@ -81,6 +88,7 @@ class UserFacade
      */
     public function __construct(
             PostsManager          $postsManager,
+            PostsHistoryManager   $postsHistoryManager,
             PostFacade            $postFacade,
             Mails2UsersManager    $mails2UsersManager,
             ModeratorsManager     $moderatorsManager,
@@ -96,6 +104,7 @@ class UserFacade
     ) {
         $this->usersManager         = $usersManager;
         $this->postsManager         = $postsManager;
+        $this->postsHistoryManager  = $postsHistoryManager;
         $this->postFacade           = $postFacade;
         $this->topicWatchManager    = $topicWatchManager;
         //$this->users2SessionManager = $users2SessionManager;
@@ -139,8 +148,9 @@ class UserFacade
         $this->thanksManager->deleteByUser($item_id);
         $this->users2ForumsManager->deleteByLeft($item_id);
         $this->users2GroupsManager->deleteByLeft($item_id);
+        $this->postsHistoryManager->deleteByUser($item_id);
     
-        return $this->usersManager->delete($item_id);;
+        return $this->usersManager->delete($item_id);
     }
     
 }
