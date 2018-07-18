@@ -193,6 +193,8 @@ services:
         class: App\Models\UserFacade
     ThanksFacade:
         class: App\Models\ThanksFacade
+    UserFavouriteUsers:
+        class: App\Models\FavouriteUsersManager
     nette.mailer:
         class: Nette\Mail\IMailer
         factory: Nextras\MailPanel\FileMailer(%tempDir%/mail-panel-mails)

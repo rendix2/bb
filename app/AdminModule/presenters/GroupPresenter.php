@@ -8,6 +8,7 @@ use App\Models\Forums2GroupsManager;
 use App\Models\ForumsManager;
 use App\Models\GroupsManager;
 use App\Models\Users2GroupsManager;
+use App\Models\UsersManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -35,6 +36,13 @@ class GroupPresenter extends Base\AdminPresenter
      * @inject
      */
     public $forumsManager;
+    
+    /**
+     *
+     * @var UsersManager $usersManager
+     * @inject
+     */
+    public $usersManager;
 
     /**
      * GroupPresenter constructor.
@@ -89,6 +97,13 @@ class GroupPresenter extends Base\AdminPresenter
     {
         parent::renderEdit($id);
 
+        if ($id) {
+            $item      = $this->template->item;        
+            $moderator = $this->usersManager->getById($item->group_moderator_id);
+        
+            $this['editForm']->setDefaults(['group_moderator' => $moderator->user_name]);
+        }
+        
         $this->template->countOfUsers = $this->users2GroupsManager->getCountByRight($id);
         $this->template->forums       = $this->forumsManager->createForums($this->forumsManager->getAll(), 0);
 
@@ -106,6 +121,7 @@ class GroupPresenter extends Base\AdminPresenter
         }
 
         $this->template->permissions = $data;
+        
     }
 
     /**
@@ -115,10 +131,26 @@ class GroupPresenter extends Base\AdminPresenter
     {
         $form = $this->getBootstrapForm();
 
+        //$form->addHidden('group_moderator_id');
         $form->addText('group_name', 'Group name:')
             ->setRequired(true);
+        $form->addText('group_moderator', 'Group moderator:');
 
         return $this->addSubmitB($form);
+    }
+    
+    public function editFormSuccess(Form $form, ArrayHash $values) {
+        $moderator = $this->usersManager->getByName($values->group_moderator);
+        
+        if ($moderator) {
+            $values->group_moderator_id = $moderator->user_id;
+        } else {
+            unset($values->group_moderator_id);
+        }
+        
+        unset($values->group_moderator);
+                
+        parent::editFormSuccess($form, $values);                
     }
 
     /**

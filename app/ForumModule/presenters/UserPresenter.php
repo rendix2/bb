@@ -17,8 +17,12 @@ use App\Models\ThanksManager;
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
 use App\Models\UsersManager;
+use App\Models\FavouriteUsersManager;
 use App\Settings\Avatars;
 use App\Settings\Ranks;
+use App\Controls\BBMailer;
+use App\Services\ChangePasswordFactory;
+use App\Services\DeleteAvatarFactory;
 
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -87,14 +91,14 @@ class UserPresenter extends Base\ForumPresenter
 
     /**
      *
-     * @var \App\Controls\BBMailer $bbMailer
+     * @var BBMailer $bbMailer
      * @inject
      */
     public $bbMailer;
     
     /**
      *
-     * @var \App\Services\ChangePasswordFactory $changePasswordFactory
+     * @var ChangePasswordFactory $changePasswordFactory
      * @inject
      */
     public $changePasswordFactory;
@@ -105,6 +109,13 @@ class UserPresenter extends Base\ForumPresenter
      * @inject
      */
     public $deleteAvatarFactory;    
+    
+    /**
+     *
+     * @var FavouriteUsersManager $favouriteUsersManager
+     * @inject
+     */
+    public $favouriteUsersManager;
 
     /**
      * UserPresenter constructor.
@@ -176,6 +187,30 @@ class UserPresenter extends Base\ForumPresenter
     {
         // case when you do not send request to reset password
     }
+    
+    public function handleSetFavourite($user_id)
+    {
+        $res = $this->favouriteUsersManager->addByLeft($this->getUser()->getId(), [$user_id]); 
+        
+        if ($res) {
+            $this->flashMessage('User was added to favourites.', self::FLASH_MESSAGE_SUCCESS);
+        }
+        
+        //$this->redrawControl('favourite');
+        $this->redirect('this');
+    }
+    
+    public function handleUnSetFavourite($user_id)
+    {
+        $res = $this->favouriteUsersManager->fullDelete($this->getUser()->getId(), $user_id);
+        
+        if ($res) {
+            $this->flashMessage('User was deleted from favourites.', self::FLASH_MESSAGE_SUCCESS);
+        }
+        
+        //$this->redrawControl('favourite');
+        $this->redirect('this');
+    }    
 
     /**
      *
@@ -266,6 +301,9 @@ class UserPresenter extends Base\ForumPresenter
         $this->template->userData        = $userData;
         $this->template->rank            = $rankUser;
         $this->template->roles           = \App\Authorizator::ROLES;
+        $this->template->isFavourite     = $this->favouriteUsersManager->fullCheck($this->getUser()->getId(), $user_id);
+        $this->template->item_id         = $user_id;
+        $this->template->favourites      = $this->favouriteUsersManager->getAllJoinedByLeft($user_id);
     }
 
     /**

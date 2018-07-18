@@ -97,7 +97,34 @@
             </div>
         </div>        
     {/if}
-
+    
+    {define favourite}
+    {if $isFavourite}
+        <a href="{link UnsetFavourite! $item_id}">
+            <i class="fas fa-star"></i>
+        </a>
+    {else}
+        <a href="{link setFavourite! $item_id}">
+            <i class="far fa-star"></i>
+        </a>
+    {/if}
+    {/define}
+    
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">{_user_favourites} {include favourite}</div>
+            <div class="card-block">
+                <ul>
+                {foreach $favourites as $favourite}
+                    <li>
+                        <a href="{link User:profile, $favourite->user_id}">{$favourite->user_name}</a>
+                    </li>
+                {/foreach}
+                <ul>
+            </div>
+        </div>
+   </div> 
+    
     <div class="col-sm-12 mt-3">
         <div class="float-left">
             <ol class="breadcrumb">

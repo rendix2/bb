@@ -37,4 +37,6 @@ class Tables
     const FORUMS2GROUPS_TABLE = self::PREFIX . 'forums2groups';
 
     const TOPIC_WATCH_TABLE = self::PREFIX . 'topics_watch';
+    
+    const FAVOURITE_USERS_TABLE = self::PREFIX . 'favourite_users';
 }
