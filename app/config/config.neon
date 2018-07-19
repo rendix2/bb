@@ -124,10 +124,6 @@ services:
         class: App\Models\ReportsManager
     SessionsManager:
         class: App\Models\SessionsManager
-    GridFilter:
-        factory: App\Controls\GridFilter
-        setup:
-            - factory
     EmailManager:
         class: App\Models\MailsManager
     ModeratorsManager:
@@ -139,7 +135,13 @@ services:
     SmiliesManager:
         class: App\Models\SmiliesManager
     CacheManager:
-        class: \App\Models\CacheManager
+        class: App\Models\CacheManager
+    PollsManager:
+        class: App\Models\PollsManager
+    PollsAnswersManager:
+        class: App\Models\PollsAnswersManager
+    PollsVotesManager:
+        class: App\Models\PollsVotesManager
     PMManager:
         class: \App\Models\PMManager
     Authenticator:
@@ -203,7 +205,10 @@ services:
         factory: Nextras\MailPanel\FileMailer(%tempDir%/mail-panel-mails)
     StartDay:
         class: App\Settings\StartDay(%startDay%)
-        
+    GridFilter:
+        factory: App\Controls\GridFilter
+        setup:
+            - factory      
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22
     recaptcha: ReCaptchaControl\DI\Extension

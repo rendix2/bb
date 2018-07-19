@@ -166,4 +166,8 @@ class TopicFacade
         return $this->topicsManager->delete($item_id);
     }
     
+    public function copy($item_id)
+    {
+        
+    }    
 }

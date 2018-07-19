@@ -122,7 +122,14 @@ class UserPresenter extends Base\ForumPresenter
      * @var \App\Settings\StartDay $startDay
      * @inject
      */
-    public $startDay;    
+    public $startDay;
+
+    /**
+     *
+     * @var \App\Settings\Users $users
+     * @inject
+     */
+    public $users;
 
     /**
      * UserPresenter constructor.
@@ -517,12 +524,13 @@ class UserPresenter extends Base\ForumPresenter
      */
     protected function createComponentEditUserForm()
     {
-        $form = $this->getBootstrapForm();
+        $form         = $this->getBootstrapForm();
+        $userSettings = $this->users->getUser();
 
         $form->addText(
             'user_name',
             'User name:'
-        );
+        )->setDisabled(!$userSettings['canChangeUserName']);
         $form->addSelect(
             'user_lang_id',
             'User language:',

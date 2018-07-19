@@ -120,10 +120,17 @@ class UserPresenter extends Base\AdminPresenter
             $this->gf->addFilter('user_role_id', 'user_role_id', GridFilter::CHECKBOX_LIST, Authorizator::ROLES);
             $this->gf->addFilter('user_active', 'user_active', GridFilter::CHECKBOX_LIST, [0 => 'Not active', 1 =>'Active']);
             $this->gf->addFilter('user_register_time', 'user_register_time', GridFilter::DATE_TIME);
+            $this->gf->addFilter('user_last_login_time', 'user_last_login_time', GridFilter::DATE_TIME);
             $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
             $this->addComponent($this->gf, 'gridFilter');
         }        
+    }
+    
+    public function renderDefault($page = 1) {
+        parent::renderDefault($page);
+        
+        $this->template->roles = Authorizator::ROLES;
     }
 
     /**

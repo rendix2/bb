@@ -132,8 +132,6 @@ class GridFilter extends Control
             $where = [];
 
             foreach ($this->type as $col => $val) {
-                \Tracy\Debugger::barDump($val, $col);
-                
                 if ( ($val['strint'] === '%in' && count($this->session->getSection($col)->value))
                     || ($val['strint'] === '%i' && is_numeric($this->session->getSection($col)->value)) 
                     || ( ($val['strint'] === '%s' || $val['strint'] == '%~like~')
@@ -142,7 +140,6 @@ class GridFilter extends Control
                     ) 
                     || $val['type'] === 'date'        
                     && $col !== self::NOTHING) {
-                    \Tracy\Debugger::barDump('proslo');
                     
                     $columnName = $this->checkFTI($col);
 
@@ -151,7 +148,7 @@ class GridFilter extends Control
                             continue;
                         }
                         
-                        $time = new \Nette\Utils\DateTime($this->session->getSection($col)->value);
+                    $time = new \Nette\Utils\DateTime($this->session->getSection($col)->value);
                         
                     $where[] = [
                         'column' => $columnName,
@@ -166,12 +163,9 @@ class GridFilter extends Control
                         'value'  => $this->session->getSection($col)->value,
                         'strint' => $val['strint']
                     ];
-                    } 
-                    
+                    }                     
                 }
             }
-
-            \Tracy\Debugger::barDump($where);
             
             return $where;
         }
@@ -260,8 +254,11 @@ class GridFilter extends Control
                 ];
                 break;
             case self::DATE_TIME:
-                $this->form->addTbDatePicker($columnName. '_Xfrom', $text);
-                $this->form->addTbDatePicker($columnName. '_Xto', $text);
+                $this->form->addTbDatePicker($columnName. '_Xfrom', $text)
+                    ->setAttribute('placeholder', 'From')
+                    ->setAttribute('class', 'mb-1');
+                $this->form->addTbDatePicker($columnName. '_Xto', $text)
+                        ->setAttribute('placeholder', 'To');
                                 $this->type[$columnName. '_Xfrom'] = [
                     'type'     => $type,
                     'text'     => $text,
