@@ -32,7 +32,7 @@
                 {/if}
             </th>
 
-            {if $val['type'] == 'FTI' && preg_match('#_Xfrom$#', $name)  }
+            {if ($val['type'] == 'FTI' || $val['type'] == 'date') && preg_match('#_Xfrom$#', $name)  }
                 {var $fti = true}
             {/if}
 
@@ -47,12 +47,12 @@
                 {continueIf true}
             {/if}
 
-            {if $val['type'] == 'FTI' && preg_match('#_Xfrom$#', $name) }
+            {if ($val['type'] == 'FTI' || $val['type'] == 'date') && preg_match('#_Xfrom$#', $name) }
                 {var $toName = str_replace('_Xfrom', '_Xto', $name)}
                 {var $fti = true}
                 <td>{input $name}{input $toName}</td>    
 
-            {elseif $val['type'] != 'empty' && $val['type'] != 'FTI' } 
+            {elseif $val['type'] != 'empty' && ($val['type'] != 'FTI' || $val['type'] != 'date') } 
                 <td>{input $name}</td>                
             {else}
                 <td></td>

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4dd15e231dbe5df7f09f93f155cdb7e6",
+    "content-hash": "1efa87627f5b399036b20c90a103652b",
     "packages": [
         {
             "name": "dg/composer-cleaner",
@@ -1581,6 +1581,49 @@
             "description": "Singleton pattern for PHP",
             "homepage": "https://github.com/petrknap/php-singleton",
             "time": "2016-09-22T07:59:18+00:00"
+        },
+        {
+            "name": "radekdostal/nette-datetimepicker",
+            "version": "2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/radekdostal/Nette-DateTimePicker.git",
+                "reference": "fb0d3db57daa9cac78c6d1def883d72baf6a8887"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/radekdostal/Nette-DateTimePicker/zipball/fb0d3db57daa9cac78c6d1def883d72baf6a8887",
+                "reference": "fb0d3db57daa9cac78c6d1def883d72baf6a8887",
+                "shasum": ""
+            },
+            "require": {
+                "nette/di": "^2.2.0",
+                "nette/forms": "^2.2.0",
+                "nette/utils": "^2.2.0",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "tracy/tracy": "^2.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1",
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Radek Dostál",
+                    "email": "radek.dostal@gmail.com"
+                }
+            ],
+            "description": "DatePicker and DateTimePicker input controls for Nette Framework",
+            "time": "2018-05-23T13:38:42+00:00"
         },
         {
             "name": "rendix2/zebra_mptt",

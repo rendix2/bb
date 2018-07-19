@@ -44,6 +44,11 @@ class GridFilter extends Control
      * @var string
      */
     const CHECKBOX_LIST = 'ch';
+    
+    /**
+     * @var string datetime
+     */
+    const DATE_TIME = 'date';
 
     /**
      * @var array $whereColumns
@@ -127,19 +132,47 @@ class GridFilter extends Control
             $where = [];
 
             foreach ($this->type as $col => $val) {
-                if ( ($val['strint'] === '%in'  && count($this->session->getSection($col)->value)) || ($val['strint']
-                        === '%i' && is_numeric($this->session->getSection($col)->value)) || ( ($val['strint'] === '%s' || $val['strint'] == '%~like~') && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) && $col !== self::NOTHING) {
+                \Tracy\Debugger::barDump($val, $col);
+                
+                if ( ($val['strint'] === '%in' && count($this->session->getSection($col)->value))
+                    || ($val['strint'] === '%i' && is_numeric($this->session->getSection($col)->value)) 
+                    || ( ($val['strint'] === '%s' || $val['strint'] == '%~like~')
+                        && is_string($this->session->getSection($col)->value)
+                        && mb_strlen($this->session->getSection($col)->value) >= 1
+                    ) 
+                    || $val['type'] === 'date'        
+                    && $col !== self::NOTHING) {
+                    \Tracy\Debugger::barDump('proslo');
+                    
                     $columnName = $this->checkFTI($col);
 
+                    if ($val['type'] === 'date') {
+                        if (!$this->session->getSection($col)->value) {
+                            continue;
+                        }
+                        
+                        $time = new \Nette\Utils\DateTime($this->session->getSection($col)->value);
+                        
                     $where[] = [
+                        'column' => $columnName,
+                        'type'   => $val['operator'],
+                        'value'  => $time->getTimestamp(),
+                        'strint' => $val['strint']
+                    ];
+                    } else {
+                        $where[] = [
                         'column' => $columnName,
                         'type'   => $val['operator'],
                         'value'  => $this->session->getSection($col)->value,
                         'strint' => $val['strint']
                     ];
+                    } 
+                    
                 }
             }
 
+            \Tracy\Debugger::barDump($where);
+            
             return $where;
         }
     }
@@ -225,6 +258,23 @@ class GridFilter extends Control
                     'operator' => 'IN',
                     'strint'   => '%in'
                 ];
+                break;
+            case self::DATE_TIME:
+                $this->form->addTbDatePicker($columnName. '_Xfrom', $text);
+                $this->form->addTbDatePicker($columnName. '_Xto', $text);
+                                $this->type[$columnName. '_Xfrom'] = [
+                    'type'     => $type,
+                    'text'     => $text,
+                    'operator' => '>=',
+                    'strint'   => '%i'
+                ];                
+                $this->type[$columnName. '_Xto'] = [
+                    'type'     => $type,
+                    'text'     => $text,
+                    'operator' => '<=',
+                    'strint'   => '%i'
+                ];  
+                
                 break;
         }
     }
