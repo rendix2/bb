@@ -2,10 +2,13 @@
 
 namespace App\Controls;
 
+use App\Models\Mails2UsersManager;
 use App\Models\MailsManager;
+use App\Models\UsersManager;
 use App\Settings\Email;
 use Latte\Engine;
 use Nette\Mail\IMailer;
+use Nette\Mail\Message;
 
 /**
  * Description of BBMailer
@@ -13,10 +16,10 @@ use Nette\Mail\IMailer;
  * @author rendix2
  */
 class BBMailer
-{  
+{
     /**
      *
-     * @var \Nette\Mail\Message $message
+     * @var Message $message
      */
     private $message;
     
@@ -39,37 +42,39 @@ class BBMailer
     private $manager;
     
     /**
-     * @var \App\Models\Mails2UsersManager $mails2users;
+     * @var Mails2UsersManager $mails2users;
      */
     private $mails2users;
     
     /**
      *
-     * @var \App\Models\UsersManager $usersManager
+     * @var UsersManager $usersManager
      */
     private $usersManager;
 
     /**
      * BBMailer constructor.
      *
-     * @param IMailer      $mailer
-     * @param MailsManager $manager
+     * @param IMailer            $mailer
+     * @param MailsManager       $manager
+     * @param Email              $email
+     * @param Mails2UsersManager $mails2users
+     * @param UsersManager       $usersManager
      */
     public function __construct(
-            IMailer $mailer,
-            MailsManager $manager,
-            Email $email,
-            \App\Models\Mails2UsersManager $mails2users,
-            \App\Models\UsersManager $usersManager
+        IMailer $mailer,
+        MailsManager $manager,
+        Email $email,
+        Mails2UsersManager $mails2users,
+        UsersManager $usersManager
     ) {
         $this->mailer  = $mailer;
-        $this->message = new \Nette\Mail\Message();
+        $this->message = new Message();
         $this->message->setFrom($email->getMail());
         
         $this->manager      = $manager;
         $this->mails2users  = $mails2users;
         $this->usersManager = $usersManager;
-        
     }
 
     /**
@@ -96,7 +101,7 @@ class BBMailer
     /**
      * @param $subject
      *
-     * @return \App\Controls\BBMailer
+     * @return BBMailer
      */
     public function setSubject($subject)
     {
@@ -109,7 +114,7 @@ class BBMailer
      * @param string $input
      * @param null|mixed   $variables
      *
-     * @return \App\Controls\BBMailer
+     * @return BBMailer
      */
     public function setText($input, $variables = null)
     {

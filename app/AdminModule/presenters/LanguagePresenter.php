@@ -55,7 +55,7 @@ class LanguagePresenter extends Base\AdminPresenter
     }
 
     /**
-     * @return BootStrapForm
+     * @return \App\Controls\BootstrapForm
      */
     protected function createComponentEditForm()
     {

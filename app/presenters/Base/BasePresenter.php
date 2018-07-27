@@ -114,7 +114,10 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             }
         }
     }
-    
+
+    /**
+     * @return bool
+     */
     protected function checkLoggedIn()
     {
         $identity = $this->getUser()->getIdentity();
@@ -126,16 +129,25 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         return $this->getUser()->isLoggedIn();
     }
 
+    /**
+     * @return bool
+     */
     protected function checkUserLoggedIn()
     {
         return $this->checkAdminLoggedIn() && !in_array('guest', $this->getUser()->getRoles(), true);
     }
-    
+
+    /**
+     * @return bool
+     */
     protected function checkJuniorAdminLoggedIn()
     {
         return $this->checkLoggedIn() && $this->getUser()->isInRole('juniorAdmin');
     }
 
+    /**
+     * @return bool
+     */
     protected function checkAdminLoggedIn()
     {
         return $this->checkLoggedIn() && $this->getUser()->isInRole('admin');

@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\Models\ForumsManager;
 use App\Models\ModeratorsManager;
+use App\Models\Users2GroupsManager;
 use App\Models\UsersManager;
 use Nette\Security\Permission;
 use Nette\Security\User;
@@ -16,7 +18,7 @@ class Authorizator
 {
 
     /**
-     * @var \App\Models\Users2GroupsManager $users2GroupsManager
+     * @var Users2GroupsManager $users2GroupsManager
      */
     private $users2GroupsManager;
 
@@ -50,24 +52,24 @@ class Authorizator
 
     /**
      * 
-     * @param \App\Models\ForumsManager $forumsManager
+     * @param ForumsManager $forumsManager
      * @param User $user
      * @param UsersManager $userManager
      * @param ModeratorsManager $moderatorsManager
-     * @param \App\Models\Users2GroupsManager $users2GroupsManager
+     * @param Users2GroupsManager $users2GroupsManager
      */
-    public function __construct(Models\ForumsManager $forumsManager, User $user, UsersManager $userManager, ModeratorsManager $moderatorsManager, \App\Models\Users2GroupsManager $users2GroupsManager)
+    public function __construct(ForumsManager $forumsManager, User $user, UsersManager $userManager, ModeratorsManager $moderatorsManager, Users2GroupsManager $users2GroupsManager)
     {
         $this->acl                 = new Permission();
         $this->forumManager        = $forumsManager;
         $this->user                = $user;
         $this->userManager         = $userManager;
         $this->moderatorsManager   = $moderatorsManager;
-        $this->users2GroupsManager = $users2GroupsManager;        
+        $this->users2GroupsManager = $users2GroupsManager;
     
-        $this->defineRoles();       
+        $this->defineRoles();
         $this->defineResources();
-        $this->definePrivilegies();   
+        $this->definePrivilegies();
     }
 
     /**
@@ -125,7 +127,7 @@ class Authorizator
                     $this->acl->deny('moderator', '' . $forum->forum_id);
                 }
             }
-        }        
+        }
 
         foreach ($this->forumManager->getAllCached() as $forum) {
             if ($forum->forum_thank) {

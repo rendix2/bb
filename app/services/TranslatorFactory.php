@@ -37,8 +37,9 @@ class TranslatorFactory
     /**
      * TranslatorFactory constructor.
      *
-     * @param User $user
-     * @param AppDir $appDir
+     * @param User            $user
+     * @param AppDir          $appDir
+     * @param DefaultLanguage $defaultLanguage
      */
     public function __construct(User $user, AppDir $appDir, DefaultLanguage $defaultLanguage)
     {

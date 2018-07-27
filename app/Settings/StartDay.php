@@ -10,7 +10,12 @@ namespace App\Settings;
 class StartDay
 {
     private $startDay;
-    
+
+    /**
+     * StartDay constructor.
+     *
+     * @param $startDay
+     */
     public function __construct($startDay)
     {
         $this->startDay = $startDay;

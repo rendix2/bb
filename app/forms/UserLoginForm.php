@@ -54,9 +54,12 @@ class UserLoginForm extends \Nette\Application\UI\Control
     private $session;
 
     /**
-     * 
+     *
      * @param TranslatorFactory $translatorFactory
      * @param User ¨            $user
+     * @param SessionsManager   $sessionsManager
+     * @param Authenticator     $authenticator
+     * @param Session           $session
      */
     public function __construct(TranslatorFactory $translatorFactory, User $user, SessionsManager $sessionsManager, Authenticator $authenticator, Session $session)
     {

@@ -7,7 +7,8 @@ namespace App\Settings;
  *
  * @author rendi
  */
-class DefaultLanguage {
+class DefaultLanguage
+{
 
     /**
      *
@@ -16,17 +17,16 @@ class DefaultLanguage {
     private $defaultLanguage;
     
     /**
-     * 
+     *
      * @param string $defaultLanguage
      */
     public function __construct($defaultLanguage)
     {
         $this->defaultLanguage = $defaultLanguage;
-        
     }
     
     /**
-     * 
+     *
      * @return string
      */
     public function getDefaultLanguage()

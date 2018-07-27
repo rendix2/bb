@@ -54,10 +54,14 @@ class PostFacade
     private $postsHistoryManager;
 
     /**
-     * 
+     *
      * @param \App\Models\PostsManager      $postsManager
      * @param \App\Models\TopicsManager     $topicsManager
      * @param \App\Models\TopicWatchManager $topicWatchManager
+     * @param UsersManager                  $usersManager
+     * @param ReportsManager                $reportsManager
+     * @param ForumsManager                 $forumsManager
+     * @param PostsHistoryManager           $postsHistoryManager
      */
     public function __construct(PostsManager $postsManager, TopicsManager $topicsManager, TopicWatchManager $topicWatchManager, UsersManager $usersManager, ReportsManager $reportsManager, ForumsManager $forumsManager, PostsHistoryManager $postsHistoryManager)
     {
@@ -69,7 +73,12 @@ class PostFacade
         $this->forumsManager       = $forumsManager;
         $this->postsHistoryManager = $postsHistoryManager;
     }
-    
+
+    /**
+     * @param ArrayHash $item_data
+     *
+     * @return \Dibi\Result|int
+     */
     public function add(ArrayHash $item_data)
     {
         \Tracy\Debugger::barDump($item_data);
@@ -113,7 +122,11 @@ class PostFacade
 
         return $post_id;              
     }
-    
+
+    /**
+     * @param           $item_id
+     * @param ArrayHash $item_data
+     */
     public function update($item_id, ArrayHash $item_data)
     {
         \Tracy\Debugger::barDump($item_data);
@@ -129,6 +142,11 @@ class PostFacade
                 ));
     }
 
+    /**
+     * @param $item_id
+     *
+     * @return \Dibi\Result|int
+     */
     public function delete($item_id)
     {
         $post  = $this->postsManager->getById($item_id);

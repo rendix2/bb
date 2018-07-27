@@ -51,6 +51,7 @@ class UserChangePasswordForm extends Control
      * @param UsersManager $userManager
      * @param ITranslator  $translator
      * @param User         $user
+     * @param Users        $users
      */
     public function __construct(UsersManager $userManager, ITranslator $translator, User $user, Users $users)
     {

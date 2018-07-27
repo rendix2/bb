@@ -6,7 +6,7 @@ use dibi;
 use Dibi\Fluent;
 use Dibi\Row;
 use Dibi\Connection;
-use Nette\Caching\IStorage;
+
 
 /**
  * Description of ForumManager
@@ -19,8 +19,14 @@ class ForumsManager extends Crud\CrudManager implements MpttTable
      * @var \Zebra_Mptt $mptt
      */
     private $mptt;
-    
-    public function __construct(Connection $dibi, \Nette\Caching\IStorage $storage)
+
+    /**
+     * ForumsManager constructor.
+     *
+     * @param Connection $dibi
+     * @param IStorage   $storage
+     */
+    public function __construct(Connection $dibi, IStorage $storage)
     {
         parent::__construct($dibi, $storage);
         
@@ -91,7 +97,7 @@ class ForumsManager extends Crud\CrudManager implements MpttTable
             ->where('forum_parent_id = %i', 0)
             ->orderBy('forum_order', dibi::ASC)
             ->fetchAll();
-    }    
+    }
 
     /**
      * @param iterable $forums
@@ -123,21 +129,33 @@ class ForumsManager extends Crud\CrudManager implements MpttTable
     {
     }
 
+    /**
+     * @return string
+     */
     public function getLeft()
     {
         return 'forum_left';
     }
 
+    /**
+     * @return string
+     */
     public function getParent()
     {
         return 'forum_parent_id';
     }
 
+    /**
+     * @return string
+     */
     public function getRight()
     {
         return 'forum_right';
     }
 
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         return 'forum_name';

@@ -10,7 +10,7 @@ use App\Models\TopicsManager;
 use App\Models\ThanksManager;
 use App\Models\PostFacade;
 use App\Models\TopicFacade;
-use App\Models\ThanksFacade;
+
 use App\Models\TopicWatchManager;
 use App\Controls\BootstrapForm;
 use App\Controls\TopicJumpToForumForm;
@@ -239,8 +239,12 @@ class TopicPresenter extends Base\ForumPresenter
         $this->template->thanks     = $this->thanksManager->getThanksWithUserInTopic($topic_id);
         $this->template->forum      = $forum;
         $this->template->topic      = $topic;
-    }    
-    
+    }
+
+    /**
+     * @param $forum_id
+     * @param $topic_id
+     */
     public function renderEdit($forum_id, $topic_id)
     {
         
@@ -346,10 +350,10 @@ class TopicPresenter extends Base\ForumPresenter
     protected function createComponentJumpToForum()
     {
         return new TopicJumpToForumForm($this->forumsManager);
-    }     
+    }
 
     /**
-     * @return BootstrapForm
+     * @return TopicFastReplyForm
      */
     protected function createComponentFastReply()
     {

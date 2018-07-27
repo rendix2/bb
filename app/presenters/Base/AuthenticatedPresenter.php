@@ -2,6 +2,7 @@
 
 namespace App\Presenters\Base;
 
+use App\Models\SessionsManager;
 use Nette\Security\IUserStorage;
 use Nette\Utils\ArrayHash;
 
@@ -15,8 +16,8 @@ abstract class AuthenticatedPresenter extends BasePresenter
     
     /**
      * session manager
-     * 
-     * @var \App\Models\SessionsManager $sessionManager
+     *
+     * @var SessionsManager $sessionManager
      * @inject
      */
     public $sessionsManager;

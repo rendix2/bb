@@ -37,10 +37,13 @@ class PollsFacade
     {
         $this->pollsManager        = $pollsManager;
         $this->pollsAnswersManager = $pollsAnwersManager;
-        $this->pollsVotesManager   = $pollsVotesManager;        
+        $this->pollsVotesManager   = $pollsVotesManager;
     }
-    
-    public function delete($item_id) 
+
+    /**
+     * @param $item_id
+     */
+    public function delete($item_id)
     {
         $this->pollsManager->delete($item_id);
     }

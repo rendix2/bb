@@ -4,13 +4,14 @@ namespace App\ModeratorModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Models\ReportsManager;
+use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 
 /**
  * Description of ReportPresenter
  *
  * @author rendi
  */
-class ReportPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresenter
+class ReportPresenter extends ModeratorPresenter
 {
     /**
      * ReportPresenter constructor.
@@ -31,6 +32,6 @@ class ReportPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPres
         
         $form->addTextArea('report_text', 'Report text:');
         
-        return $this->addSubmitB($form);            
+        return $this->addSubmitB($form);
     }
 }

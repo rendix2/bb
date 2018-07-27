@@ -13,7 +13,7 @@ use Nette\Application\UI\Control;
 class BreadCrumbControl extends Control
 {
     /**
-     * @var array $breadCrumb 
+     * @var array $breadCrumb
      */
     private $breadCrumb;
     
@@ -23,7 +23,7 @@ class BreadCrumbControl extends Control
     private $translator;
 
     /**
-     * 
+     *
      * @param array       $breadCrumb
      * @param ITranslator $translator
      */
@@ -32,7 +32,7 @@ class BreadCrumbControl extends Control
         parent::__construct();
         
         $this->breadCrumb = $breadCrumb;
-        $this->translator = $translator; 
+        $this->translator = $translator;
     }
     
     /**

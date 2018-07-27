@@ -8,10 +8,9 @@ use App\Services\TranslatorFactory;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 
-use dibi;
-use Nette\Application\UI\Control;
+
 use Nette\Application\UI\Form;
-use Nette\Http\IResponse;
+
 use Nette\Utils\ArrayHash;
 
 /**
@@ -19,7 +18,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendi
  */
-class SendMailToAdminForm extends \Nette\Application\UI\Control
+class SendMailToAdminForm extends Control
 {
     /**
      *
@@ -40,7 +39,7 @@ class SendMailToAdminForm extends \Nette\Application\UI\Control
     private $bbMailer;
 
     /**
-     * 
+     *
      * @param TranslatorFactory $translatorFactory
      * @param UsersManager $usersManager
      * @param BBMailer $bbMailer

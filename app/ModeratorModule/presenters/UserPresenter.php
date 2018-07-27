@@ -2,21 +2,32 @@
 
 namespace App\ModeratorModule\Presenters;
 
+use App\Models\UsersManager;
+use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
+
 /**
  * Description of UserPresenter
  *
  * @author rendi
  */
-class UserPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresenter
+class UserPresenter extends ModeratorPresenter
 {
-    public function __construct(\App\Models\UsersManager $manager)
+    /**
+     * UserPresenter constructor.
+     *
+     * @param UsersManager $manager
+     */
+    public function __construct(UsersManager $manager)
     {
         parent::__construct($manager);
     }
 
         //put your code here
-    protected function createComponentEditForm() {
-        
-    }
 
+    /**
+     * @return mixed|void
+     */
+    protected function createComponentEditForm()
+    {
+    }
 }

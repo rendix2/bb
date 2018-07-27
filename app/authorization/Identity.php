@@ -7,15 +7,18 @@ namespace App\Authorization;
  *
  * @author rendi
  */
-class Identity {
-    
-    
+class Identity
+{
+
     const ROLE_ADMIN = 'admin';
     
     private $id;
     
     private $roles = [];
-    
+
+    /**
+     * @return array
+     */
     public function getRoles()
     {
         return $this->roles;

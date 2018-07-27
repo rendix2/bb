@@ -3,19 +3,17 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BootstrapForm;
-use App\Controls\TopicJumpToForumForm;
-use App\Controls\PaginatorControl;
-use App\Models\ForumsManager;
+
+
 use App\Models\PostsManager;
-use App\Models\RanksManager;
+
 use App\Models\ReportsManager;
-use App\Models\ThanksManager;
+
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
 use App\Models\PostsHistoryManager;
-use App\Settings\Avatars;
-use App\Settings\TopicsSetting;
-use dibi;
+
+
 use Nette\Application\UI\Form;
 use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;

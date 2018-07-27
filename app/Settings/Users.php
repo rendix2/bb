@@ -10,7 +10,12 @@ namespace App\Settings;
 class Users {
 
     private $user;
-    
+
+    /**
+     * Users constructor.
+     *
+     * @param $user
+     */
     public function __construct($user)
     {
         $this->user = $user;

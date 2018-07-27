@@ -126,7 +126,10 @@ class UserPresenter extends Base\AdminPresenter
             $this->addComponent($this->gf, 'gridFilter');
         }        
     }
-    
+
+    /**
+     * @param int $page
+     */
     public function renderDefault($page = 1) {
         parent::renderDefault($page);
         
@@ -151,9 +154,9 @@ class UserPresenter extends Base\AdminPresenter
         $this->template->avatarsDir = $this->avatar->getTemplateDir();     
         $this->template->ranksDir   = $this->rank->getTemplateDir();  
     }
-    
+
     /**
-     * @return ChangePasswordControl
+     * @return \App\Forms\UserChangePasswordForm
      */
     protected function createComponentChangePasswordControl()
     {
@@ -193,9 +196,9 @@ class UserPresenter extends Base\AdminPresenter
 
         return $form;
     }
-    
+
     /**
-     * @return DeleteAvatarControl
+     * @return \App\Forms\UserDeleteAvatarForm
      */
     public function createComponentDeleteAvatar()
     {
@@ -219,7 +222,7 @@ class UserPresenter extends Base\AdminPresenter
      */
     public function createComponentModeratorsForm()
     {
-        $form = self::createBootstrapForm();
+        $form = $this->createBootstrapForm();
         
         $form->addSubmit('send_moderator', 'Send');
         $form->onSuccess[] = [$this, 'moderatorsSuccess'];

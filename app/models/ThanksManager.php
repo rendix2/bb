@@ -14,7 +14,7 @@ class ThanksManager extends Crud\CrudManager
     /**
      * @param int $forum_id
      *
-     * @return Row[[]
+     * @return array [[]
      */
     public function getThanksByForum($forum_id)
     {
@@ -70,11 +70,11 @@ class ThanksManager extends Crud\CrudManager
             ->where('[t.thank_topic_id] = %i', $topic_id)
             ->fetchAll();
     }
-    
+
     /**
      * @param int $user_id
      *
-     * @return Fluent
+     * @return \Dibi\Fluent
      */
     public function getThanks($user_id)
     {

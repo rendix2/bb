@@ -17,7 +17,10 @@ class User {
      * @var \App\Authorization\Identity $identity
      */
     private $identity;
-    
+
+    /**
+     * @return \App\Authorization\Identity
+     */
     public function getIdentity()
     {
         return $this->identity;

@@ -2,6 +2,10 @@
 
 namespace App\Authorization\Scopes;
 
+use App\Authorization\Identity;
+use App\Authorization\Scopes\Forum;
+use Tracy\Debugger;
+
 /**
  * Description of Topic
  *
@@ -22,7 +26,7 @@ class Topic implements \App\Authorization\IAuthorizationScope
     private $id;
     
     /**
-     * @var \App\Authorization\Scopes\Forum $forum
+     * @var Forum $forum
      */
     private $forum;
     
@@ -30,14 +34,25 @@ class Topic implements \App\Authorization\IAuthorizationScope
      * @var \App\Authorization\Scopes\User $author 
      */
     private $author;
-    
-    public function __construct(User $author, \App\Authorization\Scopes\Forum $forum)
+
+    /**
+     * Topic constructor.
+     *
+     * @param User                            $author
+     * @param \App\Authorization\Scopes\Forum $forum
+     */
+    public function __construct(User $author, Forum $forum)
     {
         $this->author = $author;
         $this->forum  = $forum;
     }
 
-    public function getIdentityRoles(\App\Authorization\Identity $identity)
+    /**
+     * @param Identity $identity
+     *
+     * @return array
+     */
+    public function getIdentityRoles(Identity $identity)
     {
         $roles = [];
                 
@@ -45,7 +60,7 @@ class Topic implements \App\Authorization\IAuthorizationScope
             $roles[] = self::ROLE_AUTHOR;
         }
         
-        \Tracy\Debugger::barDump(array_merge($roles, $this->forum->getIdentityRoles($identity)));
+        Debugger::barDump(array_merge($roles, $this->forum->getIdentityRoles($identity)));
         
         return array_merge($roles, $this->forum->getIdentityRoles($identity));
     }

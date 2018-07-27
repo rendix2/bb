@@ -37,6 +37,7 @@ class RegisterPresenter extends BasePresenter
      * RegisterPresenter constructor.
      *
      * @param LanguagesManager $languageManger
+     * @param UsersManager     $usersManager
      */
     public function __construct(LanguagesManager $languageManger, UsersManager $usersManager)
     {

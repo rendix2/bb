@@ -52,14 +52,16 @@ class TopicFacade
      * @var PostFacade $postFacade
      */
     private $postFacade;
-    
+
     /**
-     * 
-     * @param \App\Models\TopicsManager $topicsManager
+     *
+     * @param \App\Models\TopicsManager     $topicsManager
      * @param \App\Models\TopicWatchManager $topicWatchManager
-     * @param \App\Models\PostsManager $postsManager
-     * @param \App\Models\UsersManager $usersManager
-     * @param \App\Models\ThanksManager $thanksManager
+     * @param \App\Models\PostsManager      $postsManager
+     * @param \App\Models\UsersManager      $usersManager
+     * @param \App\Models\ThanksManager     $thanksManager
+     * @param ForumsManager                 $forumsManager
+     * @param PostFacade                    $postFacade
      */
     public function __construct(TopicsManager $topicsManager, TopicWatchManager $topicWatchManager, PostsManager $postsManager, UsersManager $usersManager, ThanksManager $thanksManager, ForumsManager $forumsManager, PostFacade $postFacade)
     {
@@ -71,12 +73,12 @@ class TopicFacade
         $this->postFacade        = $postFacade;
         $this->forumsManager     = $forumsManager;
     }
-    
+
     /**
-     * 
+     *
      * @param ArrayHash $item_data
-     * 
-     * @return type
+     *
+     * @return \Dibi\Result|int
      */
     public function add(ArrayHash $item_data)
     {
@@ -118,12 +120,12 @@ class TopicFacade
 
         return $topic_id;
     }
-    
+
     /**
-     * 
+     *
      * @param type $item_id
-     * 
-     * @return type
+     *
+     * @return \Dibi\Result|int
      */
     public function delete($item_id)
     {
@@ -165,7 +167,10 @@ class TopicFacade
 
         return $this->topicsManager->delete($item_id);
     }
-    
+
+    /**
+     * @param $item_id
+     */
     public function copy($item_id)
     {
         

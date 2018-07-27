@@ -198,6 +198,11 @@ class PostsManager extends Crud\CrudManager
             ->where('[post_topic_id] = %i', $topic_id);
     }
 
+    /**
+     * @param $user_id
+     *
+     * @return Fluent
+     */
     public function getByUser($user_id)
     {
         return $this->dibi

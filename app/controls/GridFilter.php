@@ -347,7 +347,7 @@ class GridFilter extends Control
     {
         $sep = DIRECTORY_SEPARATOR;
         
-        $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'gridFilter' . $sep . 'reset.latte');        
+        $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'gridFilter' . $sep . 'reset.latte');
         $this->template->render();
     }
 

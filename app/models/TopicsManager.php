@@ -75,11 +75,11 @@ class TopicsManager extends Crud\CrudManager
             ->where('MATCH([topic_name]) AGAINST (%s IN BOOLEAN MODE)', $topic_name)
             ->fetchAll();
     }
-    
+
     /**
      * @param int $forum_id
      *
-     * @return Fluent
+     * @return \Dibi\Fluent
      */
     public function getFluentJoinedUsersByForum($forum_id)
     {
@@ -107,11 +107,11 @@ class TopicsManager extends Crud\CrudManager
                 ->where('[topic_forum_id] = %i', $forum_id)
                 ->fetchAll();
     }
-    
+
     /**
      * @param int $user_id
      *
-     * @return Fluent
+     * @return \Dibi\Fluent
      */
     public function getFLuentByUser($user_id)
     {

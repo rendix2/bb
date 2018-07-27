@@ -49,10 +49,12 @@ class RanksManager extends Crud\CrudManager
             return self::NOT_UPLOADED;
         }
     }
-    
+
     /**
-     * 
-     * @param type $rank_file
+     *
+     * @param string $rank_file
+     *
+     * @return bool
      */
     public function removeRankFile($rank_file)
     {
@@ -60,7 +62,7 @@ class RanksManager extends Crud\CrudManager
             FileSystem::delete($this->ranks->getDir() . DIRECTORY_SEPARATOR . $rank_file);
             
             return true;
-        } catch (Nette\IOException $e) {
+        } catch (\Nette\IOException $e) {
             return false;
         }
     }

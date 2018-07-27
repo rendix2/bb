@@ -27,15 +27,15 @@ class LoginPresenter extends BasePresenter
     public $userLginForm;
     
     /**
-     * 
+     *
      * @param mixed $element
      */
     public function checkRequirements($element)
-    {       
+    {
         $this->getUser()->getStorage()->setNamespace('frontend');
         
         parent::checkRequirements($element);
-    }   
+    }
     
     /**
      * before render method
@@ -49,11 +49,11 @@ class LoginPresenter extends BasePresenter
     }
     
     /**
-     * 
+     *
      * @return UserLoginForm
      */
     public function createComponentLoginForm()
     {
-        return $this->userLginForm->create(); 
+        return $this->userLginForm->create();
     }
 }

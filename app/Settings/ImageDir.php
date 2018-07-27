@@ -67,7 +67,7 @@ abstract class ImageDir
     }
     
     /**
-     * 
+     *
      * @return string
      */
     public function getTemplateDir()
@@ -150,6 +150,6 @@ abstract class ImageDir
         }
         
         return count(Finder::findFiles($extensions)->in($this->getDir()));
-    }    
+    }
     
 }

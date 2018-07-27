@@ -10,10 +10,10 @@ namespace App\Models;
 class PostsHistoryManager extends Crud\CrudManager
 {
     /**
-     * 
+     *
      * @param int $post_id
-     * 
-     * @return type
+     *
+     * @return \Dibi\Result|int
      */
     public function deleteByPost($post_id)
     {
@@ -22,12 +22,12 @@ class PostsHistoryManager extends Crud\CrudManager
                 ->where('%n = %i', 'post_id', $post_id)
                 ->execute();
     }
-    
+
     /**
-     * 
+     *
      * @param int $user_id
-     * 
-     * @return type
+     *
+     * @return \Dibi\Result|int
      */
     public function deleteByUser($user_id)
     {

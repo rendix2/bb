@@ -31,8 +31,12 @@ abstract class ModeratorPresenter extends CrudPresenter
     {
         return $this->translator;
     }
-    
-    public function checkRequirements($element) {
+
+    /**
+     * @param $element
+     */
+    public function checkRequirements($element)
+    {
         parent::checkRequirements($element);
         
         $this->getUser()->getStorage()->setNamespace('frontend');

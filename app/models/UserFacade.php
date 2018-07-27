@@ -83,7 +83,19 @@ class UserFacade
     private $postsHistoryManager;
 
     /**
-     * 
+     *
+     * @param PostsManager             $postsManager
+     * @param PostsHistoryManager      $postsHistoryManager
+     * @param PostFacade               $postFacade
+     * @param Mails2UsersManager       $mails2UsersManager
+     * @param ModeratorsManager        $moderatorsManager
+     * @param PMManager                $pmManager
+     * @param ReportsManager           $reportsManager
+     * @param SessionsManager          $sessionsManager
+     * @param ThanksManager            $thanksManager
+     * @param TopicWatchManager        $topicWatchManager
+     * @param Users2ForumsManager      $users2ForumsManager
+     * @param Users2GroupsManager      $users2GroupsManager
      * @param \App\Models\UsersManager $usersManager
      */
     public function __construct(

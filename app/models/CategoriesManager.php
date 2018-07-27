@@ -19,11 +19,12 @@ class CategoriesManager extends Crud\CrudManager implements MpttTable
      * @var \Zebra_Mptt $mptt
      */
     private $mptt;
-   
+
     /**
      * CategoriesManager constructor.
      *
      * @param Connection $dibi
+     * @param IStorage   $storage
      */
     public function __construct(Connection $dibi, IStorage $storage)
     {
@@ -109,16 +110,25 @@ class CategoriesManager extends Crud\CrudManager implements MpttTable
         return 'category_left';
     }
 
+    /**
+     * @return string
+     */
     public function getParent()
     {
         return 'category_parent_id';
     }
 
+    /**
+     * @return string
+     */
     public function getRight()
     {
         return 'category_right';
     }
 
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         return 'category_name';

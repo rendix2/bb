@@ -7,7 +7,8 @@ namespace App\Settings;
  *
  * @author rendi
  */
-class Email {
+class Email
+{
     
     /**
      * @var array $mail
@@ -23,7 +24,7 @@ class Email {
     }
     
     /**
-     * 
+     *
      * @return array
      */
     public function getMail()

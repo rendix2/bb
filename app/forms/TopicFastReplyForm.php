@@ -36,7 +36,14 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
      * @var \App\Models\PostFacade $postFacade 
      */
     private $postFacade;
-    
+
+    /**
+     * TopicFastReplyForm constructor.
+     *
+     * @param TranslatorFactory $translatorFactory
+     * @param User              $user
+     * @param PostFacade        $postFacade
+     */
     public function __construct(TranslatorFactory $translatorFactory, User $user, PostFacade $postFacade)
     {
         parent::__construct();

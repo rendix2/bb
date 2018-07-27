@@ -138,7 +138,11 @@ class GroupPresenter extends Base\AdminPresenter
 
         return $this->addSubmitB($form);
     }
-    
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
     public function editFormSuccess(Form $form, ArrayHash $values) {
         $moderator = $this->usersManager->getByName($values->group_moderator);
         

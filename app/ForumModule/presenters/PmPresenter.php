@@ -49,14 +49,14 @@ class PmPresenter extends CrudPresenter
         
         $this->template->setTranslator($translator);
         $this->getUser()->setAuthorizator($this->authorizator->getAcl());
-    }    
+    }
 
     /**
      * @return BootstrapForm|
      */
     protected function createComponentEditForm()
     {
-        $form = self::createBootstrapForm();
+        $form = $this->createBootstrapForm();
         
         $form->addHidden('pm_to_user_id');
         $form->addHidden('pm_from_user_id');

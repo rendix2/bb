@@ -47,7 +47,7 @@ abstract class ForumPresenter extends ManagerPresenter
     }
     
     /**
-     * 
+     *
      * @return BootstrapForm
      */
     public function createBootstrapForm()
@@ -59,9 +59,9 @@ abstract class ForumPresenter extends ManagerPresenter
     }
 
     /**
-     * 
+     *
      * @return BootstrapForm
-     */    
+     */
     public function getBootstrapForm()
     {
         $bf = parent::getBootstrapForm();
@@ -70,14 +70,17 @@ abstract class ForumPresenter extends ManagerPresenter
         return $bf;
     }
 
+    /**
+     * @param $element
+     */
     public function checkRequirements($element)
     {
         $user = $this->getUser();
         
         $user->getStorage()->setNamespace('frontend');
         
-        parent::checkRequirements($element);     
-    }    
+        parent::checkRequirements($element);
+    }
 
     /**
      *

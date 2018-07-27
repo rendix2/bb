@@ -29,9 +29,12 @@ abstract class AdminPresenter extends CrudPresenter
         parent::__construct($manager);
     }
 
+    /**
+     * @param $element
+     */
     public function checkRequirements($element)
     {
-        $this->getUser()->getStorage()->setNamespace('beckend'); 
+        $this->getUser()->getStorage()->setNamespace('beckend');
         
         parent::checkRequirements($element);
 
@@ -73,23 +76,26 @@ abstract class AdminPresenter extends CrudPresenter
     }
     
     /**
-     * 
+     *
      * @return BootstrapForm
      */
-    public function getBootstrapForm() {
+    public function getBootstrapForm()
+    {
         $bf = parent::getBootstrapForm();
         $bf->setTranslator($this->getAdminTranslator());
         
         return $bf;
-    }  
+    }
+
     /**
-     * 
+     *
      * @return BootstrapForm
      */
-    public function createBootstrapForm() {
+    public function createBootstrapForm()
+    {
         $bf = BootstrapForm::create();
         $bf->setTranslator($this->getAdminTranslator());
         
         return $bf;
-    }    
+    }
 }

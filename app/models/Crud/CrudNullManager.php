@@ -4,18 +4,15 @@ namespace App\Models\Crud;
 
 namespace App\Models\Crud;
 
-use App\Models\Manager;
-use App\Presenters\crud\CrudPresenter;
-use dibi;
+
 use Dibi\Connection;
 use Dibi\Fluent;
 use Dibi\Result;
 use Dibi\Row;
-use Nette\Caching\Cache;
+
 use Nette\Caching\IStorage;
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
-use Tracy\ILogger;
+
 
 /**
  * Description of CrudNullManager
@@ -33,6 +30,7 @@ class CrudNullManager extends CrudManager implements ICrudManager
      * CrudNullManager constructor.
      *
      * @param Connection $dibi
+     * @param IStorage   $storage
      */
     public function __construct(Connection $dibi, IStorage $storage)
     {
@@ -142,7 +140,7 @@ class CrudNullManager extends CrudManager implements ICrudManager
     /**
      * @param ArrayHash $item_data
      *
-     * @return Result|int
+     * @return void
      */
     public function add(ArrayHash $item_data)
     {
@@ -151,7 +149,7 @@ class CrudNullManager extends CrudManager implements ICrudManager
     /**
      * @param int $item_id
      *
-     * @return Result|int
+     * @return void
      */
     public function delete($item_id)
     {
@@ -167,18 +165,17 @@ class CrudNullManager extends CrudManager implements ICrudManager
     /**
      * @param array $item_id
      *
-     * @return Result|int
+     * @return void
      */
     public function deleteMulti(array $item_id)
     {
     }
 
-
     /**
      * @param int       $item_id
      * @param ArrayHash $item_data
      *
-     * @return Result|int
+     * @return void
      */
     public function update($item_id, ArrayHash $item_data)
     {
@@ -188,7 +185,7 @@ class CrudNullManager extends CrudManager implements ICrudManager
      * @param array     $item_id
      * @param ArrayHash $item_data
      *
-     * @return Result|int
+     * @return void
      */
     public function updateMulti(array $item_id, ArrayHash $item_data)
     {

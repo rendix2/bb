@@ -39,12 +39,12 @@ class IndexPresenter extends BasePresenter
     public $cacheDir;
 
     /**
-     * 
+     *
      * @param type $element
      */
     public function checkRequirements($element)
     {
-        $this->getUser()->getStorage()->setNamespace('beckend'); 
+        $this->getUser()->getStorage()->setNamespace('beckend');
         
         parent::checkRequirements($element);
 
@@ -108,5 +108,5 @@ class IndexPresenter extends BasePresenter
         $this->user->logout(true);
         $this->flashMessage('User was logged out.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect(':Forum:Index:default');
-    }    
+    }
 }

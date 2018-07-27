@@ -30,12 +30,12 @@ class ThanksFacade
         $this->thanksManager = $thanksManager;
         $this->usersManager  = $usersManager;
     }
-    
+
     /**
-     * 
+     *
      * @param ArrayHash $item_data
-     * 
-     * @return type
+     *
+     * @return \Dibi\Result|int
      */
     public function add(ArrayHash $item_data)
     {

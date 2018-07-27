@@ -22,7 +22,7 @@ use App\Settings\Avatars;
 use App\Settings\Ranks;
 use App\Controls\BBMailer;
 use App\Services\ChangePasswordFactory;
-use App\Services\DeleteAvatarFactory;
+
 
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -201,7 +201,10 @@ class UserPresenter extends Base\ForumPresenter
     {
         // case when you do not send request to reset password
     }
-    
+
+    /**
+     * @param $user_id
+     */
     public function handleSetFavourite($user_id)
     {
         $res = $this->favouriteUsersManager->addByLeft($this->getUser()->getId(), [$user_id]); 
@@ -213,7 +216,10 @@ class UserPresenter extends Base\ForumPresenter
         //$this->redrawControl('favourite');
         $this->redirect('this');
     }
-    
+
+    /**
+     * @param $user_id
+     */
     public function handleUnSetFavourite($user_id)
     {
         $res = $this->favouriteUsersManager->fullDelete($this->getUser()->getId(), $user_id);
@@ -495,7 +501,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @return DeleteAvatarControl
+     * @return \App\Forms\UserDeleteAvatarForm
      */
     protected function createComponentDeleteAvatar()
     {
@@ -509,10 +515,10 @@ class UserPresenter extends Base\ForumPresenter
     {
         return new UserResetPasswordForm($this->translatorFactory, $this->getManager());
     }
-    
+
     /**
-     * 
-     * @return BootstrapForm
+     *
+     * @return UserChangeUserNameForm
      */
     protected function createComponentChangeUserNameForm()
     {

@@ -22,15 +22,15 @@ class CategoryFacade
     
     /**
      *
-     * @var ForumsManager $forumsManager 
+     * @var ForumsManager $forumsManager
      */
     private $forumsManager;
 
     /**
-     * 
-     * @param \App\Models\CategoriesManager $categoriesManager
-     * @param \App\Models\ForumFacade $forumFacade
-     * @param \App\Models\ForumsManager $forumsManager
+     *
+     * @param CategoriesManager $categoriesManager
+     * @param ForumFacade       $forumFacade
+     * @param ForumsManager     $forumsManager
      */
     public function __construct(CategoriesManager $categoriesManager, ForumFacade $forumFacade, ForumsManager $forumsManager)
     {
@@ -40,9 +40,9 @@ class CategoryFacade
     }
     
     /**
-     * 
+     *
      * @param int $item_id
-     * 
+     *
      * @return bool
      */
     public function delete($item_id)
@@ -60,5 +60,5 @@ class CategoryFacade
         }
         
         return $this->categoriesManager->delete($item_id);
-    }    
+    }
 }

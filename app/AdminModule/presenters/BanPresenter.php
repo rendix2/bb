@@ -54,6 +54,6 @@ class BanPresenter extends Base\AdminPresenter
         $form->addText('ban_email', 'User mail:');
         $form->addText('ban_ip', 'User IP:');
         
-       return $this->addSubmitB($form);
+        return $this->addSubmitB($form);
     }
 }
