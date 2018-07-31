@@ -8,9 +8,11 @@ use App\Settings\TopicsSetting;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Models\TopicsManager;
+use App\Forms\ForumSearchInForumForm;
 use Nette\Application\UI\Form;
 use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;
+use App\Controls\BreadCrumbControl;
 
 /**
  * Description of ForumPresenter
@@ -148,29 +150,23 @@ final class ForumPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @return BootstrapForm
+     * @return ForumSearchInForumForm
      */
     protected function createComponentSearchInForumForm()
     {
-         $form = $this->createBootstrapForm();
-         $form->addText('search_form', 'Search forum:');
-         $form->addSubmit('submit', 'Search');
-         $form->onSuccess[] = [$this, 'searchInForumFormSuccess'];
-         
-         return $form;
+        return new ForumSearchInForumForm($this->getForumTranslator());
     }
-
+    
     /**
-     * @param Form      $form
-     * @param ArrayHash $values
+     * @return BreadCrumbControl
      */
-    public function searchInForumFormSuccess(Form $form, ArrayHash $values)
+    protected function createComponentBreadCrumbAll()
     {
-        $this->redirect(
-            'Forum:default',
-            $this->getParameter('forum_id'),
-            $this->getParameter('page'),
-            $values->search_form
-        );
-    }
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['text' => 'menu_forum']            
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }    
 }

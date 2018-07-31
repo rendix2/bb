@@ -143,7 +143,7 @@ services:
     PollsVotesManager:
         class: App\Models\PollsVotesManager
     PMManager:
-        class: \App\Models\PMManager
+        class: \App\Models\PmManager
     Authenticator:
         class: App\Authenticator
     Authorizator:

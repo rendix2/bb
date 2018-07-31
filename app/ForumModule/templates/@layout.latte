@@ -38,6 +38,9 @@
                 <li class="nav-item {if $presenter->getName() === 'Forum:User' && $presenter->getAction() === 'list'}active{/if}">
                     <a class="nav-link" href="{link User:list}">{_menu_users}</a>
                 </li>
+                <li class="nav-item {if $presenter->getName() === 'Forum:Pm'}active{/if}">
+                    <a class="nav-link" href="{link Pm:default}">{_menu_pm}</a>
+                </li>                
                 <li class="nav-item">
                     <a class="nav-link" href="{link User:logout}">{_logout}</a>
                 </li>
@@ -76,11 +79,35 @@
 
 {block scripts}
     <script src="{$basePath}/js/jquery-3.3.1.min.js"></script>
-    <script src="https://nette.github.io/resources/js/netteForms.min.js"></script>
+    {*<script src="https://nette.github.io/resources/js/netteForms.min.js"></script>*}
     <script src="{$basePath}/js/main.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="{$basePath}/js/tinymce/tinymce.min.js"></script>
+    <script src="{$basePath}/js/nette.ajax.js"></script>
+    <script defer src="{$basePath}/js/live-form-validation.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $.nette.init();
+        });
+        
+        tinyMCE.init({
+            mode : "specific_textareas",
+            editor_selector : "mceEditor",
+            plugins: "image link code",
+            toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code",
+            convert_urls: false
+        });
+    </script> 
+    <script>
+        LiveForm.setOptions({
+            messageErrorPrefix: 'Error: ',
+            messageParentClass: 'has-error',
+            wait: 500
+        });
+    </script>     
+    
 {/block}
 </body>
 </html>

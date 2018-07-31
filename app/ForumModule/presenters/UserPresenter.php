@@ -21,6 +21,7 @@ use App\Models\FavouriteUsersManager;
 use App\Settings\Avatars;
 use App\Settings\Ranks;
 use App\Controls\BBMailer;
+use App\Controls\BreadCrumbControl;
 use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
 
@@ -451,7 +452,7 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function renderAdminList($page)
     {
-                $this->template->setFile(__DIR__.'/../templates/User/list.latte');
+        $this->template->setFile(__DIR__.'/../templates/User/list.latte');
         
         $users = $this->getManager()
                 ->getAllFluent()
@@ -595,4 +596,50 @@ class UserPresenter extends Base\ForumPresenter
 
         $this->redirect('User:edit');
     }
+    
+    /**
+     * BREAD CRUMBS
+     */
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbEdit()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['text' => 'menu_user']            
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }  
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbPosts()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            2 => ['link' => 'User:profile', 'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
+            3 => ['text' => 'menu_posts']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }  
+
+        /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbProfile()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            2 => ['text' => 'menu_user']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    } 
 }

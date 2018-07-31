@@ -37,18 +37,8 @@
 
     <div class="col-sm-12 main">
         <div class="float-left">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{link Index:default}">{_menu_index}</a></li>
-                <li class="breadcrumb-item">{_menu_forum}</li>
-            </ol>
-            {form searchInForumForm}
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        {input search_form}
-                        </div>            
-                    {input submit}
-                </div>                               
-            {/form}                 
+            {control breadCrumbAll}
+            {control searchInForumForm}
         </div>
         <div class="float-right">
             <a href="{link Forum:rules, $presenter->getParameter('forum_id')}">{_rules}</a>
@@ -71,7 +61,10 @@
                     <th>{_topic_count_views}</th>
                     {/if}
                     <th></th>
-                    {foreach $topics as $topic}
+                </tr>
+            </thead>
+            <tbody>
+               {foreach $topics as $topic}
                 <tr>
                     <td>
                         <a href="{link Topic:edit, $presenter->getParameter('forum_id'), $topic->topic_id}">{$topic->topic_id}</a>
@@ -106,25 +99,14 @@
                     </td>
                 </tr>
                 {/foreach}
+            </tbody>
         </table>
     </div>
 
     <div class="col-sm-12">
         <div class="float-left">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{link Index:default}">{_menu_index}</a>
-                </li>
-                <li class="breadcrumb-item">{_menu_forum}</li>
-            </ol>
-            {form searchInForumForm}
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        {input search_form}
-                        </div>            
-                    {input submit}
-                </div>                               
-            {/form}             
+            {control breadCrumbAll}
+            {control searchInForumForm}
         </div>
         <div class="float-right">
             {control paginator}

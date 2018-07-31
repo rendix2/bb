@@ -1,0 +1,17 @@
+{block content}
+<div class="row">
+    <div class="col-sm-12" >
+        {control userSearch}
+    </div>
+</div>    
+<div class="row">
+    {snippet users}
+        <div class="col-sm-12">
+        {foreach $users as $userData}
+            <a href="{plink setUserId! $userData->user_id, $userData->user_name}" class="ajax">{$userData->user_name}</a>
+            <br>
+        {/foreach}
+        </div>
+    {/snippet}
+</div>
+{/block}

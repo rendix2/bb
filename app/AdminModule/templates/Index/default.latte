@@ -23,7 +23,11 @@
         </div>
     </div>        
 
-            <a href="{link Index:deleteSessions}">{_index_delete_sessions}</a>
+    {if $countLogged}
+    <a href="{link Index:deleteSessions}" title="{_index_delete_sessions}">
+        <i class="fas fa-trash-alt"></i>                
+    </a>
+    {/if}
         
     <div class="col-sm-12 main mt-3">       
         {if $countLogged <= $maxLogged}

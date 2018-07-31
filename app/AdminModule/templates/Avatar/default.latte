@@ -18,7 +18,9 @@
     {foreach $avatars as $avatar}
         <div class="col-sm-5 mb-3 {if $iterator->counter % 2}float-left{else}float-right{/if}">
         <img src="{$basePath}/{$avatarsDir}/{$avatar->user_avatar}" class="img-thumbnail img-fluid" alt="{$avatar->user_name}" title="{$avatar->user_name}">
-        <a href="{link deleteAvatar!, $avatar->user_id, $avatar->user_avatar}">{_delete}</a>
+        <a href="{link deleteAvatar!, $avatar->user_id, $avatar->user_avatar}" title="{_delete}">
+            <i class="fas fa-trash-alt"></i>
+        </a>
         </div>
     {/foreach}
 </div>

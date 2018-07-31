@@ -44,7 +44,9 @@
                         <td>{$item->ban_email}</td>
                         <td>{$item->ban_ip}</td>
                         <td>
-                            <a href="{link Ban:delete, $item->ban_id}">{_delete}</a>
+                            <a href="{link Ban:delete, $item->ban_id}" title="{_delete}">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
                         </td>
                     </tr>
                 {/foreach}

@@ -9,6 +9,7 @@ use App\Models\ForumsManager;
 use App\Models\GroupsManager;
 use App\Models\Users2GroupsManager;
 use App\Models\UsersManager;
+use App\Controls\UserSearchControl;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -75,33 +76,34 @@ class GroupPresenter extends Base\AdminPresenter
 
         return $result;
     }
-
-    public function startup()
+    
+    /**
+     * 
+     * @param int    $user_id
+     * @param string $user_name
+     */
+    public function handleSetUserId($user_id, $user_name)
     {
-        parent::startup();
-
-        if ($this->getAction() === 'default') {
-            $this->gf->setTranslator($this->getAdminTranslator());
-            $this->gf->addFilter('group_id', 'group_id', GridFilter::INT_EQUAL);
-            $this->gf->addFilter('group_name', 'group_name', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter(null, null, GridFilter::NOTHING);
-
-            $this->addComponent($this->gf, 'gridFilter');
-        }
-    }
+        $this[self::FORM_NAME]->setDefaults(['group_moderator_id' => $user_id, 'group_moderator' => $user_name]);
+        $this->redrawControl('editForm');
+    }    
 
     /**
-     * @param null $id
+     * @param int|null $id
      */
     public function renderEdit($id = null)
     {
         parent::renderEdit($id);
 
-        if ($id) {
-            $item      = $this->template->item;        
-            $moderator = $this->usersManager->getById($item->group_moderator_id);
+        if ($id) {            
+            if ($this->getParameter('user_name') && $this->getParameter('user_id')) {
+                $this['editForm']->setDefaults(['group_moderator' => $this->getParameter('user_name'), 'group_moderator_id' => $this->getParameter('user_id')]);
+            } else {
+                $item      = $this->template->item;        
+                $moderator = $this->usersManager->getById($item->group_moderator_id);
         
-            $this['editForm']->setDefaults(['group_moderator' => $moderator->user_name]);
+                $this['editForm']->setDefaults(['group_moderator' => $moderator->user_name]);                
+            }            
         }
         
         $this->template->countOfUsers = $this->users2GroupsManager->getCountByRight($id);
@@ -120,8 +122,7 @@ class GroupPresenter extends Base\AdminPresenter
             $data[$permission->forum_id]['topic_thank']  = $permission->topic_thank;
         }
 
-        $this->template->permissions = $data;
-        
+        $this->template->permissions = $data;        
     }
 
     /**
@@ -131,26 +132,48 @@ class GroupPresenter extends Base\AdminPresenter
     {
         $form = $this->getBootstrapForm();
 
-        //$form->addHidden('group_moderator_id');
+        $form->addHidden('group_moderator_id');
         $form->addText('group_name', 'Group name:')
             ->setRequired(true);
-        $form->addText('group_moderator', 'Group moderator:');
+        $form->addText('group_moderator', 'Group moderator:')->setDisabled();
 
         return $this->addSubmitB($form);
     }
     
-    public function editFormSuccess(Form $form, ArrayHash $values) {
-        $moderator = $this->usersManager->getByName($values->group_moderator);
-        
-        if ($moderator) {
-            $values->group_moderator_id = $moderator->user_id;
-        } else {
-            unset($values->group_moderator_id);
-        }
-        
+    /**
+     * 
+     * @return GridFilter
+     */
+    protected function createComponentGridFilter()
+    {
+        $this->gf->setTranslator($this->getAdminTranslator());
+    
+        $this->gf->addFilter('group_id', 'group_id', GridFilter::INT_EQUAL);
+        $this->gf->addFilter('group_name', 'group_name', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter(null, null, GridFilter::NOTHING);
+
+        return $this->gf;
+    }
+
+    /**
+     * 
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function editFormSuccess(Form $form, ArrayHash $values)
+    {              
         unset($values->group_moderator);
-                
+        
         parent::editFormSuccess($form, $values);                
+    }
+    
+    /**
+     * 
+     * @return UserSearchControl
+     */
+    protected function createComponentUserSearch()
+    {
+        return new UserSearchControl($this->usersManager, $this->getAdminTranslator());
     }
 
     /**

@@ -25,25 +25,22 @@ class ReportPresenter extends Base\AdminPresenter
     }
     
     /**
-     * startup method
+     * 
+     * @return GridFilter
      */
-    public function startup()
+    protected function createComponentGridFilter()
     {
-        parent::startup();
-        
-        if ($this->getAction() === 'default') {
-            $this->gf->setTranslator($this->getAdminTranslator());
+        $this->gf->setTranslator($this->getAdminTranslator());
             
-            $this->gf->addFilter('report_id', 'report_id', GridFilter::INT_EQUAL);
-            $this->gf->addFilter('report_time', 'report_time', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter('user_name', 'report_user', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter('forum_name', 'report_forum', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter('topic_name', 'report_topic', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter('post_title', 'report_post', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter(null, null, GridFilter::NOTHING);
-
-            $this->addComponent($this->gf, 'gridFilter');
-        }
+        $this->gf->addFilter('report_id', 'report_id', GridFilter::INT_EQUAL);
+        $this->gf->addFilter('report_time', 'report_time', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('user_name', 'report_user', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('forum_name', 'report_forum', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('topic_name', 'report_topic', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('post_title', 'report_post', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter(null, null, GridFilter::NOTHING);
+        
+        return $this->gf;
     }
 
     /**

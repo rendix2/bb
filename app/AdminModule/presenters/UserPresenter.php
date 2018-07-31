@@ -101,31 +101,6 @@ class UserPresenter extends Base\AdminPresenter
     {
         parent::__construct($manager);
     }
-
-    /**
-     *
-     */
-    public function startup()
-    {
-        parent::startup();
-
-        if ($this->getAction() === 'default') {
-            $this->gf->setTranslator($this->getAdminTranslator());
-            
-            $this->gf->addFilter('user_id', 'user_id', GridFilter::INT_EQUAL);
-            $this->gf->addFilter('user_name', 'user_name', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter('user_post_count', 'user_post_count', GridFilter::FROM_TO_INT);
-            $this->gf->addFilter('user_topic_count', 'user_topic_count', GridFilter::FROM_TO_INT);
-            $this->gf->addFilter('user_thank_count', 'user_thank_count', GridFilter::FROM_TO_INT);
-            $this->gf->addFilter('user_role_id', 'user_role_id', GridFilter::CHECKBOX_LIST, Authorizator::ROLES);
-            $this->gf->addFilter('user_active', 'user_active', GridFilter::CHECKBOX_LIST, [0 => 'Not active', 1 =>'Active']);
-            $this->gf->addFilter('user_register_time', 'user_register_time', GridFilter::DATE_TIME);
-            $this->gf->addFilter('user_last_login_time', 'user_last_login_time', GridFilter::DATE_TIME);
-            $this->gf->addFilter(null, null, GridFilter::NOTHING);
-
-            $this->addComponent($this->gf, 'gridFilter');
-        }        
-    }
     
     public function renderDefault($page = 1) {
         parent::renderDefault($page);
@@ -152,6 +127,28 @@ class UserPresenter extends Base\AdminPresenter
         $this->template->ranksDir   = $this->rank->getTemplateDir();  
     }
     
+    /**
+     * 
+     * @return GridFilter
+     */
+    protected function createComponentGridFilter()
+    {
+        $this->gf->setTranslator($this->getAdminTranslator());
+
+        $this->gf->addFilter('user_id', 'user_id', GridFilter::INT_EQUAL);
+        $this->gf->addFilter('user_name', 'user_name', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('user_post_count', 'user_post_count', GridFilter::FROM_TO_INT);
+        $this->gf->addFilter('user_topic_count', 'user_topic_count', GridFilter::FROM_TO_INT);
+        $this->gf->addFilter('user_thank_count', 'user_thank_count', GridFilter::FROM_TO_INT);
+        $this->gf->addFilter('user_role_id', 'user_role_id', GridFilter::CHECKBOX_LIST, Authorizator::ROLES);
+        $this->gf->addFilter('user_active', 'user_active', GridFilter::CHECKBOX_LIST, [0 => 'Not active', 1 => 'Active']);
+        $this->gf->addFilter('user_register_time', 'user_register_time', GridFilter::DATE_TIME);
+        $this->gf->addFilter('user_last_login_time', 'user_last_login_time', GridFilter::DATE_TIME);
+        $this->gf->addFilter(null, null, GridFilter::NOTHING);
+            
+        return $this->gf;
+    }
+
     /**
      * @return ChangePasswordControl
      */

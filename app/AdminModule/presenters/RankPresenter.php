@@ -39,24 +39,6 @@ class RankPresenter extends Base\AdminPresenter
     }
     
     /**
-     * startup method
-     */
-    public function startup()
-    {
-        parent::startup();
-        
-        if ($this->getAction() === 'default') {
-            $this->gf->setTranslator($this->getAdminTranslator());
-            
-            $this->gf->addFilter('rank_id', 'rank_id', GridFilter::INT_EQUAL);
-            $this->gf->addFilter('rank_name', 'rank_name', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter(null, null, GridFilter::NOTHING);
-
-            $this->addComponent($this->gf, 'gridFilter');
-        }
-    }
-    
-    /**
      * 
      * @param int $id
      */
@@ -66,8 +48,23 @@ class RankPresenter extends Base\AdminPresenter
         
         $this->template->ranksDir = $this->ranks->getTemplateDir();
     }
+    
+    /**
+     * 
+     * @return GridFilter
+     */
+    protected function createComponentGridFilter()
+    {
+        $this->gf->setTranslator($this->getAdminTranslator());
+            
+        $this->gf->addFilter('rank_id', 'rank_id', GridFilter::INT_EQUAL);
+        $this->gf->addFilter('rank_name', 'rank_name', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter(null, null, GridFilter::NOTHING);
+            
+        return $this->gf;
+    }
 
-        /**
+    /**
      * @return BootstrapForm
      */
     protected function createComponentEditForm()

@@ -51,30 +51,31 @@ class EmailPresenter extends Base\AdminPresenter
 
         $this->usersManager = $usersManager;
     }
-
-    /**
-     *
-     */
-    public function startup()
-    {
-        parent::startup();
-
-        if ($this->getAction() === 'default') {
-            $this->gf->setTranslator($this->getAdminTranslator());
-
-            $this->gf->addFilter('mail_id', 'mail_id', GridFilter::INT_EQUAL);
-            $this->gf->addFilter('mail_subject', 'mail_subject', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter('mail_time', 'mail_time', GridFilter::TEXT_LIKE);
-
-            $this->addComponent($this->gf, 'gridFilter');
-        }
-    }
     
+    /**
+     * 
+     * @param int|null $id
+     */
     public function renderEdit($id = null)
     {
         parent::renderEdit($id);
         
         $this->template->emails = $this->mail2UsersManager->getAllJoinedByLeft($id);                
+    }
+    
+    /**
+     * 
+     * @return GridFilter
+     */
+    protected function createComponentGridFilter()
+    {
+        $this->gf->setTranslator($this->getAdminTranslator());
+
+        $this->gf->addFilter('mail_id', 'mail_id', GridFilter::INT_EQUAL);
+        $this->gf->addFilter('mail_subject', 'mail_subject', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('mail_time', 'mail_time', GridFilter::TEXT_LIKE);
+
+        return $this->gf;
     }
 
     /**

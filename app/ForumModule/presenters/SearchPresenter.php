@@ -6,6 +6,7 @@ use App\Controls\BootstrapForm;
 use App\Models\PostsManager;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
+use App\Controls\BreadCrumbControl;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -165,4 +166,17 @@ class SearchPresenter extends Base\ForumPresenter
 
         $this->template->userData = $result;
     }
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbDefault()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['text' => 'menu_search']            
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }    
 }

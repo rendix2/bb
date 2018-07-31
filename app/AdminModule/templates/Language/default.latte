@@ -41,7 +41,9 @@
                         </td>
                         <td>{$item->lang_name}</td>
                         <td>
-                            <a href="{link Language:delete, $item->lang_id}">{_delete}</a>
+                            <a href="{link Language:delete, $item->lang_id}" title="{_delete}">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
                         </td>
                     </tr>
                 {/foreach}

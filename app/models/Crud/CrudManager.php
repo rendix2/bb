@@ -13,13 +13,14 @@ use Nette\Caching\IStorage;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
+use Exception;
 
 /**
  * Description of CrudManager
  *
  * @author rendi
  */
-abstract class CrudManager extends Manager implements ICrudManager
+abstract class CrudManager extends Manager //implements ICrudManager
 {
     /**
      * @var string
@@ -55,20 +56,75 @@ abstract class CrudManager extends Manager implements ICrudManager
      * @var IStorage $storage
      */
     protected $storage;
+    
+    /**
+     *
+     * @var array $columnNames
+     */
+    private $columnNames;
 
     /**
      * CrudManager constructor.
      *
      * @param Connection $dibi
+     * @throws Exception
      */
     public function __construct(Connection $dibi, IStorage $storage)
     {
         parent::__construct($dibi);
 
-        $this->storage         = $storage;
-        $this->table           = $this->getNameOfTableFromClass();
-        $this->managerCache    = new Cache($storage, $this->getTable());
-        $this->primaryKey      = $this->getPrimaryKeyQuery();        
+        $this->storage = $storage;
+        
+        $table = $this->getNameOfTableFromClass();
+        
+        $databaseCache = new Cache($storage, $this->dibi->getDatabaseInfo()->getName());
+        $cachedTables  = $databaseCache->load('tables');
+                     
+        if ($cachedTables === null) {
+            $cachedTables = $this->dibi->getDatabaseInfo()->getTableNames();
+            $databaseCache->save('tables', $cachedTables);
+        }
+        
+        if (!in_array($table, $cachedTables)) {
+            throw new Exception("Table {$table} does not exists in database {$this->dibi->getDatabaseInfo()->getName()}");
+        }
+                
+        $this->table        = $table;
+        $this->managerCache = new Cache($storage, $this->getTable());
+        $this->primaryKey   = $this->getPrimaryKeyQuery();
+        $this->columnNames  = $this->getColumnsQuery();
+    }
+    
+    /**
+     * 
+     * @param string $column
+     * @param string $value
+     * 
+     * @return type
+     * @throws Exception
+     */
+    public function get($column, $value)
+    {
+        if (!in_array($column, $this->columnNames)) {
+            throw new Exception("Non existing {$column} column in table {$this->table}");
+        }
+        
+        $type = $this->getColumnTypeQuery($column);
+        
+        $query = $this->dibi->select('*')
+                ->from($this->table);
+        
+        if ($type === 'TEXT' || $type === 'VARCHAR') {
+            $query = $query->where('%n = %s', $column, $value);
+        } else if ($type === 'INT') {
+            $query = $query->where('%n = %i', $column, $value);
+        } else if (is_array($value)) {
+            $query = $query->where('%n IN %in', $column, $value);
+        } else if ($type === 'ENUM') {
+            $query = $query->where('%n = %s', $column, $value);
+        }
+        
+       return $query;
     }
 
     /**
@@ -228,23 +284,22 @@ abstract class CrudManager extends Manager implements ICrudManager
      */
     private function getPrimaryKeyQuery()
     {
-        $cachedPrimaryKey = $this->managerCache->load('primaryKey_' . $this->table);
+        $cachedPrimaryKey = $this->managerCache->load('primaryKey_' . $this->table);        
 
-        if ($cachedPrimaryKey === null) {
-            $data = $this->dibi
-                ->select('COLUMN_NAME')
-                ->from('information_schema.COLUMNS')
-                ->where('[TABLE_NAME] = %s', $this->table)
-                ->where('[COLUMN_KEY] = %s', 'PRI')
-                ->fetchSingle();
-
-            if (!$data) {
-                Debugger::log('Primary key of table:' . $this->table . ' was not found!', ILogger::CRITICAL);
-            }
+        if ($cachedPrimaryKey === null) {            
+            $columns = $this->dibi->getDatabaseInfo()->getTable($this->table)->getColumns();
+            
+            foreach ($columns as $column) {
+                if ($column->getVendorInfo('Key') === 'PRI')
+                {
+                    $cachedPrimaryKey = $column->name;
+                    break;
+                }
+            }            
 
             $this->managerCache->save(
                 'primaryKey_' . $this->table,
-                $cachedPrimaryKey = $data,
+                $cachedPrimaryKey,
                 [
                     Cache::EXPIRE => '168 hours',
                 ]
@@ -252,6 +307,48 @@ abstract class CrudManager extends Manager implements ICrudManager
         }
 
         return $cachedPrimaryKey;
+    }
+    
+    /**
+     * @return string
+     */
+    private function getColumnsQuery()
+    {
+        $cachedColumns = $this->managerCache->load('columns_' . $this->table);
+
+        if ($cachedColumns === null) {
+            // runs query!!!!! we need cache
+            $cachedColumns = $this->dibi->getDatabaseInfo()->getTable($this->table)->columnNames;            
+            
+            $this->managerCache->save(
+                'columns_' . $this->table,
+                $cachedColumns,
+                [
+                    Cache::EXPIRE => '168 hours',
+                ]
+            );
+        }
+
+        return $cachedColumns;
+    }
+    
+    private function getColumnTypeQuery($column)
+    {
+        $cachedColumn = $this->managerCache->load('Columns_objects_' . $this->table. '_column_'.$column);
+        
+        if ( $cachedColumn === null) {
+            $cachedColumn = $this->dibi->getDatabaseInfo()->getTable($this->table)->getColumn($column)->getNativeType();            
+            
+            $this->managerCache->save(
+                'Columns_objects_' . $this->table. '_column_'.$column,
+                $cachedColumn,
+                [
+                    Cache::EXPIRE => '168 hours',
+                ]
+            );
+        }
+        
+        return $cachedColumn;
     }
 
     /**

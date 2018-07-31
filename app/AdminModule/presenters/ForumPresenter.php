@@ -65,24 +65,6 @@ class ForumPresenter extends Base\AdminPresenter
     {
         parent::__construct($manager);
     }
-
-    /**
-     *
-     */
-    public function startup()
-    {
-        parent::startup();
-        
-        if ($this->getAction() === 'default') {
-            $this->gf->setTranslator($this->getAdminTranslator());
-            
-            $this->gf->addFilter('forum_id', 'forum_id', GridFilter::INT_EQUAL);
-            $this->gf->addFilter('forum_name', 'forum_name', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter(null, null, GridFilter::NOTHING);
-
-            $this->addComponent($this->gf, 'gridFilter');
-        }
-    }
     
     public function handleReorder()
     {
@@ -181,5 +163,20 @@ class ForumPresenter extends Base\AdminPresenter
         $form->addCheckbox('forum_topic_delete', 'Forum delete topic:');
 
         return $this->addSubmitB($form);
+    }
+    
+    /**
+     * 
+     * @return GridFilter
+     */
+    protected function createComponentGridFilter()
+    {
+        $this->gf->setTranslator($this->getAdminTranslator());
+            
+        $this->gf->addFilter('forum_id', 'forum_id', GridFilter::INT_EQUAL);
+        $this->gf->addFilter('forum_name', 'forum_name', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter(null, null, GridFilter::NOTHING);        
+        
+        return $this->gf;
     }
 }

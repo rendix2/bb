@@ -43,7 +43,9 @@
                         </td>
                         <td>{$item->group_name}</td>
                         <td>
-                            <a href="{link Group:delete, $item->group_id}">{_delete}</a>
+                            <a href="{link Group:delete, $item->group_id}" title="{_delete}">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
                         </td>
                     </tr>
                 {/foreach}

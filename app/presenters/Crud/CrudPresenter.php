@@ -115,6 +115,7 @@ abstract class CrudPresenter extends ManagerPresenter
     {
         $form->addSubmit('Send', 'Send');
         $form->onSuccess[] = [$this, 'editFormSuccess'];
+        $form->onValidate[] = [$this, 'onValidate'];
 
         return $form;
     }
@@ -128,6 +129,7 @@ abstract class CrudPresenter extends ManagerPresenter
     {
         $form->addSubmit('Send', 'Send');
         $form->onSuccess[] = [$this, 'editFormSuccess'];
+        $form->onValidate[] = [$this, 'onValidate'];
 
         return $form;
     }

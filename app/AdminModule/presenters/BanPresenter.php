@@ -24,26 +24,6 @@ class BanPresenter extends Base\AdminPresenter
     }
 
     /**
-     *
-     */
-    public function startup()
-    {
-        parent::startup();
-        
-        if ($this->getAction() === 'default') {
-            $this->gf->setTranslator($this->getAdminTranslator());
-            
-            $this->gf->addFilter('ban_id', 'ban_id', GridFilter::INT_EQUAL);
-            $this->gf->addFilter('ban_user_name', 'ban_user_name', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter('ban_email', 'ban_email', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter('ban_ip', 'ban_ip', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter(null, null, GridFilter::NOTHING);
-
-            $this->addComponent($this->gf, 'gridFilter');
-        }
-    }
-
-    /**
      * @return BootstrapForm|mixed
      */
     protected function createComponentEditForm()
@@ -55,5 +35,21 @@ class BanPresenter extends Base\AdminPresenter
         $form->addText('ban_ip', 'User IP:');
         
        return $this->addSubmitB($form);
+    }
+    
+    /**
+     * @return GridFilter
+     */
+    protected function createComponentGridFilter()
+    {
+        $this->gf->setTranslator($this->getAdminTranslator());
+            
+        $this->gf->addFilter('ban_id', 'ban_id', GridFilter::INT_EQUAL);
+        $this->gf->addFilter('ban_user_name', 'ban_user_name', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('ban_email', 'ban_email', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('ban_ip', 'ban_ip', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter(null, null, GridFilter::NOTHING);
+        
+        return $this->gf;
     }
 }

@@ -53,7 +53,9 @@
                         <td>{$item->user_register_time|date:'%d.%m.%Y %H:%M:%S'}</td>
                         <td>{$item->user_last_login_time|date:'%d.%m.%Y %H:%M:%S'}</td>
                         <td>
-                            <a href="{link User:delete, $item->user_id}">{_delete}</a>
+                            <a href="{link User:delete, $item->user_id}" title="{_delete}">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
                         </td>
                     </tr>
                 {/foreach}

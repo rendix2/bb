@@ -53,6 +53,12 @@ class BootstrapForm extends Form
      * @api
      */
     private $labelColumnCount;
+    
+    /**
+     *
+     * @var bool $ajax
+     */
+    private $ajax;
 
     /**
      * BootstrapForm constructor.
@@ -65,7 +71,7 @@ class BootstrapForm extends Form
      *
      * @api
      */
-    public function __construct($columnCount = 6, $columnType = 'sm', $labelColumnCount = 7, IContainer $parent = null, $name = null)
+    public function __construct($columnCount = 6, $columnType = 'sm', $labelColumnCount = 6, $ajax = false, IContainer $parent = null, $name = null)
     {
         parent::__construct(
             $parent,
@@ -76,14 +82,80 @@ class BootstrapForm extends Form
         $this->columnCount      = $columnCount;
         $this->columnType       = $columnType;
         $this->labelColumnCount = $labelColumnCount;
+        $this->ajax             = $ajax;
     }
 
+    /**
+     * 
+     * @return \App\Controls\BootstrapForm
+     */
     public static function create()
     {
         return new BootstrapForm();
     }
+    
+    /**
+     * 
+     * @return \App\Controls\BootstrapForm
+     */
+    public static function createAjax()
+    {
+        return self::create()->setAjax(true);
+    }
+    
+    /**
+     * 
+     * @param int $count
+     * 
+     * @return \App\Controls\BootstrapForm
+     */
+    public function setColumnCount($count = 6) 
+    {
+        $this->columnCount = $count;
+        
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param string $type
+     * 
+     * @return \App\Controls\BootstrapForm
+     */
+    public function setColumnType($type = 'sm')
+    {
+        $this->columnType = $type;
+        
+        return $this;
+    }
 
-        /**
+    /**
+     * 
+     * @param int $count
+     * 
+     * @return \App\Controls\BootstrapForm
+     */
+    public function setLabelColumnCount($count = 6) 
+    {
+        $this->labelColumnCount = $count;
+        
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param bool $ajax
+     * 
+     * @return \App\Controls\BootstrapForm
+     */
+    public function setAjax($ajax) 
+    {
+        $this->ajax = $ajax;
+        
+        return $this;
+    }
+
+    /**
      * BootstrapForm destruct.
      *
      * @api
@@ -169,11 +241,13 @@ class BootstrapForm extends Form
         $renderer->wrappers['control']['container']      = 'div class=col-' . $this->columnType . '-' . $this->columnCount;
         $renderer->wrappers['pair']['container']         = 'div class="form-group row"';
         $renderer->wrappers['pair']['.error']            = 'has-error';
-        $renderer->wrappers['label']['container']        = 'div class="col-' . $this->columnType . '-4 control-label"';
+        $renderer->wrappers['label']['container']        = 'div class="col-' . $this->columnType . '-' . $this->labelColumnCount . ' control-label"';
         $renderer->wrappers['label']['']                 = '';
 
         // make form and controls compatible with Twitter Bootstrap
-        $this->getElementPrototype()->class('form-horizontal');
+        $ajax = $this->ajax ? 'ajax ' : '';       
+        
+        $this->getElementPrototype()->class($ajax. 'form-horizontal');
 
         foreach ($this->getControls() as $control) {
             // add some class for label!;

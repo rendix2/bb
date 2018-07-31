@@ -42,7 +42,9 @@
                         </td>
                         <td>{$item->category_name}</td>
                         <td>
-                            <a href="{link Category:delete, $item->category_id}">{_delete}</a>
+                            <a href="{link Category:delete, $item->category_id}" title="{_delete}">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
                         </td>
                     </tr>
                 {/foreach}

@@ -57,7 +57,7 @@ class PostPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresen
      */
     protected function createComponentEditForm()
     {
-        $form = new BootstrapForm();
+        $form = BootstrapForm::create();
         
         $form->addText('post_title', 'Post title:');
         $form->addTextArea('post_text', 'Post:');

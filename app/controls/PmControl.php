@@ -3,13 +3,14 @@
 namespace App\Controls;
 
 use App\Models\PMManager;
+use Nette\Application\UI\Control;
 
 /**
  * Description of PmControl
  *
  * @author rendi
  */
-class PmControl extends \Nette\Application\UI\Control
+class PmControl extends Control
 {
     /**
      *

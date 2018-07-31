@@ -15,6 +15,7 @@ use App\Models\TopicWatchManager;
 use App\Models\PostsHistoryManager;
 use App\Settings\Avatars;
 use App\Settings\TopicsSetting;
+use App\Controls\BreadCrumbControl;
 use dibi;
 use Nette\Application\UI\Form;
 use Nette\Http\IResponse;
@@ -212,7 +213,6 @@ class PostPresenter extends Base\ForumPresenter
             $values->post_edit_user_ip     = $this->getHttpRequest()->getRemoteAddress();
             $values->post_user_id          = $user_id;            
 
-            //$result = $this->getManager()->update($post_id, $values);
             $result = $this->postFacade->update($post_id, $values);
         } else {
             $values->post_forum_id    = $forum_id;
@@ -221,8 +221,7 @@ class PostPresenter extends Base\ForumPresenter
             $values->post_add_time    = time();
             $values->post_add_user_ip = $this->getHttpRequest()->getRemoteAddress();
 
-            $result = $this->postFacade->add($values);
-            
+            $result = $this->postFacade->add($values);            
             $emails = $this->topicWatchManager->getAllJoinedByLeft($topic_id);
             
             $emailsArray = [];
@@ -250,7 +249,40 @@ class PostPresenter extends Base\ForumPresenter
         }
 
         $this->redirect('Topic:default', $forum_id, $topic_id);
-    }   
+    }  
+    
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbEdit()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
+            2 => ['link' => 'Topic:default', 'text' => 'menu_topic', 'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]],
+            3 => ['text' => 'menu_post']
+            
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }     
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbReport()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
+            2 => ['link' => 'Topic:default', 'text' => 'menu_topic', 'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]],
+            3 => ['text' => 'report_post']
+            
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }     
 
     /**
      * 

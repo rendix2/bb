@@ -9,6 +9,7 @@ use App\Models\ModeratorsManager;
 use App\Models\PostsManager;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
+use App\Controls\BreadCrumbControl;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use dibi;
@@ -203,4 +204,17 @@ class IndexPresenter extends Base\ForumPresenter
         $this->template->totalTopics   = $this->topicManager->getCountCached();
         $this->template->data          = $result;
     }
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbCategory()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['text' => 'menu_category']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }     
 }
