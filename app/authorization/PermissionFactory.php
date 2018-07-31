@@ -10,7 +10,9 @@ use Nette\Security\Permission;
  * @author rendi
  */
 class PermissionFactory {
-    
+    /**
+     * @return Permission
+     */
     public function create()
     {
         $permission = new Permission();
@@ -33,7 +35,12 @@ class PermissionFactory {
         return $permission;
         
     }
-    
+
+    /**
+     * @param Permission $permission
+     * @param            $role
+     * @param array      $action
+     */
     private function allow(Permission $permission, $role, array $action)
     {
         list($resource, $privilege) = $action;

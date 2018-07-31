@@ -31,7 +31,12 @@ class Post implements \App\Authorization\IAuthorizationScope {
      * @var \App\Authorization\Scopes\User $author
      */
     private $author;
-    
+
+    /**
+     * @param \App\Authorization\Identity $identity
+     *
+     * @return array
+     */
     public function getIdentityRoles(\App\Authorization\Identity $identity) {
         $roles = [];
         

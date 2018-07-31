@@ -2,18 +2,20 @@
 
 namespace App\Presenters\Base;
 
+use App\Authorizator;
 use App\Models\BansManager;
 use App\Services\TranslatorFactory;
 use Nette;
 use App\Controls\BootstrapForm;
 use Nette\Http\IResponse;
+use Nextras\Application\UI\SecuredLinksPresenterTrait;
 
 /**
  * Base presenter for all application presenters.
  */
 abstract class BasePresenter extends Nette\Application\UI\Presenter
 {
-    use \Nextras\Application\UI\SecuredLinksPresenterTrait;
+    use SecuredLinksPresenterTrait;
     
     /**
      * @var string
@@ -100,7 +102,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         $user     = $this->getUser();
         
         // if not main admin or role is not admin, so you can not ban admin, if some problem....
-        if ($user->getId() !== 1 || !in_array(\App\Authorizator::ROLES[5], $this->getUser()->getRoles())) {
+        if ($user->getId() !== 1 || !in_array(Authorizator::ROLES[5], $this->getUser()->getRoles(), true)) {
             foreach ($bans as $ban) {
                 if ($identity && $this->getUser()->isLoggedIn()) {
                     if ($ban->ban_email === $identity->getData()['user_email'] || $ban->ban_user_name === $identity->getData()['user_name']) {
@@ -114,7 +116,10 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             }
         }
     }
-    
+
+    /**
+     * @return bool
+     */
     protected function checkLoggedIn()
     {
         $identity = $this->getUser()->getIdentity();
@@ -126,16 +131,25 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         return $this->getUser()->isLoggedIn();
     }
 
+    /**
+     * @return bool
+     */
     protected function checkUserLoggedIn()
     {
         return $this->checkAdminLoggedIn() && !in_array('guest', $this->getUser()->getRoles(), true);
     }
-    
+
+    /**
+     * @return bool
+     */
     protected function checkJuniorAdminLoggedIn()
     {
         return $this->checkLoggedIn() && $this->getUser()->isInRole('juniorAdmin');
     }
 
+    /**
+     * @return bool
+     */
     protected function checkAdminLoggedIn()
     {
         return $this->checkLoggedIn() && $this->getUser()->isInRole('admin');

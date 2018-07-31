@@ -49,9 +49,17 @@ abstract class MNManager extends Manager
      * @param CrudManager $left
      * @param CrudManager $right
      * @param string|null $tableName
+     * @param null        $leftKey
+     * @param null        $rightKey
      */
-    public function __construct(Connection $dibi, CrudManager $left, CrudManager $right, $tableName = null, $leftKey = null, $rightKey = null)
-    {
+    public function __construct(
+        Connection $dibi,
+        CrudManager $left,
+        CrudManager $right,
+        $tableName = null,
+        $leftKey = null,
+        $rightKey = null
+    ) {
         parent::__construct($dibi);
 
         $this->left  = $left;
@@ -99,7 +107,7 @@ abstract class MNManager extends Manager
      *
      * @return Fluent
      */
-    public function getAllFLuentByLeft($left_id)
+    public function getAllFluentByLeft($left_id)
     {
         return $this->getAllFluent()
             ->where('%n = %i', $this->leftKey, $left_id);
@@ -112,7 +120,7 @@ abstract class MNManager extends Manager
      */
     public function getAllByLeft($left_id)
     {
-        return $this->getAllFLuentByLeft($left_id)->fetchAll();
+        return $this->getAllFluentByLeft($left_id)->fetchAll();
     }
     
     /**
@@ -150,7 +158,7 @@ abstract class MNManager extends Manager
      */
     public function getPairsByLeft($left_id)
     {
-        return $this->getAllFLuentByLeft($left_id)
+        return $this->getAllFluentByLeft($left_id)
             ->fetchPairs(null, $this->right->getPrimaryKey());
     }
     
@@ -162,7 +170,7 @@ abstract class MNManager extends Manager
     public function getAllFluentByRight($right_id)
     {
         return $this->getAllFluent()
-            ->where('%n = %i', $this->rightKey,  $right_id);
+            ->where('%n = %i', $this->rightKey, $right_id);
     }
 
     /**
@@ -271,7 +279,7 @@ abstract class MNManager extends Manager
     public function getCountByLeft($left_id)
     {
         return $this->getCountFluent()
-            ->where('%n = %i', $this->leftKey,  $left_id)
+            ->where('%n = %i', $this->leftKey, $left_id)
             ->fetchSingle();
     }
 

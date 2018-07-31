@@ -25,7 +25,10 @@ class CacheDir
     {
         $this->cacheDir = $cacheDir;
     }
-    
+
+    /**
+     * @return CacheDir
+     */
     public function getCacheDir()
     {
         return $this->cacheDir;

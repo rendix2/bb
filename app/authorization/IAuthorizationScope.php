@@ -9,7 +9,11 @@ namespace App\Authorization;
  */
 interface IAuthorizationScope
 {
-    
+    /**
+     * @param Identity $identity
+     *
+     * @return mixed
+     */
     public function getIdentityRoles(Identity $identity);
     
 }

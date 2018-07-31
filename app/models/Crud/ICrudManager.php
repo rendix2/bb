@@ -2,18 +2,15 @@
 
 namespace App\Models\Crud;
 
-use App\Models\Manager;
-use App\Presenters\crud\CrudPresenter;
-use dibi;
+
 use Dibi\Connection;
 use Dibi\Fluent;
 use Dibi\Result;
 use Dibi\Row;
-use Nette\Caching\Cache;
+
 use Nette\Caching\IStorage;
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
-use Tracy\ILogger;
+
 
 /**
  * Description of ICrudManager
@@ -26,6 +23,7 @@ interface ICrudManager
      * ICrudManager constructor.
      *
      * @param Connection $dibi
+     * @param IStorage   $storage
      */
     public function __construct(Connection $dibi, IStorage $storage);
 

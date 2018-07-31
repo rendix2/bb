@@ -32,10 +32,10 @@ class TopicJumpToForumForm extends Control
     }
 
     /**
-     * render jump to foorum
+     * render jump to forum
      */
     public function render()
-    {       
+    {
         $this['jumpToForum']->render();
     }
 

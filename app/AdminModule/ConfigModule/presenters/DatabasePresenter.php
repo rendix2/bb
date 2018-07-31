@@ -4,6 +4,8 @@ namespace App\AdminModule\ConfigModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Models\UsersManager;
+use App\Settings\DatabaseBackupDir;
+use Ifsnop\Mysqldump\Mysqldump;
 use Nette\Application\Responses\FileResponse;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
@@ -18,13 +20,13 @@ class DatabasePresenter extends AdminPresenter
 {
     /**
      *
-     * @var \Ifsnop\Mysqldump\Mysqldump
+     * @var Mysqldump
      * @inject
      */
     public $exporter;
     
     /**
-     * @var \App\Settings\DatabaseBackupDir $databaseDir
+     * @var DatabaseBackupDir $databaseDir
      * @inject
      */
     public $databaseDir;
@@ -65,7 +67,7 @@ class DatabasePresenter extends AdminPresenter
      */
     public function actionDeleteDump($name)
     {
-        FileSystem::delete($this->databaseDir . DIRECTORY_SEPARATOR . $name);
+        FileSystem::delete($this->databaseDir->getDatabaseBackupDir() . DIRECTORY_SEPARATOR . $name);
         $this->redirect(':Admin:Config:Database:dumps');
     }
 
@@ -81,8 +83,8 @@ class DatabasePresenter extends AdminPresenter
      *
      */
     public function actionExportDatabase()
-    {              
-        $time = time();   
+    {
+        $time = time();
         $path = $this->databaseDir->getDatabaseBackupDir() . DIRECTORY_SEPARATOR . 'dump-'.$time.'.sql';
                 
         $this->exporter->start($path);

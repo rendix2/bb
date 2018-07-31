@@ -3,17 +3,21 @@
 namespace App\ModeratorModule\Presenters;
 
 use App\Controls\BootstrapForm;
+use App\Models\ForumsManager;
 use App\Models\TopicsManager;
+use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
+use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of TopicPresenter
  *
  * @author rendi
  */
-class TopicPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresenter
+class TopicPresenter extends ModeratorPresenter
 {
     /**
-     * @var \App\Models\ForumsManager $forumsManager
+     * @var ForumsManager $forumsManager
      * @inject
      */
     public $forumsManager;
@@ -29,7 +33,7 @@ class TopicPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPrese
     }
     
     /**
-     * 
+     *
      * @return BootstrapForm
      */
     protected function createComponentEditForm()
@@ -43,7 +47,10 @@ class TopicPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPrese
 
         return $this->addSubmitB($form);
     }
-    
+
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentMoveTopic()
     {
         $form = BootstrapForm::create();
@@ -53,12 +60,19 @@ class TopicPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPrese
         
         return $form;
     }
-    
-    public function moveTopicSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function moveTopicSuccess(Form $form, ArrayHash $values)
     {
         $this->getManager()->update($this->getParameter('id'), $values);
     }
-    
+
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentChangeTopicAuthor()
     {
         $form = BootstrapForm::create();
@@ -68,10 +82,14 @@ class TopicPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPrese
         
         $form->onSuccess[] = [$this, 'changeTopicAuthorSuccess'];
         
-        return $form;    
+        return $form;
     }
-    
-    public function changeTopicAuthorSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function changeTopicAuthorSuccess(Form $form, ArrayHash $values)
     {
         
     }

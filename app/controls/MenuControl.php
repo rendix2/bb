@@ -11,12 +11,13 @@ use Nette\Application\UI\Control;
  */
 class MenuControl extends Control
 {
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
     
     public function render()
-    {        
+    {
         $template = $this->template;
         $sep      = DIRECTORY_SEPARATOR;
         

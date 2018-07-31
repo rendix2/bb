@@ -6,7 +6,7 @@ use App\Controls\AppDir;
 use App\Settings\Avatars;
 use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
-use App\Translator;
+
 
 /**
  * Description of IndexPresenter
@@ -33,12 +33,12 @@ class IndexPresenter extends BasePresenter
     public $avatar;
    
     /**
-     * 
-     * @param type $element
+     *
+     * @param mixed $element
      */
     public function checkRequirements($element)
     {
-        $this->getUser()->getStorage()->setNamespace('beckend'); 
+        $this->getUser()->getStorage()->setNamespace('beckend');
         
         parent::checkRequirements($element);
 

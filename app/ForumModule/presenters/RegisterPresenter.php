@@ -37,6 +37,7 @@ class RegisterPresenter extends BasePresenter
      * RegisterPresenter constructor.
      *
      * @param LanguagesManager $languageManger
+     * @param UsersManager     $usersManager
      */
     public function __construct(LanguagesManager $languageManger, UsersManager $usersManager)
     {
@@ -95,7 +96,6 @@ class RegisterPresenter extends BasePresenter
         if ($user_email) {
             $form->addError('User email is already taken.');
         }
-        
     }
 
     /**

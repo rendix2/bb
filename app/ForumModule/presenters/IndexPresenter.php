@@ -86,7 +86,7 @@ class IndexPresenter extends Base\ForumPresenter
     /**
      * IndexPresenter constructor.
      *
-     * @param IndexManager $manager
+     * @param CategoriesManager $categoriesManager
      */
     public function __construct(CategoriesManager $categoriesManager)
     {
@@ -111,7 +111,7 @@ class IndexPresenter extends Base\ForumPresenter
 
     /**
      * renders categories
-     * 
+     *
      * @param int $category_id
      */
     public function renderCategory($category_id)
@@ -160,9 +160,7 @@ class IndexPresenter extends Base\ForumPresenter
                                               
                 foreach ($moderators as $moderator) {
                     unset($moderator->user_password);
-                     
-                    
-                    
+
                     $result['cats'][$category->category_id]->forums[$forum->forum_id]->moderators[$moderator->user_id] = $moderator;
                 }
             }

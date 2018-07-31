@@ -8,10 +8,9 @@ use App\Services\TranslatorFactory;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 
-use dibi;
-use Nette\Application\UI\Control;
+
 use Nette\Application\UI\Form;
-use Nette\Http\IResponse;
+
 use Nette\Utils\ArrayHash;
 
 /**
@@ -19,7 +18,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendi
  */
-class SendMailToAdminForm extends \Nette\Application\UI\Control
+class SendMailToAdminForm extends Control
 {
     /**
      *
@@ -40,7 +39,7 @@ class SendMailToAdminForm extends \Nette\Application\UI\Control
     private $bbMailer;
 
     /**
-     * 
+     *
      * @param TranslatorFactory $translatorFactory
      * @param UsersManager $usersManager
      * @param BBMailer $bbMailer
@@ -66,8 +65,10 @@ class SendMailToAdminForm extends \Nette\Application\UI\Control
         $form = BootstrapForm::create();
         $form->setTranslator($this->translatorFactory->forumTranslatorFactory());
         
-        $form->addText('mail_subject', 'Mail subject:')->setRequired('Subject is required.');
-        $form->addTextArea('mail_text', 'Mail text:', null, 10)->setRequired('Text is required.');
+        $form->addText('mail_subject', 'Mail subject:')
+            ->setRequired('Subject is required.');
+        $form->addTextArea('mail_text', 'Mail text:', null, 10)
+            ->setRequired('Text is required.');
         
         $form->addSubmit('send', 'Send mail');
         $form->onSuccess[] = [$this, 'sendMailToAdminSuccess'];
@@ -93,7 +94,7 @@ class SendMailToAdminForm extends \Nette\Application\UI\Control
             $adminsMails[] = $admin->user_email;
         }
         
-        $this->bbMailer->addRecepients($adminsMails);
+        $this->bbMailer->addRecipients($adminsMails);
         $this->bbMailer->setSubject($values->mail_subject);
         $this->bbMailer->setText($values->mail_text);
         $res = $this->bbMailer->send();

@@ -17,7 +17,12 @@ class PmControl extends Control
      * @var PMManager $pmManager
      */
     private $pmManager;
-    
+
+    /**
+     * PmControl constructor.
+     *
+     * @param PMManager $pmManager
+     */
     public function __construct(PMManager $pmManager)
     {
         parent::__construct();

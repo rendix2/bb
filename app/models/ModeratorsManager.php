@@ -14,10 +14,10 @@ class ModeratorsManager extends MNManager
     /**
      * ModeratorsManager constructor.
      *
-     * @param Connection $dibi
-     * @param UsersManager     $left
-     * @param ForumsManager    $right
-     * @param string           $tableName
+     * @param Connection    $dibi
+     * @param UsersManager  $left
+     * @param ForumsManager $right
+     * @param string        $tableName
      */
     public function __construct(Connection $dibi, UsersManager $left, ForumsManager $right, $tableName = 'moderators')
     {

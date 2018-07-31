@@ -6,8 +6,10 @@ use App\Controls\BootstrapForm;
 use App\Controls\ChangePasswordControl;
 use App\Controls\DeleteAvatarControl;
 use App\Controls\PaginatorControl;
+use App\Forms\UserChangePasswordForm;
 use App\Forms\UserChangeUserNameForm;
 use App\Forms\SendMailToAdminForm;
+use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserResetPasswordForm;
 use App\Models\LanguagesManager;
 use App\Models\ModeratorsManager;
@@ -23,7 +25,7 @@ use App\Settings\Ranks;
 use App\Controls\BBMailer;
 use App\Controls\BreadCrumbControl;
 use App\Services\ChangePasswordFactory;
-use App\Services\DeleteAvatarFactory;
+
 
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -202,7 +204,10 @@ class UserPresenter extends Base\ForumPresenter
     {
         // case when you do not send request to reset password
     }
-    
+
+    /**
+     * @param $user_id
+     */
     public function handleSetFavourite($user_id)
     {
         $res = $this->favouriteUsersManager->addByLeft($this->getUser()->getId(), [$user_id]); 
@@ -214,7 +219,10 @@ class UserPresenter extends Base\ForumPresenter
         //$this->redrawControl('favourite');
         $this->redirect('this');
     }
-    
+
+    /**
+     * @param $user_id
+     */
     public function handleUnSetFavourite($user_id)
     {
         $res = $this->favouriteUsersManager->fullDelete($this->getUser()->getId(), $user_id);
@@ -488,7 +496,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @return ChangePasswordControl
+     * @return UserChangePasswordForm
      */
     protected function createComponentChangePasswordControl()
     {
@@ -496,7 +504,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @return DeleteAvatarControl
+     * @return UserDeleteAvatarForm
      */
     protected function createComponentDeleteAvatar()
     {
@@ -510,10 +518,10 @@ class UserPresenter extends Base\ForumPresenter
     {
         return new UserResetPasswordForm($this->translatorFactory, $this->getManager());
     }
-    
+
     /**
-     * 
-     * @return BootstrapForm
+     *
+     * @return UserChangeUserNameForm
      */
     protected function createComponentChangeUserNameForm()
     {

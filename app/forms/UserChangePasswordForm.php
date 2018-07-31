@@ -33,7 +33,7 @@ class UserChangePasswordForm extends Control
 
     /**
      * nette user
-     * 
+     *
      * @var User $user
      */
     private $user;
@@ -41,7 +41,7 @@ class UserChangePasswordForm extends Control
     /**
      * user config from neon
      *
-     * @var Users $users 
+     * @var Users $users
      */
     private $users;
 
@@ -51,6 +51,7 @@ class UserChangePasswordForm extends Control
      * @param UsersManager $userManager
      * @param ITranslator  $translator
      * @param User         $user
+     * @param Users        $users
      */
     public function __construct(UsersManager $userManager, ITranslator $translator, User $user, Users $users)
     {
@@ -68,7 +69,7 @@ class UserChangePasswordForm extends Control
     public function render()
     {
         $this['changePasswordForm']->render();
-    }  
+    }
     
     /**
      * @return BootstrapForm
@@ -90,7 +91,7 @@ class UserChangePasswordForm extends Control
         $form->onValidate[] = [$this, 'changePasswordOnValidate'];
 
         return $form;
-    }    
+    }
 
     /**
      * @param Form      $form

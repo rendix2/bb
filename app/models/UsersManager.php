@@ -139,9 +139,9 @@ class UsersManager extends Crud\CrudManager
     }
     
     /**
-     * 
+     *
      * @param string $user_name
-     * 
+     *
      * @return bool
      */
     public function getByUserName($user_name)
@@ -150,13 +150,13 @@ class UsersManager extends Crud\CrudManager
             ->select('')
             ->from($this->getTable())
             ->where('[user_name] = %s', $user_name)
-            ->fetchSingle() === 1;        
+            ->fetchSingle() === 1;
     }
     
     /**
-     * 
+     *
      * @param string $email
-     * 
+     *
      * @return Row[]
      */
     public function getByEmail($email)
@@ -165,13 +165,13 @@ class UsersManager extends Crud\CrudManager
                 ->select('*')
                 ->from($this->getTable())
                 ->where('[user_email] = %s', $email)
-                ->fetchAll();        
+                ->fetchAll();
     }
     
     /**
-     * 
+     *
      * @param array $emails
-     * 
+     *
      * @return Row[]
      */
     public function getByEmails(array $emails)
@@ -224,19 +224,19 @@ class UsersManager extends Crud\CrudManager
     }
     
     /**
-     * 
+     *
      * @param string $avatar_file
-     * 
+     *
      * @return bool success
      */
     public function removeAvatarFile($avatar_file)
     {
         try {
-            FileSystem::delete($this->avatar->getDir() . DIRECTORY_SEPARATOR . $avatar_file); 
+            FileSystem::delete($this->avatar->getDir() . DIRECTORY_SEPARATOR . $avatar_file);
             
             return true;
         } catch (\Nette\IOException $e){
             return false;
-        }        
+        }
     }
 }

@@ -21,22 +21,29 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
 {
     /**
      *
-     * @var \App\Services\TranslatorFactory $translatorFactory
+     * @var TranslatorFactory $translatorFactory
      */
     private $translatorFactory;
     
     /**
      *
-     * @var \Nette\Security\User $user
+     * @var User $user
      */
     private $user;
     
     /**
      *
-     * @var \App\Models\PostFacade $postFacade 
+     * @var PostFacade $postFacade
      */
     private $postFacade;
-    
+
+    /**
+     * TopicFastReplyForm constructor.
+     *
+     * @param TranslatorFactory $translatorFactory
+     * @param User              $user
+     * @param PostFacade        $postFacade
+     */
     public function __construct(TranslatorFactory $translatorFactory, User $user, PostFacade $postFacade)
     {
         parent::__construct();
@@ -89,6 +96,5 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
         }
 
         $this->presenter->redirect('Topic:default', $forum_id, $topic_id, $page);
-    }    
-    
+    }
 }

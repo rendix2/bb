@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Forms\UserDeleteAvatarForm;
 use App\Models\UsersManager;
 use App\Settings\Avatars;
-use App\Forms\UserDeleteAvatarForm;
 use Nette\Security\User;
 
 /**
@@ -39,13 +39,18 @@ class DeleteAvatarFactory
     private $translatorFactory;
     
     /**
-     * 
+     *
      * @param UsersManager $userManager
      * @param Avatars $avatars
      * @param User $user
      * @param TranslatorFactory $translatorFactory
      */
-    public function __construct(UsersManager $userManager, Avatars $avatars, User $user, TranslatorFactory $translatorFactory) {
+    public function __construct(
+        UsersManager $userManager,
+        Avatars $avatars,
+        User $user,
+        TranslatorFactory $translatorFactory
+    ) {
         $this->userManager       = $userManager;
         $this->avatars           = $avatars;
         $this->user              = $user;
@@ -53,7 +58,7 @@ class DeleteAvatarFactory
     }
 
     /**
-     * 
+     *
      * @return UserDeleteAvatarForm
      */
     public function getForum()
@@ -67,7 +72,7 @@ class DeleteAvatarFactory
     }
     
     /**
-     * 
+     *
      * @return UserDeleteAvatarForm
      */
     public function getAdmin()
@@ -77,6 +82,6 @@ class DeleteAvatarFactory
             $this->avatars,
             $this->user,
             $this->translatorFactory->adminTranslatorFactory()
-        );   
+        );
     }
 }

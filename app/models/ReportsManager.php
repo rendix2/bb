@@ -34,7 +34,7 @@ class ReportsManager extends Crud\CrudManager
     }
     
     /**
-     * 
+     *
      * @param int $post_id
      */
     public function deleteByPost($post_id)
@@ -45,7 +45,7 @@ class ReportsManager extends Crud\CrudManager
     }
     
     /**
-     * 
+     *
      * @param int $forum_id
      */
     public function deleteByForum($forum_id)
@@ -53,16 +53,16 @@ class ReportsManager extends Crud\CrudManager
         $this->dibi->delete($this->getTable())
                 ->where('[report_forum_id] = %i', $forum_id)
                 ->execute();
-    }    
+    }
     
     /**
-     * 
+     *
      * @param int $user_id
      */
     public function deleteByUser($user_id)
     {
         $this->dibi->delete($this->getTable())
                 ->where('[report_user_id] = %i', $user_id)
-                ->execute();        
+                ->execute();
     }
 }

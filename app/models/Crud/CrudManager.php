@@ -67,6 +67,8 @@ abstract class CrudManager extends Manager //implements ICrudManager
      * CrudManager constructor.
      *
      * @param Connection $dibi
+     * @param IStorage   $storage
+     * 
      * @throws Exception
      */
     public function __construct(Connection $dibi, IStorage $storage)
@@ -380,7 +382,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     {
         return $this->dibi
             ->delete($this->table)
-            ->where('%n = %i', $this->primaryKey,  $item_id)
+            ->where('%n = %i', $this->primaryKey, $item_id)
             ->execute();
     }
 
@@ -401,7 +403,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     {
         return $this->dibi
             ->delete($this->table)
-            ->where('[%n IN %in', $this->primaryKey,  $item_id)
+            ->where('[%n IN %in', $this->primaryKey, $item_id)
             ->execute(dibi::AFFECTED_ROWS);
     }
 
@@ -429,7 +431,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     {
         return $this->dibi
             ->update($this->table, $item_data)
-            ->where('%n IN %in', $this->primaryKey,  $item_id)
+            ->where('%n IN %in', $this->primaryKey, $item_id)
             ->execute(dibi::AFFECTED_ROWS);
     }
 }

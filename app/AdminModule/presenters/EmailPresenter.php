@@ -5,9 +5,9 @@ namespace App\AdminModule\Presenters;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
+use App\Models\Mails2UsersManager;
 use App\Models\MailsManager;
 use App\Models\UsersManager;
-use App\Models\Mails2UsersManager;
 use Nette\Application\UI\Form;
 use Nette\InvalidArgumentException;
 use Nette\Mail\FallbackMailerException;
@@ -51,16 +51,15 @@ class EmailPresenter extends Base\AdminPresenter
 
         $this->usersManager = $usersManager;
     }
-    
+
     /**
-     * 
      * @param int|null $id
      */
     public function renderEdit($id = null)
     {
         parent::renderEdit($id);
-        
-        $this->template->emails = $this->mail2UsersManager->getAllJoinedByLeft($id);                
+
+        $this->template->emails = $this->mail2UsersManager->getAllJoinedByLeft($id);
     }
     
     /**
@@ -121,7 +120,7 @@ class EmailPresenter extends Base\AdminPresenter
             $usersMails[] = $user->user_email;
         }
 
-        $this->bbMailer->addRecepients($usersMails);
+        $this->bbMailer->addRecipients($usersMails);
         $this->bbMailer->setSubject($values->email_subject);
         $this->bbMailer->setText($values->email_text);
 

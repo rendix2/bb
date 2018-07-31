@@ -3,7 +3,11 @@
 namespace App\ModeratorModule\Presenters;
 
 use App\Controls\BootstrapForm;
+use App\Models\PostsHistoryManager;
 use App\Models\PostsManager;
+use App\Models\TopicsManager;
+use App\Models\UsersManager;
+use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -12,23 +16,23 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendi
  */
-class PostPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresenter
+class PostPresenter extends ModeratorPresenter
 {
     /**
-     * @var \App\Models\UsersManager $usersManager
+     * @var UsersManager $usersManager
      * @inject
      */
     public $usersManager;
     
     /**
-     * @var \App\Models\TopicsManager
+     * @var TopicsManager
      * @inject
      */
     public $topicsManager;
     
     /**
      *
-     * @var \App\Models\PostsHistoryManager $postsHistoryManager
+     * @var PostsHistoryManager $postsHistoryManager
      * @inject
      */
     public $postsHistoryManager;
@@ -44,7 +48,7 @@ class PostPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresen
     }
     
     /**
-     * 
+     *
      * @param int $post_id
      */
     public function renderHistory($post_id)
@@ -65,7 +69,10 @@ class PostPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresen
         
         return $this->addSubmitB($form);
     }
-    
+
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentChangePostAuthor()
     {
         $form = BootstrapForm::create();
@@ -74,9 +81,12 @@ class PostPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresen
         $form->addSubmit('send', 'Search and set');
         $form->onSuccess[] = [$this, 'changePostAuthorSuccess'];
         
-        return $form;  
+        return $form;
     }
-    
+
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentChangeTopic()
     {
         $form = BootstrapForm::create();
@@ -88,6 +98,10 @@ class PostPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresen
         return $form;
     }
 
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
     public function changePostAuthorSuccess(Form $form, ArrayHash $values)
     {
         $user = $this->usersManager->getByName($values->user_name);
@@ -99,15 +113,19 @@ class PostPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresen
                 $this->flashMessage('Post author was updated', self::FLASH_MESSAGE_SUCCESS);
             } else {
                 $this->flashMessage('Post author was NOT updated', self::FLASH_MESSAGE_DANGER);
-            }                        
+            }
         } else {
             $this->flashMessage('User was not found', self::FLASH_MESSAGE_DANGER);
         }
         
         $this->redirect('this');
     }
-    
-    public function changeTopicSuccess(Form $form, ArrayHash $values) 
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function changeTopicSuccess(Form $form, ArrayHash $values)
     {
         $res = $this->getManager()->update($this->getParameter('id'), $values);
         
@@ -117,6 +135,6 @@ class PostPresenter extends \App\ModeratorModule\Presenters\Base\ModeratorPresen
             $this->flashMessage('Topic was not changed.', self::FLASH_MESSAGE_DANGER);
         }
         
-        $this->redirect('this');            
+        $this->redirect('this');
     }
 }

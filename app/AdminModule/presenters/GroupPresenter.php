@@ -122,7 +122,7 @@ class GroupPresenter extends Base\AdminPresenter
             $data[$permission->forum_id]['topic_thank']  = $permission->topic_thank;
         }
 
-        $this->template->permissions = $data;        
+        $this->template->permissions = $data;
     }
 
     /**
@@ -156,12 +156,11 @@ class GroupPresenter extends Base\AdminPresenter
     }
 
     /**
-     * 
      * @param Form      $form
      * @param ArrayHash $values
      */
     public function editFormSuccess(Form $form, ArrayHash $values)
-    {              
+    {       
         unset($values->group_moderator);
         
         parent::editFormSuccess($form, $values);                
@@ -232,5 +231,5 @@ class GroupPresenter extends Base\AdminPresenter
         ];
 
         $this->forums2groupsManager->addForums2group($group_id, $data);
-    }    
+    }
 }

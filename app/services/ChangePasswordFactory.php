@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Forms\UserChangePasswordForm;
 use App\Models\UsersManager;
 use App\Settings\Users;
 use Nette\Security\User;
@@ -15,7 +16,7 @@ class ChangePasswordFactory
 {
     /**
      *
-     * @var UsersManager $userManager 
+     * @var UsersManager $userManager
      */
     private $userManager;
     
@@ -37,7 +38,7 @@ class ChangePasswordFactory
     private $translatorFactory;
     
     /**
-     * 
+     *
      * @param UsersManager $userManager
      * @param TranslatorFactory $translatorFactory
      * @param User $user
@@ -50,33 +51,32 @@ class ChangePasswordFactory
         $this->users             = $users;
         $this->translatorFactory = $translatorFactory;
     }
-    
+
     /**
-     * 
-     * @return \App\Controls\ChangePasswordControl
+     *
+     * @return UserChangePasswordForm
      */
     public function getForum()
     {
-        return new \App\Forms\UserChangePasswordForm(
+        return new UserChangePasswordForm(
             $this->userManager,
             $this->translatorFactory->forumTranslatorFactory(),
             $this->user,
             $this->users
         );
     }
-    
+
     /**
-     * 
-     * @return \App\Controls\ChangePasswordControl
+     *
+     * @return UserChangePasswordForm
      */
     public function getAdmin()
     {
-        return new \App\Forms\UserChangePasswordForm(
+        return new UserChangePasswordForm(
             $this->userManager,
             $this->translatorFactory->adminTranslatorFactory(),
             $this->user,
             $this->users
         );
-    }    
-    
+    }
 }

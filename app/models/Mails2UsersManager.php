@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Dibi\Connection;
+
 /**
  * Description of Mails2UsersManager
  *
@@ -10,12 +12,13 @@ namespace App\Models;
 class Mails2UsersManager extends MNManager
 {
     /**
-     * 
-     * @param \Dibi\Connection $dibi
-     * @param \App\Models\MailsManager $left
-     * @param \App\Models\UsersManager $right
+     *
+     * @param Connection $dibi
+     * @param MailsManager $left
+     * @param UsersManager $right
      */
-    public function __construct(\Dibi\Connection $dibi, MailsManager $left, UsersManager $right) {
+    public function __construct(Connection $dibi, MailsManager $left, UsersManager $right)
+    {
         parent::__construct($dibi, $left, $right);
-    }    
+    }
 }

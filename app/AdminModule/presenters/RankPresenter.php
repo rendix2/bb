@@ -39,8 +39,26 @@ class RankPresenter extends Base\AdminPresenter
     }
     
     /**
-     * 
-     * @param int $id
+     * startup method
+     */
+    public function startup()
+    {
+        parent::startup();
+        
+        if ($this->getAction() === 'default') {
+            $this->gf->setTranslator($this->getAdminTranslator());
+            
+            $this->gf->addFilter('rank_id', 'rank_id', GridFilter::INT_EQUAL);
+            $this->gf->addFilter('rank_name', 'rank_name', GridFilter::TEXT_LIKE);
+            $this->gf->addFilter(null, null, GridFilter::NOTHING);
+
+            $this->addComponent($this->gf, 'gridFilter');
+        }
+    }
+    
+    /**
+     *
+     * @param int|null $id
      */
     public function renderEdit($id = null)
     {
@@ -105,7 +123,7 @@ class RankPresenter extends Base\AdminPresenter
                 $form->addError('From and to should not to be same.');
             }
         }
-    }    
+    }
 
     /**
      * @param Form      $form

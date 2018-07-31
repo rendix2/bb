@@ -93,15 +93,14 @@ class PostsManager extends Crud\CrudManager
      */
     public function getLastByForum($forum_id)
     {
-        return $this->dibi->query(
-                'SELECT *
+        return $this->dibi->query('SELECT *
                 FROM %n
                 WHERE [post_id] = ( SELECT MAX(post_id) FROM %n WHERE [post_forum_id] = %i )',
-                $this->getTable(),
-                $this->getTable(),
-                $forum_id
-                )
-                ->fetch();
+            $this->getTable(),
+            $this->getTable(),
+            $forum_id
+        )
+            ->fetch();
     }
 
     /**
@@ -116,7 +115,7 @@ class PostsManager extends Crud\CrudManager
             FROM %n
             WHERE [post_id] = ( SELECT MAX(post_id) FROM %n WHERE [post_topic_id] = %i )',
             $this->getTable(),
-            $this->getTable(),                
+            $this->getTable(),
             $topic_id
         )->fetch();
     }
@@ -134,7 +133,7 @@ class PostsManager extends Crud\CrudManager
             $this->getTable(),
             $topic_id
         )->fetch();
-    }    
+    }
 
     /**
      * @param int $forum_id
@@ -179,7 +178,7 @@ class PostsManager extends Crud\CrudManager
                 ->on('[p.post_user_id] = [u.user_id]')
                 ->groupBy('post_user_id', dibi::ASC)
                 ->fetch();
-    }    
+    }
 
     /**
      * @param int $topic_id
@@ -198,6 +197,11 @@ class PostsManager extends Crud\CrudManager
             ->where('[post_topic_id] = %i', $topic_id);
     }
 
+    /**
+     * @param $user_id
+     *
+     * @return Fluent
+     */
     public function getByUser($user_id)
     {
         return $this->dibi

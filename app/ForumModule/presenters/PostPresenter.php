@@ -3,13 +3,8 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BootstrapForm;
-use App\Controls\TopicJumpToForumForm;
-use App\Controls\PaginatorControl;
-use App\Models\ForumsManager;
 use App\Models\PostsManager;
-use App\Models\RanksManager;
 use App\Models\ReportsManager;
-use App\Models\ThanksManager;
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
 use App\Models\PostsHistoryManager;
@@ -105,7 +100,7 @@ class PostPresenter extends Base\ForumPresenter
         } elseif ($res === 2) {
             $this->flashMessage('Topic was deleted.', self::FLASH_MESSAGE_SUCCESS);
             $this->redirect('Forum:default', $forum_id, $page);
-        }        
+        }
     }
 
     /**
@@ -160,7 +155,7 @@ class PostPresenter extends Base\ForumPresenter
     }
     
     /**
-     * 
+     *
      * @param int $post_id
      */
     public function renderHistory($post_id)
@@ -194,7 +189,7 @@ class PostPresenter extends Base\ForumPresenter
         $form->onSuccess[] = [$this, 'editFormSuccess'];
 
         return $form;
-    }      
+    }
     
     /**
      * @param Form      $form
@@ -211,7 +206,7 @@ class PostPresenter extends Base\ForumPresenter
             $values['post_edit_count%sql'] = 'post_edit_count + 1';
             $values->post_last_edit_time   = time();
             $values->post_edit_user_ip     = $this->getHttpRequest()->getRemoteAddress();
-            $values->post_user_id          = $user_id;            
+            $values->post_user_id          = $user_id;
 
             $result = $this->postFacade->update($post_id, $values);
         } else {
@@ -235,7 +230,7 @@ class PostPresenter extends Base\ForumPresenter
             }
             
             if (count($emailsArray)) {
-                $this->bbMailer->addRecepients($emailsArray);
+                $this->bbMailer->addRecipients($emailsArray);
                 $this->bbMailer->setSubject('Topic watch');
                 $this->bbMailer->setText('Test');
                 $this->bbMailer->send();
@@ -301,7 +296,7 @@ class PostPresenter extends Base\ForumPresenter
         $form->onSuccess[] = [$this, 'reportFormSuccess'];
 
         return $form;
-    }    
+    }
     
     /**
      * @param Form      $form
@@ -332,9 +327,5 @@ class PostPresenter extends Base\ForumPresenter
         }
 
         $this->redirect('Topic:default', $forum_id, $topic_id, $page);
-    }    
-    
-    /**
-     * REPORT FORM
-     */
+    }
 }

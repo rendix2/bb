@@ -24,8 +24,11 @@ class AppDir
     {
         $this->appDir = $appDir;
     }
-    
-    public function getAppDir() 
+
+    /**
+     * @return string
+     */
+    public function getAppDir()
     {
         return $this->appDir;
     }

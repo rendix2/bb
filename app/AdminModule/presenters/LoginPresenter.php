@@ -2,6 +2,11 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Authenticator;
+use App\Controls\BootstrapForm;
+use App\Forms\UserLoginForm;
+use App\Services\UserLoginFormFactory;
+use App\Translator;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
 use Nette\Utils\ArrayHash;
@@ -22,7 +27,7 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter
     
     /**
      *
-     * @var \App\Translator $translator
+     * @var Translator $translator
      */
     public $translator;
     
@@ -32,25 +37,25 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter
      * @var SessionsManager $sessionManager
      * @inject
      */
-    public $sessionManager; 
+    public $sessionManager;
     
     /**
      *
-     * @var \App\Services\UserLoginFormFactory $userLoginFormFactory
+     * @var UserLoginFormFactory $userLoginFormFactory
      * @inject
      */
     public $userLoginFormFactory;
 
 
     /**
-     * 
+     *
      * @param type $element
      */
     public function checkRequirements($element)
     {
-        $this->getUser()->getStorage()->setNamespace('beckend'); 
+        $this->getUser()->getStorage()->setNamespace('beckend');
         
-        parent::checkRequirements($element);       
+        parent::checkRequirements($element);
     }
 
     /**
@@ -65,7 +70,7 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter
     }
 
     /**
-     * @return \App\Controls\BootstrapForm
+     * @return BootstrapForm
      */
     protected function createComponentAdminLoginForm()
     {
@@ -95,8 +100,8 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter
                 $values->user_password
             );
             
-            if (!$this->getUser()->isInRole(\App\Authenticator::ROLES[5])) {
-              throw new AuthenticationException('You are not admin.');
+            if (!$this->getUser()->isInRole(Authenticator::ROLES[5])) {
+                throw new AuthenticationException('You are not admin.');
             }
             
             $this->sessionManager->add(
@@ -122,8 +127,11 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter
             );
         }
     }
-    
-    protected function createComponentLoginForm() 
+
+    /**
+     * @return UserLoginForm
+     */
+    protected function createComponentLoginForm()
     {
         return $this->userLoginFormFactory->create();
     }

@@ -20,18 +20,11 @@ abstract class AdminPresenter extends CrudPresenter
     private $adminTranslator;
 
     /**
-     * AdminPresenter constructor.
-     *
-     * @param CrudManager $manager
+     * @param $element
      */
-    public function __construct(CrudManager $manager)
-    {
-        parent::__construct($manager);
-    }
-
     public function checkRequirements($element)
     {
-        $this->getUser()->getStorage()->setNamespace('beckend'); 
+        $this->getUser()->getStorage()->setNamespace('beckend');
         
         parent::checkRequirements($element);
 
@@ -41,7 +34,7 @@ abstract class AdminPresenter extends CrudPresenter
 
         if (!$this->getUser()->isInRole('admin')) {
             $this->error('You are not admin.');
-        }        
+        }
     }
 
     /**
@@ -51,7 +44,7 @@ abstract class AdminPresenter extends CrudPresenter
     {
         parent::startup();
 
-        $this->adminTranslator = $this->translatorFactory->adminTranslatorFactory();              
+        $this->adminTranslator = $this->translatorFactory->adminTranslatorFactory();
     }
 
     /**
@@ -73,23 +66,26 @@ abstract class AdminPresenter extends CrudPresenter
     }
     
     /**
-     * 
+     *
      * @return BootstrapForm
      */
-    public function getBootstrapForm() {
+    public function getBootstrapForm()
+    {
         $bf = parent::getBootstrapForm();
         $bf->setTranslator($this->getAdminTranslator());
         
         return $bf;
-    }  
+    }
+
     /**
-     * 
+     *
      * @return BootstrapForm
      */
-    public function createBootstrapForm() {
+    public function createBootstrapForm()
+    {
         $bf = BootstrapForm::create();
         $bf->setTranslator($this->getAdminTranslator());
         
         return $bf;
-    }    
+    }
 }

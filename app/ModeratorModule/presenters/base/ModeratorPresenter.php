@@ -2,6 +2,10 @@
 
 namespace App\ModeratorModule\Presenters\Base;
 
+use App\Authorization\Authorizator;
+use App\Authorization\Scopes\Forum;
+use App\Authorization\Scopes\Topic;
+use App\Authorization\Scopes\User;
 use App\Presenters\crud\CrudPresenter;
 use Nette\Localization\ITranslator;
 
@@ -19,7 +23,7 @@ abstract class ModeratorPresenter extends CrudPresenter
     private $translator;
 
     /**
-     * @var \App\Authorization\Authorizator $authorizator
+     * @var Authorizator $authorizator
      * @inject
      */
     public $authorizator;
@@ -31,25 +35,30 @@ abstract class ModeratorPresenter extends CrudPresenter
     {
         return $this->translator;
     }
-    
-    public function checkRequirements($element) {
+
+    /**
+     * @param $element
+     */
+    public function checkRequirements($element)
+    {
         parent::checkRequirements($element);
         
         $this->getUser()->getStorage()->setNamespace('frontend');
     }
 
+    /**
+     *
+     */
     public function startup()
     {
         parent::startup();
-        
-        
-        $user  = new \App\Authorization\Scopes\User();
-        $admin = new \App\Authorization\Scopes\User();        
-        $forum = new \App\Authorization\Scopes\Forum();        
-        $topic = new \App\Authorization\Scopes\Topic($user, $forum);
 
-        
-        \Tracy\Debugger::barDump($this->authorizator->isAllowed($admin->getIdentity(), $topic, \App\Authorization\Scopes\Topic::ACTION_ADD));
+        $user  = new User();
+        $admin = new User();
+        $forum = new Forum();
+        $topic = new Topic($user, $forum);
+
+        \Tracy\Debugger::barDump($this->authorizator->isAllowed($admin->getIdentity(), $topic, Topic::ACTION_ADD));
         
         $enabledRoles = ['admin', 'juniorAdmin', 'moderator'];
 
@@ -61,7 +70,7 @@ abstract class ModeratorPresenter extends CrudPresenter
          */
         $canAccess = false;
         
-        foreach ( $enabledRoles as $role ){
+        foreach ($enabledRoles as $role) {
             if (in_array($role, $this->getUser()->getRoles(), true)) {
                 $canAccess = true;
                 break;
@@ -75,6 +84,9 @@ abstract class ModeratorPresenter extends CrudPresenter
         $this->translator = $this->translatorFactory->forumTranslatorFactory();
     }
 
+    /**
+     *
+     */
     public function beforeRender()
     {
         parent::beforeRender();

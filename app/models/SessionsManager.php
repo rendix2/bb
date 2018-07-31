@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -40,6 +41,8 @@ class SessionsManager extends Crud\CrudManager
 
     /**
      * @param int $session_id
+     *
+     * @return Result|int
      */
     public function deleteBySession($session_id)
     {
@@ -51,6 +54,8 @@ class SessionsManager extends Crud\CrudManager
 
     /**
      * @param int $user_id
+     *
+     * @return Result|int
      */
     public function deleteByUser($user_id)
     {
@@ -63,6 +68,8 @@ class SessionsManager extends Crud\CrudManager
     /**
      * @param                        $session_key
      * @param ArrayHash              $session_data
+     *
+     * @return Result|int
      */
     public function updateBySessionsKey($session_key, ArrayHash $session_data)
     {
@@ -85,7 +92,7 @@ class SessionsManager extends Crud\CrudManager
     }
     
     /**
-     * 
+     *
      * @return bool
      */
     public function truncateSessions()

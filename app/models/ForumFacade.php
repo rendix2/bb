@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\ForumsManager;
+use App\Models\TopicFacade;
+use App\Models\TopicsManager;
+
 /**
  * Description of ForumFacade
  *
@@ -28,10 +32,10 @@ class ForumFacade
     private $topicsManager;
 
     /**
-     * 
-     * @param \App\Models\ForumsManager $forumsManager
-     * @param \App\Models\TopicFacade   $topicFacade
-     * @param \App\Models\TopicsManager $topicsManager
+     *
+     * @param ForumsManager $forumsManager
+     * @param TopicFacade   $topicFacade
+     * @param TopicsManager $topicsManager
      */
     public function __construct(ForumsManager $forumsManager, TopicFacade $topicFacade, TopicsManager $topicsManager)
     {
@@ -42,17 +46,17 @@ class ForumFacade
     
     /**
      * @param int $item_id
-     * 
+     *
      * @return bool
      */
     public function delete($item_id)
-    {        
+    {
         $topics = $this->topicsManager->getAllTopicsByForum($item_id);
         
         foreach ($topics as $topic) {
-            $this->topicFacade->delete($topic->topic_id);            
+            $this->topicFacade->delete($topic->topic_id);
         }
  
         return $this->forumsManager->delete($item_id);
-    }    
+    }
 }

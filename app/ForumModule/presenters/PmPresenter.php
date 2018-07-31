@@ -70,7 +70,6 @@ class PmPresenter extends CrudPresenter
         $this->translator = $this->translatorFactory->forumTranslatorFactory(); 
         
         $this->template->setTranslator($this->translator);
-        $this->getUser()->setAuthorizator($this->authorizator->getAcl());
     }   
     
     /**
@@ -134,7 +133,7 @@ class PmPresenter extends CrudPresenter
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->translator);
-    }    
+    }
 
     /**
      * @return BootstrapForm
@@ -142,6 +141,7 @@ class PmPresenter extends CrudPresenter
     protected function createComponentEditForm()
     {
         $form = $this->createBootstrapForm();
+        
         $form->setTranslator($this->translator);
         
         $form->addHidden('pm_user_id_to');

@@ -71,8 +71,14 @@ class BootstrapForm extends Form
      *
      * @api
      */
-    public function __construct($columnCount = 6, $columnType = 'sm', $labelColumnCount = 6, $ajax = false, IContainer $parent = null, $name = null)
-    {
+    public function __construct(
+        $columnCount = 6,
+        $columnType = 'sm',
+        $labelColumnCount = 7,
+        $ajax = false,
+        IContainer $parent = null,
+        $name = null
+    ) {
         parent::__construct(
             $parent,
             $name
@@ -86,8 +92,7 @@ class BootstrapForm extends Form
     }
 
     /**
-     * 
-     * @return \App\Controls\BootstrapForm
+     * @return BootstrapForm
      */
     public static function create()
     {
@@ -96,7 +101,7 @@ class BootstrapForm extends Form
     
     /**
      * 
-     * @return \App\Controls\BootstrapForm
+     * @return BootstrapForm
      */
     public static function createAjax()
     {
@@ -107,7 +112,7 @@ class BootstrapForm extends Form
      * 
      * @param int $count
      * 
-     * @return \App\Controls\BootstrapForm
+     * @return BootstrapForm
      */
     public function setColumnCount($count = 6) 
     {
@@ -120,7 +125,7 @@ class BootstrapForm extends Form
      * 
      * @param string $type
      * 
-     * @return \App\Controls\BootstrapForm
+     * @return BootstrapForm
      */
     public function setColumnType($type = 'sm')
     {
@@ -133,7 +138,7 @@ class BootstrapForm extends Form
      * 
      * @param int $count
      * 
-     * @return \App\Controls\BootstrapForm
+     * @return BootstrapForm
      */
     public function setLabelColumnCount($count = 6) 
     {
@@ -146,7 +151,7 @@ class BootstrapForm extends Form
      * 
      * @param bool $ajax
      * 
-     * @return \App\Controls\BootstrapForm
+     * @return BootstrapForm
      */
     public function setAjax($ajax) 
     {

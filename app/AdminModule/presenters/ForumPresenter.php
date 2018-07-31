@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
@@ -128,7 +129,7 @@ class ForumPresenter extends Base\AdminPresenter
     }
 
     /**
-     * @return BootStrapForm
+     * @return BootstrapForm
      */
     protected function createComponentEditForm()
     {
