@@ -37,7 +37,7 @@ class UserDeleteAvatarForm extends Control
     private $translator;
     
     /**
-     * @var \App\Controls\Avatars $avatars
+     * @var Avatars $avatars
      */
     public $avatars;
 
@@ -91,12 +91,12 @@ class UserDeleteAvatarForm extends Control
         if (isset($values->delete_avatar) && $values->delete_avatar === true) {
             $user = $this->userManager->getById($this->user->getId());
 
-            if ($user->user_avatar) {                
+            if ($user->user_avatar) {
                 $this->userManager->removeAvatarFile($user->user_avatar);
                 $this->userManager->update($user->user_id, ArrayHash::from(['user_avatar' => null]));
                 $this->flashMessage('Avatar was deleted.', BasePresenter::FLASH_MESSAGE_SUCCESS);
                 $this->redirect('this');
             }
         }
-    }    
+    }
 }

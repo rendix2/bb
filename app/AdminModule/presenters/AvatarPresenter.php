@@ -57,7 +57,7 @@ class AvatarPresenter extends Base\AdminPresenter
      * @param string $avatar_name
      */
     public function handleDeleteAvatar($user_id, $avatar_name)
-    {        
+    {
         $this->getManager()->removeAvatarFile($avatar_name);
         
         $this->getManager()->update($user_id, ArrayHash::from(['user_avatar' => null]));

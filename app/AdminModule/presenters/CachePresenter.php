@@ -55,6 +55,7 @@ class CachePresenter extends Base\AdminPresenter
             if ($user->logoutReason === IUserStorage::INACTIVITY) {
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
             }
+
             $this->redirect('Login:default', ['backlink' => $this->storeRequest()]);
         }
     }

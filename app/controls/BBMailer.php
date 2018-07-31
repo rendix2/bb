@@ -9,6 +9,7 @@ use App\Settings\Email;
 use Latte\Engine;
 use Nette\Mail\IMailer;
 use Nette\Mail\Message;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of BBMailer
@@ -31,9 +32,9 @@ class BBMailer
     
     /**
      *
-     * @var array $recepients;
+     * @var array $recipients;
      */
-    private $recepients;
+    private $recipients;
     
     /**
      *
@@ -83,17 +84,17 @@ class BBMailer
      * @return $this
      */
     /**
-     * @param array $recepients
+     * @param array $recipients
      *
      * @return $this
      */
-    public function addRecepients(array $recepients)
+    public function addRecipients(array $recipients)
     {
-        foreach ($recepients as $recepient) {
-            $this->message->addTo($recepient);
+        foreach ($recipients as $recipient) {
+            $this->message->addTo($recipient);
         }
         
-        $this->recepients = $recepients;
+        $this->recipients = $recipients;
         
         return $this;
     }
@@ -166,13 +167,12 @@ class BBMailer
             'mail_subject' => $this->message->getSubject(),
             'mail_from'    => $this->message->getFrom(),
             'mail_time'    => time()
-        
         ];
         
-        $emails   = $this->usersManager->getByEmails($this->recepients);        
-        $email_id = $this->manager->add(\Nette\Utils\ArrayHash::from($item_data));
+        $emails   = $this->usersManager->getByEmails($this->recipients);
+        $email_id = $this->manager->add(ArrayHash::from($item_data));
         
-        $emailsArray = [];       
+        $emailsArray = [];
         
         foreach ($emails as $email) {
             $emailsArray[] = $email->user_id;

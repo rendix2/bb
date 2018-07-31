@@ -30,7 +30,7 @@ class UserResetPasswordForm extends Control
     private $usersManager;
 
     /**
-     * 
+     *
      * @param TranslatorFactory $translatorFactory
      * @param UsersManager      $usersManager
      */
@@ -42,12 +42,15 @@ class UserResetPasswordForm extends Control
         $this->usersManager     = $usersManager;
     }
 
+    /**
+     * renders form
+     */
     public function render()
     {
         $this['resetPasswordForm']->render();
     }
 
-        /**
+    /**
      * @return BootstrapForm
      */
     protected function createComponentResetPasswordForm()
@@ -68,7 +71,7 @@ class UserResetPasswordForm extends Control
         ];
 
         return $form;
-    }    
+    }
     
     /**
      * @param Form      $form

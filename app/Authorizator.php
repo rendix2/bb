@@ -51,15 +51,20 @@ class Authorizator
     private $moderatorsManager;
 
     /**
-     * 
+     *
      * @param ForumsManager $forumsManager
      * @param User $user
      * @param UsersManager $userManager
      * @param ModeratorsManager $moderatorsManager
      * @param Users2GroupsManager $users2GroupsManager
      */
-    public function __construct(ForumsManager $forumsManager, User $user, UsersManager $userManager, ModeratorsManager $moderatorsManager, Users2GroupsManager $users2GroupsManager)
-    {
+    public function __construct(
+        ForumsManager $forumsManager,
+        User $user,
+        UsersManager $userManager,
+        ModeratorsManager $moderatorsManager,
+        Users2GroupsManager $users2GroupsManager
+    ) {
         $this->acl                 = new Permission();
         $this->forumManager        = $forumsManager;
         $this->user                = $user;

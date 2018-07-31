@@ -60,7 +60,7 @@ class UserFacade
      */
     private $postFacade;
     
-    /** 
+    /**
      * @var TopicWatchManager $topicWatchManager
      */
     private $topicWatchManager;
@@ -77,42 +77,42 @@ class UserFacade
     
     /**
      *
-     * @var type PostsHistoryManager $postsHistoryManager
-     * 
+     * @var PostsHistoryManager $postsHistoryManager
+     *
      */
     private $postsHistoryManager;
 
     /**
      *
-     * @param PostsManager             $postsManager
-     * @param PostsHistoryManager      $postsHistoryManager
-     * @param PostFacade               $postFacade
-     * @param Mails2UsersManager       $mails2UsersManager
-     * @param ModeratorsManager        $moderatorsManager
-     * @param PMManager                $pmManager
-     * @param ReportsManager           $reportsManager
-     * @param SessionsManager          $sessionsManager
-     * @param ThanksManager            $thanksManager
-     * @param TopicWatchManager        $topicWatchManager
-     * @param Users2ForumsManager      $users2ForumsManager
-     * @param Users2GroupsManager      $users2GroupsManager
-     * @param \App\Models\UsersManager $usersManager
+     * @param PostsManager        $postsManager
+     * @param PostsHistoryManager $postsHistoryManager
+     * @param PostFacade          $postFacade
+     * @param Mails2UsersManager  $mails2UsersManager
+     * @param ModeratorsManager   $moderatorsManager
+     * @param PMManager           $pmManager
+     * @param ReportsManager      $reportsManager
+     * @param SessionsManager     $sessionsManager
+     * @param ThanksManager       $thanksManager
+     * @param TopicWatchManager   $topicWatchManager
+     * @param Users2ForumsManager $users2ForumsManager
+     * @param Users2GroupsManager $users2GroupsManager
+     * @param UsersManager        $usersManager
      */
     public function __construct(
-            PostsManager          $postsManager,
-            PostsHistoryManager   $postsHistoryManager,
-            PostFacade            $postFacade,
-            Mails2UsersManager    $mails2UsersManager,
-            ModeratorsManager     $moderatorsManager,
-            PMManager             $pmManager,
-            ReportsManager        $reportsManager,
-            SessionsManager       $sessionsManager,
-            ThanksManager         $thanksManager,
-            TopicWatchManager     $topicWatchManager,
-            Users2ForumsManager   $users2ForumsManager,
-            Users2GroupsManager   $users2GroupsManager,
-            //Users2SessionsManager $users2SessionManager,
-            UsersManager          $usersManager
+        PostsManager $postsManager,
+        PostsHistoryManager $postsHistoryManager,
+        PostFacade $postFacade,
+        Mails2UsersManager $mails2UsersManager,
+        ModeratorsManager $moderatorsManager,
+        PMManager $pmManager,
+        ReportsManager $reportsManager,
+        SessionsManager $sessionsManager,
+        ThanksManager $thanksManager,
+        TopicWatchManager $topicWatchManager,
+        Users2ForumsManager $users2ForumsManager,
+        Users2GroupsManager $users2GroupsManager,
+        //Users2SessionsManager $users2SessionManager,
+        UsersManager $usersManager
     ) {
         $this->usersManager         = $usersManager;
         $this->postsManager         = $postsManager;
@@ -131,9 +131,9 @@ class UserFacade
     }
 
     /**
-     * 
-     * @param ïnt $item_id user_id
-     * 
+     *
+     * @param int $item_id user_id
+     *
      * @return bool
      */
     public function delete($item_id)
@@ -144,7 +144,7 @@ class UserFacade
             $this->usersManager->removeAvatarFile($user->user_avatar);
         }
 
-       $posts = $this->postsManager->getByUser($item_id)->fetchAll();
+        $posts = $this->postsManager->getByUser($item_id)->fetchAll();
                 
         foreach ($posts as $post) {
             $this->postFacade->delete($post->post_id);
@@ -164,5 +164,4 @@ class UserFacade
     
         return $this->usersManager->delete($item_id);
     }
-    
 }

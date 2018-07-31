@@ -96,7 +96,6 @@ class RegisterPresenter extends BasePresenter
         if ($user_email) {
             $form->addError('User email is already taken.');
         }
-        
     }
 
     /**

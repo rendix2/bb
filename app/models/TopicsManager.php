@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Dibi\Fluent;
 use Dibi\Row;
 use Nette\Caching\Cache;
 
@@ -79,7 +80,7 @@ class TopicsManager extends Crud\CrudManager
     /**
      * @param int $forum_id
      *
-     * @return \Dibi\Fluent
+     * @return Fluent
      */
     public function getFluentJoinedUsersByForum($forum_id)
     {
@@ -91,12 +92,12 @@ class TopicsManager extends Crud\CrudManager
             ->as('u')
             ->on('[t.topic_user_id] = [u.user_id]')
             ->where('[t.topic_forum_id] = %i', $forum_id);
-    }    
+    }
     
     /**
-     * 
+     *
      * @param int $forum_id forum_id
-     * 
+     *
      * @return Row[]
      */
     public function getAllTopicsByForum($forum_id)
@@ -111,7 +112,7 @@ class TopicsManager extends Crud\CrudManager
     /**
      * @param int $user_id
      *
-     * @return \Dibi\Fluent
+     * @return Fluent
      */
     public function getFLuentByUser($user_id)
     {
@@ -119,5 +120,5 @@ class TopicsManager extends Crud\CrudManager
                 ->select('*')
                 ->from($this->getTable())
                 ->where('[topic_user_id] = %i', $user_id);
-    }    
+    }
 }

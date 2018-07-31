@@ -21,9 +21,16 @@ class FavouriteUsersManager extends MNManager
      * @param null         $leftKey
      * @param null         $rightKey
      */
-    public function __construct(Connection $dibi, UsersManager $left, UsersManager $right, $tableName = self::FAVOURITE_USERS_TABLE, $leftKey = null, $rightKey = null) {
+    public function __construct(
+        Connection $dibi,
+        UsersManager $left,
+        UsersManager $right,
+        $tableName = self::FAVOURITE_USERS_TABLE,
+        $leftKey = null,
+        $rightKey = null
+    ) {
         $right = clone $right;
         
-        parent::__construct($dibi, $left, $right, $tableName, $leftKey, 'favourite_user_id');       
+        parent::__construct($dibi, $left, $right, $tableName, $leftKey, 'favourite_user_id');
     }
 }

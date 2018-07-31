@@ -2,6 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\CategoriesManager;
+use App\Models\ForumsManager;
+use Dibi\Connection;
+use Zebra_Mptt;
+
 /**
  * Description of MtppFactory
  *
@@ -12,29 +17,29 @@ class MpttFactory
     
     /**
      *
-     * @var \App\Models\CategoriesManager $categoriesManager
+     * @var CategoriesManager $categoriesManager
      */
     private $categoriesManager;
 
     /**
      *
-     * @var \App\Models\ForumsManager $forumsManager
+     * @var ForumsManager $forumsManager
      */
     private $forumsManager;
     
     /**
      *
-     * @var \Dibi\Connection $dibi
+     * @var Connection $dibi
      */
     private $dibi;
 
     /**
-     * 
-     * @param \Dibi\Connection $dibi
-     * @param \App\Models\CategoriesManager $categoriesManager
-     * @param \App\Models\ForumsManager $forumsManager
+     *
+     * @param Connection        $dibi
+     * @param CategoriesManager $categoriesManager
+     * @param ForumsManager     $forumsManager
      */
-    public function __construct(\Dibi\Connection $dibi, \App\Models\CategoriesManager $categoriesManager, \App\Models\ForumsManager $forumsManager)
+    public function __construct(Connection $dibi, CategoriesManager $categoriesManager, ForumsManager $forumsManager)
     {
         $this->categoriesManager = $categoriesManager;
         $this->forumsManager     = $forumsManager;
@@ -42,12 +47,12 @@ class MpttFactory
     }
     
     /**
-     * 
-     * @return \App\Services\Zebra_Mptt
+     *
+     * @return Zebra_Mptt
      */
     public function getCategories()
     {
-       return new Zebra_Mptt(
+        return new Zebra_Mptt(
             $this->dibi,
             $this->categoriesManager->getTable(),
             $this->categoriesManager->getPrimaryKey(),
@@ -59,8 +64,8 @@ class MpttFactory
     }
     
     /**
-     * 
-     * @return \App\Services\Zebra_Mptt
+     *
+     * @return Zebra_Mptt
      */
     public function getForum()
     {
@@ -73,6 +78,6 @@ class MpttFactory
             $this->forumsManager->getRight(),
             $this->forumsManager->getParent()
         );
-    }    
+    }
     
 }

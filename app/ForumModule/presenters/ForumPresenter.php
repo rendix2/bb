@@ -4,10 +4,11 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Controls\PaginatorControl;
-use App\Settings\TopicsSetting;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
+use App\Models\ModeratorsManager;
 use App\Models\TopicsManager;
+use App\Settings\TopicsSetting;
 use Nette\Application\UI\Form;
 use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;
@@ -41,7 +42,7 @@ final class ForumPresenter extends Base\ForumPresenter
 
     /**
      *
-     * @var \App\Models\ModeratorsManager $moderators
+     * @var ModeratorsManager $moderators
      * @inject
      */
     public $moderators;
@@ -57,9 +58,9 @@ final class ForumPresenter extends Base\ForumPresenter
 
     /**
      * renders topics
-     * 
-     * @param int  $forum_id
-     * @param int  $page
+     *
+     * @param int         $forum_id
+     * @param int         $page
      * @param string|null $q
      */
     public function renderDefault($forum_id, $page = 1, $q = null)

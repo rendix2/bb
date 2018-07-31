@@ -2,8 +2,6 @@
 
 namespace App\Authorization;
 
-use App\Authorization\IAuthorizationScope;
-use App\Authorization\Identity;
 use Nette\Security\IAuthorizator;
 
 /**
@@ -11,8 +9,8 @@ use Nette\Security\IAuthorizator;
  *
  * @author rendi
  */
-class Authorizator {
-    
+class Authorizator
+{
     /**
      * @var IAuthorizator $authorizator
      */
@@ -26,6 +24,24 @@ class Authorizator {
     public function __construct(IAuthorizator $authorizator)
     {
         $this->authorizator = $authorizator;
+    }
+
+    /**
+     * @param Identity            $identity
+     * @param IAuthorizationScope $scope
+     *
+     * @return \Generator
+     */
+    private function getRoles(Identity $identity, IAuthorizationScope $scope)
+    {
+        //globální role
+        foreach ($identity->getRoles() as $role) {
+            yield $role; //yield používám, jelikoz když to matchne globální roli, je zbytečné se ptát scope na dynamické role
+        }
+
+        foreach ($scope->getIdentityRoles($identity) as $role) {
+            yield $role;
+        }
     }
 
     /**
@@ -46,23 +62,5 @@ class Authorizator {
         }
 
         return false;
-    }
-
-    /**
-     * @param Identity            $identity
-     * @param IAuthorizationScope $scope
-     *
-     * @return \Generator
-     */
-    private function getRoles(Identity $identity, IAuthorizationScope $scope)
-    {
-        //globální role
-	    foreach ($identity->getRoles() as $role) {
-            yield $role; //yield používám, jelikoz když to matchne globální roli, je zbytečné se ptát scope na dynamické role
-        }
-
-        foreach ($scope->getIdentityRoles($identity) as $role) {
-            yield $role;
-        }
     }
 }

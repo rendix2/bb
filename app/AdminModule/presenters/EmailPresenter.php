@@ -71,7 +71,7 @@ class EmailPresenter extends Base\AdminPresenter
     }
 
     /**
-     * @param null $id
+     * @param int|null $id
      */
     public function renderEdit($id = null)
     {
@@ -123,7 +123,7 @@ class EmailPresenter extends Base\AdminPresenter
             $usersMails[] = $user->user_email;
         }
 
-        $this->bbMailer->addRecepients($usersMails);
+        $this->bbMailer->addRecipients($usersMails);
         $this->bbMailer->setSubject($values->email_subject);
         $this->bbMailer->setText($values->email_text);
 

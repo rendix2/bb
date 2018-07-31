@@ -9,5 +9,4 @@ namespace App\Models;
  */
 class PollsVotesManager extends Crud\CrudManager
 {
-
 }

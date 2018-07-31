@@ -91,14 +91,14 @@ class GroupPresenter extends Base\AdminPresenter
     }
 
     /**
-     * @param null $id
+     * @param int|null $id
      */
     public function renderEdit($id = null)
     {
         parent::renderEdit($id);
 
         if ($id) {
-            $item      = $this->template->item;        
+            $item      = $this->template->item;
             $moderator = $this->usersManager->getById($item->group_moderator_id);
         
             $this['editForm']->setDefaults(['group_moderator' => $moderator->user_name]);
@@ -121,7 +121,6 @@ class GroupPresenter extends Base\AdminPresenter
         }
 
         $this->template->permissions = $data;
-        
     }
 
     /**
@@ -143,7 +142,8 @@ class GroupPresenter extends Base\AdminPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function editFormSuccess(Form $form, ArrayHash $values) {
+    public function editFormSuccess(Form $form, ArrayHash $values)
+    {
         $moderator = $this->usersManager->getByName($values->group_moderator);
         
         if ($moderator) {
@@ -154,7 +154,7 @@ class GroupPresenter extends Base\AdminPresenter
         
         unset($values->group_moderator);
                 
-        parent::editFormSuccess($form, $values);                
+        parent::editFormSuccess($form, $values);
     }
 
     /**
@@ -213,5 +213,5 @@ class GroupPresenter extends Base\AdminPresenter
         ];
 
         $this->forums2groupsManager->addForums2group($group_id, $data);
-    }    
+    }
 }

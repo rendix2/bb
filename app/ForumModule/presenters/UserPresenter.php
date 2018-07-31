@@ -6,8 +6,10 @@ use App\Controls\BootstrapForm;
 use App\Controls\ChangePasswordControl;
 use App\Controls\DeleteAvatarControl;
 use App\Controls\PaginatorControl;
+use App\Forms\UserChangePasswordForm;
 use App\Forms\UserChangeUserNameForm;
 use App\Forms\SendMailToAdminForm;
+use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserResetPasswordForm;
 use App\Models\LanguagesManager;
 use App\Models\ModeratorsManager;
@@ -493,7 +495,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @return ChangePasswordControl
+     * @return UserChangePasswordForm
      */
     protected function createComponentChangePasswordControl()
     {
@@ -501,7 +503,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @return \App\Forms\UserDeleteAvatarForm
+     * @return UserDeleteAvatarForm
      */
     protected function createComponentDeleteAvatar()
     {

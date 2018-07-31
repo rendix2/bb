@@ -8,6 +8,8 @@ use App\Controls\BootstrapForm;
 use App\Forms\ChangePasswordForm;
 use App\Controls\DeleteAvatarControl;
 use App\Controls\GridFilter;
+use App\Forms\UserChangePasswordForm;
+use App\Forms\UserDeleteAvatarForm;
 use App\Models\ForumsManager;
 use App\Models\GroupsManager;
 use App\Models\LanguagesManager;
@@ -15,6 +17,8 @@ use App\Models\ModeratorsManager;
 use App\Models\Users2ForumsManager;
 use App\Models\Users2GroupsManager;
 use App\Models\UsersManager;
+use App\Services\ChangePasswordFactory;
+use App\Services\DeleteAvatarFactory;
 use App\Settings\Avatars;
 use App\Settings\Ranks;
 use Nette\Application\UI\Form;
@@ -80,14 +84,14 @@ class UserPresenter extends Base\AdminPresenter
 
     /**
      *
-     * @var \App\Services\ChangePasswordFactory $changePasswordFactory
+     * @var ChangePasswordFactory $changePasswordFactory
      * @inject
      */
-    public $changePasswordFactory;  
+    public $changePasswordFactory;
     
     /**
      *
-     * @var \App\Services\DeleteAvatarFactory $deleteAvatarFactory
+     * @var DeleteAvatarFactory $deleteAvatarFactory
      * @inject
      */
     public $deleteAvatarFactory;
@@ -124,13 +128,14 @@ class UserPresenter extends Base\AdminPresenter
             $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
             $this->addComponent($this->gf, 'gridFilter');
-        }        
+        }
     }
 
     /**
      * @param int $page
      */
-    public function renderDefault($page = 1) {
+    public function renderDefault($page = 1)
+    {
         parent::renderDefault($page);
         
         $this->template->roles = Authorizator::ROLES;
@@ -151,12 +156,12 @@ class UserPresenter extends Base\AdminPresenter
         
         $this->template->myModerators = $this->moderatorsManager->getPairsByLeft($id);
         
-        $this->template->avatarsDir = $this->avatar->getTemplateDir();     
-        $this->template->ranksDir   = $this->rank->getTemplateDir();  
+        $this->template->avatarsDir = $this->avatar->getTemplateDir();
+        $this->template->ranksDir   = $this->rank->getTemplateDir();
     }
 
     /**
-     * @return \App\Forms\UserChangePasswordForm
+     * @return UserChangePasswordForm
      */
     protected function createComponentChangePasswordControl()
     {
@@ -198,7 +203,7 @@ class UserPresenter extends Base\AdminPresenter
     }
 
     /**
-     * @return \App\Forms\UserDeleteAvatarForm
+     * @return UserDeleteAvatarForm
      */
     public function createComponentDeleteAvatar()
     {
@@ -210,7 +215,7 @@ class UserPresenter extends Base\AdminPresenter
      */
     public function createComponentForumsForm()
     {
-        $form = self::createBootstrapForm();
+        $form = $this->createBootstrapForm();
 
         $form->addSubmit('send_forum', 'Send');
         $form->onSuccess[] = [$this, 'forumsSuccess'];

@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Dibi\Fluent;
 use Dibi\Result;
+use Dibi\Row;
 
 /**
  * Description of ThanksManager
@@ -74,19 +76,18 @@ class ThanksManager extends Crud\CrudManager
     /**
      * @param int $user_id
      *
-     * @return \Dibi\Fluent
+     * @return Fluent
      */
     public function getThanks($user_id)
     {
-        return $this->dibi
-                ->select('*')
-                ->from($this->getTable())
-                ->as('th')
-                ->innerJoin(self::TOPICS_TABLE)
-                ->as('to')
-                ->on('[th.thank_topic_id] = [to.topic_id]')
-                ->where('[th.thank_user_id] = %i', $user_id);
-    }    
+        return $this->dibi->select('*')
+            ->from($this->getTable())
+            ->as('th')
+            ->innerJoin(self::TOPICS_TABLE)
+            ->as('to')
+            ->on('[th.thank_topic_id] = [to.topic_id]')
+            ->where('[th.thank_user_id] = %i', $user_id);
+    }
 
     /**
      * @param int $forum_id
@@ -130,5 +131,5 @@ class ThanksManager extends Crud\CrudManager
             ->delete($this->getTable())
             ->where('[thank_user_id] = %i', $user_id)
             ->execute();
-    }    
+    }
 }

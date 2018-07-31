@@ -28,20 +28,23 @@ class PollsFacade
     private $pollsVotesManager;
     
     /**
-     * 
+     *
      * @param PollsManager        $pollsManager
      * @param PollsAnswersManager $pollsAnwersManager
      * @param PollsVotesManager   $pollsVotesManager
      */
-    public function __construct(PollsManager $pollsManager, PollsAnswersManager $pollsAnwersManager, PollsVotesManager $pollsVotesManager)
-    {
+    public function __construct(
+        PollsManager $pollsManager,
+        PollsAnswersManager $pollsAnwersManager,
+        PollsVotesManager $pollsVotesManager
+    ) {
         $this->pollsManager        = $pollsManager;
         $this->pollsAnswersManager = $pollsAnwersManager;
         $this->pollsVotesManager   = $pollsVotesManager;
     }
 
     /**
-     * @param $item_id
+     * @param int $item_id
      */
     public function delete($item_id)
     {

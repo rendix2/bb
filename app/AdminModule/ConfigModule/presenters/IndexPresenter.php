@@ -34,7 +34,7 @@ class IndexPresenter extends BasePresenter
    
     /**
      *
-     * @param type $element
+     * @param mixed $element
      */
     public function checkRequirements($element)
     {

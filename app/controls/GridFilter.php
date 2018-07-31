@@ -101,7 +101,7 @@ class GridFilter extends Control
     public function factory(Session $session)
     {
         $this->session = $session;
-    }    
+    }
 
     /**
      * @return array
@@ -132,38 +132,31 @@ class GridFilter extends Control
             $where = [];
 
             foreach ($this->type as $col => $val) {
-                if ( ($val['strint'] === '%in' && count($this->session->getSection($col)->value))
-                    || ($val['strint'] === '%i' && is_numeric($this->session->getSection($col)->value)) 
-                    || ( ($val['strint'] === '%s' || $val['strint'] == '%~like~')
-                        && is_string($this->session->getSection($col)->value)
-                        && mb_strlen($this->session->getSection($col)->value) >= 1
-                    ) 
-                    || $val['type'] === 'date'        
-                    && $col !== self::NOTHING) {
-                    
+                if (($val['strint'] === '%in' && count($this->session->getSection($col)->value)) || ($val['strint'] === '%i' && is_numeric($this->session->getSection($col)->value)) || (($val['strint'] === '%s' || $val['strint'] == '%~like~') && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) || $val['type'] === 'date' && $col !== self::NOTHING) {
+
                     $columnName = $this->checkFTI($col);
 
                     if ($val['type'] === 'date') {
                         if (!$this->session->getSection($col)->value) {
                             continue;
                         }
-                        
-                    $time = new \Nette\Utils\DateTime($this->session->getSection($col)->value);
-                        
-                    $where[] = [
-                        'column' => $columnName,
-                        'type'   => $val['operator'],
-                        'value'  => $time->getTimestamp(),
-                        'strint' => $val['strint']
-                    ];
+
+                        $time = new \Nette\Utils\DateTime($this->session->getSection($col)->value);
+
+                        $where[] = [
+                            'column' => $columnName,
+                            'type'   => $val['operator'],
+                            'value'  => $time->getTimestamp(),
+                            'strint' => $val['strint']
+                        ];
                     } else {
                         $where[] = [
-                        'column' => $columnName,
-                        'type'   => $val['operator'],
-                        'value'  => $this->session->getSection($col)->value,
-                        'strint' => $val['strint']
-                    ];
-                    }                     
+                            'column' => $columnName,
+                            'type'   => $val['operator'],
+                            'value'  => $this->session->getSection($col)->value,
+                            'strint' => $val['strint']
+                        ];
+                    }
                 }
             }
             
@@ -259,18 +252,18 @@ class GridFilter extends Control
                     ->setAttribute('class', 'mb-1');
                 $this->form->addTbDatePicker($columnName. '_Xto', $text)
                         ->setAttribute('placeholder', 'To');
-                                $this->type[$columnName. '_Xfrom'] = [
+                $this->type[$columnName. '_Xfrom'] = [
                     'type'     => $type,
                     'text'     => $text,
                     'operator' => '>=',
                     'strint'   => '%i'
-                ];                
+                ];
                 $this->type[$columnName. '_Xto'] = [
                     'type'     => $type,
                     'text'     => $text,
                     'operator' => '<=',
                     'strint'   => '%i'
-                ];  
+                ];
                 
                 break;
         }
@@ -297,8 +290,8 @@ class GridFilter extends Control
     }
     
     public function handleReset()
-    {        
-        foreach ( $this->type as $name => $type) {
+    {
+        foreach ($this->type as $name => $type) {
             unset($this->session->getSection($name)->value);
         }
         
@@ -315,7 +308,7 @@ class GridFilter extends Control
         $template = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'gridFilter' . $sep . 'gridFilter.latte');
         $template->setTranslator($this->translator);
 
-        foreach ($this->type as $column => $value) {            
+        foreach ($this->type as $column => $value) {
             $this['gridFilter']->setDefaults([$column => $this->session->getSection($column)->value]);
         }
 
@@ -398,5 +391,5 @@ class GridFilter extends Control
         $this->whereColumns = $where;
 
         $this->redirect('this');
-    }    
+    }
 }

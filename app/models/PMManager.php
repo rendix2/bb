@@ -11,5 +11,4 @@ use App\Models\Crud\CrudManager;
  */
 class PMManager extends CrudManager
 {
-
 }

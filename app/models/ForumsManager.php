@@ -6,6 +6,7 @@ use dibi;
 use Dibi\Fluent;
 use Dibi\Row;
 use Dibi\Connection;
+use Nette\Caching\IStorage;
 
 
 /**

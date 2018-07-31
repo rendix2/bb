@@ -2,6 +2,7 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Models\PMManager;
 use App\Presenters\crud\CrudPresenter;
@@ -15,7 +16,7 @@ use App\Controls\GridFilter;
 class PmPresenter extends CrudPresenter
 {    
     /**
-     * @var \App\Authorizator $authorizator
+     * @var Authorizator $authorizator
      * @inject
      */
     public $authorizator;
@@ -30,7 +31,8 @@ class PmPresenter extends CrudPresenter
         parent::__construct($manager);
     }
     
-    public function startup() {
+    public function startup()
+    {
         parent::startup();
         
         $translator = $this->translatorFactory->forumTranslatorFactory();
@@ -45,14 +47,14 @@ class PmPresenter extends CrudPresenter
             $this->gf->addFilter(null, null, GridFilter::NOTHING);
 
             $this->addComponent($this->gf, 'gridFilter');
-        }  
+        }
         
         $this->template->setTranslator($translator);
         $this->getUser()->setAuthorizator($this->authorizator->getAcl());
     }
 
     /**
-     * @return BootstrapForm|
+     * @return BootstrapForm
      */
     protected function createComponentEditForm()
     {

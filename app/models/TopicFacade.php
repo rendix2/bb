@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -55,16 +56,23 @@ class TopicFacade
 
     /**
      *
-     * @param \App\Models\TopicsManager     $topicsManager
-     * @param \App\Models\TopicWatchManager $topicWatchManager
-     * @param \App\Models\PostsManager      $postsManager
-     * @param \App\Models\UsersManager      $usersManager
-     * @param \App\Models\ThanksManager     $thanksManager
-     * @param ForumsManager                 $forumsManager
-     * @param PostFacade                    $postFacade
+     * @param TopicsManager     $topicsManager
+     * @param TopicWatchManager $topicWatchManager
+     * @param PostsManager      $postsManager
+     * @param UsersManager      $usersManager
+     * @param ThanksManager     $thanksManager
+     * @param ForumsManager     $forumsManager
+     * @param PostFacade        $postFacade
      */
-    public function __construct(TopicsManager $topicsManager, TopicWatchManager $topicWatchManager, PostsManager $postsManager, UsersManager $usersManager, ThanksManager $thanksManager, ForumsManager $forumsManager, PostFacade $postFacade)
-    {
+    public function __construct(
+        TopicsManager $topicsManager,
+        TopicWatchManager $topicWatchManager,
+        PostsManager $postsManager,
+        UsersManager $usersManager,
+        ThanksManager $thanksManager,
+        ForumsManager $forumsManager,
+        PostFacade $postFacade
+    ) {
         $this->topicsManager     = $topicsManager;
         $this->topicWatchManager = $topicWatchManager;
         $this->postsManager      = $postsManager;
@@ -78,7 +86,7 @@ class TopicFacade
      *
      * @param ArrayHash $item_data
      *
-     * @return \Dibi\Result|int
+     * @return Result|int
      */
     public function add(ArrayHash $item_data)
     {
@@ -111,8 +119,8 @@ class TopicFacade
         $this->topicsManager->update($topic_id, ArrayHash::from(['topic_first_post_id' => $post_id, 'topic_last_post_id' => $post_id]));
         $this->usersManager->update($values->topic_user_id, ArrayHash::from(
             [
-                    'user_topic_count%sql' => 'user_topic_count + 1',
-                    'user_watch_count%sql' => 'user_watch_count + 1'
+                'user_topic_count%sql' => 'user_topic_count + 1',
+                'user_watch_count%sql' => 'user_watch_count + 1'
             ]
         ));
         
@@ -125,7 +133,7 @@ class TopicFacade
      *
      * @param type $item_id
      *
-     * @return \Dibi\Result|int
+     * @return Result|int
      */
     public function delete($item_id)
     {
@@ -173,6 +181,5 @@ class TopicFacade
      */
     public function copy($item_id)
     {
-        
-    }    
+    }
 }

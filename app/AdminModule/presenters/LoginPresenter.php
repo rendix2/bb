@@ -2,9 +2,11 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Authenticator;
 use App\Controls\BootstrapForm;
 use App\Forms\UserLoginForm;
 use App\Services\UserLoginFormFactory;
+use App\Translator;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
 use Nette\Utils\ArrayHash;
@@ -25,7 +27,7 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter
     
     /**
      *
-     * @var \App\Translator $translator
+     * @var Translator $translator
      */
     public $translator;
     
@@ -98,7 +100,7 @@ class LoginPresenter extends \App\Presenters\Base\BasePresenter
                 $values->user_password
             );
             
-            if (!$this->getUser()->isInRole(\App\Authenticator::ROLES[5])) {
+            if (!$this->getUser()->isInRole(Authenticator::ROLES[5])) {
                 throw new AuthenticationException('You are not admin.');
             }
             

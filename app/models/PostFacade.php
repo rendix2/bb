@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -55,16 +56,23 @@ class PostFacade
 
     /**
      *
-     * @param \App\Models\PostsManager      $postsManager
-     * @param \App\Models\TopicsManager     $topicsManager
-     * @param \App\Models\TopicWatchManager $topicWatchManager
-     * @param UsersManager                  $usersManager
-     * @param ReportsManager                $reportsManager
-     * @param ForumsManager                 $forumsManager
-     * @param PostsHistoryManager           $postsHistoryManager
+     * @param PostsManager        $postsManager
+     * @param TopicsManager       $topicsManager
+     * @param TopicWatchManager   $topicWatchManager
+     * @param UsersManager        $usersManager
+     * @param ReportsManager      $reportsManager
+     * @param ForumsManager       $forumsManager
+     * @param PostsHistoryManager $postsHistoryManager
      */
-    public function __construct(PostsManager $postsManager, TopicsManager $topicsManager, TopicWatchManager $topicWatchManager, UsersManager $usersManager, ReportsManager $reportsManager, ForumsManager $forumsManager, PostsHistoryManager $postsHistoryManager)
-    {
+    public function __construct(
+        PostsManager $postsManager,
+        TopicsManager $topicsManager,
+        TopicWatchManager $topicWatchManager,
+        UsersManager $usersManager,
+        ReportsManager $reportsManager,
+        ForumsManager $forumsManager,
+        PostsHistoryManager $postsHistoryManager
+    ) {
         $this->postsManager        = $postsManager;
         $this->topicsManager       = $topicsManager;
         $this->topicWatchManager   = $topicWatchManager;
@@ -77,12 +85,10 @@ class PostFacade
     /**
      * @param ArrayHash $item_data
      *
-     * @return \Dibi\Result|int
+     * @return Result|int
      */
     public function add(ArrayHash $item_data)
     {
-        \Tracy\Debugger::barDump($item_data);
-        
         $post_id  = $this->postsManager->add($item_data);
         $user_id  = $item_data->post_user_id;
         $forum_id = $item_data->post_forum_id;
@@ -104,15 +110,14 @@ class PostFacade
             $this->topicWatchManager->add([$user_id], $item_data->post_topic_id);
             $watch = ['user_watch_count%sql' => 'user_watch_count + 1'];
         }
-        
-        $this->postsHistoryManager->add(ArrayHash::from(
-                ['post_id'              => $post_id,
-                    'post_user_id'      => $user_id,
-                    'post_title'        => $item_data->post_title,
-                    'post_text'         => $item_data->post_text,
-                    'post_history_time' => time()
-                ]
-                ));
+
+        $this->postsHistoryManager->add(ArrayHash::from([
+                'post_id'           => $post_id,
+                'post_user_id'      => $user_id,
+                'post_title'        => $item_data->post_title,
+                'post_text'         => $item_data->post_text,
+                'post_history_time' => time()
+            ]));
         $this->usersManager->update(
             $user_id,
             ArrayHash::from(['user_post_count%sql' => 'user_post_count + 1'] + $watch)
@@ -120,32 +125,29 @@ class PostFacade
         
         $this->forumsManager->update($forum_id, ArrayHash::from(['forum_post_count%sql' => 'forum_post_count + 1']));
 
-        return $post_id;              
+        return $post_id;
     }
 
     /**
-     * @param           $item_id
+     * @param int       $item_id
      * @param ArrayHash $item_data
      */
     public function update($item_id, ArrayHash $item_data)
     {
-        \Tracy\Debugger::barDump($item_data);
-        
         $this->postsManager->update($item_id, $item_data);
-        $this->postsHistoryManager->add(ArrayHash::from(
-                ['post_id'              => $item_id,
-                    'post_user_id'      => $item_data->post_user_id,
-                    'post_title'        => $item_data->post_title,
-                    'post_text'         => $item_data->post_text,
-                    'post_history_time' => time()
-                ]
-                ));
+        $this->postsHistoryManager->add(ArrayHash::from([
+                'post_id'           => $item_id,
+                'post_user_id'      => $item_data->post_user_id,
+                'post_title'        => $item_data->post_title,
+                'post_text'         => $item_data->post_text,
+                'post_history_time' => time()
+            ]));
     }
 
     /**
      * @param $item_id
      *
-     * @return \Dibi\Result|int
+     * @return Result|int
      */
     public function delete($item_id)
     {
@@ -164,7 +166,6 @@ class PostFacade
         $postCount = $this->postsManager->getCountOfUsersByTopicId($post->post_topic_id);
 
         foreach ($postCount as $ps) {
-
             // check if user has there only one post so we can delete his topic watching
             // else he can still want to watch this topic
             if ($ps->post_count === 1 || $ps->post_count === 0) {
@@ -178,12 +179,12 @@ class PostFacade
         
         $this->reportsManager->deleteByPost($item_id);
         $this->forumsManager->update(
-                $post->post_forum_id,
-                ArrayHash::from(['forum_post_count%sql' => 'forum_post_count - 1'])
+            $post->post_forum_id,
+            ArrayHash::from(['forum_post_count%sql' => 'forum_post_count - 1'])
         );
         
         // recount last post info
-        $res = $this->postsManager->delete($item_id);  
+        $res = $this->postsManager->delete($item_id);
         
         $this->postsHistoryManager->deleteByPost($item_id);
         
@@ -196,7 +197,7 @@ class PostFacade
             $first_post = $this->postsManager->getFirstByTopic($post->post_topic_id);
        
             $this->topicsManager->update($post->post_topic_id, ArrayHash::from(['topic_first_post_id' => $first_post->post_id, 'topic_first_user_id' => $first_post->post_user_id]));            
-        } 
+        }
         /*
          * elseif ($topic->topic_last_post_id === $topic->topic_first_post_id && $topic->topic_first_post_id === (int)$item_id) {
             $this->forumsManager->update($post->post_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));

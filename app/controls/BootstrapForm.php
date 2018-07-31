@@ -65,8 +65,13 @@ class BootstrapForm extends Form
      *
      * @api
      */
-    public function __construct($columnCount = 6, $columnType = 'sm', $labelColumnCount = 7, IContainer $parent = null, $name = null)
-    {
+    public function __construct(
+        $columnCount = 6,
+        $columnType = 'sm',
+        $labelColumnCount = 7,
+        IContainer $parent = null,
+        $name = null
+    ) {
         parent::__construct(
             $parent,
             $name
@@ -86,7 +91,7 @@ class BootstrapForm extends Form
         return new BootstrapForm();
     }
 
-        /**
+    /**
      * BootstrapForm destruct.
      *
      * @api

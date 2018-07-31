@@ -102,7 +102,10 @@ class IndexPresenter extends BasePresenter
         
         $this->redirect('Index:default');
     }
-    
+
+    /**
+     * logout user
+     */
     public function actionLogout()
     {
         $this->user->logout(true);

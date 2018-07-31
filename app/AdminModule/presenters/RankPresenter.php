@@ -57,7 +57,7 @@ class RankPresenter extends Base\AdminPresenter
     }
     
     /**
-     * 
+     *
      * @param int $id
      */
     public function renderEdit($id = null)
@@ -67,7 +67,7 @@ class RankPresenter extends Base\AdminPresenter
         $this->template->ranksDir = $this->ranks->getTemplateDir();
     }
 
-        /**
+    /**
      * @return BootstrapForm
      */
     protected function createComponentEditForm()
@@ -108,7 +108,7 @@ class RankPresenter extends Base\AdminPresenter
                 $form->addError('From and to should not to be same.');
             }
         }
-    }    
+    }
 
     /**
      * @param Form      $form

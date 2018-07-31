@@ -6,6 +6,7 @@ use App\Forms\TopicFastReplyForm;
 use App\Models\ForumsManager;
 use App\Models\PostsManager;
 use App\Models\RanksManager;
+use App\Models\ThanksFacade;
 use App\Models\TopicsManager;
 use App\Models\ThanksManager;
 use App\Models\PostFacade;
@@ -35,11 +36,11 @@ class TopicPresenter extends Base\ForumPresenter
      * @var ForumsManager $forumManager
      * @inject
      */
-    public $forumsManager;   
+    public $forumsManager;
     
     /**
      *
-     * @var PostsManager $manager 
+     * @var PostsManager $manager
      * @inject
      */
     public $postsManager;
@@ -48,14 +49,14 @@ class TopicPresenter extends Base\ForumPresenter
      * @var TopicsSetting $topicSetting
      * @inject
      */
-    public $topicSetting;    
+    public $topicSetting;
     
     /**
      *
      * @var Avatars $avatar
      * @inject
      */
-    public $avatars;    
+    public $avatars;
     
     /**
      * @var TopicWatchManager $topicWatchManager
@@ -79,11 +80,11 @@ class TopicPresenter extends Base\ForumPresenter
      * @var TopicFacade $topicFacade
      * @inject
      */
-    public $topicFacade; 
+    public $topicFacade;
     
     /**
-     * 
-     * @var \App\Models\ThanksFacade $thanksFacade
+     *
+     * @var ThanksFacade $thanksFacade
      * @inject
      */
     public $thanksFacade;
@@ -96,13 +97,13 @@ class TopicPresenter extends Base\ForumPresenter
     public $postFacade;
 
     /**
-     * 
+     *
      * @param TopicsManager $manager
      */
     public function __construct(TopicsManager $manager)
     {
         parent::__construct($manager);
-    }    
+    }
 
     /**
      * @param int $forum_id
@@ -164,7 +165,7 @@ class TopicPresenter extends Base\ForumPresenter
         }
         
         $this->redirect('Topic:default', $forum_id, $topic_id);
-    }    
+    }
     
     /**
      * @param int $forum_id
@@ -184,11 +185,11 @@ class TopicPresenter extends Base\ForumPresenter
         }
         
         $this->redirect('Forum:default', $forum_id, $page);
-    }    
+    }
 
     /**
      * renders posts in topic
-     * 
+     *
      * @param int $forum_id
      * @param int $topic_id
      * @param int $page
@@ -231,7 +232,7 @@ class TopicPresenter extends Base\ForumPresenter
 
         $user_id = $this->getUser()->getId();
 
-        $this->template->avatarsDir = $this->avatars->getTemplateDir();        
+        $this->template->avatarsDir = $this->avatars->getTemplateDir();
         $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $user_id);
         $this->template->ranks      = $this->rankManager->getAllCached();
         $this->template->posts      = $data->orderBy('post_id', dibi::ASC)->fetchAll();
@@ -247,7 +248,6 @@ class TopicPresenter extends Base\ForumPresenter
      */
     public function renderEdit($forum_id, $topic_id)
     {
-        
     }
     
     /**
@@ -274,7 +274,7 @@ class TopicPresenter extends Base\ForumPresenter
     }
     
     /**
-     * 
+     *
      * @param int $forum_id
      * @param int $topic_id
      */
@@ -290,7 +290,7 @@ class TopicPresenter extends Base\ForumPresenter
     }
 
     /**
-     * 
+     *
      * @return BootstrapForm
      */
     public function createComponentEditForm()
@@ -304,7 +304,7 @@ class TopicPresenter extends Base\ForumPresenter
         $form->onSuccess[] = [$this,'editFormSuccess'];
 
         return $form;
-    }  
+    }
     
     /**
      * @param Form      $form
@@ -328,7 +328,7 @@ class TopicPresenter extends Base\ForumPresenter
         }
         
         $this->redirect('Topic:default', $forum_id, $topic_id);
-    }    
+    }
      
     /**
      * @return BreadCrumbControl
@@ -338,7 +338,7 @@ class TopicPresenter extends Base\ForumPresenter
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'Forum:default', 'params' => [$this->getParameter('forum_id')], 'text' => 'menu_forum'],
-            2 => ['text' => 'menu_topic']            
+            2 => ['text' => 'menu_topic']
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
@@ -372,7 +372,7 @@ class TopicPresenter extends Base\ForumPresenter
         $form->onSuccess[] = [$this, 'reportFormSuccess'];
 
         return $form;
-    }      
+    }
     
     /**
      * @param Form      $form

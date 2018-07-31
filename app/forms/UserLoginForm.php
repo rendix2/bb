@@ -27,19 +27,19 @@ class UserLoginForm extends \Nette\Application\UI\Control
     
     /**
      *
-     * @var TranslatorFactory $translatorFactory 
+     * @var TranslatorFactory $translatorFactory
      */
     private $translatorFactory;
     
     /**
      *
-     * @var Nette\Security\User $user 
+     * @var \Nette\Security\User $user
      */
     private $user;
     
     /**
      *
-     * @var SessionsManager $sessionsManager 
+     * @var SessionsManager $sessionsManager
      */
     private $sessionsManager;
     
@@ -61,8 +61,13 @@ class UserLoginForm extends \Nette\Application\UI\Control
      * @param Authenticator     $authenticator
      * @param Session           $session
      */
-    public function __construct(TranslatorFactory $translatorFactory, User $user, SessionsManager $sessionsManager, Authenticator $authenticator, Session $session)
-    {
+    public function __construct(
+        TranslatorFactory $translatorFactory,
+        User $user,
+        SessionsManager $sessionsManager,
+        Authenticator $authenticator,
+        Session $session
+    ) {
         parent::__construct();
         
         $this->translatorFactory = $translatorFactory;

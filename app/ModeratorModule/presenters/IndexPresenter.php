@@ -3,13 +3,14 @@
 namespace App\ModeratorModule\Presenters;
 
 use App\Models\PostsManager;
+use App\Presenters\Base\BasePresenter;
 
 /**
  * Description of IndexPresenter
  *
  * @author rendi
  */
-class IndexPresenter extends \App\Presenters\Base\BasePresenter
+class IndexPresenter extends BasePresenter
 {
     /**
      * IndexPresenter constructor.

@@ -2,10 +2,13 @@
 
 namespace App\Forms;
 
+use App\Controls\BootstrapForm;
 use App\Presenters\Base\BasePresenter;
 use App\Models\UsersManager;
+use Nette\Application\UI\Form;
 use Nette\Security\User;
 use \Nette\Application\UI\Control;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of ChangeUserNameForm
@@ -17,7 +20,7 @@ class UserChangeUserNameForm extends Control
     
     /**
      *
-     * @var UsersManager $usersManager 
+     * @var UsersManager $usersManager
      */
     private $usersManager;
 
@@ -28,11 +31,11 @@ class UserChangeUserNameForm extends Control
     private $user;
 
     /**
-     * 
+     *
      * @param UsersManager $usersManager
      * @param User         $user
      */
-    public function __construct(UsersManager $usersManager,User $user)
+    public function __construct(UsersManager $usersManager, User $user)
     {
         parent::__construct();
         
@@ -46,7 +49,7 @@ class UserChangeUserNameForm extends Control
     }
 
     /**
-     * 
+     *
      * @return BootstrapForm
      */
     protected function createComponentChangeUserNameForm()
@@ -62,7 +65,7 @@ class UserChangeUserNameForm extends Control
     }
     
     /**
-     * 
+     *
      * @param Form      $form
      * @param ArrayHash $values
      */
@@ -74,7 +77,7 @@ class UserChangeUserNameForm extends Control
     }
     
     /**
-     * 
+     *
      * @param Form      $form
      * @param ArrayHash $values
      */
@@ -87,6 +90,5 @@ class UserChangeUserNameForm extends Control
         } else {
             $this->presenter->flashMessage('Nothing to change.', BasePresenter::FLASH_MESSAGE_INFO);
         }
-    }    
-    
+    }
 }

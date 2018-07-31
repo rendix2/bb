@@ -4,6 +4,8 @@ namespace App\AdminModule\ConfigModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Models\UsersManager;
+use App\Settings\DatabaseBackupDir;
+use Ifsnop\Mysqldump\Mysqldump;
 use Nette\Application\Responses\FileResponse;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
@@ -18,13 +20,13 @@ class DatabasePresenter extends AdminPresenter
 {
     /**
      *
-     * @var \Ifsnop\Mysqldump\Mysqldump
+     * @var Mysqldump
      * @inject
      */
     public $exporter;
     
     /**
-     * @var \App\Settings\DatabaseBackupDir $databaseDir
+     * @var DatabaseBackupDir $databaseDir
      * @inject
      */
     public $databaseDir;

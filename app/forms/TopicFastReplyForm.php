@@ -21,19 +21,19 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
 {
     /**
      *
-     * @var \App\Services\TranslatorFactory $translatorFactory
+     * @var TranslatorFactory $translatorFactory
      */
     private $translatorFactory;
     
     /**
      *
-     * @var \Nette\Security\User $user
+     * @var User $user
      */
     private $user;
     
     /**
      *
-     * @var \App\Models\PostFacade $postFacade 
+     * @var PostFacade $postFacade
      */
     private $postFacade;
 
@@ -96,6 +96,5 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
         }
 
         $this->presenter->redirect('Topic:default', $forum_id, $topic_id, $page);
-    }    
-    
+    }
 }
