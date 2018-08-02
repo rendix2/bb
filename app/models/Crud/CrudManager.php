@@ -210,9 +210,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function getById($item_id)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->table)
+        return $this->getAllFluent()
             ->where('%n = %i', $this->primaryKey, $item_id)
             ->fetch();
     }
@@ -224,9 +222,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function getByIds(array $item_id)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->table)
+        return $this->getAllFluent()
             ->where('%n IN %in', $this->primaryKey, $item_id)
             ->fetchAll();
     }

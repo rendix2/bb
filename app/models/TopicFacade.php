@@ -164,7 +164,7 @@ class TopicFacade
                 ->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
 
         $posts = $this->postsManager
-                ->getByTopic($item_id)
+                ->getByTopicJoinedUser($item_id)
                 ->fetchAll();
 
         foreach ($posts as $post) {
@@ -177,9 +177,33 @@ class TopicFacade
     }
 
     /**
-     * @param $item_id
+     * @param int $item_id
+     * 
+     * @return int 
      */
-    public function copy($item_id)
+    public function copy($item_id, $target_forum_id)
     {
+        $posts        = $this->postsManager->getByTopic($item_id);        
+        $new_topic_id = $this->topicsManager->copy($item_id, $target_forum_id);
+        
+        foreach ($posts as $post) {
+            $this->postsManager->copy($post->post_id, $new_topic_id);
+        } 
+        
+        return $new_topic_id;
+    }
+    
+    /**
+     * @param int $item_id
+     */
+    public function move($topic_id, $target_forum_id)            
+    {
+        $posts = $this->postsManager->getByTopic($topic_id);
+        
+        $this->topicsManager->update($topic_id, ArrayHash::from(['topic_forum_id' => $target_forum_id]));
+        
+        foreach ($posts as $post) {
+            $this->postsManager->update($post->post_id, ArrayHash::from(['post_forum_id' => $target_forum_id]));
+        }        
     }
 }

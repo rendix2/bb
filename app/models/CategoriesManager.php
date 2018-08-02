@@ -46,9 +46,7 @@ class CategoriesManager extends Crud\CrudManager implements MpttTable
      */
     public function getActiveCategories()
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->where('[category_active] = %i', 1)
             ->orderBy('category_order', dibi::ASC)
             ->fetchAll();

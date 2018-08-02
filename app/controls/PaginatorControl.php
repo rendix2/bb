@@ -66,10 +66,7 @@ class PaginatorControl extends Control
         Fluent $data,
         $itemsPerPage,
         $itemsAround,
-        $page,
-        $where = null,
-        $table = null,
-        $alias = null
+        $page
     ) {
         parent::__construct();
 
@@ -80,8 +77,8 @@ class PaginatorControl extends Control
         $this->paginator->setItemsPerPage($this->itemsPerPage);
         $this->paginator->setPage($page);
 
-        $this->data = $data;
-        $this->setCount($table, $where, $alias);
+        $this->data  = $data;
+        $this->count = $this->data->count();
         $this->paginator->setItemCount($this->count);
         $data->limit($this->paginator->getLength())->offset($this->paginator->getOffset());
     }
@@ -118,56 +115,6 @@ class PaginatorControl extends Control
     final public function getPaginator()
     {
         return $this->paginator;
-    }
-
-    /**
-     * set count of items
-     *
-     * @param string $table
-     * @param string $where
-     * @param string $alias
-     *
-     * @api
-     */
-    private function setCount($table, $where, $alias)
-    {
-        if ($table !== null && $where !== null) {
-            $query = dibi::select('COUNT(*)')->from($table);
-
-            if ($alias !== '') {
-                $query->as($alias);
-            }
-
-            if ($where) {
-                $where = explode(' AND ', $where);
-
-                // adding alias :)
-                foreach ($where as &$whereItem) {
-                    if (!substr($alias . '.', 0, 2) && !preg_match('#^`' . $alias . '`\.#', $whereItem) && !preg_match('#^' . $alias . '\.#', $whereItem)) {
-                        $explodedWhereItem = explode(' ', $whereItem);
-
-                        $count  = count($explodedWhereItem);
-                        $result = '';
-
-                        for ($i = 1; $i < $count; $i++) {
-                            $result .= $explodedWhereItem[$i] . ' ';
-                        }
-
-                        $whereItem = '`' . $alias . '`.`' . $explodedWhereItem[0] . '` ' . $result;
-                    }
-                }
-
-                $where = implode(' AND ', $where);
-
-                if ($where) {
-                    $query->where($where);
-                }
-            }
-
-            $this->count = $query->fetchSingle();
-        } else {
-            $this->count = $this->data->count();
-        }
     }
 
     /**

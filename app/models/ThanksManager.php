@@ -60,7 +60,7 @@ class ThanksManager extends Crud\CrudManager
      *
      * @return Row[]
      */
-    public function getThanksWithUserInTopic($topic_id)
+    public function getThanksJoinedUserByTopic($topic_id)
     {
         return $this->dibi
             ->select('*')

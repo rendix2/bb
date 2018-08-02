@@ -185,7 +185,7 @@ class PostsManager extends Crud\CrudManager
      *
      * @return Fluent
      */
-    public function getByTopic($topic_id)
+    public function getByTopicJoinedUser($topic_id)
     {
         return $this->dibi
             ->select('*')
@@ -196,6 +196,17 @@ class PostsManager extends Crud\CrudManager
             ->on('[p.post_user_id] = [u.user_id]')
             ->where('[post_topic_id] = %i', $topic_id);
     }
+    
+    /**
+     * @param int $topic_id
+     *
+     * @return Fluent
+     */
+    public function getByTopic($topic_id)
+    {
+        return $this->getAllFluent()
+            ->where('[post_topic_id] = %i', $topic_id);
+    }    
 
     /**
      * @param $user_id
@@ -204,9 +215,7 @@ class PostsManager extends Crud\CrudManager
      */
     public function getByUser($user_id)
     {
-        return $this->dibi
-                ->select('*')
-                ->from($this->getTable())
+        return $this->getAllFluent()
                 ->where('[post_user_id] = %i', $user_id);
     }
      
@@ -227,5 +236,25 @@ class PostsManager extends Crud\CrudManager
             ->on('[p.post_topic_id] = [t.topic_id]')
             ->where('MATCH([p.post_title],[p.post_text]) AGAINST(%s IN BOOLEAN MODE)', $post_text)
             ->fetchAll();
+    }
+        
+    /**
+     * 
+     * @param int $post_id
+     * @param int $target_topic_id
+     * 
+     * @return type
+     */
+    public function copy($post_id, $target_topic_id)
+    {
+        $post = $this->postsManager->getById($post_id);
+        
+        unset($post->post_id);
+        
+        if ($target_topic_id) {
+            $post->post_topic_id = $target_topic_id;
+        }
+                
+        return $this->add(ArrayHash::from($post->toArray()));
     }
 }

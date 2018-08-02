@@ -11,7 +11,6 @@ use App\Models\TopicsManager;
 use App\Models\ThanksManager;
 use App\Models\PostFacade;
 use App\Models\TopicFacade;
-
 use App\Models\TopicWatchManager;
 use App\Controls\BootstrapForm;
 use App\Controls\TopicJumpToForumForm;
@@ -216,7 +215,7 @@ class TopicPresenter extends Base\ForumPresenter
             $this->error('Topic does not exist.');
         }
 
-        $data = $this->postsManager->getByTopic($topic_id);
+        $data = $this->postsManager->getByTopicJoinedUser($topic_id);
 
         if ($this->topicSetting->canLogView()) {
             $this->getManager()->update($topic_id, ArrayHash::from(['topic_view_count%sql' => 'topic_view_count + 1']));
@@ -237,7 +236,7 @@ class TopicPresenter extends Base\ForumPresenter
         $this->template->ranks      = $this->rankManager->getAllCached();
         $this->template->posts      = $data->orderBy('post_id', dibi::ASC)->fetchAll();
         $this->template->canThank   = $this->thanksManager->canUserThank($forum_id, $topic_id, $user_id);
-        $this->template->thanks     = $this->thanksManager->getThanksWithUserInTopic($topic_id);
+        $this->template->thanks     = $this->thanksManager->getThanksJoinedUserByTopic($topic_id);
         $this->template->forum      = $forum;
         $this->template->topic      = $topic;
     }
@@ -280,7 +279,7 @@ class TopicPresenter extends Base\ForumPresenter
      */
     public function renderThanks($forum_id, $topic_id)
     {
-        $thanks = $this->thanksManager->getThanksWithUserInTopic($topic_id);
+        $thanks = $this->thanksManager->getThanksJoinedUserByTopic($topic_id);
         
         if (!$thanks) {
             $this->flashMessage('Topic has not any thanks.', self::FLASH_MESSAGE_INFO);
