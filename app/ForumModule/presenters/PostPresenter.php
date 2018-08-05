@@ -194,15 +194,15 @@ class PostPresenter extends Base\ForumPresenter
     
     /**
      * 
-     * @param \Nette\Forms\Controls\SubmitButton $form
+     * @param \Nette\Forms\Controls\SubmitButton $submit
      * @param ArrayHash $values
      */
-    public function preview(\Nette\Forms\Controls\SubmitButton $form, \Nette\Utils\ArrayHash $values)
+    public function preview(\Nette\Forms\Controls\SubmitButton $submit, \Nette\Utils\ArrayHash $values)
     {
         $this['editForm']->setDefaults($values);
         $this->template->preview_text = $this['editForm-post_text']->getValue();
             
-        $form->getForm()->addError('Post was not saved. You see preview.');
+        $submit->getForm()->addError('Post was not saved. You see preview.');
     }
 
     /**
