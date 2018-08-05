@@ -5,6 +5,17 @@
         </div>
     </div>
 
+    {if isset($preview_text)}
+    <div class="col-sm-12 mb-3">
+        <div class="card">
+            <div class="card-header">{_post_preview}</div>
+            <div class="card-block p-3">        
+                {$preview_text|noescape}
+            </div>
+        </div>
+    </div>
+    {/if}            
+
     <div class="col-sm-12 main">
         <div class="card">
             <div class="card-header">{_menu_post}</div>

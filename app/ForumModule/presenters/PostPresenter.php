@@ -174,7 +174,7 @@ class PostPresenter extends Base\ForumPresenter
         
         $this->template->posts = $this->postsHistoryManager->getJoinedByPost($post_id);
     }
-
+    
     /**
      * @return BootstrapForm
      */
@@ -183,14 +183,28 @@ class PostPresenter extends Base\ForumPresenter
         $form = $this->getBootstrapForm();
 
         $form->addText('post_title', 'Title')->setRequired(true);
-        $form->addTextArea('post_text', 'Text', 0, 15)->setRequired(true);
+        $form->addTextAreaHtml('post_text', 'Text', 0, 15)->setRequired(true);
         $form->addSubmit('send', 'Send');
+        $form->addSubmit('preview', 'Preview')->onClick[] = [$this, 'preview'];
 
         $form->onSuccess[] = [$this, 'editFormSuccess'];
 
         return $form;
-    }
+    }       
     
+    /**
+     * 
+     * @param \Nette\Forms\Controls\SubmitButton $form
+     * @param ArrayHash $values
+     */
+    public function preview(\Nette\Forms\Controls\SubmitButton $form, \Nette\Utils\ArrayHash $values)
+    {
+        $this['editForm']->setDefaults($values);
+        $this->template->preview_text = $this['editForm-post_text']->getValue();
+            
+        $form->getForm()->addError('Post was not saved. You see preview.');
+    }
+
     /**
      * @param Form      $form
      * @param ArrayHash $values
