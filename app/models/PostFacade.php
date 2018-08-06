@@ -120,7 +120,11 @@ class PostFacade
             ]));
         $this->usersManager->update(
             $user_id,
-            ArrayHash::from(['user_post_count%sql' => 'user_post_count + 1'] + $watch)
+            ArrayHash::from([
+                'user_post_count%sql' => 'user_post_count + 1',
+                'user_last_post_time' => time()
+                ] + $watch
+            )
         );
         
         $this->forumsManager->update($forum_id, ArrayHash::from(['forum_post_count%sql' => 'forum_post_count + 1']));
@@ -207,6 +211,10 @@ class PostFacade
         }
          *
          */
+        
+        $lastPostOfUser = $this->postsManager->getLastByUser($post->post_user_id);
+        
+        $this->usersManager->update($post->post_user_id, ArrayHash::from(['user_last_post_time' => $lastPostOfUser->post_add_time]));
         
         return $res;
     }

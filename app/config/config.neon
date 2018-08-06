@@ -35,7 +35,7 @@ parameters:
     topics:
         pagination:
             itemsPerPage: 25
-            itemsArountPagination: 5
+            itemsAroundPagination: 5
         cache:
             lastTopic: 1 hour
             totalTopics: 1 hour
@@ -44,12 +44,14 @@ parameters:
     posts:
         pagination:
             itemsPerPage: 25
-            itemsArountPagination: 5
+            itemsAroundPagination: 5
         cache:
             totalPosts: 1 hour
             primaryKey: 10 day
         minLength: 5 # int or null
         maxLength: 100000 # int or null
+        minUserTimeInterval: 20
+        minDoublePostTimeInterval: 300 # this value must be bigger than minUserTimeInterval
     users:
         cache:
             lastUser: 1 hour
@@ -208,7 +210,9 @@ services:
     GridFilter:
         factory: App\Controls\GridFilter
         setup:
-            - factory      
+            - factory 
+    PostsSettings:
+        class: \App\Settings\PostSetting(%posts%)
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22
     recaptcha: ReCaptchaControl\DI\Extension

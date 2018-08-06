@@ -237,7 +237,20 @@ class PostsManager extends Crud\CrudManager
             ->where('MATCH([p.post_title],[p.post_text]) AGAINST(%s IN BOOLEAN MODE)', $post_text)
             ->fetchAll();
     }
-        
+    
+    /**
+     * 
+     * @param int $user_id
+     * 
+     * @return type
+     */
+    public function getLastByUser($user_id)
+    {
+        return $this->dibi
+                ->query('SELECT * FROM %n WHERE post_id = (SELECT MAX(post_id) FROM %n WHERE post_user_id = %i)', $this->getTable(), $this->getTable(), $user_id)
+                ->fetch();
+    }
+
     /**
      * 
      * @param int $post_id
@@ -256,5 +269,24 @@ class PostsManager extends Crud\CrudManager
         }
                 
         return $this->add(ArrayHash::from($post->toArray()));
+    }
+    
+    /**
+     * 
+     * @param string $post_text
+     * @param int    $user_id
+     * @param int    $time
+     * 
+     * @return int
+     */
+    public function checkDoublePost($post_text, $user_id, $time)
+    {
+        return $this->dibi
+                ->select('1')
+                ->from($this->getTable())
+                ->where('[post_text] = %s', $post_text)
+                ->where('[post_user_id] = %i', $user_id)
+                ->where('[post_add_time] >= %i', $time)
+                ->fetchSingle();
     }
 }

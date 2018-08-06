@@ -8,8 +8,10 @@ use App\Models\ReportsManager;
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
 use App\Models\PostsHistoryManager;
+use App\Models\UsersManager;
 use App\Settings\Avatars;
 use App\Settings\TopicsSetting;
+use App\Settings\PostSetting;
 use App\Controls\BreadCrumbControl;
 use dibi;
 use Nette\Application\UI\Form;
@@ -63,6 +65,19 @@ class PostPresenter extends Base\ForumPresenter
      * @inject
      */
     public $postsHistoryManager;
+    
+    /**
+     * @var PostSetting $postSetting
+     * @inject
+     */
+    public $postSetting;
+    
+    /**
+     *
+     * @var UsersManager $usersManager
+     * @inject
+     */
+    public $usersManager;
 
 
     /**
@@ -187,7 +202,8 @@ class PostPresenter extends Base\ForumPresenter
         $form->addSubmit('send', 'Send');
         $form->addSubmit('preview', 'Preview')->onClick[] = [$this, 'preview'];
 
-        $form->onSuccess[] = [$this, 'editFormSuccess'];
+        $form->onSuccess[]  = [$this, 'editFormSuccess'];
+        $form->onValidate[] = [$this, 'onValidate'];
 
         return $form;
     }       
@@ -205,6 +221,26 @@ class PostPresenter extends Base\ForumPresenter
         $submit->getForm()->addError('Post was not saved. You see preview.');
     }
 
+    /**
+     * 
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function onValidate(Form $form, ArrayHash $values)
+    {
+        $user            = $this->usersManager->getById($this->getUser()->getId());        
+        $minTimeInterval = $this->postSetting->get()['minUserTimeInterval'];
+        $doublePostInterval = $this->postSetting->get()['minDoublePostTimeInterval'];
+        
+        if (time() - $user->user_last_post_time <= $minTimeInterval) {
+            $form->addError('You cannot send new post so soon.', false);
+        }
+        
+        if ($this->getManager()->checkDoublePost($values->post_text, $this->getUser()->getId(), time() - $doublePostInterval)) {
+            $form->addError('Double post', false);
+        }
+    }    
+    
     /**
      * @param Form      $form
      * @param ArrayHash $values
