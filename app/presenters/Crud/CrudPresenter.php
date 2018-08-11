@@ -193,12 +193,16 @@ abstract class CrudPresenter extends ManagerPresenter
 
         $this->redirect(':' . $this->getName() . ':default');
     }
-
+    
     /**
      * @param int $page
      */
     public function renderDefault($page = 1)
     {
+        if (isset($this['gridFilter'])) {
+            $this->getComponent('gridFilter');            
+        }
+        
         $items = $this->getManager()->getAllFluent();
         
         foreach ($this->gf->getWhere() as $where) {

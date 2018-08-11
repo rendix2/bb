@@ -228,8 +228,8 @@ class PostPresenter extends Base\ForumPresenter
      */
     public function onValidate(Form $form, ArrayHash $values)
     {
-        $user            = $this->usersManager->getById($this->getUser()->getId());        
-        $minTimeInterval = $this->postSetting->get()['minUserTimeInterval'];
+        $user               = $this->usersManager->getById($this->getUser()->getId());        
+        $minTimeInterval    = $this->postSetting->get()['minUserTimeInterval'];
         $doublePostInterval = $this->postSetting->get()['minDoublePostTimeInterval'];
         
         if (time() - $user->user_last_post_time <= $minTimeInterval) {

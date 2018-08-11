@@ -39,6 +39,12 @@
                     <td>{$item->forum_name}</td>
                     <td>{$item->topic_name}</td>
                     <td>{$item->post_title}</td>
+                    <td>{if $item->report_status}{_report_solved}{else}{_report_added}{/if}</td>
+                    <td>
+                        <a href="{link Report:edit, $item->report_id}" title="{_edit}">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
                     <td>
                         <a href="{link Report:delete, $item->report_id}" title="{_delete}">
                             <i class="fas fa-trash-alt"></i>

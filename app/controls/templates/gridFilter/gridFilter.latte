@@ -40,14 +40,16 @@
     </tr>
     <tr>
         {var $fti = false}
+        {dump $type}
         {foreach $type as $name => $val}
-
             {if $fti == true}
                 {var $fti = false}
                 {continueIf true}
             {/if}
 
-            {if ($val['type'] == 'FTI' || $val['type'] == 'date') && preg_match('#_Xfrom$#', $name) }
+            {if $val['type'] === 'empty'}
+                <td></td>
+            {elseif ($val['type'] == 'FTI' || $val['type'] == 'date') && preg_match('#_Xfrom$#', $name) }
                 {var $toName = str_replace('_Xfrom', '_Xto', $name)}
                 {var $fti = true}
                 <td>{input $name}{input $toName}</td>    

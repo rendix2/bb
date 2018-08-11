@@ -40,7 +40,12 @@
                         <td>
                             <a href="{link Forum:edit, $item->forum_id}">{$item->forum_id}</a>
                         </td>
-                        <td>{$item->forum_name}</td>
+                        <td>{$item->forum_name}</td>                       
+                        <td>
+                            <a href="{link Forum:edit, $item->forum_id}" title="{_edit}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>                        
                         <td>
                             <a href="{link Forum:delete, $item->forum_id}" title="{_delete}">
                                 <i class="fas fa-trash-alt"></i>

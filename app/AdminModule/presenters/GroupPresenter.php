@@ -150,7 +150,8 @@ class GroupPresenter extends Base\AdminPresenter
     
         $this->gf->addFilter('group_id', 'group_id', GridFilter::INT_EQUAL);
         $this->gf->addFilter('group_name', 'group_name', GridFilter::TEXT_LIKE);
-        $this->gf->addFilter(null, null, GridFilter::NOTHING);
+        $this->gf->addFilter('edit', null, GridFilter::NOTHING);
+        $this->gf->addFilter('delete', null, GridFilter::NOTHING);
 
         return $this->gf;
     }

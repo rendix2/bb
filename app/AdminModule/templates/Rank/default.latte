@@ -42,6 +42,11 @@
                         </td>
                         <td>{$item->rank_name}</td>
                         <td>
+                            <a href="{link Rank:edit, $item->rank_id}" title="{_edit}">
+                                <i class="fas fa-edit"></i>
+                            </a>                           
+                        </td>
+                        <td>
                             <a href="{link Rank:delete, $item->rank_id}" title="{_delete}">
                                 <i class="fas fa-trash-alt"></i>
                             </a>

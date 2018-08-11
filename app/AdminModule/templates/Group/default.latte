@@ -43,6 +43,11 @@
                         </td>
                         <td>{$item->group_name}</td>
                         <td>
+                            <a href="{link Group:edit, $item->group_id}" title={_edit}"">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>                        
+                        <td>
                             <a href="{link Group:delete, $item->group_id}" title="{_delete}">
                                 <i class="fas fa-trash-alt"></i>
                             </a>

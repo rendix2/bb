@@ -36,25 +36,7 @@ class RankPresenter extends Base\AdminPresenter
     public function __construct(RanksManager $manager)
     {
         parent::__construct($manager);
-    }
-    
-    /**
-     * startup method
-     */
-    public function startup()
-    {
-        parent::startup();
-        
-        if ($this->getAction() === 'default') {
-            $this->gf->setTranslator($this->getAdminTranslator());
-            
-            $this->gf->addFilter('rank_id', 'rank_id', GridFilter::INT_EQUAL);
-            $this->gf->addFilter('rank_name', 'rank_name', GridFilter::TEXT_LIKE);
-            $this->gf->addFilter(null, null, GridFilter::NOTHING);
-
-            $this->addComponent($this->gf, 'gridFilter');
-        }
-    }
+    }   
     
     /**
      *
@@ -77,7 +59,8 @@ class RankPresenter extends Base\AdminPresenter
             
         $this->gf->addFilter('rank_id', 'rank_id', GridFilter::INT_EQUAL);
         $this->gf->addFilter('rank_name', 'rank_name', GridFilter::TEXT_LIKE);
-        $this->gf->addFilter(null, null, GridFilter::NOTHING);
+        $this->gf->addFilter('edit', null, GridFilter::NOTHING);
+        $this->gf->addFilter('delete', null, GridFilter::NOTHING);
             
         return $this->gf;
     }

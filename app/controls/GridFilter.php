@@ -205,7 +205,7 @@ class GridFilter extends Control
                 ];
                 break;
             case self::NOTHING:
-                $this->type[self::NOTHING] = [
+                $this->type[$columnName] = [
                     'type'     => $type,
                     'text'     => $text,
                     'operator' => null,
@@ -237,7 +237,7 @@ class GridFilter extends Control
                 ];
                 break;
             case self::CHECKBOX_LIST:
-                $this->form->addCheckboxList($columnName, $text, $data)->setTranslator(null);
+                $this->form->addCheckboxList($columnName, $text, $data);
                 
                 $this->type[$columnName] = [
                     'type'     => $type,
@@ -266,7 +266,9 @@ class GridFilter extends Control
                 ];
                 
                 break;
-        }
+        }        
+        
+        \Tracy\Debugger::barDump($this->type, 'TYPEEE');
     }
 
     /**

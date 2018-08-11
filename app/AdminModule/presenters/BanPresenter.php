@@ -48,7 +48,8 @@ class BanPresenter extends Base\AdminPresenter
         $this->gf->addFilter('ban_user_name', 'ban_user_name', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('ban_email', 'ban_email', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('ban_ip', 'ban_ip', GridFilter::TEXT_LIKE);
-        $this->gf->addFilter(null, null, GridFilter::NOTHING);
+        $this->gf->addFilter('edit', null, GridFilter::NOTHING);
+        $this->gf->addFilter('delete', null, GridFilter::NOTHING);
         
         return $this->gf;
     }
