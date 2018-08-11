@@ -12,6 +12,7 @@ use Nette\Application\UI\Form;
 use Nette\InvalidArgumentException;
 use Nette\Mail\FallbackMailerException;
 use Nette\Utils\ArrayHash;
+use App\Controls\BreadCrumbControl;
 
 /**
  * Description of EmailPresenter
@@ -136,4 +137,45 @@ class EmailPresenter extends Base\AdminPresenter
             $this->redirect('this');
         }
     }
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbAll()
+    {                
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['text' => 'menu_emails']            
+        ];                
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
+    
+    /**
+     * @return BreadCrumbControl
+     */    
+    protected function createComponentBreadCrumbEdit()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Email:default', 'text' => 'menu_emails'],            
+            2 => ['link' => 'Email:edit', 'text' => 'menu_email'],
+        ];       
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
+    }  
+    
+    /**
+     * @return BreadCrumbControl
+     */    
+    protected function createComponentBreadCrumbSend()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Email:default', 'text' => 'menu_emails'],            
+            2 => ['link' => 'Email:send', 'text' => 'mail_send'],  
+        ];       
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
+    }    
 }

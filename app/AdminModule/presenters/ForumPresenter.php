@@ -10,6 +10,7 @@ use App\Models\PostsManager;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
 use App\Models\ModeratorsManager;
+use App\Controls\BreadCrumbControl;
 
 /**
  * Description of ForumPresenter
@@ -181,4 +182,31 @@ class ForumPresenter extends Base\AdminPresenter
         
         return $this->gf;
     }
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbAll()
+    {                
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['text' => 'menu_forums']            
+        ];                
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
+    
+    /**
+     * @return BreadCrumbControl
+     */    
+    protected function createComponentBreadCrumbEdit()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Forum:default', 'text' => 'menu_forums'],            
+            2 => ['link' => 'Forum:edit', 'text' => 'menu_forum'],
+        ];       
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
+    }     
 }

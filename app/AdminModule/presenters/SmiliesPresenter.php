@@ -3,6 +3,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\Models\SmiliesManager;
+use App\Controls\BreadCrumbControl;
 
 /**
  * Description of SmiliesPresenter
@@ -30,5 +31,31 @@ class SmiliesPresenter extends Base\AdminPresenter
         
         return $form;
     }
-
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbAll()
+    {                
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['text' => 'menu_smilies']            
+        ];                
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
+    
+    /**
+     * @return BreadCrumbControl
+     */    
+    protected function createComponentBreadCrumbEdit()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Smilies:default', 'text' => 'menu_smilies'],            
+            2 => ['link' => 'Smilies:edit',    'text' => 'menu_smilie'],
+        ];       
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
+    }
 }

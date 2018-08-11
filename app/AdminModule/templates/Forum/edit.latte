@@ -2,15 +2,7 @@
 
     <div class="col-sm-12">
         <div class="float-left">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{link Index:default}">{_menu_index}</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{link Forum:default}">{_menu_forums}</a>
-                </li>
-                <li class="breadcrumb-item">{if isset($item)}{$item->forum_name}{else}{_forum_new}{/if}</li>
-            </ol>
+            {control breadCrumbEdit}
         </div>
     </div>
 
@@ -96,15 +88,7 @@
 
     <div class="col-sm-12">
         <div class="float-left">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{link Index:default}">{_menu_index}</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{link Forum:default}">{_menu_forums}</a>
-                </li>
-                <li class="breadcrumb-item">{if isset($item)}{$item->forum_name}{else}{_forum_new}{/if}</li>
-            </ol>
+            {control breadCrumbEdit}
         </div>
     </div>
 {/block}

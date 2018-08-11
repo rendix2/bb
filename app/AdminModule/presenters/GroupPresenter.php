@@ -12,6 +12,7 @@ use App\Models\UsersManager;
 use App\Controls\UserSearchControl;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use App\Controls\BreadCrumbControl;
 
 /**
  * Description of GroupPresenter
@@ -233,4 +234,31 @@ class GroupPresenter extends Base\AdminPresenter
 
         $this->forums2groupsManager->addForums2group($group_id, $data);
     }
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbAll()
+    {                
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['text' => 'menu_groups']            
+        ];                
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
+    
+    /**
+     * @return BreadCrumbControl
+     */    
+    protected function createComponentBreadCrumbEdit()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Group:default', 'text' => 'menu_groups'],            
+            2 => ['link' => 'Grup:edit',     'text' => 'menu_group'],
+        ];       
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
+    }     
 }

@@ -8,6 +8,7 @@ use App\Models\RanksManager;
 use App\Settings\Ranks;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use App\Controls\BreadCrumbControl;
 
 /**
  * Description of RankPresenter
@@ -128,4 +129,31 @@ class RankPresenter extends Base\AdminPresenter
 
         parent::editFormSuccess($form, $values);
     }
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbAll()
+    {                
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['text' => 'menu_ranks']            
+        ];                
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
+    
+    /**
+     * @return BreadCrumbControl
+     */    
+    protected function createComponentBreadCrumbEdit()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Rank:default',  'text' => 'menu_ranks'],            
+            2 => ['link' => 'Rank:edit',     'text' => 'menu_rank'],
+        ];       
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
+    }     
 }

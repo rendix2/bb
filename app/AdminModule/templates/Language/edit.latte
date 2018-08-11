@@ -2,15 +2,7 @@
 
     <div class="col-sm-12">
         <div class="float-left">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{link Index:default}">{_menu_index}</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{link Language:default}">{_menu_languages}</a>
-                </li>
-                <li class="breadcrumb-item">{if $presenter->getParameter('id')}{$item->lang_name}{else}{_lang_new}{/if}</li>
-            </ol>
+            {control breadCrumbEdit}
         </div>
     </div>
 
@@ -37,15 +29,7 @@
 
     <div class="col-sm-12 mt-3">
         <div class="float-left">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{link Index:default}">{_menu_index}</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{link Language:default}">{_menu_languages}</a>
-                </li>
-                <li class="breadcrumb-item">{if $presenter->getParameter('id')}{$item->lang_name}{else}{_lang_new}{/if}</li>
-            </ol>
+            {control breadCrumbEdit}
         </div>
     </div>
 

@@ -3,6 +3,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\Models\FaqManager;
+use App\Controls\BreadCrumbControl;
 
 /**
  * Description of FaqPresenter

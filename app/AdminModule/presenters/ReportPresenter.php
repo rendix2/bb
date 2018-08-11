@@ -5,6 +5,7 @@ namespace App\AdminModule\Presenters;
 use App\Controls\BootstrapForm;
 use App\Models\ReportsManager;
 use App\Controls\GridFilter;
+use App\Controls\BreadCrumbControl;
 
 /**
  * Description of ReportPresenter
@@ -63,4 +64,31 @@ class ReportPresenter extends Base\AdminPresenter
 
         return $this->addSubmitB($form);
     }
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbAll()
+    {                
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['text' => 'menu_reports']            
+        ];                
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
+    
+    /**
+     * @return BreadCrumbControl
+     */    
+    protected function createComponentBreadCrumbEdit()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default',  'text' => 'menu_index'],
+            1 => ['link' => 'Report:default', 'text' => 'menu_reports'],            
+            2 => ['link' => 'Report:edit',    'text' => 'menu_report'],
+        ];       
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
+    }    
 }

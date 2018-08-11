@@ -6,6 +6,7 @@ use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
+use App\Controls\BreadCrumbControl;
 
 /**
  * Description of CategoryPresenter
@@ -102,4 +103,31 @@ class CategoryPresenter extends Base\AdminPresenter
 
         return $this->gf;
     }
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbAll()
+    {                
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['text' => 'menu_categories']            
+        ];                
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
+    
+    /**
+     * @return BreadCrumbControl
+     */    
+    protected function createComponentBreadCrumbEdit()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Category:default', 'text' => 'menu_categories'],            
+            2 => ['link' => 'Category:edit', 'text' => 'menu_category'],
+        ];       
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
+    }     
 }

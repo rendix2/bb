@@ -23,6 +23,7 @@ use App\Settings\Avatars;
 use App\Settings\Ranks;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use App\Controls\BreadCrumbControl;
 
 /**
  * Description of UserPresenter
@@ -274,4 +275,31 @@ class UserPresenter extends Base\AdminPresenter
         $this->flashMessage('Groups saved.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('User:edit', $user_id);
     }
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbAll()
+    {                
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['text' => 'menu_users']            
+        ];                
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
+    
+    /**
+     * @return BreadCrumbControl
+     */    
+    protected function createComponentBreadCrumbEdit()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'User:default',  'text' => 'menu_users'],            
+            2 => ['link' => 'User:edit',     'text' => 'menu_user'],
+        ];       
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
+    }    
 }

@@ -5,6 +5,7 @@ namespace App\AdminModule\Presenters;
 use App\Controls\BootstrapForm;
 use App\Models\BansManager;
 use App\Controls\GridFilter;
+use App\Controls\BreadCrumbControl;
 
 /**
  * Description of BanPresenter
@@ -53,4 +54,31 @@ class BanPresenter extends Base\AdminPresenter
         
         return $this->gf;
     }
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbAll()
+    {                
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['text' => 'menu_bans']            
+        ];                
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
+    
+    /**
+     * @return BreadCrumbControl
+     */    
+    protected function createComponentBreadCrumbEdit()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Ban:default', 'text' => 'menu_bans'],            
+            2 => ['link' => 'Ban:default', 'text' => 'menu_ban'],
+        ];       
+        
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
+    }    
 }
