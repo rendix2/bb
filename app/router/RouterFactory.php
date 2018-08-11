@@ -21,6 +21,7 @@ class RouterFactory
     public static function createRouter()
     {
         $router = new RouteList;
+        //$router[] = new Route('modal/<action>', 'Modal:default');        
         $router[] = new Route('<module>/<presenter>/<action>', 'Index:default');
         $router[] = new Route('<presenter>/<action>', 'Forum:Index:default');
 

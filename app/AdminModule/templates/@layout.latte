@@ -115,7 +115,7 @@
                 </ul>            
             </div>
         </nav>
-            
+                    
         <div class="col-sm-4 main">
         {foreach $flashes as $flash}
             <div class="alert alert-{$flash->type}">{_$flash->message}</div>
@@ -127,7 +127,9 @@
             {include content}
             </div>
         </div>
-
+        
+    {includeblock ../../presenters/templates/modal.latte}
+    
     {block scripts}
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
