@@ -7,10 +7,8 @@ use App\Controls\BootstrapForm;
 use App\Services\TranslatorFactory;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
-
-
+use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-
 use Nette\Utils\ArrayHash;
 
 /**

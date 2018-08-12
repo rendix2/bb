@@ -650,4 +650,67 @@ class UserPresenter extends Base\ForumPresenter
         
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     } 
+    
+    /**
+     * 
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbSendMailToAdmin()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            2 => ['text' => 'user_admin_contact']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }
+    
+    /**
+     * 
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbThanks()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            2 => ['link' => 'User:profile', 'params' => [$this->getParameter('user_id')], 'text' => 'menu_user'],
+            3 => ['text' => 'Thanks']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }
+    
+    /**
+     * 
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbTopics()
+    {        
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            2 => ['link' => 'User:profile', 'params' => [$this->getParameter('user_id')], 'text' => 'menu_user'],
+            3 => ['text' => 'menu_topics']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }     
+    
+    /**
+     * 
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbWatches()
+    {        
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            2 => ['link' => 'User:profile', 'params' => [$this->getParameter('user_id')], 'text' => 'menu_user'],
+            3 => ['text' => 'watches']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }     
 }

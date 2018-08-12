@@ -134,7 +134,35 @@ class PmPresenter extends CrudPresenter
         
         return new BreadCrumbControl($breadCrumb, $this->translator);
     }
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbEdit()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Pm:default', 'text' => 'menu_pms'],
+            2 => ['text' => 'menu_pm']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->translator);
+    }    
 
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbUserSearch()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Pm:default', 'text' => 'menu_pms'],
+            2 => ['text' => 'pm_add_new']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->translator);
+    }     
+    
     /**
      * @return BootstrapForm
      */

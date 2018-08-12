@@ -169,5 +169,19 @@ final class ForumPresenter extends Base\ForumPresenter
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }  
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbRules()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
+            2 => ['link' => 'Forum:rules',   'text' => 'forum_rules', 'params' => [$this->getParameter('forum_id')]],
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }    
 }

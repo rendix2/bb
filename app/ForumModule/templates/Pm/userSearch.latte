@@ -1,3 +1,19 @@
 {block content}
-    {control userSearch}
+<div class="col-sm-12">
+    <div class="float-left">
+        {control breadCrumbUserSearch}
+    </div>
+</div>
+        
+<div class="col-sm-12 main">
+    {snippet form}
+        {control userSearch}
+    {/snippet}
+</div>
+
+<div class="col-sm-12">
+    <div class="float-left">
+        {control breadCrumbUserSearch}
+    </div>
+</div>
 {/block}

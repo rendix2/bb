@@ -2,18 +2,7 @@
 
     <div class="col-sm-12">
         <div class="float-left">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{link Index:default}">{_menu_index}</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{link User:list}">{_menu_users}</a>
-                </li>                
-                <li class="breadcrumb-item">
-                    <a href="{link User:profile $presenter->getParameter('user_id')}">{_menu_user}</a>
-                </li>
-                <li class="breadcrumb-item active">{_watches}</li>
-            </ol>
+            {control breadCrumbWatches}
         </div>
 
         <div class="float-right">
@@ -41,20 +30,10 @@
             </tbody>
         </table>
     </div>
-        <div class="col-sm-12">
+            
+    <div class="col-sm-12">
         <div class="float-left">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{link Index:default}">{_menu_index}</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{link User:list}">{_menu_users}</a>
-                </li>                
-                <li class="breadcrumb-item">
-                    <a href="{link User:profile $presenter->getParameter('user_id')}">{_menu_user}</a>
-                </li>
-                <li class="breadcrumb-item active">{_watches}</li>
-            </ol>
+            {control breadCrumbWatches}
         </div>
 
         <div class="float-right">

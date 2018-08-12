@@ -344,6 +344,35 @@ class TopicPresenter extends Base\ForumPresenter
     }
     
     /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbEdit()
+    {        
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Forum:default', 'params' => [$this->getParameter('forum_id')], 'text' => 'menu_forum'],
+            2 => ['text' => 'menu_topic']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbReport()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Forum:default', 'params' => [$this->getParameter('forum_id')], 'text' => 'menu_forum'],
+            2 => ['link' => 'Topic:default', 'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')], 'text' => 'menu_topic'],            
+            3 => ['text' => 'report_topic']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }     
+    
+    /**
      * @return TopicJumpToForumForm
      */
     protected function createComponentJumpToForum()

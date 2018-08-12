@@ -178,5 +178,47 @@ class SearchPresenter extends Base\ForumPresenter
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }    
+    }  
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbPostResults()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Search:default', 'text' => 'menu_search'],            
+            2 => ['text' => 'menu_post']            
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }  
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbTopicResults()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Search:default', 'text' => 'menu_search'],            
+            2 => ['text' => 'menu_topic']            
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }  
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbUserResults()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Search:default', 'text' => 'menu_search'],            
+            2 => ['text' => 'menu_user']            
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }        
 }

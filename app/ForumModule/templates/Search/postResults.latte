@@ -2,19 +2,13 @@
 
     <div class="col-sm-12">
         <div class="float-left">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{link Index:default}">{_menu_index}</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{link Search:default}">{_menu_search}</a>
-                </li>
-                <li class="breadcrumb-item active">{_menu_post}</li>
-            </ol>
+            {control breadCrumbPostResults}
         </div>
     </div>
 
-    {control searchPostForm}
+    <div class="col-sm-12 main">        
+        {control searchPostForm}
+    </div>        
 
     {if count($postData)}
         <div class="col-sm-12 main">
@@ -47,15 +41,7 @@
 
     <div class="col-sm-12">
         <div class="float-left">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{link Index:default}">{_menu_index}</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{link Search:default}">{_menu_search}</a>
-                </li>
-                <li class="breadcrumb-item active">{_menu_post}</li>
-            </ol>
+            {control breadCrumbPostResults}
         </div>
     </div>
 {/block}

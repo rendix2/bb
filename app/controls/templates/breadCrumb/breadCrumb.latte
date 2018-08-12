@@ -1,7 +1,7 @@
 {block content}
 <ol class="breadcrumb">
     {foreach $breadCrumb as $item}
-    <li class="breadcrumb-item">
+    <li class="breadcrumb-item {if $iterator->last}active{/if}">
         
         {if $iterator->last}
         {_$item['text']}
