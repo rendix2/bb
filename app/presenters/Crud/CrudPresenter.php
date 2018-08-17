@@ -13,7 +13,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of CrudPresenter
  *
- * @author rendi
+ * @author rendix2
  * @method CrudManager getManager()
  */
 abstract class CrudPresenter extends ManagerPresenter

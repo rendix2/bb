@@ -14,7 +14,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of SendMailToAdmin
  *
- * @author rendi
+ * @author rendix2
  */
 class SendMailToAdminForm extends Control
 {

@@ -15,7 +15,7 @@ use Nette\Http\Session;
 /**
  * Description of UserLoginForm
  *
- * @author rendi
+ * @author rendix2
  */
 class UserLoginForm extends \Nette\Application\UI\Control
 {

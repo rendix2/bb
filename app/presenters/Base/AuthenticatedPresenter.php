@@ -9,7 +9,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of AuthenticatedPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 abstract class AuthenticatedPresenter extends BasePresenter
 {

@@ -17,7 +17,7 @@ use Nette\Localization\ITranslator;
 /**
  * Description of PmPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class PmPresenter extends CrudPresenter
 {    

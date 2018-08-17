@@ -16,7 +16,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of ChangePasswordControl
  *
- * @author rendi
+ * @author rendix2
  */
 class UserChangePasswordForm extends Control
 {

@@ -17,7 +17,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of CrudNullManager
  *
- * @author rendi
+ * @author rendix2
  */
 class CrudNullManager extends CrudManager implements ICrudManager
 {

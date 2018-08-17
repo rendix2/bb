@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Description of LanguageManager
  *
- * @author rendi
+ * @author rendix2
  */
 class LanguagesManager extends Crud\CrudManager
 {

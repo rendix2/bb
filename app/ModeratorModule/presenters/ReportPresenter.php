@@ -9,7 +9,7 @@ use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 /**
  * Description of ReportPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class ReportPresenter extends ModeratorPresenter
 {

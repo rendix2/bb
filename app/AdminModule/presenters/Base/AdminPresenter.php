@@ -10,7 +10,7 @@ use Nette\Localization\ITranslator;
 /**
  * Description of AdminPresenter¨
  *
- * @author rendi
+ * @author rendix2
  */
 abstract class AdminPresenter extends CrudPresenter
 {

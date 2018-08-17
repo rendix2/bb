@@ -11,7 +11,7 @@ use App\Presenters\Base\BasePresenter;
 /**
  * Description of IndexPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class IndexPresenter extends BasePresenter
 {

@@ -11,7 +11,7 @@ use App\Controls\BootstrapForm;
 /**
  * Description of ForumSearchInForumForm
  *
- * @author rendi
+ * @author rendix2
  */
 class ForumSearchInForumForm extends Control
 {

@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Description of PollsManager
  *
- * @author rendi
+ * @author rendix2
  */
 class PollsManager extends Crud\CrudManager
 {

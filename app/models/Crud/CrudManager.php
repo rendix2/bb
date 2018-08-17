@@ -18,7 +18,7 @@ use Exception;
 /**
  * Description of CrudManager
  *
- * @author rendi
+ * @author rendix2
  */
 abstract class CrudManager extends Manager //implements ICrudManager
 {

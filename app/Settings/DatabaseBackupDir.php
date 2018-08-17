@@ -5,7 +5,7 @@ namespace App\Settings;
 /**
  * Description of DatabaseBackupDir
  *
- * @author rendi
+ * @author rendix2
  */
 class DatabaseBackupDir
 {

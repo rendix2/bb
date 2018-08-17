@@ -7,7 +7,7 @@ use Dibi\Connection;
 /**
  * Description of Users2Forums
  *
- * @author rendi
+ * @author rendix2
  */
 class Users2ForumsManager extends MNManager
 {

@@ -8,7 +8,7 @@ use App\Authorization\Identity;
 /**
  * Description of Category
  *
- * @author rendi
+ * @author rendix2
  */
 class Category implements IAuthorizationScope
 {

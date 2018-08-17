@@ -11,7 +11,7 @@ use App\Controls\BreadCrumbControl;
 /**
  * Description of CategoryPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class CategoryPresenter extends Base\AdminPresenter
 {

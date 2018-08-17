@@ -9,7 +9,7 @@ use Nette\Caching\Cache;
 /**
  * Description of TopicsManager
  *
- * @author rendi
+ * @author rendix2
  */
 class TopicsManager extends Crud\CrudManager
 {

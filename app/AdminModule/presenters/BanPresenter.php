@@ -10,7 +10,7 @@ use App\Controls\BreadCrumbControl;
 /**
  * Description of BanPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class BanPresenter extends Base\AdminPresenter
 {

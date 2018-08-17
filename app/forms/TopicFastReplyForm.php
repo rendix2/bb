@@ -15,7 +15,7 @@ use Nette\Security\User;
 /**
  * Description of TopicFastReplyForm
  *
- * @author rendi
+ * @author rendix2
  */
 class TopicFastReplyForm extends \Nette\Application\UI\Control
 {

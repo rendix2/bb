@@ -8,7 +8,7 @@ use App\Controls\BreadCrumbControl;
 /**
  * Description of FaqPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class FaqPresenter extends Base\AdminPresenter
 {

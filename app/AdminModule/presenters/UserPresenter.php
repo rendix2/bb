@@ -28,7 +28,7 @@ use App\Controls\BreadCrumbControl;
 /**
  * Description of UserPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class UserPresenter extends Base\AdminPresenter
 {

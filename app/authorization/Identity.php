@@ -5,7 +5,7 @@ namespace App\Authorization;
 /**
  * Description of Identity
  *
- * @author rendi
+ * @author rendix2
  */
 class Identity
 {

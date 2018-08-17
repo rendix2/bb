@@ -7,7 +7,7 @@ use Dibi\Connection;
 /**
  * Description of ModeratorsManager
  *
- * @author rendi
+ * @author rendix2
  */
 class ModeratorsManager extends MNManager
 {

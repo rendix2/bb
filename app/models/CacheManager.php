@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Description of CacheManager
  *
- * @author rendi
+ * @author rendix2
  */
 class CacheManager extends Crud\CrudNullManager
 {

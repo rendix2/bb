@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Description of FaqManager
  *
- * @author rendi
+ * @author rendix2
  */
 class FaqManager extends Crud\CrudManager
 {

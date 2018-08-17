@@ -10,7 +10,7 @@ use App\Controls\BreadCrumbControl;
 /**
  * Description of ReportPresenter
  *
- * @author rendi
+ * @author rendix2
  * @method ReportsManager getManager()
  */
 class ReportPresenter extends Base\AdminPresenter

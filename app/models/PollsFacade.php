@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Description of PollsFacade
  *
- * @author rendi
+ * @author rendix2
  */
 class PollsFacade
 {

@@ -15,7 +15,7 @@ use App\Controls\BreadCrumbControl;
 /**
  * Description of ForumPresenter
  *
- * @author rendi
+ * @author rendix2
  * @method ForumsManager getManager()
  */
 class ForumPresenter extends Base\AdminPresenter

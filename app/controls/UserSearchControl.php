@@ -13,7 +13,7 @@ use App\Presenters\Base\BasePresenter;
 /**
  * Description of UserSearchControl
  *
- * @author rendi
+ * @author rendix2
  */
 class UserSearchControl extends Control
 {

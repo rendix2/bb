@@ -8,7 +8,7 @@ use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 /**
  * Description of UserPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class UserPresenter extends ModeratorPresenter
 {

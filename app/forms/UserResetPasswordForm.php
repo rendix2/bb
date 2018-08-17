@@ -13,7 +13,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of ResetPasswordForm
  *
- * @author rendi
+ * @author rendix2
  */
 class UserResetPasswordForm extends Control
 {

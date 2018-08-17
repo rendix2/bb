@@ -10,7 +10,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of ThanksFacade
  *
- * @author rendi
+ * @author rendix2
  */
 class ThanksFacade
 {

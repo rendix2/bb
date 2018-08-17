@@ -10,7 +10,7 @@ use Nette\Security\User;
 /**
  * Description of ChangePasswordFactory
  *
- * @author rendi
+ * @author rendix2
  */
 class ChangePasswordFactory
 {

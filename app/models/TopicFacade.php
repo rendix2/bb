@@ -8,7 +8,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of TopicFacade
  *
- * @author rendi
+ * @author rendix2
  */
 class TopicFacade
 {

@@ -5,7 +5,7 @@ namespace App\Settings;
 /**
  * Description of StartDay
  *
- * @author rendi
+ * @author rendix2
  */
 class StartDay
 {

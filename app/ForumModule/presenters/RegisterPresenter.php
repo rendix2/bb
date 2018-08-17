@@ -13,7 +13,7 @@ use Nette\Localization\ITranslator;
 /**
  * Description of RegisterPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class RegisterPresenter extends BasePresenter
 {

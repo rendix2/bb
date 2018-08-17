@@ -13,7 +13,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of ChangeUserNameForm
  *
- * @author rendi
+ * @author rendix2
  */
 class UserChangeUserNameForm extends Control
 {

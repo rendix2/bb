@@ -13,7 +13,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of Authenticator
  *
- * @author rendi
+ * @author rendix2
  */
 class Authenticator implements IAuthenticator
 {

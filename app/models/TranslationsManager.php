@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Description of TranslationsManager
  *
- * @author rendi
+ * @author rendix2
  */
 class TranslationsManager extends Crud\CrudManager
 {

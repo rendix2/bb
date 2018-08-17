@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Description of MpttTable
  *
- * @author rendi
+ * @author rendix2
  */
 interface MpttTable {
     

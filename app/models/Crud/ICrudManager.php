@@ -15,7 +15,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of ICrudManager
  *
- * @author rendi
+ * @author rendix2
  */
 interface ICrudManager
 {

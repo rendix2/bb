@@ -8,7 +8,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of PostFacade
  *
- * @author rendi
+ * @author rendix2
  */
 class PostFacade
 {   

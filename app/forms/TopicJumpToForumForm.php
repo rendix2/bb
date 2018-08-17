@@ -10,7 +10,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of JumpToForumControl
  *
- * @author rendi
+ * @author rendix2
  */
 class TopicJumpToForumForm extends Control
 {

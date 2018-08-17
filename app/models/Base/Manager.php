@@ -8,7 +8,7 @@ use SplFileInfo;
 /**
  * Description of Manager
  *
- * @author rendi
+ * @author rendix2
  */
 abstract class Manager extends Tables
 {

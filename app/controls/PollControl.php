@@ -8,7 +8,7 @@ use Nette\Application\UI\Control;
 /**
  * Description of PollControll
  *
- * @author rendi
+ * @author rendix2
  */
 class PollControl extends Control
 {

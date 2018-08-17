@@ -8,7 +8,7 @@ use Nette\Application\UI\Control;
 /**
  * Description of BreadCrumbControl
  *
- * @author rendi
+ * @author rendix2
  */
 class BreadCrumbControl extends Control
 {

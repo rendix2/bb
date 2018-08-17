@@ -13,7 +13,7 @@ use App\Controls\BreadCrumbControl;
 /**
  * Description of RankPresenter
  *
- * @author rendi
+ * @author rendix2
  * @method RanksManager getManager()
  */
 class RankPresenter extends Base\AdminPresenter
