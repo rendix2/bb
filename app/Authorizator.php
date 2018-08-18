@@ -110,7 +110,7 @@ class Authorizator
         foreach ($this->forumManager->getAllCached() as $forum) {
             $this->acl->addResource('' . $forum->forum_id);
         }
-        
+
         foreach ($this->forumManager->getAllCached() as $forum) {
                 $this->acl->deny('guest', '' . $forum->forum_id, Permission::ALL);
             $this->acl->allow('guest', '' . $forum->forum_id, 'forum_view');

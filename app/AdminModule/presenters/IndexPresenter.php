@@ -45,7 +45,7 @@ class IndexPresenter extends BasePresenter
      */
     public function checkRequirements($element)
     {
-        $this->getUser()->getStorage()->setNamespace('beckend');
+        $this->getUser()->getStorage()->setNamespace(self::BECK_END_NAMESPACE);
         
         parent::checkRequirements($element);
 

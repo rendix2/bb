@@ -38,6 +38,16 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     const FLASH_MESSAGE_INFO = 'info';
     
     /**
+     * @var string
+     */
+    const BECK_END_NAMESPACE = 'beckend';
+    
+    /**
+     * @var string
+     */
+    const FRONT_END_NAMESPACE = 'frontend';
+    
+    /**
      * @var BansManager $banManager
      * @inject
      */
@@ -53,7 +63,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      * @inject
      */
     public $translatorFactory;
-
+    
     /**
      * BasePresenter constructor.
      */
@@ -70,7 +80,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     public function startup()
     {
         parent::startup();
-      
+             
         $this->banUser();
     }
     

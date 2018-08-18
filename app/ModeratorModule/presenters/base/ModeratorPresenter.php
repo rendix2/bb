@@ -43,7 +43,7 @@ abstract class ModeratorPresenter extends CrudPresenter
     {
         parent::checkRequirements($element);
         
-        $this->getUser()->getStorage()->setNamespace('frontend');
+        $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
     }
 
     /**
@@ -57,8 +57,6 @@ abstract class ModeratorPresenter extends CrudPresenter
         $admin = new User();
         $forum = new Forum();
         $topic = new Topic($user, $forum);
-
-        \Tracy\Debugger::barDump($this->authorizator->isAllowed($admin->getIdentity(), $topic, Topic::ACTION_ADD));
         
         $enabledRoles = ['admin', 'juniorAdmin', 'moderator'];
 

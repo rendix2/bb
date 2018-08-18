@@ -55,7 +55,7 @@ class PmPresenter extends CrudPresenter
      */
     public function checkRequirements($element)
     {       
-        $this->getUser()->getStorage()->setNamespace('frontend');
+        $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         
         parent::checkRequirements($element);
     }       
@@ -129,7 +129,7 @@ class PmPresenter extends CrudPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['text' => 'menu_pm']
+            1 => ['text' => 'menu_pms']
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->translator);
@@ -172,11 +172,18 @@ class PmPresenter extends CrudPresenter
         
         $form->setTranslator($this->translator);
         
-        $form->addHidden('pm_user_id_to');
-        $form->addText('pm_subject', 'PM Subject:')->setRequired(true);        
-        $form->addText('user_name', 'User name:')->setDisabled();                
-        $form->addTextAreaHtml('pm_text', 'PM Text:');
+        $form->addHidden('pm_user_id_to');           
+        $form->addText('user_name', 'User name:')->setDisabled(); 
         
+        if ($this->getParameter('id')) {
+            $form->addTextArea('pm_text', 'PM Text:')->setDisabled();
+            $form->addText('pm_subject', 'PM Subject:')->setDisabled();
+        } else {
+            $form->addTextAreaHtml('pm_text', 'PM Text:');
+            $form->addText('pm_subject', 'PM Subject:')->setRequired(true);
+            $form->addText('pm_subject', 'PM Subject:')->setRequired(true);     
+        } 
+
         return $this->addSubmitB($form);
     }
     
@@ -185,7 +192,8 @@ class PmPresenter extends CrudPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function onValidate(Form $form, ArrayHash $values) {       
+    public function onValidate(Form $form, ArrayHash $values)
+    {       
         if (!$values->pm_user_id_to) {
             $form->addError('We are missing recepients user ID', true);
         }

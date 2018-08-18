@@ -370,7 +370,37 @@ class TopicPresenter extends Base\ForumPresenter
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }     
+    }  
+
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbThanks()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Forum:default', 'params' => [$this->getParameter('forum_id')], 'text' => 'menu_forum'],
+            2 => ['link' => 'Topic:default', 'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')], 'text' => 'menu_topic'],            
+            3 => ['text' => 'Thanks']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }  
+    
+    /**
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbWatchers()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Forum:default', 'params' => [$this->getParameter('forum_id')], 'text' => 'menu_forum'],
+            2 => ['link' => 'Topic:default', 'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')], 'text' => 'menu_topic'],            
+            3 => ['text' => 'watches']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }    
     
     /**
      * @return TopicJumpToForumForm

@@ -206,4 +206,20 @@ class TopicFacade
             $this->postsManager->update($post->post_id, ArrayHash::from(['post_forum_id' => $target_forum_id]));
         }        
     }
+    
+    public function split($topic_id)
+    {
+        
+    }
+    
+    public function merge($topic_target_id, $topic_from_id)
+    {        
+        $posts = $this->postsManager->getByTopic($topic_from_id);
+        
+        foreach ($posts as $post) {
+            $this->postsManager->update($post->post_id, ArrayHash::from(['post_topic_id' => $topic_target_id]));
+        }
+        
+        $this->delete($topic_from_id);       
+    }
 }

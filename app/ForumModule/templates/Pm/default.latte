@@ -2,7 +2,7 @@
 
     <div class="col-sm-12">
         <div class="float-left">
-            <h1>{_menu_pm}</h1>
+            <h1>{_menu_pms}</h1>
         </div>
             <div class="float-right">
                 <a class="btn btn-primary" href="{link Pm:userSearch}">
@@ -10,6 +10,12 @@
                     {_pm_add_new}
                 </a>
             </div>
+    </div>
+                
+    <div class="col-sm-12 main">
+        <div class="float-left">
+            {control breadCrumbAll}              
+        </div>
     </div>
 
     <div class="col-sm-12">
@@ -19,10 +25,6 @@
     </div>
         
     <div class="col-sm-12 main">
-        <div class="float-left">
-            {control breadCrumbAll}              
-        </div>
-            
         <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
            {control gridFilter}
                 

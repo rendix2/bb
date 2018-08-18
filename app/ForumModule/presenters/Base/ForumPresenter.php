@@ -77,7 +77,7 @@ abstract class ForumPresenter extends ManagerPresenter
     {
         $user = $this->getUser();
         
-        $user->getStorage()->setNamespace('frontend');
+        $user->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         
         parent::checkRequirements($element);
     }
@@ -91,6 +91,8 @@ abstract class ForumPresenter extends ManagerPresenter
         
         $this->forumTranslator = $this->translatorFactory->forumTranslatorFactory();
         $this->getUser()->setAuthorizator($this->authorizator->getAcl());
+        
+            \Tracy\Debugger::barDump($this->user->isAllowed('1', 'forum_view'));
     }
 
     /**

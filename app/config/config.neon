@@ -202,6 +202,8 @@ services:
         class: App\Models\FavouriteUsersManager
     PostsHistoryManager:
         class: App\Models\PostsHistoryManager
+    LogsManager:
+        class: App\Models\LogsManager
     nette.mailer:
         class: Nette\Mail\IMailer
         factory: Nextras\MailPanel\FileMailer(%tempDir%/mail-panel-mails)
@@ -212,7 +214,8 @@ services:
         setup:
             - factory 
     PostsSettings:
-        class: \App\Settings\PostSetting(%posts%)
+        class: App\Settings\PostSetting(%posts%)
+    #đ- App\Services\BBLogger
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22
     recaptcha: ReCaptchaControl\DI\Extension

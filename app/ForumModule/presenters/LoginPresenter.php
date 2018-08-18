@@ -32,7 +32,7 @@ class LoginPresenter extends BasePresenter
      */
     public function checkRequirements($element)
     {
-        $this->getUser()->getStorage()->setNamespace('frontend');
+        $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         
         parent::checkRequirements($element);
     }
