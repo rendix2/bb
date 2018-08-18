@@ -5,7 +5,7 @@ namespace App\Authorization;
 /**
  * Description of BBIdentity
  *
- * @author rendi
+ * @author rendix2
  */
 class BBIdentity implements \Nette\Security\IIdentity
 {

@@ -7,7 +7,7 @@ use App\Models\Crud\CrudManager;
 /**
  * Description of PMManager
  *
- * @author rendi
+ * @author rendix2
  */
 class PmManager extends CrudManager
 {

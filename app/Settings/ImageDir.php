@@ -8,7 +8,7 @@ use SplFileInfo;
 /**
  * Description of ImageDir
  *
- * @author rendi
+ * @author rendix2
  */
 abstract class ImageDir
 {

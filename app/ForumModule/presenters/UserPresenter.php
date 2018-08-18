@@ -33,7 +33,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of UserProfilePresenter
  *
- * @author rendi
+ * @author rendix2
  * @method UsersManager getManager()
  */
 class UserPresenter extends Base\ForumPresenter

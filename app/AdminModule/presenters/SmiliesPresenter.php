@@ -8,7 +8,7 @@ use App\Controls\BreadCrumbControl;
 /**
  * Description of SmiliesPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class SmiliesPresenter extends Base\AdminPresenter
 {

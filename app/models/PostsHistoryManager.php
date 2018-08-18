@@ -8,7 +8,7 @@ use Dibi\Row;
 /**
  * Description of PostsHistoryManager
  *
- * @author rendi
+ * @author rendix2
  */
 class PostsHistoryManager extends Crud\CrudManager
 {

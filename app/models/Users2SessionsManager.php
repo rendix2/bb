@@ -7,7 +7,7 @@ use Dibi\Connection;
 /**
  * Description of Users2SessionsManager
  *
- * @author rendi
+ * @author rendix2
  */
 class Users2SessionsManager extends MNManager
 {

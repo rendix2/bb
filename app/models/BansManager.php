@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Description of BanManager
  *
- * @author rendi
+ * @author rendix2
  */
 class BansManager extends Crud\CrudManager
 {

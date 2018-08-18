@@ -5,7 +5,7 @@ namespace App\Settings;
 /**
  * Description of TopicsSetting
  *
- * @author rendi
+ * @author rendix2
  */
 class TopicsSetting
 {

@@ -5,7 +5,7 @@ namespace App\Settings;
 /**
  * Description of PostSetting
  *
- * @author rendi
+ * @author rendix2
  */
 class PostSetting
 {

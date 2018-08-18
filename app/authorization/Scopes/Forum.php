@@ -8,7 +8,7 @@ use App\Authorization\Identity;
 /**
  * Description of Forum
  *
- * @author rendi
+ * @author rendix2
  */
 class Forum implements IAuthorizationScope {
 

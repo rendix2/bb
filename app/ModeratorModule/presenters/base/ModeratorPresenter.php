@@ -12,7 +12,7 @@ use Nette\Localization\ITranslator;
 /**
  * Description of ModeratorPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 abstract class ModeratorPresenter extends CrudPresenter
 {

@@ -9,7 +9,7 @@ use App\Forms\UserLoginForm;
 /**
  * Description of LoginPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class LoginPresenter extends BasePresenter
 {

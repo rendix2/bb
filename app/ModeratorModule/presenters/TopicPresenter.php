@@ -12,7 +12,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of TopicPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class TopicPresenter extends ModeratorPresenter
 {

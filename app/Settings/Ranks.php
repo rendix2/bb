@@ -5,7 +5,7 @@ namespace App\Settings;
 /**
  * Description of Ranks
  *
- * @author rendi
+ * @author rendix2
  */
 final class Ranks extends ImageDir
 {

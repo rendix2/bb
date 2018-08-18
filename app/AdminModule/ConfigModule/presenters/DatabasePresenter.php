@@ -13,7 +13,7 @@ use Nette\Utils\Finder;
 /**
  * Description of ConfigPresenter¨
  *
- * @author rendi
+ * @author rendix2
  * @method UsersManager getManager()
  */
 class DatabasePresenter extends AdminPresenter

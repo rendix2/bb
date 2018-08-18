@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Description of MailsManager
  *
- * @author rendi
+ * @author rendix2
  */
 class MailsManager extends Crud\CrudManager
 {

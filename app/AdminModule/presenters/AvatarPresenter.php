@@ -10,7 +10,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of AvatarPresenter
  *
- * @author rendi
+ * @author rendix2
  * @method UsersManager getManager()
  */
 class AvatarPresenter extends Base\AdminPresenter

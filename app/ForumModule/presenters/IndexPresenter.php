@@ -17,7 +17,7 @@ use dibi;
 /**
  * Description of IndexPresenter¨
  *
- * @author rendi
+ * @author rendix2
  * @method IndexManager getManager()
  */
 class IndexPresenter extends Base\ForumPresenter

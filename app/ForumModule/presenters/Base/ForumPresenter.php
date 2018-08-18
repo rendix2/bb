@@ -11,7 +11,7 @@ use Nette\Localization\ITranslator;
 /**
  * Description of ForumPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 abstract class ForumPresenter extends ManagerPresenter
 {

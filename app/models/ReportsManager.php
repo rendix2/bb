@@ -7,7 +7,7 @@ use Dibi\Fluent;
 /**
  * Description of ReportsManager
  *
- * @author rendi
+ * @author rendix2
  */
 class ReportsManager extends Crud\CrudManager
 {

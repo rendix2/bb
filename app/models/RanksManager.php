@@ -8,7 +8,7 @@ use Nette\Utils\FileSystem;
 /**
  * Description of RanksManager
  *
- * @author rendi
+ * @author rendix2
  */
 class RanksManager extends Crud\CrudManager
 {

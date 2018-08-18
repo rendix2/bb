@@ -10,7 +10,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of ManagerPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 abstract class ManagerPresenter extends BasePresenter
 {

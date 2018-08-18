@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Description of CategoryFacade
  *
- * @author rendi
+ * @author rendix2
  */
 class CategoryFacade
 {

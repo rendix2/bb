@@ -5,7 +5,7 @@ namespace App\Settings;
 /**
  * Description of TempDir
  *
- * @author rendi
+ * @author rendix2
  */
 class TempDir
 {

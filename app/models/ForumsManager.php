@@ -12,7 +12,7 @@ use Nette\Caching\IStorage;
 /**
  * Description of ForumManager
  *
- * @author rendi
+ * @author rendix2
  */
 class ForumsManager extends Crud\CrudManager implements MpttTable
 {

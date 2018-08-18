@@ -5,7 +5,7 @@ namespace App\Authorization\Scopes;
 /**
  * Description of Post
  *
- * @author rendi
+ * @author rendix2
  */
 class Post implements \App\Authorization\IAuthorizationScope {
     

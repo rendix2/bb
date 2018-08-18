@@ -11,7 +11,7 @@ use Nette\Utils\FileSystem;
 /**
  * Description of UserManager
  *
- * @author rendi
+ * @author rendix2
  */
 class UsersManager extends Crud\CrudManager
 {

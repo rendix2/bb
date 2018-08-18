@@ -12,7 +12,7 @@ use Nette\Security\User;
 /**
  * Description of Authorizator
  *
- * @author rendi
+ * @author rendix2
  */
 class Authorizator
 {

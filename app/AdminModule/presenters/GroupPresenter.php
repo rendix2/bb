@@ -17,7 +17,7 @@ use App\Controls\BreadCrumbControl;
 /**
  * Description of GroupPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class GroupPresenter extends Base\AdminPresenter
 {

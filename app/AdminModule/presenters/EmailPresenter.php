@@ -17,7 +17,7 @@ use App\Controls\BreadCrumbControl;
 /**
  * Description of EmailPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class EmailPresenter extends Base\AdminPresenter
 {

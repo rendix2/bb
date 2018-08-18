@@ -7,7 +7,7 @@ use Dibi\Connection;
 /**
  * Description of Mails2UsersManager
  *
- * @author rendi
+ * @author rendix2
  */
 class Mails2UsersManager extends MNManager
 {

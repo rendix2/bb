@@ -8,7 +8,7 @@ use Nette\Application\UI\Control;
 /**
  * Description of PmControl
  *
- * @author rendi
+ * @author rendix2
  */
 class PmControl extends Control
 {

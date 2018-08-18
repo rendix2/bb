@@ -7,7 +7,7 @@ use Nette\Utils\Finder;
 /**
  * Description of CacheDir
  *
- * @author rendi
+ * @author rendix2
  */
 class CacheDir
 {

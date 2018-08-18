@@ -5,7 +5,7 @@ namespace App\Settings;
 /**
  * Description of Email
  *
- * @author rendi
+ * @author rendix2
  */
 class Email
 {

@@ -7,7 +7,7 @@ use Nette\Application\UI\Control;
 /**
  * Description of MenuCotrol
  *
- * @author rendi
+ * @author rendix2
  */
 class MenuControl extends Control
 {

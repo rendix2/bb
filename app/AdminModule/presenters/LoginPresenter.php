@@ -16,7 +16,7 @@ use App\Controls\BreadCrumbControl;
 /**
  * Description of LoginPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class LoginPresenter extends \App\Presenters\Base\BasePresenter
 {

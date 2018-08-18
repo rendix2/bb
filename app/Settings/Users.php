@@ -5,7 +5,7 @@ namespace App\Settings;
 /**
  * Description of User
  *
- * @author rendi
+ * @author rendix2
  */
 class Users {
 

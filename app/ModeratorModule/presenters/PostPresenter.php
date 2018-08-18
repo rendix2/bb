@@ -14,7 +14,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of PostPresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class PostPresenter extends ModeratorPresenter
 {

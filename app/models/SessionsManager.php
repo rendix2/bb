@@ -8,7 +8,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of SessionsManager
  *
- * @author rendi
+ * @author rendix2
  */
 class SessionsManager extends Crud\CrudManager
 {

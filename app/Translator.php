@@ -9,7 +9,7 @@ use Nette\Localization\ITranslator;
 /**
  * Description of Translator
  *
- * @author rendi
+ * @author rendix2
  */
 class Translator implements ITranslator
 {

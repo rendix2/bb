@@ -13,7 +13,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of SearchPresenter
  *
- * @author rendi
+ * @author rendix2
  * @method UsersManager getManager()
  */
 class SearchPresenter extends Base\ForumPresenter

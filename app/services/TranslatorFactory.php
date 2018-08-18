@@ -10,7 +10,7 @@ use Nette\Security\User;
 /**
  * Description of TranslatorFactory
  *
- * @author rendi
+ * @author rendix2
  */
 class TranslatorFactory
 {

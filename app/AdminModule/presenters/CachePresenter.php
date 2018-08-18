@@ -13,7 +13,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of CachePresenter
  *
- * @author rendi
+ * @author rendix2
  */
 class CachePresenter extends Base\AdminPresenter
 {

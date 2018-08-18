@@ -9,7 +9,7 @@ use Dibi\Row;
 /**
  * Description of ThanksManager
  *
- * @author rendi
+ * @author rendix2
  */
 class ThanksManager extends Crud\CrudManager
 {

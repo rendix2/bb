@@ -7,7 +7,7 @@ use Dibi\Connection;
 /**
  * Description of Group2User
  *
- * @author rendi
+ * @author rendix2
  */
 class Users2GroupsManager extends MNManager
 {

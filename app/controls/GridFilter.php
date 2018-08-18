@@ -11,7 +11,7 @@ use Nette\Utils\ArrayHash;
 /**
  * Description of GridFilter
  *
- * @author rendi
+ * @author rendix2
  */
 class GridFilter extends Control
 {

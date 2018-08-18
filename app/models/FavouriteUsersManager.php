@@ -7,7 +7,7 @@ use Dibi\Connection;
 /**
  * Description of FavouriteUsers
  *
- * @author rendi
+ * @author rendix2
  */
 class FavouriteUsersManager extends MNManager
 {

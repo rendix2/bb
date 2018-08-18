@@ -10,7 +10,7 @@ use Zebra_Mptt;
 /**
  * Description of MtppFactory
  *
- * @author rendi
+ * @author rendix2
  */
 class MpttFactory
 {

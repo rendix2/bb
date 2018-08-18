@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Description of UserFacade
  *
- * @author rendi
+ * @author rendix2
  */
 class UserFacade
 {

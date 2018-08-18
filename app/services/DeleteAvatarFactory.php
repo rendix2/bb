@@ -10,7 +10,7 @@ use Nette\Security\User;
 /**
  * Description of DeleteAvatarFactory
  *
- * @author rendi
+ * @author rendix2
  */
 class DeleteAvatarFactory
 {

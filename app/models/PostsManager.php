@@ -10,7 +10,7 @@ use Nette\Caching\Cache;
 /**
  * Description of PostManager
  *
- * @author rendi
+ * @author rendix2
  */
 class PostsManager extends Crud\CrudManager
 {   

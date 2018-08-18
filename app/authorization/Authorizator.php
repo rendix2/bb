@@ -7,7 +7,7 @@ use Nette\Security\IAuthorizator;
 /**
  * Description of Authorizator
  *
- * @author rendi
+ * @author rendix2
  */
 class Authorizator
 {

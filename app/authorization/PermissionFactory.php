@@ -7,7 +7,7 @@ use Nette\Security\Permission;
 /**
  * Description of PermissionFactory
  *
- * @author rendi
+ * @author rendix2
  */
 class PermissionFactory {
     /**

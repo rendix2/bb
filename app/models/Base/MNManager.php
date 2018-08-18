@@ -11,7 +11,7 @@ use Dibi\Row;
 /**
  * Description of MNManager
  *
- * @author rendi
+ * @author rendix2
  */
 abstract class MNManager extends Manager
 {

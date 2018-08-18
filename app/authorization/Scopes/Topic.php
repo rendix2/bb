@@ -9,7 +9,7 @@ use Tracy\Debugger;
 /**
  * Description of Topic
  *
- * @author rendi
+ * @author rendix2
  */
 class Topic implements \App\Authorization\IAuthorizationScope
 {
