@@ -90,9 +90,7 @@ class ForumsManager extends Crud\CrudManager implements MpttTable
      */
     public function getForumsFirstLevel($category_id)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->where('[forum_category_id] = %i', $category_id)
             ->where('[forum_active] = %i', 1)
             ->where('forum_parent_id = %i', 0)

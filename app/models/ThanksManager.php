@@ -20,9 +20,7 @@ class ThanksManager extends Crud\CrudManager
      */
     public function getThanksByForum($forum_id)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->where('[thank_forum_id] = %i', $forum_id)
             ->fetchAll();
     }
@@ -34,9 +32,7 @@ class ThanksManager extends Crud\CrudManager
      */
     public function getThanksByTopic($topic_id)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->where('[thank_topic_id] = %i', $topic_id)
             ->fetchAll();
     }
@@ -48,9 +44,7 @@ class ThanksManager extends Crud\CrudManager
      */
     public function getThanksByUser($user_id)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->where('[thank_user_id] = %i', $user_id)
             ->fetchAll();
     }
@@ -62,9 +56,7 @@ class ThanksManager extends Crud\CrudManager
      */
     public function getThanksJoinedUserByTopic($topic_id)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->as('t')
             ->innerJoin(self::USERS_TABLE)
             ->as('u')
@@ -80,8 +72,7 @@ class ThanksManager extends Crud\CrudManager
      */
     public function getThanks($user_id)
     {
-        return $this->dibi->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->as('th')
             ->innerJoin(self::TOPICS_TABLE)
             ->as('to')

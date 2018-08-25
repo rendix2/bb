@@ -93,14 +93,13 @@ class PostsManager extends Crud\CrudManager
      */
     public function getLastByForum($forum_id)
     {
-        return $this->dibi->query('SELECT *
-                FROM %n
-                WHERE [post_id] = ( SELECT MAX(post_id) FROM %n WHERE [post_forum_id] = %i )',
-            $this->getTable(),
-            $this->getTable(),
-            $forum_id
-        )
-            ->fetch();
+        return $this->getAllFluent()
+                ->where('[post_id] = ',
+                    $this->dibi
+                    ->select('MAX(post_id)')
+                    ->from($this->getTable())
+                    ->where('[post_forum_id] = %i', $forum_id)
+                )->fetch();        
     }
 
     /**
@@ -110,14 +109,13 @@ class PostsManager extends Crud\CrudManager
      */
     public function getLastByTopic($topic_id)
     {
-        return $this->dibi->query(
-            'SELECT *
-            FROM %n
-            WHERE [post_id] = ( SELECT MAX(post_id) FROM %n WHERE [post_topic_id] = %i )',
-            $this->getTable(),
-            $this->getTable(),
-            $topic_id
-        )->fetch();
+        return $this->getAllFluent()
+                ->where('[post_id] = ',
+                    $this->dibi
+                        ->select('MAX(post_id)')
+                        ->from($this->getTable())
+                        ->where('[post_topic_id] = %i', $topic_id)
+                       )->fetch();
     }
     
     /**
@@ -127,12 +125,13 @@ class PostsManager extends Crud\CrudManager
      */
     public function getFirstByTopic($topic_id)
     {
-        return $this->dibi->query(
-            'SELECT * FROM %n WHERE [post_id] = ( SELECT MIN(post_id) FROM %n WHERE [post_topic_id] = %i )',
-            $this->getTable(),
-            $this->getTable(),
-            $topic_id
-        )->fetch();
+        return $this->getAllFluent()
+                ->where('[post_id] = ',
+                    $this->dibi
+                        ->select('MIN(post_id)')
+                        ->from($this->getTable())
+                        ->where('[post_topic_id] = %i', $topic_id)
+                       )->fetch();
     }
 
     /**
@@ -170,7 +169,7 @@ class PostsManager extends Crud\CrudManager
     public function getUserWithMostPosts()
     {
         return $this->dibi
-                ->select('COUNT(p.post_id) as post_count, u.user_id, u.user_name')
+                ->select('COUNT(p.post_id) AS post_count, u.user_id, u.user_name')
                 ->from($this->getTable())
                 ->as('p')
                 ->innerJoin(self::USERS_TABLE)
@@ -187,9 +186,7 @@ class PostsManager extends Crud\CrudManager
      */
     public function getByTopicJoinedUser($topic_id)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->as('p')
             ->innerJoin(self::USERS_TABLE)
             ->as('u')
@@ -227,9 +224,7 @@ class PostsManager extends Crud\CrudManager
      */
     public function findPosts($post_text)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->as('p')
             ->leftJoin(self::TOPICS_TABLE)
             ->as('t')
@@ -246,9 +241,14 @@ class PostsManager extends Crud\CrudManager
      */
     public function getLastByUser($user_id)
     {
-        return $this->dibi
-                ->query('SELECT * FROM %n WHERE post_id = (SELECT MAX(post_id) FROM %n WHERE post_user_id = %i)', $this->getTable(), $this->getTable(), $user_id)
-                ->fetch();
+        return $this->getAllFluent()
+                ->where('[post_id] = ',
+                    $this->dibi
+                        ->select('MAX(post_id)')
+                        ->from($this->getTable())
+                        ->where('[post_user_id] = %i', $user_id)
+                        
+                )->fetch();
     }
 
     /**

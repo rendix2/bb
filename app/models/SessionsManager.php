@@ -19,8 +19,9 @@ class SessionsManager extends Crud\CrudManager
     public function getCountOfLoggedUsers()
     {
         return $this->dibi
-            ->query('SELECT COUNT(DISTINCT session_user_id) FROM %n', $this->getTable())
-            ->fetchSingle();
+                ->select('COUNT(DISTINCT session_user_id)')
+                ->from($this->getTable())
+                ->fetchSingle();
     }
 
     /**

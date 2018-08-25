@@ -34,9 +34,7 @@ class UsersManager extends Crud\CrudManager
      */
     public function getByLang($lang_id)
     {
-        return $this->dibi
-                ->select('*')
-                ->from($this->getTable())
+        return $this->getAllFluent()
                 ->where('[user_lang_id] = %i', $lang_id)
                 ->fetchAll();
     }
@@ -48,9 +46,7 @@ class UsersManager extends Crud\CrudManager
      */
     public function getByName($user_name)
     {
-        return $this->dibi
-                ->select('*')
-                ->from($this->getTable())
+        return $this->getAllFluent()
                 ->where('[user_name] = %s', $user_name)
                 ->fetch();
     }
@@ -62,9 +58,7 @@ class UsersManager extends Crud\CrudManager
      */
     public function getByRole($role_id)
     {
-        return $this->dibi
-                ->select('*')
-                ->from($this->getTable())
+        return $this->getAllFluent()
                 ->where('[user_role_id] = %i', $role_id)
                 ->fetchAll();
     }
@@ -131,9 +125,7 @@ class UsersManager extends Crud\CrudManager
      */
     public function findLikeByUserName($user_name)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->where('[user_name] LIKE %~like~', $user_name)
             ->fetchAll();
     }
@@ -146,9 +138,7 @@ class UsersManager extends Crud\CrudManager
      */
     public function getByUserName($user_name)
     {
-        return $this->dibi
-            ->select('')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->where('[user_name] = %s', $user_name)
             ->fetchSingle() === 1;
     }
@@ -161,9 +151,7 @@ class UsersManager extends Crud\CrudManager
      */
     public function getByEmail($email)
     {
-        return $this->dibi
-                ->select('*')
-                ->from($this->getTable())
+        return $this->getAllFluent()
                 ->where('[user_email] = %s', $email)
                 ->fetchAll();
     }
@@ -176,9 +164,7 @@ class UsersManager extends Crud\CrudManager
      */
     public function getByEmails(array $emails)
     {
-        return $this->dibi
-                ->select('*')
-                ->from($this->getTable())
+        return $this->getAllFluent()
                 ->where('[user_email] IN %in', $emails)
                 ->fetchAll();
     }

@@ -19,8 +19,13 @@ class TopicsManager extends Crud\CrudManager
      */
     public function getLastTopic()
     {
-        return $this->dibi
-                ->query('SELECT * FROM %n WHERE [topic_id] = (SELECT MAX(topic_id) FROM %n)', $this->getTable(), $this->getTable())
+        return $this->getAllFluent()
+                ->where('[topic_id] = ', 
+                    $this->dibi
+                        ->select('MAX(topic_id)')
+                        ->from($this->getTable())
+                        
+                )
                 ->fetch();
     }
 
@@ -31,8 +36,13 @@ class TopicsManager extends Crud\CrudManager
      */
     public function getLastTopicByForum($forum_id)
     {
-        return $this->dibi
-                ->query('SELECT * FROM %n WHERE [topic_id] = (SELECT MAX(topic_id) FROM %n WHERE [topic_forum_id] = %i)', $this->getTable(), $this->getTable(), $forum_id)
+        return $this->getAllFluent()
+                ->where('[topic_id] = ', 
+                    $this->dibi
+                        ->select('MAX(topic_id)')
+                        ->from($this->getTable())
+                        ->where('[topic_forum_id] = %i', $forum_id)                        
+                )
                 ->fetch();
     }
 
@@ -50,9 +60,7 @@ class TopicsManager extends Crud\CrudManager
         if (!isset($cached)) {
             $this->managerCache->save(
                 $key,
-                $cached = $this->dibi
-                    ->select('*')
-                    ->from($this->getTable())
+                $cached = $this->getAllFluent()
                     ->where('[topic_forum_id] = %i', $forum_id)
                     ->where('[topic_add_time] > %i', $topic_time)
                     ->fetchAll(),
@@ -70,9 +78,7 @@ class TopicsManager extends Crud\CrudManager
      */
     public function findByTopicName($topic_name)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->where('MATCH([topic_name]) AGAINST (%s IN BOOLEAN MODE)', $topic_name)
             ->fetchAll();
     }
@@ -84,9 +90,7 @@ class TopicsManager extends Crud\CrudManager
      */
     public function getFluentJoinedUsersByForum($forum_id)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->as('t')
             ->leftJoin(self::USERS_TABLE)
             ->as('u')
@@ -102,9 +106,7 @@ class TopicsManager extends Crud\CrudManager
      */
     public function getAllTopicsByForum($forum_id)
     {
-        return $this->dibi
-                ->select('*')
-                ->from($this->getTable())
+        return $this->getAllFluent()
                 ->where('[topic_forum_id] = %i', $forum_id)
                 ->fetchAll();
     }
@@ -116,9 +118,7 @@ class TopicsManager extends Crud\CrudManager
      */
     public function getFLuentByUser($user_id)
     {
-        return $this->dibi
-                ->select('*')
-                ->from($this->getTable())
+        return $this->getAllFluent()
                 ->where('[topic_user_id] = %i', $user_id);
     }
     

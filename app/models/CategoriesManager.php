@@ -74,9 +74,7 @@ class CategoriesManager extends Crud\CrudManager implements MpttTable
      */
     public function getByForum($forum_id)
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->getTable())
+        return $this->getAllFluent()
             ->as('c')
             ->leftJoin(self::FORUM_TABLE)
             ->as('f')
