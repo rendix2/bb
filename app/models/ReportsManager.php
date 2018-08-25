@@ -17,7 +17,6 @@ class ReportsManager extends Crud\CrudManager
      */
     public function getAllFluent()
     {
-        //->where('report_status = %i', 1)
         return parent::getAllFluent()
             ->innerJoin(self::FORUM_TABLE)
             ->as('f')
@@ -39,7 +38,7 @@ class ReportsManager extends Crud\CrudManager
      */
     public function deleteByPost($post_id)
     {
-        $this->dibi->delete($this->getTable())
+        return $this->deleteFluent()
                 ->where('[report_post_id] = %i', $post_id)
                 ->execute();
     }
@@ -50,7 +49,7 @@ class ReportsManager extends Crud\CrudManager
      */
     public function deleteByForum($forum_id)
     {
-        $this->dibi->delete($this->getTable())
+        return $this->deleteFluent()
                 ->where('[report_forum_id] = %i', $forum_id)
                 ->execute();
     }
@@ -61,7 +60,7 @@ class ReportsManager extends Crud\CrudManager
      */
     public function deleteByUser($user_id)
     {
-        $this->dibi->delete($this->getTable())
+        return $this->deleteFluent()
                 ->where('[report_user_id] = %i', $user_id)
                 ->execute();
     }

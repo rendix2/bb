@@ -11,7 +11,8 @@ use App\Models\Crud\CrudManager;
  */
 class PmManager extends CrudManager
 {
-    public function getAllFluent() {
+    public function getAllFluent()
+    {
         return parent::getAllFluent()
                 ->as('pm')
                 ->innerJoin(self::USERS_TABLE)

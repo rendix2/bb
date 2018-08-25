@@ -30,9 +30,7 @@ class Users2GroupsManager extends MNManager
      */
     public function getForumsPermissionsByUserThroughGroup($user_id)
     {
-        return $this->dibi
-                ->select('*')
-                ->from($this->getTable())
+        return $this->getAllFluent()
                 ->as('ug')
                 ->innerJoin(self::FORUMS2GROUPS_TABLE)
                 ->as('fg')

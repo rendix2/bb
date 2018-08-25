@@ -70,9 +70,7 @@ class UsersManager extends Crud\CrudManager
      */
     public function getCountByLang($lang_id)
     {
-        return $this->dibi
-            ->select('COUNT(*)')
-            ->from($this->getTable())
+        return $this->getCountFluent()
             ->where('[user_lang_id] = %i', $lang_id)
             ->fetchSingle();
     }
@@ -84,9 +82,7 @@ class UsersManager extends Crud\CrudManager
      */
     public function getCountByRole($role_id)
     {
-        return $this->dibi
-                ->select('COUNT(*)')
-                ->from($this->getTable())
+        return $this->getCountFluent()
                 ->where('[user_role_id] = %i', $role_id)
                 ->fetchSingle();
     }
@@ -96,8 +92,12 @@ class UsersManager extends Crud\CrudManager
      */
     public function getLastUser()
     {
-        return $this->dibi
-            ->query('SELECT * FROM %n WHERE [user_id] = (SELECT MAX(user_id) FROM %n)', $this->getTable(), $this->getTable())
+        return $this->getAllFluent()
+                ->where('[user_id] = ',
+                    $this->dibi
+                        ->select('MAX(user_id)')
+                        ->from($this->getTable())
+                )
                 ->fetch();
     }
 

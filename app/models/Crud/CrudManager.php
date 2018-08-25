@@ -227,14 +227,19 @@ abstract class CrudManager extends Manager //implements ICrudManager
             ->fetchAll();
     }
 
-    /**
+    public function getCountFluent()
+    {
+        return $this->dibi
+            ->select('COUNT(*)')
+            ->from($this->table);
+    }
+
+        /**
      * @return int
      */
     public function getCount()
     {
-        return $this->dibi
-            ->select('COUNT(*)')
-            ->from($this->table)
+        return $this->getCountFluent()
             ->fetchSingle();
     }
 
@@ -368,6 +373,16 @@ abstract class CrudManager extends Manager //implements ICrudManager
             ->insert($this->table, $item_data)
             ->execute(dibi::IDENTIFIER);
     }
+    
+    /**
+     * 
+     * @return Fluent
+     */
+    public function deleteFluent()
+    {
+       return $this->dibi
+            ->delete($this->table); 
+    }
 
     /**
      * @param int $item_id
@@ -376,8 +391,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function delete($item_id)
     {
-        return $this->dibi
-            ->delete($this->table)
+        return $this->deleteFluent()
             ->where('%n = %i', $this->primaryKey, $item_id)
             ->execute();
     }

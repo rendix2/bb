@@ -24,7 +24,6 @@ class TopicsManager extends Crud\CrudManager
                     $this->dibi
                         ->select('MAX(topic_id)')
                         ->from($this->getTable())
-                        
                 )
                 ->fetch();
     }

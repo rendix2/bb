@@ -47,8 +47,7 @@ class SessionsManager extends Crud\CrudManager
      */
     public function deleteBySession($session_id)
     {
-        return $this->dibi
-                ->delete($this->getTable())
+        return $this->deleteFluent()
                 ->where('[session_key] = %s', $session_id)
                 ->execute();
     }
@@ -60,8 +59,7 @@ class SessionsManager extends Crud\CrudManager
      */
     public function deleteByUser($user_id)
     {
-        return $this->dibi
-                ->delete($this->getTable())
+        return $this->deleteFluent()
                 ->where('[session_user_id] = %i', $user_id)
                 ->execute();
     }

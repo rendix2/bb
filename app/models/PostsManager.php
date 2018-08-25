@@ -64,7 +64,7 @@ class PostsManager extends Crud\CrudManager
     public function getCountOfUsersByTopicId($topic_id)
     {
         return $this->dibi
-                ->select('COUNT(post_id) as post_count, post_user_id')
+                ->select('COUNT(post_id) AS post_count, post_user_id')
                 ->from($this->getTable())
                 ->where('[post_topic_id] = %i', $topic_id)
                 ->groupBy('post_user_id')
@@ -79,8 +79,7 @@ class PostsManager extends Crud\CrudManager
      */
     public function getCountByUser($topic_id, $user_id)
     {
-        return $this->dibi->select('COUNT(*)')
-            ->from($this->getTable())
+        return $this->getCountFluent()
             ->where('[post_topic_id] = %i', $topic_id)
             ->where('[post_user_id] = %i', $user_id)
             ->fetchSingle();
@@ -115,7 +114,7 @@ class PostsManager extends Crud\CrudManager
                         ->select('MAX(post_id)')
                         ->from($this->getTable())
                         ->where('[post_topic_id] = %i', $topic_id)
-                       )->fetch();
+                )->fetch();
     }
     
     /**
@@ -131,7 +130,7 @@ class PostsManager extends Crud\CrudManager
                         ->select('MIN(post_id)')
                         ->from($this->getTable())
                         ->where('[post_topic_id] = %i', $topic_id)
-                       )->fetch();
+                )->fetch();
     }
 
     /**
@@ -148,9 +147,7 @@ class PostsManager extends Crud\CrudManager
         if (!isset($cached)) {
             $this->managerCache->save(
                 $key,
-                $cached = $this->dibi
-                    ->select('*')
-                    ->from($this->getTable())
+                $cached = $this->getAllFluent()
                     ->where('[post_forum_id] = %i', $forum_id)
                     ->where('[post_add_time] > %i', $post_time)
                     ->fetchAll(),

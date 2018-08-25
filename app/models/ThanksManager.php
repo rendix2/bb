@@ -105,8 +105,7 @@ class ThanksManager extends Crud\CrudManager
      */
     public function deleteByTopic($topic_id)
     {
-        return $this->dibi
-            ->delete($this->getTable())
+        return $this->deleteFluent()
             ->where('[thank_topic_id] = %i', $topic_id)
             ->execute();
     }
@@ -118,8 +117,7 @@ class ThanksManager extends Crud\CrudManager
      */
     public function deleteByUser($user_id)
     {
-        return $this->dibi
-            ->delete($this->getTable())
+        return $this->deleteFluent()
             ->where('[thank_user_id] = %i', $user_id)
             ->execute();
     }
