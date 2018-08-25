@@ -9,7 +9,11 @@ namespace App\Models;
  */
 class UserFacade
 {
-
+    /**
+     * @var PmManager $pmManager
+     */
+    private $pmManager;
+    
     /**
      * @var Users2GroupsManager $users2GroupsManager
      */
@@ -34,11 +38,6 @@ class UserFacade
      * @var ReportsManager $reportsManager
      */
     private $reportsManager;
-
-    /**
-     * @var PMManager $pmManager
-     */
-    private $pmManager;
 
     /**
      * @var ModeratorsManager $moderatorsManager
@@ -84,12 +83,12 @@ class UserFacade
 
     /**
      *
+     * @param PmManager           $pmManager
      * @param PostsManager        $postsManager
      * @param PostsHistoryManager $postsHistoryManager
      * @param PostFacade          $postFacade
      * @param Mails2UsersManager  $mails2UsersManager
      * @param ModeratorsManager   $moderatorsManager
-     * @param PMManager           $pmManager
      * @param ReportsManager      $reportsManager
      * @param SessionsManager     $sessionsManager
      * @param ThanksManager       $thanksManager
@@ -99,12 +98,12 @@ class UserFacade
      * @param UsersManager        $usersManager
      */
     public function __construct(
+        PmManager $pmManager,
         PostsManager $postsManager,
         PostsHistoryManager $postsHistoryManager,
         PostFacade $postFacade,
         Mails2UsersManager $mails2UsersManager,
         ModeratorsManager $moderatorsManager,
-        PMManager $pmManager,
         ReportsManager $reportsManager,
         SessionsManager $sessionsManager,
         ThanksManager $thanksManager,
@@ -163,5 +162,12 @@ class UserFacade
         $this->postsHistoryManager->deleteByUser($item_id);
     
         return $this->usersManager->delete($item_id);
+    }
+    
+    public function add(\Nette\Utils\ArrayHash $item_data)
+    {
+        $user_id = $this->usersManager->add($item_data);
+        
+        $this->pmManager->add($item_data);
     }
 }

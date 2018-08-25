@@ -18,6 +18,7 @@ use Nette\Localization\ITranslator;
  * Description of PmPresenter
  *
  * @author rendix2
+ * @method PmManager getManager()
  */
 class PmPresenter extends CrudPresenter
 {    
@@ -70,6 +71,8 @@ class PmPresenter extends CrudPresenter
         $this->translator = $this->translatorFactory->forumTranslatorFactory(); 
         
         $this->template->setTranslator($this->translator);
+        
+        $this->template->pm_count = $this->getManager()->getCountSent();
     }   
     
     /**
@@ -93,6 +96,10 @@ class PmPresenter extends CrudPresenter
         }
         
         parent::renderEdit($id);
+        
+        if ($this->template->item->pm_status === 'sent') {
+            $this->getManager()->update($id, ArrayHash::from(['pm_status' => 'read']));
+        }
     }
     
     /**
@@ -106,7 +113,7 @@ class PmPresenter extends CrudPresenter
         $this->gf->addFilter('pm_id', 'pm_id', GridFilter::INT_EQUAL);
         $this->gf->addFilter('user_name', 'user_name', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('pm_subject', 'pm_subject', GridFilter::TEXT_LIKE);
-        $this->gf->addFilter('pm_status', 'pm_status', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('pm_status', 'pm_status', GridFilter::CHECKBOX_LIST, ['sent' => 'Sent', 'read' => 'Read']);
         $this->gf->addFilter(null, null, GridFilter::NOTHING);
             
         return $this->gf;
@@ -176,12 +183,11 @@ class PmPresenter extends CrudPresenter
         $form->addText('user_name', 'User name:')->setDisabled(); 
         
         if ($this->getParameter('id')) {
+            $form->addText('pm_subject', 'PM Subject:')->setDisabled();            
             $form->addTextArea('pm_text', 'PM Text:')->setDisabled();
-            $form->addText('pm_subject', 'PM Subject:')->setDisabled();
         } else {
+            $form->addText('pm_subject', 'PM Subject:')->setRequired(true);            
             $form->addTextAreaHtml('pm_text', 'PM Text:');
-            $form->addText('pm_subject', 'PM Subject:')->setRequired(true);
-            $form->addText('pm_subject', 'PM Subject:')->setRequired(true);     
         } 
 
         return $this->addSubmitB($form);

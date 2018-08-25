@@ -146,6 +146,7 @@ services:
         class: App\Models\PollsVotesManager
     PMManager:
         class: \App\Models\PmManager
+        inject: true
     Authenticator:
         class: App\Authenticator
     Authorizator:
