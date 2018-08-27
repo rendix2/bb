@@ -99,7 +99,7 @@ class PostsManager extends Crud\CrudManager
                     ->select('MAX(post_id)')
                     ->from($this->getTable())
                     ->where('[post_forum_id] = %i', $forum_id)
-                )->fetch();        
+                )->fetch();
     }
 
     /**
