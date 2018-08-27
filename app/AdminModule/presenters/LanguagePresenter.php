@@ -42,7 +42,7 @@ class LanguagePresenter extends Base\AdminPresenter
     }
 
     /**
-     * 
+     *
      * @return GridFilter
      */
     protected function createComponentGridFilter()

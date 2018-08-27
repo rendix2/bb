@@ -29,7 +29,6 @@ use App\Settings\Ranks;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
-
 /**
  * Description of UserProfilePresenter
  *
@@ -90,7 +89,7 @@ class UserPresenter extends Base\ForumPresenter
      * @var ModeratorsManager $moderatorsManager
      * @inject
      */
-     public $moderatorsManager;
+    public $moderatorsManager;
 
     /**
      *
@@ -409,7 +408,7 @@ class UserPresenter extends Base\ForumPresenter
         $this->addComponent($pag, 'paginator');
 
         if (!$pag->getCount()) {
-            $this->flashMessage('User have no awcthes.', self::FLASH_MESSAGE_WARNING);
+            $this->flashMessage('User have no watches.', self::FLASH_MESSAGE_WARNING);
         }
            
         $this->template->watches = $watches->fetchAll();

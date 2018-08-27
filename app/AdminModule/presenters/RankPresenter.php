@@ -37,7 +37,7 @@ class RankPresenter extends Base\AdminPresenter
     public function __construct(RanksManager $manager)
     {
         parent::__construct($manager);
-    }   
+    }
     
     /**
      *
@@ -51,7 +51,7 @@ class RankPresenter extends Base\AdminPresenter
     }
     
     /**
-     * 
+     *
      * @return GridFilter
      */
     protected function createComponentGridFilter()

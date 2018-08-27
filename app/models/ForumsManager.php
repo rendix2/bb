@@ -7,7 +7,7 @@ use Dibi\Fluent;
 use Dibi\Row;
 use Dibi\Connection;
 use Nette\Caching\IStorage;
-
+use Zebra_Mptt;
 
 /**
  * Description of ForumManager
@@ -17,7 +17,7 @@ use Nette\Caching\IStorage;
 class ForumsManager extends Crud\CrudManager implements MpttTable
 {
     /**
-     * @var \Zebra_Mptt $mptt
+     * @var Zebra_Mptt $mptt
      */
     private $mptt;
 
@@ -31,7 +31,7 @@ class ForumsManager extends Crud\CrudManager implements MpttTable
     {
         parent::__construct($dibi, $storage);
         
-        $this->mptt = new \Zebra_Mptt(
+        $this->mptt = new Zebra_Mptt(
             $dibi,
             $this->getTable(),
             $this->getPrimaryKey(),

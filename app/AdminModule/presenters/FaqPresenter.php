@@ -3,7 +3,6 @@
 namespace App\AdminModule\Presenters;
 
 use App\Models\FaqManager;
-use App\Controls\BreadCrumbControl;
 
 /**
  * Description of FaqPresenter
@@ -23,7 +22,7 @@ class FaqPresenter extends Base\AdminPresenter
     }
 
     /**
-     * @return mixed|void
+     * @return mixed
      */
     protected function createComponentEditForm()
     {

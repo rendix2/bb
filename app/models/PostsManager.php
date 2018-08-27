@@ -201,7 +201,7 @@ class PostsManager extends Crud\CrudManager
     {
         return $this->getAllFluent()
             ->where('[post_topic_id] = %i', $topic_id);
-    }    
+    }
 
     /**
      * @param $user_id
@@ -232,9 +232,9 @@ class PostsManager extends Crud\CrudManager
     }
     
     /**
-     * 
+     *
      * @param int $user_id
-     * 
+     *
      * @return Row
      */
     public function getLastByUser($user_id)

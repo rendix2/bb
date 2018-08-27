@@ -3,7 +3,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\Controls\BreadCrumbControl;
-use App\Models\SmiliesManager;
+use App\Models\SmilesManager;
 
 /**
  * Description of SmiliesPresenter
@@ -15,9 +15,9 @@ class SmiliesPresenter extends Base\AdminPresenter
     /**
      * SmiliesPresenter constructor.
      *
-     * @param SmiliesManager $manager
+     * @param SmilesManager $manager
      */
-    public function __construct(SmiliesManager $manager)
+    public function __construct(SmilesManager $manager)
     {
         parent::__construct($manager);
     }

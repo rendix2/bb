@@ -30,16 +30,16 @@ class PollsFacade
     /**
      *
      * @param PollsManager        $pollsManager
-     * @param PollsAnswersManager $pollsAnwersManager
+     * @param PollsAnswersManager $pollsAnswersManager
      * @param PollsVotesManager   $pollsVotesManager
      */
     public function __construct(
         PollsManager $pollsManager,
-        PollsAnswersManager $pollsAnwersManager,
+        PollsAnswersManager $pollsAnswersManager,
         PollsVotesManager $pollsVotesManager
     ) {
         $this->pollsManager        = $pollsManager;
-        $this->pollsAnswersManager = $pollsAnwersManager;
+        $this->pollsAnswersManager = $pollsAnswersManager;
         $this->pollsVotesManager   = $pollsVotesManager;
     }
 

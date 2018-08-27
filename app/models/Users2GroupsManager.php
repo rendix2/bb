@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Dibi\Connection;
+use Dibi\Row;
 
 /**
  * Description of Group2User

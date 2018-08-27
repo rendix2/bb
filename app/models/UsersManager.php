@@ -6,6 +6,7 @@ use App\Settings\Avatars;
 use Dibi\Row;
 use Nette\Http\FileUpload;
 use Nette\InvalidArgumentException;
+use Nette\IOException;
 use Nette\Utils\FileSystem;
 
 /**
@@ -221,7 +222,7 @@ class UsersManager extends Crud\CrudManager
             FileSystem::delete($this->avatar->getDir() . DIRECTORY_SEPARATOR . $avatar_file);
             
             return true;
-        } catch (\Nette\IOException $e){
+        } catch (IOException $e) {
             return false;
         }
     }

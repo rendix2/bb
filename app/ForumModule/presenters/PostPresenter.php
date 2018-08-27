@@ -2,8 +2,10 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
+use App\Models\PostFacade;
 use App\Models\PostsHistoryManager;
 use App\Models\PostsManager;
 use App\Models\ReportsManager;
@@ -12,6 +14,7 @@ use App\Models\TopicWatchManager;
 use App\Models\UsersManager;
 use App\Settings\PostSetting;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;
 
@@ -44,14 +47,14 @@ class PostPresenter extends Base\ForumPresenter
     
     /**
      *
-     * @var \App\Controls\BBMailer $bbMailer
+     * @var BBMailer $bbMailer
      * @inject
      */
     public $bbMailer;
     
     /**
-     * 
-     * @var \App\Models\PostFacade $postFacade
+     *
+     * @var PostFacade $postFacade
      * @inject
      */
     public $postFacade;
@@ -203,14 +206,14 @@ class PostPresenter extends Base\ForumPresenter
         $form->onValidate[] = [$this, 'onValidate'];
 
         return $form;
-    }       
+    }
     
     /**
-     * 
-     * @param \Nette\Forms\Controls\SubmitButton $submit
+     *
+     * @param SubmitButton $submit
      * @param ArrayHash $values
      */
-    public function preview(\Nette\Forms\Controls\SubmitButton $submit, \Nette\Utils\ArrayHash $values)
+    public function preview(SubmitButton $submit, ArrayHash $values)
     {
         $this['editForm']->setDefaults($values);
         $this->template->preview_text = $this['editForm-post_text']->getValue();
@@ -225,7 +228,8 @@ class PostPresenter extends Base\ForumPresenter
      */
     public function onValidate(Form $form, ArrayHash $values)
     {
-        $user               = $this->usersManager->getById($this->getUser()->getId());
+        $user_id            = $this->getUser()->getId();
+        $user               = $this->usersManager->getById($user_id);
         $minTimeInterval    = $this->postSetting->get()['minUserTimeInterval'];
         $doublePostInterval = $this->postSetting->get()['minDoublePostTimeInterval'];
 
@@ -233,7 +237,7 @@ class PostPresenter extends Base\ForumPresenter
             $form->addError('You cannot send new post so soon.', false);
         }
 
-        if ($this->getManager()->checkDoublePost($values->post_text, $this->getUser()->getId(), time() - $doublePostInterval)) {
+        if ($this->getManager()->checkDoublePost($values->post_text, $user_id, time() - $doublePostInterval)) {
             $form->addError('Double post', false);
         }
     }
@@ -326,7 +330,7 @@ class PostPresenter extends Base\ForumPresenter
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
 
-        /**
+    /**
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbHistory()

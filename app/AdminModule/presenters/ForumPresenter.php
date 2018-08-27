@@ -45,7 +45,7 @@ class ForumPresenter extends Base\AdminPresenter
     public $topicManager;
     
     /**
-     * post mananager
+     * post manager
      *
      * @var PostsManager $postManager
      * @inject

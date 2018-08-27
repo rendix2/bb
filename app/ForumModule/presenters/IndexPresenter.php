@@ -2,6 +2,7 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Controls\BreadCrumbControl;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Models\IndexManager;
@@ -9,10 +10,9 @@ use App\Models\ModeratorsManager;
 use App\Models\PostsManager;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
-use App\Controls\BreadCrumbControl;
+use dibi;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
-use dibi;
 
 /**
  * Description of IndexPresenter¨
@@ -75,7 +75,7 @@ class IndexPresenter extends Base\ForumPresenter
      * @inject
      */
     public $userManager;
-    
+
     /**
      *
      * @var ModeratorsManager $moderatorManager
@@ -92,7 +92,7 @@ class IndexPresenter extends Base\ForumPresenter
     {
         parent::__construct($categoriesManager);
     }
-    
+
     /**
      * @return Cache
      */
@@ -136,28 +136,28 @@ class IndexPresenter extends Base\ForumPresenter
         $categories      = $this->getManager()->getActiveCategoriesCached();
         $result          = [];
         $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
-      
+
         foreach ($categories as $category) {
             $category->forums = [];
             $forums           = $this->forumsManager->getForumsFirstLevel($category->category_id);
-            
+
             $result['cats'][$category->category_id] = $category;
 
             foreach ($forums as $forum) {
                 $category->forums[$forum->forum_id] = $forum;
                 $forum->moderators                  = [];
                 $result['cats'][$category->category_id]->forums[$forum->forum_id] = $forum;
-                
+
                 $forum->hasNewPosts  = count(
                     $this->postManger->getNewerPosts($forum->forum_id, $last_login_time)
                 );
-                
+
                 $forum->hasNewTopics = count(
                     $this->topicManager->getNewerTopics($forum->forum_id, $last_login_time)
                 );
-                
+
                 $moderators = $this->moderatorManager->getAllJoinedByRight($forum->forum_id);
-                                              
+
                 foreach ($moderators as $moderator) {
                     unset($moderator->user_password);
 
@@ -202,7 +202,7 @@ class IndexPresenter extends Base\ForumPresenter
         $this->template->totalTopics   = $this->topicManager->getCountCached();
         $this->template->data          = $result;
     }
-    
+
     /**
      * @return BreadCrumbControl
      */
@@ -212,7 +212,7 @@ class IndexPresenter extends Base\ForumPresenter
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['text' => 'menu_category']
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
 }

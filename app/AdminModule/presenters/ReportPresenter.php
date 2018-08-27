@@ -26,7 +26,7 @@ class ReportPresenter extends Base\AdminPresenter
     }
     
     /**
-     * 
+     *
      * @return GridFilter
      */
     protected function createComponentGridFilter()
@@ -39,7 +39,7 @@ class ReportPresenter extends Base\AdminPresenter
         $this->gf->addFilter('forum_name', 'report_forum', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('topic_name', 'report_topic', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('post_title', 'report_post', GridFilter::TEXT_LIKE);
-        $this->gf->addFilter('report_status', 'report_status', GridFilter::CHECKBOX_LIST,[1 => 'report_solved' , 0 => 'report_added']);
+        $this->gf->addFilter('report_status', 'report_status', GridFilter::CHECKBOX_LIST, [1 => 'report_solved', 0 => 'report_added']);
         $this->gf->addFilter('edit', null, GridFilter::NOTHING);
         $this->gf->addFilter('delete', null, GridFilter::NOTHING);
 

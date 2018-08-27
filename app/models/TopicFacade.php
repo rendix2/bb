@@ -115,8 +115,12 @@ class TopicFacade
 
         $item_data->post_topic_id = $topic_id;
         $post_id = $this->postFacade->add($item_data);
-        
-        $this->topicsManager->update($topic_id, ArrayHash::from(['topic_first_post_id' => $post_id, 'topic_last_post_id' => $post_id]));
+
+        $this->topicsManager->update(
+            $topic_id,
+            ArrayHash::from(['topic_first_post_id' => $post_id, 'topic_last_post_id' => $post_id])
+        );
+
         $this->usersManager->update($values->topic_user_id, ArrayHash::from(
             [
                 'user_topic_count%sql' => 'user_topic_count + 1',
@@ -124,7 +128,10 @@ class TopicFacade
             ]
         ));
         
-        $this->forumsManager->update($values->topic_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1']));
+        $this->forumsManager->update(
+            $values->topic_forum_id,
+            ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1'])
+        );
 
         return $topic_id;
     }
@@ -282,6 +289,8 @@ class TopicFacade
     /**
      * @param int   $topic_target_id
      * @param array $post_ids
+     *
+     * @return Result|int
      */
     public function mergeWithPosts($topic_target_id, array $post_ids)
     {

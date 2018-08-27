@@ -85,7 +85,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
             $databaseCache->save('tables', $cachedTables);
         }
         
-        if (!in_array($table, $cachedTables)) {
+        if (!in_array($table, $cachedTables, true)) {
             throw new Exception("Table {$table} does not exists in database {$this->dibi->getDatabaseInfo()->getName()}");
         }
                 
@@ -105,7 +105,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function get($column, $value)
     {
-        if (!in_array($column, $this->columnNames)) {
+        if (!in_array($column, $this->columnNames, true)) {
             throw new Exception("Non existing {$column} column in table {$this->table}");
         }
         
@@ -116,11 +116,11 @@ abstract class CrudManager extends Manager //implements ICrudManager
         
         if ($type === 'TEXT' || $type === 'VARCHAR') {
             $query = $query->where('%n = %s', $column, $value);
-        } else if ($type === 'INT') {
+        } elseif ($type === 'INT') {
             $query = $query->where('%n = %i', $column, $value);
-        } else if (is_array($value)) {
+        } elseif (is_array($value)) {
             $query = $query->where('%n IN %in', $column, $value);
-        } else if ($type === 'ENUM') {
+        } elseif ($type === 'ENUM') {
             $query = $query->where('%n = %s', $column, $value);
         }
 

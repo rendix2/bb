@@ -7,6 +7,7 @@ use App\Models\LanguagesManager;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Form;
+use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;
 use Nette\Localization\ITranslator;
 
@@ -18,12 +19,12 @@ use Nette\Localization\ITranslator;
 class RegisterPresenter extends BasePresenter
 {
     /**
-     * @var ITranslator $translator 
+     * @var ITranslator $translator
      */
-    private $translator;   
+    private $translator;
     
     /**
-     * @var LanguagesManager $languageManager 
+     * @var LanguagesManager $languageManager
      */
     private $languageManager;
     
@@ -106,7 +107,7 @@ class RegisterPresenter extends BasePresenter
     public function registerUserSuccess(Form $form, ArrayHash $values)
     {
         unset($values->user_password2);
-        $values->user_password      = \Nette\Security\Passwords::hash($values->user_password);
+        $values->user_password      = Passwords::hash($values->user_password);
         $values->user_register_time = time();
         $values->user_role_id       = 1;
                 

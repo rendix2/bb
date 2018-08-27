@@ -79,7 +79,7 @@ class GroupPresenter extends Base\AdminPresenter
     }
     
     /**
-     * 
+     *
      * @param int    $user_id
      * @param string $user_name
      */
@@ -87,7 +87,7 @@ class GroupPresenter extends Base\AdminPresenter
     {
         $this[self::FORM_NAME]->setDefaults(['group_moderator_id' => $user_id, 'group_moderator' => $user_name]);
         $this->redrawControl('editForm');
-    }    
+    }
 
     /**
      * @param int|null $id
@@ -96,15 +96,15 @@ class GroupPresenter extends Base\AdminPresenter
     {
         parent::renderEdit($id);
 
-        if ($id) {            
+        if ($id) {
             if ($this->getParameter('user_name') && $this->getParameter('user_id')) {
                 $this['editForm']->setDefaults(['group_moderator' => $this->getParameter('user_name'), 'group_moderator_id' => $this->getParameter('user_id')]);
             } else {
-                $item      = $this->template->item;        
+                $item      = $this->template->item;
                 $moderator = $this->usersManager->getById($item->group_moderator_id);
         
-                $this['editForm']->setDefaults(['group_moderator' => $moderator->user_name]);                
-            }            
+                $this['editForm']->setDefaults(['group_moderator' => $moderator->user_name]);
+            }
         }
         
         $this->template->countOfUsers = $this->users2GroupsManager->getCountByRight($id);
@@ -142,7 +142,7 @@ class GroupPresenter extends Base\AdminPresenter
     }
     
     /**
-     * 
+     *
      * @return GridFilter
      */
     protected function createComponentGridFilter()
@@ -256,7 +256,7 @@ class GroupPresenter extends Base\AdminPresenter
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'Group:default', 'text' => 'menu_groups'],
-            2 => ['link' => 'Grup:edit', 'text' => 'menu_group'],
+            2 => ['link' => 'Group:edit', 'text' => 'menu_group'],
         ];
 
         return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());

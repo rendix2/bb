@@ -7,8 +7,8 @@ namespace App\Models;
  *
  * @author rendix2
  */
-interface MpttTable {
-    
+interface MpttTable
+{
     public function getTable();
     
     public function getPrimaryKey();

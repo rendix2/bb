@@ -21,7 +21,7 @@ class TopicsManager extends Crud\CrudManager
     public function getLastTopic()
     {
         return $this->getAllFluent()
-                ->where('[topic_id] = ', 
+                ->where('[topic_id] = ',
                     $this->dibi
                         ->select('MAX(topic_id)')
                         ->from($this->getTable())

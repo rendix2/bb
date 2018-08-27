@@ -2,11 +2,9 @@
 
 namespace App\AdminModule\ConfigModule\Presenters;
 
-use App\Controls\AppDir;
 use App\Settings\Avatars;
 use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
-
 
 /**
  * Description of IndexPresenter
