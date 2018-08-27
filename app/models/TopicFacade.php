@@ -131,7 +131,7 @@ class TopicFacade
 
     /**
      *
-     * @param type $item_id
+     * @param int $item_id
      *
      * @return Result|int
      */
@@ -154,10 +154,14 @@ class TopicFacade
         
         // topics watches
         $topicsWatches = $this->topicWatchManager->getAllByLeft($item_id);
+        $user_ids      = [];
                 
         foreach ($topicsWatches as $topicsWatch) {
-            $this->usersManager->update($topicsWatch->user_id, ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1']));
+            $user_ids[] = $topicsWatch->user_id;
         }
+
+        $this->usersManager->updateMulti($user_ids, ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1']));
+
         // topics watches
 
         $this->usersManager
@@ -177,49 +181,110 @@ class TopicFacade
     }
 
     /**
-     * @param int $item_id
-     * 
-     * @return int 
+     * @param int      $topic_id
+     * @param int|null $target_forum_id
+     *
+     * @return int
      */
-    public function copy($item_id, $target_forum_id)
+    public function copy($topic_id, $target_forum_id = null)
     {
-        $posts        = $this->postsManager->getByTopic($item_id);        
-        $new_topic_id = $this->topicsManager->copy($item_id, $target_forum_id);
+        $posts        = $this->postsManager->getByTopic($topic_id);
+        $new_topic_id = $this->topicsManager->copy($topic_id, $target_forum_id);
         
         foreach ($posts as $post) {
             $this->postsManager->copy($post->post_id, $new_topic_id);
-        } 
+        }
         
         return $new_topic_id;
     }
-    
+
     /**
-     * @param int $item_id
+     * moves topic to another forum
+     *
+     * @param int $topic_id
+     * @param int $target_forum_id
      */
-    public function move($topic_id, $target_forum_id)            
+    public function move($topic_id, $target_forum_id)
     {
-        $posts = $this->postsManager->getByTopic($topic_id);
-        
+        $post_ids = [];
+        $posts    = $this->postsManager->getByTopic($topic_id);
+
         $this->topicsManager->update($topic_id, ArrayHash::from(['topic_forum_id' => $target_forum_id]));
-        
+
         foreach ($posts as $post) {
-            $this->postsManager->update($post->post_id, ArrayHash::from(['post_forum_id' => $target_forum_id]));
-        }        
-    }
-    
-    public function split($topic_id)
-    {
-        
-    }
-    
-    public function merge($topic_target_id, $topic_from_id)
-    {        
-        $posts = $this->postsManager->getByTopic($topic_from_id);
-        
-        foreach ($posts as $post) {
-            $this->postsManager->update($post->post_id, ArrayHash::from(['post_topic_id' => $topic_target_id]));
+            $post_ids[] = $post->post_id;
         }
-        
-        $this->delete($topic_from_id);       
+
+        $this->postsManager->updateMulti($post_ids, ArrayHash::from(['post_forum_id' => $target_forum_id]));
+    }
+
+    /**
+     * @param int $topic_from_id
+     * @param int $topic_target_id
+     * @param int $from_post_id
+     *
+     * @return Result|int
+     */
+    public function splitFrom($topic_from_id, $topic_target_id, $from_post_id)
+    {
+        $post_ids = [];
+        $posts = $this->postsManager->getAllFluent()
+            ->where('[post_topic_id] = %i', $topic_from_id)
+            ->where('[post_id] > %i', $from_post_id)
+            ->fetchAll();
+
+        foreach ($posts as $post) {
+            $post_ids[] = $post->post_id;
+        }
+
+        return $this->mergeWithPosts($topic_target_id, $post_ids);
+    }
+
+    /**
+     * @param int $topic_from_id
+     * @param     $topic_target_id
+     * @param int $to_post_id
+     *
+     * @return Result|int
+     */
+    public function splitTo($topic_from_id, $topic_target_id, $to_post_id)
+    {
+        $post_ids = [];
+        $posts = $this->postsManager->getAllFluent()
+            ->where('[post_topic_id] = %i', $topic_from_id)
+            ->where('[post_id] < %i', $to_post_id)
+            ->fetchAll();
+
+        foreach ($posts as $post) {
+            $post_ids[] = $post->post_id;
+        }
+
+        return $this->mergeWithPosts($topic_target_id, $post_ids);
+    }
+
+    /**
+     * @param int $topic_from_id
+     * @param int $topic_target_id
+     */
+    public function mergeTwoTopics($topic_from_id, $topic_target_id)
+    {
+        $posts    = $this->postsManager->getByTopic($topic_from_id);
+        $post_ids = [];
+
+        foreach ($posts as $post) {
+            $post_ids[] = $post->post_id;
+        }
+
+        $this->mergeWithPosts($topic_target_id, $post_ids);
+        $this->delete($topic_from_id);
+    }
+
+    /**
+     * @param int   $topic_target_id
+     * @param array $post_ids
+     */
+    public function mergeWithPosts($topic_target_id, array $post_ids)
+    {
+        return $this->postsManager->updateMulti($post_ids, ArrayHash::from(['post_topic_id' => $topic_target_id]));
     }
 }

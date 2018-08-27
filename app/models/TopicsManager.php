@@ -5,6 +5,7 @@ namespace App\Models;
 use Dibi\Fluent;
 use Dibi\Row;
 use Nette\Caching\Cache;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of TopicsManager
@@ -36,11 +37,11 @@ class TopicsManager extends Crud\CrudManager
     public function getLastTopicByForum($forum_id)
     {
         return $this->getAllFluent()
-                ->where('[topic_id] = ', 
+                ->where('[topic_id] = ',
                     $this->dibi
                         ->select('MAX(topic_id)')
                         ->from($this->getTable())
-                        ->where('[topic_forum_id] = %i', $forum_id)                        
+                        ->where('[topic_forum_id] = %i', $forum_id)
                 )
                 ->fetch();
     }
@@ -115,17 +116,17 @@ class TopicsManager extends Crud\CrudManager
      *
      * @return Fluent
      */
-    public function getFLuentByUser($user_id)
+    public function getFluentByUser($user_id)
     {
         return $this->getAllFluent()
                 ->where('[topic_user_id] = %i', $user_id);
     }
     
     /**
-     * 
+     *
      * @param int $topic_id
-     * @param int $target_forum_id
-     * 
+     * @param int|null $target_forum_id
+     *
      * @return int
      */
     public function copy($topic_id, $target_forum_id = null)
@@ -137,7 +138,7 @@ class TopicsManager extends Crud\CrudManager
         if ($target_forum_id) {
             $topic->topic_forum_id = $target_forum_id;
         }
-        
-        return $this->add(\Nette\Utils\ArrayHash::from($topic->toArray()));
+
+        return $this->add(ArrayHash::from($topic->toArray()));
     }
 }

@@ -6,6 +6,7 @@ use dibi;
 use Dibi\Fluent;
 use Dibi\Row;
 use Nette\Caching\Cache;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of PostManager
@@ -234,7 +235,7 @@ class PostsManager extends Crud\CrudManager
      * 
      * @param int $user_id
      * 
-     * @return type
+     * @return Row
      */
     public function getLastByUser($user_id)
     {
@@ -244,20 +245,19 @@ class PostsManager extends Crud\CrudManager
                         ->select('MAX(post_id)')
                         ->from($this->getTable())
                         ->where('[post_user_id] = %i', $user_id)
-                        
                 )->fetch();
     }
 
     /**
-     * 
+     *
      * @param int $post_id
      * @param int $target_topic_id
-     * 
-     * @return type
+     *
+     * @return int
      */
-    public function copy($post_id, $target_topic_id)
+    public function copy($post_id, $target_topic_id = null)
     {
-        $post = $this->postsManager->getById($post_id);
+        $post = $this->getById($post_id);
         
         unset($post->post_id);
         
@@ -269,11 +269,11 @@ class PostsManager extends Crud\CrudManager
     }
     
     /**
-     * 
+     *
      * @param string $post_text
      * @param int    $user_id
      * @param int    $time
-     * 
+     *
      * @return int
      */
     public function checkDoublePost($post_text, $user_id, $time)

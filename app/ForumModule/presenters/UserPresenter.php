@@ -376,7 +376,7 @@ class UserPresenter extends Base\ForumPresenter
             $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $topics = $this->topicManager->getFLuentByUser($user_id);
+        $topics = $this->topicManager->getFluentByUser($user_id);
         $pag    = new PaginatorControl($topics, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
 
