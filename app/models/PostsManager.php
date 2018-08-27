@@ -14,7 +14,7 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  */
 class PostsManager extends Crud\CrudManager
-{   
+{
     /**
      * @param int $category_id
      *

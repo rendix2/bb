@@ -2,15 +2,18 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
+use App\Controls\BreadCrumbControl;
 use App\Controls\ChangePasswordControl;
 use App\Controls\DeleteAvatarControl;
 use App\Controls\PaginatorControl;
+use App\Forms\SendMailToAdminForm;
 use App\Forms\UserChangePasswordForm;
 use App\Forms\UserChangeUserNameForm;
-use App\Forms\SendMailToAdminForm;
 use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserResetPasswordForm;
+use App\Models\FavouriteUsersManager;
 use App\Models\LanguagesManager;
 use App\Models\ModeratorsManager;
 use App\Models\PostsManager;
@@ -19,16 +22,13 @@ use App\Models\ThanksManager;
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
 use App\Models\UsersManager;
-use App\Models\FavouriteUsersManager;
+use App\Services\ChangePasswordFactory;
+use App\Services\DeleteAvatarFactory;
 use App\Settings\Avatars;
 use App\Settings\Ranks;
-use App\Controls\BBMailer;
-use App\Controls\BreadCrumbControl;
-use App\Services\ChangePasswordFactory;
-
-
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+
 
 /**
  * Description of UserProfilePresenter
@@ -108,10 +108,10 @@ class UserPresenter extends Base\ForumPresenter
     
     /**
      *
-     * @var \App\Services\DeleteAvatarFactory $deleteAvatarFactory
+     * @var DeleteAvatarFactory $deleteAvatarFactory
      * @inject
      */
-    public $deleteAvatarFactory;    
+    public $deleteAvatarFactory;
     
     /**
      *
@@ -210,7 +210,7 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function handleSetFavourite($user_id)
     {
-        $res = $this->favouriteUsersManager->addByLeft($this->getUser()->getId(), [$user_id]); 
+        $res = $this->favouriteUsersManager->addByLeft($this->getUser()->getId(), [$user_id]);
         
         if ($res) {
             $this->flashMessage('User was added to favourites.', self::FLASH_MESSAGE_SUCCESS);
@@ -233,7 +233,7 @@ class UserPresenter extends Base\ForumPresenter
         
         //$this->redrawControl('favourite');
         $this->redirect('this');
-    }    
+    }
 
     /**
      *
@@ -315,10 +315,10 @@ class UserPresenter extends Base\ForumPresenter
         }
         
         $reg = \Nette\Utils\DateTime::from($userData->user_register_time);
-        $now = new \Nette\Utils\DateTime();  
+        $now = new \Nette\Utils\DateTime();
         
         $this->template->ranksDir        = $this->rank->getTemplateDir();
-        $this->template->avatarsDir      = $this->avatar->getTemplateDir();        
+        $this->template->avatarsDir      = $this->avatar->getTemplateDir();
         $this->template->moderatorForums = $this->moderatorsManager->getAllJoinedByLeft($user_id);
         $this->template->thankCount      = $this->thanksManager->getCountCached();
         $this->template->topicCount      = $this->topicManager->getCountCached();
@@ -608,7 +608,7 @@ class UserPresenter extends Base\ForumPresenter
     /**
      * BREAD CRUMBS
      */
-    
+
     /**
      * @return BreadCrumbControl
      */
@@ -616,12 +616,12 @@ class UserPresenter extends Base\ForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['text' => 'menu_user']            
+            1 => ['text' => 'menu_user']
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }  
-    
+    }
+
     /**
      * @return BreadCrumbControl
      */
@@ -633,11 +633,11 @@ class UserPresenter extends Base\ForumPresenter
             2 => ['link' => 'User:profile', 'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
             3 => ['text' => 'menu_posts']
         ];
-        
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }  
 
-        /**
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }
+
+    /**
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbProfile()
@@ -647,12 +647,12 @@ class UserPresenter extends Base\ForumPresenter
             1 => ['link' => 'User:list', 'text' => 'menu_users'],
             2 => ['text' => 'menu_user']
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    } 
-    
+    }
+
     /**
-     * 
+     *
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbSendMailToAdmin()
@@ -662,12 +662,12 @@ class UserPresenter extends Base\ForumPresenter
             1 => ['link' => 'User:list', 'text' => 'menu_users'],
             2 => ['text' => 'user_admin_contact']
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
-    
+
     /**
-     * 
+     *
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbThanks()
@@ -678,39 +678,39 @@ class UserPresenter extends Base\ForumPresenter
             2 => ['link' => 'User:profile', 'params' => [$this->getParameter('user_id')], 'text' => 'menu_user'],
             3 => ['text' => 'Thanks']
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
-    
+
     /**
-     * 
+     *
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbTopics()
-    {        
+    {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'User:list', 'text' => 'menu_users'],
             2 => ['link' => 'User:profile', 'params' => [$this->getParameter('user_id')], 'text' => 'menu_user'],
             3 => ['text' => 'menu_topics']
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }     
-    
+    }
+
     /**
-     * 
+     *
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbWatches()
-    {        
+    {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'User:list', 'text' => 'menu_users'],
             2 => ['link' => 'User:profile', 'params' => [$this->getParameter('user_id')], 'text' => 'menu_user'],
             3 => ['text' => 'watches']
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }     
+    }
 }

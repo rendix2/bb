@@ -3,17 +3,14 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BootstrapForm;
+use App\Controls\BreadCrumbControl;
+use App\Models\PostsHistoryManager;
 use App\Models\PostsManager;
 use App\Models\ReportsManager;
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
-use App\Models\PostsHistoryManager;
 use App\Models\UsersManager;
-use App\Settings\Avatars;
-use App\Settings\TopicsSetting;
 use App\Settings\PostSetting;
-use App\Controls\BreadCrumbControl;
-use dibi;
 use Nette\Application\UI\Form;
 use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;
@@ -86,7 +83,7 @@ class PostPresenter extends Base\ForumPresenter
     public function __construct(PostsManager $manager)
     {
         parent::__construct($manager);
-    }   
+    }
 
     /**
      * @param int $forum_id
@@ -222,25 +219,25 @@ class PostPresenter extends Base\ForumPresenter
     }
 
     /**
-     * 
+     *
      * @param Form      $form
      * @param ArrayHash $values
      */
     public function onValidate(Form $form, ArrayHash $values)
     {
-        $user               = $this->usersManager->getById($this->getUser()->getId());        
+        $user               = $this->usersManager->getById($this->getUser()->getId());
         $minTimeInterval    = $this->postSetting->get()['minUserTimeInterval'];
         $doublePostInterval = $this->postSetting->get()['minDoublePostTimeInterval'];
-        
+
         if (time() - $user->user_last_post_time <= $minTimeInterval) {
             $form->addError('You cannot send new post so soon.', false);
         }
-        
+
         if ($this->getManager()->checkDoublePost($values->post_text, $this->getUser()->getId(), time() - $doublePostInterval)) {
             $form->addError('Double post', false);
         }
-    }    
-    
+    }
+
     /**
      * @param Form      $form
      * @param ArrayHash $values
@@ -266,7 +263,7 @@ class PostPresenter extends Base\ForumPresenter
             $values->post_add_time    = time();
             $values->post_add_user_ip = $this->getHttpRequest()->getRemoteAddress();
 
-            $result = $this->postFacade->add($values);            
+            $result = $this->postFacade->add($values);
             $emails = $this->topicWatchManager->getAllJoinedByLeft($topic_id);
             
             $emailsArray = [];
@@ -294,7 +291,7 @@ class PostPresenter extends Base\ForumPresenter
         }
 
         $this->redirect('Topic:default', $forum_id, $topic_id);
-    }  
+    }
     
     
     /**
@@ -311,7 +308,7 @@ class PostPresenter extends Base\ForumPresenter
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }     
+    }
     
     /**
      * @return BreadCrumbControl
@@ -327,7 +324,7 @@ class PostPresenter extends Base\ForumPresenter
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    } 
+    }
 
         /**
      * @return BreadCrumbControl
@@ -343,10 +340,10 @@ class PostPresenter extends Base\ForumPresenter
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    } 
+    }
 
     /**
-     * 
+     *
      * REPORT FORM
      */
     

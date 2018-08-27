@@ -5,9 +5,10 @@ namespace App\AdminModule\Presenters;
 use App\Authenticator;
 use App\Authorizator;
 use App\Controls\BootstrapForm;
-use App\Forms\ChangePasswordForm;
+use App\Controls\BreadCrumbControl;
 use App\Controls\DeleteAvatarControl;
 use App\Controls\GridFilter;
+use App\Forms\ChangePasswordForm;
 use App\Forms\UserChangePasswordForm;
 use App\Forms\UserDeleteAvatarForm;
 use App\Models\ForumsManager;
@@ -23,7 +24,6 @@ use App\Settings\Avatars;
 use App\Settings\Ranks;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
-use App\Controls\BreadCrumbControl;
 
 /**
  * Description of UserPresenter
@@ -137,7 +137,7 @@ class UserPresenter extends Base\AdminPresenter
     }
 
     /**
-     * 
+     *
      * @return GridFilter
      */
     protected function createComponentGridFilter()
@@ -159,7 +159,7 @@ class UserPresenter extends Base\AdminPresenter
         return $this->gf;
     }
 
-    /**    
+    /**
      * @return UserChangePasswordForm
      */
     protected function createComponentChangePasswordControl()
@@ -275,31 +275,31 @@ class UserPresenter extends Base\AdminPresenter
         $this->flashMessage('Groups saved.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('User:edit', $user_id);
     }
-    
+
     /**
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbAll()
-    {                
+    {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['text' => 'menu_users']            
-        ];                
-        
+            1 => ['text' => 'menu_users']
+        ];
+
         return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
     }
-    
+
     /**
      * @return BreadCrumbControl
-     */    
+     */
     protected function createComponentBreadCrumbEdit()
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:default',  'text' => 'menu_users'],            
-            2 => ['link' => 'User:edit',     'text' => 'menu_user'],
-        ];       
-        
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
-    }    
+            1 => ['link' => 'User:default', 'text' => 'menu_users'],
+            2 => ['link' => 'User:edit', 'text' => 'menu_user'],
+        ];
+
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
 }

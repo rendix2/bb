@@ -3,10 +3,10 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BootstrapForm;
+use App\Controls\BreadCrumbControl;
 use App\Models\PostsManager;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
-use App\Controls\BreadCrumbControl;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -166,7 +166,7 @@ class SearchPresenter extends Base\ForumPresenter
 
         $this->template->userData = $result;
     }
-    
+
     /**
      * @return BreadCrumbControl
      */
@@ -174,12 +174,12 @@ class SearchPresenter extends Base\ForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['text' => 'menu_search']            
+            1 => ['text' => 'menu_search']
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }  
-    
+    }
+
     /**
      * @return BreadCrumbControl
      */
@@ -187,13 +187,13 @@ class SearchPresenter extends Base\ForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Search:default', 'text' => 'menu_search'],            
-            2 => ['text' => 'menu_post']            
+            1 => ['link' => 'Search:default', 'text' => 'menu_search'],
+            2 => ['text' => 'menu_post']
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }  
-    
+    }
+
     /**
      * @return BreadCrumbControl
      */
@@ -201,13 +201,13 @@ class SearchPresenter extends Base\ForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Search:default', 'text' => 'menu_search'],            
-            2 => ['text' => 'menu_topic']            
+            1 => ['link' => 'Search:default', 'text' => 'menu_search'],
+            2 => ['text' => 'menu_topic']
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }  
-    
+    }
+
     /**
      * @return BreadCrumbControl
      */
@@ -215,10 +215,10 @@ class SearchPresenter extends Base\ForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Search:default', 'text' => 'menu_search'],            
-            2 => ['text' => 'menu_user']            
+            1 => ['link' => 'Search:default', 'text' => 'menu_search'],
+            2 => ['text' => 'menu_user']
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }        
+    }
 }

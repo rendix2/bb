@@ -214,5 +214,5 @@ class IndexPresenter extends Base\ForumPresenter
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }     
+    }
 }

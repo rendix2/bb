@@ -91,6 +91,5 @@ class TopicPresenter extends ModeratorPresenter
      */
     public function changeTopicAuthorSuccess(Form $form, ArrayHash $values)
     {
-        
     }
 }

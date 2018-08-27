@@ -3,16 +3,16 @@
 namespace App\AdminModule\Presenters;
 
 use App\Controls\BootstrapForm;
+use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
+use App\Controls\UserSearchControl;
 use App\Models\Forums2GroupsManager;
 use App\Models\ForumsManager;
 use App\Models\GroupsManager;
 use App\Models\Users2GroupsManager;
 use App\Models\UsersManager;
-use App\Controls\UserSearchControl;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
-use App\Controls\BreadCrumbControl;
 
 /**
  * Description of GroupPresenter
@@ -162,14 +162,14 @@ class GroupPresenter extends Base\AdminPresenter
      * @param ArrayHash $values
      */
     public function editFormSuccess(Form $form, ArrayHash $values)
-    {       
+    {
         unset($values->group_moderator);
-        
-        parent::editFormSuccess($form, $values);                
+
+        parent::editFormSuccess($form, $values);
     }
     
     /**
-     * 
+     *
      * @return UserSearchControl
      */
     protected function createComponentUserSearch()
@@ -234,31 +234,31 @@ class GroupPresenter extends Base\AdminPresenter
 
         $this->forums2groupsManager->addForums2group($group_id, $data);
     }
-    
+
     /**
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbAll()
-    {                
+    {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['text' => 'menu_groups']            
-        ];                
-        
+            1 => ['text' => 'menu_groups']
+        ];
+
         return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
     }
-    
+
     /**
      * @return BreadCrumbControl
-     */    
+     */
     protected function createComponentBreadCrumbEdit()
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Group:default', 'text' => 'menu_groups'],            
-            2 => ['link' => 'Grup:edit',     'text' => 'menu_group'],
-        ];       
-        
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
-    }     
+            1 => ['link' => 'Group:default', 'text' => 'menu_groups'],
+            2 => ['link' => 'Grup:edit', 'text' => 'menu_group'],
+        ];
+
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
 }
