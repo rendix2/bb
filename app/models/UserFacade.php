@@ -104,7 +104,6 @@ class UserFacade
         PostFacade $postFacade,
         Mails2UsersManager $mails2UsersManager,
         ModeratorsManager $moderatorsManager,
-        PmManager $pmManager,
         ReportsManager $reportsManager,
         SessionsManager $sessionsManager,
         ThanksManager $thanksManager,
