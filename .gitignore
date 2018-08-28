@@ -10,7 +10,7 @@ log
 build
 nbproject/
 www/avatars/*
-./idea
+idea
 
 core
 nbproject/*
