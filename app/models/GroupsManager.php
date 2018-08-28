@@ -9,5 +9,4 @@ namespace App\Models;
  */
 class GroupsManager extends Crud\CrudManager
 {
-
 }

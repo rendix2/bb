@@ -17,19 +17,19 @@ class TopicFacade
      * @var TopicsManager $topicsManager
      */
     private $topicsManager;
-    
+
     /**
      *
      * @var TopicWatchManager $topicWatchManager
      */
     private $topicWatchManager;
-    
+
     /**
      *
      * @var PostsManager $postsManager
      */
     private $postsManager;
-    
+
     /**
      *
      * @var UsersManager $usersManager
@@ -41,13 +41,13 @@ class TopicFacade
      * @var ThanksManager $thanksManager
      */
     private $thanksManager;
-    
+
     /**
      *
      * @var ForumsManager $forumsManager
      */
     private $forumsManager;
-    
+
     /**
      *
      * @var PostFacade $postFacade
@@ -127,7 +127,7 @@ class TopicFacade
                 'user_watch_count%sql' => 'user_watch_count + 1'
             ]
         ));
-        
+
         $this->forumsManager->update(
             $values->topic_forum_id,
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1'])
@@ -158,16 +158,19 @@ class TopicFacade
 
         $this->thanksManager->deleteByTopic($item_id);
         // delete thanks
-        
+
         // topics watches
         $topicsWatches = $this->topicWatchManager->getAllByLeft($item_id);
         $user_ids      = [];
-                
+
         foreach ($topicsWatches as $topicsWatch) {
             $user_ids[] = $topicsWatch->user_id;
         }
 
-        $this->usersManager->updateMulti($user_ids, ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1']));
+        $this->usersManager->updateMulti(
+            $user_ids,
+            ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1'])
+        );
 
         // topics watches
 
@@ -181,8 +184,11 @@ class TopicFacade
         foreach ($posts as $post) {
             $this->postFacade->delete($post->post_id);
         }
-        
-        $this->forumsManager->update($topic->topic_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
+
+        $this->forumsManager->update(
+            $topic->topic_forum_id,
+            ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1'])
+        );
 
         return $this->topicsManager->delete($item_id);
     }
@@ -197,11 +203,11 @@ class TopicFacade
     {
         $posts        = $this->postsManager->getByTopic($topic_id);
         $new_topic_id = $this->topicsManager->copy($topic_id, $target_forum_id);
-        
+
         foreach ($posts as $post) {
             $this->postsManager->copy($post->post_id, $new_topic_id);
         }
-        
+
         return $new_topic_id;
     }
 

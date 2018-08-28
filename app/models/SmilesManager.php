@@ -9,5 +9,4 @@ namespace App\Models;
  */
 class SmilesManager extends Crud\CrudManager
 {
-    
 }

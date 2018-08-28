@@ -70,7 +70,7 @@ class ForumsManager extends Crud\CrudManager implements MpttTable
      *
      * @return Row|false
      */
-    public function getParentForumByForumId($forum_id)
+    public function getParentForumsByForumId($forum_id)
     {
         return $this->dibi
             ->select('f2.*')
@@ -93,7 +93,7 @@ class ForumsManager extends Crud\CrudManager implements MpttTable
         return $this->getAllFluent()
             ->where('[forum_category_id] = %i', $category_id)
             ->where('[forum_active] = %i', 1)
-            ->where('forum_parent_id = %i', 0)
+            ->where('[forum_parent_id] = %i', 0)
             ->orderBy('forum_order', dibi::ASC)
             ->fetchAll();
     }

@@ -98,14 +98,15 @@ class GroupPresenter extends Base\AdminPresenter
 
         if ($id) {
             if ($this->getParameter('user_name') && $this->getParameter('user_id')) {
-                $this['editForm']->setDefaults(['group_moderator'    => $this->getParameter('user_name'),
-                                                'group_moderator_id' => $this->getParameter('user_id')
+                $this[self::FORM_NAME]->setDefaults([
+                    'group_moderator'    => $this->getParameter('user_name'),
+                    'group_moderator_id' => $this->getParameter('user_id')
                 ]);
             } else {
                 $item      = $this->template->item;
                 $moderator = $this->usersManager->getById($item->group_moderator_id);
         
-                $this['editForm']->setDefaults(['group_moderator' => $moderator->user_name]);
+                $this[self::FORM_NAME]->setDefaults(['group_moderator' => $moderator->user_name]);
             }
         }
         

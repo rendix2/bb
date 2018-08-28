@@ -9,5 +9,4 @@ namespace App\Models;
  */
 class LanguagesManager extends Crud\CrudManager
 {
-
 }

@@ -116,7 +116,7 @@ final class ForumPresenter extends Base\ForumPresenter
         $this->template->forum       = $forum;
         $this->template->topics      = $topics->fetchAll();
         $this->template->subForums   = $this->getManager()->getByParent($forum_id);
-        $this->template->parentForum = $this->getManager()->getParentForumByForumId($forum_id);
+        $this->template->parentForum = $this->getManager()->getParentForumsByForumId($forum_id);
         $this->template->moderators  = $moderators;
     }
 

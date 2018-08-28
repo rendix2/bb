@@ -16,7 +16,7 @@ class ThanksManager extends Crud\CrudManager
     /**
      * @param int $forum_id
      *
-     * @return array [[]
+     * @return array []
      */
     public function getThanksByForum($forum_id)
     {

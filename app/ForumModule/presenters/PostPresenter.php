@@ -296,8 +296,7 @@ class PostPresenter extends Base\ForumPresenter
 
         $this->redirect('Topic:default', $forum_id, $topic_id);
     }
-    
-    
+
     /**
      * @return BreadCrumbControl
      */
@@ -306,14 +305,17 @@ class PostPresenter extends Base\ForumPresenter
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
-            2 => ['link' => 'Topic:default', 'text' => 'menu_topic', 'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]],
+            2 => ['link'   => 'Topic:default',
+                  'text'   => 'menu_topic',
+                  'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]
+            ],
             3 => ['text' => 'menu_post']
-            
+
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
-    
+
     /**
      * @return BreadCrumbControl
      */
@@ -322,11 +324,14 @@ class PostPresenter extends Base\ForumPresenter
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
-            2 => ['link' => 'Topic:default', 'text' => 'menu_topic', 'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]],
+            2 => ['link'   => 'Topic:default',
+                  'text'   => 'menu_topic',
+                  'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]
+            ],
             3 => ['text' => 'report_post']
-            
+
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
 
@@ -338,11 +343,14 @@ class PostPresenter extends Base\ForumPresenter
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
-            2 => ['link' => 'Topic:default', 'text' => 'menu_topic', 'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]],
+            2 => ['link'   => 'Topic:default',
+                  'text'   => 'menu_topic',
+                  'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]
+            ],
             3 => ['text' => 'post_history']
-            
+
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
 

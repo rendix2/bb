@@ -22,16 +22,21 @@ abstract class CrudPresenter extends ManagerPresenter
      * @var string
      */
     const FORM_NAME = 'editForm';
+
+    /**
+     * @var string
+     */
+    const FORM_ON_SUCCESS = 'editFormSuccess';
+
+    /**
+     * @var string
+     */
+    const FORM_ON_VALIDATE = 'onValidate';
     
     /**
      * @var string
      */
     const ITEMS_PER_PAGE = 20;
-
-    /**
-     * @var string
-     */
-    const CACHE_KEY_PRIMARY_KEY = 'BBPrimaryKeys';
     
     /**
      * @var GridFilter $gf
@@ -114,8 +119,8 @@ abstract class CrudPresenter extends ManagerPresenter
     protected function addSubmit(Form $form)
     {
         $form->addSubmit('Send', 'Send');
-        $form->onSuccess[] = [$this, 'editFormSuccess'];
-        $form->onValidate[] = [$this, 'onValidate'];
+        $form->onSuccess[] = [$this, self::FORM_ON_SUCCESS];
+        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
 
         return $form;
     }
@@ -128,8 +133,8 @@ abstract class CrudPresenter extends ManagerPresenter
     protected function addSubmitB(BootstrapForm $form)
     {
         $form->addSubmit('Send', 'Send');
-        $form->onSuccess[] = [$this, 'editFormSuccess'];
-        $form->onValidate[] = [$this, 'onValidate'];
+        $form->onSuccess[] = [$this, self::FORM_ON_SUCCESS];
+        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
 
         return $form;
     }

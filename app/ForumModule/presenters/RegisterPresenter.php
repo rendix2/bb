@@ -7,9 +7,9 @@ use App\Models\LanguagesManager;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Form;
+use Nette\Localization\ITranslator;
 use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;
-use Nette\Localization\ITranslator;
 
 /**
  * Description of RegisterPresenter
@@ -64,11 +64,15 @@ class RegisterPresenter extends BasePresenter
     {
         $form = $this->getBootstrapForm();
         $form->setTranslator($this->translator);
-        
-        $form->addText('user_name', 'User name:')->setRequired(true);
-        $form->addPassword('user_password', 'User password:')->setRequired(true);
-        $form->addPassword('user_password2', 'User password for check:')->setRequired(true);
-        $form->addEmail('user_email', 'User email:')->setRequired(true);
+
+        $form->addText('user_name', 'User name:')
+            ->setRequired(true);
+        $form->addPassword('user_password', 'User password:')
+            ->setRequired(true);
+        $form->addPassword('user_password2', 'User password for check:')
+            ->setRequired(true);
+        $form->addEmail('user_email', 'User email:')
+            ->setRequired(true);
         $form->addSelect('user_lang_id', 'User lang:', $this->languageManager->getAllPairsCached('lang_name'));
         $form->addReCaptcha('user_captcha', 'User captcha:', 'Please prove you are not robot.');
         $form->addSubmit('send', 'User register');

@@ -94,12 +94,10 @@ class UsersManager extends Crud\CrudManager
     public function getLastUser()
     {
         return $this->getAllFluent()
-                ->where('[user_id] = ',
-                    $this->dibi
-                        ->select('MAX(user_id)')
-                        ->from($this->getTable())
-                )
-                ->fetch();
+            ->where('[user_id] = ', $this->dibi
+                ->select('MAX(user_id)')
+                ->from($this->getTable()))
+            ->fetch();
     }
 
     /**
@@ -134,6 +132,7 @@ class UsersManager extends Crud\CrudManager
     /**
      *
      * @param string $user_name
+     * @todo ->select('')
      *
      * @return bool
      */
