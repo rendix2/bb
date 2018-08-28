@@ -2,6 +2,9 @@
 
 namespace App\Settings;
 
+use DateInterval;
+use Nette\Utils\DateTime;
+
 /**
  * Description of StartDay
  *
@@ -29,18 +32,18 @@ class StartDay
     }
     
     /**
-     * 
-     * @return \DateInterval
+     *
+     * @return DateInterval
      */
     public function getDiff()
     {
-        $start = new \Nette\Utils\DateTime($this->startDay);
-        $end   = new \Nette\Utils\DateTime();
+        $start = new DateTime($this->startDay);
+        $end   = new DateTime();
                 
         return $end->diff($start);
     }
     /**
-     * 
+     *
      */
     public function getRunningDays()
     {

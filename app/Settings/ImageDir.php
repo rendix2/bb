@@ -49,7 +49,7 @@ abstract class ImageDir
     private $dir;
 
     /**
-     * Avatars constructor.
+     * ImageDir constructor.
      *
      * @param $dir
      */
@@ -100,7 +100,7 @@ abstract class ImageDir
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getEnabledExtensions()
     {
@@ -151,5 +151,4 @@ abstract class ImageDir
         
         return count(Finder::findFiles($extensions)->in($this->getDir()));
     }
-    
 }

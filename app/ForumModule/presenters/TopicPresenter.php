@@ -27,6 +27,7 @@ use Nette\Utils\ArrayHash;
  * Description of TopicPresenter
  *
  * @author rendix2
+ * @method TopicsManager getManager()
  */
 class TopicPresenter extends Base\ForumPresenter
 {

@@ -5,7 +5,7 @@ namespace App\Controls;
 use Nette\Application\UI\Control;
 
 /**
- * Description of MenuCotrol
+ * Description of MenuControl
  *
  * @author rendix2
  */

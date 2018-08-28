@@ -107,7 +107,10 @@ class PostPresenter extends ModeratorPresenter
         $user = $this->usersManager->getByName($values->user_name);
 
         if ($user) {
-            $res = $this->getManager()->update($this->getParameter('id'), ArrayHash::from(['post_user_id' => $user->user_id]));
+            $res = $this->getManager()->update(
+                $this->getParameter('id'),
+                ArrayHash::from(['post_user_id' => $user->user_id])
+            );
             
             if ($res) {
                 $this->flashMessage('Post author was updated', self::FLASH_MESSAGE_SUCCESS);

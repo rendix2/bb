@@ -10,7 +10,8 @@ use App\Authorization\Identity;
  *
  * @author rendix2
  */
-class Forum implements IAuthorizationScope {
+class Forum implements IAuthorizationScope
+{
 
     const ROLE_MODERATOR = 'Forum:manager';
     

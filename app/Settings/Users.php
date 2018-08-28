@@ -7,7 +7,8 @@ namespace App\Settings;
  *
  * @author rendix2
  */
-class Users {
+class Users
+{
 
     private $user;
 
@@ -24,5 +25,5 @@ class Users {
     public function getUser()
     {
         return $this->user;
-    }    
+    }
 }

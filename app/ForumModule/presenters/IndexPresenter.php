@@ -5,7 +5,6 @@ namespace App\ForumModule\Presenters;
 use App\Controls\BreadCrumbControl;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
-use App\Models\IndexManager;
 use App\Models\ModeratorsManager;
 use App\Models\PostsManager;
 use App\Models\TopicsManager;
@@ -18,7 +17,7 @@ use Nette\Caching\IStorage;
  * Description of IndexPresenter¨
  *
  * @author rendix2
- * @method IndexManager getManager()
+ * @method CategoriesManager getManager()
  */
 class IndexPresenter extends Base\ForumPresenter
 {

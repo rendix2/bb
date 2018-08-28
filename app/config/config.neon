@@ -80,9 +80,9 @@ mail:
     timeout: 1000
 
 application:
-	errorPresenter: Error
-	mapping:
-		*: App\*Module\Presenters\*Presenter
+    errorPresenter: Error
+    mapping:
+        *: App\*Module\Presenters\*Presenter
 session:
     expiration: 14 days
     autoStart: true # výchozí hodnota je 'smart'
@@ -215,7 +215,6 @@ services:
             - factory 
     PostsSettings:
         class: App\Settings\PostSetting(%posts%)
-    #đ- App\Services\BBLogger
 extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22
     recaptcha: ReCaptchaControl\DI\Extension

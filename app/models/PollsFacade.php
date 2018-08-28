@@ -17,7 +17,7 @@ class PollsFacade
     
     /**
      *
-     * @var PollsAnswersManager $pollsAnwersManager
+     * @var PollsAnswersManager $pollsAnswersManager
      */
     private $pollsAnswersManager;
     

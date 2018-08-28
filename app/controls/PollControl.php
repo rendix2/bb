@@ -6,7 +6,7 @@ namespace App\Controls;
 use Nette\Application\UI\Control;
 
 /**
- * Description of PollControll
+ * Description of PollControl
  *
  * @author rendix2
  */

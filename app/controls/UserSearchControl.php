@@ -2,7 +2,6 @@
 
 namespace App\Controls;
 
-use App\Controls\BootstrapForm;
 use App\Models\UsersManager;
 use Nette\Localization\ITranslator;
 use Nette\Application\UI\Control;
@@ -25,15 +24,15 @@ class UserSearchControl extends Control
     
     /**
      *
-     * @var ITranslator $translator 
+     * @var ITranslator $translator
      */
     private $translator;
     
     /**
-     * 
+     *
      * @param UsersManager $usersManager
      * @param ITranslator  $translator
-     * 
+     *
      */
     public function __construct(UsersManager $usersManager, ITranslator $translator)
     {
@@ -52,14 +51,14 @@ class UserSearchControl extends Control
         
         $template = $this->template->setFile(__DIR__ . $sep .'templates'.$sep.'userSearch'.$sep.'userSearch.latte');
         if (!isset($template->users)) {
-            $template->users = [];  
+            $template->users = [];
         }
         
         $template->render();
-    }   
+    }
 
     /**
-     * 
+     *
      * @return BootstrapForm
      */
     protected function createComponentUserSearch()
@@ -72,11 +71,11 @@ class UserSearchControl extends Control
         $form->addSubmit('send');
         $form->onSuccess[] = [$this, 'success'];
        
-        return $form;         
+        return $form;
     }
     
     /**
-     * 
+     *
      * @param Form      $form
      * @param ArrayHash $values
      */

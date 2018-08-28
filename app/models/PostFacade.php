@@ -134,14 +134,16 @@ class PostFacade
      */
     public function update($item_id, ArrayHash $item_data)
     {
-        $this->postsManager->update($item_id, $item_data);
-        $this->postsHistoryManager->add(ArrayHash::from([
+        $update = $this->postsManager->update($item_id, $item_data);
+        $add = $this->postsHistoryManager->add(ArrayHash::from([
                 'post_id'           => $item_id,
                 'post_user_id'      => $item_data->post_user_id,
                 'post_title'        => $item_data->post_title,
                 'post_text'         => $item_data->post_text,
                 'post_history_time' => time()
             ]));
+
+        return $update && $add;
     }
 
     /**
@@ -215,8 +217,11 @@ class PostFacade
          */
         
         $lastPostOfUser = $this->postsManager->getLastByUser($post->post_user_id);
-        
-        $this->usersManager->update($post->post_user_id, ArrayHash::from(['user_last_post_time' => $lastPostOfUser->post_add_time]));
+
+        $this->usersManager->update(
+            $post->post_user_id,
+            ArrayHash::from(['user_last_post_time' => $lastPostOfUser->post_add_time])
+        );
         
         return $res;
     }

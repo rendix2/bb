@@ -2,12 +2,18 @@
 
 namespace App\Authorization\Scopes;
 
+use App\Authorization\IAuthorizationScope;
+use App\Authorization\Identity;
+use App\Authorization\Scopes\Topic;
+use App\Authorization\Scopes\User;
+
 /**
  * Description of Post
  *
  * @author rendix2
  */
-class Post implements \App\Authorization\IAuthorizationScope {
+class Post implements IAuthorizationScope
+{
     
     const ROLE_AUTHOR = 'Post:author';
     
@@ -22,22 +28,23 @@ class Post implements \App\Authorization\IAuthorizationScope {
     
     /**
      *
-     * @var \App\Authorization\Scopes\Topic $topic
+     * @var Topic $topic
      */
     private $topic;
     
     /**
      *
-     * @var \App\Authorization\Scopes\User $author
+     * @var User $author
      */
     private $author;
 
     /**
-     * @param \App\Authorization\Identity $identity
+     * @param Identity $identity
      *
      * @return array
      */
-    public function getIdentityRoles(\App\Authorization\Identity $identity) {
+    public function getIdentityRoles(Identity $identity)
+    {
         $roles = [];
         
         if ($this->author->getIdentity() === $identity) {

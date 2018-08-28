@@ -2,6 +2,8 @@
 
 namespace App\Authorization\Scopes;
 
+use App\Authorization\Identity;
+
 /**
  * Description of User
  *
@@ -9,17 +11,18 @@ namespace App\Authorization\Scopes;
  */
 class User {
     
-    public function __construct() {
-        $this->identity = new \App\Authorization\Identity();
+    public function __construct()
+    {
+        $this->identity = new Identity();
     }
 
         /**
-     * @var \App\Authorization\Identity $identity
+     * @var Identity $identity
      */
     private $identity;
 
     /**
-     * @return \App\Authorization\Identity
+     * @return Identity
      */
     public function getIdentity()
     {

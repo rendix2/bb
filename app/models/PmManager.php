@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Crud\CrudManager;
+use Dibi\Fluent;
 
 /**
  * Description of PMManager
@@ -11,6 +12,9 @@ use App\Models\Crud\CrudManager;
  */
 class PmManager extends CrudManager
 {
+    /**
+     * @return Fluent
+     */
     public function getAllFluent()
     {
         return parent::getAllFluent()

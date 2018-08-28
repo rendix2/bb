@@ -79,11 +79,6 @@ class BBMailer
     }
 
     /**
-     * @param array $recepients
-     *
-     * @return $this
-     */
-    /**
      * @param array $recipients
      *
      * @return $this

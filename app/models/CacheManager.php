@@ -9,5 +9,4 @@ namespace App\Models;
  */
 class CacheManager extends Crud\CrudNullManager
 {
-
 }

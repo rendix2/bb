@@ -8,6 +8,7 @@ use App\Forms\UserLoginForm;
 use App\Services\UserLoginFormFactory;
 use App\Translator;
 use Nette\Application\UI\Form;
+use Nette\InvalidStateException;
 use Nette\Security\AuthenticationException;
 use Nette\Utils\ArrayHash;
 use App\Models\SessionsManager;

@@ -225,6 +225,9 @@ abstract class CrudManager extends Manager //implements ICrudManager
             ->fetchAll();
     }
 
+    /**
+     * @return Fluent
+     */
     public function getCountFluent()
     {
         return $this->dibi
@@ -331,7 +334,12 @@ abstract class CrudManager extends Manager //implements ICrudManager
 
         return $cachedColumns;
     }
-    
+
+    /**
+     * @param string $column
+     *
+     * @return mixed|string
+     */
     private function getColumnTypeQuery($column)
     {
         $cachedColumn = $this->managerCache->load('Columns_objects_' . $this->table. '_column_'.$column);

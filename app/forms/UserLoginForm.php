@@ -7,6 +7,7 @@ use App\Controls\BootstrapForm;
 use App\Services\TranslatorFactory;
 use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
+use Nette\Security\AuthenticationException;
 use Nette\Security\User;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;

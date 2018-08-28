@@ -65,5 +65,5 @@ class TopicJumpToForumForm extends Control
                 ':Forum:Forum:default',
                 $values->forum_id
             );
-    }    
+    }
 }

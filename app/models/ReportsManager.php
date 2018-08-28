@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Dibi\Fluent;
+use Dibi\Result;
 
 /**
  * Description of ReportsManager
@@ -31,10 +32,12 @@ class ReportsManager extends Crud\CrudManager
             ->as('p')
             ->on('report_post_id = p.post_id');
     }
-    
+
     /**
      *
      * @param int $post_id
+     *
+     * @return Result|int
      */
     public function deleteByPost($post_id)
     {
@@ -42,10 +45,12 @@ class ReportsManager extends Crud\CrudManager
                 ->where('[report_post_id] = %i', $post_id)
                 ->execute();
     }
-    
+
     /**
      *
      * @param int $forum_id
+     *
+     * @return Result|int
      */
     public function deleteByForum($forum_id)
     {
@@ -53,10 +58,12 @@ class ReportsManager extends Crud\CrudManager
                 ->where('[report_forum_id] = %i', $forum_id)
                 ->execute();
     }
-    
+
     /**
      *
      * @param int $user_id
+     *
+     * @return Result|int
      */
     public function deleteByUser($user_id)
     {

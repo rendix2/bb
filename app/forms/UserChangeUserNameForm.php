@@ -54,7 +54,7 @@ class UserChangeUserNameForm extends Control
      */
     protected function createComponentChangeUserNameForm()
     {
-        $form = self::createBootstrapForm();
+        $form = BootstrapForm::create();
         
         $form->addText('user_name', 'User name:');
         $form->addSubmit('send', 'Change user name');

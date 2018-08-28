@@ -203,11 +203,11 @@ class PmPresenter extends CrudPresenter
     public function onValidate(Form $form, ArrayHash $values)
     {
         if (!$values->pm_user_id_to) {
-            $form->addError('We are missing recepients user ID', true);
+            $form->addError('We are missing recipients user ID', true);
         }
         
         if ((int)$values->pm_user_id_to === $this->getUser()->getId()) {
-            $form->addError('You cannost send PM to yourself.', true);
+            $form->addError('You cannot send PM to yourself.', true);
         }
     }
 
