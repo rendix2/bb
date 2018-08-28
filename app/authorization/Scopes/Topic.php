@@ -3,7 +3,6 @@
 namespace App\Authorization\Scopes;
 
 use App\Authorization\Identity;
-use App\Authorization\Scopes\Forum;
 use Tracy\Debugger;
 
 /**
@@ -31,15 +30,15 @@ class Topic implements \App\Authorization\IAuthorizationScope
     private $forum;
     
     /**
-     * @var \App\Authorization\Scopes\User $author 
+     * @var User $author
      */
     private $author;
 
     /**
      * Topic constructor.
      *
-     * @param User                            $author
-     * @param \App\Authorization\Scopes\Forum $forum
+     * @param User  $author
+     * @param Forum $forum
      */
     public function __construct(User $author, Forum $forum)
     {
@@ -64,6 +63,4 @@ class Topic implements \App\Authorization\IAuthorizationScope
         
         return array_merge($roles, $this->forum->getIdentityRoles($identity));
     }
-    
-
 }

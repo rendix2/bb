@@ -24,7 +24,7 @@ class LoginPresenter extends BasePresenter
      * @var UserLoginFormFactory $userLoginForm
      * @inject
      */
-    public $userLginForm;
+    public $userLoginForm;
     
     /**
      *
@@ -54,6 +54,6 @@ class LoginPresenter extends BasePresenter
      */
     public function createComponentLoginForm()
     {
-        return $this->userLginForm->create();
+        return $this->userLoginForm->create();
     }
 }

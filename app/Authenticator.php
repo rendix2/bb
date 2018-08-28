@@ -71,7 +71,7 @@ class Authenticator implements IAuthenticator
         $langData = $this->languageManager->getById($userData->user_lang_id);
         
         if (!$langData) {
-            throw new AuthenticationException('User account has set unknow language.', IAuthenticator::INVALID_CREDENTIAL);
+            throw new AuthenticationException('User account has set unknown language.', IAuthenticator::INVALID_CREDENTIAL);
         }
 
         if (!$userData->user_active) {

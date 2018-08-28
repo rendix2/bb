@@ -2,10 +2,11 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Controls\BootstrapForm;
+use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Models\LanguagesManager;
 use App\Models\UsersManager;
-use App\Controls\BreadCrumbControl;
 
 /**
  * Description of LanguagePresenter
@@ -41,7 +42,7 @@ class LanguagePresenter extends Base\AdminPresenter
     }
 
     /**
-     * 
+     *
      * @return GridFilter
      */
     protected function createComponentGridFilter()
@@ -56,7 +57,7 @@ class LanguagePresenter extends Base\AdminPresenter
         return $this->gf;
     }
 
-        /**
+    /**
      * @return BootStrapForm
      */
     protected function createComponentEditForm()
@@ -67,31 +68,31 @@ class LanguagePresenter extends Base\AdminPresenter
 
         return $this->addSubmitB($form);
     }
-    
+
     /**
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbAll()
-    {                
+    {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['text' => 'menu_languages']            
-        ];                
-        
+            1 => ['text' => 'menu_languages']
+        ];
+
         return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
     }
-    
+
     /**
      * @return BreadCrumbControl
-     */    
+     */
     protected function createComponentBreadCrumbEdit()
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Language:default', 'text' => 'menu_languages'],            
-            2 => ['link' => 'Language:edit',     'text' => 'menu_language'],
-        ];       
-        
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
-    }      
+            1 => ['link' => 'Language:default', 'text' => 'menu_languages'],
+            2 => ['link' => 'Language:edit', 'text' => 'menu_language'],
+        ];
+
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
 }

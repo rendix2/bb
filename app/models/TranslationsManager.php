@@ -9,5 +9,4 @@ namespace App\Models;
  */
 class TranslationsManager extends Crud\CrudManager
 {
-
 }

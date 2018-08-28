@@ -18,19 +18,27 @@ class ForumSearchInForumForm extends Control
     
     /**
      *
-     * @var ITranslator $translator 
+     * @var ITranslator $translator
      */
     private $translator;
-    
+
+    /**
+     * ForumSearchInForumForm constructor.
+     *
+     * @param ITranslator $translator
+     */
     public function __construct(ITranslator $translator)
     {
         parent::__construct();
         
         $this->translator = $translator;
     }
-    
+
+    /**
+     * renders form
+     */
     public function render()
-    {       
+    {
         $sep = DIRECTORY_SEPARATOR;
         
         $template = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'searchInForumForm.latte');
@@ -64,6 +72,5 @@ class ForumSearchInForumForm extends Control
             $this->presenter->getParameter('page'),
             $values->search_form
         );
-    }    
-    
+    }
 }

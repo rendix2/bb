@@ -40,7 +40,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     /**
      * @var string
      */
-    const BECK_END_NAMESPACE = 'beckend';
+    const BECK_END_NAMESPACE = 'backend';
     
     /**
      * @var string

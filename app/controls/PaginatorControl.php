@@ -2,7 +2,6 @@
 
 namespace App\Controls;
 
-use dibi;
 use Dibi\Fluent;
 use Nette\Application\UI\Control;
 use Nette\Utils\Paginator;
@@ -56,9 +55,6 @@ class PaginatorControl extends Control
      * @param int    $itemsPerPage
      * @param int    $itemsAround
      * @param int    $page
-     * @param null   $where
-     * @param null   $table
-     * @param null   $alias
      *
      * @api
      */

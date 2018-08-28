@@ -3,9 +3,9 @@
 namespace App\AdminModule\Presenters;
 
 use App\Controls\BootstrapForm;
-use App\Models\ReportsManager;
-use App\Controls\GridFilter;
 use App\Controls\BreadCrumbControl;
+use App\Controls\GridFilter;
+use App\Models\ReportsManager;
 
 /**
  * Description of ReportPresenter
@@ -26,7 +26,7 @@ class ReportPresenter extends Base\AdminPresenter
     }
     
     /**
-     * 
+     *
      * @return GridFilter
      */
     protected function createComponentGridFilter()
@@ -39,7 +39,12 @@ class ReportPresenter extends Base\AdminPresenter
         $this->gf->addFilter('forum_name', 'report_forum', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('topic_name', 'report_topic', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('post_title', 'report_post', GridFilter::TEXT_LIKE);
-        $this->gf->addFilter('report_status', 'report_status', GridFilter::CHECKBOX_LIST,[1 => 'report_solved' , 0 => 'report_added']);
+        $this->gf->addFilter(
+            'report_status',
+            'report_status',
+            GridFilter::CHECKBOX_LIST,
+            [1 => 'report_solved', 0 => 'report_added']
+        );
         $this->gf->addFilter('edit', null, GridFilter::NOTHING);
         $this->gf->addFilter('delete', null, GridFilter::NOTHING);
 
@@ -64,31 +69,31 @@ class ReportPresenter extends Base\AdminPresenter
 
         return $this->addSubmitB($form);
     }
-    
+
     /**
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbAll()
-    {                
+    {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['text' => 'menu_reports']            
-        ];                
-        
+            1 => ['text' => 'menu_reports']
+        ];
+
         return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
     }
-    
+
     /**
      * @return BreadCrumbControl
-     */    
+     */
     protected function createComponentBreadCrumbEdit()
     {
         $breadCrumb = [
-            0 => ['link' => 'Index:default',  'text' => 'menu_index'],
-            1 => ['link' => 'Report:default', 'text' => 'menu_reports'],            
-            2 => ['link' => 'Report:edit',    'text' => 'menu_report'],
-        ];       
-        
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
-    }    
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Report:default', 'text' => 'menu_reports'],
+            2 => ['link' => 'Report:edit', 'text' => 'menu_report'],
+        ];
+
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
 }

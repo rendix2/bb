@@ -89,7 +89,7 @@ class CategoryPresenter extends Base\AdminPresenter
     }
     
     /**
-     * 
+     *
      * @return GridFilter
      */
     protected function createComponentGridFilter()
@@ -108,26 +108,26 @@ class CategoryPresenter extends Base\AdminPresenter
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbAll()
-    {                
+    {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['text' => 'menu_categories']            
-        ];                
-        
+            1 => ['text' => 'menu_categories']
+        ];
+
         return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
     }
     
     /**
      * @return BreadCrumbControl
-     */    
+     */
     protected function createComponentBreadCrumbEdit()
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Category:default', 'text' => 'menu_categories'],            
+            1 => ['link' => 'Category:default', 'text' => 'menu_categories'],
             2 => ['link' => 'Category:edit', 'text' => 'menu_category'],
-        ];       
+        ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
-    }     
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
 }

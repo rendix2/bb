@@ -66,6 +66,7 @@ class BootstrapForm extends Form
      * @param int             $columnCount      column count
      * @param string          $columnType       column type
      * @param int             $labelColumnCount label column count
+     * @param bool            $ajax             ajax
      * @param IContainer|null $parent           parent
      * @param null            $name             name
      *
@@ -100,7 +101,7 @@ class BootstrapForm extends Form
     }
     
     /**
-     * 
+     *
      * @return BootstrapForm
      */
     public static function createAjax()
@@ -109,12 +110,12 @@ class BootstrapForm extends Form
     }
     
     /**
-     * 
+     *
      * @param int $count
-     * 
+     *
      * @return BootstrapForm
      */
-    public function setColumnCount($count = 6) 
+    public function setColumnCount($count = 6)
     {
         $this->columnCount = $count;
         
@@ -122,9 +123,9 @@ class BootstrapForm extends Form
     }
     
     /**
-     * 
+     *
      * @param string $type
-     * 
+     *
      * @return BootstrapForm
      */
     public function setColumnType($type = 'sm')
@@ -135,12 +136,12 @@ class BootstrapForm extends Form
     }
 
     /**
-     * 
+     *
      * @param int $count
-     * 
+     *
      * @return BootstrapForm
      */
-    public function setLabelColumnCount($count = 6) 
+    public function setLabelColumnCount($count = 6)
     {
         $this->labelColumnCount = $count;
         
@@ -250,7 +251,7 @@ class BootstrapForm extends Form
         $renderer->wrappers['label']['']                 = '';
 
         // make form and controls compatible with Twitter Bootstrap
-        $ajax = $this->ajax ? 'ajax ' : '';       
+        $ajax = $this->ajax ? 'ajax ' : '';
         
         $this->getElementPrototype()->class($ajax. 'form-horizontal');
 

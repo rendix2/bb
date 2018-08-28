@@ -32,8 +32,11 @@ class CategoryFacade
      * @param ForumFacade       $forumFacade
      * @param ForumsManager     $forumsManager
      */
-    public function __construct(CategoriesManager $categoriesManager, ForumFacade $forumFacade, ForumsManager $forumsManager)
-    {
+    public function __construct(
+        CategoriesManager $categoriesManager,
+        ForumFacade $forumFacade,
+        ForumsManager $forumsManager
+    ) {
         $this->categoriesManager = $categoriesManager;
         $this->forumFacade       = $forumFacade;
         $this->forumsManager     = $forumsManager;

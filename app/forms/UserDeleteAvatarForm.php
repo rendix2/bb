@@ -12,7 +12,6 @@ use Nette\Localization\ITranslator;
 use Nette\Security\User;
 use Nette\Utils\ArrayHash;
 
-
 /**
  * Description of DeleteAvatarControl
  *

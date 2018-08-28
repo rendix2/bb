@@ -2,19 +2,19 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
+use App\Controls\BreadCrumbControl;
+use App\Models\PostFacade;
+use App\Models\PostsHistoryManager;
 use App\Models\PostsManager;
 use App\Models\ReportsManager;
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
-use App\Models\PostsHistoryManager;
 use App\Models\UsersManager;
-use App\Settings\Avatars;
-use App\Settings\TopicsSetting;
 use App\Settings\PostSetting;
-use App\Controls\BreadCrumbControl;
-use dibi;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;
 
@@ -47,14 +47,14 @@ class PostPresenter extends Base\ForumPresenter
     
     /**
      *
-     * @var \App\Controls\BBMailer $bbMailer
+     * @var BBMailer $bbMailer
      * @inject
      */
     public $bbMailer;
     
     /**
-     * 
-     * @var \App\Models\PostFacade $postFacade
+     *
+     * @var PostFacade $postFacade
      * @inject
      */
     public $postFacade;
@@ -86,7 +86,7 @@ class PostPresenter extends Base\ForumPresenter
     public function __construct(PostsManager $manager)
     {
         parent::__construct($manager);
-    }   
+    }
 
     /**
      * @param int $forum_id
@@ -206,14 +206,14 @@ class PostPresenter extends Base\ForumPresenter
         $form->onValidate[] = [$this, 'onValidate'];
 
         return $form;
-    }       
+    }
     
     /**
-     * 
-     * @param \Nette\Forms\Controls\SubmitButton $submit
+     *
+     * @param SubmitButton $submit
      * @param ArrayHash $values
      */
-    public function preview(\Nette\Forms\Controls\SubmitButton $submit, \Nette\Utils\ArrayHash $values)
+    public function preview(SubmitButton $submit, ArrayHash $values)
     {
         $this['editForm']->setDefaults($values);
         $this->template->preview_text = $this['editForm-post_text']->getValue();
@@ -222,25 +222,26 @@ class PostPresenter extends Base\ForumPresenter
     }
 
     /**
-     * 
+     *
      * @param Form      $form
      * @param ArrayHash $values
      */
     public function onValidate(Form $form, ArrayHash $values)
     {
-        $user               = $this->usersManager->getById($this->getUser()->getId());        
+        $user_id            = $this->getUser()->getId();
+        $user               = $this->usersManager->getById($user_id);
         $minTimeInterval    = $this->postSetting->get()['minUserTimeInterval'];
         $doublePostInterval = $this->postSetting->get()['minDoublePostTimeInterval'];
-        
+
         if (time() - $user->user_last_post_time <= $minTimeInterval) {
             $form->addError('You cannot send new post so soon.', false);
         }
-        
-        if ($this->getManager()->checkDoublePost($values->post_text, $this->getUser()->getId(), time() - $doublePostInterval)) {
+
+        if ($this->getManager()->checkDoublePost($values->post_text, $user_id, time() - $doublePostInterval)) {
             $form->addError('Double post', false);
         }
-    }    
-    
+    }
+
     /**
      * @param Form      $form
      * @param ArrayHash $values
@@ -266,7 +267,7 @@ class PostPresenter extends Base\ForumPresenter
             $values->post_add_time    = time();
             $values->post_add_user_ip = $this->getHttpRequest()->getRemoteAddress();
 
-            $result = $this->postFacade->add($values);            
+            $result = $this->postFacade->add($values);
             $emails = $this->topicWatchManager->getAllJoinedByLeft($topic_id);
             
             $emailsArray = [];
@@ -294,9 +295,8 @@ class PostPresenter extends Base\ForumPresenter
         }
 
         $this->redirect('Topic:default', $forum_id, $topic_id);
-    }  
-    
-    
+    }
+
     /**
      * @return BreadCrumbControl
      */
@@ -305,14 +305,17 @@ class PostPresenter extends Base\ForumPresenter
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
-            2 => ['link' => 'Topic:default', 'text' => 'menu_topic', 'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]],
+            2 => ['link'   => 'Topic:default',
+                  'text'   => 'menu_topic',
+                  'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]
+            ],
             3 => ['text' => 'menu_post']
-            
+
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }     
-    
+    }
+
     /**
      * @return BreadCrumbControl
      */
@@ -321,15 +324,18 @@ class PostPresenter extends Base\ForumPresenter
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
-            2 => ['link' => 'Topic:default', 'text' => 'menu_topic', 'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]],
+            2 => ['link'   => 'Topic:default',
+                  'text'   => 'menu_topic',
+                  'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]
+            ],
             3 => ['text' => 'report_post']
-            
-        ];
-        
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    } 
 
-        /**
+        ];
+
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }
+
+    /**
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbHistory()
@@ -337,16 +343,19 @@ class PostPresenter extends Base\ForumPresenter
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
-            2 => ['link' => 'Topic:default', 'text' => 'menu_topic', 'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]],
+            2 => ['link'   => 'Topic:default',
+                  'text'   => 'menu_topic',
+                  'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]
+            ],
             3 => ['text' => 'post_history']
-            
+
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    } 
+    }
 
     /**
-     * 
+     *
      * REPORT FORM
      */
     

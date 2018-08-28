@@ -7,8 +7,9 @@ use App\Models\LanguagesManager;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Form;
-use Nette\Utils\ArrayHash;
 use Nette\Localization\ITranslator;
+use Nette\Security\Passwords;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of RegisterPresenter
@@ -18,12 +19,12 @@ use Nette\Localization\ITranslator;
 class RegisterPresenter extends BasePresenter
 {
     /**
-     * @var ITranslator $translator 
+     * @var ITranslator $translator
      */
-    private $translator;   
+    private $translator;
     
     /**
-     * @var LanguagesManager $languageManager 
+     * @var LanguagesManager $languageManager
      */
     private $languageManager;
     
@@ -63,11 +64,15 @@ class RegisterPresenter extends BasePresenter
     {
         $form = $this->getBootstrapForm();
         $form->setTranslator($this->translator);
-        
-        $form->addText('user_name', 'User name:')->setRequired(true);
-        $form->addPassword('user_password', 'User password:')->setRequired(true);
-        $form->addPassword('user_password2', 'User password for check:')->setRequired(true);
-        $form->addEmail('user_email', 'User email:')->setRequired(true);
+
+        $form->addText('user_name', 'User name:')
+            ->setRequired(true);
+        $form->addPassword('user_password', 'User password:')
+            ->setRequired(true);
+        $form->addPassword('user_password2', 'User password for check:')
+            ->setRequired(true);
+        $form->addEmail('user_email', 'User email:')
+            ->setRequired(true);
         $form->addSelect('user_lang_id', 'User lang:', $this->languageManager->getAllPairsCached('lang_name'));
         $form->addReCaptcha('user_captcha', 'User captcha:', 'Please prove you are not robot.');
         $form->addSubmit('send', 'User register');
@@ -106,7 +111,7 @@ class RegisterPresenter extends BasePresenter
     public function registerUserSuccess(Form $form, ArrayHash $values)
     {
         unset($values->user_password2);
-        $values->user_password      = \Nette\Security\Passwords::hash($values->user_password);
+        $values->user_password      = Passwords::hash($values->user_password);
         $values->user_register_time = time();
         $values->user_role_id       = 1;
                 
@@ -122,7 +127,7 @@ class RegisterPresenter extends BasePresenter
     }
 
     /**
-     * 
+     *
      */
     public function renderDefault()
     {

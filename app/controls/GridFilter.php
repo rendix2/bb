@@ -133,7 +133,6 @@ class GridFilter extends Control
 
             foreach ($this->type as $col => $val) {
                 if (($val['strint'] === '%in' && count($this->session->getSection($col)->value)) || ($val['strint'] === '%i' && is_numeric($this->session->getSection($col)->value)) || (($val['strint'] === '%s' || $val['strint'] == '%~like~') && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) || $val['type'] === 'date' && $col !== self::NOTHING) {
-
                     $columnName = $this->checkFTI($col);
 
                     if ($val['type'] === 'date') {
@@ -266,7 +265,7 @@ class GridFilter extends Control
                 ];
                 
                 break;
-        }        
+        }
         
         \Tracy\Debugger::barDump($this->type, 'TYPEEE');
     }

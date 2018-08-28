@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Settings\Ranks;
 use Nette\Http\FileUpload;
+use Nette\IOException;
 use Nette\Utils\FileSystem;
 
 /**
@@ -18,7 +20,7 @@ class RanksManager extends Crud\CrudManager
     const NOT_UPLOADED = -5;
     
     /**
-     * @var \App\Settings\Ranks $ranks
+     * @var Ranks $ranks
      * @inject
      */
     public $ranks;
@@ -62,7 +64,7 @@ class RanksManager extends Crud\CrudManager
             FileSystem::delete($this->ranks->getDir() . DIRECTORY_SEPARATOR . $rank_file);
             
             return true;
-        } catch (\Nette\IOException $e) {
+        } catch (IOException $e) {
             return false;
         }
     }

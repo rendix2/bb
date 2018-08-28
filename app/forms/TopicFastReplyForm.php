@@ -6,11 +6,9 @@ use App\Presenters\Base\BasePresenter;
 use App\Controls\BootstrapForm;
 use App\Services\TranslatorFactory;
 use App\Models\PostFacade;
-
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 use Nette\Security\User;
-
 
 /**
  * Description of TopicFastReplyForm

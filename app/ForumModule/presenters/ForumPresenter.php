@@ -2,18 +2,15 @@
 
 namespace App\ForumModule\Presenters;
 
-use App\Controls\BootstrapForm;
+use App\Controls\BreadCrumbControl;
 use App\Controls\PaginatorControl;
+use App\Forms\ForumSearchInForumForm;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Models\ModeratorsManager;
 use App\Models\TopicsManager;
-use App\Forms\ForumSearchInForumForm;
 use App\Settings\TopicsSetting;
-use Nette\Application\UI\Form;
 use Nette\Http\IResponse;
-use Nette\Utils\ArrayHash;
-use App\Controls\BreadCrumbControl;
 
 /**
  * Description of ForumPresenter
@@ -105,7 +102,7 @@ final class ForumPresenter extends Base\ForumPresenter
         }
         
         if ($q) {
-            $topics = $topics->where('topic_id IN ( SELECT post_topic_id FROM posts WHERE MATCH(post_title, post_text) AGAINST (%s IN BOOLEAN MODE) AND post_forum_id = %i) OR MATCH(topic_name) AGAINST (%s IN BOOLEAN MODE)', $q, $forum_id, $q);                               
+            $topics = $topics->where('topic_id IN ( SELECT post_topic_id FROM posts WHERE MATCH(post_title, post_text) AGAINST (%s IN BOOLEAN MODE) AND post_forum_id = %i) OR MATCH(topic_name) AGAINST (%s IN BOOLEAN MODE)', $q, $forum_id, $q);
             $this['searchInForumForm']->setDefaults(['search_form' => $q]);
         }
         
@@ -119,13 +116,13 @@ final class ForumPresenter extends Base\ForumPresenter
         $this->template->forum       = $forum;
         $this->template->topics      = $topics->fetchAll();
         $this->template->subForums   = $this->getManager()->getByParent($forum_id);
-        $this->template->parentForum = $this->getManager()->getParentForumByForumId($forum_id);
+        $this->template->parentForum = $this->getManager()->getParentForumsByForumId($forum_id);
         $this->template->moderators  = $moderators;
     }
 
     /**
-     * renderes rules of forum
-     * 
+     * renders rules of forum
+     *
      * @param int $forum_id
      */
     public function renderRules($forum_id)
@@ -157,7 +154,7 @@ final class ForumPresenter extends Base\ForumPresenter
     {
         return new ForumSearchInForumForm($this->getForumTranslator());
     }
-    
+
     /**
      * @return BreadCrumbControl
      */
@@ -165,12 +162,12 @@ final class ForumPresenter extends Base\ForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['text' => 'menu_forum']            
+            1 => ['text' => 'menu_forum']
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }  
-    
+    }
+
     /**
      * @return BreadCrumbControl
      */
@@ -179,9 +176,9 @@ final class ForumPresenter extends Base\ForumPresenter
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
-            2 => ['link' => 'Forum:rules',   'text' => 'forum_rules', 'params' => [$this->getParameter('forum_id')]],
+            2 => ['link' => 'Forum:rules', 'text' => 'forum_rules', 'params' => [$this->getParameter('forum_id')]],
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }    
+    }
 }

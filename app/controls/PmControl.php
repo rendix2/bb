@@ -2,7 +2,7 @@
 
 namespace App\Controls;
 
-use App\Models\PMManager;
+use App\Models\PmManager;
 use Nette\Application\UI\Control;
 
 /**

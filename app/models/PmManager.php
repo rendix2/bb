@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Crud\CrudManager;
+use Dibi\Fluent;
+use \Nette\Security\User;
 
 /**
  * Description of PMManager
@@ -14,11 +16,14 @@ class PmManager extends CrudManager
     
     /**
      *
-     * @var \Nette\Security\User $user
+     * @var User $user
      * @inject
      */
     public $user;
 
+    /**
+     * @return Fluent
+     */
     public function getAllFluent()
     {
         return parent::getAllFluent()
@@ -29,6 +34,10 @@ class PmManager extends CrudManager
                 ->where('pm.pm_user_id_to = %i', $this->user->id);
     }
     
+    /**
+     * 
+     * @return int
+     */
     public function getCountSent()
     {
         return parent::getCountFluent()

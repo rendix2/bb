@@ -2,10 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\ForumsManager;
-use App\Models\TopicFacade;
-use App\Models\TopicsManager;
-
 /**
  * Description of ForumFacade
  *

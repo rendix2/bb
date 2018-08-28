@@ -30,6 +30,5 @@ class TopicsSetting
     public function canLogView()
     {
         return $this->topic['logViews'];
-        
     }
 }

@@ -45,7 +45,7 @@ class ForumPresenter extends Base\AdminPresenter
     public $topicManager;
     
     /**
-     * post mananager
+     * post manager
      *
      * @var PostsManager $postManager
      * @inject
@@ -168,7 +168,7 @@ class ForumPresenter extends Base\AdminPresenter
     }
     
     /**
-     * 
+     *
      * @return GridFilter
      */
     protected function createComponentGridFilter()
@@ -187,26 +187,26 @@ class ForumPresenter extends Base\AdminPresenter
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbAll()
-    {                
+    {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['text' => 'menu_forums']            
-        ];                
+            1 => ['text' => 'menu_forums']
+        ];
         
         return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
     }
     
     /**
      * @return BreadCrumbControl
-     */    
+     */
     protected function createComponentBreadCrumbEdit()
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Forum:default', 'text' => 'menu_forums'],            
+            1 => ['link' => 'Forum:default', 'text' => 'menu_forums'],
             2 => ['link' => 'Forum:edit', 'text' => 'menu_forum'],
-        ];       
+        ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());        
-    }     
+        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+    }
 }

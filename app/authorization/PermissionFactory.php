@@ -9,7 +9,8 @@ use Nette\Security\Permission;
  *
  * @author rendix2
  */
-class PermissionFactory {
+class PermissionFactory
+{
     /**
      * @return Permission
      */
@@ -23,7 +24,7 @@ class PermissionFactory {
         $permission->addResource(Scopes\Post::class);
         
         $permission->addRole(Scopes\Post::ROLE_AUTHOR);
-        $permission->addRole(Scopes\Topic::ROLE_AUTHOR);        
+        $permission->addRole(Scopes\Topic::ROLE_AUTHOR);
         $permission->addRole(Scopes\Forum::ROLE_MODERATOR, [Scopes\Post::ROLE_AUTHOR, Scopes\Topic::ROLE_AUTHOR]);
         $permission->addRole(Identity::ROLE_ADMIN, [Scopes\Forum::ROLE_MODERATOR]);
         
@@ -33,7 +34,6 @@ class PermissionFactory {
         $permission->allow(Identity::ROLE_ADMIN, Permission::ALL, Permission::ALL);
         
         return $permission;
-        
     }
 
     /**
@@ -44,7 +44,7 @@ class PermissionFactory {
     private function allow(Permission $permission, $role, array $action)
     {
         list($resource, $privilege) = $action;
-	$permission->allow($role, $resource, $privilege);
-    }   
+        $permission->allow($role, $resource, $privilege);
+    }
 }
 

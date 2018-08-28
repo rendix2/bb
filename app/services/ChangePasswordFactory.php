@@ -44,8 +44,12 @@ class ChangePasswordFactory
      * @param User $user
      * @param Users $users
      */
-    public function __construct(UsersManager $userManager, TranslatorFactory $translatorFactory, User $user, Users $users)
-    {
+    public function __construct(
+        UsersManager $userManager,
+        TranslatorFactory $translatorFactory,
+        User $user,
+        Users $users
+    ) {
         $this->userManager       = $userManager;
         $this->user              = $user;
         $this->users             = $users;

@@ -6,6 +6,7 @@ use App\Settings\Avatars;
 use Dibi\Row;
 use Nette\Http\FileUpload;
 use Nette\InvalidArgumentException;
+use Nette\IOException;
 use Nette\Utils\FileSystem;
 
 /**
@@ -93,12 +94,10 @@ class UsersManager extends Crud\CrudManager
     public function getLastUser()
     {
         return $this->getAllFluent()
-                ->where('[user_id] = ',
-                    $this->dibi
-                        ->select('MAX(user_id)')
-                        ->from($this->getTable())
-                )
-                ->fetch();
+            ->where('[user_id] = ', $this->dibi
+                ->select('MAX(user_id)')
+                ->from($this->getTable()))
+            ->fetch();
     }
 
     /**
@@ -133,6 +132,7 @@ class UsersManager extends Crud\CrudManager
     /**
      *
      * @param string $user_name
+     * @todo ->select('')
      *
      * @return bool
      */
@@ -221,7 +221,7 @@ class UsersManager extends Crud\CrudManager
             FileSystem::delete($this->avatar->getDir() . DIRECTORY_SEPARATOR . $avatar_file);
             
             return true;
-        } catch (\Nette\IOException $e){
+        } catch (IOException $e) {
             return false;
         }
     }

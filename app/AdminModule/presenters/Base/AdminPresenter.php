@@ -3,7 +3,6 @@
 namespace App\AdminModule\Presenters\Base;
 
 use App\Controls\BootstrapForm;
-use App\Models\Crud\CrudManager;
 use App\Presenters\crud\CrudPresenter;
 use Nette\Localization\ITranslator;
 
@@ -28,7 +27,7 @@ abstract class AdminPresenter extends CrudPresenter
         
         parent::checkRequirements($element);
 
-        if (!$this->getUser()->isLoggedIn() && $this->getName() !== 'Login') {
+        if ($this->getName() !== 'Login' && $this->getUser()->isLoggedIn()) {
             $this->redirect(':Admin:Login:default');
         }
 

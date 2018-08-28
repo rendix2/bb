@@ -7,7 +7,6 @@ namespace App\Models;
  *
  * @author rendix2
  */
-class SmiliesManager extends Crud\CrudManager
+class SmilesManager extends Crud\CrudManager
 {
-    
 }

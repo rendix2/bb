@@ -11,7 +11,7 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  */
 class PostFacade
-{   
+{
     /**
      *
      * @var PostsManager $postsManager
@@ -32,7 +32,7 @@ class PostFacade
     
     /**
      *
-     * @var UsersManager $usersManager 
+     * @var UsersManager $usersManager
      */
     private $usersManager;
     
@@ -118,14 +118,10 @@ class PostFacade
                 'post_text'         => $item_data->post_text,
                 'post_history_time' => time()
             ]));
-        $this->usersManager->update(
-            $user_id,
-            ArrayHash::from([
+        $this->usersManager->update($user_id, ArrayHash::from([
                 'user_post_count%sql' => 'user_post_count + 1',
                 'user_last_post_time' => time()
-                ] + $watch
-            )
-        );
+            ] + $watch));
         
         $this->forumsManager->update($forum_id, ArrayHash::from(['forum_post_count%sql' => 'forum_post_count + 1']));
 
@@ -135,17 +131,21 @@ class PostFacade
     /**
      * @param int       $item_id
      * @param ArrayHash $item_data
+     *
+     * @return bool
      */
     public function update($item_id, ArrayHash $item_data)
     {
-        $this->postsManager->update($item_id, $item_data);
-        $this->postsHistoryManager->add(ArrayHash::from([
+        $update = $this->postsManager->update($item_id, $item_data);
+        $add = $this->postsHistoryManager->add(ArrayHash::from([
                 'post_id'           => $item_id,
                 'post_user_id'      => $item_data->post_user_id,
                 'post_title'        => $item_data->post_title,
                 'post_text'         => $item_data->post_text,
                 'post_history_time' => time()
             ]));
+
+        return $update && $add;
     }
 
     /**
@@ -195,12 +195,18 @@ class PostFacade
         // last post
         if ($topic->topic_last_post_id === (int)$item_id && $topic->topic_first_post_id !== (int)$item_id) {
             $last_post = $this->postsManager->getLastByTopic($post->post_topic_id);
-       
-            $this->topicsManager->update($post->post_topic_id, ArrayHash::from(['topic_last_post_id' => $last_post->post_id, 'topic_last_user_id' => $last_post->post_user_id]));
+
+            $this->topicsManager->update($post->post_topic_id, ArrayHash::from([
+                'topic_last_post_id' => $last_post->post_id,
+                'topic_last_user_id' => $last_post->post_user_id
+            ]));
         } elseif ($topic->topic_first_post_id === (int)$item_id && $topic->topic_last_post_id !== (int)$item_id) {
             $first_post = $this->postsManager->getFirstByTopic($post->post_topic_id);
-       
-            $this->topicsManager->update($post->post_topic_id, ArrayHash::from(['topic_first_post_id' => $first_post->post_id, 'topic_first_user_id' => $first_post->post_user_id]));            
+
+            $this->topicsManager->update($post->post_topic_id, ArrayHash::from([
+                'topic_first_post_id' => $first_post->post_id,
+                'topic_first_user_id' => $first_post->post_user_id
+            ]));
         }
         /*
          * elseif ($topic->topic_last_post_id === $topic->topic_first_post_id && $topic->topic_first_post_id === (int)$item_id) {
@@ -213,8 +219,11 @@ class PostFacade
          */
         
         $lastPostOfUser = $this->postsManager->getLastByUser($post->post_user_id);
-        
-        $this->usersManager->update($post->post_user_id, ArrayHash::from(['user_last_post_time' => $lastPostOfUser->post_add_time]));
+
+        $this->usersManager->update(
+            $post->post_user_id,
+            ArrayHash::from(['user_last_post_time' => $lastPostOfUser->post_add_time])
+        );
         
         return $res;
     }

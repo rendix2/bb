@@ -50,7 +50,7 @@ class CachePresenter extends Base\AdminPresenter
         parent::startup();
 
         if (!$this->user->isLoggedIn()) {
-            if ($user->logoutReason === IUserStorage::INACTIVITY) {
+            if ($this->user->logoutReason === IUserStorage::INACTIVITY) {
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
             }
 

@@ -7,7 +7,6 @@ namespace App\Models\Crud;
 
 use Dibi\Connection;
 use Dibi\Fluent;
-use Dibi\Result;
 use Dibi\Row;
 
 use Nette\Caching\IStorage;

@@ -6,7 +6,6 @@ use App\Settings\Avatars;
 use App\Settings\CacheDir;
 use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
-use App\Controls\BreadCrumbControl;
 
 /**
  * Description of IndexPresenter

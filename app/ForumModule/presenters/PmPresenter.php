@@ -4,15 +4,15 @@ namespace App\ForumModule\Presenters;
 
 use App\Authorizator;
 use App\Controls\BootstrapForm;
+use App\Controls\BreadCrumbControl;
+use App\Controls\GridFilter;
+use App\Controls\UserSearchControl;
 use App\Models\PmManager;
 use App\Models\UsersManager;
 use App\Presenters\crud\CrudPresenter;
-use App\Controls\GridFilter;
-use App\Controls\UserSearchControl;
-use App\Controls\BreadCrumbControl;
 use Nette\Application\UI\Form;
-use Nette\Utils\ArrayHash;
 use Nette\Localization\ITranslator;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of PmPresenter
@@ -21,7 +21,7 @@ use Nette\Localization\ITranslator;
  * @method PmManager getManager()
  */
 class PmPresenter extends CrudPresenter
-{    
+{
     /**
      * @var Authorizator $authorizator
      * @inject
@@ -51,15 +51,15 @@ class PmPresenter extends CrudPresenter
     }
     
     /**
-     * 
+     *
      * @param mixed $element
      */
     public function checkRequirements($element)
-    {       
+    {
         $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         
         parent::checkRequirements($element);
-    }       
+    }
     
     /**
      * @return void
@@ -68,31 +68,34 @@ class PmPresenter extends CrudPresenter
     {
         parent::startup();
         
-        $this->translator = $this->translatorFactory->forumTranslatorFactory(); 
+        $this->translator = $this->translatorFactory->forumTranslatorFactory();
         
         $this->template->setTranslator($this->translator);
-        
+
         $this->template->pm_count = $this->getManager()->getCountSent();
     }   
-    
+
     /**
-     * 
+     *
      * @param int    $user_id
      * @param string $user_name
      */
     public function handleSetUserId($user_id, $user_name)
-    {        
+    {
         $this->redirect('Pm:edit', ['user_id' => $user_id, 'user_name' => $user_name]);
-    }   
+    }
     
     /**
-     * 
+     *
      * @param int|null $id
      */
     public function renderEdit($id = null)
-    {        
+    {
         if (!$id) {
-            $this[self::FORM_NAME]->setDefaults(['pm_user_id_to' => $this->getParameter('user_id'), 'user_name' => $this->getParameter('user_name')]);
+            $this[self::FORM_NAME]->setDefaults([
+                'pm_user_id_to' => $this->getParameter('user_id'),
+                'user_name'     => $this->getParameter('user_name')
+            ]);
         }
         
         parent::renderEdit($id);
@@ -103,7 +106,7 @@ class PmPresenter extends CrudPresenter
     }
     
     /**
-     * 
+     *
      * @return GridFilter
      */
     protected function createComponentGridFilter()
@@ -120,7 +123,7 @@ class PmPresenter extends CrudPresenter
     }
 
     /**
-     * 
+     *
      * @return UserSearchControl
      */
     protected function createComponentUserSearch()
@@ -154,7 +157,7 @@ class PmPresenter extends CrudPresenter
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->translator);
-    }    
+    }
 
     /**
      * @return BreadCrumbControl
@@ -168,56 +171,61 @@ class PmPresenter extends CrudPresenter
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->translator);
-    }     
-    
+    }
+
     /**
      * @return BootstrapForm
      */
     protected function createComponentEditForm()
     {
         $form = $this->createBootstrapForm();
-        
+
         $form->setTranslator($this->translator);
-        
-        $form->addHidden('pm_user_id_to');           
-        $form->addText('user_name', 'User name:')->setDisabled(); 
-        
+
+        $form->addHidden('pm_user_id_to');
+        $form->addText('user_name', 'User name:')
+            ->setDisabled();
+
         if ($this->getParameter('id')) {
-            $form->addText('pm_subject', 'PM Subject:')->setDisabled();            
-            $form->addTextArea('pm_text', 'PM Text:')->setDisabled();
+            $form->addTextArea('pm_text', 'PM Text:')
+                ->setDisabled();
+            $form->addText('pm_subject', 'PM Subject:')
+                ->setDisabled();
         } else {
-            $form->addText('pm_subject', 'PM Subject:')->setRequired(true);            
-            $form->addTextAreaHtml('pm_text', 'PM Text:');
-        } 
+            $form->addText('pm_subject', 'PM Subject:')
+                ->setRequired(true);
+            $form->addText('pm_subject', 'PM Subject:')
+                ->setRequired(true);
+        }
 
         return $this->addSubmitB($form);
     }
     
     /**
-     * 
+     *
      * @param Form      $form
      * @param ArrayHash $values
      */
     public function onValidate(Form $form, ArrayHash $values)
-    {       
+    {
         if (!$values->pm_user_id_to) {
-            $form->addError('We are missing recepients user ID', true);
+            $form->addError('We are missing recipients user ID', true);
         }
         
         if ((int)$values->pm_user_id_to === $this->getUser()->getId()) {
-            $form->addError('You cannost send PM to yourself.', true);
+            $form->addError('You cannot send PM to yourself.', true);
         }
     }
 
     /**
-     * 
+     *
      * @param Form      $form
      * @param ArrayHash $values
      */
     public function editFormSuccess(Form $form, ArrayHash $values)
     {
         $values->pm_user_id_from = $this->getUser()->getId();
-        unset($values->user_name);            
+        unset($values->user_name);
         
         parent::editFormSuccess($form, $values);
     }

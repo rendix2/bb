@@ -2,6 +2,8 @@
 
 namespace App\Authorization;
 
+use App\Models\UsersManager;
+
 /**
  * Description of BBIdentity
  *
@@ -28,19 +30,19 @@ class BBIdentity implements \Nette\Security\IIdentity
     private $data;
     
     /**
-     * @var \App\Models\UsersManager $userManager
+     * @var UsersManager $userManager
      */
     private $userManager;
 
     /**
      * BBIdentity constructor.
      *
-     * @param \App\Models\UsersManager $userManager
-     * @param                          $id
-     * @param array                    $roles
-     * @param array                    $data
+     * @param UsersManager $userManager
+     * @param int          $id
+     * @param array        $roles
+     * @param array        $data
      */
-    public function __construct(\App\Models\UsersManager $userManager, $id, array $roles = [], array $data = [])
+    public function __construct(UsersManager $userManager, $id, array $roles = [], array $data = [])
     {
         $this->userManager = $userManager;
         $this->id          = $id;
@@ -67,7 +69,7 @@ class BBIdentity implements \Nette\Security\IIdentity
      * @return array
      */
     public function getData()
-    {              
+    {
         return [];//array_merge($this->userManager->getById($this->id)->toArray(), $this->data);
     }
 }

@@ -8,12 +8,10 @@ use Dibi\Connection;
 use Dibi\Fluent;
 use Dibi\Result;
 use Dibi\Row;
+use Exception;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
-use Tracy\ILogger;
-use Exception;
 
 /**
  * Description of CrudManager
@@ -68,7 +66,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
      *
      * @param Connection $dibi
      * @param IStorage   $storage
-     * 
+     *
      * @throws Exception
      */
     public function __construct(Connection $dibi, IStorage $storage)
@@ -87,7 +85,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
             $databaseCache->save('tables', $cachedTables);
         }
         
-        if (!in_array($table, $cachedTables)) {
+        if (!in_array($table, $cachedTables, true)) {
             throw new Exception("Table {$table} does not exists in database {$this->dibi->getDatabaseInfo()->getName()}");
         }
                 
@@ -98,16 +96,16 @@ abstract class CrudManager extends Manager //implements ICrudManager
     }
     
     /**
-     * 
+     *
      * @param string $column
      * @param string $value
-     * 
-     * @return type
+     *
+     * @return Fluent
      * @throws Exception
      */
     public function get($column, $value)
     {
-        if (!in_array($column, $this->columnNames)) {
+        if (!in_array($column, $this->columnNames, true)) {
             throw new Exception("Non existing {$column} column in table {$this->table}");
         }
         
@@ -118,15 +116,15 @@ abstract class CrudManager extends Manager //implements ICrudManager
         
         if ($type === 'TEXT' || $type === 'VARCHAR') {
             $query = $query->where('%n = %s', $column, $value);
-        } else if ($type === 'INT') {
+        } elseif ($type === 'INT') {
             $query = $query->where('%n = %i', $column, $value);
-        } else if (is_array($value)) {
+        } elseif (is_array($value)) {
             $query = $query->where('%n IN %in', $column, $value);
-        } else if ($type === 'ENUM') {
+        } elseif ($type === 'ENUM') {
             $query = $query->where('%n = %s', $column, $value);
         }
-        
-       return $query;
+
+        return $query;
     }
 
     /**
@@ -227,6 +225,9 @@ abstract class CrudManager extends Manager //implements ICrudManager
             ->fetchAll();
     }
 
+    /**
+     * @return Fluent
+     */
     public function getCountFluent()
     {
         return $this->dibi
@@ -267,7 +268,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     private function getNameOfTableFromClass()
     {
-        $className    = str_replace('Manager', '', get_class($this));                       
+        $className    = str_replace('Manager', '', get_class($this));
         $explodedName = explode('\\', $className);
         $count        = count($explodedName);
 
@@ -287,18 +288,17 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     private function getPrimaryKeyQuery()
     {
-        $cachedPrimaryKey = $this->managerCache->load('primaryKey_' . $this->table);        
+        $cachedPrimaryKey = $this->managerCache->load('primaryKey_' . $this->table);
 
-        if ($cachedPrimaryKey === null) {            
+        if ($cachedPrimaryKey === null) {
             $columns = $this->dibi->getDatabaseInfo()->getTable($this->table)->getColumns();
             
             foreach ($columns as $column) {
-                if ($column->getVendorInfo('Key') === 'PRI')
-                {
+                if ($column->getVendorInfo('Key') === 'PRI') {
                     $cachedPrimaryKey = $column->name;
                     break;
                 }
-            }            
+            }
 
             $this->managerCache->save(
                 'primaryKey_' . $this->table,
@@ -321,7 +321,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
 
         if ($cachedColumns === null) {
             // runs query!!!!! we need cache
-            $cachedColumns = $this->dibi->getDatabaseInfo()->getTable($this->table)->columnNames;            
+            $cachedColumns = $this->dibi->getDatabaseInfo()->getTable($this->table)->columnNames;
             
             $this->managerCache->save(
                 'columns_' . $this->table,
@@ -334,13 +334,18 @@ abstract class CrudManager extends Manager //implements ICrudManager
 
         return $cachedColumns;
     }
-    
+
+    /**
+     * @param string $column
+     *
+     * @return mixed|string
+     */
     private function getColumnTypeQuery($column)
     {
         $cachedColumn = $this->managerCache->load('Columns_objects_' . $this->table. '_column_'.$column);
         
-        if ( $cachedColumn === null) {
-            $cachedColumn = $this->dibi->getDatabaseInfo()->getTable($this->table)->getColumn($column)->getNativeType();            
+        if ($cachedColumn === null) {
+            $cachedColumn = $this->dibi->getDatabaseInfo()->getTable($this->table)->getColumn($column)->getNativeType();
             
             $this->managerCache->save(
                 'Columns_objects_' . $this->table. '_column_'.$column,
@@ -375,13 +380,12 @@ abstract class CrudManager extends Manager //implements ICrudManager
     }
     
     /**
-     * 
+     *
      * @return Fluent
      */
     public function deleteFluent()
     {
-       return $this->dibi
-            ->delete($this->table); 
+        return $this->dibi->delete($this->table);
     }
 
     /**

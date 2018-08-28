@@ -55,7 +55,7 @@ class TopicPresenter extends ModeratorPresenter
     {
         $form = BootstrapForm::create();
         
-        $form->addSelect('topic_forum_id', 'Forum name:', $this->forumsManager->getAllPairsCached('forum_nane'));
+        $form->addSelect('topic_forum_id', 'Forum name:', $this->forumsManager->getAllPairsCached('forum_name'));
         $form->onSuccess[] = [$this, 'moveTopicSuccess'];
         
         return $form;
@@ -78,7 +78,7 @@ class TopicPresenter extends ModeratorPresenter
         $form = BootstrapForm::create();
         
         $form->addText('user_name', 'User name:');
-        $form->addSubmit('sned', 'Search');
+        $form->addSubmit('send', 'Search');
         
         $form->onSuccess[] = [$this, 'changeTopicAuthorSuccess'];
         
@@ -91,6 +91,5 @@ class TopicPresenter extends ModeratorPresenter
      */
     public function changeTopicAuthorSuccess(Form $form, ArrayHash $values)
     {
-        
     }
 }

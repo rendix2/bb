@@ -82,5 +82,4 @@ class MpttFactory
             $this->forumsManager->getParent()
         );
     }
-    
 }
