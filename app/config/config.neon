@@ -145,7 +145,8 @@ services:
     PollsVotesManager:
         class: App\Models\PollsVotesManager
     PMManager:
-        class: App\Models\PmManager
+        class: \App\Models\PmManager
+        inject: true
     RecountManager:
         class: App\Models\RecountManager
     Authenticator:

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Crud\CrudManager;
 use Dibi\Fluent;
+use \Nette\Security\User;
 
 /**
  * Description of PMManager
@@ -12,6 +13,14 @@ use Dibi\Fluent;
  */
 class PmManager extends CrudManager
 {
+    
+    /**
+     *
+     * @var User $user
+     * @inject
+     */
+    public $user;
+
     /**
      * @return Fluent
      */
@@ -21,6 +30,19 @@ class PmManager extends CrudManager
                 ->as('pm')
                 ->innerJoin(self::USERS_TABLE)
                 ->as('u')
-                ->on('pm.pm_user_id_to = u.user_id');
+                ->on('pm.pm_user_id_to = u.user_id')
+                ->where('pm.pm_user_id_to = %i', $this->user->id);
+    }
+    
+    /**
+     * 
+     * @return int
+     */
+    public function getCountSent()
+    {
+        return parent::getCountFluent()
+                ->where('pm_user_id_to = %i', $this->user->id)
+                ->where('pm_status = %s', 'sent')
+                ->fetchSingle();        
     }
 }

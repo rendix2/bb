@@ -40,7 +40,7 @@
                     <td>
                         {$pm->pm_subject}
                     </td>
-                    <td>{$pm->pm_status}</td>                 
+                    <td>{_($pm->pm_status|firstUpper)}</td>                 
                     <td>
                         <a href="{link Pm:delete, $pm->pm_id}" class="btn btn-danger btn-fa-only" title="{_pm_delete}">
                             <i class="fa fa-trash-alt" aria-hidden="true"></i>

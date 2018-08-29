@@ -27,6 +27,12 @@ abstract class ForumPresenter extends ManagerPresenter
      * @inject
      */
     public $authorizator;
+    
+    /**
+     * @var \App\Models\PmManager $pmManager
+     * @inject
+     */
+    public $pmManager;
 
     /**
      * ForumPresenter constructor.
@@ -92,7 +98,9 @@ abstract class ForumPresenter extends ManagerPresenter
         $this->forumTranslator = $this->translatorFactory->forumTranslatorFactory();
         $this->getUser()->setAuthorizator($this->authorizator->getAcl());
         
-            \Tracy\Debugger::barDump($this->user->isAllowed('1', 'forum_view'));
+        \Tracy\Debugger::barDump($this->user->isAllowed('1', 'forum_view'));
+        
+        $this->template->pm_count = $this->pmManager->getCountSent();
     }
 
     /**
