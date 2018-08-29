@@ -95,7 +95,7 @@ class BBMailer
     }
 
     /**
-     * @param $subject
+     * @param string $subject
      *
      * @return BBMailer
      */

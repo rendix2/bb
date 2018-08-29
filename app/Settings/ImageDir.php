@@ -51,9 +51,9 @@ abstract class ImageDir
     /**
      * ImageDir constructor.
      *
-     * @param $dir
+     * @param array $dir
      */
-    public function __construct($dir)
+    public function __construct(array $dir)
     {
         $this->dir = $dir;
     }

@@ -17,7 +17,7 @@ class StartDay
     /**
      * StartDay constructor.
      *
-     * @param $startDay
+     * @param string $startDay
      */
     public function __construct($startDay)
     {

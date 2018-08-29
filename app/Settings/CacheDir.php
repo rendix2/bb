@@ -3,6 +3,7 @@
 namespace App\Settings;
 
 use Nette\Utils\Finder;
+use SplFileInfo;
 
 /**
  * Description of CacheDir
@@ -12,14 +13,14 @@ use Nette\Utils\Finder;
 class CacheDir
 {
     /**
-     * @var CacheDir $cacheDir
+     * @var string $cacheDir
      */
     public $cacheDir;
 
     /**
      * CacheDir constructor.
      *
-     * @param $cacheDir
+     * @param string $cacheDir
      */
     public function __construct($cacheDir)
     {
@@ -27,7 +28,7 @@ class CacheDir
     }
 
     /**
-     * @return CacheDir
+     * @return string
      */
     public function getCacheDir()
     {
@@ -43,7 +44,7 @@ class CacheDir
         
         foreach (Finder::findFiles('*')->from($this->cacheDir) as $file) {
             /**
-             * @var \SplFileInfo $file
+             * @var SplFileInfo $file
              */
             $size += $file->getSize();
         }

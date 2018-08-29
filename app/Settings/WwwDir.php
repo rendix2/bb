@@ -18,7 +18,7 @@ class WwwDir
     /**
      * WwwDir constructor.
      *
-     * @param $wwwDir
+     * @param string $wwwDir
      */
     public function __construct($wwwDir)
     {

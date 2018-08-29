@@ -72,7 +72,7 @@ class DatabasePresenter extends AdminPresenter
     }
 
     /**
-     * @param $name
+     * @param string $name
      */
     public function actionDownloadDump($name)
     {

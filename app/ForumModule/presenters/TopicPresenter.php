@@ -243,8 +243,8 @@ class TopicPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $forum_id
-     * @param $topic_id
+     * @param int $forum_id
+     * @param int $topic_id
      */
     public function renderEdit($forum_id, $topic_id)
     {

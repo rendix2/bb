@@ -205,7 +205,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $user_id
+     * @param int $user_id
      */
     public function handleSetFavourite($user_id)
     {
@@ -220,7 +220,7 @@ class UserPresenter extends Base\ForumPresenter
     }
 
     /**
-     * @param $user_id
+     * @param int $user_id
      */
     public function handleUnSetFavourite($user_id)
     {

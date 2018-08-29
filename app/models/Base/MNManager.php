@@ -103,7 +103,7 @@ abstract class MNManager extends Manager
     }
 
     /**
-     * @param $left_id
+     * @param int $left_id
      *
      * @return Fluent
      */
