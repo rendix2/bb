@@ -54,7 +54,7 @@ class RecountManager extends Manager
 
         foreach ($users as $user) {
             foreach ($posts as $post) {
-                if (!$user->user_id !== $post->post_user_id) {
+                if ($user->user_id !== $post->post_user_id) {
                     continue;
                 }
 
@@ -85,7 +85,7 @@ class RecountManager extends Manager
 
         foreach ($users as $user) {
             foreach ($topics as $topic) {
-                if (!$user->user_id !== $topic->topic_user_id) {
+                if ($user->user_id !== $topic->topic_user_id) {
                     continue;
                 }
 
@@ -116,7 +116,7 @@ class RecountManager extends Manager
 
         foreach ($users as $user) {
             foreach ($topics as $topic) {
-                if (!$user->user_id !== $topic->topic_user_id) {
+                if ($user->user_id !== $topic->topic_user_id) {
                     continue;
                 }
 
