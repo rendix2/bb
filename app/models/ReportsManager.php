@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Dibi\Fluent;
 use Dibi\Result;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of ReportsManager
@@ -71,4 +72,29 @@ class ReportsManager extends Crud\CrudManager
                 ->where('[report_user_id] = %i', $user_id)
                 ->execute();
     }
+    
+    /**
+     *
+     * @param int $topic_id
+     *
+     * @return Result|int
+     */
+    public function deleteByTopic($topic_id)
+    {
+        return $this->deleteFluent()
+                ->where('[report_topic_id] = %i', $topic_id)
+                ->execute();
+    }    
+     
+    /**
+     * 
+     * @param int       $topic_id
+     * @param ArrayHash $item_data
+     * 
+     * @return type
+     */
+    public function updateByTopic($topic_id, ArrayHash $item_data)
+    {
+        return $this->dibi->update($this->getTable(), $item_data)->where('[report_topic_id] = %i', $topic_id)->execute();
+    }    
 }

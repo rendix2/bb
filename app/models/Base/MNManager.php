@@ -428,4 +428,34 @@ abstract class MNManager extends Manager
                 ->select('*')
                 ->from($this->table);
     }
+    
+    /**
+     * 
+     * @param int   $left_id
+     * @param array $values
+     */
+    public function mergeByLeft($left_id, array $values)
+    {
+        $left_values = $this->getPairsByLeft($left_id);        
+        $diff        = array_diff($values, $left_values);
+        
+        if (count($diff)) {
+            $this->add($diff, $left_id, null);          
+        }
+    }
+    
+    /**
+     * 
+     * @param int   $right_id
+     * @param array $values
+     */
+    public function mergeByRight($right_id, array $values)
+    {
+        $right_values = $this->getPairsByRight($right_id);        
+        $diff         = array_diff($values, $right_values);
+        
+        if (count($diff)) {
+            $this->add($diff, null, $right_id);
+        }
+    }
 }

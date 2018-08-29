@@ -95,6 +95,13 @@ class TopicPresenter extends Base\ForumPresenter
      * @inject
      */
     public $postFacade;
+    
+    /**
+     *
+     * @var \App\Models\ReportsManager $reportManager
+     * @inject
+     */
+    public $reportManager;
 
     /**
      *

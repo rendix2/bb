@@ -86,6 +86,7 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
         $values->post_forum_id = $forum_id;
         $values->post_topic_id = $topic_id;
         $values->post_user_id  = $this->user->getId();
+        $values->post_title    = '';
 
         $res = $this->postFacade->add($values);
 

@@ -134,8 +134,8 @@ services:
         class: App\Models\FaqManager
     BanManager:
         class: App\Models\BansManager
-    SmiliesManager:
-        class: App\Models\SmiliesManager
+    SmilesManager:
+        class: App\Models\SmilesManager
     CacheManager:
         class: App\Models\CacheManager
     PollsManager:

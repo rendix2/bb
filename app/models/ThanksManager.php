@@ -5,6 +5,7 @@ namespace App\Models;
 use Dibi\Fluent;
 use Dibi\Result;
 use Dibi\Row;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of ThanksManager
@@ -121,4 +122,49 @@ class ThanksManager extends Crud\CrudManager
             ->where('[thank_user_id] = %i', $user_id)
             ->execute();
     }
+    
+    /**
+     * 
+     * @param type $topic_id
+     * @param ArrayHash $item_data
+     * 
+     * @return type
+     */
+    public function updateByTopic($topic_id, ArrayHash $item_data)
+    {
+        return $this->dibi
+            ->update($this->getTable(), $item_data)
+            ->where('[thank_topic_id] = %i', $topic_id)
+            ->execute();                
+    }
+    
+    /**
+     * 
+     * @param type $user_id
+     * @param ArrayHash $item_data
+     * 
+     * @return type
+     */
+    public function updateByUser($user_id, ArrayHash $item_data)
+    {
+        return $this->dibi
+            ->update($this->getTable(), $item_data)
+            ->where('[thank_user_id] = %i', $user_id)
+            ->execute();                
+    }    
+    
+    /**
+     * 
+     * @param array $user_id
+     * @param ArrayHash $item_data
+     * 
+     * @return type
+     */
+    public function updateMultiByUser(array $user_id, ArrayHash $item_data)
+    {
+        return $this->dibi
+            ->update($this->getTable(), $item_data)
+            ->where('[thank_user_id] IN %in', $user_id)
+            ->execute();                
+    }       
 }

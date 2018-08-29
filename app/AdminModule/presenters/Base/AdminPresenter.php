@@ -17,6 +17,13 @@ abstract class AdminPresenter extends CrudPresenter
      * @var ITranslator $adminTranslator
      */
     private $adminTranslator;
+    
+    /**
+     *
+     * @var \App\Models\TopicFacade $topicFacade 
+     * @inject
+    */
+    public $topicFacade;
 
     /**
      * @param $element
@@ -27,7 +34,7 @@ abstract class AdminPresenter extends CrudPresenter
         
         parent::checkRequirements($element);
 
-        if ($this->getName() !== 'Login' && $this->getUser()->isLoggedIn()) {
+        if ($this->getName() !== 'Login' && !$this->getUser()->isLoggedIn()) {
             $this->redirect(':Admin:Login:default');
         }
 
@@ -44,6 +51,8 @@ abstract class AdminPresenter extends CrudPresenter
         parent::startup();
 
         $this->adminTranslator = $this->translatorFactory->adminTranslatorFactory();
+
+        //$this->topicFacade->mergeTwoTopics( 7, 8);
     }
 
     /**

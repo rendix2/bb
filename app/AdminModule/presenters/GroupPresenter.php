@@ -234,7 +234,7 @@ class GroupPresenter extends Base\AdminPresenter
             'forum_id'     => $forums,
             'group_id'     => $groups
         ];
-
+        
         $this->forums2groupsManager->addForums2group($group_id, $data);
     }
 

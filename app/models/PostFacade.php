@@ -220,10 +220,17 @@ class PostFacade
         
         $lastPostOfUser = $this->postsManager->getLastByUser($post->post_user_id);
 
-        $this->usersManager->update(
-            $post->post_user_id,
-            ArrayHash::from(['user_last_post_time' => $lastPostOfUser->post_add_time])
-        );
+        if ($lastPostOfUser) {
+            $this->usersManager->update(
+                $post->post_user_id,
+                ArrayHash::from(['user_last_post_time' => $lastPostOfUser->post_add_time])
+            );
+        } else {
+            $this->usersManager->update(
+                $post->post_user_id,
+                ArrayHash::from(['user_last_post_time' => 0])
+            );            
+        }
         
         return $res;
     }
