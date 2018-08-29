@@ -8,6 +8,7 @@
 
 namespace App\Models;
 
+use Dibi\Connection;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -18,6 +19,23 @@ use Nette\Utils\ArrayHash;
  */
 class RecountManager extends Manager
 {
+    /**
+     * @var UsersManager $usersManager
+     */
+    private $usersManager;
+
+    /**
+     * RecountManager constructor.
+     *
+     * @param Connection   $dibi
+     * @param UsersManager $usersManager
+     */
+    public function __construct(Connection $dibi, UsersManager $usersManager)
+    {
+        parent::__construct($dibi);
+
+        $this->usersManager = $usersManager;
+    }
 
     public function recountUsersPostCount()
     {
@@ -41,8 +59,8 @@ class RecountManager extends Manager
                 }
 
                 if ($post->post_count !== $user->user_post_count) {
-                    $this->dibi->update(
-                        self::USERS_TABLE,
+                    $this->usersManager->update(
+                        $user->user_id,
                         ArrayHash::from(['user_post_count' => $post->post_count])
                     );
                 }
@@ -72,8 +90,8 @@ class RecountManager extends Manager
                 }
 
                 if ($topic->topic_count !== $user->user_topic_count) {
-                    $this->dibi->update(
-                        self::USERS_TABLE,
+                    $this->usersManager->update(
+                        $user->user_id,
                         ArrayHash::from(['user_topic_count' => $topic->topic_count])
                     );
                 }
@@ -103,8 +121,8 @@ class RecountManager extends Manager
                 }
 
                 if ($topic->topic_count !== $user->user_topic_count) {
-                    $this->dibi->update(
-                        self::USERS_TABLE,
+                    $this->usersManager->update(
+                        $user->user_id,
                         ArrayHash::from(['user_thank_count' => $topic->topic_count])
                     );
                 }
