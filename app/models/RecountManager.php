@@ -41,7 +41,72 @@ class RecountManager extends Manager
                 }
 
                 if ($post->post_count !== $user->user_post_count) {
-                    $this->dibi->update(self::USERS_TABLE, ArrayHash::from(['user_post_count' => $post->post_count]));
+                    $this->dibi->update(
+                        self::USERS_TABLE,
+                        ArrayHash::from(['user_post_count' => $post->post_count])
+                    );
+                }
+            }
+        }
+    }
+
+    public function recountUsersTopicCount()
+    {
+        $topics = $this->dibi
+            ->select('COUNT(topic_id) as topic_count, topic_user_id')
+            ->from(self::TOPICS_TABLE)
+            ->groupBy('topic_user_id')
+            ->orderBy('topic_user_id')
+            ->fetchAll();
+
+        $users = $this->dibi
+            ->select('user_id, user_topic_count')
+            ->from(self::USERS_TABLE)
+            ->orderBy('user_id')
+            ->fetchAll();
+
+        foreach ($users as $user) {
+            foreach ($topics as $topic) {
+                if (!$user->user_id !== $topic->topic_user_id) {
+                    continue;
+                }
+
+                if ($topic->topic_count !== $user->user_topic_count) {
+                    $this->dibi->update(
+                        self::USERS_TABLE,
+                        ArrayHash::from(['user_topic_count' => $topic->topic_count])
+                    );
+                }
+            }
+        }
+    }
+
+    public function recountUsersTopicWatchCount()
+    {
+        $topics = $this->dibi
+            ->select('COUNT(thank_topic_id) as topic_thank_count, thank_user_id')
+            ->from(self::TOPIC_WATCH_TABLE)
+            ->groupBy('thank_user_id')
+            ->orderBy('thank_user_id')
+            ->fetchAll();
+
+        $users = $this->dibi
+            ->select('user_id, user_thank_count')
+            ->from(self::USERS_TABLE)
+            ->orderBy('user_id')
+            ->fetchAll();
+
+        foreach ($users as $user) {
+            foreach ($topics as $topic) {
+                if (!$user->user_id !== $topic->topic_user_id) {
+                    continue;
+                }
+
+                if ($topic->topic_count !== $user->user_topic_count) {
+                    $this->dibi->update(
+                        self::USERS_TABLE,
+                        ArrayHash::from(['user_thank_count' => $topic->topic_count])
+                    );
                 }
             }
         }
