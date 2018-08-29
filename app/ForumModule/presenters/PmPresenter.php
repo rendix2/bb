@@ -67,13 +67,13 @@ class PmPresenter extends CrudPresenter
     public function startup()
     {
         parent::startup();
-        
+
         $this->translator = $this->translatorFactory->forumTranslatorFactory();
-        
+
         $this->template->setTranslator($this->translator);
 
         $this->template->pm_count = $this->getManager()->getCountSent();
-    }   
+    }
 
     /**
      *

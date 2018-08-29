@@ -149,7 +149,7 @@ class PostFacade
     }
 
     /**
-     * @param $item_id
+     * @param int $item_id
      *
      * @return Result|int
      */

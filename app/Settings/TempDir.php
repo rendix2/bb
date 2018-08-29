@@ -9,12 +9,15 @@ namespace App\Settings;
  */
 class TempDir
 {
+    /**
+     * @var string $tempDir
+     */
     public $tempDir;
 
     /**
      * TempDir constructor.
      *
-     * @param $tempDir
+     * @param string $tempDir
      */
     public function __construct($tempDir)
     {

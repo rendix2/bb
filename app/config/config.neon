@@ -147,6 +147,8 @@ services:
     PMManager:
         class: \App\Models\PmManager
         inject: true
+    RecountManager:
+        class: App\Models\RecountManager
     Authenticator:
         class: App\Authenticator
     Authorizator:

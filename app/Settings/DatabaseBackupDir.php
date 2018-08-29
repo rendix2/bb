@@ -17,7 +17,7 @@ class DatabaseBackupDir
     /**
      * DatabaseBackupDir constructor.
      *
-     * @param $databaseBackupDir
+     * @param string $databaseBackupDir
      */
     public function __construct($databaseBackupDir)
     {

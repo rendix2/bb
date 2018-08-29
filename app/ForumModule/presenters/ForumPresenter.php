@@ -102,7 +102,10 @@ final class ForumPresenter extends Base\ForumPresenter
         }
         
         if ($q) {
-            $topics = $topics->where('topic_id IN ( SELECT post_topic_id FROM posts WHERE MATCH(post_title, post_text) AGAINST (%s IN BOOLEAN MODE) AND post_forum_id = %i) OR MATCH(topic_name) AGAINST (%s IN BOOLEAN MODE)', $q, $forum_id, $q);
+            //$topics = $topics->where('topic_id IN ( SELECT post_topic_id FROM posts WHERE MATCH(post_title,
+            // post_text) AGAINST (%s IN BOOLEAN MODE) AND post_forum_id = %i) OR MATCH(topic_name) AGAINST (%s IN BOOLEAN MODE)', $q, $forum_id, $q);
+
+            $topics = $this->topicManager->findTopic($topics, $q, $forum_id);
             $this['searchInForumForm']->setDefaults(['search_form' => $q]);
         }
         

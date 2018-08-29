@@ -141,4 +141,26 @@ class TopicsManager extends Crud\CrudManager
 
         return $this->add(ArrayHash::from($topic->toArray()));
     }
+
+    /**
+     * @param Fluent $fluent
+     * @param string $text
+     * @param int    $forum_id
+     *
+     * @return Fluent
+     *
+     */
+    public function findTopic(Fluent $fluent, $text, $forum_id)
+    {
+        $fluent = $fluent->where('topic_id IN',
+            $this->dibi
+                ->select('post_topic_id')
+                ->from(self::POSTS_TABLE)
+                ->where('(MATCH(post_title, post_text) AGAINST (%s IN BOOLEAN MODE)', $text)
+                ->where('[post_forum_id] = %i)', $forum_id)
+                ->where('1=1 OR MATCH(topic_name) AGAINST (%s IN BOOLEAN MODE)', $text)
+        );
+
+        return $fluent;
+    }
 }

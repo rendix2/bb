@@ -204,7 +204,7 @@ class PostsManager extends Crud\CrudManager
     }
 
     /**
-     * @param $user_id
+     * @param int $user_id
      *
      * @return Fluent
      */

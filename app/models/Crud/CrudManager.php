@@ -166,6 +166,31 @@ abstract class CrudManager extends Manager //implements ICrudManager
             ->from($this->table);
     }
 
+    /*
+     *
+    public function getAllFluent($columns = '*')
+    {
+        if ($columns === '*') {
+            return $this->dibi
+            ->select('*')
+            ->from($this->table);
+        } elseif (is_array($columns)) {
+            $fluent = new Fluent();
+
+            foreach ($columns as $column) {
+                $fluent = $fluent->select($column);
+            }
+
+            return $fluent->from($this->table);
+        } elseif (is_string($columns) && strpos($columns, ', ')) {
+            return $this->getAllFluent(explode(', ', $columns));
+        } else {
+            return $this->dibi->select($columns)->from($this->table);
+        }
+    }
+    *
+    */
+
     /**
      * @param string $second
      *

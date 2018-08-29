@@ -9,19 +9,24 @@ namespace App\Settings;
  */
 class Users
 {
-
+    /**
+     * @var array $user
+     */
     private $user;
 
     /**
      * Users constructor.
      *
-     * @param $user
+     * @param array $user
      */
-    public function __construct($user)
+    public function __construct(array $user)
     {
         $this->user = $user;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getUser()
     {
         return $this->user;

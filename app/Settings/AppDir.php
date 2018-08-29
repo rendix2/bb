@@ -18,7 +18,7 @@ class AppDir
     /**
      * AppDir constructor.
      *
-     * @param $appDir
+     * @param string $appDir
      */
     public function __construct($appDir)
     {
