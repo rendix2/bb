@@ -166,5 +166,21 @@ class ThanksManager extends Crud\CrudManager
             ->update($this->getTable(), $item_data)
             ->where('[thank_user_id] IN %in', $user_id)
             ->execute();                
-    }       
+    } 
+    
+    /**
+     * 
+     * @param array $user_ids
+     * @param int   $topic_id
+     * 
+     * @return type
+     */
+    public function deleteByUserAndTopic(array $user_ids, $topic_id)
+    {
+        return $this->dibi
+                ->delete($this->getTable())
+                ->where('[thank_user_id] IN %in', $user_ids)
+                ->where('[thank_topic_id] = %i', $topic_id)
+                ->execute();
+    }
 }

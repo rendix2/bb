@@ -51,8 +51,6 @@ abstract class AdminPresenter extends CrudPresenter
         parent::startup();
 
         $this->adminTranslator = $this->translatorFactory->adminTranslatorFactory();
-
-        //$this->topicFacade->mergeTwoTopics( 7, 8);
     }
 
     /**
