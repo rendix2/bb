@@ -5,7 +5,7 @@ namespace App\ForumModule\Presenters\Base;
 use App\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Models\Manager;
-use App\Presenters\Base\ManagerPresenter;
+use App\Presenters\Base\AuthenticatedPresenter;
 use Nette\Localization\ITranslator;
 
 /**
@@ -13,7 +13,7 @@ use Nette\Localization\ITranslator;
  *
  * @author rendix2
  */
-abstract class ForumPresenter extends ManagerPresenter
+abstract class ForumPresenter extends AuthenticatedPresenter
 {
     /**
      * Translator

@@ -47,6 +47,9 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      */
     const FRONT_END_NAMESPACE = 'frontend';
     
+    /**
+     * @var string
+     */
     const MODERATOR_END_SPACE = 'moderator';
     
     /**

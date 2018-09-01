@@ -6,7 +6,7 @@ use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
 use App\Models\Crud\CrudManager;
-use App\Presenters\Base\ManagerPresenter;
+use App\Presenters\Base\AuthenticatedPresenter;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -16,7 +16,7 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  * @method CrudManager getManager()
  */
-abstract class CrudPresenter extends ManagerPresenter
+abstract class CrudPresenter extends AuthenticatedPresenter
 {
     /**
      * @var string
