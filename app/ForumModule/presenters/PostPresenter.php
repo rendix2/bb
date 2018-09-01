@@ -106,6 +106,16 @@ class PostPresenter extends Base\ForumPresenter
                 IResponse::S403_FORBIDDEN
             );
         }
+        
+        $post = $this->getManager()->getById($post_id);
+        
+        if (!$post) {
+            $this->error('Post was not found.');
+        }
+        
+        if ($post->post_user_id !== $this->getUser()->getId()) {
+            $this->error('You are not author of post.', IResponse::S403_FORBIDDEN);
+        }
 
         $res = $this->postFacade->delete($post_id);
 
@@ -154,7 +164,11 @@ class PostPresenter extends Base\ForumPresenter
             if ($post->post_locked) {
                 $this->error('Post is locked.', IResponse::S403_FORBIDDEN);
             }
-        }
+            
+            if ($post->post_user_id !== $this->getUser()->getId()) {
+                $this->error('You are not author of post.', IResponse::S403_FORBIDDEN);
+            }
+        }        
 
         $this['editForm']->setDefaults($post);
     }
