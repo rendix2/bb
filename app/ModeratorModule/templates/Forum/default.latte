@@ -8,6 +8,10 @@
             <a href="{plink Topic:topics, $forum->forum_id}">{$forum->forum_id}</a>
         </td>
         <td>{$forum->forum_name}</td>
+        <td>
+            <a href="{plink Forum:edit, $forum->forum_id}">Editovat</a>
+        </td>
+            
     </tr>
 {/foreach}
 <table>

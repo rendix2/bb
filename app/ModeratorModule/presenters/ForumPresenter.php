@@ -21,7 +21,10 @@ class ForumPresenter  extends Base\ModeratorPresenter
 
     protected function createComponentEditForm()
     {
+        $form = \App\Controls\BootstrapForm::create();
+        $form->addTextArea('forum_rules', 'Forum rules:');
         
+        return $this->addSubmitB($form);
     }
-
+    
 }
