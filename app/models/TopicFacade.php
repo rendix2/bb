@@ -290,21 +290,21 @@ class TopicFacade
         if ($topic_from_id === $topic_target_id) {
             return false;
         }
-        
+
         $topicFrom   = $this->topicsManager->getById($topic_from_id);
         $topicTarget = $this->topicsManager->getById($topic_target_id);
-        
+
         if (!$topicFrom) {
             return false;
         }
-        
+
         if (!$topicTarget) {
             return false;
         }
-        
+
         $post_ids          = [];
         $thanksFromUsers   = [];
-        $thanksTargetUsers = [];                
+        $thanksTargetUsers = [];
         
         $posts  = $this->postsManager->getByTopic($topic_from_id);
         $thanks = $this->thanksManager->getThanksByTopic($topic_from_id);
@@ -315,7 +315,7 @@ class TopicFacade
 
         foreach ($thanks as $thanksFrom) {
             $thanksFromUsers[] = $thanksFrom->thank_user_id;
-        }        
+        }
               
         foreach ($targetThanks as $thanksTarget) {
             $thanksTargetUsers[] = $thanksTarget->thank_user_id;
@@ -323,43 +323,41 @@ class TopicFacade
         
         $same_thanks     = array_intersect($thanksTargetUsers, $thanksFromUsers);
         $misssing_thanks = array_diff($thanksFromUsers, $thanksTargetUsers);
-        
+
         $this->usersManager->updateMulti(
             $same_thanks,
             ArrayHash::from(['user_thank_count%sql' =>'user_thank_count - 1']
-        ));     
-        
-        $this->thanksManager->deleteByUserAndTopic($same_thanks, $topic_from_id); 
+        ));
+
+        $this->thanksManager->deleteByUserAndTopic($same_thanks, $topic_from_id);
         // thanks end
-        
+
         // topics watches begin
         $topicsWatchesFrom    = $this->topicWatchManager->getAllByLeft($topic_from_id);
         $topicsWatchesTarget  = $this->topicWatchManager->getAllByLeft($topic_target_id);
-        
+
         $topic_watch_from_user_ids   = [];
         $topic_watch_target_user_ids = [];
 
         foreach ($topicsWatchesFrom as $topicsWatchFrom) {
             $topic_watch_from_user_ids[] = $topicsWatchFrom->user_id;
         }
-        
+
         foreach ($topicsWatchesTarget as $topicWatchTarget) {
             $topic_watch_target_user_ids[] = $topicWatchTarget->user_id;
         }
-        
+
         $same_watches    = array_intersect($topic_watch_from_user_ids, $topic_watch_target_user_ids);
         $missing_watches = array_diff($topic_watch_target_user_ids, $topic_watch_from_user_ids);
-        
+
         $this->usersManager->updateMulti(
             $same_watches,
             ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1'])
-        );        
-                      
-        // topics watches end
+        );
 
-        $this->usersManager->update($topicFrom->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
-        $this->topicsManager->update($topic_target_id, ArrayHash::from(['topic_view_count%sql' => 'topic_view_count + ' . $topicFrom->topic_view_count]));
-        $this->thanksManager->updateMultiByUser($misssing_thanks, ArrayHash::from(['thank_topic_id' => $topic_target_id]));        
+        // topics watches
+
+        $this->thanksManager->updateMultiByUser($misssing_thanks, ArrayHash::from(['thank_topic_id' => $topic_target_id]));
         $this->forumsManager->update($topicFrom->topic_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
         $this->thanksManager->deleteByTopic($topic_from_id);
         $this->reportsManager->updateByTopic($topic_from_id, ArrayHash::from(['report_topic_id' => $topic_target_id, 'report_forum_id' => $topicTarget->topic_forum_id]));
@@ -382,17 +380,16 @@ class TopicFacade
      */
     public function mergeWithPosts($topic_target_id, array $post_ids)
     {
-        $this->postsManager->updateMulti($post_ids, ArrayHash::from(['post_topic_id' => $topic_target_id]));        
+        $this->postsManager->updateMulti($post_ids, ArrayHash::from(['post_topic_id' => $topic_target_id]));
         $last_post  = $this->postsManager->getLastByTopic($topic_target_id);
         $first_post = $this->postsManager->getFirstByTopic($topic_target_id);
 
-        return $this->topicsManager->update(
-            $topic_target_id, ArrayHash::from([
-                'topic_post_count%sql'     => 'topic_post_count + '. count($post_ids),
-                'topic_first_post_id'      => $first_post->post_id,
-                'topic_first_user_id'      => $first_post->post_user_id,                
-                'topic_last_post_id'       => $last_post->post_id,
-                'topic_last_user_id'       => $last_post->post_user_id,])
-            );
+        return $this->topicsManager->update($topic_target_id, ArrayHash::from([
+            'topic_post_count%sql' => 'topic_post_count + ' . count($post_ids),
+            'topic_first_post_id'  => $first_post->post_id,
+            'topic_first_user_id'  => $first_post->post_user_id,
+            'topic_last_post_id'   => $last_post->post_id,
+            'topic_last_user_id'   => $last_post->post_user_id,
+        ]));
     }
 }
