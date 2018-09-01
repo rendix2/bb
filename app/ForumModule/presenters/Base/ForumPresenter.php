@@ -33,6 +33,8 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      * @inject
      */
     public $pmManager;
+    
+    private $manager;
 
     /**
      * ForumPresenter constructor.
@@ -41,7 +43,18 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      */
     public function __construct(Manager $manager)
     {
-        parent::__construct($manager);
+        parent::__construct();
+        
+        $this->manager = $manager;
+    }
+    
+    /**
+     * 
+     * @return Manager
+     */
+    public function getManager()
+    {
+        return $this->manager;
     }
 
     /**

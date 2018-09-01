@@ -14,7 +14,6 @@ use Nette\Utils\ArrayHash;
  * Description of CrudPresenter
  *
  * @author rendix2
- * @method CrudManager getManager()
  */
 abstract class CrudPresenter extends AuthenticatedPresenter
 {
@@ -47,6 +46,12 @@ abstract class CrudPresenter extends AuthenticatedPresenter
      * @var string $title
      */
     private $title;
+    
+    /**
+     *
+     * @var CrudManager $manager
+     */
+    private $manager;
 
     /**
      * @return mixed
@@ -60,7 +65,18 @@ abstract class CrudPresenter extends AuthenticatedPresenter
      */
     public function __construct(CrudManager $manager)
     {
-        parent::__construct($manager);
+        parent::__construct();
+        
+        $this->manager = $manager;
+    }
+    
+    /**
+     * 
+     * @return CrudManager
+     */
+    public function getManager()
+    {
+        return $this->manager;
     }
 
     /**
