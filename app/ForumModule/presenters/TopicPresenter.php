@@ -477,6 +477,6 @@ class TopicPresenter extends Base\ForumPresenter
             }
         }
 
-        $this->redirect('Topic:default', $forum_id, $topic_id, $page);
+        $this->redirect('Forum:default', $forum_id, $page);
     }
 }
