@@ -150,7 +150,7 @@
                         <div class="card-block p-3">
                             {$post->post_text}
                             <br>
-                            <hr>
+                            {$signatureDelimiter|noescape}
                             <div>
                                 <h6>{$post->user_signature}</h6>
                             </div>

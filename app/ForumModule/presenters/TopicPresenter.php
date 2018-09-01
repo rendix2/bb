@@ -102,6 +102,13 @@ class TopicPresenter extends Base\ForumPresenter
      * @inject
      */
     public $reportManager;
+    
+    /**
+     *
+     * @var \App\Settings\PostSetting $postSettings
+     * @inject
+     */
+    public $postSettings;
 
     /**
      *
@@ -247,6 +254,8 @@ class TopicPresenter extends Base\ForumPresenter
         $this->template->thanks     = $this->thanksManager->getThanksJoinedUserByTopic($topic_id);
         $this->template->forum      = $forum;
         $this->template->topic      = $topic;
+        
+        $this->template->signatureDelimiter = $this->postSettings->get()['signatureDelimiter'];
     }
 
     /**

@@ -52,7 +52,7 @@ parameters:
         maxLength: 100000 # int or null
         minUserTimeInterval: 20
         minDoublePostTimeInterval: 300 # this value must be bigger than minUserTimeInterval
-        signatureDelimiter: "----------------------------"
+        signatureDelimiter: "<hr>"
     users:
         cache:
             lastUser: 1 hour
