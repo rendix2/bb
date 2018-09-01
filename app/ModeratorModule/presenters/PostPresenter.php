@@ -15,6 +15,7 @@ use Nette\Utils\ArrayHash;
  * Description of PostPresenter
  *
  * @author rendix2
+ * @method PostsManager getManager()
  */
 class PostPresenter extends ModeratorPresenter
 {
@@ -139,5 +140,10 @@ class PostPresenter extends ModeratorPresenter
         }
         
         $this->redirect('this');
+    }
+    
+    public function renderPosts($topic_id)
+    {
+        $this->template->posts = $this->getManager()->getByTopic($topic_id)->fetchAll();
     }
 }

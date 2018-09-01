@@ -39,7 +39,7 @@
                     <a class="nav-link" href="{link User:list}">{_menu_users}</a>
                 </li>
                 <li class="nav-item {if $presenter->getName() === 'Forum:Pm'}active{/if}">
-                    <a class="nav-link" href="{link Pm:default}">{_menu_pms} {if $pm_count}({$pm_count}){/if}</a>
+                    <a class="nav-link" href="{link Pm:default}">{_menu_pms} {if isset($pm_count) && $pm_count}({$pm_count}){/if}</a>
                 </li>                
                 <li class="nav-item">
                     <a class="nav-link" href="{link User:logout}">{_logout}</a>
@@ -60,6 +60,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{link :Admin:Index:default}">{_admin}</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{link :Moderator:Index:default}">{_moderator}</a>
+                </li>
+                
             </ul>
         {/if}
     </div>

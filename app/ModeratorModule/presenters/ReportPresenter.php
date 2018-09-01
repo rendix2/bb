@@ -34,4 +34,21 @@ class ReportPresenter extends ModeratorPresenter
         
         return $this->addSubmitB($form);
     }
+    
+    protected function createComponentGridFilter()
+    {
+        $this->gf->setTranslator($this->getTranslator());
+        
+        $gf = $this->gf;
+        $gf->addFilter('report_id', 'report_id', \App\Controls\GridFilter::INT_EQUAL);
+        $gf->addFilter('report_time', 'report_time', \App\Controls\GridFilter::DATE_TIME);
+        $gf->addFilter('user_name', 'user_name', \App\Controls\GridFilter::TEXT_LIKE);
+        $gf->addFilter('forum_name', 'forum_name', \App\Controls\GridFilter::TEXT_LIKE);        
+        $gf->addFilter('topic_name', 'topic_name', \App\Controls\GridFilter::TEXT_LIKE);
+        $gf->addFilter('post_title', 'post_title', \App\Controls\GridFilter::TEXT_LIKE);
+        $gf->addFilter(null, null, \App\Controls\GridFilter::NOTHING);
+        
+        
+        return $gf;
+    }
 }

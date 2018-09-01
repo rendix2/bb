@@ -27,22 +27,23 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{plink User:logout}">{_logout}</a>
                 </li>
+                
                 <li class="nav-item">
-                    <a class="nav-link" href="{plink Post:default}">{_menu_posts}</a>
+                    <a class="nav-link" href="{plink Forum:default}">{_menu_forums}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{plink Topic:default}">{_menu_topics}</a>
-                </li>     
+                </li>                  
+                <li class="nav-item">
+                    <a class="nav-link" href="{plink Post:default}">{_menu_posts}</a>
+                </li>   
                 <li class="nav-item">
                     <a class="nav-link" href="{plink Report:default}">{_menu_reports}</a>
                 </li>                 
             {else}
-                <li class="nav-item">
-                    <a class="nav-link" href="{link Login:default}">{_login}</a>
-                </li>
                 
                 <li class="nav-item">
-                    <a class="nav-link" href="{link Register:default}">{_register}</a>
+                    <a class="nav-link" href="{plink :Moderator:User:login}">{_login}</a>
                 </li>                
             {/if}
         </ul>

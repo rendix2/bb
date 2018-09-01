@@ -1,0 +1,8 @@
+{block content}
+<div>
+    {foreach $posts as $post}
+        <div>{$post->post_text} <a href="{plink Post:edit, $post->post_id}">Moderovat</a> </div><br>
+    {/foreach}   
+    <div>
+
+{/block}

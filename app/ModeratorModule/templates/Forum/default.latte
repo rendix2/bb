@@ -1,0 +1,13 @@
+{block content}
+
+<table>
+    
+{foreach $forums as $forum}
+    <tr>
+        <td>
+            <a href="{plink Topic:topics, $forum->forum_id}">{$forum->forum_id}</a>
+        </td>
+        <td>{$forum->forum_name}</td>
+    </tr>
+{/foreach}
+<table>

@@ -5,6 +5,7 @@ namespace App\ModeratorModule\Presenters;
 use App\Controls\BootstrapForm;
 use App\Models\ForumsManager;
 use App\Models\TopicsManager;
+use App\Models\TopicFacade;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -13,6 +14,7 @@ use Nette\Utils\ArrayHash;
  * Description of TopicPresenter
  *
  * @author rendix2
+ * @method TopicsManager getManager()
  */
 class TopicPresenter extends ModeratorPresenter
 {
@@ -21,6 +23,13 @@ class TopicPresenter extends ModeratorPresenter
      * @inject
      */
     public $forumsManager;
+    
+    /**
+     *
+     * @var TopicFacade $topicFacade
+     * @inject
+     */
+    public $topicFacade;
 
     /**
      * TopicPresenter constructor.
@@ -92,4 +101,31 @@ class TopicPresenter extends ModeratorPresenter
     public function changeTopicAuthorSuccess(Form $form, ArrayHash $values)
     {
     }
+    
+    
+    protected function createComponentMergeTopics()
+    {
+        $form = BootstrapForm::create();
+        
+        $form->addSelect('topic_from_id', 'Topic from', $items);
+        $form->addSelect('topic_target_id', 'Topic target', $items);
+        
+        $form->addSubmit('send', 'Merge topic');
+        $form->onSuccess[] = [$this, 'mergeTopicSuccess'];
+        
+        return $form;
+    }
+    
+    public function mergeTopicSuccess(Form $form, ArrayHash $values)
+    {
+        $this->topicFacade->mergeTwoTopics($values->topic_from_id, $values->topic_target_id);
+        
+        $this->flashMessage('Topics was merged.', self::FLASH_MESSAGE_SUCCESS);
+    }
+    
+    public function renderTopics($forum_id)
+    {
+        $this->template->topics = $this->getManager()->getAllTopicsByForum($forum_id);
+    }
+    
 }

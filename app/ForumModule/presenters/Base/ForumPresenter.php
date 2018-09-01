@@ -84,7 +84,7 @@ abstract class ForumPresenter extends ManagerPresenter
         $user = $this->getUser();
         
         $user->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
-        
+             
         parent::checkRequirements($element);
     }
 

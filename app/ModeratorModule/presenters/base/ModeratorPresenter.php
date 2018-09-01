@@ -8,6 +8,7 @@ use App\Authorization\Scopes\Topic;
 use App\Authorization\Scopes\User;
 use App\Presenters\crud\CrudPresenter;
 use Nette\Localization\ITranslator;
+use App\Models\ModeratorsManager;
 
 /**
  * Description of ModeratorPresenter
@@ -29,6 +30,14 @@ abstract class ModeratorPresenter extends CrudPresenter
     public $authorizator;
     
     /**
+     *
+     * @var ModeratorsManager $moderatorsManager
+     * @inject
+     */
+    public $moderatorsManager;
+
+
+    /**
      * @return ITranslator
      */
     public function getTranslator()
@@ -41,9 +50,9 @@ abstract class ModeratorPresenter extends CrudPresenter
      */
     public function checkRequirements($element)
     {
-        parent::checkRequirements($element);
-        
         $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
+        
+        parent::checkRequirements($element);
     }
 
     /**
@@ -59,7 +68,7 @@ abstract class ModeratorPresenter extends CrudPresenter
         $topic = new Topic($user, $forum);
         
         $enabledRoles = ['admin', 'juniorAdmin', 'moderator'];
-
+        
         /*
         if ( !$this->getUser()->isInRole('admin') || !$this->getUser()->isInRole('moderator')) {
             $this->error('You are not in moderator role!s');
@@ -80,6 +89,7 @@ abstract class ModeratorPresenter extends CrudPresenter
         }
         
         $this->translator = $this->translatorFactory->forumTranslatorFactory();
+        //$this->template->setTranslator($this->translator);
     }
 
     /**

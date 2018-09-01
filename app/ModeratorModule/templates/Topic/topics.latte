@@ -1,0 +1,22 @@
+{block content}
+
+<table>
+    {foreach $topics as $topic}
+        <tr>
+            <td>{$topic->topic_id}</td>
+            <td>{$topic->topic_name}</td>
+            <td>
+                <a href="{plink Post:posts, $topic->topic_id}">Příspěvky</a>
+            </td>
+            <td>
+                <a href="{plink :Forum:Topic:default $topic->topic_forum_id, $topic->topic_id}">Prohlídnout</a>
+            <td>
+                <a href="{plink Topic:edit, $topic->topic_id}">Moderovat</a>                
+            </td>
+            <td>
+                <a href="{plink Topic:delete, $topic->topic_id}">Smazat</a>
+            </td>
+        </tr>
+    {/foreach}
+</table>
+{/block}
