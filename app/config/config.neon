@@ -133,6 +133,10 @@ services:
         class: App\Models\ModeratorsManager
     FaqManager:
         class: App\Models\FaqManager
+    FaqAnswersManager:
+        class: App\Models\FaqAnswersManager
+    FaqFacade:
+        class: App\Models\FaqFacade
     BanManager:
         class: App\Models\BansManager
     SmilesManager:
