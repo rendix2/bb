@@ -18,6 +18,7 @@
                     <th>{_user_role}</th>
                     <th>{_user_posts_per_day}</th>
                     <th>{_user_topics_per_day}</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -44,8 +45,11 @@
                         {/if}
                     </td>
                     <td>{$roles[$userData->user_role_id]}</td>
-                    <td>{$userData->user_post_count/$runningDays}
-                    <td>{$userData->user_topic_count/$runningDays}
+                    <td>{$userData->user_post_count/$runningDays}</td>
+                    <td>{$userData->user_topic_count/$runningDays}</td>
+                    <td>
+                        <a href="{link report, $userData->user_id}">{_user_report}</a>
+                    </td>
                 </tr>
             </tbody>
         </table>

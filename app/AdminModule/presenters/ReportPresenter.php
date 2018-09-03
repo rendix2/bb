@@ -35,10 +35,11 @@ class ReportPresenter extends Base\AdminPresenter
             
         $this->gf->addFilter('report_id', 'report_id', GridFilter::INT_EQUAL);
         $this->gf->addFilter('report_time', 'report_time', GridFilter::TEXT_LIKE);
-        $this->gf->addFilter('user_name', 'report_user', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('user_name', 'reporter_user_name', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('forum_name', 'report_forum', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('topic_name', 'report_topic', GridFilter::TEXT_LIKE);
-        $this->gf->addFilter('post_title', 'report_post', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('post_title', 'report_post', GridFilter::TEXT_LIKE);        
+        $this->gf->addFilter('reported_user_name', 'reported_user_name', GridFilter::TEXT_LIKE);
         $this->gf->addFilter(
             'report_status',
             'report_status',

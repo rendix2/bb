@@ -19,19 +19,24 @@ class ReportsManager extends Crud\CrudManager
      */
     public function getAllFluent()
     {
-        return parent::getAllFluent()
-            ->innerJoin(self::FORUM_TABLE)
+        return $this->dibi->select('r.*, u.*, f.*, t.*, p.* , u2.user_id AS reported_user_id, u2.user_name as reported_user_name')
+            ->from($this->getTable())
+            ->as('r')    
+            ->leftJoin(self::FORUM_TABLE)
             ->as('f')
             ->on('[f.forum_id] = [report_forum_id]')
             ->leftJoin(self::TOPICS_TABLE)
             ->as('t')
-            ->on('[report_topic_id] = t.topic_id')
+            ->on('[r.report_topic_id] = [t.topic_id]')
             ->leftJoin(self::USERS_TABLE)
             ->as('u')
-            ->on('report_user_id = u.user_id')
+            ->on('[r.report_user_id] = [u.user_id]')
             ->leftJoin(self::POSTS_TABLE)
             ->as('p')
-            ->on('report_post_id = p.post_id');
+            ->on('[r.report_post_id] = [p.post_id]')
+            ->leftJoin(self::USERS_TABLE)
+            ->as('u2')
+            ->on('[r.report_reported_user_id] = [u2.user_id]');
     }
 
     /**

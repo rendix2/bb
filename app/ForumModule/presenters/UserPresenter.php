@@ -18,6 +18,7 @@ use App\Models\LanguagesManager;
 use App\Models\ModeratorsManager;
 use App\Models\PostsManager;
 use App\Models\RanksManager;
+use App\Models\ReportsManager;
 use App\Models\ThanksManager;
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
@@ -132,6 +133,13 @@ class UserPresenter extends Base\ForumPresenter
      * @inject
      */
     public $users;
+    
+    /**
+     *
+     * @var ReportsManager $reportsManager
+     * @inject
+     */
+    public $reportsManager;
 
     /**
      * UserPresenter constructor.
@@ -484,6 +492,25 @@ class UserPresenter extends Base\ForumPresenter
     public function renderSendMailToAdmin()
     {
         // TODO
+    }
+    
+    public function actionReport($user_id)
+    {
+        $data = [
+            'report_user_id'          => $this->getUser()->getId(),
+            'report_reported_user_id' => $user_id,
+            'report_time'             => time()
+        ];
+        
+        $res = $this->reportsManager->add(ArrayHash::from($data));
+      
+        if ($res) {
+            $this->flashMessage('User was reported.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('User was not reported.', self::FLASH_MESSAGE_DANGER);
+        }
+        
+        $this->redirect('User:profile', $user_id);
     }
 
     /**
