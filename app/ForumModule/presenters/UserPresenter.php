@@ -496,20 +496,44 @@ class UserPresenter extends Base\ForumPresenter
     
     public function actionReport($user_id)
     {
+    }
+
+    /**
+     * @return BootstrapForm
+     */
+    protected function createComponentReportUserForm()
+    {
+        $form = BootstrapForm::create();
+
+        $form->addTextArea('report_text', 'report_text');
+        $form->addSubmit('send', 'Report');
+        $form->onSuccess[] = [$this, 'reportUserSuccess'];
+
+        return $form;
+    }
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function reportUserSuccess(Form $form, ArrayHash $values)
+    {
+        $user_id = $this->getParameter('user_id');
+
         $data = [
             'report_user_id'          => $this->getUser()->getId(),
             'report_reported_user_id' => $user_id,
             'report_time'             => time()
         ];
-        
+
         $res = $this->reportsManager->add(ArrayHash::from($data));
-      
+
         if ($res) {
             $this->flashMessage('User was reported.', self::FLASH_MESSAGE_SUCCESS);
         } else {
             $this->flashMessage('User was not reported.', self::FLASH_MESSAGE_DANGER);
         }
-        
+
         $this->redirect('User:profile', $user_id);
     }
 
