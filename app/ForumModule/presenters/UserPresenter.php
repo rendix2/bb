@@ -27,6 +27,7 @@ use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
 use App\Settings\Avatars;
 use App\Settings\Ranks;
+use App\Settings\Users;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -129,7 +130,7 @@ class UserPresenter extends Base\ForumPresenter
 
     /**
      *
-     * @var \App\Settings\Users $users
+     * @var Users $users
      * @inject
      */
     public $users;
@@ -165,15 +166,10 @@ class UserPresenter extends Base\ForumPresenter
 
             if ($can) {
                 $this->getManager()
-                    ->update(
-                        $user_id,
-                        ArrayHash::from(
-                            [
-                                'user_active'         => 1,
-                                'user_activation_key' => null
-                            ]
-                        )
-                    );
+                    ->update($user_id, ArrayHash::from([
+                            'user_active'         => 1,
+                            'user_activation_key' => null
+                        ]));
                 $this->flashMessage('You have been activated.', self::FLASH_MESSAGE_SUCCESS);
                 $this->redirect('Login:default');
             } else {
