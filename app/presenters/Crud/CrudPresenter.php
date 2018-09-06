@@ -135,7 +135,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     protected function addSubmit(Form $form)
     {
         $form->addSubmit('Send', 'Send');
-        $form->onSuccess[] = [$this, self::FORM_ON_SUCCESS];
+        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
         $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
 
         return $form;
@@ -149,7 +149,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     protected function addSubmitB(BootstrapForm $form)
     {
         $form->addSubmit('Send', 'Send');
-        $form->onSuccess[] = [$this, self::FORM_ON_SUCCESS];
+        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
         $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
 
         return $form;
@@ -239,8 +239,8 @@ abstract class CrudPresenter extends AuthenticatedPresenter
         $paginator = new PaginatorControl($items, static::ITEMS_PER_PAGE, 5, $page);
         $this->addComponent($paginator, 'paginator');
         
-        if (!$paginator->getCount()) {
-            $this->flashMessage('No '.$this->getTitle().'.', self::FLASH_MESSAGE_DANGER);
+        if (!$paginator->getCount()) {           
+            $this->flashMessage(sprintf('No %s.', $this->getTitle()), self::FLASH_MESSAGE_DANGER);
         }
        
         $this->template->items      = $items->fetchAll();
@@ -265,7 +265,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
             }
 
             $this[self::FORM_NAME]->setDefaults($item);
-
+            
             $this->template->item_id = $id;
             $this->template->item    = $item;
             $this->template->title   = $this->getTitleOnEdit();

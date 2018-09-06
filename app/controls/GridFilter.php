@@ -277,8 +277,6 @@ class GridFilter extends Control
                 
                 break;
         }
-        
-        \Tracy\Debugger::barDump($this->type, 'TYPEEE');
     }
 
     /**
