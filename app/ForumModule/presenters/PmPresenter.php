@@ -138,6 +138,8 @@ class PmPresenter extends CrudPresenter
      */
     public function reportFormSuccess(Form $form, ArrayHash $values)
     {
+        $values->report_pm_id = $this->getParameter('pm_id');
+
         $res = $this->reportsManager->add($values);
 
         if ($res) {
