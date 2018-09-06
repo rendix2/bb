@@ -8,6 +8,7 @@ use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\UserSearchControl;
 use App\Models\PmManager;
+use App\Models\ReportsManager;
 use App\Models\UsersManager;
 use App\Presenters\crud\CrudPresenter;
 use Nette\Application\UI\Form;
@@ -33,6 +34,11 @@ class PmPresenter extends CrudPresenter
      * @inject
      */
     public $usersManager;
+    /**
+     * @var ReportsManager $reportsManager
+     * @inject
+     */
+    public $reportsManager;
     
     /**
      *
@@ -103,6 +109,44 @@ class PmPresenter extends CrudPresenter
         if ($this->template->item->pm_status === 'sent') {
             $this->getManager()->update($id, ArrayHash::from(['pm_status' => 'read']));
         }
+    }
+
+    /**
+     * @param int $pm_id
+     */
+    public function renderReport($pm_id)
+    {
+    }
+
+    /**
+     *
+     */
+    protected function createComponentReportForm()
+    {
+        $form = BootstrapForm::create();
+
+        $form->addTextArea('report_text', 'Report text:');
+        $form->addSubmit('send', 'Report PM');
+        $form->onSuccess = [$this, 'reportFormSuccess'];
+
+        return $form;
+    }
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
+    public function reportFormSuccess(Form $form, ArrayHash $values)
+    {
+        $res = $this->reportsManager->add($values);
+
+        if ($res) {
+            $this->flashMessage('PM was reported.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('PM was not reported.', self::FLASH_MESSAGE_DANGER);
+        }
+
+        $this->redirect('this');
     }
     
     /**
