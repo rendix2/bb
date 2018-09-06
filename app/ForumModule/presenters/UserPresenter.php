@@ -501,9 +501,10 @@ class UserPresenter extends Base\ForumPresenter
     protected function createComponentReportUserForm()
     {
         $form = BootstrapForm::create();
+        $form->setTranslator($this->translatorFactory->forumTranslatorFactory());
 
-        $form->addTextArea('report_text', 'report_text');
-        $form->addSubmit('send', 'Report');
+        $form->addTextArea('report_text', 'Report text:');
+        $form->addSubmit('send', 'Report user');
         $form->onSuccess[] = [$this, 'reportUserSuccess'];
 
         return $form;
@@ -760,4 +761,20 @@ class UserPresenter extends Base\ForumPresenter
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
+    
+    /**
+     *
+     * @return BreadCrumbControl
+     */
+    protected function createComponentBreadCrumbReport()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            2 => ['link' => 'User:profile', 'params' => [$this->getParameter('user_id')], 'text' => 'menu_user'],
+            3 => ['text' => 'Report user']
+        ];
+
+        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+    }    
 }
