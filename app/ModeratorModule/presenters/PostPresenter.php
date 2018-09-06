@@ -26,7 +26,7 @@ class PostPresenter extends ModeratorPresenter
     public $usersManager;
     
     /**
-     * @var TopicsManager
+     * @var TopicsManager $topicsManager
      * @inject
      */
     public $topicsManager;
@@ -141,7 +141,10 @@ class PostPresenter extends ModeratorPresenter
         
         $this->redirect('this');
     }
-    
+
+    /**
+     * @param int $topic_id
+     */
     public function renderPosts($topic_id)
     {
         $this->template->posts = $this->getManager()->getByTopic($topic_id)->fetchAll();

@@ -30,6 +30,7 @@ use App\Settings\Ranks;
 use App\Settings\Users;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\DateTime;
 
 /**
  * Description of UserProfilePresenter
@@ -193,7 +194,7 @@ class UserPresenter extends Base\ForumPresenter
      */
     public function actionLogout()
     {
-        $this->sessionManager->deleteBySession($this->getSession()->getId());
+        $this->sessionsManager->deleteBySession($this->getSession()->getId());
         $this->getUser()->logout(true);
 
         $this->flashMessage('Successfully logged out.', self::FLASH_MESSAGE_SUCCESS);
@@ -317,8 +318,8 @@ class UserPresenter extends Base\ForumPresenter
             }
         }
         
-        $reg = \Nette\Utils\DateTime::from($userData->user_register_time);
-        $now = new \Nette\Utils\DateTime();
+        $reg = DateTime::from($userData->user_register_time);
+        $now = new DateTime();
         
         $this->template->ranksDir        = $this->rank->getTemplateDir();
         $this->template->avatarsDir      = $this->avatar->getTemplateDir();

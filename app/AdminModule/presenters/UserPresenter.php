@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Authenticator;
 use App\Authorizator;
 use App\Controls\BootstrapForm;
@@ -29,8 +30,9 @@ use Nette\Utils\ArrayHash;
  * Description of UserPresenter
  *
  * @author rendix2
+ * @method UsersManager getManager()
  */
-class UserPresenter extends Base\AdminPresenter
+class UserPresenter extends AdminPresenter
 {
     /**
      * @var LanguagesManager $languagesManager

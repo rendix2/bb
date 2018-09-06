@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
@@ -12,8 +13,9 @@ use App\Models\UsersManager;
  * Description of LanguagePresenter
  *
  * @author rendix2
+ * @method LanguagesManager getManager()
  */
-class LanguagePresenter extends Base\AdminPresenter
+class LanguagePresenter extends AdminPresenter
 {
     /**
      * @var UsersManager $userManager

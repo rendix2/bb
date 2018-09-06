@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\PaginatorControl;
 use App\Settings\Avatars;
 use App\Models\UsersManager;
@@ -13,7 +14,7 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  * @method UsersManager getManager()
  */
-class AvatarPresenter extends Base\AdminPresenter
+class AvatarPresenter extends AdminPresenter
 {
     /**
      *

@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BreadCrumbControl;
 use App\Models\SmilesManager;
 
@@ -9,8 +10,9 @@ use App\Models\SmilesManager;
  * Description of SmiliesPresenter
  *
  * @author rendix2
+ * @method SmilesManager getManager()
  */
-class SmiliesPresenter extends Base\AdminPresenter
+class SmiliesPresenter extends AdminPresenter
 {
     /**
      * SmiliesPresenter constructor.

@@ -28,7 +28,7 @@ class Authorizator
     private $acl;
 
     /**
-     * @var Models\ForumsManager $forumManager
+     * @var ForumsManager $forumManager
      */
     private $forumManager;
 

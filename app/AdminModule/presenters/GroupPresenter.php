@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
@@ -18,8 +19,9 @@ use Nette\Utils\ArrayHash;
  * Description of GroupPresenter
  *
  * @author rendix2
+ * @method GroupsManager getManager()
  */
-class GroupPresenter extends Base\AdminPresenter
+class GroupPresenter extends AdminPresenter
 {
     /**
      * @var Users2GroupsManager $users2Groups

@@ -5,6 +5,7 @@ namespace App\AdminModule\Presenters;
 use App\Authenticator;
 use App\Controls\BootstrapForm;
 use App\Forms\UserLoginForm;
+use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
 use App\Translator;
 use Nette\Application\UI\Form;
@@ -18,7 +19,7 @@ use App\Models\SessionsManager;
  *
  * @author rendix2
  */
-class LoginPresenter extends \App\Presenters\Base\BasePresenter
+class LoginPresenter extends BasePresenter
 {
     /**
      * @persistent

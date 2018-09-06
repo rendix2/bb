@@ -11,12 +11,14 @@ use App\Models\ForumsManager;
 use App\Models\PostFacade;
 use App\Models\PostsManager;
 use App\Models\RanksManager;
+use App\Models\ReportsManager;
 use App\Models\ThanksFacade;
 use App\Models\ThanksManager;
 use App\Models\TopicFacade;
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
 use App\Settings\Avatars;
+use App\Settings\PostSetting;
 use App\Settings\TopicsSetting;
 use dibi;
 use Nette\Application\UI\Form;
@@ -98,14 +100,14 @@ class TopicPresenter extends Base\ForumPresenter
     
     /**
      *
-     * @var \App\Models\ReportsManager $reportManager
+     * @var ReportsManager $reportManager
      * @inject
      */
     public $reportManager;
     
     /**
      *
-     * @var \App\Settings\PostSetting $postSettings
+     * @var PostSetting $postSettings
      * @inject
      */
     public $postSettings;

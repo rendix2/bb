@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
@@ -18,8 +19,9 @@ use App\Controls\BreadCrumbControl;
  * Description of EmailPresenter
  *
  * @author rendix2
+ * @method MailsManager getManager()
  */
-class EmailPresenter extends Base\AdminPresenter
+class EmailPresenter extends AdminPresenter
 {
     /**
      *

@@ -168,7 +168,7 @@ class PostPresenter extends Base\ForumPresenter
             if ($post->post_user_id !== $this->getUser()->getId()) {
                 $this->error('You are not author of post.', IResponse::S403_FORBIDDEN);
             }
-        }        
+        }
 
         $this['editForm']->setDefaults($post);
     }

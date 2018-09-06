@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
@@ -16,7 +17,7 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  * @method RanksManager getManager()
  */
-class RankPresenter extends Base\AdminPresenter
+class RankPresenter extends AdminPresenter
 {
     /**
      * @var int

@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Models\BansManager;
 use App\Controls\GridFilter;
@@ -11,8 +12,9 @@ use App\Controls\BreadCrumbControl;
  * Description of BanPresenter
  *
  * @author rendix2
+ * @method BansManager getManager()
  */
-class BanPresenter extends Base\AdminPresenter
+class BanPresenter extends AdminPresenter
 {
     /**
      * BanPresenter constructor.

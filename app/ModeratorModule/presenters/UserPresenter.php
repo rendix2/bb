@@ -9,6 +9,7 @@ use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
  * Description of UserPresenter
  *
  * @author rendix2
+ * @method UsersManager getManager()
  */
 class UserPresenter extends ModeratorPresenter
 {
@@ -22,12 +23,11 @@ class UserPresenter extends ModeratorPresenter
         parent::__construct($manager);
     }
 
-        //put your code here
-
     /**
      * @return mixed|void
      */
     protected function createComponentEditForm()
     {
+        return null;
     }
 }

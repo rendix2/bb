@@ -5,6 +5,7 @@ namespace App\ForumModule\Presenters\Base;
 use App\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Models\Manager;
+use App\Models\PmManager;
 use App\Presenters\Base\AuthenticatedPresenter;
 use Nette\Localization\ITranslator;
 
@@ -29,11 +30,14 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     public $authorizator;
     
     /**
-     * @var \App\Models\PmManager $pmManager
+     * @var PmManager $pmManager
      * @inject
      */
     public $pmManager;
-    
+
+    /**
+     * @var Manager $manager
+     */
     private $manager;
 
     /**
@@ -49,7 +53,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     }
     
     /**
-     * 
+     *
      * @return Manager
      */
     public function getManager()

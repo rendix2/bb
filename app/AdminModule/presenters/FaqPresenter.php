@@ -2,14 +2,16 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Models\FaqManager;
 
 /**
  * Description of FaqPresenter
  *
  * @author rendix2
+ * @method FaqManager getManager()
  */
-class FaqPresenter extends Base\AdminPresenter
+class FaqPresenter extends AdminPresenter
 {
     /**
      * FaqPresenter constructor.

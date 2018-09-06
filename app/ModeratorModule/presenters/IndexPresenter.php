@@ -4,6 +4,7 @@ namespace App\ModeratorModule\Presenters;
 
 use App\Models\PostsManager;
 use App\Presenters\Base\BasePresenter;
+use Nette\Localization\ITranslator;
 
 /**
  * Description of IndexPresenter
@@ -38,7 +39,7 @@ class IndexPresenter extends BasePresenter
         parent::checkRequirements($element);
     }
 
-        /**
+    /**
      *
      */
     public function startup()
@@ -50,7 +51,7 @@ class IndexPresenter extends BasePresenter
         $admin = new User();
         $forum = new Forum();
         $topic = new Topic($user, $forum);
-        
+
         $enabledRoles = ['admin', 'juniorAdmin', 'moderator'];
 
         /*
@@ -61,14 +62,14 @@ class IndexPresenter extends BasePresenter
          */
         /*
         $canAccess = false;
-        
+
         foreach ($enabledRoles as $role) {
             if (in_array($role, $this->getUser()->getRoles(), true)) {
                 $canAccess = true;
                 break;
             }
         }
-        
+
         if (!$canAccess) {
              $this->error('You are not in moderator role!s');
         }

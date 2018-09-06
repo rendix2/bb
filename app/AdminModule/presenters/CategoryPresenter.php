@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\CategoriesManager;
@@ -12,8 +13,9 @@ use App\Controls\BreadCrumbControl;
  * Description of CategoryPresenter
  *
  * @author rendix2
+ * @method CategoriesManager getManager()
  */
-class CategoryPresenter extends Base\AdminPresenter
+class CategoryPresenter extends AdminPresenter
 {
     /**
      * @var ForumsManager $forumsManager
@@ -25,9 +27,8 @@ class CategoryPresenter extends Base\AdminPresenter
      * CategoryPresenter constructor.
      *
      * @param CategoriesManager $manager
-     * @param GridFilter        $gf
      */
-    public function __construct(CategoriesManager $manager, GridFilter $gf)
+    public function __construct(CategoriesManager $manager)
     {
         parent::__construct($manager);
     }

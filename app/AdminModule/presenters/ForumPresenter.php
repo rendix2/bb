@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\CategoriesManager;
@@ -18,7 +19,7 @@ use App\Controls\BreadCrumbControl;
  * @author rendix2
  * @method ForumsManager getManager()
  */
-class ForumPresenter extends Base\AdminPresenter
+class ForumPresenter extends AdminPresenter
 {
     /**
      * category manager

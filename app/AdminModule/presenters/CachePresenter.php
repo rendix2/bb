@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Models\CacheManager;
 use Nette\Application\UI\Form;
@@ -14,8 +15,9 @@ use Nette\Utils\ArrayHash;
  * Description of CachePresenter
  *
  * @author rendix2
+ * @method CacheManager getManager()
  */
-class CachePresenter extends Base\AdminPresenter
+class CachePresenter extends AdminPresenter
 {
     
     /**

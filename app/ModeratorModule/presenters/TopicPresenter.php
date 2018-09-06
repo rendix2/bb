@@ -101,8 +101,10 @@ class TopicPresenter extends ModeratorPresenter
     public function changeTopicAuthorSuccess(Form $form, ArrayHash $values)
     {
     }
-    
-    
+
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentMergeTopics()
     {
         $form = BootstrapForm::create();
@@ -115,14 +117,21 @@ class TopicPresenter extends ModeratorPresenter
         
         return $form;
     }
-    
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
     public function mergeTopicSuccess(Form $form, ArrayHash $values)
     {
         $this->topicFacade->mergeTwoTopics($values->topic_from_id, $values->topic_target_id);
         
         $this->flashMessage('Topics was merged.', self::FLASH_MESSAGE_SUCCESS);
     }
-    
+
+    /**
+     * @param int $forum_id
+     */
     public function renderTopics($forum_id)
     {
         $this->template->topics = $this->getManager()->getAllTopicsByForum($forum_id);
