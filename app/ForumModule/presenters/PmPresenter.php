@@ -124,10 +124,11 @@ class PmPresenter extends CrudPresenter
     protected function createComponentReportForm()
     {
         $form = BootstrapForm::create();
+        $form->setTranslator($this->translatorFactory->forumTranslatorFactory());
 
         $form->addTextArea('report_text', 'Report text:');
         $form->addSubmit('send', 'Report PM');
-        $form->onSuccess = [$this, 'reportFormSuccess'];
+        $form->onSuccess[] = [$this, 'reportFormSuccess'];
 
         return $form;
     }
@@ -148,7 +149,7 @@ class PmPresenter extends CrudPresenter
             $this->flashMessage('PM was not reported.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $this->redirect('this');
+        $this->redirect('Pm:default');
     }
     
     /**
@@ -217,6 +218,17 @@ class PmPresenter extends CrudPresenter
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->translator);
+    }
+    
+    protected function createComponentBreadCrumbReport()
+    {
+        $breadCrumb = [
+            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            1 => ['link' => 'Pm:default', 'text' => 'menu_pms'],
+            2 => ['text' => 'pm_report']
+        ];
+        
+        return new BreadCrumbControl($breadCrumb, $this->translator);        
     }
 
     /**
