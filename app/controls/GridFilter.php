@@ -70,6 +70,8 @@ class GridFilter extends Control
      */
     private $session;
     
+    private $sessionName;
+    
     /**
      *
      * @var ITranslator $translator
@@ -125,6 +127,8 @@ class GridFilter extends Control
      */
     public function getWhere()
     {
+        $sessionName = 'grid_filter_' . $this->presenter->name. ':' . $this->presenter->action;
+        
         if ($this->whereColumns) {
             return $this->whereColumns;
         } else {
@@ -132,15 +136,22 @@ class GridFilter extends Control
             $where = [];
 
             foreach ($this->type as $col => $val) {
-                if (($val['strint'] === '%in' && count($this->session->getSection($col)->value)) || ($val['strint'] === '%i' && is_numeric($this->session->getSection($col)->value)) || (($val['strint'] === '%s' || $val['strint'] == '%~like~') && is_string($this->session->getSection($col)->value) && mb_strlen($this->session->getSection($col)->value) >= 1) || $val['type'] === 'date' && $col !== self::NOTHING) {
+                if (
+                        ($val['strint'] === '%in' && count($this->session->getSection($sessionName)->{$col})) 
+                        || ($val['strint'] === '%i' && is_numeric($this->session->getSection($sessionName)->{$col})) 
+                        || (($val['strint'] === '%s' 
+                                || $val['strint'] == '%~like~') 
+                                && is_string($this->session->getSection($sessionName)->{$col}) 
+                                && mb_strlen($this->session->getSection($sessionName)->{$col}) >= 1) 
+                        || $val['type'] === 'date' && $col !== self::NOTHING) {
                     $columnName = $this->checkFTI($col);
 
                     if ($val['type'] === 'date') {
-                        if (!$this->session->getSection($col)->value) {
+                    if (!$this->session->getSection($sessionName)->{$col}) {
                             continue;
                         }
 
-                        $time = new \Nette\Utils\DateTime($this->session->getSection($col)->value);
+                    $time = new \Nette\Utils\DateTime($this->session->getSection($sessionName)->{$col});
 
                         $where[] = [
                             'column' => $columnName,
@@ -152,7 +163,7 @@ class GridFilter extends Control
                         $where[] = [
                             'column' => $columnName,
                             'type'   => $val['operator'],
-                            'value'  => $this->session->getSection($col)->value,
+                            'value'  => $this->session->getSection($sessionName)->{$col},
                             'strint' => $val['strint']
                         ];
                     }
@@ -292,8 +303,10 @@ class GridFilter extends Control
     
     public function handleReset()
     {
+        $sessionName = 'grid_filter_' . $this->presenter->name. ':' . $this->presenter->action;
+        
         foreach ($this->type as $name => $type) {
-            unset($this->session->getSection($name)->value);
+            unset($this->session->getSection($sessionName)->{$name});
         }
         
         $this->whereColumns = [];
@@ -305,12 +318,14 @@ class GridFilter extends Control
     public function render()
     {
         $sep = DIRECTORY_SEPARATOR;
+        $sessionName = 'grid_filter_' . $this->presenter->name. ':' . $this->presenter->action;
+        
         
         $template = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'gridFilter' . $sep . 'gridFilter.latte');
         $template->setTranslator($this->translator);
 
         foreach ($this->type as $column => $value) {
-            $this['gridFilter']->setDefaults([$column => $this->session->getSection($column)->value]);
+            $this['gridFilter']->setDefaults([$column => $this->session->getSection($sessionName)->{$column}]);
         }
 
         $template->type = $this->type;
@@ -366,12 +381,13 @@ class GridFilter extends Control
      */
     public function success(Form $form, ArrayHash $values)
     {
-        $where = [];
+        $where       = [];
+        $sessionName = 'grid_filter_' . $this->presenter->name. ':' . $this->presenter->action;
 
         foreach ($this->type as $name => $type) {
             if (isset($values[$name]) && $name !== self::NOTHING) {
-                $section        = $this->session->getSection($name);
-                $section->value = $values[$name];
+                $section          = $this->session->getSection($sessionName);
+                $section[$name] = $values[$name];
 
                 if ($type['operator'] === 'IN') {
                     $where[] = [
