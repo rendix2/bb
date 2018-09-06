@@ -266,11 +266,13 @@ abstract class CrudPresenter extends AuthenticatedPresenter
 
             $this[self::FORM_NAME]->setDefaults($item);
 
-            $this->template->item  = $item;
-            $this->template->title = $this->getTitleOnEdit();
+            $this->template->item_id = $id;
+            $this->template->item    = $item;
+            $this->template->title   = $this->getTitleOnEdit();
         } else {
-            $this->template->title = $this->getTitleOnAdd();
-            $this->template->item  = [];
+            $this->template->item_id = null;
+            $this->template->title   = $this->getTitleOnAdd();
+            $this->template->item    = [];
 
             $this[self::FORM_NAME]->setDefaults([]);
         }
