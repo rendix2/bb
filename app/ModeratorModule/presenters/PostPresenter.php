@@ -58,7 +58,7 @@ class PostPresenter extends ModeratorPresenter
     }
 
     /**
-     *
+     * @return BootstrapForm
      */
     protected function createComponentEditForm()
     {

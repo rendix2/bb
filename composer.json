@@ -38,7 +38,8 @@
         "nextras/secured-links": "^1.4",
         "nextras/datagrid": "^3.0",
         "uestla/recaptcha-control": "^7.0",
-        "radekdostal/nette-datetimepicker": "^2.6"
+        "radekdostal/nette-datetimepicker": "^2.6",
+        "doctrine/migrations": "^1.5"
     },    
     "repositories": [
         {
