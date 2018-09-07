@@ -168,16 +168,22 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     {
         $id = $this->getParameter('id');
 
-        if ($id) {
-            $result = $this->getManager()->update($id, $values);
-        } else {
-            $result = $id = $this->getManager()->add($values);
-        }
+        try{
+            if ($id) {
+                $result = $this->getManager()->update($id, $values);
+            } else {
+                $result = $id = $this->getManager()->add($values);
+            }
 
-        if ($result) {
-            $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
-        } else {
-            $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
+            if ($result) {
+                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+            } else {
+                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
+            }
+        } catch (Dibi\DriverException $e) {
+            $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
+            
+            \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
         }
 
         $this->getManager()->deleteCache();
