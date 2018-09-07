@@ -33,6 +33,15 @@ class SmiliesPresenter extends AdminPresenter
         
         return $form;
     }
+    
+    /**
+     * 
+     * @return null
+     */
+    protected function createComponentGridFilter()
+    {
+        return null;
+    }    
 
     /**
      * @return BreadCrumbControl

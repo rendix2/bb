@@ -54,9 +54,14 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     private $manager;
 
     /**
-     * @return mixed
+     * @return Form
      */
     abstract protected function createComponentEditForm();
+    
+    /**
+     * @return GridFilter
+     */
+    abstract protected function createComponentGridFilter();            
 
     /**
      * CrudPresenter constructor.

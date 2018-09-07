@@ -46,9 +46,19 @@ class DatabasePresenter extends AdminPresenter
      */
     protected function createComponentEditForm()
     {
+        return null;
     }
 
     /**
+     * 
+     * @return null
+     */
+    protected function createComponentGridFilter()
+    {
+        return null;
+    }
+
+        /**
      *
      */
     public function renderDumps()

@@ -32,4 +32,13 @@ class FaqPresenter extends CrudPresenter
 
         return $form;
     }
+    
+    /**
+     * 
+     * @return null
+     */
+    protected function createComponentGridFilter()
+    {
+        return null;
+    }    
 }

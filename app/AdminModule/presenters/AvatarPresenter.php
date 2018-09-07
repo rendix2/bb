@@ -75,4 +75,13 @@ class AvatarPresenter extends AdminPresenter
     {
         return null;
     }
+    
+    /**
+     * 
+     * @return null
+     */
+    protected function createComponentGridFilter()
+    {
+        return null;
+    }    
 }

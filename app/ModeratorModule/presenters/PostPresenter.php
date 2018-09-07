@@ -70,6 +70,15 @@ class PostPresenter extends ModeratorPresenter
         
         return $this->addSubmitB($form);
     }
+    
+    /**
+     * 
+     * @return null
+     */
+    protected function createComponentGridFilter()
+    {
+        return null;
+    }    
 
     /**
      * @return BootstrapForm

@@ -86,6 +86,15 @@ class CachePresenter extends AdminPresenter
     }
     
     /**
+     * 
+     * @return null
+     */
+    protected function createComponentGridFilter()
+    {
+        return null;
+    }    
+    
+    /**
      * deletes ALL cache
      *
      * @param Form      $form

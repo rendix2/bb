@@ -30,4 +30,13 @@ class UserPresenter extends ModeratorPresenter
     {
         return null;
     }
+    
+    /**
+     * 
+     * @return null
+     */
+    protected function createComponentGridFilter()
+    {
+        return null;
+    }    
 }

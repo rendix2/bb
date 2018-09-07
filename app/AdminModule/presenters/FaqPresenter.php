@@ -30,4 +30,13 @@ class FaqPresenter extends AdminPresenter
     {
         return $form = $this->getBootstrapForm();
     }
+    
+    /**
+     * 
+     * @return null
+     */
+    protected function createComponentGridFilter()
+    {
+        return null;
+    }    
 }
