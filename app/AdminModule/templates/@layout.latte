@@ -56,7 +56,10 @@
                     </li>
                     <li class="nav-item {if $presenter->getName() === 'Admin:Ban'}active{/if}">
                         <a class="nav-link" href="{link :Admin:Ban:default}">{_menu_bans}</a>
-                    </li>                    
+                    </li>
+                    <li class="nav-item {if $presenter->getName() === 'Admin:File'}active{/if}">
+                        <a class="nav-link" href="{link :Admin:File:default}">{_menu_files}</a>
+                    </li>                     
                     <li class="nav-item dropdown {if $presenter->getName() === 'Admin:Config' || $presenter->getName() === 'Admin:Config:Database'}active{/if}" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         <a class="nav-link dropdown-toggle" href="#{*{link :Admin:Config:Index:default}*}">{_menu_config}</a>  
                         

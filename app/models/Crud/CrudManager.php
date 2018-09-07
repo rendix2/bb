@@ -86,7 +86,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
         }
         
         if (!in_array($table, $cachedTables, true)) {
-            throw new Exception("Table {$table} does not exists in database {$this->dibi->getDatabaseInfo()->getName()}");
+            throw new Exception("Table '{$table}' does not exist in database '{$this->dibi->getDatabaseInfo()->getName()}'.");
         }
                 
         $this->table        = $table;

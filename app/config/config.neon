@@ -154,6 +154,8 @@ services:
         inject: true
     RecountManager:
         class: App\Models\RecountManager
+    PostFilesManager:
+        class: App\Models\PostFilesManager
     Authenticator:
         class: App\Authenticator
     Authorizator:
