@@ -169,4 +169,27 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     {
         return $this->checkLoggedIn() && $this->getUser()->isInRole('admin');
     }
+        
+    protected function createComponentMenuAdmin()
+    {
+        $menu = [
+            0 => ['presenter' => ':Admin:Index:default', 'title' => 'menu_index'],
+            1 => ['presenter' => ':Admin:Forum:default', 'title' => 'menu_forums'],
+            2 => ['presenter' => ':Admin:Category:default', 'title' => 'menu_categories'],            
+            3 => ['presenter' => ':Admin:User:default', 'title' => 'menu_users'],
+            4 => ['presenter' => ':Admin:Avatar:default', 'title' => 'menu_avatar'],
+            5 => ['presenter' => ':Admin:Email:default', 'title' => 'menu_emails'],
+            6 => ['presenter' => ':Admin:Cache:default', 'title' => 'menu_cache'],
+            7 => ['presenter' => ':Admin:Language:default', 'title' => 'menu_language'],
+            8 => ['presenter' => ':Admin:Group:default', 'title' => 'menu_groups'],
+            9 => ['presenter' => ':Admin:Rank:default', 'title' => 'menu_ranks'],
+            10 => ['presenter' => ':Admin:Report:default', 'title' => 'menu_reports'],
+            11 => ['presenter' => ':Admin:Ban:default', 'title' => 'menu_bans'],
+            12 => ['presenter' => ':Admin:Config:Index:default', 'title' => 'menu_config', 
+                'submenu' => [0 => ['presenter' => ':Admin:Config:Database:dumps', 'title' => 'menu_database']]
+                ],            
+        ];
+        
+        return new \App\Controls\MenuControl($this->translatorFactory->adminTranslatorFactory(), $menu);
+    }    
 }

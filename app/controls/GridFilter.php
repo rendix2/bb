@@ -127,7 +127,9 @@ class GridFilter extends Control
      */
     public function getWhere()
     {
-        $sessionName = 'grid_filter_' . $this->presenter->name. ':' . $this->presenter->action;
+        if ($this->parent !== null) {
+            $sessionName = 'grid_filter_' . $this->presenter->name. ':' . $this->presenter->action;
+        }
         
         if ($this->whereColumns) {
             return $this->whereColumns;
