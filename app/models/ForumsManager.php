@@ -159,4 +159,35 @@ class ForumsManager extends Crud\CrudManager implements MpttTable
     {
         return 'forum_name';
     }
+    
+    public function getAllParents($forum_id) 
+    {
+        return $this->getParents($forum_id);
+    }
+    
+    private function getParents($forum_id, $forum_parent_id = null, &$found = [])
+    {
+        $row = [];
+        
+        if ($forum_parent_id === null) {
+            $row = $this->getById($forum_id);
+            if ($row) {
+                $found[] = $row;
+                
+                return $this->getParents($forum_id, $row->forum_parent_id, $found);
+            } else {
+                return $found;
+            }
+        } else {        
+            $row = $this->getById($forum_parent_id);
+        }
+        
+        if (!$row) {
+            return $found;
+        }
+        
+        $found[] = $row;       
+        
+        return $this->getParents($forum_id, $row->forum_parent_id, $found);        
+    }
 }
