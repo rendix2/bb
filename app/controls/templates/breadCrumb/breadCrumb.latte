@@ -1,15 +1,26 @@
 {block content}
+
+{define text}
+    {if !isset($item['t']) || $item['t']}
+        {_$item['text']}
+    {else}
+        {$item['text']}
+    {/if}
+{/define}
+
 <ol class="breadcrumb">
     {foreach $breadCrumb as $item}
     <li class="breadcrumb-item {if $iterator->last}active{/if}">
         
         {if $iterator->last}
-        {_$item['text']}
+            {include text}
         {else}
             {if isset($item['params'])}
-            <a href="{plink $item['link'], (expand) $item['params']}">{_$item['text']}</a>
+            <a href="{plink $item['link'], (expand) $item['params']}">
+                {include text}
+            </a>
             {else}
-            <a href="{plink $item['link']}">{_$item['text']}</a>
+            <a href="{plink $item['link']}">{include text}</a>
             {/if}
         {/if}
     </li>

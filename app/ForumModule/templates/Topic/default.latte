@@ -126,7 +126,7 @@
                                             <i class="far fa-edit"></i>
                                         </a>
                                             
-                                        <a href="{link Post:history, $post->post_id}" title="{_post_history}">
+                                        <a href="{link Post:history, $presenter->getParameter('forum_id'), $post->post_id}" title="{_post_history}">
                                             <i class="fas fa-history"></i>
                                         </a>                                            
                                     {/if}
@@ -192,7 +192,7 @@
                 <a href="{link Topic:startWatch $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $presenter->getParameter('page')}">{_topic_start_watch}</a>
             {/if}
 
-            <a href="{link Topic:watchers, $presenter->getParameter('topic_id')}">{_topic_wacthers}</a>
+            <a href="{link Topic:watchers, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">{_topic_wacthers}</a>
         </div>
     </div>
 {/block}

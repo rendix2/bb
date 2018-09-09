@@ -14,34 +14,8 @@ use Zebra_Mptt;
  *
  * @author rendix2
  */
-class ForumsManager extends Crud\CrudManager implements MpttTable
-{
-    /**
-     * @var Zebra_Mptt $mptt
-     */
-    private $mptt;
-
-    /**
-     * ForumsManager constructor.
-     *
-     * @param Connection $dibi
-     * @param IStorage   $storage
-     */
-    public function __construct(Connection $dibi, IStorage $storage)
-    {
-        parent::__construct($dibi, $storage);
-        
-        $this->mptt = new Zebra_Mptt(
-            $dibi,
-            $this->getTable(),
-            $this->getPrimaryKey(),
-            $this->getTitle(),
-            $this->getLeft(),
-            $this->getRight(),
-            $this->getParent()
-        );
-    }
-    
+class ForumsManager extends Crud\CrudManager
+{    
     /**
      * @param int $category_id
      *
@@ -127,67 +101,35 @@ class ForumsManager extends Crud\CrudManager implements MpttTable
     public function move()
     {
     }
-
-    /**
-     * @return string
-     */
-    public function getLeft()
-    {
-        return 'forum_left';
-    }
-
-    /**
-     * @return string
-     */
-    public function getParent()
-    {
-        return 'forum_parent_id';
-    }
-
-    /**
-     * @return string
-     */
-    public function getRight()
-    {
-        return 'forum_right';
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return 'forum_name';
-    }
     
     public function getAllParents($forum_id) 
     {
-        return $this->getParents($forum_id);
+        $forum = $this->getById($forum_id);
+        
+        return $this->dibi->select('*')
+                ->from($this->getTable())
+                ->where('[forum_left] <= %i', $forum->forum_left)
+                ->where('[forum_right] >= %i', $forum->forum_right)
+                ->orderBy('forum_left')
+                ->fetchAll();
     }
     
-    private function getParents($forum_id, $forum_parent_id = null, &$found = [])
+    public function getBreadCrumb($forum_id)
     {
-        $row = [];
+        $forums = $this->getAllParents($forum_id);
         
-        if ($forum_parent_id === null) {
-            $row = $this->getById($forum_id);
-            if ($row) {
-                $found[] = $row;
-                
-                return $this->getParents($forum_id, $row->forum_parent_id, $found);
-            } else {
-                return $found;
-            }
-        } else {        
-            $row = $this->getById($forum_parent_id);
-        }
+        $bcForum = [];
         
-        if (!$row) {
-            return $found;
-        }
+        foreach ($forums as $forum) {
+            $tmp = [];
+            $tmp['link']   = 'Forum:default';
+            $tmp['params'] = ['forum_id' => $forum->forum_id];
+            $tmp['text']   = $forum->forum_name;
+            $tmp['t']      = 0;
+            
+            $bcForum[] = $tmp;
+        }    
         
-        $found[] = $row;       
-        
-        return $this->getParents($forum_id, $row->forum_parent_id, $found);        
+        return $bcForum;
     }
 }

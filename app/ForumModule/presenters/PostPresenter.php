@@ -5,6 +5,7 @@ namespace App\ForumModule\Presenters;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
+use App\Models\ForumsManager;
 use App\Models\PostFacade;
 use App\Models\PostsHistoryManager;
 use App\Models\PostsManager;
@@ -78,7 +79,13 @@ class PostPresenter extends Base\ForumPresenter
      * @inject
      */
     public $usersManager;
-
+    
+    
+    /**
+     * @var ForumsManager $forumManager
+     * @inject
+     */
+    public $forumsManager;
 
     /**
      * @param PostsManager $manager
@@ -187,7 +194,7 @@ class PostPresenter extends Base\ForumPresenter
      *
      * @param int $post_id
      */
-    public function renderHistory($post_id)
+    public function renderHistory($forum_id, $post_id)
     {
         $user_id = $this->getUser()->getId();
         
@@ -315,17 +322,18 @@ class PostPresenter extends Base\ForumPresenter
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbEdit()
-    {
-        $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
-            2 => ['link'   => 'Topic:default',
+    {       
+        $breadCrumb = array_merge(
+                [['link' => 'Index:default', 'text' => 'menu_index']],
+                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+                [['link'   => 'Topic:default',
                   'text'   => 'menu_topic',
                   'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]
-            ],
-            3 => ['text' => 'menu_post']
-
-        ];
+                ]],
+                [['text' => 'menu_post']]
+        );      
+        
+        
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
@@ -334,17 +342,16 @@ class PostPresenter extends Base\ForumPresenter
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbReport()
-    {
-        $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
-            2 => ['link'   => 'Topic:default',
+    {        
+        $breadCrumb = array_merge(
+                [['link' => 'Index:default', 'text' => 'menu_index']],
+                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+                [['link'   => 'Topic:default',
                   'text'   => 'menu_topic',
                   'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]
-            ],
-            3 => ['text' => 'report_post']
-
-        ];
+                ]],
+                [['text' => 'report_post']]
+        );         
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
@@ -354,16 +361,15 @@ class PostPresenter extends Base\ForumPresenter
      */
     protected function createComponentBreadCrumbHistory()
     {
-        $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
-            2 => ['link'   => 'Topic:default',
+        $breadCrumb = array_merge(
+                [['link' => 'Index:default', 'text' => 'menu_index']],
+                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+                [['link'   => 'Topic:default',
                   'text'   => 'menu_topic',
                   'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]
-            ],
-            3 => ['text' => 'post_history']
-
-        ];
+                ]],
+                [['text' => 'post_history']]
+        );           
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }

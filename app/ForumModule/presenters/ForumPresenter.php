@@ -163,10 +163,10 @@ final class ForumPresenter extends Base\ForumPresenter
      */
     protected function createComponentBreadCrumbAll()
     {
-        $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['text' => 'menu_forum']
-        ];
+        $breadCrumb = array_merge(
+            [['link' => 'Index:default', 'text' => 'menu_index']],
+            $this->getManager()->getBreadCrumb($this->getParameter('forum_id'))
+        );
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
@@ -176,11 +176,11 @@ final class ForumPresenter extends Base\ForumPresenter
      */
     protected function createComponentBreadCrumbRules()
     {
-        $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Forum:default', 'text' => 'menu_forum', 'params' => [$this->getParameter('forum_id')]],
-            2 => ['link' => 'Forum:rules', 'text' => 'forum_rules', 'params' => [$this->getParameter('forum_id')]],
-        ];
+        $breadCrumb = array_merge(
+            [['link' => 'Index:default', 'text' => 'menu_index']],
+            $this->getManager()->getBreadCrumb($this->getParameter('forum_id')),
+            [['link' => 'Forum:rules', 'text' => 'forum_rules', 'params' => [$this->getParameter('forum_id')]]]
+        );
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }

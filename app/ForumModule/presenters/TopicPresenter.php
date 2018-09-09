@@ -280,7 +280,7 @@ class TopicPresenter extends Base\ForumPresenter
     /**
      * @param int $topic_id
      */
-    public function renderWatchers($topic_id)
+    public function renderWatchers($forum_id, $topic_id)
     {
         $watchers = $this->topicWatchManager->getAllJoinedByLeft($topic_id);
         
@@ -353,11 +353,11 @@ class TopicPresenter extends Base\ForumPresenter
      */
     protected function createComponentBreadCrumbAll()
     {
-        $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Forum:default', 'params' => [$this->getParameter('forum_id')], 'text' => 'menu_forum'],
-            2 => ['text' => 'menu_topic']
-        ];
+        $breadCrumb = array_merge(
+                [['link' => 'Index:default', 'text' => 'menu_index']],
+                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+                [['text' => 'menu_topic']]
+        );
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
@@ -381,15 +381,14 @@ class TopicPresenter extends Base\ForumPresenter
      */
     protected function createComponentBreadCrumbReport()
     {
-        $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Forum:default', 'params' => [$this->getParameter('forum_id')], 'text' => 'menu_forum'],
-            2 => ['link'   => 'Topic:default',
+        $breadCrumb = array_merge(
+                [['link' => 'Index:default', 'text' => 'menu_index']],
+                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+                [['link'   => 'Topic:default',
                   'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')],
-                  'text'   => 'menu_topic'
-            ],
-            3 => ['text' => 'report_topic']
-        ];
+                  'text'   => 'menu_topic']],
+                [['text' => 'report_topic']]
+        );        
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
@@ -399,15 +398,14 @@ class TopicPresenter extends Base\ForumPresenter
      */
     protected function createComponentBreadCrumbThanks()
     {
-        $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Forum:default', 'params' => [$this->getParameter('forum_id')], 'text' => 'menu_forum'],
-            2 => ['link'   => 'Topic:default',
+        $breadCrumb = array_merge(
+                [['link' => 'Index:default', 'text' => 'menu_index']],
+                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+                [['link'   => 'Topic:default',
                   'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')],
-                  'text'   => 'menu_topic'
-            ],
-            3 => ['text' => 'Thanks']
-        ];
+                  'text'   => 'menu_topic']],
+                [['text' => 'Thanks']]
+        );        
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
@@ -417,15 +415,14 @@ class TopicPresenter extends Base\ForumPresenter
      */
     protected function createComponentBreadCrumbWatchers()
     {
-        $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Forum:default', 'params' => [$this->getParameter('forum_id')], 'text' => 'menu_forum'],
-            2 => ['link'   => 'Topic:default',
+        $breadCrumb = array_merge(
+                [['link' => 'Index:default', 'text' => 'menu_index']],
+                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+                [['link'   => 'Topic:default',
                   'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')],
-                  'text'   => 'menu_topic'
-            ],
-            3 => ['text' => 'watches']
-        ];
+                  'text'   => 'menu_topic']],
+                [['text' => 'watches']]
+        );         
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }

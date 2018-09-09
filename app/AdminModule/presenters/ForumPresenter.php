@@ -11,7 +11,11 @@ use App\Models\PostsManager;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
 use App\Models\ModeratorsManager;
+use App\Models\ForumFacade;
 use App\Controls\BreadCrumbControl;
+
+use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of ForumPresenter
@@ -58,6 +62,13 @@ class ForumPresenter extends AdminPresenter
      * @inject
      */
     public $moderatorsManager;
+    
+    /**
+     *
+     * @var ForumFacade $forumFacade
+     * @inject
+     */
+    public $forumFacade;
 
     /**
      * ForumPresenter constructor.
@@ -140,6 +151,7 @@ class ForumPresenter extends AdminPresenter
         $form->addGroup('forum');
         $form->addText('forum_name', 'Forum name:')
             ->setRequired(true);
+        $form->addSelect('forum_parent_id', 'Forum parent:', [0 => '-'] + $this->getManager()->getAllPairs('forum_name'))->setTranslator(null);
         
         $form->addText('forum_description', 'Forum description:')
             ->setRequired(true);
@@ -210,4 +222,34 @@ class ForumPresenter extends AdminPresenter
         
         return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
     }
+    
+    /**
+     * @param Form      $form   form
+     * @param ArrayHash $values values
+     */
+    public function editFormSuccess(Form $form, ArrayHash $values)
+    {
+        $id = $this->getParameter('id');
+
+        try{
+            if ($id) {
+                $result = $this->getManager()->update($id, $values);
+            } else {
+                $result = $id = $this->forumFacade->add($values);
+            }
+
+            if ($result) {
+                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+            } else {
+                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
+            }
+        } catch (Dibi\DriverException $e) {
+            $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
+            
+            \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
+        }
+
+        $this->getManager()->deleteCache();
+        $this->redirect(':' . $this->getName() . ':default');
+    }    
 }
