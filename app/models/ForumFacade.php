@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Dibi\Connection;
-use Zebra_Mptt;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -30,39 +28,26 @@ class ForumFacade
      * @var TopicsManager $topicsManager
      */
     private $topicsManager;
-    
-    /**
-     * @var Zebra_Mptt $mptt
-     */
-    private $mptt;
 
     /**
      *
-     * @param Connection    $dibi
      * @param ForumsManager $forumsManager
      * @param TopicFacade   $topicFacade
      * @param TopicsManager $topicsManager
      */
-    public function __construct(Connection $dibi, ForumsManager $forumsManager, TopicFacade $topicFacade, TopicsManager $topicsManager)
-    {
+    public function __construct(
+            ForumsManager $forumsManager,
+            TopicFacade $topicFacade,
+            TopicsManager $topicsManager
+    ) {
         $this->forumsManager = $forumsManager;
         $this->topicFacade   = $topicFacade;
         $this->topicsManager = $topicsManager;
-        
-        $this->mptt = new Zebra_Mptt(
-            $dibi,
-            $this->forumsManager->getTable(),
-            $this->forumsManager->getPrimaryKey(),
-            'forum_name',
-            'forum_left',
-            'forum_right',
-            'forum_parent_id'
-        );
     }
     
     public function add(ArrayHash $item_data)
     {    
-        $forum_id = $this->mptt->add($item_data->forum_parent_id, $item_data->forum_name);
+        $forum_id = $this->forumsManager->getMptt()->add($item_data->forum_parent_id, $item_data->forum_name);
         
         $this->forumsManager->update($forum_id, $item_data);
         

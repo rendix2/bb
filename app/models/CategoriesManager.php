@@ -42,6 +42,15 @@ class CategoriesManager extends Crud\CrudManager
     }
     
     /**
+     * 
+     * @return Zebra_Mptt
+     */
+    public function getMptt()
+    {
+        return $this->mptt;
+    }    
+    
+    /**
      * @return array
      */
     public function getActiveCategories()

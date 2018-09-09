@@ -35,8 +35,17 @@ class ForumsManager extends Crud\CrudManager
             'forum_parent_id'
         );        
     }
+    
+    /**
+     * 
+     * @return Zebra_Mptt
+     */
+    public function getMptt()
+    {
+        return $this->mptt;
+    }
 
-        /**
+    /**
      * @param int $category_id
      *
      * @return Fluent
