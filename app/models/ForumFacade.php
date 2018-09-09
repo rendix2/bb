@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Dibi\Connection;
 use Zebra_Mptt;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of ForumFacade
@@ -33,10 +34,11 @@ class ForumFacade
     /**
      * @var Zebra_Mptt $mptt
      */
-    public $mptt;
+    private $mptt;
 
     /**
      *
+     * @param Connection    $dibi
      * @param ForumsManager $forumsManager
      * @param TopicFacade   $topicFacade
      * @param TopicsManager $topicsManager
@@ -58,7 +60,7 @@ class ForumFacade
         );
     }
     
-    public function add(\Nette\Utils\ArrayHash $item_data)
+    public function add(ArrayHash $item_data)
     {    
         $forum_id = $this->mptt->add($item_data->forum_parent_id, $item_data->forum_name);
         

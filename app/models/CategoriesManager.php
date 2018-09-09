@@ -13,7 +13,7 @@ use Nette\Caching\IStorage;
  *
  * @package App\Models
  */
-class CategoriesManager extends Crud\CrudManager implements MpttTable
+class CategoriesManager extends Crud\CrudManager
 {
     /**
      * @var \Zebra_Mptt $mptt
@@ -34,10 +34,10 @@ class CategoriesManager extends Crud\CrudManager implements MpttTable
             $dibi,
             $this->getTable(),
             $this->getPrimaryKey(),
-            $this->getTitle(),
-            $this->getLeft(),
-            $this->getRight(),
-            $this->getParent()
+            'category_name',
+            'category_left',
+            'category_right',
+            'category_parent_id'
         );
     }
     
@@ -96,37 +96,23 @@ class CategoriesManager extends Crud\CrudManager implements MpttTable
         //$this->mptt->move(1, 2);
         \Tracy\Debugger::barDump($this->mptt->get_tree());
     }
-
-    /**
-     * MpttTable interface
-     */
     
-    public function getLeft()
+    public function getBreadCrumb($category_id)
     {
-        return 'category_left';
-    }
-
-    /**
-     * @return string
-     */
-    public function getParent()
-    {
-        return 'category_parent_id';
-    }
-
-    /**
-     * @return string
-     */
-    public function getRight()
-    {
-        return 'category_right';
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return 'category_name';
-    }
+        $categories = $this->mptt->getBreadCrumb($category_id);
+        
+        $bcForum = [];
+        
+        foreach ($categories as $category) {
+            $tmp = [];
+            $tmp['link']   = 'Index:category';
+            $tmp['params'] = ['category_id' => $category->category_id];
+            $tmp['text']   = $category->category_name;
+            $tmp['t']      = 0;
+            
+            $bcForum[] = $tmp;
+        }    
+        
+        return $bcForum;
+    }    
 }

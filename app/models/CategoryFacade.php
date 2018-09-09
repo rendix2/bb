@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use Dibi\Connection;
+use Zebra_Mptt;
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of CategoryFacade
  *
@@ -25,14 +29,21 @@ class CategoryFacade
      * @var ForumsManager $forumsManager
      */
     private $forumsManager;
+    
+    /**
+     * @var Zebra_Mptt $mptt
+     */
+    private $mptt;    
 
     /**
      *
+     * @param Connection        $dibi
      * @param CategoriesManager $categoriesManager
      * @param ForumFacade       $forumFacade
      * @param ForumsManager     $forumsManager
      */
     public function __construct(
+        Connection $dibi,
         CategoriesManager $categoriesManager,
         ForumFacade $forumFacade,
         ForumsManager $forumsManager
@@ -40,9 +51,30 @@ class CategoryFacade
         $this->categoriesManager = $categoriesManager;
         $this->forumFacade       = $forumFacade;
         $this->forumsManager     = $forumsManager;
+        
+        $this->mptt = new Zebra_Mptt(
+            $dibi,
+            $this->forumsManager->getTable(),
+            $this->forumsManager->getPrimaryKey(),
+            'category_name',
+            'category_left',
+            'category_right',
+            'category_parent_id'
+        );        
     }
     
     /**
+     * 
+     * @param ArrayHash $item_data
+     */
+    public function add(ArrayHash $item_data)
+    {
+        $category_id = $this->mptt->add($item_data->category_parent_id, $item_data->category_name);
+        
+        $this->categoriesManager->update($category_id, $item_data);
+    }
+
+        /**
      *
      * @param int $item_id
      *

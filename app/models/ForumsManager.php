@@ -17,6 +17,26 @@ use Zebra_Mptt;
 class ForumsManager extends Crud\CrudManager
 {    
     /**
+     * @var Zebra_Mptt $mptt
+     */
+    private $mptt;
+
+    public function __construct(Connection $dibi, IStorage $storage)
+    {
+        parent::__construct($dibi, $storage);
+        
+        $this->mptt = new Zebra_Mptt(
+            $dibi,
+            $this->getTable(),
+            $this->getPrimaryKey(),
+            'forum_name',
+            'forum_left',
+            'forum_right',
+            'forum_parent_id'
+        );        
+    }
+
+        /**
      * @param int $category_id
      *
      * @return Fluent
@@ -102,21 +122,9 @@ class ForumsManager extends Crud\CrudManager
     {
     }
     
-    public function getAllParents($forum_id) 
-    {
-        $forum = $this->getById($forum_id);
-        
-        return $this->dibi->select('*')
-                ->from($this->getTable())
-                ->where('[forum_left] <= %i', $forum->forum_left)
-                ->where('[forum_right] >= %i', $forum->forum_right)
-                ->orderBy('forum_left')
-                ->fetchAll();
-    }
-    
     public function getBreadCrumb($forum_id)
     {
-        $forums = $this->getAllParents($forum_id);
+        $forums = $this->mptt->getBreadCrumb($forum_id);
         
         $bcForum = [];
         
