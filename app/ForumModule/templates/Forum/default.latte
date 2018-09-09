@@ -16,9 +16,6 @@
 
     <div class="col-sm-12">
         <div class="float-left">
-            {if $parentForum}
-                {_forum_parent_forum}: <a href="{link Forum:default, $parentForum->forum_id}">{$parentForum->forum_name}</a>
-            {/if}
             {if $subForums}
                 {_forum_subforums}:
                 <ul>
