@@ -183,4 +183,13 @@ class ThanksManager extends Crud\CrudManager
                 ->where('[thank_topic_id] = %i', $topic_id)
                 ->execute();
     }
+    
+    public function getByUserAndTopic($user_id, $topic_id)
+    {
+        return $this->dibi->select('*')
+                ->from($this->getTable())
+                ->where('[thank_user_id] = %i', $user_id)
+                ->where('[thank_topic_id] = %i', $topic_id)
+                ->fetch();
+    }
 }

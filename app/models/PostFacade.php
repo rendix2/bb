@@ -53,6 +53,12 @@ class PostFacade
      * @var PostsHistoryManager $postsHistoryManager
      */
     private $postsHistoryManager;
+    
+    /**
+     *
+     * @var ThanksManager $thanksManager
+     */
+    private $thanksManager;
 
     /**
      *
@@ -63,6 +69,7 @@ class PostFacade
      * @param ReportsManager      $reportsManager
      * @param ForumsManager       $forumsManager
      * @param PostsHistoryManager $postsHistoryManager
+     * @param ThanksManager       $thanksManager
      */
     public function __construct(
         PostsManager $postsManager,
@@ -71,7 +78,8 @@ class PostFacade
         UsersManager $usersManager,
         ReportsManager $reportsManager,
         ForumsManager $forumsManager,
-        PostsHistoryManager $postsHistoryManager
+        PostsHistoryManager $postsHistoryManager,
+        ThanksManager $thanksManager
     ) {
         $this->postsManager        = $postsManager;
         $this->topicsManager       = $topicsManager;
@@ -80,6 +88,7 @@ class PostFacade
         $this->reportsManager      = $reportsManager;
         $this->forumsManager       = $forumsManager;
         $this->postsHistoryManager = $postsHistoryManager;
+        $this->thanksManager       = $thanksManager;
     }
 
     /**
@@ -207,16 +216,30 @@ class PostFacade
                 'topic_first_post_id' => $first_post->post_id,
                 'topic_first_user_id' => $first_post->post_user_id
             ]));
-        }
-        /*
-         * elseif ($topic->topic_last_post_id === $topic->topic_first_post_id && $topic->topic_first_post_id === (int)$item_id) {
+        } elseif ($topic->topic_last_post_id === $topic->topic_first_post_id && $topic->topic_first_post_id === (int)$item_id) {
             $this->forumsManager->update($post->post_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
+            $this->thanksManager->deleteByTopic($topic->topic_id);
+            $this->reportsManager->deleteByTopic($topic->topic_id);
+            
+            $userUpdate = ['user_topic_count%sql' => 'user_topic_count - 1'];
+            
+            $watching = $this->topicWatchManager->fullCheck($topic->topic_id, $topic->topic_user_id);
+            
+            if (!$watching) {
+                $userUpdate['user_watch_count%sql'] = ['user_watch_count - 1'];
+            }
+            
+            $thanks = $this->thanksManager->getByUserAndTopic($topic->topic_user_id, $topic->topic_id);
+            
+            if (!$thanks) {
+                $userUpdate['user_thank_count%sql'] = ['user_thank_count - 1'];
+            }
+            
+            $this->usersManager->update($topic->topic_user_id, ArrayHash::from($userUpdate));
             $this->topicsManager->delete($topic->topic_id);
 
             return 2;
         }
-         *
-         */
         
         $lastPostOfUser = $this->postsManager->getLastByUser($post->post_user_id);
 

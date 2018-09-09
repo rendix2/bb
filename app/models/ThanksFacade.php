@@ -47,4 +47,22 @@ class ThanksFacade
 
         return $this->thanksManager->add($item_data);
     }
+    
+    /**
+     * 
+     * @param int $topic_id
+     */
+    public function deleteByTopic($topic_id)
+    {
+        
+    }
+    
+    /**
+     * 
+     * @param int $user_id
+     */
+    public function deleteByUser($user_id)
+    {
+        
+    }
 }
