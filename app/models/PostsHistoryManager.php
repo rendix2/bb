@@ -44,7 +44,7 @@ class PostsHistoryManager extends Crud\CrudManager
      *
      * @return Row[]
      */
-    public function getJoinedByPost($post_id)
+    public function getAllJoinedByPost($post_id)
     {
         return $this->dibi
                 ->select('p.*')

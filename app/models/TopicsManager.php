@@ -18,7 +18,7 @@ class TopicsManager extends Crud\CrudManager
     /**
      * @return Row|false
      */
-    public function getLastTopic()
+    public function getLast()
     {
         return $this->getAllFluent()
                 ->where('[topic_id] = ',
@@ -34,7 +34,7 @@ class TopicsManager extends Crud\CrudManager
      *
      * @return Row|false
      */
-    public function getLastTopicByForum($forum_id)
+    public function getLastByForum($forum_id)
     {
         return $this->getAllFluent()
                 ->where('[topic_id] = ',
@@ -104,7 +104,7 @@ class TopicsManager extends Crud\CrudManager
      *
      * @return Row[]
      */
-    public function getAllTopicsByForum($forum_id)
+    public function getAllByForum($forum_id)
     {
         return $this->getAllFluent()
                 ->where('[topic_forum_id] = %i', $forum_id)

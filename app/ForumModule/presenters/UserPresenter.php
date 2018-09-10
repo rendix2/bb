@@ -353,7 +353,7 @@ class UserPresenter extends Base\ForumPresenter
             $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $thanks = $this->thanksManager->getThanks($user_id);
+        $thanks = $this->thanksManager->getFluentJoinedTopicByUser($user_id);
         $pag    = new PaginatorControl($thanks, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
 

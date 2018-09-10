@@ -69,7 +69,7 @@ class CategoryFacade
             $this->delete($subForum->forum_id);
         }
                 
-        $forums = $this->forumsManager->getByCategory($item_id)->fetchAll();
+        $forums = $this->forumsManager->getFluentByCategory($item_id)->fetchAll();
         
         foreach ($forums as $forum) {
             $this->forumFacade->delete($forum->forum_id);

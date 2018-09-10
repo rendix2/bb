@@ -232,7 +232,7 @@ class TopicPresenter extends Base\ForumPresenter
             $this->error('Topic does not exist.');
         }
 
-        $data = $this->postsManager->getByTopicJoinedUser($topic_id);
+        $data = $this->postsManager->getFluentByTopicJoinedUser($topic_id);
 
         if ($this->topicSetting->canLogView()) {
             $this->getManager()->update($topic_id, ArrayHash::from(['topic_view_count%sql' => 'topic_view_count + 1']));
@@ -253,7 +253,7 @@ class TopicPresenter extends Base\ForumPresenter
         $this->template->ranks      = $this->rankManager->getAllCached();
         $this->template->posts      = $data->orderBy('post_id', dibi::ASC)->fetchAll();
         $this->template->canThank   = $this->thanksManager->canUserThank($forum_id, $topic_id, $user_id);
-        $this->template->thanks     = $this->thanksManager->getThanksJoinedUserByTopic($topic_id);
+        $this->template->thanks     = $this->thanksManager->getAllJoinedUserByTopic($topic_id);
         $this->template->forum      = $forum;
         $this->template->topic      = $topic;
         
@@ -298,7 +298,7 @@ class TopicPresenter extends Base\ForumPresenter
      */
     public function renderThanks($forum_id, $topic_id)
     {
-        $thanks = $this->thanksManager->getThanksJoinedUserByTopic($topic_id);
+        $thanks = $this->thanksManager->getAllJoinedUserByTopic($topic_id);
         
         if (!$thanks) {
             $this->flashMessage('Topic has not any thanks.', self::FLASH_MESSAGE_INFO);

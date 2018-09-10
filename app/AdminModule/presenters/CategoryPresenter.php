@@ -52,7 +52,7 @@ class CategoryPresenter extends AdminPresenter
             $this[self::FORM_NAME]->setDefaults($item);
 
             $forums = $this->forumsManager->createForums(
-                $this->forumsManager->getByCategory($id)->fetchAll(),
+                $this->forumsManager->getFluentByCategory($id)->fetchAll(),
                 0
             );
 

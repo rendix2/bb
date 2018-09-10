@@ -54,7 +54,7 @@ class PostPresenter extends ModeratorPresenter
      */
     public function renderHistory($post_id)
     {
-        $this->template->posts = $this->postsHistoryManager->getJoinedByPost($post_id);
+        $this->template->posts = $this->postsHistoryManager->getAllJoinedByPost($post_id);
     }
 
     /**

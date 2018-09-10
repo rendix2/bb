@@ -91,7 +91,7 @@ class UsersManager extends Crud\CrudManager
     /**
      * @return Row|false
      */
-    public function getLastUser()
+    public function getLast()
     {
         return $this->getAllFluent()
             ->where('[user_id] = ', $this->dibi

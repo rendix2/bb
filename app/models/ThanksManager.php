@@ -19,7 +19,7 @@ class ThanksManager extends Crud\CrudManager
      *
      * @return array []
      */
-    public function getThanksByForum($forum_id)
+    public function getAllByForum($forum_id)
     {
         return $this->getAllFluent()
             ->where('[thank_forum_id] = %i', $forum_id)
@@ -31,7 +31,7 @@ class ThanksManager extends Crud\CrudManager
      *
      * @return Row[]
      */
-    public function getThanksByTopic($topic_id)
+    public function getAllByTopic($topic_id)
     {
         return $this->getAllFluent()
             ->where('[thank_topic_id] = %i', $topic_id)
@@ -43,7 +43,7 @@ class ThanksManager extends Crud\CrudManager
      *
      * @return Row[]
      */
-    public function getThanksByUser($user_id)
+    public function getAllByUser($user_id)
     {
         return $this->getAllFluent()
             ->where('[thank_user_id] = %i', $user_id)
@@ -55,7 +55,7 @@ class ThanksManager extends Crud\CrudManager
      *
      * @return Row[]
      */
-    public function getThanksJoinedUserByTopic($topic_id)
+    public function getAllJoinedUserByTopic($topic_id)
     {
         return $this->getAllFluent()
             ->as('t')
@@ -71,7 +71,7 @@ class ThanksManager extends Crud\CrudManager
      *
      * @return Fluent
      */
-    public function getThanks($user_id)
+    public function getFluentJoinedTopicByUser($user_id)
     {
         return $this->getAllFluent()
             ->as('th')
