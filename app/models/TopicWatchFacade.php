@@ -50,7 +50,6 @@ class TopicWatchFacade
      */
     public function deleteByForum($forum_id)
     {
-        
     }
 
     /**
@@ -59,7 +58,17 @@ class TopicWatchFacade
      */
     public function deleteByTopic($topic_id)
     {
-        
+        $topicsWatches = $this->topicWatchManager->getAllByLeft($topic_id);
+        $user_ids      = [];
+
+        foreach ($topicsWatches as $topicsWatch) {
+            $user_ids[] = $topicsWatch->user_id;
+        }
+
+        $this->usersManager->updateMulti(
+            $user_ids,
+            ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1'])
+        );        
     }
     
     /**
@@ -68,7 +77,6 @@ class TopicWatchFacade
      */
     public function deleteByPost($post_id)
     {
-        
     }
 
     /**

@@ -46,7 +46,7 @@ class ForumFacade
     }
     
     public function add(ArrayHash $item_data)
-    {    
+    {
         $forum_id = $this->forumsManager->getMptt()->add($item_data->forum_parent_id, $item_data->forum_name);
         
         $this->forumsManager->update($forum_id, $item_data);
@@ -61,7 +61,7 @@ class ForumFacade
      */
     public function delete($item_id)
     {
-        $topics = $this->topicsManager->getAllTopicsByForum($item_id);
+        $topics = $this->topicsManager->getAllByForum($item_id);
         
         foreach ($topics as $topic) {
             $this->topicFacade->delete($topic->topic_id);

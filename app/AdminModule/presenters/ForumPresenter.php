@@ -110,7 +110,7 @@ class ForumPresenter extends AdminPresenter
                 $this->flashMessage('No sub forums.', self::FLASH_MESSAGE_WARNING);
             }
 
-            $lastTopic = $this->topicManager->getLastTopicByForum($id);
+            $lastTopic = $this->topicManager->getLastByForum($id);
 
             if (!$lastTopic) {
                 $this->flashMessage('No last topic.', self::FLASH_MESSAGE_WARNING);

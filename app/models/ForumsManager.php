@@ -50,10 +50,21 @@ class ForumsManager extends Crud\CrudManager
      *
      * @return Fluent
      */
-    public function getByCategory($category_id)
+    public function getFluentByCategory($category_id)
     {
         return $this->getAllFluent()
             ->where('[forum_category_id] = %i', $category_id);
+    }
+    
+    /**
+     * 
+     * @param int $category_id
+     * 
+     * @return Fluent
+     */
+    public function getAllByCategory($category_id)
+    {
+        return $this->getFluentByCategory($category_id)->fetchAll();
     }
 
     /**

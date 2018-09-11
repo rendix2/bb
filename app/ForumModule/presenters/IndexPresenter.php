@@ -116,7 +116,7 @@ class IndexPresenter extends Base\ForumPresenter
     public function renderCategory($category_id)
     {
         $forums = $this->forumsManager
-                ->getByCategory($category_id)
+                ->getFluentByCategory($category_id)
                 ->orderBy('forum_order', dibi::ASC)
                 ->fetchAll();
 
@@ -172,7 +172,7 @@ class IndexPresenter extends Base\ForumPresenter
             $this->getCache()
                 ->save(
                     self::CACHE_KEY_LAST_USER,
-                    $cachedLastUser = $this->userManager->getLastUser(),
+                    $cachedLastUser = $this->userManager->getLast(),
                     [
                         Cache::EXPIRE => '1 hour',
                     ]
@@ -186,7 +186,7 @@ class IndexPresenter extends Base\ForumPresenter
             $this->getCache()
                 ->save(
                     self::CACHE_KEY_LAST_TOPIC,
-                    $cachedLastTopic = $this->topicManager->getLastTopic(),
+                    $cachedLastTopic = $this->topicManager->getLast(),
                     [
                         Cache::EXPIRE => '1 hour',
                     ]

@@ -182,7 +182,7 @@ class PostsManager extends Crud\CrudManager
      *
      * @return Fluent
      */
-    public function getByTopicJoinedUser($topic_id)
+    public function getFluentByTopicJoinedUser($topic_id)
     {
         return $this->getAllFluent()
             ->as('p')

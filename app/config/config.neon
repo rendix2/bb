@@ -216,6 +216,8 @@ services:
         class: App\Models\LogsManager
     TopicWatchFacade:
         class: App\Models\TopicWatchFacade
+    ReportFacade:
+        class: App\Models\ReportFacade
     nette.mailer:
         class: Nette\Mail\IMailer
         factory: Nextras\MailPanel\FileMailer(%tempDir%/mail-panel-mails)

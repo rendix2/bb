@@ -89,9 +89,22 @@ class ReportsManager extends Crud\CrudManager
         return $this->deleteFluent()
                 ->where('[report_topic_id] = %i', $topic_id)
                 ->execute();
-    }    
-     
+    }
+    
     /**
+     * 
+     * @param array $post_ids
+     * 
+     * @return bool
+     */
+    public function deleteByPosts(array $post_ids)
+    {
+        return $this->deleteFluent()
+                ->where('[report_post_id] IN %in', $post_ids)
+                ->execute();        
+    }
+
+        /**
      * 
      * @param int       $topic_id
      * @param ArrayHash $item_data

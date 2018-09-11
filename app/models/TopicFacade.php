@@ -151,7 +151,7 @@ class TopicFacade
         $topic = $this->topicsManager->getById($item_id);
 
         // delete thanks
-        $thanks = $this->thanksManager->getThanksByTopic($item_id);
+        $thanks = $this->thanksManager->getAllByTopic($item_id);
 
         foreach ($thanks as $thank) {
             $this->usersManager->update(
@@ -182,7 +182,7 @@ class TopicFacade
                 ->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
 
         $posts = $this->postsManager
-                ->getByTopicJoinedUser($item_id)
+                ->getFluentByTopicJoinedUser($item_id)
                 ->fetchAll();
 
         foreach ($posts as $post) {
@@ -307,11 +307,11 @@ class TopicFacade
         $thanksTargetUsers = [];
         
         $posts  = $this->postsManager->getByTopic($topic_from_id);
-        $thanks = $this->thanksManager->getThanksByTopic($topic_from_id);
+        $thanks = $this->thanksManager->getAllByTopic($topic_from_id);
 
         // thanks begin
         $topicWatches = $this->topicWatchManager->getPairsByLeft($topic_from_id);
-        $targetThanks = $this->thanksManager->getThanksByTopic($topic_target_id);
+        $targetThanks = $this->thanksManager->getAllByTopic($topic_target_id);
 
         foreach ($thanks as $thanksFrom) {
             $thanksFromUsers[] = $thanksFrom->thank_user_id;

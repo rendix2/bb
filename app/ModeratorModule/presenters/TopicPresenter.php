@@ -143,7 +143,7 @@ class TopicPresenter extends ModeratorPresenter
      */
     public function renderTopics($forum_id)
     {
-        $this->template->topics = $this->getManager()->getAllTopicsByForum($forum_id);
+        $this->template->topics = $this->getManager()->getAllByForum($forum_id);
     }
     
 }
