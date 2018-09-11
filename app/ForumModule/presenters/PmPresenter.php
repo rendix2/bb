@@ -219,7 +219,10 @@ class PmPresenter extends CrudPresenter
         
         return new BreadCrumbControl($breadCrumb, $this->translator);
     }
-    
+
+    /**
+     * @return BreadCrumbControl
+     */
     protected function createComponentBreadCrumbReport()
     {
         $breadCrumb = [

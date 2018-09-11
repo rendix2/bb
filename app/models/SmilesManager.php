@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
+
 /**
  * Description of SmiliesManager
  *
  * @author rendix2
  */
-class SmilesManager extends Crud\CrudManager
+class SmilesManager extends CrudManager
 {
 }

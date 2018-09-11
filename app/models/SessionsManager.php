@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
 use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
@@ -10,7 +11,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendix2
  */
-class SessionsManager extends Crud\CrudManager
+class SessionsManager extends CrudManager
 {
 
     /**
@@ -65,8 +66,8 @@ class SessionsManager extends Crud\CrudManager
     }
 
     /**
-     * @param                        $session_key
-     * @param ArrayHash              $session_data
+     * @param           $session_key
+     * @param ArrayHash $session_data
      *
      * @return Result|int
      */

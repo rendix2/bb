@@ -14,6 +14,11 @@ use App\Controls\GridFilter;
  */
 class FilePresenter extends AdminPresenter
 {
+    /**
+     * FilePresenter constructor.
+     *
+     * @param PostFilesManager $manager
+     */
     public function __construct(PostFilesManager $manager)
     {
         parent::__construct($manager);

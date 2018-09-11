@@ -34,7 +34,7 @@ class ReportPresenter extends ModeratorPresenter
         $form->addTextArea('report_text', 'Report text:');
         
         return $this->addSubmitB($form);
-    }      
+    }
 
     /**
      * @return GridFilter

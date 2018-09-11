@@ -34,11 +34,11 @@ class FaqPresenter extends CrudPresenter
     }
     
     /**
-     * 
+     *
      * @return null
      */
     protected function createComponentGridFilter()
     {
         return null;
-    }    
+    }
 }

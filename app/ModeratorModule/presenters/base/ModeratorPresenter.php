@@ -36,7 +36,6 @@ abstract class ModeratorPresenter extends CrudPresenter
      */
     public $moderatorsManager;
 
-
     /**
      * @return ITranslator
      */

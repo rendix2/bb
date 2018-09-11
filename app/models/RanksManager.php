@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
 use App\Settings\Ranks;
+use Dibi\Connection;
+use Nette\Caching\IStorage;
 use Nette\Http\FileUpload;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
@@ -12,7 +15,7 @@ use Nette\Utils\FileSystem;
  *
  * @author rendix2
  */
-class RanksManager extends Crud\CrudManager
+class RanksManager extends CrudManager
 {
     /**
      * @var int
@@ -21,9 +24,22 @@ class RanksManager extends Crud\CrudManager
     
     /**
      * @var Ranks $ranks
-     * @inject
      */
-    public $ranks;
+    private $ranks;
+
+    /**
+     * RanksManager constructor.
+     *
+     * @param Connection $dibi
+     * @param IStorage   $storage
+     * @param Ranks      $ranks
+     */
+    public function __construct(Connection $dibi, IStorage $storage, Ranks $ranks)
+    {
+        parent::__construct($dibi, $storage);
+
+        $this->ranks = $ranks;
+    }
 
     /**
      * @param FileUpload $file

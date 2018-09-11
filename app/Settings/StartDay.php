@@ -25,7 +25,10 @@ class StartDay
         
         //\Tracy\Debugger::barDump($this->getDiff());
     }
-    
+
+    /**
+     * @return string
+     */
     public function getStartDay()
     {
         return $this->startDay;

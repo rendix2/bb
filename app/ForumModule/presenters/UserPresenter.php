@@ -13,6 +13,7 @@ use App\Forms\UserChangePasswordForm;
 use App\Forms\UserChangeUserNameForm;
 use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserResetPasswordForm;
+use App\ForumModule\Presenters\Base\ForumPresenter;
 use App\Models\FavouriteUsersManager;
 use App\Models\LanguagesManager;
 use App\Models\ModeratorsManager;
@@ -38,7 +39,7 @@ use Nette\Utils\DateTime;
  * @author rendix2
  * @method UsersManager getManager()
  */
-class UserPresenter extends Base\ForumPresenter
+class UserPresenter extends ForumPresenter
 {
      /**
      * @var LanguagesManager $languageManager
@@ -490,7 +491,10 @@ class UserPresenter extends Base\ForumPresenter
     {
         // TODO
     }
-    
+
+    /**
+     * @param $user_id
+     */
     public function actionReport($user_id)
     {
     }
@@ -776,5 +780,5 @@ class UserPresenter extends Base\ForumPresenter
         ];
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
-    }    
+    }
 }

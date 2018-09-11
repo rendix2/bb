@@ -207,7 +207,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     /**
      * @param string $second
      *
-     * @return array|mixed
+     * @return array
      */
     public function getAllPairsCached($second)
     {
@@ -260,7 +260,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
             ->from($this->table);
     }
 
-        /**
+    /**
      * @return int
      */
     public function getCount()

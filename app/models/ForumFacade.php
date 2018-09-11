@@ -36,15 +36,20 @@ class ForumFacade
      * @param TopicsManager $topicsManager
      */
     public function __construct(
-            ForumsManager $forumsManager,
-            TopicFacade $topicFacade,
-            TopicsManager $topicsManager
+        ForumsManager $forumsManager,
+        TopicFacade $topicFacade,
+        TopicsManager $topicsManager
     ) {
         $this->forumsManager = $forumsManager;
         $this->topicFacade   = $topicFacade;
         $this->topicsManager = $topicsManager;
     }
-    
+
+    /**
+     * @param ArrayHash $item_data
+     *
+     * @return mixed
+     */
     public function add(ArrayHash $item_data)
     {
         $forum_id = $this->forumsManager->getMptt()->add($item_data->forum_parent_id, $item_data->forum_name);

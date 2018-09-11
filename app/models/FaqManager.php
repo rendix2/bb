@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
+
 /**
  * Description of FaqManager
  *
  * @author rendix2
  */
-class FaqManager extends Crud\CrudManager
+class FaqManager extends CrudManager
 {
     
 }

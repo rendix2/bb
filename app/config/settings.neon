@@ -1,0 +1,27 @@
+services:
+    WwwDir:
+        class: App\Settings\WwwDir(%wwwDir%)
+    AppDir:
+        class: App\Settings\AppDir(%appDir%)
+    Avatars:
+        class: App\Settings\Avatars(%avatars%)
+    Ranks:
+        class: App\Settings\Ranks(%ranks%)
+    TempDir:
+        class: App\Settings\TempDir(%tempDir%)
+    CacheDir:
+        class: App\Settings\CacheDir(%tempDir%/cache)
+    TopicSetting:
+        class: App\Settings\TopicsSetting(%topics%)
+    DefaultLanguage:
+        class: App\Settings\DefaultLanguage(%defaultLanguage%)
+    Email:
+        class: App\Settings\Email(%mail.from%)
+    Users:
+        class: App\Settings\Users(%users%)
+    DatabaseBackupDir:
+        class: App\Settings\DatabaseBackupDir(%databaseBackupDir%)
+    StartDay:
+        class: App\Settings\StartDay(%startDay%)
+    PostsSettings:
+        class: App\Settings\PostSetting(%posts%)

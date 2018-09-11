@@ -53,7 +53,10 @@ class TopicFacade
      * @var PostFacade $postFacade
      */
     private $postFacade;
-    
+
+    /**
+     * @var ReportsManager $reportsManager
+     */
     private $reportsManager;
 
     /**
@@ -65,6 +68,7 @@ class TopicFacade
      * @param ThanksManager     $thanksManager
      * @param ForumsManager     $forumsManager
      * @param PostFacade        $postFacade
+     * @param ReportsManager    $reportsManager
      */
     public function __construct(
         TopicsManager $topicsManager,
@@ -74,7 +78,7 @@ class TopicFacade
         ThanksManager $thanksManager,
         ForumsManager $forumsManager,
         PostFacade $postFacade,
-        \App\Models\ReportsManager $reportsManager
+        ReportsManager $reportsManager
     ) {
         $this->topicsManager     = $topicsManager;
         $this->topicWatchManager = $topicWatchManager;

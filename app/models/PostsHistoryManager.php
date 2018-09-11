@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
 use Dibi\Result;
 use Dibi\Row;
 
@@ -10,7 +11,7 @@ use Dibi\Row;
  *
  * @author rendix2
  */
-class PostsHistoryManager extends Crud\CrudManager
+class PostsHistoryManager extends CrudManager
 {
     /**
      *

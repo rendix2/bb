@@ -32,7 +32,7 @@ class FaqPresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      * @return null
      */
     protected function createComponentGridFilter()

@@ -17,13 +17,13 @@ class ReportFacade
     
     /**
      *
-     * @var ReportsManager $reportsManager 
+     * @var ReportsManager $reportsManager
      */
     private $reportManager;
     
     /**
      *
-     * @var TopicsManager $topicsManager 
+     * @var TopicsManager $topicsManager
      */
     private $topicsManager;
     
@@ -35,11 +35,11 @@ class ReportFacade
 
 
     /**
-     * 
-     * @param \App\Models\ForumsManager $forumsManager
-     * @param \App\Models\TopicsManager $topicsManager
-     * @param \App\Models\PostsManager $postsManager
-     * @param \App\Models\ReportsManager $reportsManager
+     *
+     * @param ForumsManager $forumsManager
+     * @param TopicsManager $topicsManager
+     * @param PostsManager $postsManager
+     * @param ReportsManager $reportsManager
      */
     public function __construct(
         ForumsManager $forumsManager,
@@ -54,24 +54,24 @@ class ReportFacade
     }
     
     /**
-     * 
+     *
      * @param int $category_id
-     * 
+     *
      * @return bool
      */
     public function deleteByCategory($category_id)
     {
         $forums = $this->forumsManager->getAllByCategory($category_id);
         
-        foreach ($forums as $forums) {
+        foreach ($forums as $forum) {
             $this->deleteByForum($forum->forum_id);
         }
     }
     
     /**
-     * 
+     *
      * @param int $forum_id
-     * 
+     *
      * @return bool
      */
     public function deleteByForum($forum_id)
@@ -86,9 +86,9 @@ class ReportFacade
     }
     
     /**
-     * 
+     *
      * @param int $topic_id
-     * 
+     *
      * @return  bool
      */
     public function deleteByTopic($topic_id)
@@ -100,14 +100,14 @@ class ReportFacade
             $posts_ids[] = $post->post_id;
         }
         
-        $this->reportManager->deleteByPosts($posts_ids);        
+        $this->reportManager->deleteByPosts($posts_ids);
         return $this->reportManager->deleteByTopic($topic_id);
     }
 
     /**
-     * 
+     *
      * @param int $post_id
-     * 
+     *
      * @return bool
      */
     public function deleteByPost($post_id)

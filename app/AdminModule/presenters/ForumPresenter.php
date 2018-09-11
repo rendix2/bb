@@ -14,6 +14,7 @@ use App\Models\ModeratorsManager;
 use App\Models\ForumFacade;
 use App\Controls\BreadCrumbControl;
 
+use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -231,7 +232,7 @@ class ForumPresenter extends AdminPresenter
     {
         $id = $this->getParameter('id');
 
-        try{
+        try {
             if ($id) {
                 $result = $this->getManager()->update($id, $values);
             } else {
@@ -243,7 +244,7 @@ class ForumPresenter extends AdminPresenter
             } else {
                 $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
             }
-        } catch (Dibi\DriverException $e) {
+        } catch (DriverException $e) {
             $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
             
             \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
@@ -251,5 +252,5 @@ class ForumPresenter extends AdminPresenter
 
         $this->getManager()->deleteCache();
         $this->redirect(':' . $this->getName() . ':default');
-    }    
+    }
 }

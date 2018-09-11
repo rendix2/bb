@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
 use dibi;
 use Dibi\Row;
 use Dibi\Connection;
@@ -13,7 +14,7 @@ use Nette\Caching\IStorage;
  *
  * @package App\Models
  */
-class CategoriesManager extends Crud\CrudManager
+class CategoriesManager extends CrudManager
 {
     /**
      * @var \Zebra_Mptt $mptt
@@ -42,13 +43,13 @@ class CategoriesManager extends Crud\CrudManager
     }
     
     /**
-     * 
+     *
      * @return Zebra_Mptt
      */
     public function getMptt()
     {
         return $this->mptt;
-    }    
+    }
     
     /**
      * @return array
@@ -105,7 +106,12 @@ class CategoriesManager extends Crud\CrudManager
         //$this->mptt->move(1, 2);
         \Tracy\Debugger::barDump($this->mptt->get_tree());
     }
-    
+
+    /**
+     * @param $category_id
+     *
+     * @return array
+     */
     public function getBreadCrumb($category_id)
     {
         $categories = $this->mptt->getBreadCrumb($category_id);
@@ -120,8 +126,8 @@ class CategoriesManager extends Crud\CrudManager
             $tmp['t']      = 0;
             
             $bcForum[] = $tmp;
-        }    
+        }
         
         return $bcForum;
-    }    
+    }
 }

@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
+
 /**
  * Description of GroupsManager
  *
  * @author rendix2
  */
-class GroupsManager extends Crud\CrudManager
+class GroupsManager extends CrudManager
 {
 }

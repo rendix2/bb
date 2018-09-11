@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
 use Dibi\Fluent;
 use Dibi\Result;
 use Dibi\Row;
@@ -12,7 +13,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendix2
  */
-class ThanksManager extends Crud\CrudManager
+class ThanksManager extends CrudManager
 {
     /**
      * @param int $forum_id
@@ -124,56 +125,56 @@ class ThanksManager extends Crud\CrudManager
     }
     
     /**
-     * 
-     * @param type $topic_id
+     *
+     * @param int $topic_id
      * @param ArrayHash $item_data
-     * 
-     * @return type
+     *
+     * @return bool
      */
     public function updateByTopic($topic_id, ArrayHash $item_data)
     {
         return $this->dibi
             ->update($this->getTable(), $item_data)
             ->where('[thank_topic_id] = %i', $topic_id)
-            ->execute();                
+            ->execute();
     }
     
     /**
-     * 
-     * @param type $user_id
+     *
+     * @param int $user_id
      * @param ArrayHash $item_data
-     * 
-     * @return type
+     *
+     * @return bool
      */
     public function updateByUser($user_id, ArrayHash $item_data)
     {
         return $this->dibi
             ->update($this->getTable(), $item_data)
             ->where('[thank_user_id] = %i', $user_id)
-            ->execute();                
-    }    
+            ->execute();
+    }
     
     /**
-     * 
-     * @param array $user_id
+     *
+     * @param array     $user_id
      * @param ArrayHash $item_data
-     * 
-     * @return type
+     *
+     * @return bool
      */
     public function updateMultiByUser(array $user_id, ArrayHash $item_data)
     {
         return $this->dibi
             ->update($this->getTable(), $item_data)
             ->where('[thank_user_id] IN %in', $user_id)
-            ->execute();                
+            ->execute();
     } 
     
     /**
-     * 
+     *
      * @param array $user_ids
      * @param int   $topic_id
-     * 
-     * @return type
+     *
+     * @return bool
      */
     public function deleteByUserAndTopic(array $user_ids, $topic_id)
     {
@@ -183,7 +184,13 @@ class ThanksManager extends Crud\CrudManager
                 ->where('[thank_topic_id] = %i', $topic_id)
                 ->execute();
     }
-    
+
+    /**
+     * @param $user_id
+     * @param $topic_id
+     *
+     * @return Row|false
+     */
     public function getByUserAndTopic($user_id, $topic_id)
     {
         return $this->dibi->select('*')

@@ -4,8 +4,6 @@ namespace App\Authorization\Scopes;
 
 use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
-use App\Authorization\Scopes\Topic;
-use App\Authorization\Scopes\User;
 
 /**
  * Description of Post

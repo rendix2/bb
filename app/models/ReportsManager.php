@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
 use Dibi\Fluent;
 use Dibi\Result;
 use Nette\Utils\ArrayHash;
@@ -11,7 +12,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendix2
  */
-class ReportsManager extends Crud\CrudManager
+class ReportsManager extends CrudManager
 {
 
     /**
@@ -21,7 +22,7 @@ class ReportsManager extends Crud\CrudManager
     {
         return $this->dibi->select('r.*, u.*, f.*, t.*, p.* , u2.user_id AS reported_user_id, u2.user_name as reported_user_name')
             ->from($this->getTable())
-            ->as('r')    
+            ->as('r')
             ->leftJoin(self::FORUM_TABLE)
             ->as('f')
             ->on('[f.forum_id] = [report_forum_id]')
@@ -92,27 +93,27 @@ class ReportsManager extends Crud\CrudManager
     }
     
     /**
-     * 
+     *
      * @param array $post_ids
-     * 
+     *
      * @return bool
      */
     public function deleteByPosts(array $post_ids)
     {
         return $this->deleteFluent()
                 ->where('[report_post_id] IN %in', $post_ids)
-                ->execute();        
+                ->execute();
     }
 
-        /**
-     * 
+    /**
+     *
      * @param int       $topic_id
      * @param ArrayHash $item_data
-     * 
-     * @return type
+     *
+     * @return bool
      */
     public function updateByTopic($topic_id, ArrayHash $item_data)
     {
         return $this->dibi->update($this->getTable(), $item_data)->where('[report_topic_id] = %i', $topic_id)->execute();
-    }    
+    }
 }

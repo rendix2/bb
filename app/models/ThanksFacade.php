@@ -29,7 +29,8 @@ class ThanksFacade
 
     /**
      * @param ThanksManager $thanksManager
-     * @param UsersManager $usersManager
+     * @param UsersManager  $usersManager
+     * @param PostsManager  $postsManager
      */
     public function __construct(ThanksManager $thanksManager, UsersManager $usersManager, PostsManager $postsManager)
     {
@@ -55,7 +56,7 @@ class ThanksFacade
     }
     
     /**
-     * 
+     *
      * @param int $category_id
      */
     public function deleteByCategory($category_id)
@@ -118,11 +119,10 @@ class ThanksFacade
     }
 
     /**
-     * 
+     *
      * @param int $user_id
      */
     public function deleteByUser($user_id)
     {
-        
     }
 }

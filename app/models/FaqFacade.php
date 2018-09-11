@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of FaqFacade
  *
@@ -10,7 +12,7 @@ namespace App\Models;
 class FaqFacade
 {
     /**
-     * 
+     *
      * @var FaqManager $faqManager
      */
     private $faqManager;
@@ -22,7 +24,7 @@ class FaqFacade
     private $faqAnswersManager;
 
     /**
-     * 
+     *
      * @param FaqManager        $faqManager
      * @param FaqAnswersManager $faqAnswersManager
      */
@@ -31,15 +33,20 @@ class FaqFacade
         $this->faqManager        = $faqManager;
         $this->faqAnswersManager = $faqAnswersManager;
     }
-    
-    public function add(\Nette\Utils\ArrayHash $item_data)
+
+    /**
+     * @param ArrayHash $item_data
+     */
+    public function add(ArrayHash $item_data)
     {
         
     }
-    
+
+    /**
+     * @param $item_id
+     */
     public function delete($item_id)
     {
         
-    }   
-    
+    }
 }

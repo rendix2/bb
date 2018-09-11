@@ -50,7 +50,7 @@ interface ICrudManager
     /**
      * @param string $second
      *
-     * @return mixed
+     * @return array
      */
     public function getAllPairsCached($second);
 

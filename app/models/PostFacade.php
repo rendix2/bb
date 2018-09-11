@@ -252,7 +252,7 @@ class PostFacade
             $this->usersManager->update(
                 $post->post_user_id,
                 ArrayHash::from(['user_last_post_time' => 0])
-            );            
+            );
         }
         
         return $res;

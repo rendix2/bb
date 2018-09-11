@@ -15,7 +15,7 @@ parameters:
         dir: %wwwDir%%avatars.relativeDir%
         maxWidth: 2000
         maxHeight: 2000        
-        maxFileSize: 5242880
+        maxFileSize: 5242880 # 5 mb
         enabledExtension:
             - jpg
             - jpeg
@@ -32,6 +32,9 @@ parameters:
             - jpeg
             - png
             - gif
+    crud:
+        cache:
+            primaryKey: 10 days
     topics:
         pagination:
             itemsPerPage: 25
@@ -100,8 +103,7 @@ services:
     PostsManager: 
         class: App\Models\PostsManager
     UsersManager: 
-        factory: App\Models\UsersManager
-        inject: yes
+        class: App\Models\UsersManager
     ThanksManager: 
         class: App\Models\ThanksManager
     TopicsManager: 
@@ -109,8 +111,7 @@ services:
     CategoriesManager: 
         class: App\Models\CategoriesManager
     RanksManager:
-        factory: App\Models\RanksManager
-        inject: yes
+        class: App\Models\RanksManager
     LanaguagesManager:        
         class: App\Models\LanguagesManager
     Forums2GroupsManager: 
@@ -223,6 +224,8 @@ services:
         factory: Nextras\MailPanel\FileMailer(%tempDir%/mail-panel-mails)
     StartDay:
         class: App\Settings\StartDay(%startDay%)
+    MpttFactory:
+        class: App\Services\MpttFactory
     GridFilter:
         factory: App\Controls\GridFilter
         setup:

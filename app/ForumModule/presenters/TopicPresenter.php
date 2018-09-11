@@ -7,6 +7,7 @@ use App\Controls\BreadCrumbControl;
 use App\Controls\PaginatorControl;
 use App\Controls\TopicJumpToForumForm;
 use App\Forms\TopicFastReplyForm;
+use App\ForumModule\Presenters\Base\ForumPresenter;
 use App\Models\ForumsManager;
 use App\Models\PostFacade;
 use App\Models\PostsManager;
@@ -31,7 +32,7 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  * @method TopicsManager getManager()
  */
-class TopicPresenter extends Base\ForumPresenter
+class TopicPresenter extends ForumPresenter
 {
     
     /**
@@ -278,6 +279,7 @@ class TopicPresenter extends Base\ForumPresenter
     }
 
     /**
+     * @param     $forum_id
      * @param int $topic_id
      */
     public function renderWatchers($forum_id, $topic_id)

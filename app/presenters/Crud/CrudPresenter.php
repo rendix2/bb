@@ -7,6 +7,7 @@ use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
 use App\Models\Crud\CrudManager;
 use App\Presenters\Base\AuthenticatedPresenter;
+use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -61,7 +62,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     /**
      * @return GridFilter
      */
-    abstract protected function createComponentGridFilter();            
+    abstract protected function createComponentGridFilter();
 
     /**
      * CrudPresenter constructor.
@@ -76,7 +77,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     }
     
     /**
-     * 
+     *
      * @return CrudManager
      */
     public function getManager()
@@ -168,7 +169,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     {
         $id = $this->getParameter('id');
 
-        try{
+        try {
             if ($id) {
                 $result = $this->getManager()->update($id, $values);
             } else {
@@ -180,7 +181,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
             } else {
                 $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
             }
-        } catch (Dibi\DriverException $e) {
+        } catch (DriverException $e) {
             $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
             
             \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);

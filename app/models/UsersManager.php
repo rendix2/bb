@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
 use App\Settings\Avatars;
+use Dibi\Connection;
 use Dibi\Row;
+use Nette\Caching\IStorage;
 use Nette\Http\FileUpload;
 use Nette\InvalidArgumentException;
 use Nette\IOException;
@@ -14,7 +17,7 @@ use Nette\Utils\FileSystem;
  *
  * @author rendix2
  */
-class UsersManager extends Crud\CrudManager
+class UsersManager extends CrudManager
 {
 
     /**
@@ -23,10 +26,23 @@ class UsersManager extends Crud\CrudManager
     const NOT_UPLOADED = -5;
     
     /**
-     * @var Avatars $avatar
-     * @inject
+     * @var Avatars $avatars
      */
-    public $avatar;
+    private $avatars;
+
+    /**
+     * UsersManager constructor.
+     *
+     * @param Connection $dibi
+     * @param IStorage   $storage
+     * @param Avatars    $avatars
+     */
+    public function __construct(Connection $dibi, IStorage $storage, Avatars $avatars)
+    {
+        parent::__construct($dibi, $storage);
+
+        $this->avatars = $avatars;
+    }
 
     /**
      * @param int $lang_id
@@ -179,16 +195,16 @@ class UsersManager extends Crud\CrudManager
     public function moveAvatar(FileUpload $file, $user_id)
     {
         if ($file->ok) {
-            if ($file->getSize() > $this->avatar->getMaxFileSize()) {
-                throw new InvalidArgumentException('File is too big. Max enabled file size is: '.$this->avatar->getMaxFileSize());
+            if ($file->getSize() > $this->avatars->getMaxFileSize()) {
+                throw new InvalidArgumentException('File is too big. Max enabled file size is: '.$this->avatars->getMaxFileSize());
             }
                                    
-            if ($file->getImageSize()[0] > $this->avatar->getMaxWidth()) {
-                throw new InvalidArgumentException('Image width is too big. Max enabled width is: ' .$this->avatar->getMaxWidth());
+            if ($file->getImageSize()[0] > $this->avatars->getMaxWidth()) {
+                throw new InvalidArgumentException('Image width is too big. Max enabled width is: ' .$this->avatars->getMaxWidth());
             }
             
-            if ($file->getImageSize()[1] > $this->avatar->getMaxHeight()) {
-                throw new InvalidArgumentException('Image height is too big. Max enabled height is: '.$this->avatar->getMaxHeight());
+            if ($file->getImageSize()[1] > $this->avatars->getMaxHeight()) {
+                throw new InvalidArgumentException('Image height is too big. Max enabled height is: '.$this->avatars->getMaxHeight());
             }
             
             $user = $this->getById($user_id);
@@ -201,7 +217,7 @@ class UsersManager extends Crud\CrudManager
             $hash      = self::getRandomString();
             $name      = $hash . '.' . $extension;
 
-            $file->move($this->avatar->getDir() . DIRECTORY_SEPARATOR . $name);
+            $file->move($this->avatars->getDir() . DIRECTORY_SEPARATOR . $name);
 
             return $name;
         } else {
@@ -218,7 +234,7 @@ class UsersManager extends Crud\CrudManager
     public function removeAvatarFile($avatar_file)
     {
         try {
-            FileSystem::delete($this->avatar->getDir() . DIRECTORY_SEPARATOR . $avatar_file);
+            FileSystem::delete($this->avatars->getDir() . DIRECTORY_SEPARATOR . $avatar_file);
             
             return true;
         } catch (IOException $e) {

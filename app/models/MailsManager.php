@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
+
 /**
  * Description of MailsManager
  *
  * @author rendix2
  */
-class MailsManager extends Crud\CrudManager
+class MailsManager extends CrudManager
 {
 }

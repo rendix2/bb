@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of UserFacade
  *
@@ -163,8 +165,11 @@ class UserFacade
     
         return $this->usersManager->delete($item_id);
     }
-    
-    public function add(\Nette\Utils\ArrayHash $item_data)
+
+    /**
+     * @param ArrayHash $item_data
+     */
+    public function add(ArrayHash $item_data)
     {
         $user_id = $this->usersManager->add($item_data);
         

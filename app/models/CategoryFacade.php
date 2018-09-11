@@ -26,7 +26,7 @@ class CategoryFacade
      *
      * @var ForumsManager $forumsManager
      */
-    private $forumsManager;    
+    private $forumsManager;
 
     /**
      *
@@ -41,16 +41,17 @@ class CategoryFacade
     ) {
         $this->categoriesManager = $categoriesManager;
         $this->forumFacade       = $forumFacade;
-        $this->forumsManager     = $forumsManager;               
+        $this->forumsManager     = $forumsManager;
     }
     
     /**
-     * 
+     *
      * @param ArrayHash $item_data
      */
     public function add(ArrayHash $item_data)
     {
-        $category_id = $this->categoriesManager->getMptt()->add($item_data->category_parent_id, $item_data->category_name);
+        $category_id = $this->categoriesManager->getMptt()
+            ->add($item_data->category_parent_id, $item_data->category_name);
         
         $this->categoriesManager->update($category_id, $item_data);
     }

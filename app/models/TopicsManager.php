@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
 use Dibi\Fluent;
 use Dibi\Row;
 use Nette\Caching\Cache;
@@ -12,7 +13,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendix2
  */
-class TopicsManager extends Crud\CrudManager
+class TopicsManager extends CrudManager
 {
 
     /**

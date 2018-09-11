@@ -15,6 +15,12 @@ class MenuControl extends Control
     
     private $translator;
 
+    /**
+     * MenuControl constructor.
+     *
+     * @param ITranslator $translator
+     * @param array       $menu
+     */
     public function __construct(ITranslator $translator, array $menu)
     {
         parent::__construct();

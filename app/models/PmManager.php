@@ -35,7 +35,7 @@ class PmManager extends CrudManager
     }
     
     /**
-     * 
+     *
      * @return int
      */
     public function getCountSent()
@@ -43,6 +43,6 @@ class PmManager extends CrudManager
         return parent::getCountFluent()
                 ->where('pm_user_id_to = %i', $this->user->id)
                 ->where('pm_status = %s', 'sent')
-                ->fetchSingle();        
+                ->fetchSingle();
     }
 }

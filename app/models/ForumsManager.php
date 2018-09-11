@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Crud\CrudManager;
 use dibi;
 use Dibi\Fluent;
 use Dibi\Row;
@@ -14,13 +15,22 @@ use Zebra_Mptt;
  *
  * @author rendix2
  */
-class ForumsManager extends Crud\CrudManager
-{    
+class ForumsManager extends CrudManager
+{
+
     /**
      * @var Zebra_Mptt $mptt
      */
     private $mptt;
 
+    /**
+     * ForumsManager constructor.
+     *
+     * @param Connection $dibi
+     * @param IStorage   $storage
+     *
+     * @throws \Exception
+     */
     public function __construct(Connection $dibi, IStorage $storage)
     {
         parent::__construct($dibi, $storage);
@@ -33,11 +43,11 @@ class ForumsManager extends Crud\CrudManager
             'forum_left',
             'forum_right',
             'forum_parent_id'
-        );        
+        );
     }
     
     /**
-     * 
+     *
      * @return Zebra_Mptt
      */
     public function getMptt()
@@ -57,10 +67,10 @@ class ForumsManager extends Crud\CrudManager
     }
     
     /**
-     * 
+     *
      * @param int $category_id
-     * 
-     * @return Fluent
+     *
+     * @return Row[]
      */
     public function getAllByCategory($category_id)
     {
@@ -141,7 +151,12 @@ class ForumsManager extends Crud\CrudManager
     public function move()
     {
     }
-    
+
+    /**
+     * @param $forum_id
+     *
+     * @return array
+     */
     public function getBreadCrumb($forum_id)
     {
         $forums = $this->mptt->getBreadCrumb($forum_id);
@@ -156,7 +171,7 @@ class ForumsManager extends Crud\CrudManager
             $tmp['t']      = 0;
             
             $bcForum[] = $tmp;
-        }    
+        }
         
         return $bcForum;
     }
