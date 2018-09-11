@@ -72,13 +72,13 @@ class PostPresenter extends ModeratorPresenter
     }
     
     /**
-     * 
+     *
      * @return null
      */
     protected function createComponentGridFilter()
     {
         return null;
-    }    
+    }
 
     /**
      * @return BootstrapForm
