@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of TopicWatchFacade
  *

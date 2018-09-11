@@ -13,7 +13,7 @@ use App\Forms\UserChangePasswordForm;
 use App\Forms\UserChangeUserNameForm;
 use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserResetPasswordForm;
-use App\ForumModule\Presenters\Base\ForumPresenter;
+use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\FavouriteUsersManager;
 use App\Models\LanguagesManager;
 use App\Models\ModeratorsManager;
@@ -39,7 +39,7 @@ use Nette\Utils\DateTime;
  * @author rendix2
  * @method UsersManager getManager()
  */
-class UserPresenter extends ForumPresenter
+class UserPresenter extends BaseForumPresenter
 {
      /**
      * @var LanguagesManager $languageManager

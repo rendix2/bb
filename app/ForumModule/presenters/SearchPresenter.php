@@ -4,7 +4,7 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
-use App\ForumModule\Presenters\Base\ForumPresenter;
+use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\PostsManager;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
@@ -17,7 +17,7 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  * @method UsersManager getManager()
  */
-class SearchPresenter extends ForumPresenter
+class SearchPresenter extends BaseForumPresenter
 {
     /**
      * @var TopicsManager $topicsManager

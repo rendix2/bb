@@ -81,7 +81,7 @@ class ThanksFacade
      */
     public function deleteByTopic($topic_id)
     {
-        $thanks   = $this->thanksManager->getThanksByTopic($topic_id);
+        $thanks   = $this->thanksManager->getAllByTopic($topic_id);
         $user_ids = [];
 
         foreach ($thanks as $thank) {

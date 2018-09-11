@@ -5,7 +5,6 @@ namespace App\ForumModule\Presenters;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
-use App\ForumModule\Presenters\Base\ForumPresenter;
 use App\Models\ForumsManager;
 use App\Models\PostFacade;
 use App\Models\PostsHistoryManager;
@@ -26,7 +25,7 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  * @method PostsManager getManager()
  */
-class PostPresenter extends ForumPresenter
+class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
 {
 
     /**

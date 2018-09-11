@@ -59,6 +59,18 @@ class PostFacade
      * @var ThanksManager $thanksManager
      */
     private $thanksManager;
+    
+    /**
+     *
+     * @var ThanksFacade $thanksFacade
+     */
+    private $thanksFacade;
+    
+    /**
+     *
+     * @var TopicWatchFacade $topicWatchFacade
+     */
+    private $topicWatchFacade;
 
     /**
      *
@@ -70,6 +82,8 @@ class PostFacade
      * @param ForumsManager       $forumsManager
      * @param PostsHistoryManager $postsHistoryManager
      * @param ThanksManager       $thanksManager
+     * @param ThanksFacade        $thanksFacade
+     * @param TopicWatchFacade    $topicWatchFacade
      */
     public function __construct(
         PostsManager $postsManager,
@@ -79,7 +93,9 @@ class PostFacade
         ReportsManager $reportsManager,
         ForumsManager $forumsManager,
         PostsHistoryManager $postsHistoryManager,
-        ThanksManager $thanksManager
+        ThanksManager $thanksManager,
+        ThanksFacade $thanksFacade,
+        TopicWatchFacade $topicWatchFacade
     ) {
         $this->postsManager        = $postsManager;
         $this->topicsManager       = $topicsManager;
@@ -89,6 +105,8 @@ class PostFacade
         $this->forumsManager       = $forumsManager;
         $this->postsHistoryManager = $postsHistoryManager;
         $this->thanksManager       = $thanksManager;
+        $this->thanksFacade        = $thanksFacade;
+        $this->topicWatchFacade    = $topicWatchFacade;
     }
 
     /**
@@ -218,7 +236,7 @@ class PostFacade
             ]));
         } elseif ($topic->topic_last_post_id === $topic->topic_first_post_id && $topic->topic_first_post_id === (int)$item_id) {
             $this->forumsManager->update($post->post_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
-            $this->thanksManager->deleteByTopic($topic->topic_id);
+            $this->thanksFacade->deleteByTopic($topic->topic_id);
             $this->reportsManager->deleteByTopic($topic->topic_id);
             
             $userUpdate = ['user_topic_count%sql' => 'user_topic_count - 1'];
@@ -228,13 +246,7 @@ class PostFacade
             if (!$watching) {
                 $userUpdate['user_watch_count%sql'] = ['user_watch_count - 1'];
             }
-            
-            $thanks = $this->thanksManager->getByUserAndTopic($topic->topic_user_id, $topic->topic_id);
-            
-            if (!$thanks) {
-                $userUpdate['user_thank_count%sql'] = ['user_thank_count - 1'];
-            }
-            
+
             $this->usersManager->update($topic->topic_user_id, ArrayHash::from($userUpdate));
             $this->topicsManager->delete($topic->topic_id);
 

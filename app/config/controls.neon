@@ -1,0 +1,10 @@
+services:
+    MysqlDumper:
+        class: Ifsnop\Mysqldump\Mysqldump(%database.dsn%, %database.username%, %database.password%)
+    BBMailer:
+        class: App\Controls\BBMailer
+    GridFilter:
+        factory: App\Controls\GridFilter
+        setup:
+            - factory 
+    

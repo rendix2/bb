@@ -3,7 +3,7 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BreadCrumbControl;
-use App\ForumModule\Presenters\Base\ForumPresenter;
+use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Models\ModeratorsManager;
@@ -20,7 +20,7 @@ use Nette\Caching\IStorage;
  * @author rendix2
  * @method CategoriesManager getManager()
  */
-class IndexPresenter extends ForumPresenter
+class IndexPresenter extends BaseForumPresenter
 {
     /**
      * @var string

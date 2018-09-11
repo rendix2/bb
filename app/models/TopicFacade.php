@@ -58,6 +58,18 @@ class TopicFacade
      * @var ReportsManager $reportsManager
      */
     private $reportsManager;
+    
+    /**
+     *
+     * @var TopicWatchFacade $topicWatchFacade
+     */
+    private $topicWatchFacade;
+    
+    /**
+     *
+     * @var ThanksFacade $thanksFacade
+     */
+    private $thanksFacade;
 
     /**
      *
@@ -69,6 +81,8 @@ class TopicFacade
      * @param ForumsManager     $forumsManager
      * @param PostFacade        $postFacade
      * @param ReportsManager    $reportsManager
+     * @param TopicWatchFacade  $topicWatchFacade
+     * @param ThanksFacade      $thanksFacade
      */
     public function __construct(
         TopicsManager $topicsManager,
@@ -78,7 +92,9 @@ class TopicFacade
         ThanksManager $thanksManager,
         ForumsManager $forumsManager,
         PostFacade $postFacade,
-        ReportsManager $reportsManager
+        ReportsManager $reportsManager,
+        TopicWatchFacade $topicWatchFacade, 
+        ThanksFacade $thanksFacade
     ) {
         $this->topicsManager     = $topicsManager;
         $this->topicWatchManager = $topicWatchManager;
@@ -88,6 +104,8 @@ class TopicFacade
         $this->postFacade        = $postFacade;
         $this->forumsManager     = $forumsManager;
         $this->reportsManager    = $reportsManager;
+        $this->topicWatchFacade  = $topicWatchFacade;
+        $this->thanksFacade      = $thanksFacade;
     }
 
     /**
@@ -154,34 +172,9 @@ class TopicFacade
     {
         $topic = $this->topicsManager->getById($item_id);
 
-        // delete thanks
-        $thanks = $this->thanksManager->getAllByTopic($item_id);
-
-        foreach ($thanks as $thank) {
-            $this->usersManager->update(
-                $thank->thank_user_id,
-                ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1'])
-            );
-        }
-
-        $this->thanksManager->deleteByTopic($item_id);
-        // delete thanks
-
-        // topics watches
-        $topicsWatches = $this->topicWatchManager->getAllByLeft($item_id);
-        $user_ids      = [];
-
-        foreach ($topicsWatches as $topicsWatch) {
-            $user_ids[] = $topicsWatch->user_id;
-        }
-
-        $this->usersManager->updateMulti(
-            $user_ids,
-            ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1'])
-        );
-
-        // topics watches
-
+        $this->thanksFacade->deleteByTopic($item_id);
+        $this->topicWatchFacade->deleteByTopic($item_id);
+        
         $this->usersManager
                 ->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
 
