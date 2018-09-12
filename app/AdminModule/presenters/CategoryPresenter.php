@@ -34,7 +34,6 @@ class CategoryPresenter extends AdminPresenter
      */
     public $categoryFacade;
 
-
     /**
      * CategoryPresenter constructor.
      *
@@ -45,6 +44,13 @@ class CategoryPresenter extends AdminPresenter
         parent::__construct($manager);
     }
     
+    public function renderDefault($page = 1)
+    {
+        parent::renderDefault($page);
+        
+        $this->template->tree = $this->getManager()->getMptt()->get_tree(0);
+    }
+
     /**
      * @param int|null $id
      */

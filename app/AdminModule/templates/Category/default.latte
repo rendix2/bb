@@ -23,6 +23,21 @@
             <span>{_count}: {$countItems}</span>
         </div>
     </div>   
+        
+    <div class="col-sm-12">
+    {block category_tree}
+    <ul>
+        {foreach $tree as $item}
+        <li>
+            <a href="{plink Category:edit, $item['category_id']}">{$item['category_name']}</a>
+            {if isset($item['children']) && count($item['children']) > 0}
+                {include category_tree, tree => $item['children']}       
+            {/if}
+        </li>
+        {/foreach}
+    </ul>
+    {/block}
+    </div>
 
     <div class="col-sm-12 main">
         <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
