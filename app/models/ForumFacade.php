@@ -66,6 +66,12 @@ class ForumFacade
      */
     public function delete($item_id)
     {
+        $forums = $this->forumsManager->getByParent($item_id);
+
+        foreach ($forums as $forum) {
+            $this->delete($forum->forum_id);
+        }
+
         $topics = $this->topicsManager->getAllByForum($item_id);
         
         foreach ($topics as $topic) {
