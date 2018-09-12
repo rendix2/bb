@@ -2285,12 +2285,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/rendix2/Zebra_Mptt.git",
-                "reference": "1a4e557b395f0bcf951e98b83e7d8ea59d588eff"
+                "reference": "f5e8713fa26b1badd5f15b3777addf950b4ce86e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rendix2/Zebra_Mptt/zipball/1a4e557b395f0bcf951e98b83e7d8ea59d588eff",
-                "reference": "1a4e557b395f0bcf951e98b83e7d8ea59d588eff",
+                "url": "https://api.github.com/repos/rendix2/Zebra_Mptt/zipball/f5e8713fa26b1badd5f15b3777addf950b4ce86e",
+                "reference": "f5e8713fa26b1badd5f15b3777addf950b4ce86e",
                 "shasum": ""
             },
             "require": {
@@ -2326,7 +2326,7 @@
             "support": {
                 "source": "https://github.com/rendix2/Zebra_Mptt/tree/master"
             },
-            "time": "2018-09-09T12:23:04+00:00"
+            "time": "2018-09-12T19:47:49+00:00"
         },
         {
             "name": "symfony/console",
