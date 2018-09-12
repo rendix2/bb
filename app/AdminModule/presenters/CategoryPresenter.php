@@ -8,6 +8,10 @@ use App\Controls\GridFilter;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Controls\BreadCrumbControl;
+use App\Models\CategoryFacade;
+
+use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of CategoryPresenter
@@ -24,6 +28,14 @@ class CategoryPresenter extends AdminPresenter
     public $forumsManager;
     
     /**
+     *
+     * @var CategoryFacade $categoryFacade
+     * @inject
+     */
+    public $categoryFacade;
+
+
+    /**
      * CategoryPresenter constructor.
      *
      * @param CategoriesManager $manager
@@ -31,6 +43,13 @@ class CategoryPresenter extends AdminPresenter
     public function __construct(CategoriesManager $manager)
     {
         parent::__construct($manager);
+    }
+    
+    public function startup() {
+        parent::startup();
+        
+        echo $this->getManager()->getMptt()->to_list(0);
+        //$this->terminate();
     }
 
     /**
@@ -84,6 +103,7 @@ class CategoryPresenter extends AdminPresenter
         $form = $this->getBootstrapForm();
 
         $form->addText('category_name', 'Category name:')->setRequired(true);
+        $form->addSelect('category_parent_id', 'Category parent:', [0 => '-'] + $this->getManager()->getAllPairsCached('category_name'))->setTranslator(null);
         $form->addCheckbox('category_active', 'Category active:');
 
         return $this->addSubmitB($form);
@@ -131,4 +151,34 @@ class CategoryPresenter extends AdminPresenter
         
         return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
     }
+    
+    /**
+     * @param Form      $form   form
+     * @param ArrayHash $values values
+     */
+    public function editFormSuccess(Form $form, ArrayHash $values)
+    {
+        $id = $this->getParameter('id');
+
+        try {
+            if ($id) {
+                $result = $this->categoryFacade->update($id, $values);
+            } else {
+                $result = $id = $this->categoryFacade->add($values);
+            }
+
+            if ($result) {
+                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+            } else {
+                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
+            }
+        } catch (DriverException $e) {
+            $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
+            
+            \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
+        }
+
+        $this->getManager()->deleteCache();
+        $this->redirect(':' . $this->getName() . ':default');
+    }    
 }

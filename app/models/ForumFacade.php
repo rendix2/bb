@@ -58,6 +58,26 @@ class ForumFacade
         
         return $forum_id;
     }
+    
+    /**
+     * 
+     * @param type $item_id
+     * @param ArrayHash $item_data
+     * 
+     * @return type
+     */
+    public function update($item_id, ArrayHash $item_data)
+    {
+        $forum = $this->forumsManager->getById($item_id);
+        
+        if ($forum->forum_parent_id !== $item_data->forum_parent_id) {
+            $this->forumsManager->getMptt()->move($item_id, $item_data->forum_parent_id);
+            
+            unset($item_data->$forum_parent_id);
+        }
+        
+        return $this->forumsManager->update($item_id, $item_data);
+    }    
 
     /**
      * @param int $item_id

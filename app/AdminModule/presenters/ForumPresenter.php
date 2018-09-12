@@ -141,6 +141,26 @@ class ForumPresenter extends AdminPresenter
             $this[self::FORM_NAME]->setDefaults([]);
         }
     }
+    
+    /**
+     * @param int $id
+     */
+    public function actionDelete($id)
+    {
+        if (!is_numeric($id)) {
+            $this->error('Parameter is not numeric.');
+        }
+
+        $result = $this->forumFacade->delete($id);
+
+        if ($result) {
+            $this->flashMessage('Item was deleted.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('Item was not deleted.', self::FLASH_MESSAGE_DANGER);
+        }
+
+        $this->redirect(':' . $this->getName() . ':default');
+    }    
 
     /**
      * @return BootstrapForm
@@ -234,7 +254,7 @@ class ForumPresenter extends AdminPresenter
 
         try {
             if ($id) {
-                $result = $this->getManager()->update($id, $values);
+                $result = $this->forumFacade->update($id, $values);
             } else {
                 $result = $id = $this->forumFacade->add($values);
             }

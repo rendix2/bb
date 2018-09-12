@@ -265,8 +265,29 @@ class TopicPresenter extends BaseForumPresenter
      * @param int $forum_id
      * @param int $topic_id
      */
-    public function renderEdit($forum_id, $topic_id)
+    public function renderEdit($forum_id, $topic_id = null)
     {
+        $forum = $this->forumsManager->getById($forum_id);
+        
+        if (!$forum) {
+            $this->error('Forum was not found.');
+        }
+        
+        if (!$forum->forum_active) {
+            $this->error('Forum is not active.');
+        }
+        
+        if ($topic_id) {
+            $topic = $this->getManager()->getById($topic_id);
+            
+            if (!$topic) {
+                $this->error('Topic was not found.');
+            }
+            
+            if ($topic->topic_forum_id !== $forum_id) {
+                $this->error('Forum id does nont match to param');
+            }
+        }        
     }
     
     /**

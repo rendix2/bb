@@ -431,6 +431,8 @@ abstract class CrudManager extends Manager //implements ICrudManager
     public function deleteCache()
     {
         $this->managerCache->remove(self::CACHE_ALL_KEY);
+        $this->managerCache->remove(self::CACHE_PAIRS);
+        $this->managerCache->remove(self::CACHE_COUNT_KEY);
     }
 
     /**
