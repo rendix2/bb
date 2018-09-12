@@ -144,12 +144,17 @@ class ForumsManager extends CrudManager
 
         return $result;
     }
-    
+
     /**
+     * @param int  $forum_id
+     * @param int  $target_forum_id
+     * @param bool $position
      *
+     * @return bool
      */
-    public function move()
+    public function move($forum_id, $target_forum_id, $position = false)
     {
+        return $this->mptt->move($forum_id, $target_forum_id, $position);
     }
 
     /**

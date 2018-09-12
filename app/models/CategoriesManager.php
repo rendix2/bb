@@ -94,17 +94,15 @@ class CategoriesManager extends CrudManager
     }
 
     /**
+     * @param int  $category_id
+     * @param int  $target_category_id
+     * @param bool $position
      *
+     * @return bool
      */
-    public function move()
+    public function move($category_id, $target_category_id, $position = false)
     {
-        //$this->mptt->move(1, 2);
-        //$this->mptt->add(0, 'TEST CAT');
-        //$this->mptt->add(0, 'cat 2');
-        //$this->mptt->add(0, 'CAT 3');
-        
-        //$this->mptt->move(1, 2);
-        \Tracy\Debugger::barDump($this->mptt->get_tree());
+        return $this->mptt->move($category_id, $target_category_id, $position);
     }
 
     /**
