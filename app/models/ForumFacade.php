@@ -73,7 +73,7 @@ class ForumFacade
         if ($forum->forum_parent_id !== $item_data->forum_parent_id) {
             $this->forumsManager->getMptt()->move($item_id, $item_data->forum_parent_id);
             
-            unset($item_data->$forum_parent_id);
+            unset($item_data->forum_parent_id);
         }
         
         return $this->forumsManager->update($item_id, $item_data);

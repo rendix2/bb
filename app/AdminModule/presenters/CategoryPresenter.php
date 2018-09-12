@@ -45,13 +45,6 @@ class CategoryPresenter extends AdminPresenter
         parent::__construct($manager);
     }
     
-    public function startup() {
-        parent::startup();
-        
-        echo $this->getManager()->getMptt()->to_list(0);
-        //$this->terminate();
-    }
-
     /**
      * @param int|null $id
      */
