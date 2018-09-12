@@ -22,12 +22,10 @@ class TopicsManager extends CrudManager
     public function getLast()
     {
         return $this->getAllFluent()
-                ->where('[topic_id] = ',
-                    $this->dibi
-                        ->select('MAX(topic_id)')
-                        ->from($this->getTable())
-                )
-                ->fetch();
+            ->where('[topic_id] = ', $this->dibi
+                ->select('MAX(topic_id)')
+                ->from($this->getTable()))
+            ->fetch();
     }
 
     /**
@@ -38,13 +36,11 @@ class TopicsManager extends CrudManager
     public function getLastByForum($forum_id)
     {
         return $this->getAllFluent()
-                ->where('[topic_id] = ',
-                    $this->dibi
-                        ->select('MAX(topic_id)')
-                        ->from($this->getTable())
-                        ->where('[topic_forum_id] = %i', $forum_id)
-                )
-                ->fetch();
+            ->where('[topic_id] = ', $this->dibi
+                ->select('MAX(topic_id)')
+                ->from($this->getTable())
+                ->where('[topic_forum_id] = %i', $forum_id))
+            ->fetch();
     }
 
     /**

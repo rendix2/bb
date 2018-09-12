@@ -72,6 +72,11 @@ class TopicFacade
     private $thanksFacade;
 
     /**
+     * @var ReportFacade $reportFacade
+     */
+    private $reportFacade;
+
+    /**
      *
      * @param TopicsManager     $topicsManager
      * @param TopicWatchManager $topicWatchManager
@@ -83,6 +88,7 @@ class TopicFacade
      * @param ReportsManager    $reportsManager
      * @param TopicWatchFacade  $topicWatchFacade
      * @param ThanksFacade      $thanksFacade
+     * @param ReportFacade      $reportFacade
      */
     public function __construct(
         TopicsManager $topicsManager,
@@ -93,8 +99,9 @@ class TopicFacade
         ForumsManager $forumsManager,
         PostFacade $postFacade,
         ReportsManager $reportsManager,
-        TopicWatchFacade $topicWatchFacade, 
-        ThanksFacade $thanksFacade
+        TopicWatchFacade $topicWatchFacade,
+        ThanksFacade $thanksFacade,
+        ReportFacade $reportFacade
     ) {
         $this->topicsManager     = $topicsManager;
         $this->topicWatchManager = $topicWatchManager;
@@ -106,6 +113,7 @@ class TopicFacade
         $this->reportsManager    = $reportsManager;
         $this->topicWatchFacade  = $topicWatchFacade;
         $this->thanksFacade      = $thanksFacade;
+        $this->reportFacade      = $reportFacade;
     }
 
     /**
@@ -191,7 +199,7 @@ class TopicFacade
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1'])
         );
         
-        $this->reportsManager->deleteByTopic($item_id);
+        $this->reportFacade->deleteByTopic($item_id);
 
         return $this->topicsManager->delete($item_id);
     }
@@ -319,12 +327,12 @@ class TopicFacade
         }
         
         $same_thanks     = array_intersect($thanksTargetUsers, $thanksFromUsers);
-        $misssing_thanks = array_diff($thanksFromUsers, $thanksTargetUsers);
+        $missing_thanks = array_diff($thanksFromUsers, $thanksTargetUsers);
 
         $this->usersManager->updateMulti(
             $same_thanks,
-            ArrayHash::from(['user_thank_count%sql' =>'user_thank_count - 1']
-        ));
+            ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1'])
+        );
 
         $this->thanksManager->deleteByUserAndTopic($same_thanks, $topic_from_id);
         // thanks end
@@ -354,10 +362,19 @@ class TopicFacade
 
         // topics watches
 
-        $this->thanksManager->updateMultiByUser($misssing_thanks, ArrayHash::from(['thank_topic_id' => $topic_target_id]));
-        $this->forumsManager->update($topicFrom->topic_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
+        $this->thanksManager->updateMultiByUser(
+            $missing_thanks,
+            ArrayHash::from(['thank_topic_id' => $topic_target_id])
+        );
+        $this->forumsManager->update(
+            $topicFrom->topic_forum_id,
+            ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1'])
+        );
         $this->thanksManager->deleteByTopic($topic_from_id);
-        $this->reportsManager->updateByTopic($topic_from_id, ArrayHash::from(['report_topic_id' => $topic_target_id, 'report_forum_id' => $topicTarget->topic_forum_id]));
+        $this->reportsManager->updateByTopic(
+            $topic_from_id,
+            ArrayHash::from(['report_topic_id' => $topic_target_id, 'report_forum_id' => $topicTarget->topic_forum_id])
+        );
         $this->topicWatchManager->mergeByLeft($topic_target_id, $topicWatches);
         $this->topicWatchManager->deleteByLeft($topic_from_id);
         
