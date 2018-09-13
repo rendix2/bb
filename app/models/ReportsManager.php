@@ -104,6 +104,18 @@ class ReportsManager extends CrudManager
                 ->where('[report_post_id] IN %in', $post_ids)
                 ->execute();
     }
+    
+    /**
+     * 
+     * @param int $post_id
+     * @param ArrayHash $item_data
+     * 
+     * @return type
+     */
+    public function updateByPost($post_id, ArrayHash $item_data)
+    {
+        return $this->dibi->update($this->getTable(), $item_data)->where('[report_post_id] = %i', $post_id)->execute();
+    }    
 
     /**
      *
@@ -116,4 +128,15 @@ class ReportsManager extends CrudManager
     {
         return $this->dibi->update($this->getTable(), $item_data)->where('[report_topic_id] = %i', $topic_id)->execute();
     }
+    
+    /**
+     * 
+     * @param int $forum_id
+     * @param ArrayHash $item_data
+     * @return type)
+     */
+    public function updateByForum($forum_id, ArrayHash $item_data)
+    {
+        return $this->dibi->update($this->getTable(), $item_data)->where('[report_forum_id] = %i', $forum_id)->execute();
+    }    
 }

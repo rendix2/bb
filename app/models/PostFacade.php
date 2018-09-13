@@ -305,5 +305,9 @@ class PostFacade
             $this->forumsManager->update($source_forum_id, ArrayHash::from(['forum_post_count%sql' => 'forum_post_count - 1']));
             $this->forumsManager->update($target_forum_id, ArrayHash::from(['forum_post_count%sql' => 'forum_post_count + 1']));
         }
+        
+        $this->reportsManager->updateByPost($post_id, ArrayHash::from(['report_topic_id' => $target_topic_id]));
+        
+        return $this->postsManager->update($post_id, ArrayHash::from(['post_topic_id' => $target_topic_id]));
     }
 }
