@@ -269,4 +269,41 @@ class PostFacade
         
         return $res;
     }
+    
+    /**
+     * 
+     * @param int $post_id
+     * @param int $target_topic_id
+     * 
+     * @return boolean
+     */
+    public function move($post_id, $target_topic_id)
+    {
+        $post = $this->postsManager->getById($post_id);
+       
+        if (!$post) {
+            return false;
+        }     
+        
+        $target_topic = $this->topicsManager->getById($target_topic_id);
+        
+        if (!$target_topic) {
+            return false;
+        }
+        
+        $source_topic_id = $post->post_topic_id;
+        $source_forum_id = $post->post_forum_id;        
+                
+        $target_forum_id = $target_topic->topic_forum_id;
+       
+        if ($source_topic_id !== $target_topic_id) {            
+            $this->topicsManager->update($source_topic_id, ArrayHash::from(['topic_post_count%sql' => 'topic_post_count - 1']));
+            $this->topicsManager->update($target_topic_id, ArrayHash::from(['topic_post_count%sql' => 'topic_post_count + 1']));
+        }
+        
+        if ($source_forum_id!== $target_forum_id) {
+            $this->forumsManager->update($source_forum_id, ArrayHash::from(['forum_post_count%sql' => 'forum_post_count - 1']));
+            $this->forumsManager->update($target_forum_id, ArrayHash::from(['forum_post_count%sql' => 'forum_post_count + 1']));
+        }
+    }
 }

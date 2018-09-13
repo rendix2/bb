@@ -5,6 +5,7 @@ namespace App\ModeratorModule\Presenters;
 use App\Controls\BootstrapForm;
 use App\Models\PostsHistoryManager;
 use App\Models\PostsManager;
+use App\Models\PostFacade;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
@@ -37,6 +38,13 @@ class PostPresenter extends ModeratorPresenter
      * @inject
      */
     public $postsHistoryManager;
+            
+    /**
+     *
+     * @var PostFacade $postFacade
+     * @inject
+     */
+    public $postFacade;
 
     /**
      * PostPresenter constructor.
@@ -140,7 +148,7 @@ class PostPresenter extends ModeratorPresenter
      */
     public function changeTopicSuccess(Form $form, ArrayHash $values)
     {
-        $res = $this->getManager()->update($this->getParameter('id'), $values);
+        $res = $this->postFacade->move($this->getParameter('id'), $values->post_topic_id);
         
         if ($res) {
             $this->flashMessage('Topic was changed', self::FLASH_MESSAGE_SUCCESS);
