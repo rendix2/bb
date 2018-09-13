@@ -26,17 +26,38 @@ class ThanksFacade
      * @var PostsManager $postsManager
      */
     private $postsManager;
+    
+    /**
+     *
+     * @var TopicsManager $topicsManager
+     */
+    private $topicsManager;
+
+    /**
+     *
+     * @var ForumsManager $forumsManager
+     */
+    private $forumsManager;
 
     /**
      * @param ThanksManager $thanksManager
      * @param UsersManager  $usersManager
      * @param PostsManager  $postsManager
+     * @param TopicsManager $topicsManager
+     * @param ForumsManager $forumsManager
      */
-    public function __construct(ThanksManager $thanksManager, UsersManager $usersManager, PostsManager $postsManager)
-    {
+    public function __construct(
+        ThanksManager $thanksManager,
+        UsersManager $usersManager,
+        PostsManager $postsManager,
+        TopicsManager $topicsManager,
+        ForumsManager $forumsManager
+    ) {
         $this->thanksManager = $thanksManager;
         $this->usersManager  = $usersManager;
         $this->postsManager  = $postsManager;
+        $this->topicsManager = $topicsManager;
+        $this->forumsManager = $forumsManager;
     }
 
     /**
@@ -61,7 +82,11 @@ class ThanksFacade
      */
     public function deleteByCategory($category_id)
     {
+        $forums = $this->forumsManager->getAllByCategory($category_id);
         
+        foreach ($forums as $forums) {
+            $this->deleteByForum($forum->forum_id);
+        }
     }
 
     /**
@@ -70,7 +95,11 @@ class ThanksFacade
      */
     public function deleteByForum($forum_id)
     {
+        $topics = $this->topicsManager->getAllByForum($forum_id);
         
+        foreach ($topics as $topic) {
+            $this->deleteByTopic($topic->topic_id);
+        }                
     }
 
     /**
