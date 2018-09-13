@@ -25,13 +25,31 @@ class TopicWatchFacade
     
     /**
      *
+     * @var TopicsManager $topicsManager 
+     */
+    private $topicsManager;
+
+    /**
+     *
+     * @var ForumsManager $forumsManager
+     */
+    private $forumsManager;
+
+    /**
+     *
      * @param UsersManager      $usersManager
      * @param TopicWatchManager $topicWatchManager
      */
-    public function __construct(UsersManager $usersManager, TopicWatchManager $topicWatchManager)
-    {
+    public function __construct(
+        UsersManager $usersManager,
+        TopicWatchManager $topicWatchManager,
+        TopicsManager $topicsManager,
+        ForumsManager $forumsManager
+    ) {
         $this->usersManager      = $usersManager;
         $this->topicWatchManager = $topicWatchManager;
+        $this->topicsManager     = $topicsManager;
+        $this->forumsManager     = $forumsManager;
     }
     
     /**
@@ -40,7 +58,11 @@ class TopicWatchFacade
      */
     public function deleteByCategory($category_id)
     {
+        $forums = $this->forumsManager->getAllByCategory($category_id);
         
+        foreach ($forums as $forum) {
+            $this->deleteByForum($forum->forum_id);
+        }
     }
 
     /**
@@ -48,7 +70,12 @@ class TopicWatchFacade
      * @param int $forum_id
      */
     public function deleteByForum($forum_id)
-    {
+    {        
+        $topics = $this->topicsManager->getAllByForum($forum_id);
+        
+        foreach ($topics as $topic) {
+            $this->deleteByTopic($topic->topic_id);
+        }
     }
 
     /**
