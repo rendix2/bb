@@ -245,17 +245,18 @@ class TopicFacade
         $post_ids = [];
         $posts    = $this->postsManager->getByTopic($topic_id);
 
-        $this->forumsManager->update($source_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1', 'forum_post_count%sql' => 'forum_post_count - ' . $topic->topic_post_count]));
-        $this->forumsManager->update($target_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1', 'forum_post_count%sql' => 'forum_post_count + ' . $topic->topic_post_count]));
-        $this->topicsManager->update($topic_id, ArrayHash::from(['topic_forum_id' => $target_forum_id]));
-
         foreach ($posts as $post) {
             $post_ids[] = $post->post_id;
         }
 
+        $this->forumsManager->update($source_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1', 'forum_post_count%sql' => 'forum_post_count - ' . $topic->topic_post_count]));
+        $this->forumsManager->update($target_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1', 'forum_post_count%sql' => 'forum_post_count + ' . $topic->topic_post_count]));
+        
         $this->postsManager->updateMulti($post_ids, ArrayHash::from(['post_forum_id' => $target_forum_id]));        
         $this->reportsManager->updateByTopic($topic_id, ArrayHash::from(['report_forum_id' => $target_forum_id]));
         $this->thanksManager->updateByTopic($topic_id, ArrayHash::from(['thank_forum_id' => $target_forum_id]));
+        
+        return $this->topicsManager->update($topic_id, ArrayHash::from(['topic_forum_id' => $target_forum_id]));
     }
 
     /**
