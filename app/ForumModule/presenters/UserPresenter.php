@@ -333,7 +333,7 @@ class UserPresenter extends BaseForumPresenter
         $this->template->rank            = $rankUser;
         $this->template->roles           = \App\Authorizator::ROLES;
         $this->template->isFavourite     = $this->favouriteUsersManager->fullCheck($this->getUser()->getId(), $user_id);
-        $this->template->item_id         = $user_id;
+        $this->template->user_id         = $user_id;
         $this->template->favourites      = $this->favouriteUsersManager->getAllJoinedByLeft($user_id);
         $this->template->runningDays     = $reg->diff($now)->days;
     }

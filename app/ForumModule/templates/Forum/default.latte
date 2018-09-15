@@ -4,9 +4,9 @@
         <div class="float-left">
             <h1>{_forum}: {$forum->forum_name}</h1>
         </div>
-        {if $user->isAllowed($presenter->getParameter('forum_id'), 'topic_add')}
+        {if $user->isAllowed($forum_id, 'topic_add')}
             <div class="float-right">
-                <a class="btn btn-primary" href="{link Topic:edit, $presenter->getParameter('forum_id')}">
+                <a class="btn btn-primary" href="{link Topic:edit, $forum_id}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     {_topic_add_new}
                 </a>
@@ -38,7 +38,7 @@
             {control searchInForumForm}
         </div>
         <div class="float-right">
-            <a href="{link Forum:rules, $presenter->getParameter('forum_id')}">{_forum_rules}</a>
+            <a href="{link Forum:rules, $forum_id}">{_forum_rules}</a>
             
             <br>
             {_moderators}:
@@ -64,11 +64,11 @@
                {foreach $topics as $topic}
                 <tr>
                     <td>
-                        <a href="{link Topic:edit, $presenter->getParameter('forum_id'), $topic->topic_id}">{$topic->topic_id}</a>
+                        <a href="{link Topic:edit, $forum_id, $topic->topic_id}">{$topic->topic_id}</a>
                         {if $topic->topic_locked}<span class="badge badge-secondary">Locked</span>{/if}
                     </td>
                     <td>
-                        <a href="{link Topic:default, $presenter->getParameter('forum_id'), $topic->topic_id}">{$topic->topic_name}</a>
+                        <a href="{link Topic:default, $forum_id, $topic->topic_id}">{$topic->topic_name}</a>
                     </td>
                     <td>
                         <a href="{link User:profile, $topic->user_id}">{$topic->user_name}</a>
@@ -78,16 +78,16 @@
                         <td>{$topic->topic_view_count}</td>
                     {/if}                    
                     <td>
-                        <a href="{link Topic:edit, $presenter->getParameter('forum_id'), $topic->topic_id}" title="{_topic_edit}">
+                        <a href="{link Topic:edit, $forum_id, $topic->topic_id}" title="{_topic_edit}">
                             <i class="far fa-edit"></i>
                         </a>
                         
                         {if $user->getId() === $topic->topic_user_id}
-                            <a href="{link Topic:delete, $presenter->getParameter('forum_id'), $topic->topic_id, $presenter->getParameter('page')}"title="{_topic_delete}">
+                            <a href="{link Topic:delete, $forum_id, $topic->topic_id, $page}"title="{_topic_delete}">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                         {/if}
-                        <a href="{link Topic:report, $presenter->getParameter('forum_id'), $topic->topic_id}" title="{_topic_report_topic}">
+                        <a href="{link Topic:report, $forum_id, $topic->topic_id}" title="{_topic_report_topic}">
                             <i class="fas fa-exclamation"></i>
                         </a>
                         <a href="{link :Moderator:Topic:edit $topic->topic_id}" title="{_topic_moderate}">

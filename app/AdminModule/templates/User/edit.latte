@@ -6,34 +6,34 @@
         </div>
     </div>
 
-    {if $presenter->getParameter('id')}
+    {if $id}
         <div class="col-sm-12 my-2">
             <div class="card h-100">
                 <div class="card-header">{_statistic}</div>
                 <div class="card-block row p-1">
                     <div class="col-sm-2">
-                        <a href="{link :Forum:User:posts $presenter->getParameter('id')}">
+                        <a href="{link :Forum:User:posts $id}">
                             <div class="btn btn-primary">{_user_post_count}
                                 <span class="badge badge-light">{$item->user_post_count}</span>
                             </div>
                         </a>
                     </div>
                     <div class="col-sm-2">
-                        <a href="{link :Forum:User:topics $presenter->getParameter('id')}">
+                        <a href="{link :Forum:User:topics $id}">
                             <div class="btn btn-primary">{_user_topic_count}
                                 <span class="badge badge-light">{$item->user_topic_count}</span>
                             </div>
                         </a>
                     </div>
                     <div class="col-sm-2">
-                        <a href="{link :Forum:User:thanks $presenter->getParameter('id')}">
+                        <a href="{link :Forum:User:thanks $id}">
                             <div class="btn btn-primary">{_user_thank_count}
                                 <span class="badge badge-light">{$item->user_thank_count}</span>
                             </div>
                         </a>
                     </div>
                     <div class="col-sm-2">
-                        <a href="{link :Forum:User:watches $presenter->getParameter('id')}">
+                        <a href="{link :Forum:User:watches $id}">
                             <div class="btn btn-primary">{_user_topic_watch_count}
                                 <span class="badge badge-light">{$item->user_watch_count}</span>
                             </div>

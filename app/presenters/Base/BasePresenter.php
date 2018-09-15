@@ -3,10 +3,10 @@
 namespace App\Presenters\Base;
 
 use App\Authorizator;
+use App\Controls\BootstrapForm;
 use App\Models\BansManager;
 use App\Services\TranslatorFactory;
 use Nette;
-use App\Controls\BootstrapForm;
 use Nette\Http\IResponse;
 use Nextras\Application\UI\SecuredLinksPresenterTrait;
 
@@ -87,6 +87,14 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         parent::startup();
              
         $this->banUser();
+
+        $this->template->id          = $this->getParameter('id');
+        $this->template->user_id     = $this->getParameter('user_id');
+        $this->template->category_id = $this->getParameter('category_id');
+        $this->template->forum_id    = $this->getParameter('forum_id');
+        $this->template->topic_id    = $this->getParameter('topic_id');
+        $this->template->post_id     = $this->getParameter('post_id');
+        $this->template->page        = $this->getParameter('page');
     }
     
     /**

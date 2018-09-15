@@ -100,11 +100,11 @@
     
     {define favourite}
     {if $isFavourite}
-        <a href="{link UnsetFavourite! $item_id}">
+        <a href="{link UnsetFavourite! $user_id}">
             <i class="fas fa-star"></i>
         </a>
     {else}
-        <a href="{link setFavourite! $item_id}">
+        <a href="{link setFavourite! $user_id}">
             <i class="far fa-star"></i>
         </a>
     {/if}

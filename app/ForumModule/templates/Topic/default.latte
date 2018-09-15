@@ -6,17 +6,17 @@
             <h6>{_topic_post_count}: {$topic->topic_post_count}</h6>
         </div>
         <div class="float-right">
-            {if $user->isAllowed($presenter->getParameter('forum_id'), 'post_add') && !$topic->topic_locked }
+            {if $user->isAllowed($forum_id, 'post_add') && !$topic->topic_locked }
                 <a class="btn btn-primary"
-                   href="{link Post:edit $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">
+                   href="{link Post:edit $forum_id, $topic_iod}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     {_post_add}
                 </a>
             {/if}
 
-            {if $user->isAllowed($presenter->getParameter('forum_id'), 'topic_thank') && $canThank}
+            {if $user->isAllowed($forum_id, 'topic_thank') && $canThank}
                 <a class="btn btn-primary"
-                   href="{link Topic:thank $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">
+                   href="{link Topic:thank $forum_id, $topic_id}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     {_topic_thank}
                 </a>
@@ -35,7 +35,7 @@
                     {if !$iterator->isLast()},{/if}
                 {/foreach}
                 
-                <a href="{link Topic:thanks $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">{_topic_thanks}</a>
+                <a href="{link Topic:thanks $forum_id, $topic_id}">{_topic_thanks}</a>
             </div>
         </div>
     {/if}
@@ -122,20 +122,20 @@
                                     {elseif $post->post_locked}
                                         <span class="badge badge-secondary">{_post_locked}</span>
                                     {elseif $post->post_user_id === $user->id}
-                                        <a href="{link Post:edit, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id}" title="{_post_edit}">
+                                        <a href="{link Post:edit, $forum_id, $topic_id, $post->post_id}" title="{_post_edit}">
                                             <i class="far fa-edit"></i>
                                         </a>
                                             
-                                        <a href="{link Post:history, $presenter->getParameter('forum_id'), $post->post_id}" title="{_post_history}">
+                                        <a href="{link Post:history, $forum_id, $post->post_id}" title="{_post_history}">
                                             <i class="fas fa-history"></i>
                                         </a>                                            
                                     {/if}
-                                    <a href="{link Post:report, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id, $presenter->getParameter('page')}" title="{_post_report}">
+                                    <a href="{link Post:report, $forum_id, $topic_id, $post->post_id, $page}" title="{_post_report}">
                                         <i class="fas fa-exclamation"></i>
                                     </a>
 
-                                    {if $user->isAllowed($presenter->getParameter('forum_id'), 'post_delete') && $post->post_user_id === $user->id}
-                                        <a href="{link Post:delete, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $post->post_id, $presenter->getParameter('page')}" title="{_post_delete}">
+                                    {if $user->isAllowed($forum_id, 'post_delete') && $post->post_user_id === $user->id}
+                                        <a href="{link Post:delete, $forum_id, $topic_id, $post->post_id, $page}" title="{_post_delete}">
                                             <i class="fas fa-trash-alt"></i>
                                         </a>
                                     {/if}
@@ -187,12 +187,12 @@
     <div class="col-sm-12">
         <div class="float-right">
             {if $topicWatch}
-                <a href="{link Topic:stopWatch $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $presenter->getParameter('page')}">{_topic_stop_watch}</a>
+                <a href="{link Topic:stopWatch $forum_id, $topic_id, $page}">{_topic_stop_watch}</a>
             {else}
-                <a href="{link Topic:startWatch $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id'), $presenter->getParameter('page')}">{_topic_start_watch}</a>
+                <a href="{link Topic:startWatch $forum_id, $topic_id, $page}">{_topic_start_watch}</a>
             {/if}
 
-            <a href="{link Topic:watchers, $presenter->getParameter('forum_id'), $presenter->getParameter('topic_id')}">{_topic_wacthers}</a>
+            <a href="{link Topic:watchers, $forum_id, $topic_id}">{_topic_wacthers}</a>
         </div>
     </div>
 {/block}
