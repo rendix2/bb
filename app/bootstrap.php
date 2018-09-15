@@ -19,6 +19,7 @@ $configurator->addConfig(__DIR__ . '/config/config.neon');
 if (!Tracy\Debugger::$productionMode) {
     $configurator->addConfig(__DIR__ . '/config/config.local.neon');
 }
+//
 
 $container = $configurator->createContainer();
 
