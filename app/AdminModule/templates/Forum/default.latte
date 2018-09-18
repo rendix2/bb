@@ -48,6 +48,9 @@
                 {foreach $items as $item}
                     <tr>
                         <td>
+                            <input type="checkbox" name="multiDelete[]" value="{$item->forum_id}">
+                        </td>
+                        <td>
                             <a href="{link Forum:edit, $item->forum_id}">{$item->forum_id}</a>
                         </td>
                         <td>{$item->forum_name}</td>                       

@@ -37,6 +37,10 @@ class FilePresenter extends AdminPresenter
      */
     protected function createComponentGridFilter()
     {
+        $this->gf->setTranslator($this->getAdminTranslator());
+
+        $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
+
         return $this->gf;        
     }
 

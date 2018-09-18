@@ -2,8 +2,10 @@
 
 namespace App\Settings;
 
+use Doctrine\Common\Util\Debug;
 use Nette\Utils\Finder;
 use SplFileInfo;
+use Tracy\Debugger;
 
 /**
  * Description of ImageDir
@@ -56,6 +58,12 @@ abstract class ImageDir
     public function __construct(array $dir)
     {
         $this->dir = $dir;
+
+        Debugger::barDump($this->dir);
+
+        if (!file_exists($this->dir[self::DIR]) && !is_dir($this->dir[self::DIR])) {
+            mkdir($this->dir[self::DIR]);
+        }
     }
 
     /**

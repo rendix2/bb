@@ -146,6 +146,7 @@ class UserPresenter extends AdminPresenter
     {
         $this->gf->setTranslator($this->getAdminTranslator());
 
+        $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('user_id', 'user_id', GridFilter::INT_EQUAL);
         $this->gf->addFilter('user_name', 'user_name', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('user_post_count', 'user_post_count', GridFilter::FROM_TO_INT);

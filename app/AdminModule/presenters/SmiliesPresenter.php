@@ -40,7 +40,11 @@ class SmiliesPresenter extends AdminPresenter
      */
     protected function createComponentGridFilter()
     {
-        return null;
+        $this->gf->setTranslator($this->getAdminTranslator());
+
+        $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
+
+        return $this->gf;
     }    
 
     /**

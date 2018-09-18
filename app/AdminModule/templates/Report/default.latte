@@ -27,6 +27,9 @@
             {foreach $items as $item}
                 <tr>
                     <td>
+                        <input type="checkbox" name="multiDelete[]" value="{$item->report_id}">
+                    </td>
+                    <td>
                         <a href="{link Report:edit, $item->report_id}">{$item->report_id}</a>
                     </td>
                     <td>{$item->report_time|date:'%d.%m.%Y %H:%M:%S'}</td>

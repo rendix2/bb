@@ -48,6 +48,9 @@ awdwa
                 {foreach $items as $item}
                     <tr>
                         <td>
+                            <input type="checkbox" name="multiDelete[]" value="{$item->ban_id}">
+                        </td>
+                        <td>
                             <a href="{link Ban:edit, $item->ban_id}">{$item->ban_id}</a>
                         </td>
                         <td>{$item->ban_user_name}</td>

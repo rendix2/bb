@@ -91,7 +91,7 @@ class CachePresenter extends AdminPresenter
      */
     protected function createComponentGridFilter()
     {
-        return null;
+        return $this->gf;
     }    
     
     /**

@@ -73,6 +73,7 @@ class EmailPresenter extends AdminPresenter
     {
         $this->gf->setTranslator($this->getAdminTranslator());
 
+        $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('mail_id', 'mail_id', GridFilter::INT_EQUAL);
         $this->gf->addFilter('mail_subject', 'mail_subject', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('mail_time', 'mail_time', GridFilter::TEXT_LIKE);
