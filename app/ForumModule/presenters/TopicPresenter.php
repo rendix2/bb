@@ -8,6 +8,7 @@ use App\Controls\PaginatorControl;
 use App\Controls\TopicJumpToForumForm;
 use App\Forms\TopicFastReplyForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
+use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Models\PostFacade;
 use App\Models\PostsManager;
@@ -114,6 +115,12 @@ class TopicPresenter extends BaseForumPresenter
     public $postSettings;
 
     /**
+     * @var CategoriesManager $categoriesManager
+     * @inject
+     */
+    public $categoriesManager;
+
+    /**
      *
      * @param TopicsManager $manager
      */
@@ -123,11 +130,12 @@ class TopicPresenter extends BaseForumPresenter
     }
 
     /**
+     * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
      * @param int $page
      */
-    public function actionStartWatch($forum_id, $topic_id, $page)
+    public function actionStartWatch($category_id, $forum_id, $topic_id, $page)
     {
         $user_id = $this->getUser()->getId();
         $res     = $this->topicWatchManager->addByLeft($topic_id, [$user_id]);
@@ -136,15 +144,16 @@ class TopicPresenter extends BaseForumPresenter
             $this->flashMessage('You have start watching topic.', self::FLASH_MESSAGE_SUCCESS);
         }
 
-        $this->redirect('Topic:default', $forum_id, $topic_id, $page);
+        $this->redirect('Topic:default', $category_id, $forum_id, $topic_id, $page);
     }
 
     /**
+     * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
-     * @param int $page
+     * @param int $pages
      */
-    public function actionStopWatch($forum_id, $topic_id, $page)
+    public function actionStopWatch($category_id, $forum_id, $topic_id, $page)
     {
         $user_id = $this->getUser()->getId();
         $res = $this->topicWatchManager->fullDelete($topic_id, $user_id);
@@ -153,14 +162,15 @@ class TopicPresenter extends BaseForumPresenter
             $this->flashMessage('You have stop watching topic.', self::FLASH_MESSAGE_SUCCESS);
         }
 
-        $this->redirect('Topic:default', $forum_id, $topic_id, $page);
+        $this->redirect('Topic:default', $category_id, $forum_id, $topic_id, $page);
     }
 
     /**
+     * @param $category_id
      * @param int $forum_id
      * @param int $topic_id
      */
-    public function actionThank($forum_id, $topic_id)
+    public function actionThank($category_id, $forum_id, $topic_id)
     {
         if (!$this->getUser()->isAllowed($forum_id, 'topic_thank')) {
             $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
@@ -181,15 +191,16 @@ class TopicPresenter extends BaseForumPresenter
             $this->flashMessage('Your thank to this topic.', self::FLASH_MESSAGE_SUCCESS);
         }
         
-        $this->redirect('Topic:default', $forum_id, $topic_id);
+        $this->redirect('Topic:default', $category_id, $forum_id, $topic_id);
     }
-    
+
     /**
+     * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
      * @param int $page
      */
-    public function actionDelete($forum_id, $topic_id, $page)
+    public function actionDelete($category_id, $forum_id, $topic_id, $page)
     {
         if (!$this->getUser()->isAllowed($forum_id, 'topic_delete')) {
             $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
@@ -201,18 +212,41 @@ class TopicPresenter extends BaseForumPresenter
             $this->flashMessage('Topic was deleted.', self::FLASH_MESSAGE_SUCCESS);
         }
         
-        $this->redirect('Forum:default', $forum_id, $page);
+        $this->redirect('Forum:default', $category_id, $forum_id, $page);
     }
 
     /**
      * renders posts in topic
      *
+     * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
      * @param int $page
      */
-    public function renderDefault($forum_id, $topic_id, $page = 1)
+    public function renderDefault($category_id, $forum_id, $topic_id, $page = 1)
     {
+        if (!isset($category_id)) {
+            $this->error('Category parameter is not set.');
+        }
+
+        if (!is_numeric($category_id)) {
+            $this->error('Category param is not numeric.');
+        }
+
+        $category = $this->categoriesManager->getById($category_id);
+
+        if (!$category) {
+            $this->error('Category does not exist.');
+        }
+
+        if (!$category->category_active) {
+            $this->error('Category is not active.');
+        }
+
+        if (!isset($forum_id)) {
+            $this->error('Forum parameter is not set.');
+        }
+
         if (!is_numeric($forum_id)) {
             $this->error('Forum parameter is not numeric.');
         }
@@ -221,6 +255,14 @@ class TopicPresenter extends BaseForumPresenter
 
         if (!$forum) {
             $this->error('Forum does not exist.');
+        }
+
+        if (!$forum->forum_active) {
+            $this->error('Forum is not active.');
+        }
+
+        if (!$topic_id) {
+            $this->error('Topic parameter is not set.');
         }
 
         if (!is_numeric($topic_id)) {
@@ -262,11 +304,30 @@ class TopicPresenter extends BaseForumPresenter
     }
 
     /**
+     * @param $category_id
      * @param int $forum_id
      * @param int $topic_id
      */
-    public function renderEdit($forum_id, $topic_id = null)
+    public function renderEdit($category_id, $forum_id, $topic_id = null)
     {
+        if (!isset($category_id)) {
+            $this->error('Category parameter is not set.');
+        }
+
+        if (!is_numeric($category_id)) {
+            $this->error('Category parameter is not numeric.');
+        }
+
+        $category = $this->categoriesManager->getById($category_id);
+
+        if (!$category) {
+            $this->error('Category was not found.');
+        }
+
+        if (!$category->category_active) {
+            $this->error('Category is not active.');
+        }
+
         $forum = $this->forumsManager->getById($forum_id);
         
         if (!$forum) {
@@ -276,6 +337,10 @@ class TopicPresenter extends BaseForumPresenter
         if (!$forum->forum_active) {
             $this->error('Forum is not active.');
         }
+
+        if ($forum->forum_category_id !== (int)$category_id) {
+            $this->error('Category parameter is not match.');
+        }
         
         if ($topic_id) {
             $topic = $this->getManager()->getById($topic_id);
@@ -284,26 +349,28 @@ class TopicPresenter extends BaseForumPresenter
                 $this->error('Topic was not found.');
             }
             
-            if ($topic->topic_forum_id !== $forum_id) {
-                $this->error('Forum id does nont match to param');
+            if ($topic->topic_forum_id !== (int)$forum_id) {
+                $this->error('Forum id does non match.');
             }
         }        
     }
-    
+
     /**
+     * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
      * @param int $page
      */
-    public function renderReport($forum_id, $topic_id, $page)
+    public function renderReport($category_id, $forum_id, $topic_id, $page)
     {
     }
 
     /**
-     * @param     $forum_id
+     * @param int $category_id
+     * @param int $forum_id
      * @param int $topic_id
      */
-    public function renderWatchers($forum_id, $topic_id)
+    public function renderWatchers($category_id, $forum_id, $topic_id)
     {
         $watchers = $this->topicWatchManager->getAllJoinedByLeft($topic_id);
         
@@ -313,13 +380,14 @@ class TopicPresenter extends BaseForumPresenter
         
         $this->template->watchers = $watchers;
     }
-    
+
     /**
      *
+     * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
      */
-    public function renderThanks($forum_id, $topic_id)
+    public function renderThanks($category_id, $forum_id, $topic_id)
     {
         $thanks = $this->thanksManager->getAllJoinedUserByTopic($topic_id);
         
@@ -353,9 +421,10 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function editFormSuccess(Form $form, ArrayHash $values)
     {
-        $forum_id = $this->getParameter('forum_id');
-        $topic_id = $this->getParameter('topic_id');
-        $user_id  = $this->getUser()->getId();
+        $category_id = $this->getParameter('category_id');
+        $forum_id    = $this->getParameter('forum_id');
+        $topic_id    = $this->getParameter('topic_id');
+        $user_id     = $this->getUser()->getId();
 
         $values->post_add_time = time();
         $values->post_user_id  = $user_id;
@@ -368,7 +437,7 @@ class TopicPresenter extends BaseForumPresenter
             $this->flashMessage('Topic was saved.', self::FLASH_MESSAGE_SUCCESS);
         }
         
-        $this->redirect('Topic:default', $forum_id, $topic_id);
+        $this->redirect('Topic:default', $category_id, $forum_id, $topic_id);
     }
 
     /**
@@ -378,6 +447,7 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
                 [['link' => 'Index:default', 'text' => 'menu_index']],
+                $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
                 $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
                 [['text' => 'menu_topic']]
         );
@@ -390,11 +460,12 @@ class TopicPresenter extends BaseForumPresenter
      */
     protected function createComponentBreadCrumbEdit()
     {
-        $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Forum:default', 'params' => [$this->getParameter('forum_id')], 'text' => 'menu_forum'],
-            2 => ['text' => 'menu_topic']
-        ];
+        $breadCrumb = array_merge(
+            [['link' => 'Index:default', 'text' => 'menu_index']],
+            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            [['text' => 'menu_topic']]
+        );
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
@@ -406,9 +477,14 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
                 [['link' => 'Index:default', 'text' => 'menu_index']],
+                $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
                 $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
                 [['link'   => 'Topic:default',
-                  'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')],
+                  'params' => [
+                      $this->getParameter('category_id'),
+                      $this->getParameter('forum_id'),
+                      $this->getParameter('topic_id')
+                  ],
                   'text'   => 'menu_topic']],
                 [['text' => 'report_topic']]
         );        
@@ -423,9 +499,14 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
                 [['link' => 'Index:default', 'text' => 'menu_index']],
+                $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
                 $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
                 [['link'   => 'Topic:default',
-                  'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')],
+                  'params' => [
+                      $this->getParameter('category_id'),
+                      $this->getParameter('forum_id'),
+                      $this->getParameter('topic_id')
+                  ],
                   'text'   => 'menu_topic']],
                 [['text' => 'Thanks']]
         );        
@@ -440,9 +521,14 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
                 [['link' => 'Index:default', 'text' => 'menu_index']],
+                $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
                 $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
                 [['link'   => 'Topic:default',
-                  'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')],
+                  'params' => [
+                      $this->getParameter('category_id'),
+                      $this->getParameter('forum_id'),
+                      $this->getParameter('topic_id')
+                  ],
                   'text'   => 'menu_topic']],
                 [['text' => 'watches']]
         );         
@@ -486,11 +572,12 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function reportFormSuccess(Form $form, ArrayHash $values)
     {
-        $forum_id = $this->getParameter('forum_id');
-        $topic_id = $this->getParameter('topic_id');
-        $post_id  = $this->getParameter('post_id');
-        $page     = $this->getParameter('page');
-        $user_id  = $this->getUser()->getId();
+        $category_id = $this->getParameter('category_id');
+        $forum_id    = $this->getParameter('forum_id');
+        $topic_id    = $this->getParameter('topic_id');
+        $post_id     = $this->getParameter('post_id');
+        $page        = $this->getParameter('page');
+        $user_id     = $this->getUser()->getId();
 
         $values->report_forum_id = $forum_id;
         $values->report_topic_id = $topic_id;
@@ -508,6 +595,6 @@ class TopicPresenter extends BaseForumPresenter
             }
         }
 
-        $this->redirect('Forum:default', $forum_id, $page);
+        $this->redirect('Forum:default', $category_id, $forum_id, $page);
     }
 }

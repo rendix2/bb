@@ -63,6 +63,7 @@ class TopicJumpToForumForm extends Control
         $this->presenter
             ->redirect(
                 ':Forum:Forum:default',
+                $this->presenter->getParameter('category_id'),
                 $values->forum_id
             );
     }

@@ -79,9 +79,10 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
      */
     public function fastReplySuccess(Form $form, ArrayHash $values)
     {
-        $forum_id = $this->presenter->getParameter('forum_id');
-        $topic_id = $this->presenter->getParameter('topic_id');
-        $page     = $this->presenter->getParameter('page');
+        $category_id = $this->presenter->getParameter('category_id');
+        $forum_id    = $this->presenter->getParameter('forum_id');
+        $topic_id    = $this->presenter->getParameter('topic_id');
+        $page        = $this->presenter->getParameter('page');
 
         $values->post_forum_id = $forum_id;
         $values->post_topic_id = $topic_id;
@@ -94,6 +95,6 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
             $this->presenter->flashMessage('Post was added.', BasePresenter::FLASH_MESSAGE_SUCCESS);
         }
 
-        $this->presenter->redirect('Topic:default', $forum_id, $topic_id, $page);
+        $this->presenter->redirect('Topic:default', $category_id, $forum_id, $topic_id, $page);
     }
 }

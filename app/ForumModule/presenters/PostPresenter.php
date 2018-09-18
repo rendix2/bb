@@ -5,6 +5,7 @@ namespace App\ForumModule\Presenters;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
+use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Models\PostFacade;
 use App\Models\PostsHistoryManager;
@@ -79,13 +80,18 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      * @inject
      */
     public $usersManager;
-    
-    
+
     /**
      * @var ForumsManager $forumManager
      * @inject
      */
     public $forumsManager;
+
+    /**
+     * @var CategoriesManager
+     * @inject
+     */
+    public $categoriesManager;
 
     /**
      * @param PostsManager $manager
@@ -96,12 +102,15 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
     }
 
     /**
+     * @param $category_id
      * @param int $forum_id
      * @param int $topic_id
      * @param int $post_id
      * @param int $page
+     * @throws \Nette\Application\AbortException
+     * @throws \Nette\Application\BadRequestException
      */
-    public function actionDelete($forum_id, $topic_id, $post_id, $page)
+    public function actionDelete($category_id, $forum_id, $topic_id, $post_id, $page)
     {
         if (!$this->getUser()
             ->isAllowed(
@@ -128,20 +137,20 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
 
         if ($res === 1) {
             $this->flashMessage('Post was deleted.', self::FLASH_MESSAGE_SUCCESS);
-            $this->redirect('Topic:default', $forum_id, $topic_id, $page);
+            $this->redirect('Topic:default', $category_id, $forum_id, $topic_id, $page);
         } elseif ($res === 2) {
             $this->flashMessage('Topic was deleted.', self::FLASH_MESSAGE_SUCCESS);
-            $this->redirect('Forum:default', $forum_id, $page);
+            $this->redirect('Forum:default', $category_id, $forum_id, $page);
         }
     }
 
     /**
      *
+     * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
-     * @param int $post_id
      */
-    public function renderEdit($forum_id, $topic_id, $post_id = null)
+    public function renderEdit($category_id, $forum_id, $topic_id, $post_id = null)
     {
         if ($post_id === null) {
             if (!$this->getUser()->isAllowed($forum_id, 'post_add')) {
@@ -181,22 +190,23 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
     }
 
     /**
+     * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
      * @param int $post_id
      * @param int $page
      */
-    public function renderReport($forum_id, $topic_id, $post_id, $page)
+    public function renderReport($category_id, $forum_id, $topic_id, $post_id, $page)
     {
     }
 
     /**
      *
+     * @param int $category_id
      * @param int $forum_id
      * @param int $post_id
-     *
      */
-    public function renderHistory($forum_id, $post_id)
+    public function renderHistory($category_id, $forum_id, $post_id)
     {
         $user_id = $this->getUser()->getId();
         
@@ -271,10 +281,11 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      */
     public function editFormSuccess(Form $form, ArrayHash $values)
     {
-        $forum_id = $this->getParameter('forum_id');
-        $post_id  = $this->getParameter('post_id');
-        $topic_id = $this->getParameter('topic_id');
-        $user_id  = $this->getUser()->getId();
+        $category_id = $this->getParameter('category_id');
+        $forum_id    = $this->getParameter('forum_id');
+        $post_id     = $this->getParameter('post_id');
+        $topic_id    = $this->getParameter('topic_id');
+        $user_id     = $this->getUser()->getId();
 
         if ($post_id) {
             $values['post_edit_count%sql'] = 'post_edit_count + 1';
@@ -317,7 +328,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
             $this->flashMessage('Nothing to change.', self::FLASH_MESSAGE_INFO);
         }
 
-        $this->redirect('Topic:default', $forum_id, $topic_id);
+        $this->redirect('Topic:default', $category_id, $forum_id, $topic_id);
     }
 
     /**
@@ -327,10 +338,15 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
     {       
         $breadCrumb = array_merge(
                 [['link' => 'Index:default', 'text' => 'menu_index']],
+                $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
                 $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
                 [['link'   => 'Topic:default',
                   'text'   => 'menu_topic',
-                  'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]
+                  'params' => [
+                      $this->getParameter('category_id'),
+                      $this->getParameter('forum_id'),
+                      $this->getParameter('topic_id')
+                  ]
                 ]],
                 [['text' => 'menu_post']]
         );      
@@ -350,7 +366,11 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
                 $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
                 [['link'   => 'Topic:default',
                   'text'   => 'menu_topic',
-                  'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]
+                  'params' => [
+                      $this->getParameter('category_id'),
+                      $this->getParameter('forum_id'),
+                      $this->getParameter('topic_id')
+                  ]
                 ]],
                 [['text' => 'report_post']]
         );         
@@ -365,10 +385,15 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
     {
         $breadCrumb = array_merge(
                 [['link' => 'Index:default', 'text' => 'menu_index']],
+                $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
                 $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
                 [['link'   => 'Topic:default',
                   'text'   => 'menu_topic',
-                  'params' => [$this->getParameter('forum_id'), $this->getParameter('topic_id')]
+                  'params' => [
+                      $this->getParameter('category_id'),
+                      $this->getParameter('forum_id'),
+                      $this->getParameter('topic_id')
+                  ]
                 ]],
                 [['text' => 'post_history']]
         );           
@@ -401,6 +426,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      */
     public function reportFormSuccess(Form $form, ArrayHash $values)
     {
+        $category_id = $this->getParameter('category_id');
         $forum_id = $this->getParameter('forum_id');
         $topic_id = $this->getParameter('topic_id');
         $post_id  = $this->getParameter('post_id');
@@ -423,6 +449,6 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
             }
         }
 
-        $this->redirect('Topic:default', $forum_id, $topic_id, $page);
+        $this->redirect('Topic:default', $category_id, $forum_id, $topic_id, $page);
     }
 }

@@ -171,7 +171,7 @@ class ForumsManager extends CrudManager
         foreach ($forums as $forum) {
             $tmp = [];
             $tmp['link']   = 'Forum:default';
-            $tmp['params'] = ['forum_id' => $forum->forum_id];
+            $tmp['params'] = ['category_id' => $forum->forum_category_id, 'forum_id' => $forum->forum_id, ];
             $tmp['text']   = $forum->forum_name;
             $tmp['t']      = 0;
             

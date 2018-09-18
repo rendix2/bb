@@ -7,10 +7,13 @@
     </div>
 
     <div class="col-sm-12">
+        <ul>
         {foreach $watchers as $watcher}
-            <a href="{link User:profile $watcher->user_id}">{$watcher->user_name}</a>
-            {if !$iterator->last}, {/if}
+            <li>
+                <a href="{link User:profile $watcher->user_id}">{$watcher->user_name}</a>
+            </li>
         {/foreach}
+        </ul>
     </div>
         
     <div class="col-sm-12">

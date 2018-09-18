@@ -114,7 +114,7 @@ class CategoriesManager extends CrudManager
     {
         $categories = $this->mptt->getBreadCrumb($category_id);
         
-        $bcForum = [];
+        $bcCat = [];
         
         foreach ($categories as $category) {
             $tmp = [];
@@ -123,9 +123,9 @@ class CategoriesManager extends CrudManager
             $tmp['text']   = $category->category_name;
             $tmp['t']      = 0;
             
-            $bcForum[] = $tmp;
+            $bcCat[] = $tmp;
         }
         
-        return $bcForum;
+        return $bcCat;
     }
 }

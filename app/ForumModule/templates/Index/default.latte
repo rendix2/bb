@@ -17,7 +17,7 @@
                                 <tr>
                                     <td>
                                         {if $forum->hasNewTopics || $forum->hasNewPosts}NEW POSTS{/if}
-                                        <a href="{link Forum:default, $forum->forum_id}">{$forum->forum_name}</a>
+                                        <a href="{link Forum:default, $forum->forum_category_id, $forum->forum_id}">{$forum->forum_name}</a>
                                     </td>
                                 </tr>
                                 <tr>

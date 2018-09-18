@@ -58,14 +58,29 @@ final class ForumPresenter extends Base\ForumPresenter
     /**
      * renders topics
      *
-     * @param int         $forum_id
-     * @param int         $page
+     * @param int $category_id
+     * @param int $forum_id
+     * @param int $page
      * @param string|null $q
      */
-    public function renderDefault($forum_id, $page = 1, $q = null)
+    public function renderDefault($category_id, $forum_id, $page = 1, $q = null)
     {
+        if (!is_numeric($category_id)) {
+            $this->error('Category parameter is not numeric.');
+        }
+
+        $category = $this->categoryManager->getById($category_id);
+
+        if(!$category) {
+            $this->error('Category does not exist.');
+        }
+
+        if (!$category->category_active) {
+            $this->error('Category is not active.');
+        }
+
         if (!is_numeric($forum_id)) {
-            $this->error('Parameter is not numeric');
+            $this->error('Forum parameter is not numeric');
         }
 
         $forum = $this->getManager()->getById($forum_id);
@@ -78,18 +93,12 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->error('Forum is not active.');
         }
 
+        if ($forum->forum_category_id !== (int)$category_id) {
+            $this->error('Category parameter does not match.');
+        }
+
         if (!$this->getUser()->isAllowed($forum_id, 'forum_view')) {
             $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
-        }
-
-        $category = $this->categoryManager->getByForum($forum_id);
-
-        if (!$category) {
-            $this->error('Not existing category.');
-        }
-
-        if (!$category->category_active) {
-            $this->error('Category is not active.');
         }
 
         $topics    = $this->topicManager->getFluentJoinedUsersByForum($forum_id);
@@ -125,10 +134,33 @@ final class ForumPresenter extends Base\ForumPresenter
     /**
      * renders rules of forum
      *
+     * @param int $category_id
      * @param int $forum_id
      */
-    public function renderRules($forum_id)
+    public function renderRules($category_id, $forum_id)
     {
+        if (!isset($category_id)) {
+            $this->error('Category parameter is not set.');
+        }
+
+        if (!is_numeric($category_id)) {
+            $this->error('Category parameter is not numeric.');
+        }
+
+        $category = $this->categoryManager->getById($category_id);
+
+        if(!$category) {
+            $this->error('Category does not exist.');
+        }
+
+        if (!$category->category_active) {
+            $this->error('Category is not active.');
+        }
+
+        if (!isset($forum_id)) {
+            $this->error('Forum parameter is not set.');
+        }
+
         if (!is_numeric($forum_id)) {
             $this->error('Parameter is not numeric');
         }
@@ -136,7 +168,19 @@ final class ForumPresenter extends Base\ForumPresenter
         $forum = $this->getManager()->getById($forum_id);
 
         if (!$forum) {
-            $this->error('Forum not found');
+            $this->error('Forum does not exist.');
+        }
+
+        if (!$forum->forum_active) {
+            $this->error('Forum is not active.');
+        }
+
+        if ($forum->forum_category_id !== (int)$category_id) {
+            $this->error('Category parameter does not match.');
+        }
+
+        if (!$forum->forum_rules) {
+            $this->flashMessage('No forum rules.', self::FLASH_MESSAGE_WARNING);
         }
 
         $this->template->forum = $forum;
@@ -164,6 +208,7 @@ final class ForumPresenter extends Base\ForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
+            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
             $this->getManager()->getBreadCrumb($this->getParameter('forum_id'))
         );
 
@@ -177,8 +222,9 @@ final class ForumPresenter extends Base\ForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
+            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
             $this->getManager()->getBreadCrumb($this->getParameter('forum_id')),
-            [['link' => 'Forum:rules', 'text' => 'forum_rules', 'params' => [$this->getParameter('forum_id')]]]
+            [['link' => 'Forum:rules', 'text' => 'forum_rules', 'params' => [$this->getParameter('category_id'), $this->getParameter('forum_id')]]]
         );
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
