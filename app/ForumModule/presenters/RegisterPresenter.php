@@ -4,6 +4,7 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Models\LanguagesManager;
+use App\Models\Manager;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Form;
@@ -111,9 +112,10 @@ class RegisterPresenter extends BasePresenter
     public function registerUserSuccess(Form $form, ArrayHash $values)
     {
         unset($values->user_password2);
-        $values->user_password      = Passwords::hash($values->user_password);
-        $values->user_register_time = time();
-        $values->user_role_id       = 1;
+        $values->user_password       = Passwords::hash($values->user_password);
+        $values->user_register_time  = time();
+        $values->user_role_id        = 1;
+        $values->user_activation_key = Manager::getRandomString();
                 
         $res = $this->usersManager->add(ArrayHash::from($values));
         

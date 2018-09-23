@@ -153,34 +153,6 @@ class UserPresenter extends BaseForumPresenter
     {
         parent::__construct($manager);
     }
-    
-    /**
-     * @param int    $user_id
-     * @param string $key
-     */
-    public function actionActivate($user_id, $key)
-    {
-        // after register
-        if (!$this->getUser()
-            ->isLoggedIn()) {
-            $can = $this->getManager()
-                ->canBeActivated($user_id, $key);
-
-            if ($can) {
-                $this->getManager()
-                    ->update($user_id, ArrayHash::from([
-                            'user_active'         => 1,
-                            'user_activation_key' => null
-                        ]));
-                $this->flashMessage('You have been activated.', self::FLASH_MESSAGE_SUCCESS);
-                $this->redirect('Login:default');
-            } else {
-                $this->flashMessage('You cannot be activated.', self::FLASH_MESSAGE_DANGER);
-            }
-        } else {
-            $this->flashMessage('You are logged in!', self::FLASH_MESSAGE_DANGER);
-        }
-    }
 
     /**
      *

@@ -65,6 +65,7 @@ parameters:
         canDelete: false
         canDeletePostCount: false
         neededLogin: true
+        neededActivate: true
         minUserNameLength: 3
         minUserPasswordLength: 8
     search:
