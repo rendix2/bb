@@ -13,6 +13,7 @@ use App\Models\UsersManager;
 use dibi;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
+use Tracy\Debugger;
 
 /**
  * Description of IndexPresenter¨
@@ -125,7 +126,7 @@ class IndexPresenter extends BaseForumPresenter
             $this->flashMessage('No forums in this category.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $this->template->forums = $this->forumsManager->createForums($forums, 0);
+        $this->template->forums = $this->forumsManager->createForums($forums, 1);
     }
 
     /**

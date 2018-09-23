@@ -10,7 +10,7 @@
         <ul>
             {foreach $forums as $forum}
                 <li>
-                    <a href="{link Forum:default, $forum->forum_id}">{$forum->forum_name}</a>
+                    <a href="{link Forum:default, $category_id, $forum->forum_id}">{$forum->forum_name}</a>
                 </li>
 
                 {if is_array($forum['childs'])}
