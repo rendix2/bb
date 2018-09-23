@@ -135,7 +135,13 @@ class IndexPresenter extends BaseForumPresenter
     {
         $categories      = $this->getManager()->getActiveCategoriesCached();
         $result          = [];
-        $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
+
+        if ($this->getUser()->getIdentity()) {
+            $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
+        } else {
+            // we do not show any new posts
+            $last_login_time = time() + 1;
+        }
 
         foreach ($categories as $category) {
             $category->forums = [];

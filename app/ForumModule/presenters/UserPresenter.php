@@ -299,7 +299,7 @@ class UserPresenter extends BaseForumPresenter
         $this->template->moderatorForums = $this->moderatorsManager->getAllJoinedByLeft($user_id);
         $this->template->thankCount      = $this->thanksManager->getCountCached();
         $this->template->topicCount      = $this->topicManager->getCountCached();
-        $this->template->postCount       = $this->postManager->getCountCached();
+        $this->template->postCount       = $thfis->postManager->getCountCached();
         $this->template->watchTotalCount = $this->topicWatchManager->getCount();
         $this->template->userData        = $userData;
         $this->template->rank            = $rankUser;

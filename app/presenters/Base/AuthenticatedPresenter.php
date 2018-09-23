@@ -36,10 +36,12 @@ abstract class AuthenticatedPresenter extends BasePresenter
         } else {
             if ($user->logoutReason === IUserStorage::INACTIVITY) {
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
-                $this->sessionsManager->deleteBySession($this->getSession()->getId());
             }
-            
-            $this->redirect(':Forum:Login:default', ['loginForm-backlink' => $this->storeRequest()]);
+
+            if ($this->presenter->getName() !== 'Forum:Index') {
+                $this->sessionsManager->deleteBySession($this->getSession()->getId());
+                $this->redirect(':Forum:Login:default', ['loginForm-backlink' => $this->storeRequest()]);
+            }
         }
     }
 }
