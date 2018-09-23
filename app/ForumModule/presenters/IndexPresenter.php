@@ -13,6 +13,7 @@ use App\Models\UsersManager;
 use dibi;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
+use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 
 /**
@@ -119,14 +120,16 @@ class IndexPresenter extends BaseForumPresenter
     {
         $forums = $this->forumsManager
                 ->getFluentByCategory($category_id)
-                ->orderBy('forum_order', dibi::ASC)
+                ->orderBy('forum_left', dibi::ASC)
                 ->fetchAll();
 
-        if (!$forums) {
+        $this->template->forums = [];
+
+        if ($forums) {
+            $this->template->forums = $this->forumsManager->createForums($forums, $forums[0]->forum_parent_id);
+        } else {
             $this->flashMessage('No forums in this category.', self::FLASH_MESSAGE_DANGER);
         }
-
-        $this->template->forums = $this->forumsManager->createForums($forums, 1);
     }
 
     /**
