@@ -4,6 +4,7 @@ namespace App\Presenters\Base;
 
 use App\Authorizator;
 use App\Controls\BootstrapForm;
+use App\Controls\MenuControl;
 use App\Models\BansManager;
 use App\Services\TranslatorFactory;
 use Nette;
@@ -179,11 +180,11 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     }
 
     /**
-     * @return \App\Controls\MenuControl
+     * @return MenuControl
      */
     protected function createComponentMenuAdmin()
     {
-        $menu = [
+        $leftMenu = [
             0 => ['presenter' => ':Admin:Index:default', 'title' => 'menu_index'],
             1 => ['presenter' => ':Admin:Forum:default', 'title' => 'menu_forums'],
             2 => ['presenter' => ':Admin:Category:default', 'title' => 'menu_categories'],
@@ -196,11 +197,16 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             9 => ['presenter' => ':Admin:Rank:default', 'title' => 'menu_ranks'],
             10 => ['presenter' => ':Admin:Report:default', 'title' => 'menu_reports'],
             11 => ['presenter' => ':Admin:Ban:default', 'title' => 'menu_bans'],
-            12 => ['presenter' => ':Admin:Config:Index:default', 'title' => 'menu_config',
+            /*12 => ['presenter' => ':Admin:Config:Index:default', 'title' => 'menu_config',
                 'submenu' => [0 => ['presenter' => ':Admin:Config:Database:dumps', 'title' => 'menu_database']]
-                ],
+            ],*/
         ];
-        
-        return new \App\Controls\MenuControl($this->translatorFactory->adminTranslatorFactory(), $menu);
+
+        $rightMenu = [
+            0 => ['presenter' => 'logout', 'title' => 'logout'],
+            1 => ['presenter' => ':Forum:Index:default', 'title' => 'menu_forum'],
+        ];
+
+        return new MenuControl($this->translatorFactory->adminTranslatorFactory(), $leftMenu, $rightMenu);
     }
 }

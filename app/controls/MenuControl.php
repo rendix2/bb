@@ -11,22 +11,35 @@ use Nette\Localization\ITranslator;
  */
 class MenuControl extends Control
 {
-    private $menu;
-    
+    /**
+     * @var array $leftMenu
+     */
+    private $leftMenu;
+
+    /**
+     * @var array $rightMenu
+     */
+    private $rightMenu;
+
+    /**
+     * @var ITranslator $translator
+     */
     private $translator;
 
     /**
      * MenuControl constructor.
      *
      * @param ITranslator $translator
-     * @param array       $menu
+     * @param array $leftMenu
+     * @param array $rightMenu
      */
-    public function __construct(ITranslator $translator, array $menu)
+    public function __construct(ITranslator $translator, array $leftMenu = [], array $rightMenu = [])
     {
         parent::__construct();
         
         $this->translator = $translator;
-        $this->menu       = $menu;
+        $this->leftMenu   = $leftMenu;
+        $this->rightMenu  = $rightMenu;
     }
     
     public function render()
@@ -35,10 +48,11 @@ class MenuControl extends Control
         $sep      = DIRECTORY_SEPARATOR;
                 
         $template->setFile(__DIR__ . $sep . 'templates' . $sep . 'menu' . $sep . 'menu.latte');
-        
         $template->setTranslator($this->translator);
-        $template->menu = $this->menu;
-        
+
+        $template->leftMenu  = $this->leftMenu;
+        $template->rightMenu = $this->rightMenu;
+
         $template->render();
     }
 }

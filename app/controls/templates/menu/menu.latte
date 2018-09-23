@@ -1,19 +1,21 @@
-{block menu}
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark mb-1">
-            <div class="container-fluid">
-
-<ul class="navbar-nav navbar-left">
+{define menu_foreach}
     {foreach $menu as $item}
-        {dump $presenter->name.':'.$presenter->action}
-        {dump $item['presenter']}
-        <li class="nav-item {if ':'.$presenter->name.':'.$presenter->action === $item['presenter']}active{/if}">{if isset($item['submenu']) && is_array($item['submenu'])}
-        {include menu, menu => $item['submenu']}
-    {else}
-        {dump $item}
-        <a href="{plink $item['presenter']}" class="nav-link">{_$item['title']}</a>
-    {/if}</li>
+        <li class="nav-item {if ':'.$presenter->name.':'.$presenter->action === $item['presenter']}active{/if}">
+            {if isset($item['submenu']) && is_array($item['submenu'])}
+                {include menu, menu => $item['submenu']}
+            {else}
+                <a href="{plink $item['presenter']}" class="nav-link">{_$item['title']}</a>
+            {/if}
+        </li>
     {/foreach}
+{/define}
+
+{block menu}
+<ul class="navbar-nav navbar-left">
+    {include menu_foreach, menu => $leftMenu}
 </ul>
-    </div>
-    </nav>
+
+<ul class="navbar-nav navbar-right">
+    {include menu_foreach, menu => $rightMenu}
+</ul>
 {/block}
