@@ -30,7 +30,7 @@ class PmManager extends CrudManager
                 ->as('pm')
                 ->innerJoin(self::USERS_TABLE)
                 ->as('u')
-                ->on('pm.pm_user_id_to = u.user_id')
+                ->on('pm.pm_user_id_from = u.user_id')
                 ->where('pm.pm_user_id_to = %i', $this->user->id);
     }
     

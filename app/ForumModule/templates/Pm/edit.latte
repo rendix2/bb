@@ -6,9 +6,24 @@
 </div>
         
 <div class="col-sm-12 main">
-    {snippet form}
-        {control editForm}
-    {/snippet}
+    {if $id}
+        <div class="card">
+            <div class="card-header">
+                <p>{_user_name}:{$item->user_name}</p>
+            </div>
+
+            <div class="card-header">
+                <p>{_pm_subject}:{$item->pm_subject}</p>
+            </div>
+            <div class="card-block p-1">
+                {$item->pm_text}
+            </div>
+        </div>
+    {else}
+        {snippet form}
+            {control editForm}
+        {/snippet}
+    {/if}
 </div>
 
 <div class="col-sm-12">

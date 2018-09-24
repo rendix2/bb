@@ -14,6 +14,7 @@ use App\Presenters\crud\CrudPresenter;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
+use Tracy\Debugger;
 
 /**
  * Description of PmPresenter
@@ -105,9 +106,11 @@ class PmPresenter extends CrudPresenter
         }
         
         parent::renderEdit($id);
-        
-        if ($this->template->item->pm_status === 'sent') {
-            $this->getManager()->update($id, ArrayHash::from(['pm_status' => 'read']));
+
+        Debugger::barDump($this->template->item, '$this->template->item');
+
+        if ($id && $this->template->item->pm_status === 'sent') {
+            $this->getManager()->update($id, ArrayHash::from(['pm_status' => 'read', 'pm_time_read' => time()]));
         }
     }
 
@@ -247,15 +250,10 @@ class PmPresenter extends CrudPresenter
         $form->addText('user_name', 'User name:')
             ->setDisabled();
 
-        if ($this->getParameter('id')) {
-            $form->addTextArea('pm_text', 'PM Text:')
-                ->setDisabled();
-            $form->addText('pm_subject', 'PM Subject:')
-                ->setDisabled();
-        } else {
+        if (!$this->getParameter('id')) {
             $form->addText('pm_subject', 'PM Subject:')
                 ->setRequired(true);
-            $form->addText('pm_subject', 'PM Subject:')
+            $form->addTextArea('pm_text', 'PM Text:')
                 ->setRequired(true);
         }
 
@@ -286,6 +284,7 @@ class PmPresenter extends CrudPresenter
     public function editFormSuccess(Form $form, ArrayHash $values)
     {
         $values->pm_user_id_from = $this->getUser()->getId();
+        $values->pm_time_sent = time();
         unset($values->user_name);
         
         parent::editFormSuccess($form, $values);
