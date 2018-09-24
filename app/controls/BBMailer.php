@@ -121,7 +121,7 @@ class BBMailer
             
             $this->message->setHtmlBody($latte->renderToString($input, $variables));
         } else {
-            $this->message->setBody($input);
+            $this->message->setHtmlBody($input);
         }
         
         return $this;

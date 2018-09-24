@@ -2,6 +2,7 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Models\LanguagesManager;
 use App\Models\Manager;
@@ -41,6 +42,12 @@ class RegisterPresenter extends BasePresenter
      * @inject
      */
     public $pmManager;
+
+    /**
+     * @var BBMailer $bbMailer
+     * @inject
+     */
+    public $bbMailer;
 
     /**
      * RegisterPresenter constructor.
@@ -121,7 +128,7 @@ class RegisterPresenter extends BasePresenter
         unset($values->user_password2);
         $values->user_password       = Passwords::hash($values->user_password);
         $values->user_register_time  = time();
-        $values->user_role_id        = 1;
+        $values->user_role_id        = 2;
         $values->user_activation_key = Manager::getRandomString();
 
         $res = $this->usersManager->add(ArrayHash::from($values));
@@ -136,6 +143,21 @@ class RegisterPresenter extends BasePresenter
         ];
 
         $this->pmManager->add(ArrayHash::from($welcome_pm_data));
+
+        $this->bbMailer->setSubject($this->translator->translate('welcome_mail_subject'));
+        $this->bbMailer->addRecipients([$values->user_email]);
+        $this->bbMailer->setText(
+            sprintf(
+                $this->translator->translate('welcome_mail_text'),
+                $values->user_name,
+                $this->link(
+                    '//Login:activate',
+                    $res,
+                    $values->user_activation_key
+                )
+            )
+        );
+        $this->bbMailer->send();
         
         if ($res) {
             $this->flashMessage('User was added.', self::FLASH_MESSAGE_SUCCESS);

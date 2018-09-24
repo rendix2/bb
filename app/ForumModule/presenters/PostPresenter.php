@@ -316,8 +316,13 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
             
             if (count($emailsArray)) {
                 $this->bbMailer->addRecipients($emailsArray);
-                $this->bbMailer->setSubject('Topic watch');
-                $this->bbMailer->setText('Test');
+                $this->bbMailer->setSubject($this->getForumTranslator()->translate('topic_watch_mail_subject'));
+                $this->bbMailer->setText(
+                    sprintf(
+                        $this->getForumTranslator()->translate('topic_watch_mail_text'),
+                        $this->link('//Topic:default', $category_id, $forum_id, $topic_id)
+                    )
+                );
                 $this->bbMailer->send();
             }
         }
