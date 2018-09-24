@@ -122,6 +122,9 @@ class LoginPresenter extends BasePresenter
         }
     }
 
+    /**
+     *
+     */
     public function renderReactivate()
     {
         // :)
@@ -136,6 +139,9 @@ class LoginPresenter extends BasePresenter
         return $this->userLoginForm->create();
     }
 
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentReactivateForm()
     {
         $form = BootstrapForm::create();
@@ -147,6 +153,10 @@ class LoginPresenter extends BasePresenter
         return $form;
     }
 
+    /**
+     * @param Form $form
+     * @param ArrayHash $values
+     */
     public function reactivateFormSuccess(Form $form, ArrayHash $values)
     {
         $user = $this->usersManager->getByEmail($values->user_email);
