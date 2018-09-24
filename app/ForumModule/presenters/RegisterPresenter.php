@@ -5,6 +5,7 @@ namespace App\ForumModule\Presenters;
 use App\Controls\BootstrapForm;
 use App\Models\LanguagesManager;
 use App\Models\Manager;
+use App\Models\PmManager;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Form;
@@ -34,6 +35,12 @@ class RegisterPresenter extends BasePresenter
      * @var UsersManager $usersManager
      */
     private $usersManager;
+
+    /**
+     * @var PmManager $pmManager
+     * @inject
+     */
+    public $pmManager;
 
     /**
      * RegisterPresenter constructor.
@@ -116,8 +123,19 @@ class RegisterPresenter extends BasePresenter
         $values->user_register_time  = time();
         $values->user_role_id        = 1;
         $values->user_activation_key = Manager::getRandomString();
-                
+
         $res = $this->usersManager->add(ArrayHash::from($values));
+
+        $welcome_pm_data = [
+            'pm_user_id_from' => 1,
+            'pm_user_id_to'   => $res,
+            'pm_subject'      => $this->translator->translate('welcome_pm_subject'),
+            'pm_text'         => sprintf($this->translator->translate('welcome_pm_text'), $values->user_name),
+            'pm_status'       => 'sent',
+            'pm_time_sent'    => time()
+        ];
+
+        $this->pmManager->add(ArrayHash::from($welcome_pm_data));
         
         if ($res) {
             $this->flashMessage('User was added.', self::FLASH_MESSAGE_SUCCESS);
