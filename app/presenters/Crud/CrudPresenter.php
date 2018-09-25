@@ -187,7 +187,6 @@ abstract class CrudPresenter extends AuthenticatedPresenter
             \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
         }
 
-        $this->getManager()->deleteCache();
         $this->redirect(':' . $this->getName() . ':default');
     }
 

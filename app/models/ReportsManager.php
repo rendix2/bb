@@ -114,6 +114,8 @@ class ReportsManager extends CrudManager
      */
     public function updateByPost($post_id, ArrayHash $item_data)
     {
+        $this->deleteCache();
+
         return $this->dibi->update($this->getTable(), $item_data)->where('[report_post_id] = %i', $post_id)->execute();
     }    
 
@@ -126,6 +128,8 @@ class ReportsManager extends CrudManager
      */
     public function updateByTopic($topic_id, ArrayHash $item_data)
     {
+        $this->deleteCache();
+
         return $this->dibi->update($this->getTable(), $item_data)->where('[report_topic_id] = %i', $topic_id)->execute();
     }
     
@@ -137,6 +141,8 @@ class ReportsManager extends CrudManager
      */
     public function updateByForum($forum_id, ArrayHash $item_data)
     {
+        $this->deleteCache();
+
         return $this->dibi->update($this->getTable(), $item_data)->where('[report_forum_id] = %i', $forum_id)->execute();
     }    
 }

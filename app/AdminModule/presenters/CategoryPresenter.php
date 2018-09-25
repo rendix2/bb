@@ -178,7 +178,6 @@ class CategoryPresenter extends AdminPresenter
             \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
         }
 
-        $this->getManager()->deleteCache();
         $this->redirect(':' . $this->getName() . ':default');
     }    
 }

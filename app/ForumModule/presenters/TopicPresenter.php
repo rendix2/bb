@@ -445,6 +445,7 @@ class TopicPresenter extends BaseForumPresenter
         // refresh cache on index page to show this last topic
         $cache = new Cache($this->storage, IndexPresenter::CACHE_NAMESPACE);
         $cache->remove(IndexPresenter::CACHE_KEY_LAST_TOPIC);
+        $cache->remove(IndexPresenter::CACHE_KEY_TOTAL_TOPICS);
 
         if ($topic_id) {
             $this->flashMessage('Topic was saved.', self::FLASH_MESSAGE_SUCCESS);

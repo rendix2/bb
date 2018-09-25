@@ -52,6 +52,11 @@ class IndexPresenter extends BaseForumPresenter
     /**
      * @var string
      */
+    const CACHE_KEY_LAST_POST = 'lastPost';
+
+    /**
+     * @var string
+     */
     const CACHE_NAMESPACE = 'BBIndex';
 
     /**
@@ -168,7 +173,7 @@ class IndexPresenter extends BaseForumPresenter
                 );
 
                 $forum->hasNewTopics = count(
-                    $this->topicManager->getNewerTopics($forum->forum_id, $last_login_time)
+                    $this->topicManager->getNewerTopicsCached($forum->forum_id, $last_login_time)
                 );
 
                 $moderators = $this->moderatorManager->getAllJoinedByRight($forum->forum_id);
@@ -209,9 +214,25 @@ class IndexPresenter extends BaseForumPresenter
                 );
         }
 
+        $cachedLastPost = $this->getCache()
+            ->load(self::CACHE_KEY_LAST_POST);
+
+        if (!$cachedLastPost) {
+            $this->getCache()
+                ->save(
+                    self::CACHE_KEY_LAST_POST,
+                    $cachedLastPost = $this->postManger->getLast(),
+                    [
+                        Cache::EXPIRE => '1 hour',
+                    ]
+                );
+        }
+
         $this->template->mostPostsUser = $this->postManger->getUserWithMostPosts();
+        $this->template->mostTopicsUser = $this->topicManager->getUserWithMostTopic();
         $this->template->lastTopic     = $cachedLastTopic;
         $this->template->lastUser      = $cachedLastUser;
+        $this->template->lastPost      = $cachedLastPost;
         $this->template->totalUsers    = $this->userManager->getCountCached();
         $this->template->totalPosts    = $this->postManger->getCountCached();
         $this->template->totalTopics   = $this->topicManager->getCountCached();

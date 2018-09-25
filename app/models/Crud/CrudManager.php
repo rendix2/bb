@@ -399,6 +399,8 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function add(ArrayHash $item_data)
     {
+        $this->deleteCache();
+
         return $this->dibi
             ->insert($this->table, $item_data)
             ->execute(dibi::IDENTIFIER);
@@ -410,6 +412,8 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function deleteFluent()
     {
+        $this->deleteCache();
+
         return $this->dibi->delete($this->table);
     }
 
@@ -428,7 +432,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     /**
      *
      */
-    public function deleteCache()
+    protected function deleteCache()
     {
         $this->managerCache->remove(self::CACHE_ALL_KEY);
         $this->managerCache->remove(self::CACHE_PAIRS);
@@ -442,6 +446,8 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function deleteMulti(array $item_id)
     {
+        $this->deleteCache();
+
         return $this->dibi
             ->delete($this->table)
             ->where('[%n IN %in', $this->primaryKey, $item_id)
@@ -456,6 +462,8 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function update($item_id, ArrayHash $item_data)
     {
+        $this->deleteCache();
+
         return $this->dibi
                 ->update($this->table, $item_data)
                 ->where('%n = %i', $this->primaryKey, $item_id)
@@ -470,6 +478,8 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function updateMulti(array $item_id, ArrayHash $item_data)
     {
+        $this->deleteCache();
+
         return $this->dibi
             ->update($this->table, $item_data)
             ->where('%n IN %in', $this->primaryKey, $item_id)

@@ -154,6 +154,8 @@ class ForumsManager extends CrudManager
      */
     public function move($forum_id, $target_forum_id, $position = false)
     {
+        $this->deleteCache();
+
         return $this->mptt->move($forum_id, $target_forum_id, $position);
     }
 

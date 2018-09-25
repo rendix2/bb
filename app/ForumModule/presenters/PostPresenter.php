@@ -16,6 +16,8 @@ use App\Models\TopicWatchManager;
 use App\Models\UsersManager;
 use App\Settings\PostSetting;
 use Nette\Application\UI\Form;
+use Nette\Caching\Cache;
+use Nette\Caching\IStorage;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;
@@ -92,6 +94,12 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      * @inject
      */
     public $categoriesManager;
+
+    /**
+     * @var IStorage $storage
+     * @inject
+     */
+    public $storage;
 
     /**
      * @param PostsManager $manager
@@ -325,6 +333,11 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
                 );
                 $this->bbMailer->send();
             }
+
+            // refresh cache on index page to show this last topic
+            $cache = new Cache($this->storage, IndexPresenter::CACHE_NAMESPACE);
+            $cache->remove(IndexPresenter::CACHE_KEY_LAST_POST);
+            $cache->remove(IndexPresenter::CACHE_KEY_TOTAL_POSTS);
         }
 
         if ($result) {

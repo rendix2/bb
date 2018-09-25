@@ -102,6 +102,8 @@ class CategoriesManager extends CrudManager
      */
     public function move($category_id, $target_category_id, $position = false)
     {
+        $this->deleteCache();
+
         return $this->mptt->move($category_id, $target_category_id, $position);
     }
 

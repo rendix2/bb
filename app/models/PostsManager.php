@@ -88,6 +88,18 @@ class PostsManager extends CrudManager
     }
 
     /**
+     * @return Row|false
+     */
+    public function getLast()
+    {
+        return $this->getAllFluent()
+            ->where('[post_id] = ', $this->dibi
+                ->select('MAX(post_id)')
+                ->from($this->getTable()))
+            ->fetch();
+    }
+
+    /**
      * @param int $forum_id
      *
      * @return Row|false

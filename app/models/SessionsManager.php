@@ -73,6 +73,8 @@ class SessionsManager extends CrudManager
      */
     public function updateBySessionsKey($session_key, ArrayHash $session_data)
     {
+        $this->deleteCache();
+
         return $this->dibi
                 ->update($this->getTable(), $session_data)
                 ->where('[session_key] = %s', $session_key)
@@ -85,6 +87,8 @@ class SessionsManager extends CrudManager
      */
     public function updateByUser($user_id, ArrayHash $session_data)
     {
+        $this->deleteCache();
+
         $this->dibi
                 ->update($this->getTable(), $session_data)
                 ->where('[session_user_id] = %i', $user_id)
@@ -97,6 +101,8 @@ class SessionsManager extends CrudManager
      */
     public function truncateSessions()
     {
+        $this->deleteCache();
+
         return $this->dibi->query('TRUNCATE TABLE %n', $this->getTable());
     }
 }

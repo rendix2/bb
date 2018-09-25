@@ -10,6 +10,8 @@ use App\Models\PmManager;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Form;
+use Nette\Caching\Cache;
+use Nette\Caching\IStorage;
 use Nette\Localization\ITranslator;
 use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;
@@ -48,6 +50,12 @@ class RegisterPresenter extends BasePresenter
      * @inject
      */
     public $bbMailer;
+
+    /**
+     * @var IStorage $storage
+     * @inject
+     */
+    public $storage;
 
     /**
      * RegisterPresenter constructor.
@@ -158,7 +166,13 @@ class RegisterPresenter extends BasePresenter
             )
         );
         $this->bbMailer->send();
-        
+
+
+        // refresh cache on index page to show this last topic
+        $cache = new Cache($this->storage, IndexPresenter::CACHE_NAMESPACE);
+        $cache->remove(IndexPresenter::CACHE_KEY_LAST_USER);
+        $cache->remove(IndexPresenter::CACHE_KEY_TOTAL_USERS);
+
         if ($res) {
             $this->flashMessage('User was added.', self::FLASH_MESSAGE_SUCCESS);
         } else {

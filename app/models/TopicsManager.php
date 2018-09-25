@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Crud\CrudManager;
+use dibi;
 use Dibi\Fluent;
 use Dibi\Row;
 use Nette\Caching\Cache;
@@ -49,7 +50,7 @@ class TopicsManager extends CrudManager
      *
      * @return array|mixed
      */
-    public function getNewerTopics($forum_id, $topic_time)
+    public function getNewerTopicsCached($forum_id, $topic_time)
     {
         $key    = $forum_id . '-' . $topic_time;
         $cached = $this->managerCache->load($key);
@@ -66,6 +67,22 @@ class TopicsManager extends CrudManager
         }
 
         return $cached;
+    }
+
+    /**
+     * @return Row|false
+     */
+    public function getUserWithMostTopic()
+    {
+        return $this->dibi
+            ->select('COUNT(t.topic_id) AS topic_count, u.user_id, u.user_name')
+            ->from($this->getTable())
+            ->as('t')
+            ->innerJoin(self::USERS_TABLE)
+            ->as('u')
+            ->on('[t.topic_user_id] = [u.user_id]')
+            ->groupBy('topic_user_id', dibi::ASC)
+            ->fetch();
     }
 
     /**

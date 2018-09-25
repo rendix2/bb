@@ -133,6 +133,8 @@ class ThanksManager extends CrudManager
      */
     public function updateByTopic($topic_id, ArrayHash $item_data)
     {
+        $this->deleteCache();
+
         return $this->dibi
             ->update($this->getTable(), $item_data)
             ->where('[thank_topic_id] = %i', $topic_id)
@@ -148,6 +150,8 @@ class ThanksManager extends CrudManager
      */
     public function updateByUser($user_id, ArrayHash $item_data)
     {
+        $this->deleteCache();
+
         return $this->dibi
             ->update($this->getTable(), $item_data)
             ->where('[thank_user_id] = %i', $user_id)
@@ -163,6 +167,8 @@ class ThanksManager extends CrudManager
      */
     public function updateMultiByUser(array $user_id, ArrayHash $item_data)
     {
+        $this->deleteCache();
+
         return $this->dibi
             ->update($this->getTable(), $item_data)
             ->where('[thank_user_id] IN %in', $user_id)
@@ -178,8 +184,7 @@ class ThanksManager extends CrudManager
      */
     public function deleteByUserAndTopic(array $user_ids, $topic_id)
     {
-        return $this->dibi
-                ->delete($this->getTable())
+        return $this->deleteFluent()
                 ->where('[thank_user_id] IN %in', $user_ids)
                 ->where('[thank_topic_id] = %i', $topic_id)
                 ->execute();
@@ -193,7 +198,8 @@ class ThanksManager extends CrudManager
      */
     public function getByUserAndTopic($user_id, $topic_id)
     {
-        return $this->dibi->select('*')
+        return $this->dibi
+                ->select('*')
                 ->from($this->getTable())
                 ->where('[thank_user_id] = %i', $user_id)
                 ->where('[thank_topic_id] = %i', $topic_id)
