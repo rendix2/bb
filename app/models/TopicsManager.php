@@ -85,13 +85,16 @@ class TopicsManager extends CrudManager
      *
      * @return Fluent
      */
-    public function getFluentJoinedUsersByForum($forum_id)
+    public function getFluentJoinedUsersJoinedLastPostByForum($forum_id)
     {
         return $this->getAllFluent()
             ->as('t')
             ->leftJoin(self::USERS_TABLE)
             ->as('u')
             ->on('[t.topic_user_id] = [u.user_id]')
+            ->leftJoin(self::POSTS_TABLE)
+            ->as('p')
+            ->on('[p.post_id] = [t.topic_last_post_id]')
             ->where('[t.topic_forum_id] = %i', $forum_id);
     }
     

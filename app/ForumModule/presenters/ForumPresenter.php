@@ -101,7 +101,7 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
         }
 
-        $topics    = $this->topicManager->getFluentJoinedUsersByForum($forum_id);
+        $topics    = $this->topicManager->getFluentJoinedUsersJoinedLastPostByForum($forum_id);
         $paginator = new PaginatorControl($topics, 10, 5, $page);
 
         $this->addComponent($paginator, 'paginator');

@@ -57,6 +57,7 @@
                     {if $logViews}
                     <th>{_topic_count_views}</th>
                     {/if}
+                    <th>{_topic_last_post_time}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -76,7 +77,8 @@
                     <td>{$topic->topic_post_count}</td>
                     {if $logViews}
                         <td>{$topic->topic_view_count}</td>
-                    {/if}                    
+                    {/if}
+                    <td>{$topic->post_add_time|date:"%d.%m.%Y %H:%M:%S"}</td>
                     <td>
                         <a href="{link Topic:edit, $category_id, $forum_id, $topic->topic_id}" title="{_topic_edit}">
                             <i class="far fa-edit"></i>

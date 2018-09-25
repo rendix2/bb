@@ -24,6 +24,8 @@ use App\Settings\PostSetting;
 use App\Settings\TopicsSetting;
 use dibi;
 use Nette\Application\UI\Form;
+use Nette\Caching\Cache;
+use Nette\Caching\IStorage;
 use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;
 
@@ -119,6 +121,12 @@ class TopicPresenter extends BaseForumPresenter
      * @inject
      */
     public $categoriesManager;
+
+    /**
+     * @var IStorage $storage
+     * @inject
+     */
+    public $storage;
 
     /**
      *
@@ -426,12 +434,17 @@ class TopicPresenter extends BaseForumPresenter
         $topic_id    = $this->getParameter('topic_id');
         $user_id     = $this->getUser()->getId();
 
-        $values->post_add_time = time();
-        $values->post_user_id  = $user_id;
-        $values->post_forum_id = $forum_id;
+        $values->post_add_time     = time();
+        $values->post_user_id      = $user_id;
+        $values->post_forum_id     = $forum_id;
+        $values->post_category_id = $category_id;
         $values->post_add_user_ip = $this->getHttpRequest()->getRemoteAddress();
 
         $topic_id = $this->topicFacade->add($values);
+
+        // refresh cache on index page to show this last topic
+        $cache = new Cache($this->storage, IndexPresenter::CACHE_NAMESPACE);
+        $cache->remove(IndexPresenter::CACHE_KEY_LAST_TOPIC);
 
         if ($topic_id) {
             $this->flashMessage('Topic was saved.', self::FLASH_MESSAGE_SUCCESS);

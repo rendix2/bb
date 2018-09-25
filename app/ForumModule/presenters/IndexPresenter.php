@@ -50,6 +50,11 @@ class IndexPresenter extends BaseForumPresenter
     const CACHE_KEY_LAST_TOPIC = 'lastTopic';
 
     /**
+     * @var string
+     */
+    const CACHE_NAMESPACE = 'BBIndex';
+
+    /**
      * @var Cache $cache
      */
     private $cache;
@@ -108,7 +113,7 @@ class IndexPresenter extends BaseForumPresenter
      */
     public function injectCache(IStorage $storage)
     {
-        $this->cache = new Cache($storage, 'BBIndex');
+        $this->cache = new Cache($storage, self::CACHE_NAMESPACE);
     }
 
     /**

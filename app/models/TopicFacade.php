@@ -133,6 +133,7 @@ class TopicFacade
         $values->topic_first_user_id = $item_data->post_user_id;
         $values->topic_last_user_id  = $item_data->post_user_id;
         //$values->post_add_user_ip = $item_data->post_add_user_ip;
+        $values->topic_category_id   = $item_data->post_category_id;
 
         unset(
             $values->post_title,
@@ -140,7 +141,8 @@ class TopicFacade
             $values->post_add_time,
             $values->post_user_id,
             $values->post_forum_id,
-            $values->post_add_user_ip
+            $values->post_add_user_ip,
+            $values->post_category_id
         );
 
         $topic_id = $this->topicsManager->add($values);
