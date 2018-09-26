@@ -437,8 +437,8 @@ class TopicPresenter extends BaseForumPresenter
         $values->post_add_time     = time();
         $values->post_user_id      = $user_id;
         $values->post_forum_id     = $forum_id;
-        $values->post_category_id = $category_id;
-        $values->post_add_user_ip = $this->getHttpRequest()->getRemoteAddress();
+        $values->post_category_id  = $category_id;
+        $values->post_add_user_ip  = $this->getHttpRequest()->getRemoteAddress();
 
         $topic_id = $this->topicFacade->add($values);
 

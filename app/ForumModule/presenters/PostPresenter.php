@@ -303,6 +303,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
 
             $result = $this->postFacade->update($post_id, $values);
         } else {
+            $values->post_category_id = $category_id;
             $values->post_forum_id    = $forum_id;
             $values->post_user_id     = $user_id;
             $values->post_topic_id    = $topic_id;
