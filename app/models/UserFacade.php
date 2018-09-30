@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Services\TranslatorFactory;
+use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -84,6 +86,11 @@ class UserFacade
     private $postsHistoryManager;
 
     /**
+     * @var TranslatorFactory $translatorFactory
+     */
+    private $translatorFactory;
+
+    /**
      *
      * @param PmManager           $pmManager
      * @param PostsManager        $postsManager
@@ -98,6 +105,7 @@ class UserFacade
      * @param Users2ForumsManager $users2ForumsManager
      * @param Users2GroupsManager $users2GroupsManager
      * @param UsersManager        $usersManager
+     * @param  TranslatorFactory  $translatorFactory
      */
     public function __construct(
         PmManager $pmManager,
@@ -113,7 +121,8 @@ class UserFacade
         Users2ForumsManager $users2ForumsManager,
         Users2GroupsManager $users2GroupsManager,
         //Users2SessionsManager $users2SessionManager,
-        UsersManager $usersManager
+        UsersManager $usersManager,
+        TranslatorFactory $translatorFactory
     ) {
         $this->usersManager         = $usersManager;
         $this->postsManager         = $postsManager;
@@ -129,6 +138,7 @@ class UserFacade
         $this->thanksManager        = $thanksManager;
         $this->users2ForumsManager  = $users2ForumsManager;
         $this->users2GroupsManager  = $users2GroupsManager;
+        $this->translatorFactory    = $translatorFactory;
     }
 
     /**
@@ -168,11 +178,25 @@ class UserFacade
 
     /**
      * @param ArrayHash $item_data
+     *
+     * @return Result|int
      */
     public function add(ArrayHash $item_data)
     {
-        $user_id = $this->usersManager->add($item_data);
-        
-        $this->pmManager->add($item_data);
+        $user_id         = $this->usersManager->add($item_data);
+        $forumTranslator = $this->translatorFactory->forumTranslatorFactory();
+
+        $welcome_pm_data = [
+            'pm_user_id_from' => 1,
+            'pm_user_id_to'   => $user_id,
+            'pm_subject'      => $forumTranslator->translate('welcome_pm_subject'),
+            'pm_text'         => sprintf($forumTranslator->translate('welcome_pm_text'), $item_data->user_name),
+            'pm_status'       => 'sent',
+            'pm_time_sent'    => time()
+        ];
+
+        $this->pmManager->add(ArrayHash::from($welcome_pm_data));
+
+        return $user_id;
     }
 }

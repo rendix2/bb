@@ -7,6 +7,7 @@ use App\Controls\BootstrapForm;
 use App\Models\LanguagesManager;
 use App\Models\Manager;
 use App\Models\PmManager;
+use App\Models\UserFacade;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Form;
@@ -58,17 +59,24 @@ class RegisterPresenter extends BasePresenter
     public $storage;
 
     /**
+     * @var UserFacade $userFacade
+     */
+    private $userFacade;
+
+    /**
      * RegisterPresenter constructor.
      *
      * @param LanguagesManager $languageManger
      * @param UsersManager     $usersManager
+     * @param UserFacade       $userFacade
      */
-    public function __construct(LanguagesManager $languageManger, UsersManager $usersManager)
+    public function __construct(LanguagesManager $languageManger, UsersManager $usersManager, UserFacade $userFacade)
     {
         parent::__construct();
         
         $this->languageManager = $languageManger;
         $this->usersManager    = $usersManager;
+        $this->userFacade      = $userFacade;
     }
     
     public function startup()
@@ -139,18 +147,7 @@ class RegisterPresenter extends BasePresenter
         $values->user_role_id        = 2;
         $values->user_activation_key = Manager::getRandomString();
 
-        $res = $this->usersManager->add(ArrayHash::from($values));
-
-        $welcome_pm_data = [
-            'pm_user_id_from' => 1,
-            'pm_user_id_to'   => $res,
-            'pm_subject'      => $this->translator->translate('welcome_pm_subject'),
-            'pm_text'         => sprintf($this->translator->translate('welcome_pm_text'), $values->user_name),
-            'pm_status'       => 'sent',
-            'pm_time_sent'    => time()
-        ];
-
-        $this->pmManager->add(ArrayHash::from($welcome_pm_data));
+        $res = $this->userFacade->add($values);
 
         $this->bbMailer->setSubject($this->translator->translate('welcome_mail_subject'));
         $this->bbMailer->addRecipients([$values->user_email]);
