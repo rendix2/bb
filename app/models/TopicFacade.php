@@ -425,4 +425,19 @@ class TopicFacade
             'topic_last_user_id'   => $last_post->post_user_id,
         ]));
     }
+
+    /**
+     * @param int $item_id
+     *
+     * @param ArrayHash $item_data
+     */
+    public function update($item_id, ArrayHash $item_data)
+    {
+        $res = $this->topicsManager->update($item_id, ArrayHash::from(['topic_name' => $item_data->post_title]));
+        $firstPost = $this->postsManager->getFirstByTopic($item_id);
+
+        $this->postsManager->update($firstPost->post_id, ArrayHash::from(['post_text' => $item_data->post_text]));
+
+        return $res;
+    }
 }

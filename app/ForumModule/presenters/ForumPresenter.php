@@ -65,6 +65,14 @@ final class ForumPresenter extends Base\ForumPresenter
      */
     public function renderDefault($category_id, $forum_id, $page = 1, $q = null)
     {
+        if (!$this->getUser()->isAllowed($forum_id, 'forum_view')) {
+            $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
+        }
+
+        if (!isset($category_id)) {
+            $this->error('Category param is not set.');
+        }
+
         if (!is_numeric($category_id)) {
             $this->error('Category parameter is not numeric.');
         }
@@ -79,6 +87,10 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->error('Category is not active.');
         }
 
+        if (!isset($forum_id)) {
+            $this->error('Forum param is not set.');
+        }
+
         if (!is_numeric($forum_id)) {
             $this->error('Forum parameter is not numeric');
         }
@@ -89,16 +101,12 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->error('Forum does not exist.');
         }
 
-        if (!$forum->forum_active) {
-            $this->error('Forum is not active.');
-        }
-
         if ($forum->forum_category_id !== (int)$category_id) {
             $this->error('Category parameter does not match.');
         }
 
-        if (!$this->getUser()->isAllowed($forum_id, 'forum_view')) {
-            $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
+        if (!$forum->forum_active) {
+            $this->error('Forum is not active.');
         }
 
         $topics    = $this->topicManager->getFluentJoinedUsersJoinedLastPostByForum($forum_id);
@@ -171,12 +179,12 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->error('Forum does not exist.');
         }
 
-        if (!$forum->forum_active) {
-            $this->error('Forum is not active.');
-        }
-
         if ($forum->forum_category_id !== (int)$category_id) {
             $this->error('Category parameter does not match.');
+        }
+
+        if (!$forum->forum_active) {
+            $this->error('Forum is not active.');
         }
 
         if (!$forum->forum_rules) {

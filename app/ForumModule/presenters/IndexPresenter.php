@@ -128,6 +128,24 @@ class IndexPresenter extends BaseForumPresenter
      */
     public function renderCategory($category_id)
     {
+        if (!isset($category_id)) {
+            $this->error('Category param is not set.');
+        }
+
+        if (!is_numeric($category_id)) {
+            $this->error('Category parameter is not numeric.');
+        }
+
+        $category = $this->getManager()->getById($category_id);
+
+        if (!$category) {
+            $this->error('Category was not found.');
+        }
+
+        if (!$category->category_active) {
+            $this->error('Category is not active.');
+        }
+
         $forums = $this->forumsManager
                 ->getFluentByCategory($category_id)
                 ->orderBy('forum_left', dibi::ASC)
@@ -228,15 +246,15 @@ class IndexPresenter extends BaseForumPresenter
                 );
         }
 
-        $this->template->mostPostsUser = $this->postManger->getUserWithMostPosts();
+        $this->template->mostPostsUser  = $this->postManger->getUserWithMostPosts();
         $this->template->mostTopicsUser = $this->topicManager->getUserWithMostTopic();
-        $this->template->lastTopic     = $cachedLastTopic;
-        $this->template->lastUser      = $cachedLastUser;
-        $this->template->lastPost      = $cachedLastPost;
-        $this->template->totalUsers    = $this->userManager->getCountCached();
-        $this->template->totalPosts    = $this->postManger->getCountCached();
-        $this->template->totalTopics   = $this->topicManager->getCountCached();
-        $this->template->data          = $result;
+        $this->template->lastTopic      = $cachedLastTopic;
+        $this->template->lastUser       = $cachedLastUser;
+        $this->template->lastPost       = $cachedLastPost;
+        $this->template->totalUsers     = $this->userManager->getCountCached();
+        $this->template->totalPosts     = $this->postManger->getCountCached();
+        $this->template->totalTopics    = $this->topicManager->getCountCached();
+        $this->template->data           = $result;
     }
 
     /**

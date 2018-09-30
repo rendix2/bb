@@ -124,12 +124,11 @@ class SearchPresenter extends BaseForumPresenter
     {
         $result = $this->postsManager->findPosts($q);
 
-        $this['searchPostForm']->setDefaults(['search_post' => $q]);
-
         if (!$result) {
             $this->flashMessage('Post was not found.', self::FLASH_MESSAGE_WARNING);
-            $result = [];
         }
+
+        $this['searchPostForm']->setDefaults(['search_post' => $q]);
 
         $this->template->postData = $result;
     }
@@ -141,12 +140,11 @@ class SearchPresenter extends BaseForumPresenter
     {
         $result = $this->topicsManager->findByTopicName($q);
 
-        $this['searchTopicForm']->setDefaults(['search_topic' => $q]);
-
         if (!$result) {
             $this->flashMessage('Topics was not found.', self::FLASH_MESSAGE_WARNING);
-            $result = [];
         }
+
+        $this['searchTopicForm']->setDefaults(['search_topic' => $q]);
 
         $this->template->topicData = $result;
     }
@@ -158,12 +156,11 @@ class SearchPresenter extends BaseForumPresenter
     {
         $result = $this->getManager()->findLikeByUserName($q);
 
-        $this['searchUserForm']->setDefaults(['search_user' => $q]);
-
         if (!$result) {
             $this->flashMessage('User was not found.', self::FLASH_MESSAGE_WARNING);
-            $result = [];
         }
+
+        $this['searchUserForm']->setDefaults(['search_user' => $q]);
 
         $this->template->userData = $result;
     }

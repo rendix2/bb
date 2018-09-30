@@ -187,6 +187,20 @@ class UserPresenter extends BaseForumPresenter
      */
     public function handleSetFavourite($user_id)
     {
+        if (!isset($user_id)) {
+            $this->error('User param is not set.');
+        }
+
+        if (!is_numeric($user_id)) {
+            $this->error('User param is not numeric.');
+        }
+
+        $user = $this->getManager()->getById($user_id);
+
+        if (!$user) {
+            $this->error('User was not found.');
+        }
+
         $res = $this->favouriteUsersManager->addByLeft($this->getUser()->getId(), [$user_id]);
         
         if ($res) {
@@ -202,6 +216,20 @@ class UserPresenter extends BaseForumPresenter
      */
     public function handleUnSetFavourite($user_id)
     {
+        if (!isset($user_id)) {
+            $this->error('User param is not set.');
+        }
+
+        if (!is_numeric($user_id)) {
+            $this->error('User param is not numeric.');
+        }
+
+        $user = $this->getManager()->getById($user_id);
+
+        if (!$user) {
+            $this->error('User was not found.');
+        }
+
         $res = $this->favouriteUsersManager->fullDelete($this->getUser()->getId(), $user_id);
         
         if ($res) {
@@ -245,14 +273,18 @@ class UserPresenter extends BaseForumPresenter
      */
     public function renderPosts($user_id, $page = 1)
     {
+        if (!isset($user_id)) {
+            $this->error('User param is not set.');
+        }
+
         if (!is_numeric($user_id)) {
-            $this->error('Parameter is not numeric.');
+            $this->error('User param is not numeric.');
         }
 
         $user = $this->getManager()->getById($user_id);
 
         if (!$user) {
-            $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
+            $this->error('User was not found.');
         }
 
         $posts = $this->postManager->getByUser($user_id);
@@ -271,14 +303,18 @@ class UserPresenter extends BaseForumPresenter
      */
     public function renderProfile($user_id)
     {
+        if (!isset($user_id)) {
+            $this->error('User param is not set.');
+        }
+
         if (!is_numeric($user_id)) {
-            $this->error('Parameter is not numeric');
+            $this->error('User param is not numeric.');
         }
 
         $userData = $this->getManager()->getById($user_id);
 
         if (!$userData) {
-            $this->error('User not found.');
+            $this->error('User was not found.');
         }
 
         $ranks    = $this->rankManager->getAllCached();
@@ -299,7 +335,7 @@ class UserPresenter extends BaseForumPresenter
         $this->template->moderatorForums = $this->moderatorsManager->getAllJoinedByLeft($user_id);
         $this->template->thankCount      = $this->thanksManager->getCountCached();
         $this->template->topicCount      = $this->topicManager->getCountCached();
-        $this->template->postCount       = $thfis->postManager->getCountCached();
+        $this->template->postCount       = $this->postManager->getCountCached();
         $this->template->watchTotalCount = $this->topicWatchManager->getCount();
         $this->template->userData        = $userData;
         $this->template->rank            = $rankUser;
@@ -316,14 +352,18 @@ class UserPresenter extends BaseForumPresenter
      */
     public function renderThanks($user_id, $page = 1)
     {
+        if (!isset($user_id)) {
+            $this->error('User param is not set.');
+        }
+
         if (!is_numeric($user_id)) {
-            $this->error('Parameter is not numeric.');
+            $this->error('User param is not numeric.');
         }
 
         $user = $this->getManager()->getById($user_id);
 
         if (!$user) {
-            $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
+            $this->error('User was not found.');
         }
 
         $thanks = $this->thanksManager->getFluentJoinedTopicByUser($user_id);
@@ -343,14 +383,18 @@ class UserPresenter extends BaseForumPresenter
      */
     public function renderTopics($user_id, $page = 1)
     {
+        if (!isset($user_id)) {
+            $this->error('User param is not set.');
+        }
+
         if (!is_numeric($user_id)) {
-            $this->error('Parameter is not numeric.');
+            $this->error('User param is not numeric.');
         }
 
         $user = $this->getManager()->getById($user_id);
 
         if (!$user) {
-            $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
+            $this->error('User was not found.');
         }
 
         $topics = $this->topicManager->getFluentByUser($user_id);
@@ -370,14 +414,18 @@ class UserPresenter extends BaseForumPresenter
      */
     public function renderWatches($user_id, $page = 1)
     {
+        if (!isset($user_id)) {
+            $this->error('User param is not set.');
+        }
+
         if (!is_numeric($user_id)) {
-            $this->error('Parameter is not numeric.');
+            $this->error('User param is not numeric.');
         }
 
         $user = $this->getManager()->getById($user_id);
 
         if (!$user) {
-            $this->flashMessage('User does not exists.', self::FLASH_MESSAGE_DANGER);
+            $this->error('User was not found.');
         }
         
         $watches = $this->topicWatchManager->getFluentJoinedByRight($user_id);
@@ -469,6 +517,19 @@ class UserPresenter extends BaseForumPresenter
      */
     public function actionReport($user_id)
     {
+        if (!isset($user_id)) {
+            $this->error('User param is not set.');
+        }
+
+        if (!is_numeric($user_id)) {
+            $this->error('User param is not numeric.');
+        }
+
+        $user = $this->getManager()->getById($user_id);
+
+        if (!$user) {
+            $this->error('User was not found.');
+        }
     }
 
     /**

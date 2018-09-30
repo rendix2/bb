@@ -40,21 +40,14 @@ class PostsHistoryManager extends CrudManager
     }
 
     /**
-     *
      * @param int $post_id
      *
      * @return Row[]
      */
-    public function getAllJoinedByPost($post_id)
+    public function getByPost($post_id)
     {
-        return $this->dibi
-                ->select('p.*')
-                ->from($this->getTable())
-                ->as('ph')
-                ->innerJoin(self::POSTS_TABLE)
-                ->as('p')
-                ->on('%n = %n', 'ph.post_id', 'p.post_id')
-                ->where('%n = %i', 'p.post_id', $post_id)
-                ->fetchAll();
+        return $this->getAllFluent()
+            ->where('[post_id] = %i', $post_id)
+            ->fetchAll();
     }
 }
