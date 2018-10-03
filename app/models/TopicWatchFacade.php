@@ -99,10 +99,12 @@ class TopicWatchFacade
             $user_ids[] = $topicsWatch->user_id;
         }
 
-        $this->usersManager->updateMulti(
-            $user_ids,
-            ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1'])
-        );
+        if (count($user_ids)) {
+            $this->usersManager->updateMulti(
+                $user_ids,
+                ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1'])
+            );
+        }
     }
     
     /**
