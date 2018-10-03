@@ -194,20 +194,9 @@ class PostFacade
             ArrayHash::from(['topic_post_count%sql' => 'topic_post_count - 1'])
         );
 
-        $postCount = $this->postsManager->getCountOfUsersByTopicId($post->post_topic_id);
-
-        foreach ($postCount as $ps) {
-            // check if user has there only one post so we can delete his topic watching
-            // else he can still want to watch this topic
-            if ($ps->post_count === 1 || $ps->post_count === 0) {
-                $check = $this->topicWatchManager->fullCheck($post->post_topic_id, $ps->post_user_id);
-
-                if ($check) {
-                    $this->topicWatchManager->fullDelete($post->post_topic_id, $ps->post_user_id);
-                }
-            }
-        }
-        
+        $this->thanksFacade->deleteByPost($item_id);
+        $this->postsHistoryManager->deleteByPost($item_id);
+        $this->topicWatchFacade->deleteByPost($item_id);
         $this->reportsManager->deleteByPost($item_id);
         $this->forumsManager->update(
             $post->post_forum_id,
@@ -215,9 +204,8 @@ class PostFacade
         );
         
         // recount last post info
-        $res = $this->postsManager->delete($item_id);
+        $res = $this->postsManager->delete($item_id);        
         
-        $this->postsHistoryManager->deleteByPost($item_id);
         
         // last post
         if ($topic->topic_last_post_id === (int)$item_id && $topic->topic_first_post_id !== (int)$item_id) {
@@ -238,16 +226,8 @@ class PostFacade
             $this->forumsManager->update($post->post_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
             $this->thanksFacade->deleteByTopic($topic->topic_id);
             $this->reportsManager->deleteByTopic($topic->topic_id);
-            
-            $userUpdate = ['user_topic_count%sql' => 'user_topic_count - 1'];
-            
-            $watching = $this->topicWatchManager->fullCheck($topic->topic_id, $topic->topic_user_id);
-            
-            if (!$watching) {
-                $userUpdate['user_watch_count%sql'] = ['user_watch_count - 1'];
-            }
-
-            $this->usersManager->update($topic->topic_user_id, ArrayHash::from($userUpdate));
+            $this->topicWatchFacade->deleteByTopic($topic->topic_id);
+            $this->usersManager->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
             $this->topicsManager->delete($topic->topic_id);
 
             return 2;
