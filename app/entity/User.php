@@ -27,6 +27,26 @@ class User
         public $user_last_post_time;
         public $user_activation_key;
     
+    /**
+     * 
+     * @param int    $user_id
+     * @param string $user_name
+     * @param string $user_password
+     * @param string $user_email
+     * @param string $user_signature
+     * @param bool   $user_active
+     * @param int    $user_post_count
+     * @param int    $user_topic_count
+     * @param int    $user_thank_count
+     * @param int    $user_watch_count
+     * @param int    $user_lang_id
+     * @param int    $user_role_id
+     * @param string $user_avatar
+     * @param int    $user_register_time
+     * @param int    $user_last_login_time
+     * @param int    $user_last_post_time
+     * @param string $user_activation_key
+     */
     public function __construct(
         $user_id,
         $user_name,
@@ -64,6 +84,35 @@ class User
         $this->user_last_login_time = $user_last_login_time;
         $this->user_last_post_time  = $user_post_count;
         $this->user_activation_key  = $user_activation_key;
+    }
+    
+    /**
+     * 
+     * @param \Dibi\Row $values
+     * 
+     * @return \App\Entity\User
+     */
+    public static function get(\Dibi\Row $values)
+    {
+        return new User(
+            $values->user_id,
+            $values->user_name,
+            $values->user_password,
+            $values->user_email,
+            $values->user_signature,
+            $values->user_active,
+            $values->user_post_count,
+            $values->user_topic_count,
+            $values->user_thank_count,
+            $values->user_watch_count,
+            $values->user_lang_id,
+            $values->user_role_id,
+            $values->user_avatar,
+            $values->user_register_time,
+            $values->user_last_login_time,
+            $values->user_last_post_time,
+            $values->user_activation_key
+        );
     }
     
 }

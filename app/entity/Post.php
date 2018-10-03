@@ -37,6 +37,23 @@ class Post
     
     public $post_order;
     
+    /**
+     * 
+     * @param int    $post_id
+     * @param int    $post_user_id
+     * @param int    $post_category_id
+     * @param int    $post_forum_id
+     * @param int    $post_topic_id
+     * @param string $post_title
+     * @param string $post_text
+     * @param int    $post_add_time
+     * @param string $post_add_user_ip
+     * @param strin  $post_edit_user_ip
+     * @param int    $post_edit_count
+     * @param int    $post_last_edit_time
+     * @param bool   $post_locked
+     * @param int    $post_order
+     */
     public function __construct(
         $post_id,
         $post_user_id,
@@ -67,6 +84,32 @@ class Post
         $this->post_last_edit_time = $post_last_edit_time;
         $this->post_locked         = $post_locked;
         $this->post_order          = $post_order ;
+    }
+    
+    /**
+     * 
+     * @param \Dibi\Row $values
+     * 
+     * @return \App\Entity\Post
+     */
+    public static function get(\Dibi\Row $values)
+    {
+        return new Post(
+            $values->post_id,
+            $values->post_user_id,
+            $values->post_category_id,
+            $values->post_forum_id,
+            $values->post_topic_id,
+            $values->post_title, 
+            $values->post_text,
+            $values->post_add_time,
+            $values->post_add_user_ip,
+            $values->post_edit_user_ip,
+            $values->post_edit_count, 
+            $values->post_last_edit_time,
+            $values->post_locked,
+            $values->post_order
+        );
     }
     
 }
