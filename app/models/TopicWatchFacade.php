@@ -105,6 +105,8 @@ class TopicWatchFacade
                 ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1'])
             );
         }
+        
+        return $this->topicWatchManager->deleteByLeft($topic_id);
     }
     
     /**

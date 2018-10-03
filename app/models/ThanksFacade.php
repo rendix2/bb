@@ -117,7 +117,12 @@ class ThanksFacade
             $user_ids[] = $thank->thank_user_id;
         }
 
-        $this->usersManager->updateMulti($user_ids, ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1']));
+        if (count($user_ids)) {
+            $this->usersManager->updateMulti(
+                    $user_ids,
+                    ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1'])
+            );
+        }
 
         return $this->thanksManager->deleteByTopic($topic_id);
     }
