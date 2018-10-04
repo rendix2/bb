@@ -82,7 +82,7 @@ class User
         $this->user_avatar          = $user_avatar;
         $this->user_register_time   = (int)$user_register_time;
         $this->user_last_login_time = (int)$user_last_login_time;
-        $this->user_last_post_time  = (int)$user_post_count;
+        $this->user_last_post_time  = (int)$user_last_post_time;
         $this->user_activation_key  = $user_activation_key;
     }
     
@@ -114,5 +114,41 @@ class User
             $values->user_activation_key
         );
     }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getArray()
+    {
+        return [   
+            'user_id'              => $this->user_id,
+            'user_name'            => $this->user_name,
+            'user_password'        => $this->user_password,            
+            'user_email'           => $this->user_email,
+            'user_signature'       => $this->user_signature,
+            'user_active'          => $this->user_active,
+            'user_post_count'      => $this->user_post_count, 
+            'user_topic_count'     => $this->user_topic_count, 
+            'user_thank_count'     => $this->user_thank_count, 
+            'user_watch_count'     => $this->user_watch_count, 
+            'user_lang_id'         => $this->user_lang_id, 
+            'user_role_id'         => $this->user_role_id, 
+            'user_avatar'          => $this->user_avatar, 
+            'user_register_time'   => $this->user_register_time,             
+            'user_last_login_time' => $this->user_last_login_time,
+            'user_last_post_time'  => $this->user_last_post_time,
+            'user_activation_key'  => $this->user_activation_key,
+        ];
+    }
+    
+    /**
+     * 
+     * @return \Nette\Utils\ArrayHas
+     */
+    public function getArrayHash()
+    {
+        return \Nette\Utils\ArrayHash::from($this->getArray());
+    }       
     
 }

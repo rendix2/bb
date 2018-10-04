@@ -9,29 +9,28 @@ namespace App\Models\Entity;
  */
 class Topic
 {
-        public $topic_id;
-        public $topic_category_id;
-        public $topic_forum_id;
-        public $topic_user_id;
-        public $topic_name;
-        public $topic_post_count;
-        public $topic_add_time;
-        public $topic_locked;
-        public $topic_view_count;
-        public $topic_first_post_id;
-        public $topic_first_user_id;
-        public $topic_last_post_id;
-        public $topic_last_user_id;
-        public $topic_order;
+    public $topic_id;
+    public $topic_category_id;
+    public $topic_forum_id;
+    public $topic_user_id;
+    public $topic_name;
+    public $topic_post_count;
+    public $topic_add_time;
+    public $topic_locked;
+    public $topic_view_count;
+    public $topic_first_post_id;
+    public $topic_first_user_id;
+    public $topic_last_post_id;
+    public $topic_last_user_id;
+    public $topic_order;
         
-        /**
-         *
-         * @var \App\Models\Entity\Post $post
-         */
-        public $post;
+    /**
+     *
+     * @var \App\Models\Entity\Post $post
+     */
+    public $post;
 
-
-        /**
+    /**
      * 
      * @param int    $topic_id
      * @param int    $topic_category_id
@@ -108,6 +107,10 @@ class Topic
         );
     }
     
+    /**
+     * 
+     * @return array
+     */
     public function getArray()
     {
         return [
@@ -128,9 +131,12 @@ class Topic
         ];
     }
     
+    /**
+     * 
+     * @return \Nette\Utils\ArrayHash
+     */
     public function getArrayHash()
     {
         return \Nette\Utils\ArrayHash::from($this->getArray());
     }
-    
 }
