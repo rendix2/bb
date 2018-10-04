@@ -34,6 +34,12 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
      * @var PostFacade $postFacade
      */
     private $postFacade;
+    
+    /**
+     *
+     * @var \Nette\Http\IRequest $request
+     */
+    private $request;
 
     /**
      * TopicFastReplyForm constructor.
@@ -42,13 +48,14 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
      * @param User              $user
      * @param PostFacade        $postFacade
      */
-    public function __construct(TranslatorFactory $translatorFactory, User $user, PostFacade $postFacade)
+    public function __construct(TranslatorFactory $translatorFactory, User $user, PostFacade $postFacade, \Nette\Http\IRequest $request)
     {
         parent::__construct();
         
         $this->translatorFactory = $translatorFactory;
         $this->user              = $user;
         $this->postFacade        = $postFacade;
+        $this->request           = $request;
     }
     
     public function render()
@@ -83,13 +90,26 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
         $forum_id    = $this->presenter->getParameter('forum_id');
         $topic_id    = $this->presenter->getParameter('topic_id');
         $page        = $this->presenter->getParameter('page');
+        $user_id     = $this->user->getId();
+        
+        $post = new \App\Models\Entity\Post(
+            null,
+            $user_id,
+            $category_id,
+            $forum_id,
+            $topic_id,
+            '',
+            $values->post_text,
+            time(),
+            $this->request->getRemoteAddress(),
+            '',
+            0,
+            0,
+            0,
+            1
+        );        
 
-        $values->post_forum_id = $forum_id;
-        $values->post_topic_id = $topic_id;
-        $values->post_user_id  = $this->user->getId();
-        $values->post_title    = '';
-
-        $res = $this->postFacade->add($values);
+        $res = $this->postFacade->add($post);
 
         if ($res) {
             $this->presenter->flashMessage('Post was added.', BasePresenter::FLASH_MESSAGE_SUCCESS);

@@ -97,20 +97,22 @@ class ThanksFacade
     {
         $topics = $this->topicsManager->getAllByForum($forum_id);
         
-        foreach ($topics as $topic) {
-            $this->deleteByTopic($topic->topic_id);
+        foreach ($topics as $topicDibi) {
+            $topic = Entity\Topic::get($topicDibi);
+            
+            $this->deleteByTopic($topic);
         }                
     }
 
     /**
      *
-     * @param int $topic_id
+     * @param Entity\Topic $topic
      *
      * @return int
      */
-    public function deleteByTopic($topic_id)
+    public function deleteByTopic(Entity\Topic $topic)
     {
-        $thanks   = $this->thanksManager->getAllByTopic($topic_id);
+        $thanks   = $this->thanksManager->getAllByTopic($topic->topic_id);
         $user_ids = [];
 
         foreach ($thanks as $thank) {
@@ -124,23 +126,17 @@ class ThanksFacade
             );
         }
 
-        return $this->thanksManager->deleteByTopic($topic_id);
+        return $this->thanksManager->deleteByTopic($topic->topic_id);
     }
 
     /**
      *
-     * @param int $post_id
+     * @param Entity\Post $post
      *
      * @return bool
      */
-    public function deleteByPost($post_id)
-    {
-        $post = $this->postsManager->getById($post_id);
-
-        if (!$post) {
-            return false;
-        }
-        
+    public function deleteByPost(Entity\Post $post)
+    {        
         $count = $this->postsManager->getCountByUser($post->post_topic_id, $post->post_user_id);       
 
         if ($count === 1 || $count === 0) {

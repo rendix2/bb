@@ -463,9 +463,13 @@ abstract class CrudManager extends Manager //implements ICrudManager
     public function update($item_id, ArrayHash $item_data)
     {
         $this->deleteCache();
+        
+        $newData = clone $item_data;
+        
+        unset($newData[$this->primaryKey]);
 
         return $this->dibi
-                ->update($this->table, $item_data)
+                ->update($this->table, $newData)
                 ->where('%n = %i', $this->primaryKey, $item_id)
                 ->execute(dibi::AFFECTED_ROWS);
     }

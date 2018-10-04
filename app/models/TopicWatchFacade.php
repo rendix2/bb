@@ -111,16 +111,10 @@ class TopicWatchFacade
     
     /**
      *
-     * @param int $post_id
+     * @param Entity\Post $post
      */
-    public function deleteByPost($post_id)
-    {
-        $post      = $this->postsManager->getById($post_id);  
-        
-        if (!$post) {
-            return false;
-        }
-        
+    public function deleteByPost(Entity\Post $post)
+    {       
         $postCount = $this->postsManager->getCountOfUsersByTopicId($post->post_topic_id);
 
         foreach ($postCount as $ps) {

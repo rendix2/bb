@@ -40,19 +40,6 @@ class TopicPresenter extends BaseForumPresenter
 {
     
     /**
-     * @var ForumsManager $forumManager
-     * @inject
-     */
-    public $forumsManager;
-    
-    /**
-     *
-     * @var PostsManager $manager
-     * @inject
-     */
-    public $postsManager;
-    
-    /**
      * @var TopicsSetting $topicSetting
      * @inject
      */
@@ -118,12 +105,6 @@ class TopicPresenter extends BaseForumPresenter
     public $postSettings;
 
     /**
-     * @var CategoriesManager $categoriesManager
-     * @inject
-     */
-    public $categoriesManager;
-
-    /**
      * @var IStorage $storage
      * @inject
      */
@@ -146,74 +127,9 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function actionStartWatch($category_id, $forum_id, $topic_id, $page)
     {
-;        // category check
-        if (!isset($category_id)) {
-            $this->error('Category param is not set.');
-        }
-
-        if (!is_numeric($category_id)) {
-            $this->error('Category param is not numeric.');
-        }
-
-        $category = $this->categoriesManager->getById($category_id);
-
-        if (!$category) {
-            $this->error('Category was not found.');
-        }
-
-        if (!$category->category_active) {
-            $this->error('Category is not active.');
-        }
-
-        // forum check
-        if (!isset($forum_id)) {
-            $this->error('Forum param is not set.');
-        }
-
-        if (!is_numeric($forum_id)) {
-            $this->error('Forum param is not numeric.');
-        }
-
-        $forum = $this->forumsManager->getById($forum_id);
-
-        if (!$forum) {
-            $this->error('Forum was not found.');
-        }
-
-        if ($forum->forum_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if (!$forum->forum_active) {
-            $this->error('Forum is not active.');
-        }
-
-        // topic check
-        if (!isset($topic_id)) {
-            $this->error('Topic param is not set.');
-        }
-
-        if (!is_numeric($topic_id)) {
-            $this->error('Topic param is not numeric.');
-        }
-
-        $topic = $this->getManager()->getById($topic_id);
-
-        if (!$topic) {
-            $this->error('Topic was not found.');
-        }
-
-        if ($topic->topic_locked) {
-            $this->error('Topic is locked.', IResponse::S403_FORBIDDEN);
-        }
-
-        if ($topic->topic_category_id !== (int)$category_id) {
-             $this->error('Category param does not match.');
-        }
-
-        if ($topic->topic_forum_id !== (int)$forum_id) {
-            $this->error('Forum param does not match.');
-        }
+        $category = $this->checkCategoryParam($category_id);
+        $forum    = $this->checkForumParam($forum_id, $category_id);
+        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
 
         $user_id = $this->getUser()->getId();
         $res     = $this->topicWatchManager->addByLeft($topic_id, [$user_id]);
@@ -233,74 +149,9 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function actionStopWatch($category_id, $forum_id, $topic_id, $page)
     {
-        // category check
-        if (!isset($category_id)) {
-            $this->error('Category param is not set.');
-        }
-
-        if (!is_numeric($category_id)) {
-            $this->error('Category param is not numeric.');
-        }
-
-        $category = $this->categoriesManager->getById($category_id);
-
-        if (!$category) {
-            $this->error('Category was not found.');
-        }
-
-        if (!$category->category_active) {
-            $this->error('Category is not active.');
-        }
-
-        // forum check
-        if (!isset($forum_id)) {
-            $this->error('Forum param is not set.');
-        }
-
-        if (!is_numeric($forum_id)) {
-            $this->error('Forum param is not numeric.');
-        }
-
-        $forum = $this->forumsManager->getById($forum_id);
-
-        if (!$forum) {
-            $this->error('Forum was not found.');
-        }
-
-        if ($forum->forum_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if (!$forum->forum_active) {
-            $this->error('Forum is not active.');
-        }
-
-        // topic check
-        if (!isset($topic_id)) {
-            $this->error('Topic param is not set.');
-        }
-
-        if (!is_numeric($topic_id)) {
-            $this->error('Topic param is not numeric.');
-        }
-
-        $topic = $this->getManager()->getById($topic_id);
-
-        if (!$topic) {
-            $this->error('Topic was not found.');
-        }
-
-        if ($topic->topic_locked) {
-            $this->error('Topic is locked.', IResponse::S403_FORBIDDEN);
-        }
-
-        if ($topic->topic_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if ($topic->topic_forum_id !== (int)$forum_id) {
-            $this->error('Forum param does not match.');
-        }
+        $category = $this->checkCategoryParam($category_id);
+        $forum    = $this->checkForumParam($forum_id, $category_id);
+        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
 
         $user_id = $this->getUser()->getId();
         $res = $this->topicWatchManager->fullDelete($topic_id, $user_id);
@@ -323,74 +174,9 @@ class TopicPresenter extends BaseForumPresenter
             $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
         }
 
-        // category check
-        if (!isset($category_id)) {
-            $this->error('Category param is not set.');
-        }
-
-        if (!is_numeric($category_id)) {
-            $this->error('Category param is not numeric.');
-        }
-
-        $category = $this->categoriesManager->getById($category_id);
-
-        if (!$category) {
-            $this->error('Category was not found.');
-        }
-
-        if (!$category->category_active) {
-            $this->error('Category is not active.');
-        }
-
-        // forum check
-        if (!isset($forum_id)) {
-            $this->error('Forum param is not set.');
-        }
-
-        if (!is_numeric($forum_id)) {
-            $this->error('Forum param is not numeric.');
-        }
-
-        $forum = $this->forumsManager->getById($forum_id);
-
-        if (!$forum) {
-            $this->error('Forum was not found.');
-        }
-
-        if ($forum->forum_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if (!$forum->forum_active) {
-            $this->error('Forum is not active.');
-        }
-
-        // topic check
-        if (!isset($topic_id)) {
-            $this->error('Topic param is not set.');
-        }
-
-        if (!is_numeric($topic_id)) {
-            $this->error('Topic param is not numeric.');
-        }
-
-        $topic = $this->getManager()->getById($topic_id);
-
-        if (!$topic) {
-            $this->error('Topic was not found.');
-        }
-
-        if ($topic->topic_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if ($topic->topic_forum_id !== (int)$forum_id) {
-            $this->error('Forum param does not match.');
-        }
-
-        if ($topic->topic_locked) {
-            $this->error('Topic is locked.', IResponse::S403_FORBIDDEN);
-        }
+        $category = $this->checkCategoryParam($category_id);
+        $forum    = $this->checkForumParam($forum_id, $category_id);
+        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
 
         $user_id = $this->getUser()->getId();
 
@@ -398,7 +184,8 @@ class TopicPresenter extends BaseForumPresenter
             'thank_forum_id' => $forum_id,
             'thank_topic_id' => $topic_id,
             'thank_user_id'  => $user_id,
-            'thank_time'     => time()
+            'thank_time'     => time(),
+            'thank_user_ip'  => $this->getHttpRequest()->getRemoteAddress()
         ];
 
         $res = $this->thanksFacade->add(ArrayHash::from($data));
@@ -422,80 +209,15 @@ class TopicPresenter extends BaseForumPresenter
             $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
         }
 
-        // category check
-        if (!isset($category_id)) {
-            $this->error('Category param is not set.');
-        }
-
-        if (!is_numeric($category_id)) {
-            $this->error('Category param is not numeric.');
-        }
-
-        $category = $this->categoriesManager->getById($category_id);
-
-        if (!$category) {
-            $this->error('Category was not found.');
-        }
-
-        if (!$category->category_active) {
-            $this->error('Category is not active.');
-        }
-
-        // forum check
-        if (!isset($forum_id)) {
-            $this->error('Forum param is not set.');
-        }
-
-        if (!is_numeric($forum_id)) {
-            $this->error('Forum param is not numeric.');
-        }
-
-        $forum = $this->forumsManager->getById($forum_id);
-
-        if (!$forum) {
-            $this->error('Forum was not found.');
-        }
-
-        if ($forum->forum_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if (!$forum->forum_active) {
-            $this->error('Forum is not active.');
-        }
-
-        // topic check
-        if (!isset($topic_id)) {
-            $this->error('Topic param is not set.');
-        }
-
-        if (!is_numeric($topic_id)) {
-            $this->error('Topic param is not numeric.');
-        }
-
-        $topic = $this->getManager()->getById($topic_id);
-
-        if (!$topic) {
-            $this->error('Topic was not found.');
-        }
-
-        if ($topic->topic_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if ($topic->topic_forum_id !== (int)$forum_id) {
-            $this->error('Forum param does not match.');
-        }
-
-        if ($topic->topic_locked) {
-            $this->error('Topic is locked.', IResponse::S403_FORBIDDEN);
-        }
+        $category = $this->checkCategoryParam($category_id);
+        $forum    = $this->checkForumParam($forum_id, $category_id);
+        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
 
         if ($topic->topic_user_id !== $this->getUser()->getId()) {
             $this->error('You are not author of topic.', IResponse::S403_FORBIDDEN);
         }
 
-        $res = $this->topicFacade->delete($topic_id);
+        $res = $this->topicFacade->delete($topic);
         
         if ($res) {
             $this->flashMessage('Topic was deleted.', self::FLASH_MESSAGE_SUCCESS);
@@ -514,74 +236,9 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function renderDefault($category_id, $forum_id, $topic_id, $page = 1)
     {
-        // category check
-        if (!isset($category_id)) {
-            $this->error('Category param is not set.');
-        }
-
-        if (!is_numeric($category_id)) {
-            $this->error('Category param is not numeric.');
-        }
-
-        $category = $this->categoriesManager->getById($category_id);
-
-        if (!$category) {
-            $this->error('Category was not found.');
-        }
-
-        if (!$category->category_active) {
-            $this->error('Category is not active.');
-        }
-
-        // forum check
-        if (!isset($forum_id)) {
-            $this->error('Forum param is not set.');
-        }
-
-        if (!is_numeric($forum_id)) {
-            $this->error('Forum param is not numeric.');
-        }
-
-        $forum = $this->forumsManager->getById($forum_id);
-
-        if (!$forum) {
-            $this->error('Forum was not found.');
-        }
-
-        if ($forum->forum_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if (!$forum->forum_active) {
-            $this->error('Forum is not active.');
-        }
-
-        // topic check
-        if (!isset($topic_id)) {
-            $this->error('Topic param is not set.');
-        }
-
-        if (!is_numeric($topic_id)) {
-            $this->error('Topic param is not numeric.');
-        }
-
-        $topic = $this->getManager()->getById($topic_id);
-
-        if (!$topic) {
-            $this->error('Topic was not found.');
-        }
-
-        if ($topic->topic_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if ($topic->topic_forum_id !== (int)$forum_id) {
-            $this->error('Forum param does not match.');
-        }
-
-        if ($topic->topic_locked) {
-            $this->error('Topic is locked.', IResponse::S403_FORBIDDEN);
-        }
+        $category = $this->checkCategoryParam($category_id);
+        $forum    = $this->checkForumParam($forum_id, $category_id);
+        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
 
         $data = $this->postsManager->getFluentByTopicJoinedUser($topic_id);
 
@@ -594,7 +251,7 @@ class TopicPresenter extends BaseForumPresenter
 
         if (!$pagination->getCount()) {
             $this->flashMessage('No posts.', self::FLASH_MESSAGE_WARNING);
-            $this->redirect('Forum:default', $forum_id);
+            $this->redirect('Forum:default', $category_id, $forum_id);
         }
 
         $user_id = $this->getUser()->getId();
@@ -618,59 +275,14 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function renderEdit($category_id, $forum_id, $topic_id = null)
     {
-        if (!isset($category_id)) {
-            $this->error('Category parameter is not set.');
-        }
-
-        if (!is_numeric($category_id)) {
-            $this->error('Category parameter is not numeric.');
-        }
-
-        $category = $this->categoriesManager->getById($category_id);
-
-        if (!$category) {
-            $this->error('Category was not found.');
-        }
-
-        if (!$category->category_active) {
-            $this->error('Category is not active.');
-        }
-
-        $forum = $this->forumsManager->getById($forum_id);
-        
-        if (!$forum) {
-            $this->error('Forum was not found.');
-        }
-        
-        if (!$forum->forum_active) {
-            $this->error('Forum is not active.');
-        }
-
-        if ($forum->forum_category_id !== (int)$category_id) {
-            $this->error('Category parameter is not match.');
-        }
+        $category = $this->checkCategoryParam($category_id);
+        $forum    = $this->checkForumParam($forum_id, $category_id);        
 
         $topic = [];
         $post  = [];
         
         if ($topic_id) {
-            $topic = $this->getManager()->getById($topic_id);
-            
-            if (!$topic) {
-                $this->error('Topic was not found.');
-            }
-
-            if ($topic->topic_category_id !== (int)$category_id) {
-                $this->error('Category param does not match.');
-            }
-            
-            if ($topic->topic_forum_id !== (int)$forum_id) {
-                $this->error('Forum param does non match.');
-            }
-
-            if ($topic->topic_locked) {
-                $this->error('Topic is locked.');
-            }
+            $topic = $this->checkTopicParam($topic_id, $category_id, $forum_id);
 
             $post = $this->postsManager->getFirstByTopic($topic_id);
 
@@ -690,74 +302,9 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function renderReport($category_id, $forum_id, $topic_id, $page)
     {
-        // category check
-        if (!isset($category_id)) {
-            $this->error('Category param is not set.');
-        }
-
-        if (!is_numeric($category_id)) {
-            $this->error('Category param is not numeric.');
-        }
-
-        $category = $this->categoriesManager->getById($category_id);
-
-        if (!$category) {
-            $this->error('Category was not found.');
-        }
-
-        if (!$category->category_active) {
-            $this->error('Category is not active.');
-        }
-
-        // forum check
-        if (!isset($forum_id)) {
-            $this->error('Forum param is not set.');
-        }
-
-        if (!is_numeric($forum_id)) {
-            $this->error('Forum param is not numeric.');
-        }
-
-        $forum = $this->forumsManager->getById($forum_id);
-
-        if (!$forum) {
-            $this->error('Forum was not found.');
-        }
-
-        if ($forum->forum_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if (!$forum->forum_active) {
-            $this->error('Forum is not active.');
-        }
-
-        // topic check
-        if (!isset($topic_id)) {
-            $this->error('Topic param is not set.');
-        }
-
-        if (!is_numeric($topic_id)) {
-            $this->error('Topic param is not numeric.');
-        }
-
-        $topic = $this->getManager()->getById($topic_id);
-
-        if (!$topic) {
-            $this->error('Topic was not found.');
-        }
-
-        if ($topic->topic_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if ($topic->topic_forum_id !== (int)$forum_id) {
-            $this->error('Forum param does not match.');
-        }
-
-        if ($topic->topic_locked) {
-            $this->error('Topic is locked.', IResponse::S403_FORBIDDEN);
-        }
+        $category = $this->checkCategoryParam($category_id);
+        $forum    = $this->checkForumParam($forum_id, $category_id);
+        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
     }
 
     /**
@@ -767,74 +314,9 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function renderWatchers($category_id, $forum_id, $topic_id)
     {
-        // category check
-        if (!isset($category_id)) {
-            $this->error('Category param is not set.');
-        }
-
-        if (!is_numeric($category_id)) {
-            $this->error('Category param is not numeric.');
-        }
-
-        $category = $this->categoriesManager->getById($category_id);
-
-        if (!$category) {
-            $this->error('Category was not found.');
-        }
-
-        if (!$category->category_active) {
-            $this->error('Category is not active.');
-        }
-
-        // forum check
-        if (!isset($forum_id)) {
-            $this->error('Forum param is not set.');
-        }
-
-        if (!is_numeric($forum_id)) {
-            $this->error('Forum param is not numeric.');
-        }
-
-        $forum = $this->forumsManager->getById($forum_id);
-
-        if (!$forum) {
-            $this->error('Forum was not found.');
-        }
-
-        if ($forum->forum_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if (!$forum->forum_active) {
-            $this->error('Forum is not active.');
-        }
-
-        // topic check
-        if (!isset($topic_id)) {
-            $this->error('Topic param is not set.');
-        }
-
-        if (!is_numeric($topic_id)) {
-            $this->error('Topic param is not numeric.');
-        }
-
-        $topic = $this->getManager()->getById($topic_id);
-
-        if (!$topic) {
-            $this->error('Topic was not found.');
-        }
-
-        if ($topic->topic_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if ($topic->topic_forum_id !== (int)$forum_id) {
-            $this->error('Forum param does not match.');
-        }
-
-        if ($topic->topic_locked) {
-            $this->error('Topic is locked.', IResponse::S403_FORBIDDEN);
-        }
+        $category = $this->checkCategoryParam($category_id);
+        $forum    = $this->checkForumParam($forum_id, $category_id);
+        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
 
         $watchers = $this->topicWatchManager->getAllJoinedByLeft($topic_id);
         
@@ -853,74 +335,9 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function renderThanks($category_id, $forum_id, $topic_id)
     {
-        // category check
-        if (!isset($category_id)) {
-            $this->error('Category param is not set.');
-        }
-
-        if (!is_numeric($category_id)) {
-            $this->error('Category param is not numeric.');
-        }
-
-        $category = $this->categoriesManager->getById($category_id);
-
-        if (!$category) {
-            $this->error('Category was not found.');
-        }
-
-        if (!$category->category_active) {
-            $this->error('Category is not active.');
-        }
-
-        // forum check
-        if (!isset($forum_id)) {
-            $this->error('Forum param is not set.');
-        }
-
-        if (!is_numeric($forum_id)) {
-            $this->error('Forum param is not numeric.');
-        }
-
-        $forum = $this->forumsManager->getById($forum_id);
-
-        if (!$forum) {
-            $this->error('Forum was not found.');
-        }
-
-        if ($forum->forum_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if (!$forum->forum_active) {
-            $this->error('Forum is not active.');
-        }
-
-        // topic check
-        if (!isset($topic_id)) {
-            $this->error('Topic param is not set.');
-        }
-
-        if (!is_numeric($topic_id)) {
-            $this->error('Topic param is not numeric.');
-        }
-
-        $topic = $this->getManager()->getById($topic_id);
-
-        if (!$topic) {
-            $this->error('Topic was not found.');
-        }
-
-        if ($topic->topic_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
-        }
-
-        if ($topic->topic_forum_id !== (int)$forum_id) {
-            $this->error('Forum param does not match.');
-        }
-
-        if ($topic->topic_locked) {
-            $this->error('Topic is locked.', IResponse::S403_FORBIDDEN);
-        }
+        $category = $this->checkCategoryParam($category_id);
+        $forum    = $this->checkForumParam($forum_id, $category_id);
+        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
 
         $thanks = $this->thanksManager->getAllJoinedUserByTopic($topic_id);
         
@@ -958,6 +375,7 @@ class TopicPresenter extends BaseForumPresenter
         $forum_id    = $this->getParameter('forum_id');
         $topic_id    = $this->getParameter('topic_id');
         $user_id     = $this->getUser()->getId();
+        $page        = $this->getParameter('page');
 
         $values->post_add_time     = time();
         $values->post_user_id      = $user_id;
@@ -966,9 +384,84 @@ class TopicPresenter extends BaseForumPresenter
         $values->post_add_user_ip  = $this->getHttpRequest()->getRemoteAddress();
 
         if ($topic_id) {
-            $this->topicFacade->update($topic_id, $values);
+            $oldTopicDibi = $this->getManager()->getById($topic_id);
+            $oldTopic     = \App\Models\Entity\Topic::get($oldTopicDibi);
+            
+            $firstPost = $this->postsManager->getFirstByTopic($oldTopicDibi->topic_id);
+            
+            $post = new \App\Models\Entity\Post(
+                $firstPost->post_id,
+                $firstPost->post_user_id,
+                $firstPost->post_category_id,
+                $firstPost->post_forum_id,
+                $firstPost->post_topic_id,
+                $firstPost->post_title, 
+                $values->post_text,
+                $firstPost->post_add_time, 
+                $firstPost->post_add_user_ip, 
+                $firstPost->post_edit_user_ip,
+                $firstPost->post_edit_count, 
+                $firstPost->post_last_edit_time, 
+                $firstPost->post_locked,
+                $firstPost->post_order
+            );
+            
+            $topic = new \App\Models\Entity\Topic(
+                $topic_id,
+                $category_id,
+                $forum_id,
+                $user_id,
+                $values->post_title, 
+                $oldTopic->topic_post_count,
+                $oldTopic->topic_add_time,
+                $oldTopic->topic_locked,
+                $oldTopic->topic_view_count,
+                $oldTopic->topic_first_post_id,
+                $oldTopic->topic_first_user_id,
+                $oldTopic->topic_last_post_id,
+                $oldTopic->topic_last_user_id, 
+                $oldTopic->topic_order,
+                $post
+            );
+            
+            $res = $this->topicFacade->update($topic);
         } else {
-            $topic_id = $this->topicFacade->add($values);
+            $post = new \App\Models\Entity\Post(
+                null,
+                $user_id,
+                $category_id,
+                $forum_id,
+                $topic_id,
+                $values->post_title, 
+                $values->post_text,
+                time(), 
+                $this->getHttpRequest()->getRemoteAddress(),
+                '',
+                0, 
+                0, 
+                0,
+                1
+            );
+
+            $topic = new \App\Models\Entity\Topic(
+                $topic_id,
+                $category_id,
+                $forum_id, 
+                $user_id, 
+                $values->post_title, 
+                0,
+                time(), 
+                0, 
+                0,
+                0,
+                $user_id,
+                0,
+                $user_id,
+                1, 
+                $post
+            );
+            
+            $res = $topic_id = $this->topicFacade->add($topic);
         }
 
         // refresh cache on index page to show this last topic
@@ -976,11 +469,11 @@ class TopicPresenter extends BaseForumPresenter
         $cache->remove(IndexPresenter::CACHE_KEY_LAST_TOPIC);
         $cache->remove(IndexPresenter::CACHE_KEY_TOTAL_TOPICS);
 
-        if ($topic_id) {
+        if ($res) {
             $this->flashMessage('Topic was saved.', self::FLASH_MESSAGE_SUCCESS);
         }
         
-        $this->redirect('Topic:default', $category_id, $forum_id, $topic_id);
+        $this->redirect(':Forum:Topic:default', $category_id, $forum_id, (string)$topic_id, $page);
     }
 
     /**
@@ -1092,7 +585,7 @@ class TopicPresenter extends BaseForumPresenter
      */
     protected function createComponentFastReply()
     {
-        return new TopicFastReplyForm($this->translatorFactory, $this->getUser(), $this->postFacade);
+        return new TopicFastReplyForm($this->translatorFactory, $this->getUser(), $this->postFacade, $this->getHttpRequest());
     }
 
     /**

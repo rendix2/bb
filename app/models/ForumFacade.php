@@ -94,8 +94,10 @@ class ForumFacade
 
         $topics = $this->topicsManager->getAllByForum($item_id);
         
-        foreach ($topics as $topic) {
-            $this->topicFacade->delete($topic->topic_id);
+        foreach ($topics as $topicDibi) {
+            $topic = Entity\Topic::get($topicDibi);
+            
+            $this->topicFacade->delete($topic);
         }
  
         return $this->forumsManager->delete($item_id);

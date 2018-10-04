@@ -122,42 +122,21 @@ class TopicFacade
      *
      * @return Result|int
      */
-    public function add(ArrayHash $item_data)
+    public function add(Entity\Topic $item_data)
     {
-        $values = clone $item_data;
+        $topic_id = $this->topicsManager->add($item_data->getArrayHash());
+        $item_data->post->post_topic_id = $topic_id;
 
-        $values->topic_name          = $item_data->post_title;
-        $values->topic_user_id       = $item_data->post_user_id;
-        $values->topic_forum_id      = $item_data->post_forum_id;
-        $values->topic_add_time      = $item_data->post_add_time;
-        $values->topic_first_user_id = $item_data->post_user_id;
-        $values->topic_last_user_id  = $item_data->post_user_id;
-        //$values->post_add_user_ip = $item_data->post_add_user_ip;
-        $values->topic_category_id   = $item_data->post_category_id;
+        $this->topicWatchManager->add([$item_data->topic_user_id], $topic_id);
 
-        unset(
-            $values->post_title,
-            $values->post_text,
-            $values->post_add_time,
-            $values->post_user_id,
-            $values->post_forum_id,
-            $values->post_add_user_ip,
-            $values->post_category_id
-        );
-
-        $topic_id = $this->topicsManager->add($values);
-
-        $this->topicWatchManager->add([$values->topic_user_id], $topic_id);
-
-        $item_data->post_topic_id = $topic_id;
-        $post_id = $this->postFacade->add($item_data);
+        $post_id = $this->postFacade->add($item_data->post);
 
         $this->topicsManager->update(
             $topic_id,
             ArrayHash::from(['topic_first_post_id' => $post_id, 'topic_last_post_id' => $post_id])
         );
 
-        $this->usersManager->update($values->topic_user_id, ArrayHash::from(
+        $this->usersManager->update($item_data->topic_user_id, ArrayHash::from(
             [
                 'user_topic_count%sql' => 'user_topic_count + 1',
                 'user_watch_count%sql' => 'user_watch_count + 1'
@@ -165,7 +144,7 @@ class TopicFacade
         ));
 
         $this->forumsManager->update(
-            $values->topic_forum_id,
+            $item_data->topic_forum_id,
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1'])
         );
 
@@ -174,34 +153,32 @@ class TopicFacade
 
     /**
      *
-     * @param int $item_id
+     * @param Entity\Topic $topic
      *
      * @return Result|int
      */
-    public function delete($item_id)
+    public function delete(Entity\Topic $topic)
     {
-        $topic = $this->topicsManager->getById($item_id);
-
-        $this->thanksFacade->deleteByTopic($item_id);
-        $this->topicWatchFacade->deleteByTopic($item_id);
+        $this->thanksFacade->deleteByTopic($topic);
+        $this->topicWatchFacade->deleteByTopic($topic->topic_id);        
+        $this->reportFacade->deleteByTopic($topic->topic_id);        
         
         $this->usersManager
                 ->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
-
-        $posts = $this->postsManager
-                ->getFluentByTopicJoinedUser($item_id)
-                ->fetchAll();
-
+        
+        $posts = $this->postsManager->getCountOfUsersByTopicId($topic->topic_id);
+        $users = [];
+        
         foreach ($posts as $post) {
-            $this->postFacade->delete($post->post_id);
-        }
+            $users[] = $post->post_user_id;
+            
+            $this->usersManager->update($post->post_user_id, ArrayHash::from(['user_post_count%sql' => 'user_post_count - ' . $post->post_count]));
+        }        
 
         $this->forumsManager->update(
             $topic->topic_forum_id,
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1'])
         );
-        
-        $this->reportFacade->deleteByTopic($item_id);
 
         return $this->topicsManager->delete($item_id);
     }
@@ -431,12 +408,11 @@ class TopicFacade
      *
      * @param ArrayHash $item_data
      */
-    public function update($item_id, ArrayHash $item_data)
+    public function update(Entity\Topic $topic)
     {
-        $res = $this->topicsManager->update($item_id, ArrayHash::from(['topic_name' => $item_data->post_title]));
-        $firstPost = $this->postsManager->getFirstByTopic($item_id);
+        $res = $this->topicsManager->update($topic->topic_id, ArrayHash::from(['topic_name' => $topic->post_title]));
 
-        $this->postsManager->update($firstPost->post_id, ArrayHash::from(['post_text' => $item_data->post_text]));
+        $this->postsManager->update($topic->post->post_id, ArrayHash::from(['post_text' => $topic->post->post_text]));
 
         return $res;
     }
