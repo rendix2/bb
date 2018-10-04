@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Models\Entity;
 
 /**
  * Description of Post
@@ -70,27 +70,27 @@ class Post
         $post_locked,
         $post_order
     ) {
-        $this->post_id             = $post_id;
-        $this->post_user_id        = $post_user_id;
+        $this->post_id             = (int)$post_id;
+        $this->post_user_id        = (int)$post_user_id;
         $this->post_category_id    = $post_category_id;
-        $this->post_forum_id       = $post_forum_id;
-        $this->post_topic_id       = $post_topic_id;
+        $this->post_forum_id       = (int)$post_forum_id;
+        $this->post_topic_id       = (int)$post_topic_id;
         $this->post_title          = $post_title;
         $this->post_text           = $post_text;
-        $this->post_add_time       = $post_add_time;
+        $this->post_add_time       = (int)$post_add_time;
         $this->post_add_user_ip    = $post_add_user_ip;
         $this->post_edit_user_ip   = $post_edit_user_ip;
-        $this->post_edit_count     = $post_edit_count;
-        $this->post_last_edit_time = $post_last_edit_time;
-        $this->post_locked         = $post_locked;
-        $this->post_order          = $post_order ;
+        $this->post_edit_count     = (int)$post_edit_count;
+        $this->post_last_edit_time = (int)$post_last_edit_time;
+        $this->post_locked         = (bool)$post_locked;
+        $this->post_order          = (int)$post_order ;
     }
     
     /**
      * 
      * @param \Dibi\Row $values
      * 
-     * @return \App\Entity\Post
+     * @return \App\Models\Entity\Post
      */
     public static function get(\Dibi\Row $values)
     {
@@ -110,6 +110,31 @@ class Post
             $values->post_locked,
             $values->post_order
         );
+    }
+    
+    public function getArray()
+    {
+        return [   
+            'post_id'             => $this->post_id,
+            'post_user_id'        => $this->post_user_id,
+            'post_category_id'    => $this->post_category_id,
+            'post_forum_id'       => $this->post_forum_id,
+            'post_topic_id'       => $this->post_topic_id,
+            'post_title'          => $this->post_title, 
+            'post_text'           => $this->post_text,
+            'post_add_time'       => $this->post_add_time,
+            'post_add_user_ip'    => $this->post_add_user_ip,
+            'post_edit_user_ip'   => $this->post_edit_user_ip,
+            'post_edit_count'     => $this->post_edit_count, 
+            'post_last_edit_time' => $this->post_last_edit_time,
+            'post_locked'         => $this->post_locked,
+            'post_order'          => $this->post_order
+        ];
+    }
+    
+    public function getArrayHash()
+    {
+        return \Nette\Utils\ArrayHash::from($this->getArray());
     }
     
 }
