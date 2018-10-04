@@ -41,16 +41,16 @@ class Report
         $report_time,    
         $report_status
     ) {
-        $this->report_id               = (int)$report_id;
-        $this->report_user_id          = (int)$report_user_id;
-        $this->report_forum_id         = (int)$report_forum_id;
-        $this->report_topic_id         = (int)$report_topic_id;
-        $this->report_post_id          = (int)$report_post_id;
-        $this->report_reported_user_id = (int)$report_reported_user_id;
-        $this->report_pm_id            = (int)$report_pm_id;
-        $this->report_text             = $report_text;
-        $this->report_time             = (int)$report_time;
-        $this->report_status           = $report_status;
+        $this->report_id               = $report_id === null ? null : (int)$report_id;
+        $this->report_user_id          = $report_user_id === null ? null : (int)$report_user_id;
+        $this->report_forum_id         = $report_forum_id === null ? null : (int)$report_forum_id;
+        $this->report_topic_id         = $report_topic_id === null ? null : (int)$report_topic_id;
+        $this->report_post_id          = $report_post_id === null ? null : (int)$report_post_id;
+        $this->report_reported_user_id = $report_reported_user_id === null ? null : (int)$report_reported_user_id;
+        $this->report_pm_id            = $report_pm_id === null ? null : (int)$report_pm_id;
+        $this->report_text             = $report_text === null ? null : (int)$report_text;
+        $this->report_time             = $report_time === null ? null : (int)$report_time;
+        $this->report_status           = $report_status === null ? null : (int)$report_status;
     }
     
     /**

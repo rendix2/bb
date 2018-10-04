@@ -614,14 +614,21 @@ class TopicPresenter extends BaseForumPresenter
         $post_id     = $this->getParameter('post_id');
         $page        = $this->getParameter('page');
         $user_id     = $this->getUser()->getId();
+        
+        $report = new \App\Models\Entity\Report(
+            null,
+            $user_id,
+            $forum_id,
+            $topic_id,
+            null,
+            null,
+            null,
+            $values->report_text,
+            time(),
+            0
+        );
 
-        $values->report_forum_id = $forum_id;
-        $values->report_topic_id = $topic_id;
-        $values->report_post_id  = $post_id;
-        $values->report_user_id  = $user_id;
-        $values->report_time     = time();
-
-        $res = $this->reportManager->add($values);
+        $res = $this->reportManager->add($report->getArrayHash());
 
         if ($res) {
             if ($post_id) {

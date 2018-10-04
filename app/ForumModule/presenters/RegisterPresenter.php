@@ -136,29 +136,43 @@ class RegisterPresenter extends BasePresenter
 
     /**
      *
-     * @param Form $form
+     * @param Form      $form
      * @param ArrayHash $values
      */
     public function registerUserSuccess(Form $form, ArrayHash $values)
-    {
-        unset($values->user_password2);
-        $values->user_password       = Passwords::hash($values->user_password);
-        $values->user_register_time  = time();
-        $values->user_role_id        = 2;
-        $values->user_activation_key = Manager::getRandomString();
+    {        
+        $user = new \App\Models\Entity\User(
+            null,
+            $values->user_name,
+            $values->user_password,
+            $values->user_email,
+            '',
+            0,
+            0,
+            0,
+            0,
+            0,
+            $values->user_lang_id,
+            2,
+            '',
+            time(),
+            0,
+            0,
+            Manager::getRandomString()
+        );
 
-        $res = $this->userFacade->add($values);
+        $res = $this->userFacade->add($user);
 
         $this->bbMailer->setSubject($this->translator->translate('welcome_mail_subject'));
-        $this->bbMailer->addRecipients([$values->user_email]);
+        $this->bbMailer->addRecipients([$user->user_email]);
         $this->bbMailer->setText(
             sprintf(
                 $this->translator->translate('welcome_mail_text'),
-                $values->user_name,
+                $user->user_name,
                 $this->link(
                     '//Login:activate',
                     $res,
-                    $values->user_activation_key
+                    $user->user_activation_key
                 )
             )
         );

@@ -554,8 +554,21 @@ class UserPresenter extends BaseForumPresenter
             'report_reported_user_id' => $user_id,
             'report_time'             => time()
         ];
+        
+        $report = new \App\Models\Entity\Report(
+                null,
+                $this->getUser()->getId(),
+                null,
+                null,
+                null,
+                $user_id,
+                null,
+                $values->report_text,
+                time(),
+                0
+        );
 
-        $res = $this->reportsManager->add(ArrayHash::from($data));
+        $res = $this->reportsManager->add($report->getArrayHash());
 
         if ($res) {
             $this->flashMessage('User was reported.', self::FLASH_MESSAGE_SUCCESS);

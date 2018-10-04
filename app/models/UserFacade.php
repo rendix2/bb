@@ -177,20 +177,20 @@ class UserFacade
     }
 
     /**
-     * @param ArrayHash $item_data
+     * @param Entity\User $user
      *
      * @return Result|int
      */
-    public function add(ArrayHash $item_data)
+    public function add(Entity\User $user)
     {
-        $user_id         = $this->usersManager->add($item_data);
+        $user_id         = $this->usersManager->add($user->getArrayHash());
         $forumTranslator = $this->translatorFactory->forumTranslatorFactory();
 
         $welcome_pm_data = [
             'pm_user_id_from' => 1,
             'pm_user_id_to'   => $user_id,
             'pm_subject'      => $forumTranslator->translate('welcome_pm_subject'),
-            'pm_text'         => sprintf($forumTranslator->translate('welcome_pm_text'), $item_data->user_name),
+            'pm_text'         => sprintf($forumTranslator->translate('welcome_pm_text'), $user->user_name),
             'pm_status'       => 'sent',
             'pm_time_sent'    => time()
         ];

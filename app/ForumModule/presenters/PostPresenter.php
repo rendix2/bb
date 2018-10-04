@@ -102,15 +102,8 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      */
     public function actionDelete($category_id, $forum_id, $topic_id, $post_id, $page)
     {
-        if (!$this->getUser()
-            ->isAllowed(
-                $forum_id,
-                'post_delete'
-            )) {
-            $this->error(
-                'Not allowed.',
-                IResponse::S403_FORBIDDEN
-            );
+        if (!$this->getUser()->isAllowed($forum_id,'post_delete')) {
+            $this->error('Not allowed.',IResponse::S403_FORBIDDEN);
         }
 
         $category = $this->checkCategoryParam($category_id);
@@ -156,31 +149,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         $post = [];
 
         if ($post_id) {
-            $post = $this->getManager()->getById($post_id);
-
-            if (!$post) {
-                $this->error('Post was not found.');
-            }
-
-            if ($post->post_category_id !== (int)$category_id) {
-                $this->error('Category param does not match.', IResponse::S403_FORBIDDEN);
-            }
-
-            if ($post->post_forum_id !== (int)$forum_id) {
-                $this->error('Category param does not match.', IResponse::S403_FORBIDDEN);
-            }
-
-            if ($post->post_topic_id !== (int)$topic_id) {
-                $this->error('Category param does not match.', IResponse::S403_FORBIDDEN);
-            }
-
-            if ($post->post_user_id !== $this->getUser()->getId()) {
-                $this->error('You are not author of post.', IResponse::S403_FORBIDDEN);
-            }
-
-            if ($post->post_locked) {
-                $this->error('Post is locked.', IResponse::S403_FORBIDDEN);
-            }
+            $post = $this->checkPostParam($post_id, $category_id, $forum_id, $topic_id);
         }
 
         $this['editForm']->setDefaults($post);
@@ -470,13 +439,20 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         $page        = $this->getParameter('page');
         $user_id     = $this->getUser()->getId();
 
-        $values->report_forum_id = $forum_id;
-        $values->report_topic_id = $topic_id;
-        $values->report_post_id  = $post_id;
-        $values->report_user_id  = $user_id;
-        $values->report_time     = time();
+        $report = new \App\Models\Entity\Report(
+            null,
+            $user_id,
+            $forum_id,
+            $topic_id,
+            $post_id,
+            null,
+            null,
+            $values->report_text,
+            time(),
+            0
+        );
 
-        $res = $this->reportManager->add($values);
+        $res = $this->reportManager->add($report->getArrayHash());
 
         if ($res) {
             $this->flashMessage('Post was reported.', self::FLASH_MESSAGE_SUCCESS);
