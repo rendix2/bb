@@ -35,6 +35,7 @@ class PmPresenter extends CrudPresenter
      * @inject
      */
     public $usersManager;
+    
     /**
      * @var ReportsManager $reportsManager
      * @inject
