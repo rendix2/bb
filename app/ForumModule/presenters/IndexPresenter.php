@@ -65,18 +65,6 @@ class IndexPresenter extends BaseForumPresenter
     private $cache;
 
     /**
-     * @var ForumsManager $forumsManager
-     * @inject
-     */
-    public $forumsManager;
-
-    /**
-     * @var TopicsManager $topicManager
-     * @inject
-     */
-    public $topicManager;
-
-    /**
      * @var PostsManager $postManger
      * @inject
      */
@@ -128,23 +116,7 @@ class IndexPresenter extends BaseForumPresenter
      */
     public function renderCategory($category_id)
     {
-        if (!isset($category_id)) {
-            $this->error('Category param is not set.');
-        }
-
-        if (!is_numeric($category_id)) {
-            $this->error('Category parameter is not numeric.');
-        }
-
-        $category = $this->getManager()->getById($category_id);
-
-        if (!$category) {
-            $this->error('Category was not found.');
-        }
-
-        if (!$category->category_active) {
-            $this->error('Category is not active.');
-        }
+        $category = $this->checkCategoryParam($category_id);
 
         $forums = $this->forumsManager
                 ->getFluentByCategory($category_id)
@@ -191,7 +163,7 @@ class IndexPresenter extends BaseForumPresenter
                 );
 
                 $forum->hasNewTopics = count(
-                    $this->topicManager->getNewerTopicsCached($forum->forum_id, $last_login_time)
+                    $this->topicsManager->getNewerTopicsCached($forum->forum_id, $last_login_time)
                 );
 
                 $moderators = $this->moderatorManager->getAllJoinedByRight($forum->forum_id);
@@ -225,7 +197,7 @@ class IndexPresenter extends BaseForumPresenter
             $this->getCache()
                 ->save(
                     self::CACHE_KEY_LAST_TOPIC,
-                    $cachedLastTopic = $this->topicManager->getLast(),
+                    $cachedLastTopic = $this->topicsManager->getLast(),
                     [
                         Cache::EXPIRE => '1 hour',
                     ]
@@ -247,13 +219,13 @@ class IndexPresenter extends BaseForumPresenter
         }
 
         $this->template->mostPostsUser  = $this->postManger->getUserWithMostPosts();
-        $this->template->mostTopicsUser = $this->topicManager->getUserWithMostTopic();
+        $this->template->mostTopicsUser = $this->topicsManager->getUserWithMostTopic();
         $this->template->lastTopic      = $cachedLastTopic;
         $this->template->lastUser       = $cachedLastUser;
         $this->template->lastPost       = $cachedLastPost;
         $this->template->totalUsers     = $this->userManager->getCountCached();
         $this->template->totalPosts     = $this->postManger->getCountCached();
-        $this->template->totalTopics    = $this->topicManager->getCountCached();
+        $this->template->totalTopics    = $this->topicsManager->getCountCached();
         $this->template->data           = $result;
     }
 

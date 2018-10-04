@@ -66,14 +66,14 @@ class ThanksFacade
      *
      * @return Result|int
      */
-    public function add(ArrayHash $item_data)
+    public function add(Entity\Thank $thank)
     {
         $this->usersManager->update(
-            $item_data->thank_user_id,
+            $thank->thank_user_id,
             ArrayHash::from(['user_thank_count%sql' => 'user_thank_count + 1'])
         );
 
-        return $this->thanksManager->add($item_data);
+        return $this->thanksManager->add($thank->getArrayHash());
     }
     
     /**

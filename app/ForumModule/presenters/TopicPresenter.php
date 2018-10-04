@@ -177,18 +177,18 @@ class TopicPresenter extends BaseForumPresenter
         $category = $this->checkCategoryParam($category_id);
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        $user_id  = $this->getUser()->getId();
+        
+        $thank = new \App\Models\Entity\Thank(
+            null,
+            $forum_id,
+            $topic_id,
+            $user_id,
+            time(),
+            $this->getHttpRequest()->getRemoteAddress()
+        );
 
-        $user_id = $this->getUser()->getId();
-
-        $data = [
-            'thank_forum_id' => $forum_id,
-            'thank_topic_id' => $topic_id,
-            'thank_user_id'  => $user_id,
-            'thank_time'     => time(),
-            'thank_user_ip'  => $this->getHttpRequest()->getRemoteAddress()
-        ];
-
-        $res = $this->thanksFacade->add(ArrayHash::from($data));
+        $res = $this->thanksFacade->add($thank);
         
         if ($res) {
             $this->flashMessage('Your thank to this topic.', self::FLASH_MESSAGE_SUCCESS);

@@ -73,7 +73,6 @@ class Thank
         return [
             'thank_id'       => $this->thank_id, 
             'thank_forum_id' => $this->thank_forum_id,
-            'topic_forum_id' => $this->topic_forum_id, 
             'thank_topic_id' => $this->thank_topic_id, 
             'thank_user_id'  => $this->thank_user_id, 
             'thank_time'     => $this->thank_time, 

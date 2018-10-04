@@ -60,12 +60,6 @@ class UserPresenter extends BaseForumPresenter
     public $topicWatchManager;
 
     /**
-     * @var TopicsManager $topicManager
-     * @inject
-     */
-    public $topicManager;
-
-    /**
      * @var PostsManager $postManager
      * @inject
      */
@@ -334,7 +328,7 @@ class UserPresenter extends BaseForumPresenter
         $this->template->avatarsDir      = $this->avatar->getTemplateDir();
         $this->template->moderatorForums = $this->moderatorsManager->getAllJoinedByLeft($user_id);
         $this->template->thankCount      = $this->thanksManager->getCountCached();
-        $this->template->topicCount      = $this->topicManager->getCountCached();
+        $this->template->topicCount      = $this->topicsManager->getCountCached();
         $this->template->postCount       = $this->postManager->getCountCached();
         $this->template->watchTotalCount = $this->topicWatchManager->getCount();
         $this->template->userData        = $userData;
@@ -397,7 +391,7 @@ class UserPresenter extends BaseForumPresenter
             $this->error('User was not found.');
         }
 
-        $topics = $this->topicManager->getFluentByUser($user_id);
+        $topics = $this->topicsManager->getFluentByUser($user_id);
         $pag    = new PaginatorControl($topics, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
 
