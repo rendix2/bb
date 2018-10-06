@@ -68,6 +68,7 @@ class ForumSearchInForumForm extends Control
     {
         $this->presenter->redirect(
             'Forum:default',
+            $this->presenter->getParameter('category_id'),
             $this->presenter->getParameter('forum_id'),
             $this->presenter->getParameter('page'),
             $values->search_form
