@@ -29,6 +29,19 @@ class Report
     
     public $report_status;
 
+    /**
+     * 
+     * @param int $report_id
+     * @param int $report_user_id
+     * @param int $report_forum_id
+     * @param int $report_topic_id
+     * @param int $report_post_id
+     * @param int $report_reported_user_id
+     * @param int $report_pm_id
+     * @param string $report_text
+     * @param int $report_time
+     * @param int $report_status
+     */
     public function __construct(
         $report_id,
         $report_user_id,    
@@ -48,7 +61,7 @@ class Report
         $this->report_post_id          = $report_post_id === null ? null : (int)$report_post_id;
         $this->report_reported_user_id = $report_reported_user_id === null ? null : (int)$report_reported_user_id;
         $this->report_pm_id            = $report_pm_id === null ? null : (int)$report_pm_id;
-        $this->report_text             = $report_text === null ? null : (int)$report_text;
+        $this->report_text             = $report_text === null ? null : $report_text;
         $this->report_time             = $report_time === null ? null : (int)$report_time;
         $this->report_status           = $report_status === null ? null : (int)$report_status;
     }

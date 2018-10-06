@@ -108,8 +108,6 @@ class PmPresenter extends CrudPresenter
         
         parent::renderEdit($id);
 
-        Debugger::barDump($this->template->item, '$this->template->item');
-
         if ($id && $this->template->item->pm_status === 'sent') {
             $this->getManager()->update($id, ArrayHash::from(['pm_status' => 'read', 'pm_time_read' => time()]));
         }
@@ -127,33 +125,7 @@ class PmPresenter extends CrudPresenter
      */
     protected function createComponentReportForm()
     {
-        $form = BootstrapForm::create();
-        $form->setTranslator($this->translatorFactory->forumTranslatorFactory());
-
-        $form->addTextArea('report_text', 'Report text:');
-        $form->addSubmit('send', 'Report PM');
-        $form->onSuccess[] = [$this, 'reportFormSuccess'];
-
-        return $form;
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function reportFormSuccess(Form $form, ArrayHash $values)
-    {
-        $values->report_pm_id = $this->getParameter('pm_id');
-
-        $res = $this->reportsManager->add($values);
-
-        if ($res) {
-            $this->flashMessage('PM was reported.', self::FLASH_MESSAGE_SUCCESS);
-        } else {
-            $this->flashMessage('PM was not reported.', self::FLASH_MESSAGE_DANGER);
-        }
-
-        $this->redirect('Pm:default');
+        return new \ReportForm($this->reportsManager);
     }
     
     /**

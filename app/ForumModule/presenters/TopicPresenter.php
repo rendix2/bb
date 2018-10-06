@@ -593,51 +593,6 @@ class TopicPresenter extends BaseForumPresenter
      */
     protected function createComponentReportForm()
     {
-        $form = $this->getBootstrapForm();
-
-        $form->addTextArea('report_text', 'Report text:');
-        $form->addSubmit('send', 'Send');
-        $form->onSuccess[] = [$this, 'reportFormSuccess'];
-
-        return $form;
-    }
-    
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function reportFormSuccess(Form $form, ArrayHash $values)
-    {
-        $category_id = $this->getParameter('category_id');
-        $forum_id    = $this->getParameter('forum_id');
-        $topic_id    = $this->getParameter('topic_id');
-        $post_id     = $this->getParameter('post_id');
-        $page        = $this->getParameter('page');
-        $user_id     = $this->getUser()->getId();
-        
-        $report = new \App\Models\Entity\Report(
-            null,
-            $user_id,
-            $forum_id,
-            $topic_id,
-            null,
-            null,
-            null,
-            $values->report_text,
-            time(),
-            0
-        );
-
-        $res = $this->reportManager->add($report->getArrayHash());
-
-        if ($res) {
-            if ($post_id) {
-                $this->flashMessage('Post was reported.', self::FLASH_MESSAGE_SUCCESS);
-            } else {
-                $this->flashMessage('Topic was reported.', self::FLASH_MESSAGE_SUCCESS);
-            }
-        }
-
-        $this->redirect('Forum:default', $category_id, $forum_id, $page);
-    }
+        return new \ReportForm($this->reportManager);
+    }    
 }

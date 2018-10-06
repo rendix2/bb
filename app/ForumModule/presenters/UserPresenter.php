@@ -531,52 +531,7 @@ class UserPresenter extends BaseForumPresenter
      */
     protected function createComponentReportUserForm()
     {
-        $form = BootstrapForm::create();
-        $form->setTranslator($this->translatorFactory->forumTranslatorFactory());
-
-        $form->addTextArea('report_text', 'Report text:');
-        $form->addSubmit('send', 'Report user');
-        $form->onSuccess[] = [$this, 'reportUserSuccess'];
-
-        return $form;
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function reportUserSuccess(Form $form, ArrayHash $values)
-    {
-        $user_id = $this->getParameter('user_id');
-
-        $data = [
-            'report_user_id'          => $this->getUser()->getId(),
-            'report_reported_user_id' => $user_id,
-            'report_time'             => time()
-        ];
-        
-        $report = new \App\Models\Entity\Report(
-                null,
-                $this->getUser()->getId(),
-                null,
-                null,
-                null,
-                $user_id,
-                null,
-                $values->report_text,
-                time(),
-                0
-        );
-
-        $res = $this->reportsManager->add($report->getArrayHash());
-
-        if ($res) {
-            $this->flashMessage('User was reported.', self::FLASH_MESSAGE_SUCCESS);
-        } else {
-            $this->flashMessage('User was not reported.', self::FLASH_MESSAGE_DANGER);
-        }
-
-        $this->redirect('User:profile', $user_id);
+        return new \ReportForm($this->reportsManager);
     }
 
     /**
