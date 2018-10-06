@@ -54,9 +54,10 @@ services:
         class: App\Models\PollsAnswersManager
     PollsVotesManager:
         class: App\Models\PollsVotesManager
-    PMManager:
-        class: \App\Models\PmManager
-        inject: true
+    PmManager:
+        class: App\Models\PmManager
+    PmFacade:
+        class: App\Models\PmFacade
     RecountManager:
         class: App\Models\RecountManager
     PostFilesManager:

@@ -89,10 +89,15 @@ class UserFacade
      * @var TranslatorFactory $translatorFactory
      */
     private $translatorFactory;
+    
+    /**
+     *
+     * @var PmFacade $pmFacade 
+     */
+    private $pmFacade;
 
     /**
      *
-     * @param PmManager           $pmManager
      * @param PostsManager        $postsManager
      * @param PostsHistoryManager $postsHistoryManager
      * @param PostFacade          $postFacade
@@ -105,10 +110,10 @@ class UserFacade
      * @param Users2ForumsManager $users2ForumsManager
      * @param Users2GroupsManager $users2GroupsManager
      * @param UsersManager        $usersManager
-     * @param  TranslatorFactory  $translatorFactory
+     * @param TranslatorFactory   $translatorFactory
+     * @param PmFacade            $pmFacade
      */
     public function __construct(
-        PmManager $pmManager,
         PostsManager $postsManager,
         PostsHistoryManager $postsHistoryManager,
         PostFacade $postFacade,
@@ -122,7 +127,8 @@ class UserFacade
         Users2GroupsManager $users2GroupsManager,
         //Users2SessionsManager $users2SessionManager,
         UsersManager $usersManager,
-        TranslatorFactory $translatorFactory
+        TranslatorFactory $translatorFactory,
+        PmFacade $pmFacade
     ) {
         $this->usersManager         = $usersManager;
         $this->postsManager         = $postsManager;
@@ -132,13 +138,13 @@ class UserFacade
         //$this->users2SessionManager = $users2SessionManager;
         $this->mails2UsersManager   = $mails2UsersManager;
         $this->moderatorsManager    = $moderatorsManager;
-        $this->pmManager            = $pmManager;
         $this->reportsManager       = $reportsManager;
         $this->sessionsManager      = $sessionsManager;
         $this->thanksManager        = $thanksManager;
         $this->users2ForumsManager  = $users2ForumsManager;
         $this->users2GroupsManager  = $users2GroupsManager;
         $this->translatorFactory    = $translatorFactory;
+        $this->pmFacade             = $pmFacade;
     }
 
     /**
@@ -165,7 +171,7 @@ class UserFacade
         //$this->users2SessionManager->deleteByLeft($item_id);
         $this->mails2UsersManager->deleteByRight($item_id);
         $this->moderatorsManager->deleteByLeft($item_id);
-        //$this->pmManager->delete($item_id);
+        $this->pmFacade->delete($item_id);
         $this->reportsManager->deleteByUser($item_id);
         $this->sessionsManager->deleteByUser($item_id);
         $this->thanksManager->deleteByUser($item_id);
