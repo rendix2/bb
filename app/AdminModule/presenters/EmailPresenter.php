@@ -8,7 +8,6 @@ use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\Mails2UsersManager;
 use App\Models\MailsManager;
-use App\Models\UsersManager;
 use Nette\Application\UI\Form;
 use Nette\InvalidArgumentException;
 use Nette\Mail\FallbackMailerException;
@@ -23,11 +22,6 @@ use App\Controls\BreadCrumbControl;
  */
 class EmailPresenter extends AdminPresenter
 {
-    /**
-     *
-     * @var UsersManager $usersManager
-     */
-    private $usersManager;
     
     /**
      * @var BBMailer $bbMailer
@@ -46,13 +40,10 @@ class EmailPresenter extends AdminPresenter
      * EmailPresenter constructor.
      *
      * @param MailsManager $manager
-     * @param UsersManager $usersManager
      */
-    public function __construct(MailsManager $manager, UsersManager $usersManager)
+    public function __construct(MailsManager $manager)
     {
         parent::__construct($manager);
-
-        $this->usersManager = $usersManager;
     }
 
     /**

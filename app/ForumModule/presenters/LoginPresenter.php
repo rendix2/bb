@@ -35,12 +35,6 @@ class LoginPresenter extends BasePresenter
     public $userLoginForm;
 
     /**
-     * @var UsersManager $usersManager
-     * @inject
-     */
-    public $usersManager;
-
-    /**
      * @var BBMailer $bbMailer
      * @inject
      */

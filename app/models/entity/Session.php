@@ -7,7 +7,7 @@ namespace App\Models\Entity;
  *
  * @author rendi
  */
-class Session
+class Session extends \App\Models\Entity\Base\Entity
 {
     
     public $session_id;
@@ -59,22 +59,28 @@ class Session
      */
     public function getArray()
     {
-        return [
-            'session_id'            => $this->session_id, 
-            'session_user_id'       => $this->session_user_id,
-            'session_key'           => $this->session_key, 
-            'session_from'          => $this->session_from, 
-            'session_last_activity' => $this->session_last_activity
-        ];
-    }
-    
-    /**
-     * 
-     * @return \Nette\Utils\ArrayHash
-     */
-    public function getArrayHash()
-    {
-        return \Nette\Utils\ArrayHash::from($this->getArray());
-    }    
+        $res = [];
+        
+        if (isset($this->session_id)) {
+            $res['session_id'] = $this->session_id;
+        }
+        
+        if (isset($this->session_user_id)) {
+            $res['session_user_id'] = $this->session_user_id;
+        }
 
+        if (isset($this->session_key)) {
+            $res['session_key'] = $this->session_key;
+        }
+
+        if (isset($this->session_from)) {
+            $res['session_from'] = $this->session_from;
+        }
+
+        if (isset($this->session_last_activity)) {
+            $res['session_last_activity'] = $this->session_last_activity;
+        }        
+        
+        return $res;
+    }
 }

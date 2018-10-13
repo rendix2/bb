@@ -20,18 +20,6 @@ use Nette\Utils\ArrayHash;
 class SearchPresenter extends BaseForumPresenter
 {
     /**
-     * @var TopicsManager $topicsManager
-     * @inject
-     */
-    public $topicsManager;
-
-    /**
-     * @var PostsManager $postsManager
-     * @inject
-     */
-    public $postsManager;
-
-    /**
      * SearchPresenter constructor.
      *
      * @param UsersManager $userManager

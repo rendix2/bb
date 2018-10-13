@@ -19,19 +19,7 @@ use Nette\Utils\ArrayHash;
  * @method PostsManager getManager()
  */
 class PostPresenter extends ModeratorPresenter
-{
-    /**
-     * @var UsersManager $usersManager
-     * @inject
-     */
-    public $usersManager;
-    
-    /**
-     * @var TopicsManager $topicsManager
-     * @inject
-     */
-    public $topicsManager;
-    
+{    
     /**
      *
      * @var PostsHistoryManager $postsHistoryManager

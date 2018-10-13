@@ -1,0 +1,21 @@
+<div class="col-sm-4">
+    <div class="card h-100">
+        <div class="card-header">{_menu_group} ({_member})</div>
+        <div class="card-block p-3">
+            <h2>{_menu_groups}</h2>
+                {form groupFrom}
+                <ul>
+                {foreach $groups as $group}
+                    <li>
+                        <label>{$group->group_name}
+                            <input type="checkbox" name="group[]" value="{$group->group_id}"
+                            {if in_array($group->group_id,$myGroups)}checked="checked"{/if}>
+                        </label>
+                    </li>
+                {/foreach}
+               </ul>
+               {input send_group}
+               {/form}
+        </div>
+    </div>
+</div>

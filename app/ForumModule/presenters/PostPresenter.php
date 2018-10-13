@@ -69,13 +69,6 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      * @inject
      */
     public $postSetting;
-    
-    /**
-     *
-     * @var UsersManager $usersManager
-     * @inject
-     */
-    public $usersManager;
 
     /**
      * @var IStorage $storage
@@ -149,7 +142,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         $post = [];
 
         if ($post_id) {
-            $post = $this->checkPostParam($post_id, $category_id, $forum_id, $topic_id);
+            $post = $this->checkPostParam($post_id, $category_id, $forum_id, $topic_id)->getArray();
         }
 
         $this['editForm']->setDefaults($post);

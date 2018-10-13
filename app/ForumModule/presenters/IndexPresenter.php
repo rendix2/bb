@@ -65,18 +65,6 @@ class IndexPresenter extends BaseForumPresenter
     private $cache;
 
     /**
-     * @var PostsManager $postManger
-     * @inject
-     */
-    public $postManger;
-
-    /**
-     * @var UsersManager $userManager
-     * @inject
-     */
-    public $userManager;
-
-    /**
      *
      * @var ModeratorsManager $moderatorManager
      * @inject
@@ -159,7 +147,7 @@ class IndexPresenter extends BaseForumPresenter
                 $result['cats'][$category->category_id]->forums[$forum->forum_id] = $forum;
 
                 $forum->hasNewPosts  = count(
-                    $this->postManger->getNewerPosts($forum->forum_id, $last_login_time)
+                    $this->postsManager->getNewerPosts($forum->forum_id, $last_login_time)
                 );
 
                 $forum->hasNewTopics = count(
@@ -183,7 +171,7 @@ class IndexPresenter extends BaseForumPresenter
             $this->getCache()
                 ->save(
                     self::CACHE_KEY_LAST_USER,
-                    $cachedLastUser = $this->userManager->getLast(),
+                    $cachedLastUser = $this->usersManager->getLast(),
                     [
                         Cache::EXPIRE => '1 hour',
                     ]
@@ -211,20 +199,20 @@ class IndexPresenter extends BaseForumPresenter
             $this->getCache()
                 ->save(
                     self::CACHE_KEY_LAST_POST,
-                    $cachedLastPost = $this->postManger->getLast(),
+                    $cachedLastPost = $this->postsManager->getLast(),
                     [
                         Cache::EXPIRE => '1 hour',
                     ]
                 );
         }
 
-        $this->template->mostPostsUser  = $this->postManger->getUserWithMostPosts();
+        $this->template->mostPostsUser  = $this->postsManager->getUserWithMostPosts();
         $this->template->mostTopicsUser = $this->topicsManager->getUserWithMostTopic();
         $this->template->lastTopic      = $cachedLastTopic;
         $this->template->lastUser       = $cachedLastUser;
         $this->template->lastPost       = $cachedLastPost;
-        $this->template->totalUsers     = $this->userManager->getCountCached();
-        $this->template->totalPosts     = $this->postManger->getCountCached();
+        $this->template->totalUsers     = $this->usersManager->getCountCached();
+        $this->template->totalPosts     = $this->postsManager->getCountCached();
         $this->template->totalTopics    = $this->topicsManager->getCountCached();
         $this->template->data           = $result;
     }

@@ -7,7 +7,7 @@ namespace App\Models\Entity;
  *
  * @author rendi
  */
-class Report
+class Report extends \App\Models\Entity\Base\Entity
 {
     public $report_id;
     
@@ -94,26 +94,48 @@ class Report
      */
     public function getArray()
     {
-        return [   
-            'report_id'               => $this->report_id,
-            'report_user_id'          => $this->report_user_id,
-            'report_forum_id'         => $this->report_forum_id,            
-            'report_topic_id'         => $this->report_topic_id,
-            'report_post_id'          => $this->report_post_id,
-            'report_reported_user_id' => $this->report_reported_user_id,
-            'report_pm_id'            => $this->report_pm_id, 
-            'report_text'             => $this->report_text, 
-            'report_time'             => $this->report_time, 
-            'report_status'           => $this->report_status, 
-        ];
+        $res = [];
+        
+        if (isset($this->report_id)) {
+            $res['report_id'] = $this->report_id; 
+        }
+
+        if (isset($this->report_user_id)) {
+            $res['report_user_id'] = $this->report_user_id; 
+        }
+
+        if (isset($this->report_forum_id)) {
+            $res['report_forum_id'] = $this->report_forum_id; 
+        }
+
+        if (isset($this->report_topic_id)) {
+            $res['report_topic_id'] = $this->report_topic_id; 
+        }
+
+        if (isset($this->report_post_id)) {
+            $res['report_post_id'] = $this->report_post_id; 
+        }
+        
+        if (isset($this->report_reported_user_id)) {
+            $res['report_reported_user_id'] = $this->report_reported_user_id; 
+        }
+        
+        if (isset($this->report_pm_id)) {
+            $res['report_pm_id'] = $this->report_pm_id; 
+        }
+
+        if (isset($this->report_text)) {
+            $res['report_text'] = $this->report_text; 
+        }
+
+        if (isset($this->report_time)) {
+            $res['report_time'] = $this->report_time; 
+        }
+
+        if (isset($this->report_status)) {
+            $res['report_status'] = $this->report_status; 
+        }        
+
+        return $res;
     }
-    
-    /**
-     * 
-     * @return \Nette\Utils\ArrayHash
-     */
-    public function getArrayHash()
-    {
-        return \Nette\Utils\ArrayHash::from($this->getArray());
-    }  
 }

@@ -7,7 +7,7 @@ namespace App\Models\Entity;
  *
  * @author rendi
  */
-class Pm
+class Pm extends \App\Models\Entity\Base\Entity
 {
     
     public $pm_id;
@@ -83,25 +83,40 @@ class Pm
      */
     public function getArray()
     {
-        return [
-            'pm_id'            => $this->pm_id, 
-            'pm_user_id_from'  => $this->pm_user_id_from,
-            'pm_user_id_to'    => $this->pm_user_id_to, 
-            'pm_subject'       => $this->pm_subject, 
-            'pm_text'          => $this->pm_text,
-            'pm_status'        => $this->pm_status,
-            'pm_time_sent'     => $this->pm_time_sent,
-            'pm_time_read'     => $this->pm_time_read
-        ];
+        $res = [];
+        
+        if (isset($this->pm_id)) {
+            $res['pm_id'] = $this->pm_id;
+        }
+        
+        if (isset($this->pm_user_id_from)) {
+            $res['pm_user_id_from'] = $this->pm_user_id_from;
+        }
+
+        if (isset($this->pm_user_id_to)) {
+            $res['pm_user_id_to'] = $this->pm_user_id_to;
+        }
+
+        if (isset($this->pm_subject)) {
+            $res['pm_subject'] = $this->pm_subject;
+        }
+
+        if (isset($this->pm_text)) {
+            $res['pm_text'] = $this->pm_text;
+        }
+
+        if (isset($this->pm_status)) {
+            $res['pm_status'] = $this->pm_status;
+        }   
+        
+        if (isset($this->pm_time_sent)) {
+            $res['pm_time_sent'] = $this->pm_time_sent;
+        }      
+
+        if (isset($this->pm_status)) {
+            $res['pm_time_read'] = $this->pm_time_read;
+        }              
+        
+        return $res;
     }
-    
-    /**
-     * 
-     * @return \Nette\Utils\ArrayHash
-     */
-    public function getArrayHash()
-    {
-        return \Nette\Utils\ArrayHash::from($this->getArray());
-    }  
-    
 }

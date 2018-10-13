@@ -28,9 +28,9 @@ class Authorizator
     private $acl;
 
     /**
-     * @var ForumsManager $forumManager
+     * @var ForumsManager $forumsManager
      */
-    private $forumManager;
+    private $forumsManager;
 
     /**
      * @var User $user
@@ -38,9 +38,9 @@ class Authorizator
     private $user;
 
     /**
-     * @var UsersManager $userManager
+     * @var UsersManager $usersManager
      */
-    private $userManager;
+    private $usersManager;
     
     const ROLES = [ 1 => 'guest', 2 => 'registered', 3 => 'moderator', 4 => 'juniorAdmin', 5 => 'Admin'];
 
@@ -66,9 +66,9 @@ class Authorizator
         Users2GroupsManager $users2GroupsManager
     ) {
         $this->acl                 = new Permission();
-        $this->forumManager        = $forumsManager;
+        $this->forumsManager        = $forumsManager;
         $this->user                = $user;
-        $this->userManager         = $userManager;
+        $this->usersManager         = $userManager;
         $this->moderatorsManager   = $moderatorsManager;
         $this->users2GroupsManager = $users2GroupsManager;
     
@@ -107,17 +107,17 @@ class Authorizator
     {
         
         // adds all resources
-        foreach ($this->forumManager->getAllCached() as $forum) {
+        foreach ($this->forumsManager->getAllCached() as $forum) {
             $this->acl->addResource('' . $forum->forum_id);
         }
 
-        foreach ($this->forumManager->getAllCached() as $forum) {
+        foreach ($this->forumsManager->getAllCached() as $forum) {
                 $this->acl->deny('guest', '' . $forum->forum_id, Permission::ALL);
             $this->acl->allow('guest', '' . $forum->forum_id, 'forum_view');
         }
         
         if ($this->user->isInRole('admin')) {
-            foreach ($this->forumManager->getAllCached() as $forum) {
+            foreach ($this->forumsManager->getAllCached() as $forum) {
                 $this->acl->allow('admin', '' . $forum->forum_id);
             }
         }
@@ -125,7 +125,7 @@ class Authorizator
         if ($this->user->isInRole('moderator')) {
             $moderators = $this->moderatorsManager->getPairsByLeft($this->user->getId());
         
-            foreach ($this->forumManager->getAllCached() as $forum) {
+            foreach ($this->forumsManager->getAllCached() as $forum) {
                 if (in_array($forum->forum_id, $moderators, true)) {
                     $this->acl->allow('moderator', '' . $forum->forum_id, Permission::ALL);
                 } else {
@@ -134,7 +134,7 @@ class Authorizator
             }
         }
 
-        foreach ($this->forumManager->getAllCached() as $forum) {
+        foreach ($this->forumsManager->getAllCached() as $forum) {
             if ($forum->forum_thank) {
                 $this->acl->allow('registered', '' . $forum->forum_id, 'topic_thank');
             }

@@ -229,7 +229,7 @@ class PostFacade
             $this->forumsManager->update($post->post_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
             $this->thanksFacade->deleteByTopic($topic);
             $this->reportsManager->deleteByTopic($topic->topic_id);
-            $this->topicWatchFacade->deleteByTopic($topic->topic_id);
+            $this->topicWatchFacade->deleteByTopic($topic);
             $this->usersManager->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
             $this->topicsManager->delete($topic->topic_id);
 

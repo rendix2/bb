@@ -78,8 +78,9 @@ class ReportFacade
     {
         $topics = $this->topicsManager->getAllByForum($forum_id);
         
-        foreach ($topics as $topic) {
-            $this->deleteByTopic($topic->topic_id);
+        foreach ($topics as $topicDibi) {
+            $topic = Entity\Topic::get($topicDibi);
+            $this->deleteByTopic($topic);
         }
         
         return $this->reportManager->deleteByForum($forum_id);
@@ -87,13 +88,13 @@ class ReportFacade
     
     /**
      *
-     * @param int $topic_id
+     * @param Entity\Topic $topic
      *
      * @return  bool
      */
-    public function deleteByTopic($topic_id)
+    public function deleteByTopic(Entity\Topic $topic)
     {
-        $posts     = $this->postsManager->getByTopic($topic_id);
+        $posts     = $this->postsManager->getByTopic($topic->topic_id);
         $posts_ids = [];
         
         foreach ($posts as $post) {
@@ -101,7 +102,7 @@ class ReportFacade
         }
         
         $this->reportManager->deleteByPosts($posts_ids);
-        return $this->reportManager->deleteByTopic($topic_id);
+        return $this->reportManager->deleteByTopic($topic->topic_id);
     }
 
     /**

@@ -14,6 +14,7 @@ use App\Models\PostsManager;
 use App\Models\TopicsManager;
 use App\Models\ForumsManager;
 use App\Models\CategoriesManager;
+use App\Models\UsersManager;
 
 /**
  * Base presenter for all application presenters.
@@ -99,6 +100,14 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      */
     public $postsManager;
     
+    /**
+     *
+     * @var UsersManager $usersManager
+     * @inject
+     */
+    public $usersManager;
+
+
 
 
 
@@ -242,6 +251,12 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         return new MenuControl($this->translatorFactory->adminTranslatorFactory(), $leftMenu, $rightMenu);
     }
     
+    /**
+     * 
+     * @param int $category_id
+     * 
+     * @return \App\Models\Entity\Category
+     */
     public function checkCategoryParam($category_id)
     {
         // category check
@@ -253,11 +268,13 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             $this->error('Category param is not numeric.');
         }
 
-        $category = $this->categoriesManager->getById($category_id);
+        $categoryDibi = $this->categoriesManager->getById($category_id);
 
-        if (!$category) {
+        if (!$categoryDibi) {
             $this->error('Category was not found.');
         }
+        
+        $category = \App\Models\Entity\Category::get($categoryDibi);
 
         if (!$category->category_active) {
             $this->error('Category is not active.');
@@ -266,7 +283,15 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         return $category;
     }
     
-    public function checkForumParam($forum_id, $category_id)
+    /**
+     * 
+     * @param int $forum_id
+     * @param int $category_id
+     * 
+     * @return \App\Models\Entity\Forum
+     * ¨
+     */
+    public function checkForumParam($forum_id, $category_id = null)
     {
         // forum check
         if (!isset($forum_id)) {
@@ -283,8 +308,10 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             $this->error('Forum was not found.');
         }
 
-        if ($forum->forum_category_id !== (int)$category_id) {
-            $this->error('Category param does not match.');
+        if ($category_id) {
+            if ($forum->forum_category_id !== (int)$category_id) {
+                $this->error('Category param does not match.');
+            }
         }
 
         if (!$forum->forum_active) {
@@ -294,6 +321,14 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         return $forum;
     }    
 
+    /**
+     * 
+     * @param int $topic_id
+     * @param int $category_id
+     * @param int $forum_id
+     * 
+     * @return \App\Models\Entity\Topic
+     */
     public function checkTopicParam($topic_id, $category_id, $forum_id)
     {
         // topic check
@@ -328,6 +363,15 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         return $topic;
     }
     
+    /**
+     * 
+     * @param int $post_id
+     * @param imt $category_id
+     * @param int $forum_id
+     * @param int $topic_id
+     * 
+     * @return \App\Models\Entity\Post
+     */
     public function checkPostParam($post_id, $category_id, $forum_id, $topic_id)
     {
         if (!isset($post_id)) {
@@ -369,5 +413,35 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         return $post;
     }
     
+    /**
+     * 
+     * @param int $user_id
+     * 
+     * @return \App\Models\Entity\User
+     */
+    public function checkUserParam($user_id)
+    {
+        if (!isset($user_id)) {
+            $this->error('User param is not set.');
+        }
+
+        if (!is_numeric($user_id)) {
+            $this->error('User param is not numeric.');
+        }
+
+        $userDibi = $this->usersManager->getById($user_id);
+
+        if (!$user) {
+            $this->error('User was not found.');
+        }
+        
+        $user = \App\Models\Entity\User::get($userDibi);
+        
+        if (!$user->user_active) {
+            $this->error('User is not active.');
+        }
+        
+        return $user;
+    }    
 
 }

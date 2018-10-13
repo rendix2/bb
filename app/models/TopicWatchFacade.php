@@ -81,18 +81,19 @@ class TopicWatchFacade
     {        
         $topics = $this->topicsManager->getAllByForum($forum_id);
         
-        foreach ($topics as $topic) {
-            $this->deleteByTopic($topic->topic_id);
+        foreach ($topics as $topicDibi) {
+            $topic = Entity\Topic::get($topicDibi);
+            $this->deleteByTopic($topic);
         }
     }
 
     /**
      *
-     * @param int $topic_id
+     * @param Entity\Topic $topic
      */
-    public function deleteByTopic($topic_id)
+    public function deleteByTopic(Entity\Topic $topic)
     {
-        $topicsWatches = $this->topicWatchManager->getAllByLeft($topic_id);
+        $topicsWatches = $this->topicWatchManager->getAllByLeft($topic->topic_id);
         $user_ids      = [];
 
         foreach ($topicsWatches as $topicsWatch) {
@@ -106,7 +107,7 @@ class TopicWatchFacade
             );
         }
         
-        return $this->topicWatchManager->deleteByLeft($topic_id);
+        return $this->topicWatchManager->deleteByLeft($topic->topic_id);
     }
     
     /**

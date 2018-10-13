@@ -9,6 +9,9 @@ use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\DeleteAvatarControl;
 use App\Controls\GridFilter;
+use App\Forms\UserForumsForm;
+use App\Forms\UserGroupsForm;
+use App\Forms\UserModeratorForm;
 use App\Forms\ChangePasswordForm;
 use App\Forms\UserChangePasswordForm;
 use App\Forms\UserDeleteAvatarForm;
@@ -50,19 +53,13 @@ class UserPresenter extends AdminPresenter
      * @var GroupsManager $groupManager
      * @inject
      */
-    public $groupManager;
-    
-    /**
-     * @var ForumsManager $forumsManager
-     * @inject
-     */
-    public $forumsManager;
+    public $groupsManager;
     
     /**
      * @var Users2ForumsManager $users2Forums
      * @inject
      */
-    public $users2Forums;
+    public $users2ForumsManager;
     
     /**
      * @var Avatars $avatar
@@ -124,15 +121,7 @@ class UserPresenter extends AdminPresenter
      */
     public function renderEdit($id = null)
     {
-        parent::renderEdit($id);
-
-        $this->template->groups   = $this->groupManager->getAllCached();
-        $this->template->myGroups = array_values($this->group2UserManager->getPairsByLeft($id));
-
-        $this->template->forums   = $this->forumsManager->createForums($this->forumsManager->getAllCached(), 0);
-        $this->template->myForums = array_values($this->users2Forums->getPairsByLeft($id));
-        
-        $this->template->myModerators = $this->moderatorsManager->getPairsByLeft($id);
+        parent::renderEdit($id);       
         
         $this->template->avatarsDir = $this->avatar->getTemplateDir();
         $this->template->ranksDir   = $this->rank->getTemplateDir();
@@ -190,24 +179,37 @@ class UserPresenter extends AdminPresenter
 
         return $this->addSubmitB($form);
     }
-
+    
     /**
-     * @return BootstrapForm
+     * 
+     * @return UserGroupsForm
      */
-    protected function createComponentGroupFrom()
+    protected function createComponentGroupForm()
     {
-        $form = $this->createBootstrapForm();
-
-        $form->addSubmit('send_group', 'Send');
-        $form->onSuccess[] = [$this, 'groupSuccess'];
-
-        return $form;
+        return new UserGroupsForm(
+            $this->groupsManager,
+            $this->group2UserManager,
+            $this->getAdminTranslator()
+        );
+    }
+    
+    /**
+     * 
+     * @return UserForumsForm
+     */
+    protected function createComponentForumsForm()
+    {
+        return new UserForumsForm(
+            $this->forumsManager,
+            $this->users2ForumsManager,
+            $this->getAdminTranslator()
+        );
     }
 
     /**
      * @return UserDeleteAvatarForm
      */
-    public function createComponentDeleteAvatar()
+    protected function createComponentDeleteAvatar()
     {
         return $this->deleteAvatarFactory->getAdmin();
     }
@@ -215,68 +217,13 @@ class UserPresenter extends AdminPresenter
     /**
      * @return BootstrapForm
      */
-    public function createComponentForumsForm()
+    protected function createComponentModeratorsForm()
     {
-        $form = $this->createBootstrapForm();
-
-        $form->addSubmit('send_forum', 'Send');
-        $form->onSuccess[] = [$this, 'forumsSuccess'];
-        return $form;
-    }
-
-    /**
-     * @return BootstrapForm
-     */
-    public function createComponentModeratorsForm()
-    {
-        $form = $this->createBootstrapForm();
-        
-        $form->addSubmit('send_moderator', 'Send');
-        $form->onSuccess[] = [$this, 'moderatorsSuccess'];
-
-        return $form;
-    }
-    
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function forumsSuccess(Form $form, ArrayHash $values)
-    {
-        $forums  = $form->getHttpData($form::DATA_TEXT, 'forums[]');
-        $user_id = $this->getParameter('id');
-
-        $this->users2Forums->addByLeft((int) $user_id, array_values($forums));
-        $this->flashMessage('Forums saved.', self::FLASH_MESSAGE_SUCCESS);
-        $this->redirect('User:edit', $user_id);
-    }
-    
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function moderatorsSuccess(Form $form, ArrayHash $values)
-    {
-        $moderators  = $form->getHttpData($form::DATA_TEXT, 'moderators[]');
-        $user_id = $this->getParameter('id');
-
-        $this->moderatorsManager->addByLeft((int) $user_id, array_values($moderators));
-        $this->flashMessage('Forums saved.', self::FLASH_MESSAGE_SUCCESS);
-        $this->redirect('User:edit', $user_id);
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function groupSuccess(Form $form, ArrayHash $values)
-    {
-        $groups  = $form->getHttpData($form::DATA_TEXT, 'group[]');
-        $user_id = $this->getParameter('id');
-
-        $this->group2UserManager->addByLeft((int) $user_id, array_values($groups));
-        $this->flashMessage('Groups saved.', self::FLASH_MESSAGE_SUCCESS);
-        $this->redirect('User:edit', $user_id);
+        return new UserModeratorForm(
+            $this->forumsManager,
+            $this->moderatorsManager,
+            $this->getAdminTranslator()
+        );
     }
 
     /**

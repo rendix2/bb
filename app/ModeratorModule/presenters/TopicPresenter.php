@@ -18,11 +18,6 @@ use Nette\Utils\ArrayHash;
  */
 class TopicPresenter extends ModeratorPresenter
 {
-    /**
-     * @var ForumsManager $forumsManager
-     * @inject
-     */
-    public $forumsManager;
     
     /**
      *

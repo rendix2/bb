@@ -32,13 +32,7 @@ class RegisterPresenter extends BasePresenter
     /**
      * @var LanguagesManager $languageManager
      */
-    private $languageManager;
-    
-    /**
-     *
-     * @var UsersManager $usersManager
-     */
-    private $usersManager;
+    private $languageManager;   
 
     /**
      * @var PmManager $pmManager
@@ -70,12 +64,11 @@ class RegisterPresenter extends BasePresenter
      * @param UsersManager     $usersManager
      * @param UserFacade       $userFacade
      */
-    public function __construct(LanguagesManager $languageManger, UsersManager $usersManager, UserFacade $userFacade)
+    public function __construct(LanguagesManager $languageManger, UserFacade $userFacade)
     {
         parent::__construct();
         
         $this->languageManager = $languageManger;
-        $this->usersManager    = $usersManager;
         $this->userFacade      = $userFacade;
     }
     

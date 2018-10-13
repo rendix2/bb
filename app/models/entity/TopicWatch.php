@@ -7,7 +7,7 @@ namespace App\Models\Entity;
  *
  * @author rendi
  */
-class TopicWatch
+class TopicWatch extends \App\Models\Entity\Base\Entity
 {
     public $id;
     
@@ -26,7 +26,7 @@ class TopicWatch
         $topic_id,
         $user_id
     ) {
-        $this->id       = (int)$id;
+        $this->id       = $id === null ? null : (int)$id;
         $this->topic_id = (int)$topic_id;
         $this->user_id  = (int)$user_id;
     }
@@ -52,19 +52,20 @@ class TopicWatch
      */
     public function getArray()
     {
-        return [
-            'id'       => $this->id, 
-            'topic_id' => $this->topic_id,
-            'user_id'  => $this->user_id,  
-        ];
-    }
-    
-    /**
-     * 
-     * @return \Nette\Utils\ArrayHas
-     */
-    public function getArrayHash()
-    {
-        return \Nette\Utils\ArrayHash::from($this->getArray());
-    }
+        $res = [];
+        
+        if (isset($this->id)) {
+            $res['id'] = $this->id;
+        }
+        
+        if (isset($this->topic_id)) {
+            $res['topic_id'] = $this->topic_id;
+        }
+
+        if (isset($this->user_id)) {
+            $res['user_id'] = $this->user_id;
+        }
+        
+        return $res;
+    }   
 }

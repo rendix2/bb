@@ -30,7 +30,7 @@ class LoginPresenter extends BasePresenter
      *
      * @var Translator $translator
      */
-    public $translator;
+    private $translator;
     
     /**
      * session manager

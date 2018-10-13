@@ -7,7 +7,7 @@ namespace App\Models\Entity;
  *
  * @author rendi
  */
-class User
+class User extends \App\Models\Entity\Base\Entity
 {
         public $user_id;
         public $user_name;
@@ -121,34 +121,76 @@ class User
      */
     public function getArray()
     {
-        return [   
-            'user_id'              => $this->user_id,
-            'user_name'            => $this->user_name,
-            'user_password'        => $this->user_password,            
-            'user_email'           => $this->user_email,
-            'user_signature'       => $this->user_signature,
-            'user_active'          => $this->user_active,
-            'user_post_count'      => $this->user_post_count, 
-            'user_topic_count'     => $this->user_topic_count, 
-            'user_thank_count'     => $this->user_thank_count, 
-            'user_watch_count'     => $this->user_watch_count, 
-            'user_lang_id'         => $this->user_lang_id, 
-            'user_role_id'         => $this->user_role_id, 
-            'user_avatar'          => $this->user_avatar, 
-            'user_register_time'   => $this->user_register_time,             
-            'user_last_login_time' => $this->user_last_login_time,
-            'user_last_post_time'  => $this->user_last_post_time,
-            'user_activation_key'  => $this->user_activation_key,
-        ];
-    }
-    
-    /**
-     * 
-     * @return \Nette\Utils\ArrayHas
-     */
-    public function getArrayHash()
-    {
-        return \Nette\Utils\ArrayHash::from($this->getArray());
-    }       
-    
+        $res = [];
+        
+        if (isset($this->user_id)) {
+            $res['user_id'] = $this->user_id;
+        }
+        
+        if (isset($this->user_name)) {
+            $res['user_name'] = $this->user_name;
+        }
+
+        if (isset($this->user_password)) {
+            $res['user_password'] = $this->user_password;
+        }
+
+        if (isset($this->user_email)) {
+            $res['user_email'] = $this->user_email;
+        }
+
+        if (isset($this->user_signature)) {
+            $res['user_signature'] = $this->user_signature;
+        }
+
+        if (isset($this->user_active)) {
+            $res['user_active'] = $this->user_active;
+        }
+
+        if (isset($this->user_post_count)) {
+            $res['user_post_count'] = $this->user_post_count;
+        }
+
+        if (isset($this->user_topic_count)) {
+            $res['user_topic_count'] = $this->user_topic_count;
+        }
+
+        if (isset($this->user_thank_count)) {
+            $res['user_thank_count'] = $this->user_thank_count;
+        }
+
+        if (isset($this->user_watch_count)) {
+            $res['user_watch_count'] = $this->user_watch_count;
+        }
+
+        if (isset($this->user_lang_id)) {
+            $res['user_lang_id'] = $this->user_lang_id;
+        }
+
+        if (isset($this->user_role_id)) {
+            $res['user_role_id'] = $this->user_role_id;
+        }   
+        
+        if (isset($this->user_avatar)) {
+            $res['user_avatar'] = $this->user_avatar;
+        }   
+        
+        if (isset($this->user_register_time)) {
+            $res['user_register_time'] = $this->user_register_time;
+        }   
+
+        if (isset($this->user_last_login_time)) {
+            $res['user_last_login_time'] = $this->user_last_login_time;
+        }   
+
+        if (isset($this->user_last_post_time)) {
+            $res['user_last_post_time'] = $this->user_last_post_time;
+        }   
+
+        if (isset($this->user_activation_key)) {
+            $res['user_activation_key'] = $this->user_activation_key;
+        }   
+
+        return $res;
+    }  
 }

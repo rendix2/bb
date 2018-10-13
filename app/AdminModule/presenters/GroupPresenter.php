@@ -34,19 +34,6 @@ class GroupPresenter extends AdminPresenter
      * @inject
      */
     public $forums2groupsManager;
-    
-    /**
-     * @var ForumsManager $forumsManager
-     * @inject
-     */
-    public $forumsManager;
-    
-    /**
-     *
-     * @var UsersManager $usersManager
-     * @inject
-     */
-    public $usersManager;
 
     /**
      * GroupPresenter constructor.

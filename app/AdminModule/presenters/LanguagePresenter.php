@@ -17,11 +17,6 @@ use App\Models\UsersManager;
  */
 class LanguagePresenter extends AdminPresenter
 {
-    /**
-     * @var UsersManager $userManager
-     * @inject
-     */
-    public $userManager;
 
     /**
      * LanguagePresenter constructor.
@@ -40,7 +35,7 @@ class LanguagePresenter extends AdminPresenter
     {
         parent::renderEdit($id);
 
-        $this->template->countOfUsers = $this->userManager->getCountByLang($id);
+        $this->template->countOfUsers = $this->usersManager->getCountByLang($id);
     }
 
     /**

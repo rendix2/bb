@@ -118,25 +118,25 @@ class TopicFacade
 
     /**
      *
-     * @param ArrayHash $item_data
+     * @param ArrayHash $topic
      *
      * @return Result|int
      */
-    public function add(Entity\Topic $item_data)
+    public function add(Entity\Topic $topic)
     {
-        $topic_id = $this->topicsManager->add($item_data->getArrayHash());
-        $item_data->post->post_topic_id = $topic_id;
+        $topic_id = $this->topicsManager->add($topic->getArrayHash());
+        $topic->post->post_topic_id = $topic_id;
 
-        $this->topicWatchManager->add([$item_data->topic_user_id], $topic_id);
+        $this->topicWatchManager->add([$topic->topic_user_id], $topic_id);
 
-        $post_id = $this->postFacade->add($item_data->post);
+        $post_id = $this->postFacade->add($topic->post);
 
         $this->topicsManager->update(
             $topic_id,
             ArrayHash::from(['topic_first_post_id' => $post_id, 'topic_last_post_id' => $post_id])
         );
 
-        $this->usersManager->update($item_data->topic_user_id, ArrayHash::from(
+        $this->usersManager->update($topic->topic_user_id, ArrayHash::from(
             [
                 'user_topic_count%sql' => 'user_topic_count + 1',
                 'user_watch_count%sql' => 'user_watch_count + 1'
@@ -144,7 +144,7 @@ class TopicFacade
         ));
 
         $this->forumsManager->update(
-            $item_data->topic_forum_id,
+            $topic->topic_forum_id,
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1'])
         );
 
@@ -160,8 +160,8 @@ class TopicFacade
     public function delete(Entity\Topic $topic)
     {
         $this->thanksFacade->deleteByTopic($topic);
-        $this->topicWatchFacade->deleteByTopic($topic->topic_id);        
-        $this->reportFacade->deleteByTopic($topic->topic_id);        
+        $this->topicWatchFacade->deleteByTopic($topic);        
+        $this->reportFacade->deleteByTopic($topic);        
         
         $this->usersManager
                 ->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));

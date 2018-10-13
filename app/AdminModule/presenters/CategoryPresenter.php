@@ -20,13 +20,7 @@ use Nette\Utils\ArrayHash;
  * @method CategoriesManager getManager()
  */
 class CategoryPresenter extends AdminPresenter
-{
-    /**
-     * @var ForumsManager $forumsManager
-     * @inject
-     */
-    public $forumsManager;
-    
+{    
     /**
      *
      * @var CategoryFacade $categoryFacade
@@ -44,6 +38,10 @@ class CategoryPresenter extends AdminPresenter
         parent::__construct($manager);
     }
     
+    /**
+     * 
+     * @param int $page
+     */
     public function renderDefault($page = 1)
     {
         parent::renderDefault($page);
@@ -164,7 +162,17 @@ class CategoryPresenter extends AdminPresenter
             if ($id) {
                 $result = $this->categoryFacade->update($id, $values);
             } else {
-                $result = $id = $this->categoryFacade->add($values);
+                $category = new \App\Models\Entity\Category(
+                null,
+                $values->category_parent_id,
+                $values->category_name,
+                $values->category_active,
+                null,
+                null,
+                0
+                );
+                
+                $result = $id = $this->categoryFacade->add($category);
             }
 
             if ($result) {

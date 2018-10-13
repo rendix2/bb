@@ -46,16 +46,16 @@ class CategoryFacade
     
     /**
      *
-     * @param ArrayHash $item_data
+     * @param Entity\Category $category
      */
-    public function add(ArrayHash $item_data)
+    public function add(Entity\Category $category)
     {
-        $category_id = $this->categoriesManager->getMptt()
-            ->add($item_data->category_parent_id, $item_data->category_name);
+        $category->category_id = $this->categoriesManager->getMptt()
+            ->add($category->category_parent_id, $category->category_name);
         
-        $this->categoriesManager->update($category_id, $item_data);
+        $this->categoriesManager->update($category->category_id, $category->getArrayHash());
         
-        return $category_id;
+        return $category->category_id;
     }
     
     /**
@@ -86,10 +86,10 @@ class CategoryFacade
      */
     public function delete($item_id)
     {
-        $subForums = $this->forumsManager->getByParent($item_id);
+        $subCategories = $this->categoriesManager->getByParent($item_id);
         
-        foreach ($subForums as $subForum) {
-            $this->delete($subForum->forum_id);
+        foreach ($subCategories as $subCategory) {
+            $this->delete($subCategory->category_id);
         }
                 
         $forums = $this->forumsManager->getFluentByCategory($item_id)->fetchAll();

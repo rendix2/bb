@@ -30,25 +30,25 @@ class Authenticator implements IAuthenticator
         ];
     
     /**
-     * @var UsersManager $userManager
+     * @var UsersManager $usersManager
      */
-    private $userManager;
+    private $usersManager;
 
     /**
-     * @var LanguagesManager $languageManager
+     * @var LanguagesManager $languagesManager
      */
-    private $languageManager;
+    private $languagesManager;
 
     /**
      * Authenticator constructor.
      *
-     * @param UsersManager     $userManger
+     * @param UsersManager     $usersManger
      * @param LanguagesManager $languageManager
      */
-    public function __construct(UsersManager $userManger, LanguagesManager $languageManager)
+    public function __construct(UsersManager $usersManger, LanguagesManager $languageManager)
     {
-        $this->userManager     = $userManger;
-        $this->languageManager = $languageManager;
+        $this->usersManager     = $usersManger;
+        $this->languagesManager = $languageManager;
     }
 
     /**
@@ -62,13 +62,13 @@ class Authenticator implements IAuthenticator
     {
         list($userName, $userPassword) = $credentials;
 
-        $userData = $this->userManager->getByName($userName);
+        $userData = $this->usersManager->getByName($userName);
 
         if (!$userData) {
             throw new AuthenticationException('User name not found.', IAuthenticator::IDENTITY_NOT_FOUND);
         }
         
-        $langData = $this->languageManager->getById($userData->user_lang_id);
+        $langData = $this->languagesManager->getById($userData->user_lang_id);
         
         if (!$langData) {
             throw new AuthenticationException('User account has set unknown language.', IAuthenticator::INVALID_CREDENTIAL);
@@ -82,7 +82,7 @@ class Authenticator implements IAuthenticator
             throw new AuthenticationException('Password is incorrect.', IAuthenticator::INVALID_CREDENTIAL);
         }
                
-        $this->userManager->update($userData->user_id, ArrayHash::from(['user_last_login_time' => time()]));
+        $this->usersManager->update($userData->user_id, ArrayHash::from(['user_last_login_time' => time()]));
         
         $data =
             [

@@ -25,39 +25,7 @@ use Nette\Utils\ArrayHash;
  * @method ForumsManager getManager()
  */
 class ForumPresenter extends AdminPresenter
-{
-    /**
-     * category manager
-     *
-     * @var CategoriesManager $categoryManager
-     * @inject
-     */
-    public $categoryManager;
-    
-    /**
-     * user manager
-     *
-     * @var UsersManager $userManager
-     * @inject
-     */
-    public $userManager;
-    
-    /**
-     * topic manager
-     *
-     * @var TopicsManager $topicManager
-     * @inject
-     */
-    public $topicManager;
-    
-    /**
-     * post manager
-     *
-     * @var PostsManager $postManager
-     * @inject
-     */
-    public $postManager;
-    
+{   
     /**
      * @var ModeratorsManager $moderatorsManager
      * @inject
@@ -86,6 +54,10 @@ class ForumPresenter extends AdminPresenter
         // todo
     }
     
+    /**
+     * 
+     * @param int $page
+     */
     public function renderDefault($page = 1)
     {
         parent::renderDefault($page);
@@ -118,16 +90,16 @@ class ForumPresenter extends AdminPresenter
                 $this->flashMessage('No sub forums.', self::FLASH_MESSAGE_WARNING);
             }
 
-            $lastTopic = $this->topicManager->getLastByForum($id);
+            $lastTopic = $this->topicsManager->getLastByForum($id);
 
             if (!$lastTopic) {
                 $this->flashMessage('No last topic.', self::FLASH_MESSAGE_WARNING);
             }
 
-            $lastPost = $this->postManager->getLastByForum($id);
+            $lastPost = $this->postsManager->getLastByForum($id);
 
             if ($lastPost) {
-                $userData = $this->userManager->getById($lastPost->post_user_id);
+                $userData = $this->usersManager->getById($lastPost->post_user_id);
             } else {
                 $userData = false;
             }
@@ -154,11 +126,10 @@ class ForumPresenter extends AdminPresenter
      */
     public function actionDelete($id)
     {
-        if (!is_numeric($id)) {
-            $this->error('Parameter is not numeric.');
-        }
+       $forumDibi = $this->getManager()->getById($id);
+       $forum     = \App\Models\Entity\Forum::get($forumDibi);
 
-        $result = $this->forumFacade->delete($id);
+        $result = $this->forumFacade->delete($forum);
 
         if ($result) {
             $this->flashMessage('Item was deleted.', self::FLASH_MESSAGE_SUCCESS);
@@ -187,7 +158,7 @@ class ForumPresenter extends AdminPresenter
         $form->addSelect(
             'forum_category_id',
             'Forum category:',
-            $this->categoryManager->getAllPairsCached('category_name')
+            $this->categoriesManager->getAllPairsCached('category_name')
         )
             ->setRequired(true)
             ->setTranslator(null);
@@ -264,7 +235,30 @@ class ForumPresenter extends AdminPresenter
             if ($id) {
                 $result = $this->forumFacade->update($id, $values);
             } else {
-                $result = $id = $this->forumFacade->add($values);
+                $forum = new \App\Models\Entity\Forum(
+                    $id,
+                    $values->forum_category_id, 
+                    $values->forum_name, 
+                    $values->forum_description,
+                    $values->forum_active, 
+                    $values->forum_parent_id, 
+                    0,
+                    $values->forum_thank,
+                    0, 
+                    0, 
+                    $values->forum_post_add,
+                    $values->forum_post_delete,
+                    $values->forum_post_update, 
+                    $values->forum_topic_add,
+                    $values->forum_topic_update,
+                    $values->forum_topic_delete, 
+                    $values->forum_rules, 
+                    null,
+                   null
+                );
+                
+                
+                $result = $id = $this->forumFacade->add($forum);
             }
 
             if ($result) {

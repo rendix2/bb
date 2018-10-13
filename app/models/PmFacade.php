@@ -24,7 +24,7 @@ class PmFacade
         $this->pmManager = $pmManager;
     }
     
-    public function delete($item_id)
+    public function delete($user_id)
     {
         $this->pmManager->deleteByUserFrom($user_id);
         $this->pmManager->deleteByUserTo($user_id);

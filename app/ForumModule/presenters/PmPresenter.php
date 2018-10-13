@@ -28,13 +28,7 @@ class PmPresenter extends CrudPresenter
      * @var Authorizator $authorizator
      * @inject
      */
-    public $authorizator;
-    
-    /**
-     * @var UsersManager $usersManager
-     * @inject
-     */
-    public $usersManager;
+    public $authorizator;   
     
     /**
      * @var ReportsManager $reportsManager

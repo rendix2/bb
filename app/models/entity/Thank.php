@@ -7,7 +7,7 @@ namespace App\Models\Entity;
  *
  * @author rendi
  */
-class Thank 
+class Thank extends \App\Models\Entity\Base\Entity
 {
     public $thank_id;
     
@@ -70,22 +70,32 @@ class Thank
      */
     public function getArray()
     {
-        return [
-            'thank_id'       => $this->thank_id, 
-            'thank_forum_id' => $this->thank_forum_id,
-            'thank_topic_id' => $this->thank_topic_id, 
-            'thank_user_id'  => $this->thank_user_id, 
-            'thank_time'     => $this->thank_time, 
-            'thank_user_ip'  => $this->thank_user_ip, 
-        ];
-    }
-    
-    /**
-     * 
-     * @return \Nette\Utils\ArrayHash
-     */
-    public function getArrayHash()
-    {
-        return \Nette\Utils\ArrayHash::from($this->getArray());
+        $res = [];
+        
+        if (isset($this->thank_id)) {
+            $res['thank_id'] = $this->thank_id;
+        }
+        
+        if (isset($this->thank_forum_id)) {
+            $res['thank_forum_id'] = $this->thank_forum_id;
+        }
+
+        if (isset($this->thank_topic_id)) {
+            $res['thank_topic_id'] = $this->thank_topic_id;
+        }
+
+        if (isset($this->thank_user_id)) {
+            $res['thank_user_id'] = $this->thank_user_id;
+        }
+
+        if (isset($this->thank_time)) {
+            $res['thank_time'] = $this->thank_time;
+        }
+
+        if (isset($this->thank_user_ip)) {
+            $res['thank_user_ip'] = $this->thank_user_ip;
+        }        
+        
+        return $res;
     }
 }

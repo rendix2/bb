@@ -7,7 +7,7 @@ namespace App\Models\Entity;
  *
  * @author rendi
  */
-class Category 
+class Category extends \App\Models\Entity\Base\Entity
 {
     public $category_id;
     
@@ -46,8 +46,8 @@ class Category
         $this->category_parent_id = (int)$category_parent_id;
         $this->category_name      = $category_name;
         $this->category_active    = (bool)$category_active;
-        $this->category_left      = (int)$category_left;
-        $this->category_right     = (int)$category_right;
+        $this->category_left      = $category_left === null ? null : (int)$category_left;
+        $this->category_right     = $category_right === null ? null : (int)$category_right;
         $this->category_order     = (int)$category_order;
     }
     
@@ -71,21 +71,33 @@ class Category
     }    
     
     public function getArray()
-    {
-        return [   
-            'category_id'        => $this->category_id,
-            'category_parent_id' => $this->category_parent_id,
-            'category_name'      => $this->category_name,            
-            'category_active'    => $this->category_active,
-            'category_left'      => $this->category_left,
-            'category_right'     => $this->category_right,
-            'category_order'     => $this->category_order, 
-        ];
-    }
-    
-    public function getArrayHash()
-    {
-        return \Nette\Utils\ArrayHash::from($this->getArray());
+    {        
+        $res = [];
+        
+        if (isset($this->category_id)) {
+            $res['category_id'] = $this->category_id;
+        }
+        
+        if (isset($this->category_name)) {
+            $res['category_name'] = $this->category_name;
+        }
+
+        if (isset($this->category_active)) {
+            $res['category_active'] = $this->category_active;
+        }
+
+        if (isset($this->category_left)) {
+            $res['category_left'] = $this->category_left;
+        }
+
+        if (isset($this->category_right)) {
+            $res['category_right'] = $this->category_right;
+        }
+
+        if (isset($this->category_order)) {
+            $res['category_order'] = $this->category_order;
+        }
+        
+        return $res;
     }    
-    
 }

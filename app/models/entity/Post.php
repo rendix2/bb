@@ -7,7 +7,7 @@ namespace App\Models\Entity;
  *
  * @author rendi
  */
-class Post
+class Post extends \App\Models\Entity\Base\Entity
 {
     public $post_id;
     
@@ -114,27 +114,60 @@ class Post
     
     public function getArray()
     {
-        return [   
-            'post_id'             => $this->post_id,
-            'post_user_id'        => $this->post_user_id,
-            'post_category_id'    => $this->post_category_id,
-            'post_forum_id'       => $this->post_forum_id,
-            'post_topic_id'       => $this->post_topic_id,
-            'post_title'          => $this->post_title, 
-            'post_text'           => $this->post_text,
-            'post_add_time'       => $this->post_add_time,
-            'post_add_user_ip'    => $this->post_add_user_ip,
-            'post_edit_user_ip'   => $this->post_edit_user_ip,
-            'post_edit_count'     => $this->post_edit_count, 
-            'post_last_edit_time' => $this->post_last_edit_time,
-            'post_locked'         => $this->post_locked,
-            'post_order'          => $this->post_order
-        ];
+        $res = [];
+        
+        if (isset($this->post_id)) {
+            $res['post_id'] = $this->post_id;
+        }
+        
+        if (isset($this->post_user_id)) {
+            $res['post_user_id'] = $this->post_user_id;
+        }
+        
+        if (isset($this->post_category_id)) {
+            $res['post_category_id'] = $this->post_category_id;
+        }
+
+        if (isset($this->post_forum_id)) {
+            $res['post_forum_id'] = $this->post_forum_id;
+        }
+
+        if (isset($this->post_topic_id)) {
+            $res['post_topic_id'] = $this->post_topic_id;
+        }
+
+        if (isset($this->post_title)) {
+            $res['post_title'] = $this->post_title;
+        }
+
+        if (isset($this->post_text)) {
+            $res['post_text'] = $this->post_text;
+        }
+
+        if (isset($this->post_add_time)) {
+            $res['post_add_time'] = $this->post_add_time;
+        }
+
+        if (isset($this->post_add_user_ip)) {
+            $res['post_add_user_ip'] = $this->post_add_user_ip;
+        }
+
+        if (isset($this->post_edit_count)) {
+            $res['post_edit_count'] = $this->post_edit_count;
+        }
+
+        if (isset($this->post_last_edit_time)) {
+            $res['post_last_edit_time'] = $this->post_last_edit_time;
+        }
+
+        if (isset($this->post_locked)) {
+            $res['post_locked'] = $this->post_locked;
+        }
+        
+        if (isset($this->post_order)) {
+            $res['post_order'] = $this->post_order;
+        }        
+                
+        return $res;
     }
-    
-    public function getArrayHash()
-    {
-        return \Nette\Utils\ArrayHash::from($this->getArray());
-    }
-    
 }
