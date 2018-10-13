@@ -2,14 +2,14 @@
 
 namespace App\ForumModule\Presenters;
 
+
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Models\PostsManager;
-use App\Models\TopicsManager;
+use App\Forms\SearchPostForm;
+use App\Forms\SearchTopicForm;
+use App\Forms\SearchUserForm;
 use App\Models\UsersManager;
-use Nette\Application\UI\Form;
-use Nette\Utils\ArrayHash;
 
 /**
  * Description of SearchPresenter
@@ -34,13 +34,7 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function createComponentSearchPostForm()
     {
-        $form = $this->createBootstrapForm();
-
-        $form->addText('search_post', 'Post')->setRequired('Please enter some in post');
-        $form->addSubmit('send_post', 'Search post');
-        $form->onSuccess[] = [$this, 'searchPostFormSuccess'];
-
-        return $form;
+        return new SearchPostForm();
     }
 
     /**
@@ -48,13 +42,7 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function createComponentSearchTopicForm()
     {
-        $form = $this->createBootstrapForm();
-
-        $form->addText('search_topic', 'Topic')->setRequired('Please enter some in topic');
-        $form->addSubmit('send_topic', 'Search topic');
-        $form->onSuccess[] = [$this, 'searchTopicFormSuccess'];
-
-        return $form;
+        return new SearchTopicForm();
     }
 
     /**
@@ -62,40 +50,7 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function createComponentSearchUserForm()
     {
-        $form = $this->createBootstrapForm();
-
-        $form->addText('search_user', 'User')->setRequired('Please enter name.');
-        $form->addSubmit('send_user', 'Search user');
-        $form->onSuccess[] = [$this, 'searchUserFormSuccess'];
-
-        return $form;
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function searchPostFormSuccess(Form $form, ArrayHash $values)
-    {
-        $this->redirect('Search:postResults', $values->search_post);
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function searchTopicFormSuccess(Form $form, ArrayHash $values)
-    {
-        $this->redirect('Search:topicResults', $values->search_topic);
-    }
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function searchUserFormSuccess(Form $form, ArrayHash $values)
-    {
-        $this->redirect('Search:userResults', $values->search_user);
+        return new SearchUserForm();
     }
 
     /**
@@ -116,7 +71,7 @@ class SearchPresenter extends BaseForumPresenter
             $this->flashMessage('Post was not found.', self::FLASH_MESSAGE_WARNING);
         }
 
-        $this['searchPostForm']->setDefaults(['search_post' => $q]);
+        $this['searchPostForm-searchPostForm']->setDefaults(['search_post' => $q]);
 
         $this->template->postData = $result;
     }
@@ -132,7 +87,7 @@ class SearchPresenter extends BaseForumPresenter
             $this->flashMessage('Topics was not found.', self::FLASH_MESSAGE_WARNING);
         }
 
-        $this['searchTopicForm']->setDefaults(['search_topic' => $q]);
+        $this['searchTopicForm-searchTopicForm']->setDefaults(['search_topic' => $q]);
 
         $this->template->topicData = $result;
     }
@@ -148,7 +103,7 @@ class SearchPresenter extends BaseForumPresenter
             $this->flashMessage('User was not found.', self::FLASH_MESSAGE_WARNING);
         }
 
-        $this['searchUserForm']->setDefaults(['search_user' => $q]);
+        $this['searchUserForm-searchUserForm']->setDefaults(['search_user' => $q]);
 
         $this->template->userData = $result;
     }
