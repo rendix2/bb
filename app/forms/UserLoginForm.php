@@ -9,6 +9,7 @@ use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Security\AuthenticationException;
 use Nette\Security\User;
+use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 use Nette\Http\Session;
@@ -18,7 +19,7 @@ use Nette\Http\Session;
  *
  * @author rendix2
  */
-class UserLoginForm extends \Nette\Application\UI\Control
+class UserLoginForm extends Control
 {
     /**
      * @var string $backlink

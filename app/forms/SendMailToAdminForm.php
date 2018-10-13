@@ -50,12 +50,15 @@ class SendMailToAdminForm extends Control
         $this->bbMailer          = $bbMailer;
     }
 
+    /**
+     * 
+     */
     public function render()
     {
         $this['sendMailToAdmin']->render();
     }
 
-        /**
+    /**
      * @return BootstrapForm
      */
     protected function createComponentSendMailToAdmin()

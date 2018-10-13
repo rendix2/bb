@@ -2,6 +2,7 @@
 
 namespace App\Forms;
 
+use App\Controls\BootstrapForm;
 use App\Models\GroupsManager;
 use App\Models\Users2GroupsManager;
 use Nette\Application\UI\Control;
@@ -51,7 +52,9 @@ class UserGroupsForm extends Control
      */
     public function render()
     {   
-        $this->template->setFile(__DIR__ . '/templates/userGroupsForm.latte');
+        $sep = DIRECTORY_SEPARATOR;
+        
+        $this->template->setFile(__DIR__ . $sep. 'templates' . $sep . 'userGroupsForm.latte');
         $this->template->setTranslator($this->translator);
         
         $this->template->groups   = $this->groupsManager->getAllCached();
@@ -65,7 +68,7 @@ class UserGroupsForm extends Control
      */
     protected function createComponentGroupFrom()
     {
-        $form = \App\Controls\BootstrapForm::create();
+        $form = BootstrapForm::create();
 
         $form->addSubmit('send_group', 'Send');
         $form->onSuccess[] = [$this, 'groupSuccess'];

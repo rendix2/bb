@@ -1,7 +1,9 @@
 <?php
 
+use App\Controls\BootstrapForm;
 use App\Models\ReportsManager;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Control;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -9,7 +11,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendix2
  */
-class ReportForm extends Nette\Application\UI\Control
+class ReportForm extends Control
 {
     
     /**
@@ -18,12 +20,19 @@ class ReportForm extends Nette\Application\UI\Control
      */
     private $reportsManager;
     
+    /**
+     * 
+     * @param ReportsManager $reportsManager
+     */
     public function __construct(ReportsManager $reportsManager) {
         parent::__construct();
         
         $this->reportsManager = $reportsManager;
     }
     
+    /**
+     * 
+     */
     public function render()
     {
         $this['reportForm']->render();
@@ -34,7 +43,7 @@ class ReportForm extends Nette\Application\UI\Control
      */
     protected function createComponentReportForm()
     {
-        $form = \App\Controls\BootstrapForm::create();
+        $form = BootstrapForm::create();
 
         $form->addTextArea('report_text', 'Report text:');
         $form->addSubmit('send', 'Send');

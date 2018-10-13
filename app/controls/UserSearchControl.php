@@ -49,7 +49,7 @@ class UserSearchControl extends Control
     {
         $sep = DIRECTORY_SEPARATOR;
         
-        $template = $this->template->setFile(__DIR__ . $sep .'templates'.$sep.'userSearch'.$sep.'userSearch.latte');
+        $template = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'userSearch' . $sep . 'userSearch.latte');
         if (!isset($template->users)) {
             $template->users = [];
         }

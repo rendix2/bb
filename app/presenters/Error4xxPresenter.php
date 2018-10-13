@@ -30,9 +30,11 @@ class Error4xxPresenter extends BasePresenter
      */
     public function renderDefault(BadRequestException $exception)
     {
+        $sep = DIRECTORY_SEPARATOR;
+        
         // load template 403.latte or 404.latte or ... 4xx.latte
-        $file = __DIR__ . "/templates/Error/{$exception->getCode()}.latte";
-        $file = is_file($file) ? $file : __DIR__ . '/templates/Error/4xx.latte';
+        $file = __DIR__ . $sep . 'templates' . $sep . 'Error' . $sep . '{$exception->getCode()}.latte';
+        $file = is_file($file) ? $file : __DIR__ . $sep . 'templates' . $sep . 'Error' . $sep . '4xx.latte';
         $this->template->setFile($file);
     }
 }

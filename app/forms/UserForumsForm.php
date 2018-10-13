@@ -2,6 +2,7 @@
 
 namespace App\Forms;
 
+use App\Controls\BootstrapForm;
 use App\Models\ForumsManager;
 use App\Models\Users2ForumsManager;
 use Nette\Application\UI\Control;
@@ -49,7 +50,9 @@ class UserForumsForm extends Control
     
     public function render()
     {
-        $this->template->setFile(__DIR__ . '/templates/userForumsForm.latte');
+        $sep = DIRECTORY_SEPARATOR;
+        
+        $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'userForumsForm.latte');
         $this->template->setTranslator($this->translator);
         
         $this->template->forums   = $this->forumsManager->createForums($this->forumsManager->getAllCached(), 0);
@@ -63,7 +66,7 @@ class UserForumsForm extends Control
      */
     public function createComponentForumsForm()
     {
-        $form = \App\Controls\BootstrapForm::create();
+        $form = BootstrapForm::create();
 
         $form->addSubmit('send_forum', 'Send');
         $form->onSuccess[] = [$this, 'forumsSuccess'];

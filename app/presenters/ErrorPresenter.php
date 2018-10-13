@@ -56,7 +56,9 @@ class ErrorPresenter implements Nette\Application\IPresenter
 
         return new Responses\CallbackResponse(
             function () {
-                require __DIR__ . '/templates/Error/500.phtml';
+            $sep = DIRECTORY_SEPARATOR;
+            
+                require __DIR__ . $sep . 'templates' . $sep . 'Error' . $sep . '500.phtml';
             }
         );
     }

@@ -37,7 +37,9 @@ class UserModeratorForm extends Control
      */
     public function render()
     {   
-        $this->template->setFile(__DIR__ . '/templates/userModeratorForm.latte');
+        $sep = DIRECTORY_SEPARATOR;
+        
+        $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'userModeratorForm.latte');
         $this->template->setTranslator($this->translator);
         
         $this->template->forums       = $this->forumsManager->createForums($this->forumsManager->getAllCached(), 0);
