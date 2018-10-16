@@ -12,6 +12,8 @@ nbproject/
 www/avatars/*
 idea
 .idea/codeStyles/codeStyleSettings.xml
+.idea/codeStyles/codeStyleConfig.xml
+
 .idea/*
 nbproject
 
