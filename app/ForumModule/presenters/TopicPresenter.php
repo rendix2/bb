@@ -7,11 +7,9 @@ use App\Controls\BreadCrumbControl;
 use App\Controls\PaginatorControl;
 use App\Controls\TopicJumpToForumForm;
 use App\Forms\TopicFastReplyForm;
+use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Models\CategoriesManager;
-use App\Models\ForumsManager;
 use App\Models\PostFacade;
-use App\Models\PostsManager;
 use App\Models\RanksManager;
 use App\Models\ReportsManager;
 use App\Models\ThanksFacade;
@@ -591,6 +589,6 @@ class TopicPresenter extends BaseForumPresenter
      */
     protected function createComponentReportForm()
     {
-        return new \ReportForm($this->reportManager);
+        return new ReportForm($this->reportManager);
     }    
 }

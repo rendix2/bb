@@ -47,7 +47,7 @@ class LanguagePresenter extends AdminPresenter
         $this->gf->setTranslator($this->getAdminTranslator());
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
-        $this->gf->addFilter('lang_id', 'lang_id', GridFilter::INT_EQUAL);
+        $this->gf->addFilter('lang_id', 'lang_id', GridFilter::INT_LIKE);
         $this->gf->addFilter('lang_name', 'lang_name', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('edit', null, GridFilter::NOTHING);
         $this->gf->addFilter('delete', null, GridFilter::NOTHING);

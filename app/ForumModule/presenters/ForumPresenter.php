@@ -3,6 +3,7 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BreadCrumbControl;
+use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
 use App\Forms\ForumSearchInForumForm;
 use App\Models\CategoriesManager;
@@ -21,6 +22,12 @@ use Nette\Http\IResponse;
  */
 final class ForumPresenter extends Base\ForumPresenter
 {
+    /**
+     *
+     * @var ForumSettings $forumsSettings
+     * @inject
+     */
+    public $forumSettings;
     
     /**
      * @var TopicsSetting $topicSetting
@@ -33,14 +40,14 @@ final class ForumPresenter extends Base\ForumPresenter
      * @var ModeratorsManager $moderators
      * @inject
      */
-    public $moderators;
+    public $moderatorsManager;
     
     /**
      *
-     * @var ForumSettings $forumsSettings
+     * @var GridFilter $gf
      * @inject
      */
-    public $forumSettings;
+    public $gf;
 
     /**
      *
@@ -59,7 +66,7 @@ final class ForumPresenter extends Base\ForumPresenter
      * @param int $page
      * @param string|null $q
      */
-    public function renderDefault($category_id, $forum_id, $page = 1, $q = null)
+    public function renderDefault($category_id, $forum_id, $page = 1)
     {
         if (!$this->getUser()->isAllowed($forum_id, 'forum_view')) {
             $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
@@ -67,26 +74,32 @@ final class ForumPresenter extends Base\ForumPresenter
 
         $category      = $this->checkCategoryParam($category_id);
         $forum         = $this->checkForumParam($forum_id, $category_id);
-        $forumSettings = $this->forumSettings->get();
+        $forumSettings = $this->forumSettings->get();        
+        $topics        = $this->topicsManager->getFluentJoinedUsersJoinedLastPostByForum($forum_id);
         
-        $topics    = $this->topicsManager->getFluentJoinedUsersJoinedLastPostByForum($forum_id);
+        if (isset($this['gridFilter'])) {
+            $this->getComponent('gridFilter');
+        }
+               
+        foreach ($this->gf->getWhere() as $where) {
+            if (isset($where['value'])) {
+                $topics->where('[' . $where['column'] . '] ' . $where['type'] . ' ' . $where['strint'], $where['value']);
+            }
+        }
+
+        foreach ($this->gf->getOrderBy() as $column => $type) {
+            $topics->orderBy($column, $type);
+        }
+        
         $paginator = new PaginatorControl($topics, $forumSettings['pagination']['itemsPerPage'], $forumSettings['pagination']['itemsAroundPagination'], $page);
 
         $this->addComponent($paginator, 'paginator');
 
         if (!$paginator->getCount()) {
             $this->flashMessage('No topics.', self::FLASH_MESSAGE_DANGER);
-        }
+        }      
         
-        if ($q) {
-            //$topics = $topics->where('topic_id IN ( SELECT post_topic_id FROM posts WHERE MATCH(post_title,
-            // post_text) AGAINST (%s IN BOOLEAN MODE) AND post_forum_id = %i) OR MATCH(topic_name) AGAINST (%s IN BOOLEAN MODE)', $q, $forum_id, $q);
-
-            $topics = $this->topicsManager->findTopic($topics, $q, $forum_id);
-            $this['searchInForumForm']->setDefaults(['search_form' => $q]);
-        }
-        
-        $moderators = $this->moderators->getAllJoinedByRight($forum_id);
+        $moderators = $this->moderatorsManager->getAllJoinedByRight($forum_id);
         
         if (!$moderators) {
             $this->flashMessage('No moderators in forum.', self::FLASH_MESSAGE_INFO);
@@ -117,19 +130,19 @@ final class ForumPresenter extends Base\ForumPresenter
         $this->template->forum = $forum;
     }
 
-    /**
-     * @param int $forum_id
-     */
-    public function renderSearchForum($forum_id)
+    protected function createComponentGridFilter()
     {
-    }
+        $this->gf->setTranslator($this->getForumTranslator());
+        
+        $this->gf->addFilter('topic_id', 'topic_id', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('topic_name', 'topic_name', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('user_name', 'topic_author', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('topic_post_count', 'topic_post_count', GridFilter::FROM_TO_INT);
+        $this->gf->addFilter('topic_view_count', 'topic_count_views', GridFilter::FROM_TO_INT);
+        $this->gf->addFilter('post_add_time', 'topic_last_post_time', GridFilter::DATE_TIME);
+        $this->gf->addFilter('edit', null, GridFilter::NOTHING);
 
-    /**
-     * @return ForumSearchInForumForm
-     */
-    protected function createComponentSearchInForumForm()
-    {
-        return new ForumSearchInForumForm($this->getForumTranslator());
+        return $this->gf;
     }
 
     /**

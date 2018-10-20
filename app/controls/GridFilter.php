@@ -28,7 +28,7 @@ class GridFilter extends Control
     /**
      * @var string
      */
-    const INT_EQUAL = 'i';
+    const INT_LIKE = 'i';
 
     /**
      * @var string
@@ -69,8 +69,6 @@ class GridFilter extends Control
      * @var Session $session
      */
     private $session;
-    
-    private $sessionName;
     
     /**
      *
@@ -205,7 +203,7 @@ class GridFilter extends Control
                     'strint'   => '%~like~'
                 ];
                 break;
-            case self::INT_EQUAL:
+            case self::INT_LIKE:
                 $this->form->addText($columnName, $text)
                     ->setRequired(false)
                     ->addRule(Form::INTEGER);
@@ -325,7 +323,9 @@ class GridFilter extends Control
         $template->setTranslator($this->translator);
 
         foreach ($this->type as $column => $value) {
-            $this['gridFilter']->setDefaults([$column => $this->session->getSection($sessionName)->{$column}]);
+            if ($this->session->getSection($sessionName)) {
+                $this['gridFilter']->setDefaults([$column => $this->session->getSection($sessionName)->{$column}]);
+            }
         }
 
         $template->type = $this->type;

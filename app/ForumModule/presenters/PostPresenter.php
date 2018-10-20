@@ -5,15 +5,12 @@ namespace App\ForumModule\Presenters;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
-use App\Models\CategoriesManager;
-use App\Models\ForumsManager;
+use App\Forms\ReportForm;
 use App\Models\PostFacade;
 use App\Models\PostsHistoryManager;
 use App\Models\PostsManager;
 use App\Models\ReportsManager;
-use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
-use App\Models\UsersManager;
 use App\Settings\PostSetting;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
@@ -405,6 +402,6 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      */
     protected function createComponentReportForm()
     {
-        return new \ReportForm($this->reportManager);
+        return new ReportForm($this->reportManager);
     }    
 }

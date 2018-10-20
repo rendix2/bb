@@ -47,7 +47,7 @@ class BanPresenter extends AdminPresenter
     {
         $this->gf->setTranslator($this->getAdminTranslator());
             
-        $this->gf->addFilter('ban_id', 'ban_id', GridFilter::INT_EQUAL);
+        $this->gf->addFilter('ban_id', 'ban_id', GridFilter::INT_LIKE);
         $this->gf->addFilter('ban_user_name', 'ban_user_name', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('ban_email', 'ban_email', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('ban_ip', 'ban_ip', GridFilter::TEXT_LIKE);

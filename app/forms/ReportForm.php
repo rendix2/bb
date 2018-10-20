@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Forms;
+
 use App\Controls\BootstrapForm;
 use App\Models\ReportsManager;
 use Nette\Application\UI\Form;

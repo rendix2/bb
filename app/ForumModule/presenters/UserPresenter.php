@@ -13,6 +13,7 @@ use App\Forms\UserChangePasswordForm;
 use App\Forms\UserChangeUserNameForm;
 use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserResetPasswordForm;
+use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\FavouriteUsersManager;
 use App\Models\LanguagesManager;
@@ -367,7 +368,7 @@ class UserPresenter extends BaseForumPresenter
      */
     public function renderModeratorList($page)
     {
-        $this->template->setFile(__DIR__.'/../templates/User/list.latte');
+        $this->setView('list');
         
                 $users = $this->getManager()
                 ->getAllFluent()
@@ -389,7 +390,7 @@ class UserPresenter extends BaseForumPresenter
      */
     public function renderAdminList($page)
     {
-        $this->template->setFile(__DIR__.'/../templates/User/list.latte');
+        $this->setView('list');
         
         $users = $this->getManager()
                 ->getAllFluent()
@@ -429,7 +430,7 @@ class UserPresenter extends BaseForumPresenter
      */
     protected function createComponentReportUserForm()
     {
-        return new \ReportForm($this->reportsManager);
+        return new ReportForm($this->reportsManager);
     }
 
     /**
@@ -479,7 +480,7 @@ class UserPresenter extends BaseForumPresenter
     protected function createComponentEditUserForm()
     {
         $form         = $this->getBootstrapForm();
-        $userSettings = $this->users->getUser();
+        $userSettings = $this->users->get();
 
         $form->addText(
             'user_name',
@@ -513,6 +514,14 @@ class UserPresenter extends BaseForumPresenter
 
         return $form;
     }
+    
+    /**	
+     * @param Form      $form	
+     * @param ArrayHash $values	
+     */	
+    public function editUserOnValidate(Form $form, ArrayHash $values)	
+    {	
+    }    
     
     /**
      * @param Form      $form
