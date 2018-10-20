@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Dibi\Result;
 use Nette\Utils\ArrayHash;
+use App\Settings\TopicsSetting;
 
 /**
  * Description of PostFacade
@@ -71,6 +72,12 @@ class PostFacade
      * @var TopicWatchFacade $topicWatchFacade
      */
     private $topicWatchFacade;
+    
+    /**
+     *
+     * @var TopicsSetting $topicSettings
+     */
+    private $topicSettings;
 
     /**
      *
@@ -84,6 +91,7 @@ class PostFacade
      * @param ThanksManager       $thanksManager
      * @param ThanksFacade        $thanksFacade
      * @param TopicWatchFacade    $topicWatchFacade
+     * @param TopicsSetting       $topicSettings
      */
     public function __construct(
         PostsManager $postsManager,
@@ -95,7 +103,8 @@ class PostFacade
         PostsHistoryManager $postsHistoryManager,
         ThanksManager $thanksManager,
         ThanksFacade $thanksFacade,
-        TopicWatchFacade $topicWatchFacade
+        TopicWatchFacade $topicWatchFacade,
+        TopicsSetting $topicSettings
     ) {
         $this->postsManager        = $postsManager;
         $this->topicsManager       = $topicsManager;
@@ -107,6 +116,7 @@ class PostFacade
         $this->thanksManager       = $thanksManager;
         $this->thanksFacade        = $thanksFacade;
         $this->topicWatchFacade    = $topicWatchFacade;
+        $this->topicSettings       = $topicSettings;
     }
 
     /**
@@ -119,22 +129,27 @@ class PostFacade
         $post_id  = $this->postsManager->add($post->getArrayHash());
         $user_id  = $post->post_user_id;
         $forum_id = $post->post_forum_id;
+        $topic_id = $post->post_topic_id;
+        
+        $topicDibi = $this->topicsManager->getById($topic_id);
+        $topic     = Entity\Topic::get($topicDibi);
 
         $this->topicsManager->update(
-            $post->post_topic_id,
+            $topic_id,
             ArrayHash::from([
                 'topic_post_count%sql' => 'topic_post_count + 1',
                 'topic_last_user_id'   => $user_id,
-                'topic_last_post_id'   => $post_id
+                'topic_last_post_id'   => $post_id,
+                'topic_page_count'     => ceil(($topic->topic_post_count + 1) / $this->topicSettings->get()['pagination']['itemsPerPage'])
                 ])
         );
 
-        $topicWatching = $this->topicWatchManager->fullCheck($post->post_topic_id, $user_id);
+        $topicWatching = $this->topicWatchManager->fullCheck($topic_id, $user_id);
 
         $watch = [];
 
         if (!$topicWatching) {
-            $this->topicWatchManager->add([$user_id], $post->post_topic_id);
+            $this->topicWatchManager->add([$user_id], $topic_id);
             $watch = ['user_watch_count%sql' => 'user_watch_count + 1'];
         }
 
@@ -191,7 +206,10 @@ class PostFacade
         );
         $this->topicsManager->update(
             $post->post_topic_id,
-            ArrayHash::from(['topic_post_count%sql' => 'topic_post_count - 1'])
+            ArrayHash::from([
+                'topic_post_count%sql' => 'topic_post_count - 1',
+                'topic_page_count'     => ceil(($topic->topic_post_count - 1) / $this->topicSettings->get()['pagination']['itemsPerPage'])
+                ])
         );
 
         $this->thanksFacade->deleteByPost($post);

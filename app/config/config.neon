@@ -35,9 +35,14 @@ parameters:
     crud:
         cache:
             primaryKey: 10 days
-    topics:
+    categories:
+    forums:
         pagination:
             itemsPerPage: 25
+            itemsAroundPagination: 5
+    topics:
+        pagination:
+            itemsPerPage: 4
             itemsAroundPagination: 5
         cache:
             lastTopic: 1 hour
@@ -45,9 +50,6 @@ parameters:
             primaryKey: 10 day
         logViews: true
     posts:
-        pagination:
-            itemsPerPage: 25
-            itemsAroundPagination: 5
         cache:
             totalPosts: 1 hour
             primaryKey: 10 day

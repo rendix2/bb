@@ -246,7 +246,9 @@ class TopicPresenter extends BaseForumPresenter
             $this->getManager()->update($topic_id, ArrayHash::from(['topic_view_count%sql' => 'topic_view_count + 1']));
         }
 
-        $pagination = new PaginatorControl($data, 10, 5, $page);
+        $topicSettings = $this->topicSetting->get();
+        
+        $pagination = new PaginatorControl($data, $topicSettings['pagination']['itemsPerPage'], $topicSettings['pagination']['itemsAroundPagination'], $page);
         $this->addComponent($pagination, 'paginator');
 
         if (!$pagination->getCount()) {
@@ -415,6 +417,7 @@ class TopicPresenter extends BaseForumPresenter
                 $oldTopic->topic_last_post_id,
                 $oldTopic->topic_last_user_id, 
                 $oldTopic->topic_order,
+                $oldTopic->topic_page_count,
                 $post
             );
             
@@ -434,6 +437,7 @@ class TopicPresenter extends BaseForumPresenter
                 0, 
                 0, 
                 0,
+                1,
                 1
             );
 

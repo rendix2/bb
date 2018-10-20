@@ -23,7 +23,10 @@ class Topic extends \App\Models\Entity\Base\Entity
     public $topic_last_post_id;
     public $topic_last_user_id;
     public $topic_order;
-        
+    
+    public $topic_page_count;
+
+
     /**
      *
      * @var \App\Models\Entity\Post $post
@@ -46,6 +49,7 @@ class Topic extends \App\Models\Entity\Base\Entity
      * @param int    $topic_last_post_id
      * @param int    $topic_last_user_id
      * @param int    $topic_order
+     * @param int    $topic_page_count
      */    
     public function __construct(
         $topic_id,
@@ -62,6 +66,7 @@ class Topic extends \App\Models\Entity\Base\Entity
         $topic_last_post_id,
         $topic_last_user_id,
         $topic_order,
+        $topic_page_count,
         \App\Models\Entity\Post $post = null
     ) {
         $this->topic_id            = (int)$topic_id;
@@ -78,6 +83,7 @@ class Topic extends \App\Models\Entity\Base\Entity
         $this->topic_last_post_id  = (int)$topic_last_post_id;
         $this->topic_last_user_id  = (int)$topic_last_user_id;
         $this->topic_order         = (int)$topic_order;
+        $this->topic_page_count    = (int)$topic_page_count;
         $this->post                = $post;
     }
     
@@ -103,7 +109,8 @@ class Topic extends \App\Models\Entity\Base\Entity
             $values->topic_first_user_id, 
             $values->topic_last_post_id, 
             $values->topic_last_user_id, 
-            $values->topic_order
+            $values->topic_order,
+            $values->topic_page_count
         );
     }
     
@@ -169,7 +176,11 @@ class Topic extends \App\Models\Entity\Base\Entity
 
         if (isset($this->topic_order)) {
             $res['topic_order'] = $this->topic_order;
-        }            
+        }          
+        
+        if (isset($this->topic_page_count)) {
+            $res['topic_page_count'] = $this->topic_page_count;
+        }
         
         return $res;
     }

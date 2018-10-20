@@ -23,6 +23,11 @@ class TopicsSetting
     {
         $this->topic = $topic;
     }
+    
+    public function get()
+    {
+        return $this->topic;
+    }
 
     /**
      * @return mixed
