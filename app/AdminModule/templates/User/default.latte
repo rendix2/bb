@@ -46,7 +46,7 @@
                         <td>{$item->user_post_count}</td>
                         <td>{$item->user_topic_count}</td>
                         <td>{$item->user_thank_count}</td>
-                        <td>{$roles[$item->user_role_id]}</td>
+                        <td>{_$roles[$item->user_role_id]}</td>
                         <td>{if $item->user_active}{_Active}{else}{_"Not active"}{/if}</td>
                         <td>{$item->user_register_time|date:'%d.%m.%Y %H:%M:%S'}</td>
                         <td>{$item->user_last_login_time|date:'%d.%m.%Y %H:%M:%S'}</td>

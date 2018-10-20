@@ -236,16 +236,9 @@ abstract class CrudPresenter extends AuthenticatedPresenter
         }
         
         $items = $this->getManager()->getAllFluent();
-        
-        foreach ($this->gf->getWhere() as $where) {
-            if (isset($where['value'])) {
-                $items->where('[' . $where['column'] . '] ' . $where['type'] . ' ' . $where['strint'], $where['value']);
-            }
-        }
 
-        foreach ($this->gf->getOrderBy() as $column => $type) {
-            $items->orderBy($column, $type);
-        }
+        $this->gf->applyWhere($items);
+        $this->gf->applyOrderBy($items);
         
         $paginator = new PaginatorControl($items, static::ITEMS_PER_PAGE, 5, $page);
         $this->addComponent($paginator, 'paginator');

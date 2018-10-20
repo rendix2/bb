@@ -81,15 +81,8 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->getComponent('gridFilter');
         }
                
-        foreach ($this->gf->getWhere() as $where) {
-            if (isset($where['value'])) {
-                $topics->where('[' . $where['column'] . '] ' . $where['type'] . ' ' . $where['strint'], $where['value']);
-            }
-        }
-
-        foreach ($this->gf->getOrderBy() as $column => $type) {
-            $topics->orderBy($column, $type);
-        }
+        $this->gf->applyWhere($topics);
+        $this->gf->applyOrderBy($topics);
         
         $paginator = new PaginatorControl($topics, $forumSettings['pagination']['itemsPerPage'], $forumSettings['pagination']['itemsAroundPagination'], $page);
 

@@ -131,7 +131,7 @@ class PmPresenter extends CrudPresenter
     {
         $this->gf->setTranslator($this->translator);
             
-        $this->gf->addFilter('pm_id', 'pm_id', GridFilter::INT_LIKE);
+        $this->gf->addFilter('pm_id', 'pm_id', GridFilter::INT_EQUAL);
         $this->gf->addFilter('user_name', 'user_name', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('pm_subject', 'pm_subject', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('pm_status', 'pm_status', GridFilter::CHECKBOX_LIST, ['sent' => 'Sent', 'read' => 'Read']);
