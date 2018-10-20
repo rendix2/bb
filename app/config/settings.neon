@@ -11,6 +11,8 @@ services:
         class: App\Settings\TempDir(%tempDir%)
     CacheDir:
         class: App\Settings\CacheDir(%tempDir%/cache)
+    ForumSetting:
+        class: App\Settings\ForumSettings(%forums%)
     TopicSetting:
         class: App\Settings\TopicsSetting(%topics%)
     DefaultLanguage:

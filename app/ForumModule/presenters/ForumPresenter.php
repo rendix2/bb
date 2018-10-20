@@ -9,6 +9,7 @@ use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Models\ModeratorsManager;
 use App\Models\TopicsManager;
+use App\Settings\ForumSettings;
 use App\Settings\TopicsSetting;
 use Nette\Http\IResponse;
 
@@ -33,6 +34,13 @@ final class ForumPresenter extends Base\ForumPresenter
      * @inject
      */
     public $moderators;
+    
+    /**
+     *
+     * @var ForumSettings $forumsSettings
+     * @inject
+     */
+    public $forumSettings;
 
     /**
      *
@@ -57,11 +65,12 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
         }
 
-        $category = $this->checkCategoryParam($category_id);
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-
+        $category      = $this->checkCategoryParam($category_id);
+        $forum         = $this->checkForumParam($forum_id, $category_id);
+        $forumSettings = $this->forumSettings->get();
+        
         $topics    = $this->topicsManager->getFluentJoinedUsersJoinedLastPostByForum($forum_id);
-        $paginator = new PaginatorControl($topics, 10, 5, $page);
+        $paginator = new PaginatorControl($topics, $forumSettings['pagination']['itemsPerPage'], $forumSettings['pagination']['itemsAroundPagination'], $page);
 
         $this->addComponent($paginator, 'paginator');
 
