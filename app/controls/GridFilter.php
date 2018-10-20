@@ -298,7 +298,6 @@ class GridFilter extends Control
         foreach ($this->filters as $name => $type) {
             unset($this->session->getSection($sessionName)->{$name});
         }
-
     }
     
     /**
@@ -360,8 +359,12 @@ class GridFilter extends Control
     public function renderReset()
     {
         $sep = DIRECTORY_SEPARATOR;
-        
+                        
         $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'gridFilter' . $sep . 'reset.latte');
+        $this->template->setTranslator($this->translator);
+        
+        $this->template->hasWhere = count($this->getColumnsSearchedBy());
+        
         $this->template->render();
     }
 

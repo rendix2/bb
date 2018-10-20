@@ -1,3 +1,3 @@
-{block content}
-    <a href="{link reset}">Reset</a>
-{/block}
+{if $hasWhere}
+    <a href="{link reset}">{_reset}</a>
+{/if}
