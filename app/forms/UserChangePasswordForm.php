@@ -117,7 +117,7 @@ class UserChangePasswordForm extends Control
             $form->addError('Last password is incorrect.');
         }
 
-        if (mb_strlen($values->user_password) <= $this->users->getUser()['minUserPasswordLength']) {
+        if (mb_strlen($values->user_password) <= $this->users->get()['minUserPasswordLength']) {
             $form->addError('Password is not long enough.');
         }
 

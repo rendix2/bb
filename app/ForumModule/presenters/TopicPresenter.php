@@ -242,7 +242,7 @@ class TopicPresenter extends BaseForumPresenter
 
         $data = $this->postsManager->getFluentByTopicJoinedUser($topic_id);
 
-        if ($this->topicSetting->canLogView()) {
+        if ($this->topicSetting->get()['logViews']) {
             $this->getManager()->update($topic_id, ArrayHash::from(['topic_view_count%sql' => 'topic_view_count + 1']));
         }
 

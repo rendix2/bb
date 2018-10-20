@@ -7,20 +7,6 @@ namespace App\Settings;
  *
  * @author rendix2
  */
-class TempDir
+class TempDir extends Setting
 {
-    /**
-     * @var string $tempDir
-     */
-    public $tempDir;
-
-    /**
-     * TempDir constructor.
-     *
-     * @param string $tempDir
-     */
-    public function __construct($tempDir)
-    {
-        $this->tempDir = $tempDir;
-    }
 }

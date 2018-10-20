@@ -93,6 +93,8 @@ class PostsManager extends CrudManager
     public function getLast()
     {
         return $this->getAllFluent()
+            ->innerJoin(self::TOPICS_TABLE)               
+            ->on('[post_topic_id] = [topic_id]')
             ->where('[post_id] = ', $this->dibi
                 ->select('MAX(post_id)')
                 ->from($this->getTable()))

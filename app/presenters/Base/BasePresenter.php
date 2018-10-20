@@ -431,7 +431,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 
         $userDibi = $this->usersManager->getById($user_id);
 
-        if (!$user) {
+        if (!$userDibi) {
             $this->error('User was not found.');
         }
         

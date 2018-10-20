@@ -72,7 +72,13 @@
                     </td>
                     <td>
                         {if $lastPost}
-                            <a href="{link Topic:default#post_{$lastPost->post_id}, $lastPost->post_category_id, $lastPost->post_forum_id, $lastPost->post_topic_id}" title="Přidáno: {$lastPost->post_add_time|date:'%d.%m.%Y %H:%M:%S'}">{$lastPost->post_title}</a>
+                            <a href="{link Topic:default#post_{$lastPost->post_id}, $lastPost->post_category_id, $lastPost->post_forum_id, $lastPost->post_topic_id, $lastPost->topic_page_count}" title="Přidáno: {$lastPost->post_add_time|date:'%d.%m.%Y %H:%M:%S'}">
+                                {if $lastPost->post_title}
+                                    {$lastPost->post_title}
+                                {else}
+                                     {$lastPost->post_id}
+                                {/if}
+                            </a>
                         {/if}
                     </td>
                     <td>{if $mostPostsUser}

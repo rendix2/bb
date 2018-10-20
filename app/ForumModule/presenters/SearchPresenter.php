@@ -65,15 +65,15 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function renderPostResults($q)
     {
-        $result = $this->postsManager->findPosts($q);
+        $topics = $this->postsManager->findPosts($q);
 
-        if (!$result) {
+        if (!$topics) {
             $this->flashMessage('Post was not found.', self::FLASH_MESSAGE_WARNING);
         }
 
         $this['searchPostForm-searchPostForm']->setDefaults(['search_post' => $q]);
 
-        $this->template->postData = $result;
+        $this->template->posts = $topics;
     }
 
     /**
@@ -81,15 +81,15 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function renderTopicResults($q)
     {
-        $result = $this->topicsManager->findByTopicName($q);
+        $topics = $this->topicsManager->findByTopicName($q);
 
-        if (!$result) {
+        if (!$topics) {
             $this->flashMessage('Topics was not found.', self::FLASH_MESSAGE_WARNING);
         }
 
         $this['searchTopicForm-searchTopicForm']->setDefaults(['search_topic' => $q]);
 
-        $this->template->topicData = $result;
+        $this->template->topics = $topics;
     }
 
     /**
@@ -97,15 +97,15 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function renderUserResults($q)
     {
-        $result = $this->getManager()->findLikeByUserName($q);
+        $users = $this->getManager()->findLikeByUserName($q);
 
-        if (!$result) {
+        if (!$users) {
             $this->flashMessage('User was not found.', self::FLASH_MESSAGE_WARNING);
         }
 
         $this['searchUserForm-searchUserForm']->setDefaults(['search_user' => $q]);
 
-        $this->template->userData = $result;
+        $this->template->users = $users;
     }
 
     /**

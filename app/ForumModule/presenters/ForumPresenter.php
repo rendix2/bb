@@ -92,7 +92,7 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->flashMessage('No moderators in forum.', self::FLASH_MESSAGE_INFO);
         }
 
-        $this->template->logViews    = $this->topicSetting->canLogView();
+        $this->template->logViews    = $this->topicSetting->get()['logViews'];
         $this->template->forum       = $forum;
         $this->template->topics      = $topics->fetchAll();
         $this->template->subForums   = $this->getManager()->getByParent($forum_id);
