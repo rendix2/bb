@@ -8,6 +8,7 @@ use Nette\Application\UI\Form;
 use Nette\Http\Session;
 use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\DateTime;
 
 /**
  * Description of GridFilter
@@ -118,10 +119,10 @@ class GridFilter extends Control
     public function applyOrderBy(Fluent $fluent)
     {
         foreach ($this->getParameters() as $columnName => $sortType) {
-            if (!$sortType) {
+            if (!$sortType || !strpos('sort_', $columnName)) {
                 continue;
             }
-
+            
             $columnName = $this->checkFTI(str_replace('sort_', '', $columnName));
 
             $fluent->orderBy($columnName, $sortType);
@@ -184,7 +185,7 @@ class GridFilter extends Control
                     }
                     break;
                 case self::DATE_TIME:
-                    $time = new \Nette\Utils\DateTime($value);
+                    $time = new DateTime($value);
                         
                     if (strpos($col, '_Xfrom')) {
                         $fluent->where('%n >= %i', $columnName, $time->getTimestamp());
@@ -214,28 +215,14 @@ class GridFilter extends Control
             case self::TEXT_LIKE:
             case self::TEXT_FULTEXT:
                 $this->form->addText($columnName, $text);
-                
-                $this->filters[$columnName] = [
-                    'type'     => $type,
-                    'text'     => $text,
-                ];
                 break;            
             case self::INT_EQUAL:
             case self::INT_LIKE:
                 $this->form->addText($columnName, $text)
                     ->setRequired(false)
                     ->addRule(Form::INTEGER);
-                
-                $this->filters[$columnName] = [
-                    'type'     => $type,
-                    'text'     => $text,
-                ];
                 break;           
             case self::NOTHING:
-                $this->filters[$columnName] = [
-                    'type'     => $type,
-                    'text'     => $text,
-                ];
                 break;
             case self::FROM_TO_INT:
                 $this->form->addText($columnName . '_Xfrom', $text)
@@ -248,16 +235,6 @@ class GridFilter extends Control
                     ->setRequired(false)
                     ->addRule(Form::INTEGER)
                     ->setAttribute('placeholder', 'To');
-
-                $this->filters[$columnName . '_Xfrom'] = [
-                    'type'     => $type,
-                    'text'     => $text,
-                ];
-                
-                $this->filters[$columnName . '_Xto']   = [
-                    'type'     => $type,
-                    'text'     => $text,
-                ];
                 break;
 
             case self::DATE_TIME:
@@ -265,8 +242,18 @@ class GridFilter extends Control
                     ->setAttribute('placeholder', 'From')
                     ->setAttribute('class', 'mb-1');
                 $this->form->addTbDatePicker($columnName. '_Xto', $text)
-                        ->setAttribute('placeholder', 'To');
-                
+                        ->setAttribute('placeholder', 'To');             
+                break;    
+            
+            case self::CHECKBOX_LIST:
+                $this->form->addCheckboxList($columnName, $text, $data);
+                break;
+            default :
+                throw new \InvalidArgumentException('Unknow filter type.');
+        
+        }
+        
+        if ($type === self::DATE_TIME || $type === self::FROM_TO_INT) {
                 $this->filters[$columnName. '_Xfrom'] = [
                     'type'     => $type,
                     'text'     => $text,
@@ -275,18 +262,13 @@ class GridFilter extends Control
                 $this->filters[$columnName. '_Xto'] = [
                     'type'     => $type,
                     'text'     => $text,
-                ];                
-                break;    
-            
-            case self::CHECKBOX_LIST:
-                $this->form->addCheckboxList($columnName, $text, $data);
-                
-                $this->filters[$columnName] = [
+                ];             
+        } else {
+           $this->filters[$columnName] = [
                     'type'     => $type,
                     'text'     => $text,
-                ];
-                break;            
-        }
+                ]; 
+        }                
     }
 
     /**
@@ -316,8 +298,18 @@ class GridFilter extends Control
         foreach ($this->filters as $name => $type) {
             unset($this->session->getSection($sessionName)->{$name});
         }
+
+    }
+    
+    /**
+     * 
+     * @param string $column
+     */
+    public function handleStorno($column)
+    {
+        $sessionName = self::SESSION_PREFIX . $this->presenter->name. ':' . $this->presenter->action;
         
-        $this->whereColumns = [];
+        unset($this->session->getSection($sessionName)->{$column});
     }
 
     /**
