@@ -68,22 +68,34 @@ final class ForumPresenter extends Base\ForumPresenter
      */
     public function renderDefault($category_id, $forum_id, $page = 1)
     {
+        \Netpromotion\Profiler\Profiler::start('Is allowed');
         if (!$this->getUser()->isAllowed($forum_id, 'forum_view')) {
             $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
         }
+        \Netpromotion\Profiler\Profiler::finish('Is allowed');
 
+        \Netpromotion\Profiler\Profiler::start('check');
         $category      = $this->checkCategoryParam($category_id);
         $forum         = $this->checkForumParam($forum_id, $category_id);
+        \Netpromotion\Profiler\Profiler::finish('check');
         $forumSettings = $this->forumSettings->get();        
         $topics        = $this->topicsManager->getFluentJoinedUsersJoinedLastPostByForum($forum_id);
         
+        \Netpromotion\Profiler\Profiler::start('init gf');
         if (isset($this['gridFilter'])) {
             $this->getComponent('gridFilter');
         }
-               
+        \Netpromotion\Profiler\Profiler::finish('init gf');
+             
+        \Netpromotion\Profiler\Profiler::start('aply where');
         $this->gf->applyWhere($topics);
-        $this->gf->applyOrderBy($topics);
+        \Netpromotion\Profiler\Profiler::finish('aply where');
         
+        \Netpromotion\Profiler\Profiler::start('aply order by');
+        $this->gf->applyOrderBy($topics);
+        \Netpromotion\Profiler\Profiler::finish('aply order by');
+        
+        \Netpromotion\Profiler\Profiler::start('Pagination');
         $paginator = new PaginatorControl($topics, $forumSettings['pagination']['itemsPerPage'], $forumSettings['pagination']['itemsAroundPagination'], $page);
 
         $this->addComponent($paginator, 'paginator');
@@ -91,6 +103,7 @@ final class ForumPresenter extends Base\ForumPresenter
         if (!$paginator->getCount()) {
             $this->flashMessage('No topics.', self::FLASH_MESSAGE_DANGER);
         }      
+        \Netpromotion\Profiler\Profiler::finish('Pagination');
         
         $moderators = $this->moderatorsManager->getAllJoinedByRight($forum_id);
         
@@ -98,11 +111,13 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->flashMessage('No moderators in forum.', self::FLASH_MESSAGE_INFO);
         }
 
+        \Netpromotion\Profiler\Profiler::start('send to template');
         $this->template->logViews    = $this->topicSetting->get()['logViews'];
         $this->template->forum       = $forum;
         $this->template->topics      = $topics->fetchAll();
         $this->template->subForums   = $this->getManager()->getByParent($forum_id);
         $this->template->moderators  = $moderators;
+        \Netpromotion\Profiler\Profiler::finish('send to template');
     }
 
     /**

@@ -25,6 +25,14 @@ abstract class AdminPresenter extends CrudPresenter
      * @inject
     */
     public $topicFacade;
+    
+    public function __destruct()
+    {
+        $this->topicFacade     = null;
+        $this->adminTranslator = null;
+        
+        parent::__destruct();
+    }
 
     /**
      * @param $element

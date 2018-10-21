@@ -44,7 +44,14 @@ class CategoryFacade
         $this->forumsManager     = $forumsManager;
     }
     
-    /**
+    public function __destruct()
+    {
+        $this->categoriesManager = null;
+        $this->forumsManager     = null;
+        $this->forumFacade       = null;
+    }
+
+        /**
      *
      * @param Entity\Category $category
      */

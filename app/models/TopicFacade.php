@@ -115,6 +115,21 @@ class TopicFacade
         $this->thanksFacade      = $thanksFacade;
         $this->reportFacade      = $reportFacade;
     }
+    
+    public function __destruct()
+    {
+        $this->topicsManager     = null;
+        $this->topicWatchManager = null;
+        $this->postsManager      = null;
+        $this->usersManager      = null;
+        $this->thanksManager     = null;
+        $this->postFacade        = null;
+        $this->forumsManager     = null;
+        $this->reportsManager    = null;
+        $this->topicWatchFacade  = null;
+        $this->thanksFacade      = null;
+        $this->reportFacade      = null;
+    }
 
     /**
      *

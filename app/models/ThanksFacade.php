@@ -59,6 +59,15 @@ class ThanksFacade
         $this->topicsManager = $topicsManager;
         $this->forumsManager = $forumsManager;
     }
+    
+    public function __destruct()
+    {
+        $this->thanksManager = null;
+        $this->usersManager  = null;
+        $this->postsManager  = null;
+        $this->topicsManager = null;
+        $this->forumsManager = null;
+    }
 
     /**
      *

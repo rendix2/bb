@@ -21,7 +21,7 @@ use App\Models\UsersManager;
  */
 abstract class BasePresenter extends Nette\Application\UI\Presenter
 {
-    use SecuredLinksPresenterTrait;
+    //use SecuredLinksPresenterTrait;
     
     /**
      * @var string
@@ -107,10 +107,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      */
     public $usersManager;
 
-
-
-
-
     /**
      * BasePresenter constructor.
      */
@@ -121,13 +117,25 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         $this->bootstrapForm = BootstrapForm::create();
     }
 
-    /**
+    public function __destruct()
+    {
+        $this->banManager        = null;
+        $this->bootstrapForm     = null;
+        $this->translatorFactory = null;
+        $this->categoriesManager = null;
+        $this->forumsManager     = null;
+        $this->topicsManager     = null;
+        $this->postsManager      = null;
+        $this->usersManager      = null;
+    }
+
+        /**
      *
      */
     public function startup()
     {
         parent::startup();
-             
+
         $this->banUser();
 
         $this->template->id          = $this->getParameter('id');

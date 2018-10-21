@@ -118,6 +118,21 @@ class PostFacade
         $this->topicWatchFacade    = $topicWatchFacade;
         $this->topicSettings       = $topicSettings;
     }
+    
+    public function __destruct()
+    {
+        $this->postsManager        = null;
+        $this->topicsManager       = null;
+        $this->topicWatchManager   = null;
+        $this->usersManager        = null;
+        $this->reportsManager      = null;
+        $this->forumsManager       = null;
+        $this->postsHistoryManager = null;
+        $this->thanksManager       = null;
+        $this->thanksFacade        = null;
+        $this->topicWatchFacade    = null;
+        $this->topicSettings       = null;
+    }
 
     /**
      * @param ArrayHash $post

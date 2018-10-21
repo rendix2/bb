@@ -42,6 +42,12 @@ class PollsFacade
         $this->pollsAnswersManager = $pollsAnswersManager;
         $this->pollsVotesManager   = $pollsVotesManager;
     }
+    
+    public function __destruct() {
+        $this->pollsManager        = null;
+        $this->pollsAnswersManager = null;
+        $this->pollsVotesManager   = null;
+    }
 
     /**
      * @param int $item_id

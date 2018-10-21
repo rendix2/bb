@@ -72,7 +72,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     public function __construct(Connection $dibi, IStorage $storage)
     {
         parent::__construct($dibi);
-
+        
         $this->storage = $storage;
         
         $table = $this->getNameOfTableFromClass();
@@ -96,6 +96,20 @@ abstract class CrudManager extends Manager //implements ICrudManager
     }
     
     /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->table        = null;
+        $this->primaryKey   = null;
+        $this->managerCache = null;
+        $this->storage      = null;
+        $this->columnNames  = null;
+       
+        parent::__destruct();
+    }
+
+        /**
      *
      * @param string $column
      * @param string $value

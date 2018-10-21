@@ -68,11 +68,6 @@ class GridFilter extends Control
     const SESSION_PREFIX = 'grid_filter_';
 
     /**
-     * @var array $whereColumns
-     */
-    private $whereColumns;
-
-    /**
      * @var BootstrapForm $form
      */
     private $form;
@@ -103,6 +98,17 @@ class GridFilter extends Control
         $this->form    = BootstrapForm::create();
         $this->filters = [];
         $this->session = $session;
+    }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->form = null;
+        $this->filters = null;
+        $this->session = null;
+        $this->translator = null;
     }
 
     /**
@@ -287,7 +293,7 @@ class GridFilter extends Control
         if (preg_match('#_Xto$#', $name)) {
             $columnName = str_replace('_Xto', '', $name);
         }
-
+        
         return $columnName;
     }
     

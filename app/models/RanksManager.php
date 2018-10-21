@@ -40,6 +40,13 @@ class RanksManager extends CrudManager
 
         $this->ranks = $ranks;
     }
+    
+    public function __destruct()
+    {
+        $this->ranks = null;
+        
+        parent::__destruct();
+    }
 
     /**
      * @param FileUpload $file

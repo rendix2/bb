@@ -21,6 +21,16 @@ abstract class AuthenticatedPresenter extends BasePresenter
      * @inject
      */
     public $sessionsManager;
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->sessionsManager = null;
+        
+        parent::__destruct();
+    }
 
     /**
      *

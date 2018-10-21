@@ -60,7 +60,16 @@ class TopicWatchFacade
         $this->postsManager      = $postsManager;
     }
     
-    /**
+    public function __destruct()
+    {
+        $this->usersManager      = null;
+        $this->topicWatchManager = null;
+        $this->topicsManager     = null;
+        $this->forumsManager     = null;
+        $this->postsManager      = null;
+    }
+
+        /**
      *
      * @param int $category_id
      */

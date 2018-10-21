@@ -35,6 +35,13 @@ class CrudNullManager extends CrudManager implements ICrudManager
     {
         $this->connection = $dibi;
     }
+    
+    public function __destruct()
+    {
+        $this->dibi = null;
+        
+        parent::__destruct();
+    }
 
     /**
      * @return array|void

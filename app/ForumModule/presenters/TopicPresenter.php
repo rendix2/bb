@@ -454,6 +454,7 @@ class TopicPresenter extends BaseForumPresenter
                 0,
                 $user_id,
                 1, 
+                1,
                 $post
             );
             

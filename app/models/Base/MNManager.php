@@ -84,7 +84,18 @@ abstract class MNManager extends Manager
         }
     }
     
-    /**
+    public function __destruct()
+    {
+        $this->left     = null;
+        $this->right    = null;
+        $this->table    = null;
+        $this->leftKey  = null;
+        $this->rightKey = null;
+                
+        parent::__destruct();
+    }
+
+        /**
      * @param string $tableName
      *
      * @return bool|string

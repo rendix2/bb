@@ -111,7 +111,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     public function startup()
     {
         parent::startup();
-        
+
         $this->forumTranslator = $this->translatorFactory->forumTranslatorFactory();
         $this->getUser()->setAuthorizator($this->authorizator->getAcl());
         

@@ -44,6 +44,13 @@ class ForumFacade
         $this->topicFacade   = $topicFacade;
         $this->topicsManager = $topicsManager;
     }
+    
+    public function __destruct()
+    {
+        $this->topicFacade   = null;
+        $this->topicsManager = null;
+        $this->forumsManager = null;
+    }
 
     /**
      * @param Entity\Forum $forum
