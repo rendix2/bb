@@ -44,6 +44,17 @@ class GroupPresenter extends AdminPresenter
     {
         parent::__construct($manager);
     }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->users2GroupsManager  = null;
+        $this->forums2groupsManager = null;
+        
+        parent::__destruct();
+    }
 
     /**
      * @param array $data

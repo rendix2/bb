@@ -47,6 +47,17 @@ class LoginPresenter extends BasePresenter
      */
     public $userLoginFormFactory;
 
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->backlink       = null;
+        $this->translator     = null;
+        $this->sessionManager = null;
+        
+        parent::__destruct();
+    }
 
     /**
      *

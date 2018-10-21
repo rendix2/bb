@@ -41,6 +41,16 @@ class RankPresenter extends AdminPresenter
     }
     
     /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->ranks = null;
+        
+        parent::__destruct();
+    }
+
+    /**
      *
      * @param int|null $id
      */

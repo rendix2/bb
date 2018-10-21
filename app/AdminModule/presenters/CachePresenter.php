@@ -31,16 +31,10 @@ class CachePresenter extends AdminPresenter
      *
      * @param CacheManager $manager
      */
-    public function __construct(CacheManager $manager)
+    public function __construct(CacheManager $manager, IStorage $storage)
     {
         parent::__construct($manager);
-    }
-
-    /**
-     * @param IStorage $storage
-     */
-    public function injectCache(IStorage $storage)
-    {
+        
         $this->cache = new Cache($storage);
     }
 

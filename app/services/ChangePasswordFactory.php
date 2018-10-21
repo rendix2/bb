@@ -56,7 +56,8 @@ class ChangePasswordFactory
         $this->translatorFactory = $translatorFactory;
     }
     
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->userManager       = null;
         $this->user              = null;
         $this->users             = null;

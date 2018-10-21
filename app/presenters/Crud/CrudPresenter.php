@@ -229,7 +229,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
         if (!$paginator->getCount()) {           
             $this->flashMessage(sprintf('No %s.', $this->getTitle()), self::FLASH_MESSAGE_DANGER);
         }
-       
+               
         $this->template->items      = $items->fetchAll();
         $this->template->title      = $this->getTitleOnDefault();
         $this->template->countItems = $paginator->getCount();

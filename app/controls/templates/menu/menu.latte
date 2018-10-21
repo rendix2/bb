@@ -1,6 +1,6 @@
 {define menu_foreach}
     {foreach $menu as $item}
-        <li class="nav-item {if ':'.$presenter->name.':'.$presenter->action === $item['presenter']}active{/if}">
+        <li class="nav-item {if ':'.$presenter->name.':' === $item['presenter']}active{/if}">
             {if isset($item['submenu']) && is_array($item['submenu'])}
                 {include menu, menu => $item['submenu']}
             {else}

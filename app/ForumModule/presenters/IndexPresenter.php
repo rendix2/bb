@@ -22,6 +22,11 @@ use Tracy\Debugger;
  */
 class IndexPresenter extends BaseForumPresenter
 {
+    use \App\Models\Traits\ForumsTrait;
+    use \App\Models\Traits\TopicsTrait;    
+    use \App\Models\Traits\PostTrait;
+    use \App\Models\Traits\UsersTrait;
+    
     /**
      * @var string
      */
@@ -83,9 +88,13 @@ class IndexPresenter extends BaseForumPresenter
     
     public function __destruct()
     {
+        $this->forumsManager    = null;
+        $this->topicsManager    = null;
+        $this->postsManager     = null;
+        $this->user             = null;
         $this->cache            = null;
         $this->moderatorManager = null;
-        
+
         parent::__destruct();
     }
 

@@ -42,7 +42,11 @@ use Nette\Utils\DateTime;
  */
 class UserPresenter extends BaseForumPresenter
 {
-     /**
+    use \App\Models\Traits\UsersTrait;
+    use \App\Models\Traits\TopicsTrait;
+    use \App\Models\Traits\PostTrait;
+    
+    /**
      * @var LanguagesManager $languageManager
      * @inject
      */
@@ -141,6 +145,32 @@ class UserPresenter extends BaseForumPresenter
     public function __construct(UsersManager $manager)
     {
         parent::__construct($manager);
+    }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {    
+    $this->usersManager          = null;
+    $this->topicsManager         = null;
+    $this->postsManager          = null;
+    $this->languageManager       = null;
+    $this->rankManager           = null;
+    $this->topicWatchManager     = null;
+    $this->thanksManager         = null;
+    $this->avatar                = null;
+    $this->rank                  = null;
+    $this->moderatorsManager     = null;
+    $this->bbMailer              = null;
+    $this->changePasswordFactory = null;
+    $this->deleteAvatarFactory   = null;
+    $this->favouriteUsersManager = null;
+    $this->startDay              = null;
+    $this->users                 = null;
+    $this->reportsManager        = null;
+        
+        parent::__destruct();
     }
 
     /**

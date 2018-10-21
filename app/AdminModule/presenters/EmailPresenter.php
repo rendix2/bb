@@ -45,6 +45,17 @@ class EmailPresenter extends AdminPresenter
     {
         parent::__construct($manager);
     }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->bbMailer          = null;
+        $this->mail2UsersManager = null;
+        
+        parent::__destruct();
+    }
 
     /**
      * @param int|null $id

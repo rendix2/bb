@@ -14,6 +14,9 @@ use dibi;
  */
 class CategoryPresenter extends Base\ForumPresenter
 {
+    use \App\Models\Traits\CategoriesTrait;
+    use \App\Models\Traits\ForumsTrait;
+    
     /**
      * 
      * @param CategoriesManager $manager
@@ -23,6 +26,17 @@ class CategoryPresenter extends Base\ForumPresenter
         parent::__construct($manager);
     }
     
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->categoriesManager = null;        
+        $this->forumsManager     = null;
+        
+        parent::__destruct();
+    }
+
     /**
      * 
      * @param int $category_id

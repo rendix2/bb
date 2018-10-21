@@ -16,7 +16,7 @@ abstract class Entity
         }
     }
 
-        public function __set($name, $value)
+    public function __set($name, $value)
     {
         if (!property_exists($this, $name)) {
             throw new \Nette\MemberAccessException('Column {$name} does not exist.');

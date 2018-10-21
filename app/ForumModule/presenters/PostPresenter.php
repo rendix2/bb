@@ -27,6 +27,11 @@ use Nette\Utils\ArrayHash;
  */
 class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
 {
+    use \App\Models\Traits\CategoriesTrait;
+    use \App\Models\Traits\ForumsTrait;
+    use \App\Models\Traits\TopicsTrait;
+    use \App\Models\Traits\PostTrait;
+    use \App\Models\Traits\UsersTrait;
 
     /**
      * @var TopicWatchManager $topicWatchManager
@@ -85,7 +90,12 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      * 
      */
     public function __destruct()
-    {        
+    {
+        $this->categoriesManager   = null;
+        $this->forumsManager       = null;
+        $this->topicsManager       = null;
+        $this->postsManager        = null;
+        $this->usersManager        = null;
         $this->topicWatchManager   = null;
         $this->reportManager       = null;
         $this->bbMailer            = null;

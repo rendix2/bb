@@ -106,6 +106,20 @@ class UserPresenter extends AdminPresenter
         parent::__construct($manager);
     }
     
+    public function __destruct() {
+        $this->languagesManager      = null;
+        $this->group2UserManager     = null;
+        $this->groupsManager         = null;
+        $this->users2ForumsManager   = null;
+        $this->avatar                = null;
+        $this->rank                  = null;
+        $this->moderatorsManager     = null;
+        $this->changePasswordFactory = null;
+        $this->deleteAvatarFactory   = null;
+        
+        parent::__destruct();
+    }
+
     /**
      * @param int $page
      */

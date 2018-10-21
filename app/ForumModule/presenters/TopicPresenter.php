@@ -36,7 +36,11 @@ use Tracy\Debugger;
  */
 class TopicPresenter extends BaseForumPresenter
 {
-    
+    use \App\Models\Traits\CategoriesTrait;
+    use \App\Models\Traits\ForumsTrait;
+    use \App\Models\Traits\TopicsTrait;
+    use \App\Models\Traits\PostTrait;
+
     /**
      * @var TopicsSetting $topicSetting
      * @inject
@@ -120,7 +124,12 @@ class TopicPresenter extends BaseForumPresenter
     /**
      * 
      */
-    public function __destruct() {
+    public function __destruct()
+    {
+        $this->categoriesManager = null;
+        $this->forumsManager     = null;
+        $this->topicsManager     = null;
+        $this->postsManager      = null;
         $this->topicSetting      = null;
         $this->avatars           = null;
         $this->topicWatchManager = null;

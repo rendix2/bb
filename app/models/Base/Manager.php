@@ -34,7 +34,7 @@ abstract class Manager extends Tables
     public function __destruct()
     {
         if ($this->dibi && $this->dibi->isConnected()) {
-            $this->dibi->disconnect();    
+            $this->dibi->disconnect();
         }
                 
         $this->dibi = null;

@@ -22,6 +22,10 @@ use Nette\Http\IResponse;
  */
 final class ForumPresenter extends Base\ForumPresenter
 {
+    use \App\Models\Traits\CategoriesTrait;
+    use \App\Models\Traits\ForumsTrait;
+    use \App\Models\Traits\TopicsTrait;
+    
     /**
      *
      * @var ForumSettings $forumsSettings
@@ -63,6 +67,9 @@ final class ForumPresenter extends Base\ForumPresenter
      */
     public function __destruct()
     {
+        $this->categoriesManager = null;
+        $this->forumsManager     = null;
+        $this->topicsManager     = null;
         $this->forumSettings     = null;
         $this->topicSetting      = null;
         $this->moderatorsManager = null;

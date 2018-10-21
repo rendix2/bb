@@ -49,6 +49,20 @@ class ForumPresenter extends AdminPresenter
         parent::__construct($manager);
     }
     
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->moderatorsManager = null;
+        $this->forumFacade       = null;
+        
+        parent::__destruct();
+    }
+
+    /**
+     * 
+     */
     public function handleReorder()
     {
         // todo
