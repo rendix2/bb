@@ -72,6 +72,18 @@ class RegisterPresenter extends BasePresenter
         $this->userFacade      = $userFacade;
     }
     
+    public function __destruct()
+    {
+        $this->translator = null;
+        $this->languageManager = null;
+        $this->pmManager       = null;
+        $this->bbMailer        = null;
+        $this->storage         = null;
+        $this->userFacade      = null;
+        
+        parent::__destruct();
+    }
+
     public function startup()
     {
         parent::startup();

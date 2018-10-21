@@ -49,6 +49,13 @@ class SendMailToAdminForm extends Control
         $this->usersManager      = $usersManager;
         $this->bbMailer          = $bbMailer;
     }
+    
+    public function __destruct()
+    {
+        $this->translatorFactory = null;
+        $this->usersManager      = null;
+        $this->bbMailer          = null;
+    }
 
     /**
      * 

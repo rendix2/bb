@@ -31,7 +31,12 @@ class TopicJumpToForumForm extends Control
         $this->forumManager = $forumManager;
     }
 
-    /**
+    public function __destruct()
+    {
+        $this->forumManager = null;
+    }
+
+        /**
      * render jump to forum
      */
     public function render()

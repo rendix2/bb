@@ -43,7 +43,13 @@ class UserChangeUserNameForm extends Control
         $this->user         = $user;
     }
     
-    public function render()
+    public function __destruct()
+    {
+        $this->usersManager = null;
+        $this->user         = null;
+    }
+
+        public function render()
     {
         $this['changeUserNameForm']->render();
     }

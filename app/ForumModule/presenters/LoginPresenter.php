@@ -44,9 +44,22 @@ class LoginPresenter extends BasePresenter
      * @var Translator $translator
      */
     private $translator;
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->backlink      = null;
+        $this->userLoginForm = null;
+        $this->bbMailer      = null;
+        $this->translator    = null;
+        
+        parent::__destruct();
+    }
 
     /**
-     * LoginPresenter constructor.
+     * LoginPresenter startup.
      */
     public function startup()
     {

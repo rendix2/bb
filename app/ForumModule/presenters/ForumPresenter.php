@@ -57,6 +57,19 @@ final class ForumPresenter extends Base\ForumPresenter
     {
         parent::__construct($manager);
     }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->forumSettings     = null;
+        $this->topicSetting      = null;
+        $this->moderatorsManager = null;
+        $this->gf                = null;
+        
+        parent::__destruct();
+    }
 
     /**
      * renders topics

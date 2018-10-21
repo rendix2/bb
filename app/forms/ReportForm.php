@@ -26,13 +26,18 @@ class ReportForm extends Control
      * 
      * @param ReportsManager $reportsManager
      */
-    public function __construct(ReportsManager $reportsManager) {
+    public function __construct(ReportsManager $reportsManager)
+    {
         parent::__construct();
         
         $this->reportsManager = $reportsManager;
     }
     
-    /**
+    public function __destruct() {
+        $this->reportsManager = null;
+    }
+
+        /**
      * 
      */
     public function render()

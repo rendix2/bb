@@ -15,13 +15,30 @@ use Nette\Localization\ITranslator;
  */
 class UserModeratorForm extends Control
 {
+    /**
+     *
+     * @var ITranslator $translator
+     */
     private $translator;
     
+    /**
+     *
+     * @var ModeratorsManager $moderatorsManager,
+     */
     private $moderatorsManager;
     
+    /**
+     *
+     * @var ForumsManager $forumsManager
+     */
     private $forumsManager;
 
-    
+    /**
+     * 
+     * @param ForumsManager     $forumsManager
+     * @param ModeratorsManager $moderatorsManager
+     * @param ITranslator       $translator
+     */
     public function __construct(
             ForumsManager $forumsManager,
             ModeratorsManager $moderatorsManager,
@@ -32,6 +49,16 @@ class UserModeratorForm extends Control
         $this->translator        = $translator;
     }
     
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->translator        = null;
+        $this->moderatorsManager = null;
+        $this->forumsManager     = null;
+    }
+
     /**
      * 
      */

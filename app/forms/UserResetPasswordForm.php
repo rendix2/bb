@@ -41,6 +41,12 @@ class UserResetPasswordForm extends Control
         $this->translateFactory = $translatorFactory;
         $this->usersManager     = $usersManager;
     }
+    
+    public function __destruct()
+    {
+        $this->translateFactory = null;
+        $this->usersManager     = null;
+    }
 
     /**
      * renders form

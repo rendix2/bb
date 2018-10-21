@@ -42,7 +42,13 @@ class UserSearchControl extends Control
         $this->translator   = $translator;
     }
     
-    /**
+    public function __destruct()
+    {
+        $this->usersManager = null;
+        $this->translator   = null;
+    }
+
+        /**
      * renders controls
      */
     public function render()

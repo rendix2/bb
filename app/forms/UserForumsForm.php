@@ -48,7 +48,14 @@ class UserForumsForm extends Control
         $this->translator          = $translator;
     }
     
-    public function render()
+    public function __destruct()
+    {
+        $this->forumsManager       = null;
+        $this->users2ForumsManager = null;
+        $this->translator          = null;
+    }
+
+        public function render()
     {
         $sep = DIRECTORY_SEPARATOR;
         

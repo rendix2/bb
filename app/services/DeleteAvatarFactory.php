@@ -40,21 +40,32 @@ class DeleteAvatarFactory
     
     /**
      *
-     * @param UsersManager $userManager
+     * @param UsersManager $usersManager
      * @param Avatars $avatars
      * @param User $user
      * @param TranslatorFactory $translatorFactory
      */
     public function __construct(
-        UsersManager $userManager,
+        UsersManager $usersManager,
         Avatars $avatars,
         User $user,
         TranslatorFactory $translatorFactory
     ) {
-        $this->userManager       = $userManager;
+        $this->userManager       = $usersManager;
         $this->avatars           = $avatars;
         $this->user              = $user;
         $this->translatorFactory = $translatorFactory;
+    }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->userManager       = null;
+        $this->avatars           = null;
+        $this->user              = null;
+        $this->translatorFactory = null;
     }
 
     /**

@@ -50,6 +50,12 @@ class Authenticator implements IAuthenticator
         $this->usersManager     = $usersManger;
         $this->languagesManager = $languageManager;
     }
+    
+    public function __destruct()
+    {
+        $this->usersManager     = null;
+        $this->languagesManager = null;
+    }
 
     /**
      *

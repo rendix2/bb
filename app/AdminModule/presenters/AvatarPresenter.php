@@ -32,6 +32,16 @@ class AvatarPresenter extends AdminPresenter
     {
         parent::__construct($manager);
     }
+    
+    /**
+     *
+     */
+    public function __destruct()
+    {
+        $this->avatars = null;
+        
+        parent::__destruct();
+    }
 
     /**
      * @param int $page

@@ -80,6 +80,22 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
     {
         parent::__construct($manager);
     }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {        
+        $this->topicWatchManager   = null;
+        $this->reportManager       = null;
+        $this->bbMailer            = null;
+        $this->postFacade          = null;
+        $this->postsHistoryManager = null;
+        $this->postSetting         = null;
+        $this->storage             = null;
+        
+        parent::__destruct();
+    }
 
     /**
      * @param $category_id

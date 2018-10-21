@@ -49,6 +49,17 @@ class TranslatorFactory
         
         $this->setLang();
     }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->user            = null;
+        $this->lang            = null;
+        $this->appDir          = null;
+        $this->defaultLanguage = null;
+    }
 
     /**
      * sets default lang
@@ -61,7 +72,7 @@ class TranslatorFactory
         if ($identity) {
             $lang = $identity->getData()['lang_file_name'];
         } else {
-            $lang = $this->defaultLanguage->getDefaultLanguage();
+            $lang = $this->defaultLanguage->get();
         }
         
         $this->lang = $lang;

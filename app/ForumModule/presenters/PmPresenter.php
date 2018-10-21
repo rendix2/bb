@@ -54,6 +54,18 @@ class PmPresenter extends CrudPresenter
     }
     
     /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->authorizator   = null;
+        $this->reportsManager = null;
+        $this->translator     = null;
+        
+        parent::__destruct();
+    }
+
+        /**
      *
      * @param mixed $element
      */

@@ -46,6 +46,13 @@ class UserGroupsForm extends Control
         $this->users2GroupsManager = $users2GroupsManager;
         $this->translator          = $translator;
     }
+    
+    public function __destruct()
+    {
+        $this->groupsManager       = null;
+        $this->users2GroupsManager = null;
+        $this->translator          = null;
+    }
 
     /**
      * 

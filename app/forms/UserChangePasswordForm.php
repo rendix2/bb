@@ -63,7 +63,15 @@ class UserChangePasswordForm extends Control
         $this->users       = $users;
     }
     
-    /**
+    public function __destruct()
+    {
+        $this->userManager = null;
+        $this->translator  = null;
+        $this->user        = null;
+        $this->users       = null;
+    }
+
+        /**
      * renders control
      */
     public function render()

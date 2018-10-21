@@ -7,30 +7,6 @@ namespace App\Settings;
  *
  * @author rendix2
  */
-class DefaultLanguage
+class DefaultLanguage extends Setting
 {
-
-    /**
-     *
-     * @var string $defaultLanguage
-     */
-    private $defaultLanguage;
-    
-    /**
-     *
-     * @param string $defaultLanguage
-     */
-    public function __construct($defaultLanguage)
-    {
-        $this->defaultLanguage = $defaultLanguage;
-    }
-    
-    /**
-     *
-     * @return string
-     */
-    public function getDefaultLanguage()
-    {
-        return $this->defaultLanguage;
-    }
 }

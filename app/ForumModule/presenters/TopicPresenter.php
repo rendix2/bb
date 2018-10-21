@@ -118,6 +118,25 @@ class TopicPresenter extends BaseForumPresenter
     }
 
     /**
+     * 
+     */
+    public function __destruct() {
+        $this->topicSetting      = null;
+        $this->avatars           = null;
+        $this->topicWatchManager = null;
+        $this->thanksManager     = null;
+        $this->rankManager       = null;
+        $this->topicFacade       = null;
+        $this->thanksFacade      = null;
+        $this->postFacade        = null;
+        $this->reportManager     = null;
+        $this->postSettings      = null;
+        $this->storage           = null;
+        
+        parent::__destruct();
+    }
+
+        /**
      * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id

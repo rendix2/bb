@@ -10,31 +10,8 @@ use SplFileInfo;
  *
  * @author rendix2
  */
-class CacheDir
+class CacheDir extends Setting
 {
-    /**
-     * @var string $cacheDir
-     */
-    public $cacheDir;
-
-    /**
-     * CacheDir constructor.
-     *
-     * @param string $cacheDir
-     */
-    public function __construct($cacheDir)
-    {
-        $this->cacheDir = $cacheDir;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCacheDir()
-    {
-        return $this->cacheDir;
-    }
-
     /**
      * @return int
      */
@@ -42,7 +19,7 @@ class CacheDir
     {
         $size = 0;
         
-        foreach (Finder::findFiles('*')->from($this->cacheDir) as $file) {
+        foreach (Finder::findFiles('*')->from($this->get()) as $file) {
             /**
              * @var SplFileInfo $file
              */

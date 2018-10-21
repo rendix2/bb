@@ -17,6 +17,8 @@ use Nette\Security\User;
 class Authorizator
 {
 
+    const ROLES = [ 1 => 'guest', 2 => 'registered', 3 => 'moderator', 4 => 'juniorAdmin', 5 => 'Admin'];
+    
     /**
      * @var Users2GroupsManager $users2GroupsManager
      */
@@ -41,8 +43,6 @@ class Authorizator
      * @var UsersManager $usersManager
      */
     private $usersManager;
-    
-    const ROLES = [ 1 => 'guest', 2 => 'registered', 3 => 'moderator', 4 => 'juniorAdmin', 5 => 'Admin'];
 
     /**
      *
@@ -75,6 +75,16 @@ class Authorizator
         $this->defineRoles();
         $this->defineResources();
         $this->definePrivilegies();
+    }
+    
+    public function __destruct()
+    {
+        $this->users2GroupsManager = null;
+        $this->acl                 = null;
+        $this->forumsManager       = null;
+        $this->user                = null;
+        $this->usersManager        = null;
+        $this->moderatorsManager   = null;
     }
 
     /**

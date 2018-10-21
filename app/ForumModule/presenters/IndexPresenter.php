@@ -74,9 +74,19 @@ class IndexPresenter extends BaseForumPresenter
      *
      * @param CategoriesManager $categoriesManager
      */
-    public function __construct(CategoriesManager $categoriesManager)
+    public function __construct(CategoriesManager $categoriesManager, IStorage $storage)
     {
         parent::__construct($categoriesManager);
+        
+        $this->cache = new Cache($storage, self::CACHE_NAMESPACE);
+    }
+    
+    public function __destruct()
+    {
+        $this->cache            = null;
+        $this->moderatorManager = null;
+        
+        parent::__destruct();
     }
 
     /**
@@ -85,14 +95,6 @@ class IndexPresenter extends BaseForumPresenter
     public function getCache()
     {
         return $this->cache;
-    }
-
-    /**
-     * @param IStorage $storage
-     */
-    public function injectCache(IStorage $storage)
-    {
-        $this->cache = new Cache($storage, self::CACHE_NAMESPACE);
     }
 
     /**

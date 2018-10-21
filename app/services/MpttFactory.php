@@ -50,6 +50,16 @@ class MpttFactory
     }
     
     /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->categoriesManager = null;
+        $this->forumsManager     = null;
+        $this->dibi              = null;
+    }
+
+    /**
      *
      * @return Zebra_Mptt
      */

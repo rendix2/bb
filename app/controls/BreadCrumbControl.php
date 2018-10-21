@@ -35,7 +35,12 @@ class BreadCrumbControl extends Control
         $this->translator = $translator;
     }
     
-    /**
+    public function __destruct() {
+        $this->breadCrumb = null;
+        $this->translator = null;
+    }
+
+        /**
      * render breadcrumb
      */
     public function render()

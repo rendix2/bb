@@ -9,6 +9,7 @@ use App\Models\PostFacade;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 use Nette\Security\User;
+use Nette\Http\IRequest;
 
 /**
  * Description of TopicFastReplyForm
@@ -37,7 +38,7 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
     
     /**
      *
-     * @var \Nette\Http\IRequest $request
+     * @var IRequest $request
      */
     private $request;
 
@@ -47,8 +48,9 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
      * @param TranslatorFactory $translatorFactory
      * @param User              $user
      * @param PostFacade        $postFacade
+     * @param IRequest          $request
      */
-    public function __construct(TranslatorFactory $translatorFactory, User $user, PostFacade $postFacade, \Nette\Http\IRequest $request)
+    public function __construct(TranslatorFactory $translatorFactory, User $user, PostFacade $postFacade, IRequest $request)
     {
         parent::__construct();
         
@@ -58,7 +60,15 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
         $this->request           = $request;
     }
     
-    public function render()
+    public function __destruct()
+    {
+        $this->translatorFactory = null;
+        $this->user              = null;
+        $this->postFacade        = null;
+        $this->request           = null;
+    }
+
+        public function render()
     {
         $this['fastReply']->render();
     }

@@ -52,6 +52,15 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         $this->manager = $manager;
     }
     
+    public function __destruct() {
+        $this->forumTranslator = null;
+        $this->authorizator    = null;
+        $this->pmManager       = null;
+        $this->manager         = null;
+        
+        parent::__destruct();
+    }
+
     /**
      *
      * @return Manager

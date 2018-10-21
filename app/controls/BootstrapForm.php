@@ -91,6 +91,19 @@ class BootstrapForm extends Form
         $this->labelColumnCount = $labelColumnCount;
         $this->ajax             = $ajax;
     }
+    
+    /**
+     * BootstrapForm destruct.
+     *
+     * @api
+     */
+    public function __destruct()
+    {
+        $this->columnCount      = null;
+        $this->columnType       = null;
+        $this->labelColumnCount = null;
+        $this->ajax             = null;
+    }    
 
     /**
      * @return BootstrapForm
@@ -160,19 +173,7 @@ class BootstrapForm extends Form
         
         return $this;
     }
-
-    /**
-     * BootstrapForm destruct.
-     *
-     * @api
-     */
-    public function __destruct()
-    {
-        $this->columnCount      = null;
-        $this->columnType       = null;
-        $this->labelColumnCount = null;
-    }
-
+    
     /**
      * @param string      $name
      * @param string|null $caption
