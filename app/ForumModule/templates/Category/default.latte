@@ -1,0 +1,52 @@
+{block content}
+
+    <div class="col-sm-12">
+        <div class="float-left">
+            {control breadCrumbCategory}
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">{_menu_forums}</div>
+            <div class="card-block">
+                <ul>
+                {foreach $forums as $forum}
+                    <li>
+                        <a href="{link Forum:default, $category_id, $forum['forum_id']}">{$forum['forum_name']}</a>
+                    </li>
+                {/foreach}
+                </ul>
+            </div>
+        </div>
+    </div>        
+    
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">{_menu_category}</div>
+            <div class="card-block">
+            {block categories}
+                <ul>
+                {foreach $categories as $category}
+                    <li>
+                        <a href="{link Category:default, $category['category_id']}">{$category['category_name']}</a>
+                    </li>
+
+                    {if is_array($category['children'])}
+                        {include categories, categories => $category['children']}
+                    {/if}
+                {/foreach}
+                </ul>
+            {/block}
+            </div>
+        </div>
+    </div>        
+
+    <div class="col-sm-12 mt-3">
+        <div class="float-left">
+            {control breadCrumbCategory}
+        </div>
+    </div>    
+
+{/block}
+    

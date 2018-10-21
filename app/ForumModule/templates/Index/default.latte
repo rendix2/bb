@@ -5,7 +5,7 @@
             {foreach $data['cats'] as $category_id => $cat_values}
                 <tr>
                     <td>
-                        <a href="{link Index:category, $data['cats'][$category_id]->category_id}">{$data['cats'][$category_id]->category_name}</a>
+                        <a href="{link Category:default, $data['cats'][$category_id]->category_id}">{$data['cats'][$category_id]->category_name}</a>
                     </td>
                 </tr>
                 {if count($cat_values['forums'])}
