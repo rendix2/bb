@@ -91,7 +91,7 @@ class IndexPresenter extends BaseForumPresenter
         $this->forumsManager    = null;
         $this->topicsManager    = null;
         $this->postsManager     = null;
-        $this->user             = null;
+        $this->usersManager     = null;
         $this->cache            = null;
         $this->moderatorManager = null;
 

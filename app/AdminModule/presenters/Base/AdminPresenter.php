@@ -3,7 +3,6 @@
 namespace App\AdminModule\Presenters\Base;
 
 use App\Controls\BootstrapForm;
-use App\Models\TopicFacade;
 use App\Presenters\crud\CrudPresenter;
 use Nette\Localization\ITranslator;
 
@@ -20,15 +19,10 @@ abstract class AdminPresenter extends CrudPresenter
     private $adminTranslator;
     
     /**
-     *
-     * @var TopicFacade $topicFacade
-     * @inject
-    */
-    public $topicFacade;
-    
+     * 
+     */
     public function __destruct()
     {
-        $this->topicFacade     = null;
         $this->adminTranslator = null;
         
         parent::__destruct();

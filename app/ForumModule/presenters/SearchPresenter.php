@@ -10,6 +10,8 @@ use App\Forms\SearchPostForm;
 use App\Forms\SearchTopicForm;
 use App\Forms\SearchUserForm;
 use App\Models\UsersManager;
+use App\Models\TopicsManager;
+use App\Models\PostsManager;
 
 /**
  * Description of SearchPresenter
@@ -19,6 +21,21 @@ use App\Models\UsersManager;
  */
 class SearchPresenter extends BaseForumPresenter
 {
+    /**
+     *
+     * @var TopicsManager $topicsManager
+     * @inject
+     */
+    public $topicsManager;
+    
+    /**
+     *
+     * @var PostsManager $postsManager
+     * @inject
+     */
+    public $postsManager;
+
+
     /**
      * SearchPresenter constructor.
      *

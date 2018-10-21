@@ -52,9 +52,10 @@ class LoginPresenter extends BasePresenter
      */
     public function __destruct()
     {
-        $this->backlink       = null;
-        $this->translator     = null;
-        $this->sessionManager = null;
+        $this->backlink             = null;
+        $this->translator           = null;
+        $this->sessionManager       = null;
+        $this->userLoginFormFactory = null;
         
         parent::__destruct();
     }

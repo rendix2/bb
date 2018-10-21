@@ -5,14 +5,12 @@ namespace App\ForumModule\Presenters;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Models\Manager;
-use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
 use App\Forms\UserLoginForm;
 use App\Translator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
 
 /**
  * Description of LoginPresenter

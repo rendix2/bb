@@ -210,7 +210,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         ];
 
         $rightMenu = [
-            0 => ['presenter' => 'logout', 'title' => 'logout'],
+            0 => ['presenter' => ':Admin:Index:logout', 'title' => 'logout'],
             1 => ['presenter' => ':Forum:Index:default', 'title' => 'menu_forum'],
         ];
 

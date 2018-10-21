@@ -38,6 +38,9 @@ class CategoryPresenter extends AdminPresenter
         parent::__construct($manager);
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->categoryFacade = null;
