@@ -5,7 +5,7 @@ namespace App\Models\Entity;
 /**
  * Description of User
  *
- * @author rendi
+ * @author rendix2
  */
 class User extends \App\Models\Entity\Base\Entity
 {

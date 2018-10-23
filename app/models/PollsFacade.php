@@ -48,12 +48,30 @@ class PollsFacade
         $this->pollsAnswersManager = null;
         $this->pollsVotesManager   = null;
     }
+    
+    /**
+     * 
+     * @param \App\Models\Entity\Poll $poll
+     */
+    public function add(Entity\Poll $poll)
+    {
+        $poll_data = $poll->getArrayHash();
+        $poll_data->poll_time_to = $poll_data->poll_time_to->getTimestamp();
+        
+        $poll->poll_id = $this->pollsManager->add($poll_data);
+        
+        foreach ($poll->pollAnswers as $answer) {
+            $answer->poll_id = $poll->poll_id;
+            $this->pollsAnswersManager->add($answer->getArrayHash());
+        }
+    }
 
     /**
-     * @param int $item_id
+     * @param Entity\Poll $poll
      */
-    public function delete($item_id)
+    public function delete(Entity\Poll $poll)
     {
-        $this->pollsManager->delete($item_id);
+        $this->pollsManager->delete($poll->poll_id);
+        $this->pollsAnswersManager->deleteByPoll($poll->poll_id);
     }
 }

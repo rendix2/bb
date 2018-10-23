@@ -24,6 +24,7 @@ use dibi;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
+use Nette\Forms\Container;
 use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
@@ -384,12 +385,31 @@ class TopicPresenter extends BaseForumPresenter
     {
         $form = $this->getBootstrapForm();
 
+        // form
+        $form->addGroup('Topic');
         $form->addText('post_title', 'Title')->setRequired(true);
         $form->addTextAreaHtml('post_text', 'Text', 0, 15)->setRequired(true);
+        
         $form->addSubmit('send', 'Send');
         
-        $form->onSuccess[] = [$this,'editFormSuccess'];
+        $form->addGroup('Poll');
+        // poll       
+        
+        $form->addText('poll_question', 'Question');
+        $form->addTbDatePicker('poll_time_to', 'Finish');
+        
+        $answers = $form->addDynamic('answers', function (Container $answer) {
+            $answer->addText('poll_answer', 'Answer');                
+            $answer->addSubmit('remove', 'Remove answer')
+                   ->setValidationScope(FALSE) # disables validation
+                   ->addRemoveOnClick();
+        }, 1);
+        $answers->addSubmit('add', 'Add answer')
+                ->setValidationScope(FALSE) # disables validation
+                ->addCreateOnClick(true);
 
+        $form->onSuccess[] = [$this,'editFormSuccess'];
+        
         return $form;
     }
     
@@ -404,6 +424,19 @@ class TopicPresenter extends BaseForumPresenter
         $topic_id    = $this->getParameter('topic_id');
         $user_id     = $this->getUser()->getId();
         $page        = $this->getParameter('page');
+        
+        if ($values->poll_question) {        
+            $pollAnswers = [];
+        
+            foreach ($values->answers as $answer) {            
+                $pollAnswers[] = \App\Models\Entity\PollAnswer::setFromArrayHash($answer);
+            }
+        
+            $poll = \App\Models\Entity\Poll::setFromArrayHash($values);
+            $poll->pollAnswers = $pollAnswers;
+        } else {
+            $poll = null;
+        }
 
         if ($topic_id) {
             $oldTopicDibi = $this->getManager()->getById($topic_id);
@@ -444,7 +477,8 @@ class TopicPresenter extends BaseForumPresenter
                 $oldTopic->topic_last_user_id, 
                 $oldTopic->topic_order,
                 $oldTopic->topic_page_count,
-                $post
+                $post,
+                $poll
             );
             
             $res = $this->topicFacade->update($topic);
@@ -483,7 +517,8 @@ class TopicPresenter extends BaseForumPresenter
                 $user_id,
                 1, 
                 1,
-                $post
+                $post,
+                $poll                    
             );
             
             $res = $topic_id = $this->topicFacade->add($topic);
@@ -497,9 +532,15 @@ class TopicPresenter extends BaseForumPresenter
         if ($res) {
             $this->flashMessage('Topic was saved.', self::FLASH_MESSAGE_SUCCESS);
         }
+
+        Debugger::barDump($topic, '$topic');
         
-        $this->redirect(':Forum:Topic:default', $category_id, $forum_id, (string)$topic_id, $page);
+        //$this->redirect(':Forum:Topic:default', $category_id, $forum_id, (string)$topic_id, $page);
     }
+    
+    /**
+     * bread crumbs
+     */
 
     /**
      * @return BreadCrumbControl

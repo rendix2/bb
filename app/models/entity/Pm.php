@@ -5,7 +5,7 @@ namespace App\Models\Entity;
 /**
  * Description of Pm
  *
- * @author rendi
+ * @author rendix2
  */
 class Pm extends \App\Models\Entity\Base\Entity
 {

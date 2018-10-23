@@ -5,7 +5,7 @@ namespace App\Models\Entity;
 /**
  * Description of Category
  *
- * @author rendi
+ * @author rendix2
  */
 class Category extends \App\Models\Entity\Base\Entity
 {

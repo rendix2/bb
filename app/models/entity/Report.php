@@ -5,7 +5,7 @@ namespace App\Models\Entity;
 /**
  * Description of Report
  *
- * @author rendi
+ * @author rendix2
  */
 class Report extends \App\Models\Entity\Base\Entity
 {

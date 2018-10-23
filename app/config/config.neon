@@ -108,6 +108,7 @@ extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22
     recaptcha: ReCaptchaControl\DI\Extension
     tbDatePicker: RadekDostal\NetteComponents\DateTimePicker\TbDatePicker\DI\TbDatePickerExtension
+    replicator: Kdyby\Replicator\DI\ReplicatorExtension
  
 tbDatePicker:
   format: j. n. Y

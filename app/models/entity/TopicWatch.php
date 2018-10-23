@@ -5,7 +5,7 @@ namespace App\Models\Entity;
 /**
  * Description of TopicWatch
  *
- * @author rendi
+ * @author rendix2
  */
 class TopicWatch extends \App\Models\Entity\Base\Entity
 {

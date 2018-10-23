@@ -19,14 +19,14 @@ abstract class Entity
     public function __set($name, $value)
     {
         if (!property_exists($this, $name)) {
-            throw new \Nette\MemberAccessException('Column {$name} does not exist.');
+            throw new \Nette\MemberAccessException("Column '{$name}' of '".get_class($this)."' does not exist.");
         }
     }
     
     public function __get($name)
     {
         if (!property_exists($this, $name)) {
-            throw new \Nette\MemberAccessException('Column {$name} does not exist.');
+            throw new \Nette\MemberAccessException("Column {$name} of '".get_class($this)."' does not exist.");
         }
     }
     
@@ -34,14 +34,14 @@ abstract class Entity
     public function __isset($name)
     {
         if (!property_exists($this, $name)) {
-            throw new \Nette\MemberAccessException('Column {$name} does not exist.');
+            throw new \Nette\MemberAccessException("Column '{$name}' of '".get_class($this)."' does not exist.");
         }
     }
     
     public function __unset($name)
     {
         if (!property_exists($this, $name)) {
-            throw new \Nette\MemberAccessException('Column {$name} does not exist.');
+            throw new \Nette\MemberAccessException("Column '{$name}' of '".get_class($this)."' does not exist.");
         }
     }    
 

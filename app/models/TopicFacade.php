@@ -75,6 +75,12 @@ class TopicFacade
      * @var ReportFacade $reportFacade
      */
     private $reportFacade;
+    
+    /**
+     *
+     * @var PollsFacade $pollsFacade
+     */
+    private $pollsFacade;
 
     /**
      *
@@ -101,7 +107,8 @@ class TopicFacade
         ReportsManager $reportsManager,
         TopicWatchFacade $topicWatchFacade,
         ThanksFacade $thanksFacade,
-        ReportFacade $reportFacade
+        ReportFacade $reportFacade,
+        PollsFacade $pollsFacade
     ) {
         $this->topicsManager     = $topicsManager;
         $this->topicWatchManager = $topicWatchManager;
@@ -114,6 +121,7 @@ class TopicFacade
         $this->topicWatchFacade  = $topicWatchFacade;
         $this->thanksFacade      = $thanksFacade;
         $this->reportFacade      = $reportFacade;
+        $this->pollsFacade       = $pollsFacade;
     }
     
     public function __destruct()
@@ -129,6 +137,7 @@ class TopicFacade
         $this->topicWatchFacade  = null;
         $this->thanksFacade      = null;
         $this->reportFacade      = null;
+        $this->pollsFacade       = null;
     }
 
     /**
@@ -140,8 +149,13 @@ class TopicFacade
     public function add(Entity\Topic $topic)
     {
         $topic_id = $this->topicsManager->add($topic->getArrayHash());
+        $topic->topic_id            = $topic_id;
         $topic->post->post_topic_id = $topic_id;
+        $topic->poll->poll_topic_id = $topic_id;
 
+        if ($topic->poll) {            
+            $this->pollsFacade->add($topic->poll);
+        }
         $this->topicWatchManager->add([$topic->topic_user_id], $topic_id);
 
         $post_id = $this->postFacade->add($topic->post);
@@ -176,7 +190,8 @@ class TopicFacade
     {
         $this->thanksFacade->deleteByTopic($topic);
         $this->topicWatchFacade->deleteByTopic($topic);        
-        $this->reportFacade->deleteByTopic($topic);        
+        $this->reportFacade->deleteByTopic($topic);
+        //$this->pollsFacade->delete($topic->poll);
         
         $this->usersManager
                 ->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));

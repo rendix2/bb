@@ -5,7 +5,7 @@ namespace App\Models\Entity;
 /**
  * Description of Topic
  *
- * @author rendi
+ * @author rendix2
  */
 class Topic extends \App\Models\Entity\Base\Entity
 {
@@ -32,6 +32,12 @@ class Topic extends \App\Models\Entity\Base\Entity
      * @var \App\Models\Entity\Post $post
      */
     public $post;
+    
+    /**
+     *
+     * @var \App\Models\Entity\Poll $poll
+     */
+    public $poll;
 
     /**
      * 
@@ -67,7 +73,8 @@ class Topic extends \App\Models\Entity\Base\Entity
         $topic_last_user_id,
         $topic_order,
         $topic_page_count,
-        \App\Models\Entity\Post $post = null
+        \App\Models\Entity\Post $post = null,
+        \App\Models\Entity\Poll $poll = null
     ) {
         $this->topic_id            = (int)$topic_id;
         $this->topic_category_id   = (int)$topic_category_id;
@@ -85,6 +92,7 @@ class Topic extends \App\Models\Entity\Base\Entity
         $this->topic_order         = (int)$topic_order;
         $this->topic_page_count    = (int)$topic_page_count;
         $this->post                = $post;
+        $this->poll                = $poll;
     }
     
     /**

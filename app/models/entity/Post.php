@@ -5,7 +5,7 @@ namespace App\Models\Entity;
 /**
  * Description of Post
  *
- * @author rendi
+ * @author rendix2
  */
 class Post extends \App\Models\Entity\Base\Entity
 {
