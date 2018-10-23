@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Entity\Poll;
+
 /**
  * Description of PollsFacade
  *
@@ -78,25 +80,41 @@ class PollsFacade
 
     /**
      * 
-     * @param \App\Models\Entity\Poll $poll
+     * @param Poll $poll
      */
-    public function add(Entity\Poll $poll)
-    {
-        $poll_data = $poll->getArrayHash();
-        $poll_data->poll_time_to = $poll_data->poll_time_to->getTimestamp();
-        
-        $poll->poll_id = $this->pollsManager->add($poll_data);
+    public function add(Poll $poll)
+    {        
+        $poll->poll_id = $this->pollsManager->add($poll->getArrayHash());
         
         foreach ($poll->pollAnswers as $answer) {
             $answer->poll_id = $poll->poll_id;
             $this->pollsAnswersManager->add($answer->getArrayHash());
         }
     }
+    
+    /**
+     * 
+     * @param Poll $poll
+     */
+    public function update(Poll $poll)
+    {
+        $this->pollsManager->update($poll->poll_id, $poll->getArrayHash());
+        
+        foreach ($poll->pollAnswers as $answer) {
+            $answer_exists = $this->pollsAnswersManager->getById($answer->poll_answer_id);
+            
+            if ($answer_exists) {
+                $this->pollsAnswersManager->update($answer->poll_answer_id, $answer->getArrayHash());
+            } else {
+                $this->pollsAnswersManager->add($answer->getArrayHash());
+            }            
+        }
+    }
 
     /**
-     * @param Entity\Poll $poll
+     * @param Poll $poll
      */
-    public function delete(Entity\Poll $poll)
+    public function delete(Poll $poll)
     {
         $this->pollsManager->delete($poll->poll_id);
         $this->pollsAnswersManager->deleteByPoll($poll->poll_id);

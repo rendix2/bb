@@ -9,12 +9,28 @@ namespace App\Models\Entity;
  */
 class Poll extends Base\Entity
 {
+    /**
+     *
+     * @var int $poll_id 
+     */
     public $poll_id;
     
+    /**
+     *
+     * @var int $poll_topic_id
+     */
     public $poll_topic_id;
     
+    /**
+     *
+     * @var string $poll_question
+     */
     public $poll_question;
     
+    /**
+     *
+     * @var int $poll_time_to
+     */
     public $poll_time_to;
     
     /**
@@ -24,6 +40,14 @@ class Poll extends Base\Entity
     public $pollAnswers;
 
 
+    /**
+     * 
+     * @param type $poll_id
+     * @param type $poll_topic_id
+     * @param type $poll_question
+     * @param type $poll_time_to
+     * @param type $pollAnswers
+     */
     public function __construct(
         $poll_id,
         $poll_topic_id,
@@ -89,7 +113,7 @@ class Poll extends Base\Entity
        }
 
        if (isset($this->poll_time_to)) {
-           $res['poll_time_to'] = $this->poll_time_to;
+           $res['poll_time_to'] = $this->poll_time_to->getTimestamp();
        }
 
        return $res;

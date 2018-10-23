@@ -4,6 +4,7 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
+use App\Controls\PollControl;
 use App\Controls\PaginatorControl;
 use App\Controls\TopicJumpToForumForm;
 use App\Forms\TopicFastReplyForm;
@@ -327,6 +328,16 @@ class TopicPresenter extends BaseForumPresenter
                 $this->error('Post was not found.');
             }
 
+            $poll = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
+                        
+            if ($poll) {
+                $this['editForm']->setDefaults(['poll_question' => $poll->poll_question, 'poll_time_to' => date('d.m.Y', $poll->poll_time_to)]);
+                
+                $pollAnswers = $this->pollsFacade->getPollsAnswersManager()->getAllByPoll($poll->poll_id);
+
+                $this['editForm-answers']->setValues($pollAnswers);
+            }
+            
             $this['editForm']->setDefaults(['post_title' => $topic->topic_name, 'post_text' => $post->post_text]);
         }
     }
@@ -407,6 +418,7 @@ class TopicPresenter extends BaseForumPresenter
         $form->addTbDatePicker('poll_time_to', 'Finish');
         
         $answers = $form->addDynamic('answers', function (Container $answer) {
+            $answer->addHidden('poll_answer_id');
             $answer->addText('poll_answer', 'Answer');                
             $answer->addSubmit('remove', 'Remove answer')
                    ->setValidationScope(FALSE) # disables validation
@@ -436,8 +448,12 @@ class TopicPresenter extends BaseForumPresenter
         if ($values->poll_question) {        
             $pollAnswers = [];
         
-            foreach ($values->answers as $answer) {            
-                $pollAnswers[] = \App\Models\Entity\PollAnswer::setFromArrayHash($answer);
+            foreach ($values->answers as $answer) {   
+                $pollAnswer = \App\Models\Entity\PollAnswer::setFromArrayHash($answer);
+                
+                if ($pollAnswer->poll_answer) {
+                    $pollAnswers[] = $pollAnswer;
+                }                                
             }
         
             $poll = \App\Models\Entity\Poll::setFromArrayHash($values);
@@ -450,8 +466,17 @@ class TopicPresenter extends BaseForumPresenter
             $oldTopicDibi = $this->getManager()->getById($topic_id);
             $oldTopic     = \App\Models\Entity\Topic::get($oldTopicDibi);
             
-            $firstPost = $this->postsManager->getFirstByTopic($oldTopicDibi->topic_id);
+            $firstPost = $this->postsManager->getFirstByTopic($oldTopicDibi->topic_id);           
+            $pollDibi = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
             
+            if ($pollDibi) {
+                $poll->poll_id = $pollDibi->poll_id;
+            }
+            
+            foreach ($poll->pollAnswers as $answer) {
+                $answer->poll_id = $pollDibi->poll_id;
+            }
+                                    
             $post = new \App\Models\Entity\Post(
                 $firstPost->post_id,
                 $firstPost->post_user_id,
@@ -544,9 +569,13 @@ class TopicPresenter extends BaseForumPresenter
         $this->redirect(':Forum:Topic:default', $category_id, $forum_id, (string)$topic_id, $page);
     }
     
+    /**
+     * 
+     * @return PollControl
+     */
     protected function createComponentPoll()
     {
-        return new \App\Controls\PollControl($this->pollsFacade, $this->user);
+        return new PollControl($this->pollsFacade, $this->user, $this->getForumTranslator());
     }
     
     /**

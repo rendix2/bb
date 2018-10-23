@@ -28,10 +28,15 @@ class PollAnswer extends Base\Entity
      */
     public $poll_answer;
 
-    
+    /**
+     * 
+     * @param int $poll_answer_id
+     * @param int $poll_id
+     * @param string $poll_answer
+     */
     public function __construct($poll_answer_id, $poll_id, $poll_answer)
     {
-        $this->poll_answer_id = $poll_answer_id;
+        $this->poll_answer_id = $poll_answer_id ? $poll_answer_id : null;
         $this->poll_id        = $poll_id;
         $this->poll_answer    = $poll_answer;
     }
@@ -40,7 +45,7 @@ class PollAnswer extends Base\Entity
      * 
      * @param \Dibi\Row $values
      * 
-     * @return \App\Models\Entity\Post
+     * @return \App\Models\Entity\PollAnswer
      */
     public static function setFromDibi(\Dibi\Row $values)
     {
@@ -55,7 +60,7 @@ class PollAnswer extends Base\Entity
      * 
      * @param \Dibi\Row $values
      * 
-     * @return \App\Models\Entity\Post
+     * @return \App\Models\Entity\PollAnswer
      */
     public static function setFromArrayHash(\Nette\Utils\ArrayHash $values)
     {
@@ -66,6 +71,10 @@ class PollAnswer extends Base\Entity
         );
     }    
 
+    /**
+     * 
+     * @return []
+     */
     public function getArray()
     {
         $res = [];

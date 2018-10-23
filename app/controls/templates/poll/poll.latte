@@ -1,15 +1,22 @@
-{$poll->poll_question} 
-Celkem hlasů: {count($pollVotes)}
-<br>
+<div class="card">
+    <div class="card-header">{$poll->poll_question}</div>
+    <div class="card-block p-3">
 
-{foreach $pollAnswers as $answer}
+        <span>{_poll_count_votes} {count($pollVotes)}</span>
+        <ul>
 
-    {if $canVote}
-        <a href="{link vote! $answer->poll_id, $answer->poll_answer_id}">{$answer->poll_answer}</a>
-    {else}
-        {$answer->poll_answer}
-    {/if}
-        
-        ({$answer->count})   
-{/foreach}
-
+        {foreach $pollAnswers as $answer}
+            <li>
+            {if $canVote}
+                <a href="{link vote! $answer->poll_id, $answer->poll_answer_id}">{$answer->poll_answer}</a>
+            {else}
+                {$answer->poll_answer}
+            {/if}
+    
+            ({$answer->count})   
+                
+            </li>
+        {/foreach}
+        </ul>
+    </div>
+</div>

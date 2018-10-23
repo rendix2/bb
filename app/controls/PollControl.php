@@ -3,6 +3,7 @@ namespace App\Controls;
 
 use App\Models\PollsFacade;
 use Nette\Application\UI\Control;
+use Nette\Localization\ITranslator;
 use Nette\Security\User;
 
 /**
@@ -25,12 +26,25 @@ class PollControl extends Control
      */
     private $user;
     
-    public function __construct(PollsFacade $pollsFacade, User $user)
+    /**
+     *
+     * @var ITranslator $translator
+     */
+    private $translator;
+
+    /**
+     * 
+     * @param PollsFacade $pollsFacade
+     * @param User $user
+     * @param ITranslator $translator
+     */
+    public function __construct(PollsFacade $pollsFacade, User $user, ITranslator $translator)
     {
         parent::__construct();
         
         $this->user        = $user;
         $this->pollsFacade = $pollsFacade;
+        $this->translator  = $translator;
     }
     
     /**
@@ -56,6 +70,7 @@ class PollControl extends Control
         $sep = DIRECTORY_SEPARATOR;
 
         $template  = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'poll' . $sep. 'poll.latte');
+        $template->setTranslator($this->translator);
         $presenter = $this->presenter;
         
         $poll = $this->pollsFacade->getPollsManager()->getByTopic($presenter->getParameter('topic_id'));
@@ -81,15 +96,14 @@ class PollControl extends Control
                     $canVote = false;
                     break;
                 }       
-            }           
-       }
-       
-       $template->poll        = $poll;
-       $template->pollAnswers = $pollAnswers;
-       $template->pollVotes   = $pollVotes;
-       $template->canVote     = $canVote;
+            }
+            
+            $template->poll        = $poll;
+            $template->pollAnswers = $pollAnswers;
+            $template->pollVotes   = $pollVotes;
+            $template->canVote     = $canVote;
         
-        $template->render();
+            $template->render();
+        }
     }
-    
 }

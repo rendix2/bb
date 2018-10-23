@@ -440,9 +440,24 @@ class TopicFacade
      */
     public function update(Entity\Topic $topic)
     {
-        $res = $this->topicsManager->update($topic->topic_id, ArrayHash::from(['topic_name' => $topic->post_title]));
+        $res = $this->topicsManager->update($topic->topic_id, ArrayHash::from(['topic_name' => $topic->topic_name]));
 
         $this->postsManager->update($topic->post->post_id, ArrayHash::from(['post_text' => $topic->post->post_text]));
+        
+        $pollsManager = $this->pollsFacade->getPollsManager();
+        $topicHasPoll = $pollsManager->getByTopic($topic->topic_id);
+        $poll         = $topic->poll;
+        $poll->poll_topic_id = $topic->topic_id;
+        
+        if ($topicHasPoll) {
+            if($poll->poll_question) {            
+                $this->pollsFacade->update($poll);
+            } else {
+                $this->pollsFacade->delete($poll);
+            }
+        } else {
+            $this->pollsFacade->add($poll);
+        }
 
         return $res;
     }
