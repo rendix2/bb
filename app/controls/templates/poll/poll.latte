@@ -1,0 +1,15 @@
+{$poll->poll_question} 
+Celkem hlasů: {count($pollVotes)}
+<br>
+
+{foreach $pollAnswers as $answer}
+
+    {if $canVote}
+        <a href="{link vote! $answer->poll_id, $answer->poll_answer_id}">{$answer->poll_answer}</a>
+    {else}
+        {$answer->poll_answer}
+    {/if}
+        
+        ({$answer->count})   
+{/foreach}
+

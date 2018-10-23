@@ -10,6 +10,7 @@ use App\Forms\TopicFastReplyForm;
 use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\PostFacade;
+use App\Models\PollsFacade;
 use App\Models\RanksManager;
 use App\Models\ReportsManager;
 use App\Models\ThanksFacade;
@@ -112,6 +113,13 @@ class TopicPresenter extends BaseForumPresenter
      * @inject
      */
     public $storage;
+    
+    /**
+     *
+     * @var PollsFacade $pollsFacade
+     * @inject
+     */
+    public $pollsFacade;
 
     /**
      *
@@ -532,10 +540,13 @@ class TopicPresenter extends BaseForumPresenter
         if ($res) {
             $this->flashMessage('Topic was saved.', self::FLASH_MESSAGE_SUCCESS);
         }
-
-        Debugger::barDump($topic, '$topic');
         
-        //$this->redirect(':Forum:Topic:default', $category_id, $forum_id, (string)$topic_id, $page);
+        $this->redirect(':Forum:Topic:default', $category_id, $forum_id, (string)$topic_id, $page);
+    }
+    
+    protected function createComponentPoll()
+    {
+        return new \App\Controls\PollControl($this->pollsFacade, $this->user);
     }
     
     /**

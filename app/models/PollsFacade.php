@@ -51,6 +51,33 @@ class PollsFacade
     
     /**
      * 
+     * @return PollsManager
+     */
+    public function getPollsManager()
+    {
+        return $this->pollsManager;
+    }
+    
+    /**
+     * 
+     * @return PollsAnswersManager
+     */
+    public function getPollsAnswersManager()
+    {
+        return $this->pollsAnswersManager;
+    }
+    
+    /**
+     * 
+     * @return PollsVotesManager
+     */
+    public function getPollsVotesManager()
+    {
+        return $this->pollsVotesManager;
+    }
+
+    /**
+     * 
      * @param \App\Models\Entity\Poll $poll
      */
     public function add(Entity\Poll $poll)
