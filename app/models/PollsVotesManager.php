@@ -18,4 +18,11 @@ class PollsVotesManager extends CrudManager
                 ->where('[poll_id] = %i', $poll_id)
                 ->fetchAll();
     }
+    
+    public function deleteByPoll($poll_id)
+    {
+        return $this->deleteFluent()
+            ->where('[poll_id] = %i', $poll_id)
+            ->execute();
+    }
 }

@@ -22,12 +22,6 @@ abstract class ModeratorPresenter extends CrudPresenter
      * @var ITranslator $adminTranslator
      */
     private $translator;
-
-    /**
-     * @var Authorizator $authorizator
-     * @inject
-     */
-    public $authorizator;
     
     /**
      *

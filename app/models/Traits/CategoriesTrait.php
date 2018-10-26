@@ -4,6 +4,8 @@ namespace App\Models\Traits;
 
 use App\Models\CategoriesManager;
 
+use Nette\Http\IResponse;
+
 /**
  * Description of CategoriesTrait
  *
@@ -40,9 +42,9 @@ trait CategoriesTrait {
             $this->error('Category was not found.');
         }
         
-        $category = \App\Models\Entity\Category::get($categoryDibi);
+        $category = \App\Models\Entity\Category::setFromRow($categoryDibi);
 
-        if (!$category->category_active) {
+        if (!$category->getCategory_active()) {
             $this->error('Category is not active.');
         }
 

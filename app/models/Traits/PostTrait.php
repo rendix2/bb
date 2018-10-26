@@ -3,6 +3,7 @@
 namespace App\Models\Traits;
 
 use App\Models\PostsManager;
+use Nette\Http\IResponse;
 
 /**
  * Description of PostTrait
@@ -44,25 +45,25 @@ trait PostTrait
             $this->error('Post was not found.');
         }
         
-        $post = \App\Models\Entity\Post::get($postDibi);        
+        $post = \App\Models\Entity\Post::setFromRow($postDibi);        
 
-        if ($post->post_category_id !== (int)$category_id) {
+        if ($post->getPost_category_id() !== (int)$category_id) {
             $this->error('Category param does not match.', IResponse::S403_FORBIDDEN);
         }
 
-        if ($post->post_forum_id !== (int)$forum_id) {
+        if ($post->getPost_forum_id() !== (int)$forum_id) {
             $this->error('Category param does not match.', IResponse::S403_FORBIDDEN);
         }
 
-        if ($post->post_topic_id !== (int)$topic_id) {
+        if ($post->getPost_topic_id() !== (int)$topic_id) {
             $this->error('Category param does not match.', IResponse::S403_FORBIDDEN);
         }
 
-        if ($post->post_user_id !== $this->getUser()->getId()) {
+        if ($post->getPost_user_id() !== $this->getUser()->getId()) {
             $this->error('You are not author of post.', IResponse::S403_FORBIDDEN);
         }
 
-        if ($post->post_locked) {
+        if ($post->getPost_locked()) {
             $this->error('Post is locked.', IResponse::S403_FORBIDDEN);
         }
 

@@ -22,9 +22,9 @@ use Tracy\Debugger;
  */
 class IndexPresenter extends BaseForumPresenter
 {
-    use \App\Models\Traits\ForumsTrait;
-    use \App\Models\Traits\TopicsTrait;    
-    use \App\Models\Traits\PostTrait;
+    //use \App\Models\Traits\ForumsTrait;
+    //use \App\Models\Traits\TopicsTrait;    
+    //use \App\Models\Traits\PostTrait;
     use \App\Models\Traits\UsersTrait;
     
     /**

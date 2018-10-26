@@ -17,6 +17,12 @@ use App\Models\UsersManager;
  */
 class LanguagePresenter extends AdminPresenter
 {
+    /**
+     *
+     * @var UsersManager $usersManager
+     * @inject
+     */
+    public $usersManager;
 
     /**
      * LanguagePresenter constructor.

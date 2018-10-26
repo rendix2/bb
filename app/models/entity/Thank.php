@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\Entity\Thank;
+use Dibi\Row;
+use Nette\Utils\ArrayHash;
+
 namespace App\Models\Entity;
 
 /**
@@ -7,63 +11,184 @@ namespace App\Models\Entity;
  *
  * @author rendi
  */
-class Thank extends \App\Models\Entity\Base\Entity
+class Thank extends Base\Entity
 {
-    public $thank_id;
-    
-    public $thank_forum_id;
-    
-    public $thank_topic_id;
-    
-    public $thank_user_id;
-    
-    public $thank_time;
-    
-    public $thank_user_ip;
+    /**
+     *
+     * @var int $thank_id
+     */
+    private $thank_id;
     
     /**
-     * 
-     * @param int    $thank_id
-     * @param int    $thank_forum_id
-     * @param int    $thank_topic_id
-     * @param int    $thank_user_id
-     * @param int    $thank_time
-     * @param string $thank_user_ip
+     *
+     * @var int $thank_forum_id
      */
-    public function __construct(
-            $thank_id,
-            $thank_forum_id,
-            $thank_topic_id,
-            $thank_user_id,
-            $thank_time,
-            $thank_user_ip
-    ) {
-        $this->thank_id       = $thank_id;    
-        $this->thank_forum_id = $thank_forum_id;    
-        $this->thank_topic_id = $thank_topic_id;    
-        $this->thank_user_id = $thank_user_id;    
-        $this->thank_time    = $thank_time;    
-        $this->thank_user_ip = $thank_user_ip;
-    }
+    private $thank_forum_id;
     
     /**
-     * 
-     * @param \Dibi\Row $values
-     * 
-     * @return \App\Models\Entity\Thank
+     *
+     * @var int $thank_topic_id
      */
-    public static function get(\Dibi\Row $values)
+    private $thank_topic_id;
+    
+    /**
+     *
+     * @var int $thank_user_id 
+     */    
+    private $thank_user_id;
+    
+    /**
+     *
+     * @var int $thank_time
+     */    
+    private $thank_time;
+    
+    /**
+     *
+     * @var string $thank_user_ip 
+     */    
+    private $thank_user_ip;
+    
+    public function getThank_id()
     {
-        return new Thank(
-            $values->thank_id,
-            $values->thank_forum_id,
-            $values->thank_topic_id,
-            $values->thank_user_id,
-            $values->thank_time,
-            $values->thank_user_ip
-        );
+        return $this->thank_id;
+    }
+
+    public function getThank_forum_id()
+    {
+        return $this->thank_forum_id;
+    }
+
+    public function getThank_topic_id()
+    {
+        return $this->thank_topic_id;
+    }
+
+    public function getThank_user_id()
+    {
+        return $this->thank_user_id;
+    }
+
+    public function getThank_time()
+    {
+        return $this->thank_time;
+    }
+
+    public function getThank_user_ip()
+    {
+        return $this->thank_user_ip;
+    }
+
+    public function setThank_id($thank_id)
+    {
+        $this->thank_id = $thank_id;
+        return $this;
+    }
+
+    public function setThank_forum_id($thank_forum_id)
+    {
+        $this->thank_forum_id = self::makeInt($thank_forum_id);
+        return $this;
+    }
+
+    public function setThank_topic_id($thank_topic_id)
+    {
+        $this->thank_topic_id = self::makeInt($thank_topic_id);
+        return $this;
+    }
+
+    public function setThank_user_id($thank_user_id)
+    {
+        $this->thank_user_id = self::makeInt($thank_user_id);
+        return $this;
+    }
+
+    public function setThank_time($thank_time)
+    {
+        $this->thank_time = self::makeInt($thank_time);
+        return $this;
+    }
+
+    public function setThank_user_ip($thank_user_ip)
+    {
+        $this->thank_user_ip = $thank_user_ip;
+        return $this;
     }    
     
+    /**
+     * 
+     * @param Row $values
+     * 
+     * @return Thank
+     */
+    public static function setFromRow(Row $values)
+    {
+        $thank = new Thank();
+        
+        if (isset($values->thank_id)) {
+            $thank->setThank_id($values->thank_id);
+        }
+        
+        if (isset($values->thank_forum_id)) {
+            $thank->setThank_forum_id($values->thank_forum_id);
+        }
+        
+        if (isset($values->thank_topic_id)) {
+            $thank->setThank_topic_id($values->thank_topic_id);
+        }
+        
+        if (isset($values->thank_user_id)) {
+            $thank->setThank_user_id($values->thank_user_id);
+        }
+        
+        if (isset($values->thank_time)) {
+            $thank->setThank_time($values->thank_time);
+        }
+        
+        if (isset($values->thank_user_ip)) {
+            $thank->setThank_user_ip($values->thank_user_ip);
+        }
+
+        return $thank;
+    }  
+    
+    /**
+     * 
+     * @param ArrayHash $values
+     * 
+     * @return Thank
+     */
+    public static function setFromArrayHash(ArrayHash $values)
+    {
+        $thank = new Thank();
+        
+        if (isset($values->thank_id)) {
+            $thank->setThank_id($values->thank_id);
+        }
+        
+        if (isset($values->thank_forum_id)) {
+            $thank->setThank_forum_id($values->thank_forum_id);
+        }
+        
+        if (isset($values->thank_topic_id)) {
+            $thank->setThank_topic_id($values->thank_topic_id);
+        }
+        
+        if (isset($values->thank_user_id)) {
+            $thank->setThank_user_id($values->thank_user_id);
+        }
+        
+        if (isset($values->thank_time)) {
+            $thank->setThank_time($values->thank_time);
+        }
+        
+        if (isset($values->thank_user_ip)) {
+            $thank->setThank_user_ip($values->thank_user_ip);
+        }
+
+        return $thank;
+    }
+
     /**
      * 
      * @return array

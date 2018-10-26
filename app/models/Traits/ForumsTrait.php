@@ -2,7 +2,9 @@
 
 namespace App\Models\Traits;
 
+use App\Models\Entity\Forum;
 use App\Models\ForumsManager;
+use Nette\Http\IResponse;
 
 /**
  * Description of ForumsTrait
@@ -36,19 +38,21 @@ trait ForumsTrait
             $this->error('Forum param is not numeric.');
         }
 
-        $forum = $this->forumsManager->getById($forum_id);
+        $forumDibi = $this->forumsManager->getById($forum_id);
 
-        if (!$forum) {
+        if (!$forumDibi) {
             $this->error('Forum was not found.');
         }
+        
+        $forum = Forum::setFromRow($forumDibi);
 
         if ($category_id) {
-            if ($forum->forum_category_id !== (int)$category_id) {
+            if ($forum->getForum_category_id() !== (int)$category_id) {
                 $this->error('Category param does not match.');
             }
         }
 
-        if (!$forum->forum_active) {
+        if (!$forum->getForum_active()) {
             $this->error('Forum is not active.');
         }
 

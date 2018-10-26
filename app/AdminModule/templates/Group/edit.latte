@@ -56,8 +56,8 @@
                                     </li>
                                     <li class="list-group-item list-group-item-secondary">
                                         <label>
-                                            <input type="checkbox" value="{$forum->forum_id}" name="post_edit[]"
-                                                   {if isset($permissions[$forum->forum_id]['post_edit']) &&  $permissions[$forum->forum_id]['post_edit'] === 1}checked="checked"{/if}>
+                                            <input type="checkbox" value="{$forum->forum_id}" name="post_update[]"
+                                                   {if isset($permissions[$forum->forum_id]['post_update']) &&  $permissions[$forum->forum_id]['post_update'] === 1}checked="checked"{/if}>
                                             {_group_post_edit}
                                         </label>
                                     </li>
@@ -78,8 +78,8 @@
                                     </li>
                                     <li class="list-group-item list-group-item-success">
                                         <label>
-                                            <input type="checkbox" value="{$forum->forum_id}" name="topic_edit[]"
-                                                   {if isset($permissions[$forum->forum_id]['topic_edit']) &&  $permissions[$forum->forum_id]['topic_edit'] === 1}checked="checked"{/if}>
+                                            <input type="checkbox" value="{$forum->forum_id}" name="topic_update[]"
+                                                   {if isset($permissions[$forum->forum_id]['topic_update']) &&  $permissions[$forum->forum_id]['topic_update'] === 1}checked="checked"{/if}>
                                             {_group_topic_edit}
                                         </label>
                                     </li>
@@ -97,6 +97,14 @@
                                             {_group_topic_thank}
                                         </label>
                                     </li>
+                                    
+                                    <li class="list-group-item list-group-item-success">
+                                        <label>
+                                            <input type="checkbox" value="{$forum->forum_id}" name="topic_fast_reply[]"
+                                                   {if isset($permissions[$forum->forum_id]['topic_fast_reply']) &&  $permissions[$forum->forum_id]['topic_fast_reply'] === 1}checked="checked"{/if}>
+                                            {_group_topic_fast_reply}
+                                        </label>
+                                    </li>                                    
                                 </ul>
 
                                 {if is_array($forum['childs'])}

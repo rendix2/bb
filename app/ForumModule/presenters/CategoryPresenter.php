@@ -15,7 +15,7 @@ use dibi;
 class CategoryPresenter extends Base\ForumPresenter
 {
     use \App\Models\Traits\CategoriesTrait;
-    use \App\Models\Traits\ForumsTrait;
+    //use \App\Models\Traits\ForumsTrait;
     
     /**
      * 

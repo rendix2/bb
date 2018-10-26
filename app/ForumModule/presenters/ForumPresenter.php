@@ -23,8 +23,8 @@ use Nette\Http\IResponse;
 final class ForumPresenter extends Base\ForumPresenter
 {
     use \App\Models\Traits\CategoriesTrait;
-    use \App\Models\Traits\ForumsTrait;
-    use \App\Models\Traits\TopicsTrait;
+    //use \App\Models\Traits\ForumsTrait;
+    //use \App\Models\Traits\TopicsTrait;
     
     /**
      *
@@ -88,24 +88,20 @@ final class ForumPresenter extends Base\ForumPresenter
      */
     public function renderDefault($category_id, $forum_id, $page = 1)
     {
-        \Netpromotion\Profiler\Profiler::start('Is allowed');
-        if (!$this->getUser()->isAllowed($forum_id, 'forum_view')) {
+        $category   = $this->checkCategoryParam($category_id);
+        $forum      = $this->checkForumParam($forum_id, $category_id);
+        $forumScope = $this->loadForum($forum);        
+        
+        if (!$this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_VIEW)) {
             $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
         }
-        \Netpromotion\Profiler\Profiler::finish('Is allowed');
 
-        \Netpromotion\Profiler\Profiler::start('check');
-        $category      = $this->checkCategoryParam($category_id);
-        $forum         = $this->checkForumParam($forum_id, $category_id);
-        \Netpromotion\Profiler\Profiler::finish('check');
         $forumSettings = $this->forumSettings->get();        
         $topics        = $this->topicsManager->getFluentJoinedUsersJoinedLastPostByForum($forum_id);
         
-        \Netpromotion\Profiler\Profiler::start('init gf');
         if (isset($this['gridFilter'])) {
             $this->getComponent('gridFilter');
         }
-        \Netpromotion\Profiler\Profiler::finish('init gf');
              
         \Netpromotion\Profiler\Profiler::start('aply where');
         $this->gf->applyWhere($topics);
@@ -137,6 +133,8 @@ final class ForumPresenter extends Base\ForumPresenter
         $this->template->topics      = $topics->fetchAll();
         $this->template->subForums   = $this->getManager()->getByParent($forum_id);
         $this->template->moderators  = $moderators;
+        $this->template->canAddTopic = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_ADD);
+        $this->template->canDeleteTopic = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_DELETE);
         \Netpromotion\Profiler\Profiler::finish('send to template');
     }
 
@@ -151,7 +149,7 @@ final class ForumPresenter extends Base\ForumPresenter
         $category = $this->checkCategoryParam($category_id);
         $forum    = $this->checkForumParam($forum_id, $category_id);
 
-        if (!$forum->forum_rules) {
+        if (!$forum->getForum_rules()) {
             $this->flashMessage('No forum rules.', self::FLASH_MESSAGE_WARNING);
         }
 

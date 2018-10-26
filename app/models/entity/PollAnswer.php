@@ -2,78 +2,122 @@
 
 namespace App\Models\Entity;
 
+use App\Models\Entity\Base\Entity;
+use Dibi\Row;
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of PollAnswer
  *
  * @author rendix2
  */
-class PollAnswer extends Base\Entity
+class PollAnswer extends Entity
 {
     
     /**
      *
      * @var int $poll_answer_id
      */
-    public $poll_answer_id;
+    private $poll_answer_id;
     
     /**
      *
      * @var int $poll_id
      */
-    public $poll_id;
+    private $poll_id;
     
     /**
      *
      * @var string $poll_answer
      */
-    public $poll_answer;
+    private $poll_answer;
+
+    public function getPoll_answer_id()
+    {
+        return $this->poll_answer_id;
+    }
+
+    public function getPoll_id()
+    {
+        return $this->poll_id;
+    }
+
+    public function getPoll_answer()
+    {
+        return $this->poll_answer;
+    }
+
+    public function setPoll_answer_id($poll_answer_id)
+    {
+        $this->poll_answer_id = self::makeInt($poll_answer_id);
+        return $this;
+    }
+
+    public function setPoll_id($poll_id)
+    {
+        $this->poll_id = self::makeInt($poll_id);
+        return $this;
+    }
+
+    public function setPoll_answer($poll_answer)
+    {
+        $this->poll_answer = $poll_answer;
+        return $this;
+    }
 
     /**
      * 
-     * @param int $poll_answer_id
-     * @param int $poll_id
-     * @param string $poll_answer
+     * @param Row $values
+     * 
+     * @return PollAnswer
      */
-    public function __construct($poll_answer_id, $poll_id, $poll_answer)
+    public static function setFromRow(Row $values)
     {
-        $this->poll_answer_id = $poll_answer_id ? $poll_answer_id : null;
-        $this->poll_id        = $poll_id;
-        $this->poll_answer    = $poll_answer;
+        $pollAnswer = new PollAnswer();
+        
+        if (isset($values->poll_answer_id)) {
+            $pollAnswer->setPoll_answer_id($values->poll_answer_id);
+        }
+        
+        if (isset($values->poll_id)) {
+            $pollAnswer->setPoll_id($values->poll_id);
+        }
+
+        if (isset($values->poll_answer)) {
+            $pollAnswer->setPoll_answer($values->poll_answer);
+        }        
+        
+        return $pollAnswer;
     }
     
     /**
      * 
-     * @param \Dibi\Row $values
+     * @param Row $values
      * 
-     * @return \App\Models\Entity\PollAnswer
+     * @return PollAnswer
      */
-    public static function setFromDibi(\Dibi\Row $values)
+    public static function setFromArrayHash(ArrayHash $values)
     {
-        return new PollAnswer(
-            $values->poll_answer_id,
-            $values->poll_id,
-            $values->poll_answer_id
-        );
-    }
-    
-    /**
-     * 
-     * @param \Dibi\Row $values
-     * 
-     * @return \App\Models\Entity\PollAnswer
-     */
-    public static function setFromArrayHash(\Nette\Utils\ArrayHash $values)
-    {
-        return new PollAnswer(
-            isset($values->poll_answer_id) ? $values->poll_answer_id : null,
-            isset($values->poll_id)        ? $values->poll_id        : null,
-            isset($values->poll_answer)    ? $values->poll_answer    : null
-        );
+        $pollAnswer = new PollAnswer();
+        
+        if (isset($values->poll_answer_id)) {
+            $pollAnswer->setPoll_answer_id($values->poll_answer_id);
+        }
+        
+        if (isset($values->poll_id)) {
+            $pollAnswer->setPoll_id($values->poll_id);
+        }
+
+        if (isset($values->poll_answer)) {
+            $pollAnswer->setPoll_answer($values->poll_answer);
+        }        
+        
+        return $pollAnswer;
     }    
 
     /**
      * 
-     * @return []
+     * @return [] 
      */
     public function getArray()
     {

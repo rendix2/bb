@@ -11,6 +11,7 @@ use App\Models\PostsHistoryManager;
 use App\Models\PostsManager;
 use App\Models\ReportsManager;
 use App\Models\TopicWatchManager;
+use App\Models\PollsFacade;
 use App\Settings\PostSetting;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
@@ -28,9 +29,9 @@ use Nette\Utils\ArrayHash;
 class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
 {
     use \App\Models\Traits\CategoriesTrait;
-    use \App\Models\Traits\ForumsTrait;
-    use \App\Models\Traits\TopicsTrait;
-    use \App\Models\Traits\PostTrait;
+    //use \App\Models\Traits\ForumsTrait;
+    //use \App\Models\Traits\TopicsTrait;
+    //use \App\Models\Traits\PostTrait;
     use \App\Models\Traits\UsersTrait;
 
     /**
@@ -77,6 +78,13 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      * @inject
      */
     public $storage;
+    
+    /**
+     *
+     * @var PollsFacade $pollsFacade
+     * @inject
+     */
+    public $pollsFacade;
 
     /**
      * @param PostsManager $manager
@@ -108,7 +116,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
     }
 
     /**
-     * @param $category_id
+     * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
      * @param int $post_id
@@ -118,14 +126,28 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      */
     public function actionDelete($category_id, $forum_id, $topic_id, $post_id, $page)
     {
-        if (!$this->getUser()->isAllowed($forum_id,'post_delete')) {
-            $this->error('Not allowed.',IResponse::S403_FORBIDDEN);
-        }
-
         $category = $this->checkCategoryParam($category_id);
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
         $post     = $this->checkPostParam($post_id, $category_id, $forum_id, $topic_id);
+        
+        $pollDibi   = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
+        
+        if ($pollDibi) {
+            $pollTimeStamp = $pollDibi->poll_time_to;
+            unset($pollDibi->poll_time_to);
+        
+            $pollEntity = \App\Models\Entity\Poll::setFromRow($pollDibi);
+            $pollEntity->setPoll_time_to(\Nette\Utils\DateTime::from($pollTimeStamp));
+        
+            $topic->setPoll($pollEntity);
+        }
+        
+        $forumScope = $this->loadForum($forum);
+        $topicScpe  = $this->loadTopic($forum, $topic);
+        $postScope  = $this->loadPost($forum, $topic, $post);
+        
+        $this->requireAccess($postScope, \App\Authorization\Scopes\Post::ACTION_DELETE);
 
         $res = $this->postFacade->delete($topic, $post);
 
@@ -147,19 +169,16 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      */
     public function renderEdit($category_id, $forum_id, $topic_id, $post_id = null)
     {
-        if ($post_id === null) {
-            if (!$this->getUser()->isAllowed($forum_id, 'post_add')) {
-                $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
-            }
+        $category   = $this->checkCategoryParam($category_id);
+        $forum      = $this->checkForumParam($forum_id, $category_id);
+        $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        $forumScope = $this->loadForum($forum);
+        
+        if ($post_id === null) {                            
+            $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_ADD);
         } else {
-            if (!$this->getUser()->isAllowed($forum_id, 'post_update')) {
-                $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
-            }
+            $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_UPDATE);
         }
-
-        $category = $this->checkCategoryParam($category_id);
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
 
         // post check
         $post = [];
@@ -269,49 +288,41 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
     {
         $category_id = $this->getParameter('category_id');
         $forum_id    = $this->getParameter('forum_id');
-        $post_id     = $this->getParameter('post_id');
         $topic_id    = $this->getParameter('topic_id');
+        $post_id     = $this->getParameter('post_id');
         $user_id     = $this->getUser()->getId();
         
         if ($post_id) {
             $postOldDibi = $this->getManager()->getById($post_id);
-            $postOld     = \App\Models\Entity\Post::get($postOldDibi);
+            $postOld     = \App\Models\Entity\Post::setFromRow($postOldDibi);
             
-            $postNew  = new \App\Models\Entity\Post(
-                $post_id, 
-                $user_id, 
-                $category_id, 
-                $forum_id, 
-                $topic_id, 
-                $values->post_title, 
-                $values->post_text,
-                $postOld->post_add_time,
-                $postOld->post_add_user_ip,
-                $this->getHttpRequest()->getRemoteAddress(),
-                $postOld->post_edit_count + 1, 
-                time(), 
-                $postOld->post_locked, 
-                $postOld->post_order
-            );
+            $postNew = new \App\Models\Entity\Post();
+            $postNew->setPost_id($post_id)
+                    ->setPost_user_id($user_id)
+                    ->setPost_category_id($category_id)
+                    ->setPost_forum_id($forum_id)
+                    ->setPost_topic_id($topic_id)
+                    ->setPost_title($values->post_title)
+                    ->setPost_text($values->post_text)
+                    ->setPost_add_time($postOld->getPost_add_time())
+                    ->setPost_add_user_ip($postOld->getPost_add_user_ip())
+                    ->setPost_edit_user_ip($this->getHttpRequest()->getRemoteAddress())
+                    ->setPost_edit_count($postOld->getPost_edit_count() + 1)
+                    ->setPost_last_edit_time(time())
+                    ->setPost_locked($postNew->getPost_locked())
+                    ->setPost_order($postOld->getPost_order());
                                           
             $result = $this->postFacade->update($postNew);
         } else {
-            $post = new \App\Models\Entity\Post(
-                null,
-                $user_id,
-                $category_id,
-                $forum_id,
-                $topic_id,
-                $values->post_title,
-                $values->post_text,
-                time(),
-                $this->getHttpRequest()->getRemoteAddress(),
-                '',
-                0,
-                0,
-                0,
-                1
-            );
+            $post = new \App\Models\Entity\Post();
+            $post->setPost_user_id($user_id)
+                 ->setPost_category_id($category_id)
+                 ->setPost_forum_id($forum_id)
+                 ->setPost_topic_id($topic_id)
+                 ->setPost_title($values->post_title)
+                 ->setPost_text($values->post_text)
+                 ->setPost_add_user_ip($this->getHttpRequest()->getRemoteAddress())
+                 ->setPost_order(1);
             
             $result = $this->postFacade->add($post);
             $emails = $this->topicWatchManager->getAllJoinedByLeft($topic_id);

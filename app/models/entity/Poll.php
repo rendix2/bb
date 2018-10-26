@@ -2,97 +2,158 @@
 
 namespace App\Models\Entity;
 
+use App\Models\Entity\Base\Entity;
+use Dibi\Row;
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of Poll
  *
  * @author rendix2
  */
-class Poll extends Base\Entity
+class Poll extends Entity
 {
     /**
      *
      * @var int $poll_id 
      */
-    public $poll_id;
+    private $poll_id;
     
     /**
      *
      * @var int $poll_topic_id
      */
-    public $poll_topic_id;
+    private $poll_topic_id;
     
     /**
      *
      * @var string $poll_question
      */
-    public $poll_question;
+    private $poll_question;
     
     /**
      *
      * @var int $poll_time_to
      */
-    public $poll_time_to;
+    private $poll_time_to;
     
     /**
      *
      * @var PollAnswer[] $pollAnswers
      */
-    public $pollAnswers;
+    private $pollAnswers;
 
+    public function getPoll_id()
+    {
+        return $this->poll_id;
+    }
 
-    /**
-     * 
-     * @param type $poll_id
-     * @param type $poll_topic_id
-     * @param type $poll_question
-     * @param type $poll_time_to
-     * @param type $pollAnswers
-     */
-    public function __construct(
-        $poll_id,
-        $poll_topic_id,
-        $poll_question,
-        $poll_time_to,
-        $pollAnswers = []
-    ) {
-        $this->poll_id       = $poll_id;
-        $this->poll_topic_id = $poll_topic_id;
+    public function getPoll_topic_id()
+    {
+        return $this->poll_topic_id;
+    }
+
+    public function getPoll_question()
+    {
+        return $this->poll_question;
+    }
+
+    public function getPoll_time_to()
+    {
+        return $this->poll_time_to;
+    }
+
+    public function getPollAnswers()
+    {
+        return $this->pollAnswers;
+    }
+
+    public function setPoll_id($poll_id)
+    {
+        $this->poll_id = self::makeInt($poll_id);
+        return $this;
+    }
+
+    public function setPoll_topic_id($poll_topic_id)
+    {
+        $this->poll_topic_id = self::makeInt($poll_topic_id);
+        return $this;
+    }
+
+    public function setPoll_question($poll_question)
+    {
         $this->poll_question = $poll_question;
-        $this->poll_time_to  = $poll_time_to;
-        $this->pollAnswers   = $pollAnswers;
-        
+        return $this;
+    }
+
+    public function setPoll_time_to($poll_time_to)
+    {
+        $this->poll_time_to = self::makeTimestamp($poll_time_to);
+        return $this;
+    }
+
+    public function setPollAnswers(array $pollAnswers = [])
+    {
+        $this->pollAnswers = $pollAnswers;
+        return $this;
     }
 
     /**
      * 
-     * @param \Dibi\Row $values
+     * @param Row $values
      * 
-     * @return \App\Models\Entity\Poll
+     * @return Poll
      */
-    public static function setFromRow(\Dibi\Row $values)
-    {
-        return new Poll(
-            $values->poll_id,
-            $values->poll_topic_id,
-            $values->poll_question,
-            $values->poll_time_to
-        );
+    public static function setFromRow(Row $values)
+    { 
+        $poll = new Poll();
+        
+       if (isset($values->poll_id)) {
+           $poll->setPoll_id($values->poll_id);
+       }
+       
+       if (isset($values->poll_topic_id)) {
+           $poll->setPoll_topic_id($values->poll_topic_id);
+       }
+
+       if (isset($values->poll_question)) {
+           $poll->setPoll_question($values->poll_question);
+       }
+       
+       if (isset($values->poll_time_to)) {
+           $poll->setPoll_time_to($values->poll_time_to);
+       }       
+        
+        return $poll;
     }
     
     /**
      * 
-     * @param \Dibi\Row $values
+     * @param Row $values
      * 
-     * @return \App\Models\Entity\Poll
+     * @return Poll
      */
-    public static function setFromArrayHash(\Nette\Utils\ArrayHash $values)
+    public static function setFromArrayHash(ArrayHash $values)
     {
-        return new Poll(
-            isset($values->poll_id)       ? $values->poll_id       : null,
-            isset($values->poll_topic_id) ? $values->poll_topic_id : null, 
-            isset($values->poll_question) ? $values->poll_question : null,
-            isset($values->poll_time_to)  ? $values->poll_time_to  : null 
-        );
+        $poll = new Poll();
+        
+       if (isset($values->poll_id)) {
+           $poll->setPoll_id($values->poll_id);
+       }
+       
+       if (isset($values->poll_topic_id)) {
+           $poll->setPoll_topic_id($values->poll_topic_id);
+       }
+
+       if (isset($values->poll_question)) {
+           $poll->setPoll_question($values->poll_question);
+       }
+       
+       if (isset($values->poll_time_to)) {
+           $poll->setPoll_time_to($values->poll_time_to);
+       }       
+        
+        return $poll;
     }
     
     
@@ -113,10 +174,9 @@ class Poll extends Base\Entity
        }
 
        if (isset($this->poll_time_to)) {
-           $res['poll_time_to'] = $this->poll_time_to->getTimestamp();
+           $res['poll_time_to'] = $this->poll_time_to;
        }
 
        return $res;
     }
-
 }

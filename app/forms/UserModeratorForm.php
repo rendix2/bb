@@ -6,7 +6,9 @@ use App\Controls\BootstrapForm;
 use App\Models\ForumsManager;
 use App\Models\ModeratorsManager;
 use Nette\Application\UI\Control;
+use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of UserModeratorForm
@@ -95,11 +97,11 @@ class UserModeratorForm extends Control
     public function moderatorsSuccess(Form $form, ArrayHash $values)
     {
         $moderators  = $form->getHttpData($form::DATA_TEXT, 'moderators[]');
-        $user_id = $this->getParameter('id');
+        $user_id = $this->presenter->getParameter('id');
 
         $this->moderatorsManager->addByLeft((int) $user_id, array_values($moderators));
-        $this->flashMessage('Forums saved.', self::FLASH_MESSAGE_SUCCESS);
-        $this->redirect('User:edit', $user_id);
+        $this->presenter->flashMessage('Forum was saved.', \App\Presenters\Base\BasePresenter::FLASH_MESSAGE_SUCCESS);
+        $this->presenter->redirect('User:edit', $user_id);
     }
     
 }

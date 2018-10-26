@@ -43,8 +43,8 @@ use Nette\Utils\DateTime;
 class UserPresenter extends BaseForumPresenter
 {
     use \App\Models\Traits\UsersTrait;
-    use \App\Models\Traits\TopicsTrait;
-    use \App\Models\Traits\PostTrait;
+    //use \App\Models\Traits\TopicsTrait;
+    //use \App\Models\Traits\PostTrait;
     
     /**
      * @var LanguagesManager $languageManager
@@ -292,13 +292,13 @@ class UserPresenter extends BaseForumPresenter
         $rankUser = null;
 
         foreach ($ranks as $rank) {
-            if ($user->user_post_count >= $rank->rank_from && $user->user_post_count <= $rank->rank_to) {
+            if ($user->getUser_post_count() >= $rank->rank_from && $user->getUser_post_count() <= $rank->rank_to) {
                 $rankUser = $rank;
                 break;
             }
         }
         
-        $reg = DateTime::from($user->user_register_time);
+        $reg = DateTime::from($user->getUser_register_time());
         $now = new DateTime();
         
         $this->template->ranksDir        = $this->rank->getTemplateDir();

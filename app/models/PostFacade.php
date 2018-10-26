@@ -75,6 +75,12 @@ class PostFacade
     
     /**
      *
+     * @var PollsFacade $pollsFacade
+     */
+    private $pollsFacade;
+    
+    /**
+     *
      * @var TopicsSetting $topicSettings
      */
     private $topicSettings;
@@ -91,6 +97,7 @@ class PostFacade
      * @param ThanksManager       $thanksManager
      * @param ThanksFacade        $thanksFacade
      * @param TopicWatchFacade    $topicWatchFacade
+     * @param PollsFacade         $pollsFacade
      * @param TopicsSetting       $topicSettings
      */
     public function __construct(
@@ -104,6 +111,7 @@ class PostFacade
         ThanksManager $thanksManager,
         ThanksFacade $thanksFacade,
         TopicWatchFacade $topicWatchFacade,
+        PollsFacade $pollsFacade,
         TopicsSetting $topicSettings
     ) {
         $this->postsManager        = $postsManager;
@@ -116,6 +124,7 @@ class PostFacade
         $this->thanksManager       = $thanksManager;
         $this->thanksFacade        = $thanksFacade;
         $this->topicWatchFacade    = $topicWatchFacade;
+        $this->pollsFacade         = $pollsFacade;
         $this->topicSettings       = $topicSettings;
     }
     
@@ -142,12 +151,12 @@ class PostFacade
     public function add(Entity\Post $post)
     {
         $post_id  = $this->postsManager->add($post->getArrayHash());
-        $user_id  = $post->post_user_id;
-        $forum_id = $post->post_forum_id;
-        $topic_id = $post->post_topic_id;
+        $user_id  = $post->getPost_user_id();
+        $forum_id = $post->getPost_forum_id();
+        $topic_id = $post->getPost_topic_id();
         
         $topicDibi = $this->topicsManager->getById($topic_id);
-        $topic     = Entity\Topic::get($topicDibi);
+        $topic     = Entity\Topic::setFromRow($topicDibi);
 
         $this->topicsManager->update(
             $topic_id,
@@ -155,7 +164,7 @@ class PostFacade
                 'topic_post_count%sql' => 'topic_post_count + 1',
                 'topic_last_user_id'   => $user_id,
                 'topic_last_post_id'   => $post_id,
-                'topic_page_count'     => ceil(($topic->topic_post_count + 1) / $this->topicSettings->get()['pagination']['itemsPerPage'])
+                'topic_page_count'     => ceil(($topic->getTopic_post_count() + 1) / $this->topicSettings->get()['pagination']['itemsPerPage'])
                 ])
         );
 
@@ -171,8 +180,8 @@ class PostFacade
         $this->postsHistoryManager->add(ArrayHash::from([
                 'post_id'           => $post_id,
                 'post_user_id'      => $user_id,
-                'post_title'        => $post->post_title,
-                'post_text'         => $post->post_text,
+                'post_title'        => $post->getPost_title(),
+                'post_text'         => $post->getPost_text(),
                 'post_history_time' => time()
             ]));
         $this->usersManager->update($user_id, ArrayHash::from([
@@ -196,12 +205,12 @@ class PostFacade
         //$myPost = clone $post;
         //unset($myPost->post_id);
 
-        $update = $this->postsManager->update($post->post_id, $post->getArrayHash());
+        $update = $this->postsManager->update($post->getPost_id(), $post->getArrayHash());
         $add    = $this->postsHistoryManager->add(ArrayHash::from([
-                'post_id'           => $post->post_id,
-                'post_user_id'      => $post->post_user_id,
-                'post_title'        => $post->post_title,
-                'post_text'         => $post->post_text,
+                'post_id'           => $post->getPost_id(),
+                'post_user_id'      => $post->getPost_user_id(),
+                'post_title'        => $post->getPost_title(),
+                'post_text'         => $post->getPost_text(),
                 'post_history_time' => time()
             ]));
 
@@ -216,69 +225,74 @@ class PostFacade
     public function delete(Entity\Topic $topic, Entity\Post $post)
     {
         $this->usersManager->update(
-            $post->post_user_id,
+            $post->getPost_user_id(),
             ArrayHash::from(['user_post_count%sql' => 'user_post_count - 1'])
         );
         $this->topicsManager->update(
-            $post->post_topic_id,
+            $post->getPost_topic_id(),
             ArrayHash::from([
                 'topic_post_count%sql' => 'topic_post_count - 1',
-                'topic_page_count'     => ceil(($topic->topic_post_count - 1) / $this->topicSettings->get()['pagination']['itemsPerPage'])
+                'topic_page_count'     => ceil(($topic->getTopic_post_count() - 1) / $this->topicSettings->get()['pagination']['itemsPerPage'])
                 ])
         );
 
         $this->thanksFacade->deleteByPost($post);
-        $this->postsHistoryManager->deleteByPost($post->post_id);
+        $this->postsHistoryManager->deleteByPost($post->getPost_id());
         $this->topicWatchFacade->deleteByPost($post);
-        $this->reportsManager->deleteByPost($post->post_id);
+        $this->reportsManager->deleteByPost($post->getPost_id());
         $this->forumsManager->update(
-            $post->post_forum_id,
+            $post->getPost_forum_id(),
             ArrayHash::from(['forum_post_count%sql' => 'forum_post_count - 1'])
         );
         
         // recount last post info
-        $res = $this->postsManager->delete($post->post_id);        
+        $res = $this->postsManager->delete($post->getPost_id());        
                 
         // last post
-        if ($topic->topic_last_post_id === (int)$post->post_id && $topic->topic_first_post_id !== (int)$post->post_id) {
+        if ($topic->getTopic_last_post_id() === (int)$post->getPost_id() && $topic->getTopic_first_post_id() !== (int)$post->getPost_id()) {
             $last_post = $this->postsManager->getLastByTopic($post->post_topic_id);
 
             if ($last_post) {
-                $this->topicsManager->update($post->post_topic_id, ArrayHash::from([
+                $this->topicsManager->update($post->getPost_topic_id(), ArrayHash::from([
                     'topic_last_post_id' => $last_post->post_id,
                     'topic_last_user_id' => $last_post->post_user_id
                 ]));                
             }
-        } elseif ($topic->topic_first_post_id === (int)$post->post_id && $topic->topic_last_post_id !== (int)$post->post_id) {
-            $first_post = $this->postsManager->getFirstByTopic($post->post_topic_id);
+        } elseif ($topic->getTopic_first_post_id() === (int)$post->getPost_id() && $topic->getTopic_last_post_id() !== (int)$post->getPost_id()) {
+            $first_post = $this->postsManager->getFirstByTopic($post->getPost_topic_id());
             
             if ($first_post) {
-                $this->topicsManager->update($post->post_topic_id, ArrayHash::from([
+                $this->topicsManager->update($post->getPost_topic_id(), ArrayHash::from([
                     'topic_first_post_id' => $first_post->post_id,
                     'topic_first_user_id' => $first_post->post_user_id
                 ]));                
             }
-        } elseif ($topic->topic_last_post_id === $topic->topic_first_post_id && $topic->topic_first_post_id === (int)$post->post_id) {
-            $this->forumsManager->update($post->post_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
+        } elseif ($topic->getTopic_last_post_id() === $topic->getTopic_first_post_id() && $topic->getTopic_first_post_id() === (int)$post->getPost_id()) {
+            $this->forumsManager->update($post->getPost_forum_id(), ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
             $this->thanksFacade->deleteByTopic($topic);
-            $this->reportsManager->deleteByTopic($topic->topic_id);
+            $this->reportsManager->deleteByTopic($topic->getTopic_id());
             $this->topicWatchFacade->deleteByTopic($topic);
-            $this->usersManager->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
-            $this->topicsManager->delete($topic->topic_id);
+            $this->usersManager->update($topic->getTopic_user_id(), ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
+            
+            if ($topic->getPoll()) {
+                $this->pollsFacade->delete($topic->getPoll());
+            }
+            
+            $this->topicsManager->delete($topic->getTopic_id());
 
             return 2;
         }
         
-        $lastPostOfUser = $this->postsManager->getLastByUser($post->post_user_id);
+        $lastPostOfUser = $this->postsManager->getLastByUser($post->getPost_user_id());
 
         if ($lastPostOfUser) {
             $this->usersManager->update(
-                $post->post_user_id,
+                $post->getPost_user_id(),
                 ArrayHash::from(['user_last_post_time' => $lastPostOfUser->post_add_time])
             );
         } else {
             $this->usersManager->update(
-                $post->post_user_id,
+                $post->getPost_user_id(),
                 ArrayHash::from(['user_last_post_time' => 0])
             );
         }

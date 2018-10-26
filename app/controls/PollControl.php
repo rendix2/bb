@@ -53,8 +53,11 @@ class PollControl extends Control
      * @param int $poll_answer_id
      */
     public function handleVote($poll_id, $poll_answer_id)
-    {
-        $pollVote = new \App\Models\Entity\PollVote(null, $poll_id, $poll_answer_id, $this->user->getId());
+    {        
+        $pollVote = new \App\Models\Entity\PollVote();
+        $pollVote->setPoll_id($poll_id)
+                 ->setPoll_answer_id($poll_answer_id)
+                 ->setPoll_user_id($this->user->id);
         
         try {
             $this->pollsFacade->getPollsVotesManager()->add($pollVote->getArrayHash());

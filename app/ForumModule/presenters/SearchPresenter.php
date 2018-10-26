@@ -51,7 +51,7 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function createComponentSearchPostForm()
     {
-        return new SearchPostForm();
+        return new SearchPostForm($this->getForumTranslator());
     }
 
     /**
@@ -59,7 +59,7 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function createComponentSearchTopicForm()
     {
-        return new SearchTopicForm();
+        return new SearchTopicForm($this->getForumTranslator());
     }
 
     /**
@@ -67,7 +67,7 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function createComponentSearchUserForm()
     {
-        return new SearchUserForm();
+        return new SearchUserForm($this->getForumTranslator());
     }
 
     /**

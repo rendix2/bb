@@ -34,7 +34,19 @@ class GroupPresenter extends AdminPresenter
      * @inject
      */
     public $forums2groupsManager;
+    
+    /**
+     * @var ForumsManager $forumsManager
+     * @inject
+     */
+    public $forumsManager;    
 
+    /**
+     * @var UsersManager $usersManager
+     * @inject
+     */
+    public $usersManager;
+    
     /**
      * GroupPresenter constructor.
      *
@@ -109,24 +121,24 @@ class GroupPresenter extends AdminPresenter
                 $this[self::FORM_NAME]->setDefaults(['group_moderator' => $moderator->user_name]);
             }
         }
-        
-        $this->template->countOfUsers = $this->users2GroupsManager->getCountByRight($id);
-        $this->template->forums       = $this->forumsManager->createForums($this->forumsManager->getAll(), 0);
 
         $data   = [];
         $forums = $this->forums2groupsManager->getAllByRight($id);
 
         foreach ($forums as $permission) {
             $data[$permission->forum_id]['post_add']     = $permission->post_add;
-            $data[$permission->forum_id]['post_edit']    = $permission->post_edit;
+            $data[$permission->forum_id]['post_update']    = $permission->post_update;
             $data[$permission->forum_id]['post_delete']  = $permission->post_delete;
             $data[$permission->forum_id]['topic_add']    = $permission->topic_add;
-            $data[$permission->forum_id]['topic_edit']   = $permission->topic_edit;
+            $data[$permission->forum_id]['topic_update']   = $permission->topic_update;
             $data[$permission->forum_id]['topic_delete'] = $permission->topic_delete;
             $data[$permission->forum_id]['topic_thank']  = $permission->topic_thank;
+            $data[$permission->forum_id]['topic_fast_reply']  = $permission->topic_fast_reply;
         }
 
-        $this->template->permissions = $data;
+        $this->template->countOfUsers = $this->users2GroupsManager->getCountByRight($id);
+        $this->template->forums       = $this->forumsManager->createForums($this->forumsManager->getAll(), 0);
+        $this->template->permissions  = $data;
     }
 
     /**
@@ -200,14 +212,15 @@ class GroupPresenter extends AdminPresenter
      */
     public function forumsSuccess(Form $form, ArrayHash $values)
     {
-        $post_add     = $form->getHttpData($form::DATA_TEXT, 'post_add[]');
-        $post_edit    = $form->getHttpData($form::DATA_TEXT, 'post_edit[]');
-        $post_delete  = $form->getHttpData($form::DATA_TEXT, 'post_delete[]');
-        $topic_add    = $form->getHttpData($form::DATA_TEXT, 'topic_add[]');
-        $topic_edit   = $form->getHttpData($form::DATA_TEXT, 'topic_edit[]');
-        $topic_delete = $form->getHttpData($form::DATA_TEXT, 'topic_delete[]');
-        $forum_id     = $form->getHttpData($form::DATA_TEXT, 'forum_id[]');
-        $topic_thank  = $form->getHttpData($form::DATA_TEXT, 'topic_thank[]');
+        $post_add         = $form->getHttpData($form::DATA_TEXT, 'post_add[]');
+        $post_update      = $form->getHttpData($form::DATA_TEXT, 'post_update[]');
+        $post_delete      = $form->getHttpData($form::DATA_TEXT, 'post_delete[]');
+        $topic_add        = $form->getHttpData($form::DATA_TEXT, 'topic_add[]');
+        $topic_update     = $form->getHttpData($form::DATA_TEXT, 'topic_update[]');
+        $topic_delete     = $form->getHttpData($form::DATA_TEXT, 'topic_delete[]');
+        $forum_id         = $form->getHttpData($form::DATA_TEXT, 'forum_id[]');
+        $topic_thank      = $form->getHttpData($form::DATA_TEXT, 'topic_thank[]');
+        $topic_fast_reply = $form->getHttpData($form::DATA_TEXT, 'topic_fast_reply[]');
         
         /**
          * @var int $count count
@@ -226,12 +239,13 @@ class GroupPresenter extends AdminPresenter
 
         $data = [
             'post_add'     => $this->map(array_pad($post_add, $count + 1, 0)),
-            'post_edit'    => $this->map(array_pad($post_edit, $count + 1, 0)),
+            'post_update'    => $this->map(array_pad($post_update, $count + 1, 0)),
             'post_delete'  => $this->map(array_pad($post_delete, $count + 1, 0)),
             'topic_add'    => $this->map(array_pad($topic_add, $count + 1, 0)),
-            'topic_edit'   => $this->map(array_pad($topic_edit, $count + 1, 0)),
+            'topic_update'   => $this->map(array_pad($topic_update, $count + 1, 0)),
             'topic_delete' => $this->map(array_pad($topic_delete, $count + 1, 0)),
             'topic_thank'  => $this->map(array_pad($topic_thank, $count + 1, 0)),
+            'topic_fast_reply'  => $this->map(array_pad($topic_fast_reply, $count + 1, 0)),
             'forum_id'     => $forums,
             'group_id'     => $groups
         ];

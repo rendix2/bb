@@ -40,9 +40,9 @@ use Tracy\Debugger;
 class TopicPresenter extends BaseForumPresenter
 {
     use \App\Models\Traits\CategoriesTrait;
-    use \App\Models\Traits\ForumsTrait;
-    use \App\Models\Traits\TopicsTrait;
-    use \App\Models\Traits\PostTrait;
+    //use \App\Models\Traits\ForumsTrait;
+    //use \App\Models\Traits\TopicsTrait;
+    //use \App\Models\Traits\PostTrait;
 
     /**
      * @var TopicsSetting $topicSetting
@@ -206,23 +206,20 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function actionThank($category_id, $forum_id, $topic_id)
     {
-        if (!$this->getUser()->isAllowed($forum_id, 'topic_thank')) {
-            $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
-        }
-
-        $category = $this->checkCategoryParam($category_id);
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-        $user_id  = $this->getUser()->getId();
+        $category   = $this->checkCategoryParam($category_id);
+        $forum      = $this->checkForumParam($forum_id, $category_id);
+        $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        $user_id    = $this->getUser()->getId();        
+        $forumScope = $this->loadForum($forum);
         
-        $thank = new \App\Models\Entity\Thank(
-            null,
-            $forum_id,
-            $topic_id,
-            $user_id,
-            time(),
-            $this->getHttpRequest()->getRemoteAddress()
-        );
+        $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_THANK);
+
+        $thank = new \App\Models\Entity\Thank();
+        $thank->setThank_forum_id($forum_id)
+              ->setThank_topic_id($topic_id)
+              ->setThank_user_id($user_id)
+              ->setThank_time(time())
+              ->setThank_user_ip($this->getHttpRequest()->getRemoteAddress());
 
         $res = $this->thanksFacade->add($thank);
         
@@ -241,17 +238,26 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function actionDelete($category_id, $forum_id, $topic_id, $page)
     {
-        if (!$this->getUser()->isAllowed($forum_id, 'topic_delete')) {
-            $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
+        $category   = $this->checkCategoryParam($category_id);
+        $forum      = $this->checkForumParam($forum_id, $category_id);
+        $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        
+        $pollDibi   = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
+        
+        if ($pollDibi) {
+            $pollTimeStamp = $pollDibi->poll_time_to;
+            unset($pollDibi->poll_time_to);
+        
+            $pollEntity = \App\Models\Entity\Poll::setFromRow($pollDibi);
+            $pollEntity->setPoll_time_to(\Nette\Utils\DateTime::from($pollTimeStamp));
+        
+            $topic->setPoll($pollEntity);
         }
-
-        $category = $this->checkCategoryParam($category_id);
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-
-        if ($topic->topic_user_id !== $this->getUser()->getId()) {
-            $this->error('You are not author of topic.', IResponse::S403_FORBIDDEN);
-        }
+        
+        $forumScope = $this->loadForum($forum);
+        $topicScope = $this->loadTopic($forum, $topic);
+        
+        $this->requireAccess($topicScope, \App\Authorization\Scopes\Topic::ACTION_DELETE);
 
         $res = $this->topicFacade->delete($topic);
         
@@ -275,6 +281,9 @@ class TopicPresenter extends BaseForumPresenter
         $category = $this->checkCategoryParam($category_id);
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        
+        $forumScope = $this->loadForum($forum);
+        $topicScope = $this->loadTopic($forum, $topic);
 
         $data = $this->postsManager->getFluentByTopicJoinedUser($topic_id);
 
@@ -292,16 +301,34 @@ class TopicPresenter extends BaseForumPresenter
             $this->redirect('Forum:default', $category_id, $forum_id);
         }
 
-        $user_id = $this->getUser()->getId();
-
+        $user_id   = $this->getUser()->getId();        
+        $posts     = $data->orderBy('post_id', dibi::ASC)->fetchAll();
+        $postsNew  = [];
+        $postScope = null;
+                
+        foreach ($posts as $postDibi) {
+            $post      = \App\Models\Entity\Post::setFromRow($postDibi);
+            $postScope = new \App\Authorization\Scopes\Post($post, $topicScope, $topic);
+            
+            $postDibi->canDelete = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_DELETE);
+            $postDibi->canEdit = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_EDIT);
+            //$postDibi->canEdit = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_EDIT);
+            $postDibi->canHistory = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_HISTORY);
+           
+            $postsNew[] = $postDibi;
+        }
+        
         $this->template->avatarsDir = $this->avatars->getTemplateDir();
         $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $user_id);
         $this->template->ranks      = $this->rankManager->getAllCached();
-        $this->template->posts      = $data->orderBy('post_id', dibi::ASC)->fetchAll();
-        $this->template->canThank   = $this->thanksManager->canUserThank($forum_id, $topic_id, $user_id);
+        $this->template->posts      = $postsNew;
         $this->template->thanks     = $this->thanksManager->getAllJoinedUserByTopic($topic_id);
-        $this->template->forum      = $forum;
         $this->template->topic      = $topic;
+        
+        $this->template->canAddPost    = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_ADD);        
+        $this->template->canDeletePost = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_DELETE);
+        $this->template->canFastReply  = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_FAST_REPLY);
+        $this->template->canThankTopic = $this->isAllowed($topicScope, \App\Authorization\Scopes\Topic::ACTION_THANK);
         
         $this->template->signatureDelimiter = $this->postSettings->get()['signatureDelimiter'];
     }
@@ -313,8 +340,15 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function renderEdit($category_id, $forum_id, $topic_id = null)
     {
-        $category = $this->checkCategoryParam($category_id);
-        $forum    = $this->checkForumParam($forum_id, $category_id);        
+        $category   = $this->checkCategoryParam($category_id);
+        $forum      = $this->checkForumParam($forum_id, $category_id);
+        $forumScope = $this->loadForum($forum);
+
+        if ($topic_id) {
+            $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_UPDATE);
+        } else {
+            $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_ADD);
+        }
 
         $topic = [];
         $post  = [];
@@ -451,108 +485,71 @@ class TopicPresenter extends BaseForumPresenter
             foreach ($values->answers as $answer) {   
                 $pollAnswer = \App\Models\Entity\PollAnswer::setFromArrayHash($answer);
                 
-                if ($pollAnswer->poll_answer) {
+                if ($pollAnswer->getPoll_answer()) {
                     $pollAnswers[] = $pollAnswer;
                 }                                
             }
         
             $poll = \App\Models\Entity\Poll::setFromArrayHash($values);
-            $poll->pollAnswers = $pollAnswers;
+            $poll->setPollAnswers($pollAnswers);;
         } else {
             $poll = null;
         }
 
         if ($topic_id) {
             $oldTopicDibi = $this->getManager()->getById($topic_id);
-            $oldTopic     = \App\Models\Entity\Topic::get($oldTopicDibi);
+            $oldTopic     = \App\Models\Entity\Topic::setFromRow($oldTopicDibi);
             
             $firstPost = $this->postsManager->getFirstByTopic($oldTopicDibi->topic_id);           
             $pollDibi = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
             
             if ($pollDibi) {
-                $poll->poll_id = $pollDibi->poll_id;
+                $poll->setPoll_id($pollDibi->poll_id);
             }
             
-            foreach ($poll->pollAnswers as $answer) {
-                $answer->poll_id = $pollDibi->poll_id;
+            if ($poll) {
+                foreach ($poll->getPollAnswers() as $answer) {
+                    $answer->setPoll_id($pollDibi->poll_id);;
+                }
             }
-                                    
-            $post = new \App\Models\Entity\Post(
-                $firstPost->post_id,
-                $firstPost->post_user_id,
-                $firstPost->post_category_id,
-                $firstPost->post_forum_id,
-                $firstPost->post_topic_id,
-                $firstPost->post_title, 
-                $values->post_text,
-                $firstPost->post_add_time, 
-                $firstPost->post_add_user_ip, 
-                $firstPost->post_edit_user_ip,
-                $firstPost->post_edit_count, 
-                $firstPost->post_last_edit_time, 
-                $firstPost->post_locked,
-                $firstPost->post_order
-            );
             
-            $topic = new \App\Models\Entity\Topic(
-                $topic_id,
-                $category_id,
-                $forum_id,
-                $user_id,
-                $values->post_title, 
-                $oldTopic->topic_post_count,
-                $oldTopic->topic_add_time,
-                $oldTopic->topic_locked,
-                $oldTopic->topic_view_count,
-                $oldTopic->topic_first_post_id,
-                $oldTopic->topic_first_user_id,
-                $oldTopic->topic_last_post_id,
-                $oldTopic->topic_last_user_id, 
-                $oldTopic->topic_order,
-                $oldTopic->topic_page_count,
-                $post,
-                $poll
-            );
+            $post = \App\Models\Entity\Post::setFromRow($firstPost);
+            $post->setPost_text($values->post_text);
+            
+            $topic = \App\Models\Entity\Topic::setFromRow($oldTopicDibi);
+            $topic->setTopic_id($topic_id)
+                  ->setTopic_category_id($category_id)
+                  ->setTopic_forum_id($forum_id)
+                  ->setTopic_user_id($user_id)
+                  ->setTopic_name($values->post_title)
+                  ->setPost($post)
+                  ->setPoll($poll);
             
             $res = $this->topicFacade->update($topic);
-        } else {
-            $post = new \App\Models\Entity\Post(
-                null,
-                $user_id,
-                $category_id,
-                $forum_id,
-                $topic_id,
-                $values->post_title, 
-                $values->post_text,
-                time(), 
-                $this->getHttpRequest()->getRemoteAddress(),
-                '',
-                0, 
-                0, 
-                0,
-                1,
-                1
-            );
-
-            $topic = new \App\Models\Entity\Topic(
-                $topic_id,
-                $category_id,
-                $forum_id, 
-                $user_id, 
-                $values->post_title, 
-                0,
-                time(), 
-                0, 
-                0,
-                0,
-                $user_id,
-                0,
-                $user_id,
-                1, 
-                1,
-                $post,
-                $poll                    
-            );
+        } else {            
+            $post = new \App\Models\Entity\Post();
+            $post->setPost_user_id($user_id)
+                 ->setPost_category_id($category_id)
+                 ->setPost_forum_id($forum_id)
+                 ->setPost_topic_id($topic_id)
+                 ->setPost_title($values->post_title)
+                 ->setPost_text($values->post_text)
+                 ->setPost_add_time(time())
+                 ->setPost_add_user_ip($this->getHttpRequest()->getRemoteAddress())
+                 ->setPost_order(1);
+            
+            $topic = new \App\Models\Entity\Topic();
+            
+            $topic->setTopic_category_id($category_id)
+                  ->setTopic_forum_id($forum_id)
+                  ->setTopic_user_id($user_id)
+                  ->setTopic_name($values->post_title)
+                  ->setTopic_add_time(time())
+                  ->setTopic_first_user_id($user_id)
+                  ->setTopic_last_user_id($user_id)
+                  ->setTopic_page_count(1)
+                  ->setPoll($poll)
+                  ->setPost($post);
             
             $res = $topic_id = $this->topicFacade->add($topic);
         }

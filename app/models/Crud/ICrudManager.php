@@ -105,7 +105,7 @@ interface ICrudManager
     /**
      *
      */
-    public function deleteCache();
+    public function deleteCache($item_id = null);
 
     /**
      * @param array $item_id

@@ -25,11 +25,6 @@ use Tracy\Debugger;
  */
 class PmPresenter extends CrudPresenter
 {
-    /**
-     * @var Authorizator $authorizator
-     * @inject
-     */
-    public $authorizator;   
     
     /**
      * @var ReportsManager $reportsManager
@@ -58,7 +53,6 @@ class PmPresenter extends CrudPresenter
      */
     public function __destruct()
     {
-        $this->authorizator   = null;
         $this->reportsManager = null;
         $this->translator     = null;
         

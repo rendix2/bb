@@ -91,7 +91,7 @@ class TopicWatchFacade
         $topics = $this->topicsManager->getAllByForum($forum_id);
         
         foreach ($topics as $topicDibi) {
-            $topic = Entity\Topic::get($topicDibi);
+            $topic = Entity\Topic::setFromRow($topicDibi);
             $this->deleteByTopic($topic);
         }
     }
@@ -102,7 +102,7 @@ class TopicWatchFacade
      */
     public function deleteByTopic(Entity\Topic $topic)
     {
-        $topicsWatches = $this->topicWatchManager->getAllByLeft($topic->topic_id);
+        $topicsWatches = $this->topicWatchManager->getAllByLeft($topic->getTopic_id());
         $user_ids      = [];
 
         foreach ($topicsWatches as $topicsWatch) {
@@ -125,17 +125,17 @@ class TopicWatchFacade
      */
     public function deleteByPost(Entity\Post $post)
     {       
-        $postCount = $this->postsManager->getCountOfUsersByTopicId($post->post_topic_id);
+        $postCount = $this->postsManager->getCountOfUsersByTopicId($post->getPost_topic_id());
 
         foreach ($postCount as $ps) {
             // check if user has there only one post so we can delete his topic watching
             // else he can still want to watch this topic
             if ($ps->post_count === 1 || $ps->post_count === 0) {
-                $check = $this->topicWatchManager->fullCheck($post->post_topic_id, $ps->post_user_id);
+                $check = $this->topicWatchManager->fullCheck($post->getPost_topic_id(), $ps->post_user_id);
 
                 if ($check) {
-                    $this->topicWatchManager->fullDelete($post->post_topic_id, $ps->post_user_id);                    
-                    $this->usersManager->update($post->post_user_id, ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1']));
+                    $this->topicWatchManager->fullDelete($post->getPost_topic_id(), $ps->post_user_id);                    
+                    $this->usersManager->update($post->getPost_user_id(), ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1']));
                 }                                
             }
         }        

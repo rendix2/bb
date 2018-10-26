@@ -59,11 +59,13 @@ class ForumFacade
      */
     public function add(Entity\Forum $forum)
     {
-        $forum->forum_id = $this->forumsManager->getMptt()->add($forum->forum_parent_id, $forum->forum_name);        
+        $forum_id = $this->forumsManager->getMptt()->add($forum->getForum_parent_id(), $forum->getForum_name());
         
-        $this->forumsManager->update($forum->forum_id, $forum->getArrayHash());
+        $forum->setForum_id($forum_id);
         
-        return $forum->forum_id;
+        $this->forumsManager->update($forum->getForum_id(), $forum->getArrayHash());
+        
+        return $forum->getForum_id();
     }
     
     /**
@@ -93,21 +95,21 @@ class ForumFacade
      */
     public function delete(Entity\Forum $forum)
     {
-        $forums = $this->forumsManager->getByParent($forum->forum_id);
+        $forums = $this->forumsManager->getByParent($forum->getForum_id());
 
         foreach ($forums as $forumDibi) {
-            $forum = Entity\Forum::get($forumDibi);
+            $forum = Entity\Forum::setFromRow($forumDibi);
             $this->delete($forum);
         }
 
-        $topics = $this->topicsManager->getAllByForum($forum->forum_id);
+        $topics = $this->topicsManager->getAllByForum($forum->getForum_id());
         
         foreach ($topics as $topicDibi) {
-            $topic = Entity\Topic::get($topicDibi);
+            $topic = Entity\Topic::setFromRow($topicDibi);
             
             $this->topicFacade->delete($topic);
         }
  
-        return $this->forumsManager->delete($forum->forum_id);
+        return $this->forumsManager->delete($forum->getForum_id());
     }
 }

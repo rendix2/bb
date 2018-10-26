@@ -78,7 +78,7 @@ class ThanksFacade
     public function add(Entity\Thank $thank)
     {
         $this->usersManager->update(
-            $thank->thank_user_id,
+            $thank->getThank_user_id(),
             ArrayHash::from(['user_thank_count%sql' => 'user_thank_count + 1'])
         );
 
@@ -107,7 +107,7 @@ class ThanksFacade
         $topics = $this->topicsManager->getAllByForum($forum_id);
         
         foreach ($topics as $topicDibi) {
-            $topic = Entity\Topic::get($topicDibi);
+            $topic = Entity\Topic::setFromRow($topicDibi);
             
             $this->deleteByTopic($topic);
         }                
@@ -121,7 +121,7 @@ class ThanksFacade
      */
     public function deleteByTopic(Entity\Topic $topic)
     {
-        $thanks   = $this->thanksManager->getAllByTopic($topic->topic_id);
+        $thanks   = $this->thanksManager->getAllByTopic($topic->getTopic_id());
         $user_ids = [];
 
         foreach ($thanks as $thank) {
@@ -146,12 +146,12 @@ class ThanksFacade
      */
     public function deleteByPost(Entity\Post $post)
     {        
-        $count = $this->postsManager->getCountByUser($post->post_topic_id, $post->post_user_id);       
+        $count = $this->postsManager->getCountByUser($post->getPost_topic_id(), $post->getPost_user_id());       
 
         if ($count === 1 || $count === 0) {
-            $this->usersManager->update($post->post_user_id, ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1']));
+            $this->usersManager->update($post->getPost_user_id(), ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1']));
 
-            return $this->thanksManager->deleteByUserAndTopic([$post->post_user_id], $post->post_topic_id);
+            return $this->thanksManager->deleteByUserAndTopic([$post->getPost_user_id()], $post->getPost_topic_id());
         } else {
             return false;
         }

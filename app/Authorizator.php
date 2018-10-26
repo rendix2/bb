@@ -17,7 +17,7 @@ use Nette\Security\User;
 class Authorizator
 {
 
-    const ROLES = [ 1 => 'guest', 2 => 'registered', 3 => 'moderator', 4 => 'juniorAdmin', 5 => 'Admin'];
+    const ROLES = [ 1 => 'guest', 2 => 'registered', 3 => 'moderator', 4 => 'juniorAdmin', 5 => 'admin'];
     
     /**
      * @var Users2GroupsManager $users2GroupsManager

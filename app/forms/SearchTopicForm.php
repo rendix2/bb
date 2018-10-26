@@ -14,7 +14,23 @@ use Nette\Utils\ArrayHash;
  */
 class SearchTopicForm extends Control
 {
+    /**
+     *
+     * @var \Nette\Localization\ITranslator $translator 
+     */
+    private $translator;
     
+    /**
+     * 
+     * @param \Nette\Localization\ITranslator $translator
+     */
+    public function __construct(\Nette\Localization\ITranslator $translator)
+    {                
+        parent::__construct();
+        
+        $this->translator = $translator;
+    }
+
     /**
      * 
      */
@@ -29,6 +45,7 @@ class SearchTopicForm extends Control
     public function createComponentSearchTopicForm()
     {
         $form = BootstrapForm::create();
+        $form->setTranslator($this->translator);
 
         $form->addText('search_topic', 'Topic')->setRequired('Please enter some in topic');
         $form->addSubmit('send_topic', 'Search topic');

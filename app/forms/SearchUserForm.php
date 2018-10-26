@@ -14,6 +14,22 @@ use Nette\Utils\ArrayHash;
  */
 class SearchUserForm extends Control
 {
+    /**
+     *
+     * @var \Nette\Localization\ITranslator $translator 
+     */
+    private $translator;
+    
+    /**
+     * 
+     * @param \Nette\Localization\ITranslator $translator
+     */
+    public function __construct(\Nette\Localization\ITranslator $translator)
+    {                
+        parent::__construct();
+        
+        $this->translator = $translator;
+    }
     
     /**
      * 
@@ -30,6 +46,7 @@ class SearchUserForm extends Control
     {
         $form = BootstrapForm::create();
 
+        $form->setTranslator($this->translator);
         $form->addText('search_user', 'User')->setRequired('Please enter name.');
         $form->addSubmit('send_user', 'Search user');
         $form->onSuccess[] = [$this, 'searchUserFormSuccess'];

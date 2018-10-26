@@ -84,10 +84,12 @@ class PollsFacade
      */
     public function add(Poll $poll)
     {        
-        $poll->poll_id = $this->pollsManager->add($poll->getArrayHash());
+        $poll_id = $this->pollsManager->add($poll->getArrayHash());
         
-        foreach ($poll->pollAnswers as $answer) {
-            $answer->poll_id = $poll->poll_id;
+        $poll->setPoll_id($poll_id);
+        
+        foreach ($poll->getPollAnswers() as $answer) {
+            $answer->setPoll_id($poll_id);
             $this->pollsAnswersManager->add($answer->getArrayHash());
         }
     }
@@ -98,13 +100,13 @@ class PollsFacade
      */
     public function update(Poll $poll)
     {
-        $this->pollsManager->update($poll->poll_id, $poll->getArrayHash());
+        $this->pollsManager->update($poll->getPoll_id(), $poll->getArrayHash());
         
-        foreach ($poll->pollAnswers as $answer) {
-            $answer_exists = $this->pollsAnswersManager->getById($answer->poll_answer_id);
+        foreach ($poll->getPollAnswers() as $answer) {
+            $answer_exists = $this->pollsAnswersManager->getById($answer->getPoll_answer_id());
             
             if ($answer_exists) {
-                $this->pollsAnswersManager->update($answer->poll_answer_id, $answer->getArrayHash());
+                $this->pollsAnswersManager->update($answer->getPoll_answer_id(), $answer->getArrayHash());
             } else {
                 $this->pollsAnswersManager->add($answer->getArrayHash());
             }            
@@ -116,7 +118,8 @@ class PollsFacade
      */
     public function delete(Poll $poll)
     {
-        $this->pollsManager->delete($poll->poll_id);
-        $this->pollsAnswersManager->deleteByPoll($poll->poll_id);
+        $this->pollsManager->delete($poll->getPoll_id());
+        $this->pollsAnswersManager->deleteByPoll($poll->getPoll_id());
+        $this->pollsVotesManager->deleteByPoll($poll->getPoll_id());
     }
 }

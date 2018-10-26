@@ -6,7 +6,7 @@
         <div class="float-left">
             <h1>{_forum}: {$forum->forum_name}</h1>
         </div>
-        {if $user->isAllowed($forum_id, 'topic_add')}
+        {if $canAddTopic}
             <div class="float-right">
                 <a class="btn btn-primary" href="{link Topic:edit, $category_id, $forum_id}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
@@ -14,6 +14,7 @@
                 </a>
             </div>
         {/if}
+          
     </div>
 
     <div class="col-sm-12">
@@ -73,11 +74,12 @@
                             <i class="far fa-edit"></i>
                         </a>
                         
-                        {if $user->getId() === $topic->topic_user_id}
+                        {if $canDeleteTopic}
                             <a href="{link Topic:delete, $category_id, $forum_id, $topic->topic_id, $page}"title="{_topic_delete}">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                         {/if}
+                        
                         <a href="{link Topic:report, $category_id, $forum_id, $topic->topic_id}" title="{_topic_report_topic}">
                             <i class="fas fa-exclamation"></i>
                         </a>

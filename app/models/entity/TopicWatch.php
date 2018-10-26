@@ -1,5 +1,10 @@
 <?php
 
+use App\Models\Entity\TopicWatch;
+use Dibi\Row;
+use Nette\Neon\Entity;
+use Nette\Utils\ArrayHash;
+
 namespace App\Models\Entity;
 
 /**
@@ -7,46 +12,92 @@ namespace App\Models\Entity;
  *
  * @author rendix2
  */
-class TopicWatch extends \App\Models\Entity\Base\Entity
+class TopicWatch extends Entity
 {
-    public $id;
-    
-    public $topic_id;
-    
-    public $user_id;
+    /**
+     *
+     * @var int $id
+     */
+    private $id;
     
     /**
-     * 
-     * @param int $id
-     * @param int $topic_id
-     * @param int $user_id
+     *
+     * @var int $topic_id
      */
-    public function __construct(
-        $id,
-        $topic_id,
-        $user_id
-    ) {
-        $this->id       = $id === null ? null : (int)$id;
-        $this->topic_id = (int)$topic_id;
-        $this->user_id  = (int)$user_id;
+    private $topic_id;
+    
+    /**
+     *
+     * @var int $user_id
+     */
+    private $user_id;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getTopic_id()
+    {
+        return $this->topic_id;
+    }
+
+    public function getUser_id()
+    {
+        return $this->user_id;
+    }
+
+    public function setId($id)
+    {
+        $this->id = self::makeInt($id);
+        return $this;
+    }
+
+    public function setTopic_id($topic_id)
+    {
+        $this->topic_id = self::makeInt($topic_id);
+        return $this;
+    }
+
+    public function setUser_id($user_id)
+    {
+        $this->user_id = self::makeInt($user_id);
+        return $this;
     }
     
     /**
      * 
-     * @param \Dibi\Row $values
+     * @param Row $values
      * 
-     * @return \App\Models\Entity\TopicWatch
+     * @return TopicWatch
      */
-    public static function get(\Dibi\Row $values)
+    public static function setFromRow(Row $values)
     {
-        return new TopicWatch(
-            $values->id,
-            $values->topic_id,
-            $values->user_id            
-        );
+        $topicWatch = new TopicWatch();
+        $topicWatch->setId($values->id)
+                   ->setTopic_id($values->topic_id)
+                   ->setUser_id($values->user_id);
+        
+        return $topicWatch;
     } 
     
     /**
+     * 
+     * @param ArrayHash $values
+     * 
+     * @return TopicWatch
+     */
+    public static function setFromArrayHash(ArrayHash $values)
+    {
+        $topicWatch = new TopicWatch();
+        $topicWatch->setId($values->id)
+                   ->setTopic_id($values->topic_id)
+                   ->setUser_id($values->user_id);
+        
+        return $topicWatch;        
+    }
+
+        /**
      * 
      * @return array
      */

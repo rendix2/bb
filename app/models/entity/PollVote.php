@@ -13,74 +13,133 @@ class PollVote extends Base\Entity
      *
      * @var int $poll_vote_id
      */
-    public $poll_vote_id;
+    private $poll_vote_id;
     
     /**
      *
      * @var int $poll_id
      */
-    public $poll_id;
+    private $poll_id;
     
     /**
      *
      * @var int $poll_answer
      */
-    public $poll_answer_id;
+    private $poll_answer_id;
     
     /**
      *
      * @var int $poll_user_id
      */
-    public $poll_user_id;
+    private $poll_user_id;
 
-    /**
-     * 
-     * @param int $poll_vote_id
-     * @param int $poll_id
-     * @param int $poll_answer_id
-     * @param int $poll_user_id
-     * 
-     */
-    public function __construct($poll_vote_id, $poll_id, $poll_answer_id, $poll_user_id)
+    public function getPoll_vote_id()
     {
-        $this->poll_vote_id   = $poll_vote_id;
-        $this->poll_id        = $poll_id;
-        $this->poll_answer_id = $poll_answer_id;
-        $this->poll_user_id   = $poll_user_id;
+        return $this->poll_vote_id;
+    }
+
+    public function getPoll_id()
+    {
+        return $this->poll_id;
+    }
+
+    public function getPoll_answer_id()
+    {
+        return $this->poll_answer_id;
+    }
+
+    public function getPoll_user_id()
+    {
+        return $this->poll_user_id;
+    }
+
+    public function setPoll_vote_id($poll_vote_id)
+    {
+        $this->poll_vote_id = self::makeInt($poll_vote_id);
+        return $this;
+    }
+
+    public function setPoll_id($poll_id)
+    {
+        $this->poll_id = self::makeInt($poll_id);
+        return $this;
+    }
+
+    public function setPoll_answer_id($poll_answer_id)
+    {
+        $this->poll_answer_id = self::makeInt($poll_answer_id);
+        return $this;
+    }
+
+    public function setPoll_user_id($poll_user_id)
+    {
+        $this->poll_user_id = self::makeInt($poll_user_id);
+        return $this;
     }
     
     /**
      * 
      * @param \Dibi\Row $values
      * 
-     * @return \App\Models\Entity\Post
+     * @return \App\Models\Entity\PollVote
      */
-    public static function setFromDibi(\Dibi\Row $values)
+    public static function setFromRow(\Dibi\Row $values)
     {
-        return new PollAnswer(
-            $values->poll_vote_id,
-            $values->poll_id,
-            $values->poll_answer_id,
-            $values->poll_user_id
-        );
+        $pollVote = new PollVote();
+        
+        if (isset($values->poll_vote_id)) {
+            $pollVote->setPoll_vote_id($values->poll_vote_id);
+        }
+        
+        if (isset($values->poll_id)) {
+            $pollVote->setPoll_id($values->poll_id);
+        }
+
+        if (isset($values->poll_answer_id)) {
+            $pollVote->setPoll_answer_id($values->poll_answer_id);
+        }
+
+        if (isset($values->poll_user_id)) {
+            $pollVote->setPoll_user_id($values->poll_user_id);
+        }        
+                      
+        return $pollVote;
     }
-    
-    /**
+
+
+        /**
      * 
      * @param \Dibi\Row $values
      * 
-     * @return \App\Models\Entity\Post
+     * @return \App\Models\Entity\PollVote
      */
     public static function setFromArrayHash(\Nette\Utils\ArrayHash $values)
     {
-        return new PollAnswer(
-            isset($values->poll_vote_id) ? $values->poll_vote_id : null,
-            isset($values->poll_id)      ? $values->poll_id      : null,
-            isset($values->poll_answer)  ? $values->poll_answer  : null,
-            isset($values->poll_user_id) ? $values->poll_user_id : null
-        );
+        $pollVote = new PollVote();
+        
+        if (isset($values->poll_vote_id)) {
+            $pollVote->setPoll_vote_id($values->poll_vote_id);
+        }
+        
+        if (isset($values->poll_id)) {
+            $pollVote->setPoll_id($values->poll_id);
+        }
+
+        if (isset($values->poll_answer_id)) {
+            $pollVote->setPoll_answer_id($values->poll_answer_id);
+        }
+
+        if (isset($values->poll_user_id)) {
+            $pollVote->setPoll_user_id($values->poll_user_id);
+        }        
+                      
+        return $pollVote;
     }    
 
+    /**
+     * 
+     * @return []
+     */
     public function getArray()
     {
         $res = [];

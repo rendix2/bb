@@ -102,22 +102,16 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
         $page        = $this->presenter->getParameter('page');
         $user_id     = $this->user->getId();
         
-        $post = new \App\Models\Entity\Post(
-            null,
-            $user_id,
-            $category_id,
-            $forum_id,
-            $topic_id,
-            '',
-            $values->post_text,
-            time(),
-            $this->request->getRemoteAddress(),
-            '',
-            0,
-            0,
-            0,
-            1
-        );        
+        $post = new \App\Models\Entity\Post();
+        $post->setPost_user_id($user_id)
+             ->setPost_category_id($category_id)
+             ->setPost_forum_id($forum_id)
+             ->setPost_topic_id($topic_id)
+             ->setPost_title('')
+             ->setPost_text($values->post_text)
+             ->setPost_add_time(time())
+             ->setPost_add_user_ip($this->request->getRemoteAddress())
+             ->setPost_order(1);
 
         $res = $this->postFacade->add($post);
 

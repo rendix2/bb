@@ -3,6 +3,7 @@
 namespace App\Models\Traits;
 
 use App\Models\UsersManager;
+use Nette\Http\IResponse;
 
 /**
  * Description of UsersTrait
@@ -40,8 +41,6 @@ trait UsersTrait
             $this->error('User was not found.');
         }
         
-        $user = \App\Models\Entity\User::get($userDibi);
-
-        return $user;
+        return \App\Models\Entity\User::setFromRow($userDibi);
     }    
 }

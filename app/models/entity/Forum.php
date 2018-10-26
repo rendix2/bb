@@ -2,147 +2,544 @@
 
 namespace App\Models\Entity;
 
+use App\Models\Entity\Base\Entity;
+use Dibi\Row;
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of Forum
  *
  * @author rendi
  */
-class Forum extends \App\Models\Entity\Base\Entity
+class Forum extends Entity
 {
-    public $forum_id;
+    /**
+     *
+     * @var int $forum_id
+     */
+    private $forum_id;
     
-    public $forum_category_id;
+    /**
+     *
+     * @var int $forum_category_id
+     */    
+    private $forum_category_id;
     
-    public $forum_name;
+    /**
+     *
+     * @var string $forum_name
+     */        
+    private $forum_name;
     
-    public $forum_description;
+    /**
+     *
+     * @var string $forum_description
+     */        
+    private $forum_description;
     
-    public $forum_active;
+    /**
+     *
+     * @var bool $forum_active
+     */    
+    private $forum_active;
     
-    public $forum_parent_id;     
+    /**
+     *
+     * @var int $forum_parent_id
+     */ 
+    private $forum_parent_id;     
     
-    public $forum_order;
+    /**
+     *
+     * @var int $forum_order
+     */     
+    private $forum_order;
     
-    public $forum_thank;
+    /**
+     *
+     * @var bool $forum_thank
+     */     
+    private $forum_thank;
     
-    public $forum_post_count;
+    /**
+     *
+     * @var int $forum_post_count
+     */     
+    private $forum_post_count;
     
-    public $forum_topic_count;
-
-    public $forum_post_add;
-    
-    public $forum_post_delete;
-    
-    public $forum_post_update;
-
-    public $forum_topic_add;
-       
-    public $forum_topic_update;
-    
-    public $forum_topic_delete;
-    
-    public $forum_rules;
-
-    public $forum_left;
-    
-    public $forum_right;
+    /**
+     *
+     * @var int $forum_topic_count
+     */     
+    private $forum_topic_count;
 
     /**
-     * 
-     * @param int    $forum_id
-     * @param int    $forum_category_id
-     * @param type   $forum_name
-     * @param type   $forum_description
-     * @param bool   $forum_active
-     * @param int    $forum_parent_id
-     * @param int    $forum_order
-     * @param bool   $forum_thank
-     * @param int    $forum_post_count
-     * @param int    $forum_topic_count
-     * @param bool   $forum_post_add
-     * @param bool   $forum_post_delete
-     * @param bool   $forum_post_update
-     * @param bool   $forum_topic_add
-     * @param bool   $forum_topic_update
-     * @param bool   $forum_topic_delete
-     * @param string $forum_rules
-     * @param int    $forum_left
-     * @param int    $forum_right
+     *
+     * @var bool $forum_post_add
+     */     
+    private $forum_post_add;
+    
+    /**
+     *
+     * @var bool $forum_post_delete
+     */     
+    private $forum_post_delete;
+    
+    /**
+     *
+     * @var bool $forum_post_update
+     */     
+    private $forum_post_update;
+
+    /**
+     *
+     * @var bool $forum_topic_add
+     */ 
+    private $forum_topic_add;
+       
+    /**
+     *
+     * @var bool $forum_topic_update
+     */     
+    private $forum_topic_update;
+    
+    /**
+     *
+     * @var bool $forum_topic_delete
+     */     
+    private $forum_topic_delete;
+    
+    /**
+     *
+     * @var bool $forum_fast_reply
      */
-    public function __construct(
-        $forum_id,
-        $forum_category_id,    
-        $forum_name,
-        $forum_description,
-        $forum_active,
-        $forum_parent_id,      
-        $forum_order,
-        $forum_thank,    
-        $forum_post_count,    
-        $forum_topic_count,
-        $forum_post_add,
-        $forum_post_delete,    
-        $forum_post_update,
-        $forum_topic_add,       
-        $forum_topic_update,
-        $forum_topic_delete,    
-        $forum_rules,
-        $forum_left,    
-        $forum_right
-    ) {
-        $this->forum_id           = $forum_id === null ? null : (int)$forum_id;
-        $this->forum_category_id  = (int)$forum_category_id;
-        $this->forum_name         = $forum_name;
-        $this->forum_description  = $forum_description;
-        $this->forum_active       = (bool)$forum_active;
-        $this->forum_parent_id    = (int)$forum_parent_id;
-        $this->forum_order        = (int)$forum_order;
-        $this->forum_thank        = (int)$forum_thank;
-        $this->forum_post_count   = (int)$forum_post_count;
-        $this->forum_topic_count  = (int)$forum_topic_count;
-        $this->forum_post_add     = (bool)$forum_post_add;
-        $this->forum_post_delete  = (bool)$forum_post_delete;   
-        $this->forum_post_update  = (bool)$forum_post_update;
-        $this->forum_topic_add    = (bool)$forum_topic_add;   
-        $this->forum_topic_update = (bool)$forum_topic_update;
-        $this->forum_topic_delete = (bool)$forum_topic_delete;  
-        $this->forum_rules        = $forum_rules;
-        $this->forum_left         = $forum_left === null ? null : (int)$forum_left;
-        $this->forum_right        = $forum_right === null ? null : (int)$forum_right;
+    private $forum_fast_reply;
+
+    /**
+     *
+     * @var string $forum_rules
+     */     
+    private $forum_rules;
+
+    /**
+     *
+     * @var int $forum_left
+     */     
+    private $forum_left;
+    
+    /**
+     *
+     * @var int $forum_right
+     */     
+    private $forum_right;
+    
+   public function getForum_id()
+    {
+        return $this->forum_id;
+    }
+
+    public function getForum_category_id()
+    {
+        return $this->forum_category_id;
+    }
+
+    public function getForum_name()
+    {
+        return $this->forum_name;
+    }
+
+    public function getForum_description()
+    {
+        return $this->forum_description;
+    }
+
+    public function getForum_active()
+    {
+        return $this->forum_active;
+    }
+
+    public function getForum_parent_id()
+    {
+        return $this->forum_parent_id;
+    }
+
+    public function getForum_order()
+    {
+        return $this->forum_order;
+    }
+
+    public function getForum_thank()
+    {
+        return $this->forum_thank;
+    }
+
+    public function getForum_post_count()
+    {
+        return $this->forum_post_count;
+    }
+
+    public function getForum_topic_count()
+    {
+        return $this->forum_topic_count;
+    }
+
+    public function getForum_post_add()
+    {
+        return $this->forum_post_add;
+    }
+
+    public function getForum_post_delete()
+    {
+        return $this->forum_post_delete;
+    }
+
+    public function getForum_post_update()
+    {
+        return $this->forum_post_update;
+    }
+
+    public function getForum_topic_add()
+    {
+        return $this->forum_topic_add;
+    }
+
+    public function getForum_topic_update()
+    {
+        return $this->forum_topic_update;
+    }
+
+    public function getForum_topic_delete()
+    {
+        return $this->forum_topic_delete;
     }
     
-    /**
-     * 
-     * @param \Dibi\Row $values
-     * 
-     * @return \App\Models\Entity\Forums
-     */
-    public static function get(\Dibi\Row $values)
+    public function getForum_fast_reply()
     {
-        return new Forum(
-            $values->forum_id,
-            $values->forum_category_id,
-            $values->forum_name,
-            $values->forum_description,
-            $values->forum_active,
-            $values->forum_parent_id, 
-            $values->forum_order,
-            $values->forum_thank,
-            $values->forum_post_count,
-            $values->forum_topic_count,
-            $values->forum_post_add,
-            $values->forum_post_delete,
-            $values->forum_post_update,
-            $values->forum_topic_add,
-            $values->forum_topic_update,
-            $values->forum_topic_delete,
-            $values->forum_rules,
-            $values->forum_left,
-            $values->forum_right                                              
-        );
-    }     
+        return $this->forum_fast_reply;
+    }    
+
+    public function getForum_rules()
+    {
+        return $this->forum_rules;
+    }
+
+    public function getForum_left()
+    {
+        return $this->forum_left;
+    }
+
+    public function getForum_right()
+    {
+        return $this->forum_right;
+    }
+
+    public function setForum_id($forum_id)
+    {
+        $this->forum_id = self::makeInt($forum_id);
+        return $this;
+    }
+
+    public function setForum_category_id($forum_category_id)
+    {
+        $this->forum_category_id = self::makeInt($forum_category_id);
+        return $this;
+    }
+
+    public function setForum_name($forum_name)
+    {
+        $this->forum_name = $forum_name;
+        return $this;
+    }
+
+    public function setForum_description($forum_description)
+    {
+        $this->forum_description = $forum_description;
+        return $this;
+    }
+
+    public function setForum_active($forum_active)
+    {
+        $this->forum_active = self::makeBool($forum_active);
+        return $this;
+    }
+
+    public function setForum_parent_id($forum_parent_id)
+    {
+        $this->forum_parent_id = self::makeInt($forum_parent_id);
+        return $this;
+    }
+
+    public function setForum_order($forum_order)
+    {
+        $this->forum_order = self::makeInt($forum_order);
+        return $this;
+    }
+
+    public function setForum_thank($forum_thank)
+    {
+        $this->forum_thank = self::makeBool($forum_thank);
+        return $this;
+    }
+
+    public function setForum_post_count($forum_post_count)
+    {
+        $this->forum_post_count = self::makeInt($forum_post_count);
+        return $this;
+    }
+
+    public function setForum_topic_count($forum_topic_count)
+    {
+        $this->forum_topic_count = self::makeInt($forum_topic_count);
+        return $this;
+    }
+
+    public function setForum_post_add($forum_post_add)
+    {
+        $this->forum_post_add = self::makeBool($forum_post_add);
+        return $this;
+    }
+
+    public function setForum_post_delete($forum_post_delete)
+    {
+        $this->forum_post_delete = self::makeBool($forum_post_delete);
+        return $this;
+    }
+
+    public function setForum_post_update($forum_post_update)
+    {
+        $this->forum_post_update = self::makeBool($forum_post_update);
+        return $this;
+    }
+
+    public function setForum_topic_add($forum_topic_add)
+    {
+        $this->forum_topic_add = self::makeBool($forum_topic_add);
+        return $this;
+    }
+
+    public function setForum_topic_update($forum_topic_update)
+    {
+        $this->forum_topic_update = self::makeBool($forum_topic_update);
+        return $this;
+    }
+
+    public function setForum_topic_delete($forum_topic_delete)
+    {
+        $this->forum_topic_delete = self::makeBool($forum_topic_delete);
+        return $this;
+    }
+
+    public function setForum_fast_reply($forum_fast_reply)
+    {
+        $this->forum_fast_reply = $forum_fast_reply;
+        return $this;
+    }    
+    
+    public function setForum_rules($forum_rules)
+    {
+        $this->forum_rules = $forum_rules;
+        return $this;
+    }
+
+    public function setForum_left($forum_left)
+    {
+        $this->forum_left = self::makeInt($forum_left);
+        return $this;
+    }
+
+    public function setForum_right($forum_right)
+    {
+        $this->forum_right = self::makeInt($forum_right);
+        return $this;
+    }    
     
     /**
+     * 
+     * @param Row $values
+     * 
+     * @return Forum
+     */
+    public static function setFromRow(Row $values)
+    {
+        $forum = new Forum();
+        
+        if (isset($values->forum_id)) {
+            $forum->setForum_id($values->forum_id);
+        }
+        
+        if (isset($values->forum_category_id)) {
+            $forum->setForum_category_id($values->forum_category_id);
+        }
+        
+        if (isset($values->forum_name)) {
+            $forum->setForum_name($values->forum_name);
+        }
+
+        if (isset($values->forum_description)) {
+            $forum->setForum_description($values->forum_description);
+        }
+
+        if (isset($values->forum_active)) {
+            $forum->setForum_active($values->forum_active);
+        }
+
+        if (isset($values->forum_parent_id)) {
+            $forum->setForum_parent_id($values->forum_parent_id);
+        }
+
+        if (isset($values->forum_order)) {
+            $forum->setForum_order($values->forum_order);
+        }
+
+        if (isset($values->forum_thank)) {
+            $forum->setForum_thank($values->forum_thank);
+        }
+
+        if (isset($values->forum_post_count)) {
+            $forum->setForum_post_count($values->forum_post_count);
+        }
+
+        if (isset($values->forum_topic_count)) {
+            $forum->setForum_topic_count($values->forum_topic_count);
+        }
+
+        if (isset($values->forum_post_add)) {
+            $forum->setForum_post_add($values->forum_post_add);
+        }
+
+        if (isset($values->forum_post_delete)) {
+            $forum->setForum_post_delete($values->forum_post_delete);
+        }
+
+        if (isset($values->forum_post_update)) {
+            $forum->setForum_post_update($values->forum_post_update);
+        }
+
+        if (isset($values->forum_topic_add)) {
+            $forum->setForum_topic_add($values->forum_topic_add);
+        }
+
+        if (isset($values->forum_topic_update)) {
+            $forum->setForum_topic_update($values->forum_topic_update);
+        }
+
+        if (isset($values->forum_topic_delete)) {
+            $forum->setForum_topic_delete($values->forum_topic_delete);
+        }
+        
+        if (isset($values->forum_fast_reply)) {
+            $forum->setForum_fast_reply($values->forum_fast_reply);
+        }
+        
+        if (isset($values->forum_rules)) {
+            $forum->setForum_rules($values->forum_rules);
+        }      
+
+        if (isset($values->forum_left)) {
+            $forum->setForum_left($values->forum_left);
+        }    
+        
+        if (isset($values->forum_right)) {
+            $forum->setForum_right($values->forum_left);
+        }         
+        
+        return $forum;
+    }  
+    
+    /**
+     * 
+     * @param ArrayHash $values
+     * 
+     * @return Forum
+     */
+    public static function setFromArrayHash(ArrayHash $values)
+    {
+        $forum = new Forum();
+        
+        if (isset($values->forum_id)) {
+            $forum->setForum_id($values->forum_id);
+        }        
+        
+        if (isset($values->forum_category_id)) {
+            $forum->setForum_category_id($values->forum_category_id);
+        }
+        
+        if (isset($values->forum_name)) {
+            $forum->setForum_name($values->forum_name);
+        }
+
+        if (isset($values->forum_description)) {
+            $forum->setForum_description($values->forum_description);
+        }
+
+        if (isset($values->forum_active)) {
+            $forum->setForum_active($values->forum_active);
+        }
+
+        if (isset($values->forum_parent_id)) {
+            $forum->setForum_parent_id($values->forum_parent_id);
+        }
+
+        if (isset($values->forum_order)) {
+            $forum->setForum_order($values->forum_order);
+        }
+
+        if (isset($values->forum_thank)) {
+            $forum->setForum_thank($values->forum_thank);
+        }
+
+        if (isset($values->forum_post_count)) {
+            $forum->setForum_post_count($values->forum_post_count);
+        }
+
+        if (isset($values->forum_topic_count)) {
+            $forum->setForum_topic_count($values->forum_topic_count);
+        }
+
+        if (isset($values->forum_post_add)) {
+            $forum->setForum_post_add($values->forum_post_add);
+        }
+
+        if (isset($values->forum_post_delete)) {
+            $forum->setForum_post_delete($values->forum_post_delete);
+        }
+
+        if (isset($values->forum_post_update)) {
+            $forum->setForum_post_update($values->forum_post_update);
+        }
+
+        if (isset($values->forum_topic_add)) {
+            $forum->setForum_topic_add($values->forum_topic_add);
+        }
+
+        if (isset($values->forum_topic_update)) {
+            $forum->setForum_topic_update($values->forum_topic_update);
+        }
+
+        if (isset($values->forum_topic_delete)) {
+            $forum->setForum_topic_delete($values->forum_topic_delete);
+        } 
+        
+        if (isset($values->forum_fast_reply)) {
+            $forum->setForum_fast_reply($values->forum_fast_reply);
+        }        
+        
+        if (isset($values->forum_rules)) {
+            $forum->setForum_rules($values->forum_rules);
+        }      
+
+        if (isset($values->forum_left)) {
+            $forum->setForum_left($values->forum_left);
+        }    
+        
+        if (isset($values->forum_right)) {
+            $forum->setForum_right($values->forum_left);
+        }         
+        
+        return $forum;
+    }
+
+        /**
      * 
      * @return array
      */
@@ -213,6 +610,10 @@ class Forum extends \App\Models\Entity\Base\Entity
         if (isset($this->forum_topic_delete)) {
             $res['forum_topic_delete'] = $this->forum_topic_delete;
         }
+        
+        if (isset($this->forum_fast_reply)) {
+            $res['setForum_fast_reply'] = $values->forum_fast_reply;
+        }        
 
         if (isset($this->forum_rules)) {
             $res['forum_rules'] = $this->forum_rules;

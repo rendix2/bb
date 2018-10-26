@@ -38,6 +38,13 @@ use Nette\Utils\ArrayHash;
 class UserPresenter extends AdminPresenter
 {
     /**
+     *
+     * @var ForumsManager $forumsManager
+     * @inject
+     */
+    public $forumsManager;
+
+    /**
      * @var LanguagesManager $languagesManager
      * @inject
      */
@@ -135,7 +142,11 @@ class UserPresenter extends AdminPresenter
      */
     public function renderEdit($id = null)
     {
-        parent::renderEdit($id);       
+        parent::renderEdit($id); 
+        
+        if (!$id) {
+            $this[self::FORM_NAME]->setDefaults(['user_role_id' => 2]);
+        }
         
         $this->template->avatarsDir = $this->avatar->getTemplateDir();
         $this->template->ranksDir   = $this->rank->getTemplateDir();

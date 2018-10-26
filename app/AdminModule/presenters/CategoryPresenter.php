@@ -27,6 +27,12 @@ class CategoryPresenter extends AdminPresenter
      * @inject
      */
     public $categoryFacade;
+    
+    /**
+     * @var ForumsManager $forumsManager
+     * @inject
+     */
+    public $forumsManager;
 
     /**
      * CategoryPresenter constructor.
@@ -172,15 +178,11 @@ class CategoryPresenter extends AdminPresenter
             if ($id) {
                 $result = $this->categoryFacade->update($id, $values);
             } else {
-                $category = new \App\Models\Entity\Category(
-                null,
-                $values->category_parent_id,
-                $values->category_name,
-                $values->category_active,
-                null,
-                null,
-                0
-                );
+                $category = new \App\Models\Entity\Category();
+                $category->setCategory_parent_id($values->category_parent_id)
+                         ->setCategory_name($values->category_name)
+                         ->setCategory_active($values->category_active)
+                         ->setCategory_order(0);
                 
                 $result = $id = $this->categoryFacade->add($category);
             }

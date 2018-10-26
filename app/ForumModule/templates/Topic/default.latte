@@ -8,7 +8,7 @@
             <h6>{_topic_post_count}: {$topic->topic_post_count}</h6>
         </div>
         <div class="float-right">
-            {if $user->isAllowed($forum_id, 'post_add') && !$topic->topic_locked }
+            {if $canAddPost && !$topic->topic_locked }
                 <a class="btn btn-primary"
                    href="{link Post:edit, $category_id, $forum_id, $topic_id}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
@@ -16,7 +16,7 @@
                 </a>
             {/if}
 
-            {if $user->isAllowed($forum_id, 'topic_thank') && $canThank}
+            {if $canThankTopic}
                 <a class="btn btn-primary"
                    href="{link Topic:thank, $category_id, $forum_id, $topic_id}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
@@ -125,27 +125,32 @@
                                     {$post->post_add_time|date:'%d.%m.%Y %H:%M:%S'}
                                 </div>
                                 <div class="col-sm-3">
+                                    
                                     {if $topic->topic_locked}
                                         <span class="badge badge-secondary">{_topic_locked}</span>
                                     {elseif $post->post_locked}
                                         <span class="badge badge-secondary">{_post_locked}</span>
-                                    {elseif $post->post_user_id === $user->id}
+                                    {else}
+                                        {if $post->canEdit}
                                         <a href="{link Post:edit, $category_id, $forum_id, $topic_id, $post->post_id}" title="{_post_edit}">
                                             <i class="far fa-edit"></i>
                                         </a>
-                                            
+                                        {/if}
+                                        {if $post->canHistory}
                                         <a href="{link Post:history, $category_id, $forum_id, $topic_id, $post->post_id}" title="{_post_history}">
                                             <i class="fas fa-history"></i>
                                         </a>                                            
-                                    {/if}
-                                    <a href="{link Post:report, $category_id, $forum_id, $topic_id, $post->post_id, $page}" title="{_post_report}">
-                                        <i class="fas fa-exclamation"></i>
-                                    </a>
+                                        {/if}
+                                        
+                                        <a href="{link Post:report, $category_id, $forum_id, $topic_id, $post->post_id, $page}" title="{_post_report}">
+                                            <i class="fas fa-exclamation"></i>
+                                        </a>
 
-                                    {if $user->isAllowed($forum_id, 'post_delete') && $post->post_user_id === $user->id}
+                                        {if $post->canDelete}
                                         <a href="{link Post:delete, $category_id, $forum_id, $topic_id, $post->post_id, $page}" title="{_post_delete}">
                                             <i class="fas fa-trash-alt"></i>
                                         </a>
+                                        {/if}
                                     {/if}
                                     
                                     <a href="{plink :Moderator:Post:edit $post->post_id}" title="{_post_moderate}">
@@ -170,7 +175,7 @@
     {/foreach}
 
 
-    {if $forum->forum_fast_reply && !$topic->topic_locked}
+    {if $canFastReply}
         <div class="col-sm-6">
             {control fastReply}
         </div>

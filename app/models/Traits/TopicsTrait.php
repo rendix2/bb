@@ -2,7 +2,9 @@
 
 namespace App\Models\Traits;
 
+use App\Models\Entity\Topic;
 use App\Models\TopicsManager;
+use Nette\Http\IResponse;
 
 /**
  * Description of TopicsTrait
@@ -24,7 +26,7 @@ trait TopicsTrait
      * @param int $category_id
      * @param int $forum_id
      * 
-     * @return \App\Models\Entity\Topic
+     * @return Topic
      */
     public function checkTopicParam($topic_id, $category_id, $forum_id)
     {
@@ -43,17 +45,17 @@ trait TopicsTrait
             $this->error('Topic was not found.');
         }
         
-        $topic = \App\Models\Entity\Topic::get($topicDibi);
+        $topic = Topic::setFromRow($topicDibi);
 
-        if ($topic->topic_category_id !== (int)$category_id) {
+        if ($topic->getTopic_category_id() !== (int)$category_id) {
             $this->error('Category param does not match.');
         }
 
-        if ($topic->topic_forum_id !== (int)$forum_id) {
+        if ($topic->getTopic_forum_id() !== (int)$forum_id) {
             $this->error('Forum param does not match.');
         }
 
-        if ($topic->topic_locked) {
+        if ($topic->getTopic_locked()) {
             $this->error('Topic is locked.', IResponse::S403_FORBIDDEN);
         }
         
