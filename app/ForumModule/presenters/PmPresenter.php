@@ -33,6 +33,14 @@ class PmPresenter extends CrudPresenter
     
     /**
      *
+     * @var UsersManager $usersManager
+     * @inject
+     */
+    public $usersManager;
+
+
+    /**
+     *
      * @var ITranslator $translator
      */
     private $translator;
