@@ -112,6 +112,29 @@ class PaginatorControl extends Control
     {
         return $this->paginator;
     }
+    
+    protected function createComponentPagination()
+    {
+        $form = new BootstrapForm(9, 'sm', 2);
+        //$form->setTranslator($this->translator);
+
+        $form->addInteger('page', '')
+                ->setAttribute('placeholder', 'Page')
+                ->setRequired(false)
+                ->addRule(\Nette\Application\UI\Form::RANGE, 'Ivalid range', [1, $this->paginator->getPageCount()]);
+        
+        $form->onSuccess[] = [$this, 'paginationSuccess'];
+        
+        return $form;
+    }
+    
+    public function paginationSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
+    {
+        $url = new \Nette\Http\Url($this->presenter->getHttpRequest()->getUrl());
+        $url->setQueryParameter('page', $values->page);
+
+        $this->presenter->redirectUrl($url);
+    }
 
     /**
      * renders paginator
@@ -139,6 +162,8 @@ class PaginatorControl extends Control
         $template->paginator = $this->paginator;
         $template->left      = $left;
         $template->right     = $left === 1 && $this->paginator->getPageCount() > $this->itemsAround ? $this->itemsAround * 2 + 1 : $right;
+        
+        $this['pagination']->setDefaults(['page' => $this->presenter->getParameter('page')]);
 
         // render now!
         $template->render();

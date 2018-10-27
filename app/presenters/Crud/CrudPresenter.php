@@ -208,11 +208,11 @@ abstract class CrudPresenter extends AuthenticatedPresenter
 
         $this->redirect(':' . $this->getName() . ':default');
     }
-
-    /**
+    
+   /**
      * @param int $page
      */
-    public function renderDefault($page = 1)
+    public function actionDefault($page = 1)
     {
         if (isset($this['gridFilter'])) {
             $this->getComponent('gridFilter');
@@ -230,9 +230,16 @@ abstract class CrudPresenter extends AuthenticatedPresenter
             $this->flashMessage(sprintf('No %s.', $this->getTitle()), self::FLASH_MESSAGE_DANGER);
         }
                
-        $this->template->items      = $items->fetchAll();
-        $this->template->title      = $this->getTitleOnDefault();
+        $this->template->items      = $items->fetchAll();        
         $this->template->countItems = $paginator->getCount();
+    }
+
+    /**
+     * @param int $page
+     */
+    public function renderDefault($page = 1)
+    {
+        $this->template->title = $this->getTitleOnDefault();
     }
     
     /**

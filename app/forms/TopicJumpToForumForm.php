@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controls;
+namespace App\Forms;
 
+use App\Controls\BootstrapForm;
 use App\Models\ForumsManager;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
@@ -18,30 +19,44 @@ class TopicJumpToForumForm extends Control
      * @var ForumsManager $forumManager
      */
     private $forumManager;
+    
+    /**
+     *
+     * @var ITranslator $translator
+     */
+    private $translator;
 
     /**
      * JumpToForumControl constructor.
      *
      * @param ForumsManager $forumManager
      */
-    public function __construct(ForumsManager $forumManager)
+    public function __construct(ForumsManager $forumManager, \Nette\Localization\ITranslator $translator)
     {
         parent::__construct();
 
         $this->forumManager = $forumManager;
+        $this->translator   = $translator;
     }
 
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->forumManager = null;
     }
 
-        /**
+    /**
      * render jump to forum
      */
     public function render()
     {
-        $this['jumpToForum']->render();
+        $sep = DIRECTORY_SEPARATOR;
+        
+        $template = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'topicJumpToForum.latte');        
+        
+        $template->render();
     }
 
     /**
@@ -50,8 +65,9 @@ class TopicJumpToForumForm extends Control
     protected function createComponentJumpToForum()
     {
         $form = BootstrapForm::create();
+        $form->setTranslator($this->translator);
 
-        $form->addSelect('forum_id', null, $this->forumManager->getAllPairsCached('forum_name'));
+        $form->addSelect('forum_id', null, $this->forumManager->getAllPairsCached('forum_name'))->setTranslator();
         $form->addSubmit('send', 'Redirect');
 
         $form->onSuccess[] = [$this, 'jumpToForumSuccess'];
@@ -65,10 +81,12 @@ class TopicJumpToForumForm extends Control
      */
     public function jumpToForumSuccess(Form $form, ArrayHash $values)
     {
+        $forum = $this->forumManager->getById($values->forum_id);
+        
         $this->presenter
             ->redirect(
                 ':Forum:Forum:default',
-                $this->presenter->getParameter('category_id'),
+                $forum->forum_category_id,
                 $values->forum_id
             );
     }

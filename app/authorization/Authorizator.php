@@ -12,6 +12,11 @@ use Nette\Security\IAuthorizator;
 class Authorizator
 {
     /**
+     * @var string
+     */
+    const ROLES = [ 1 => 'guest', 2 => 'registered', 3 => 'moderator', 4 => 'juniorAdmin', 5 => 'admin'];
+    
+    /**
      * @var IAuthorizator $authorizator
      */
     private $authorizator;

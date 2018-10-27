@@ -44,7 +44,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      * @var Aauthorizator $authorizator
      * @inject 
      */
-    public $aauthorizator;
+    public $authorizator;
     
     /**
      * @var \App\Models\Users2GroupsManager $users2GroupsManager
@@ -66,12 +66,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      * @var ITranslator $forumTranslator
      */
     private $forumTranslator;
-
-    /**
-     * @var Authorizator $authorizator
-     * @inject
-     */
-    public $authorizator;
     
     /**
      * @var PmManager $pmManager
@@ -166,8 +160,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         parent::startup();
 
         $this->forumTranslator = $this->translatorFactory->forumTranslatorFactory();
-        //$this->getUser()->setAuthorizator($this->authorizator->getAcl());
-        //$this->user->setAuthorizator($this->aauthorizator);
         
         $this->template->pm_count = $this->pmManager->getCountSent();
     }
@@ -178,10 +170,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     public function beforeRender()
     {
         parent::beforeRender();
-               
-        //$post = $this->loadTopic(20);
-
-        //$this->requireAccess($post, \App\Authorization\Scopes\Topic::ACTION_EDIT);
 
         $this->template->setTranslator($this->forumTranslator);
     }
@@ -241,6 +229,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
 
     protected function isAllowed(\App\Authorization\IAuthorizationScope $scope, array $action)
     {
-        return $this->aauthorizator->isAllowed($this->getLoggedInUser()->getIdentity(), $scope, $action);
+        return $this->authorizator->isAllowed($this->getLoggedInUser()->getIdentity(), $scope, $action);
     }        
 }

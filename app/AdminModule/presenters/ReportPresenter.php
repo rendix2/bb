@@ -51,8 +51,6 @@ class ReportPresenter extends AdminPresenter
         $this->gf->addFilter('edit', null, GridFilter::NOTHING);
         $this->gf->addFilter('delete', null, GridFilter::NOTHING);
 
-       
-        
         return $this->gf;
     }
 

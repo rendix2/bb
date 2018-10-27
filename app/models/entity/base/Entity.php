@@ -13,6 +13,8 @@ use Nette\Utils\DateTime;
  */
 abstract class Entity
 {
+    use \Nette\SmartObject;
+    
     /**
      * 
      */
@@ -40,12 +42,15 @@ abstract class Entity
      * 
      * @throws MemberAccessException
      */
+    /*
     public function __set($name, $value)
     {
         if (!property_exists($this, $name)) {
             throw new MemberAccessException("Column '{$name}' of '".get_class($this)."' does not exist.");
         }
     }
+     *
+     */
 
     /**
      * 
@@ -53,12 +58,15 @@ abstract class Entity
      * 
      * @throws MemberAccessException
      */
+    /*
     public function __get($name)
     {
         if (!property_exists($this, $name)) {
             throw new MemberAccessException("Column {$name} of '".get_class($this)."' does not exist.");
         }
     }
+     *
+     */
     
     /**
      * 
@@ -66,12 +74,15 @@ abstract class Entity
      * 
      * @throws MemberAccessException
      */
+    /*
     public function __isset($name)
     {
         if (!property_exists($this, $name)) {
             throw new MemberAccessException("Column '{$name}' of '".get_class($this)."' does not exist.");
         }
     }
+     *
+     */
     
     /**
      * 
@@ -79,12 +90,15 @@ abstract class Entity
      * 
      * @throws MemberAccessException
      */
+    /*
     public function __unset($name)
     {
         if (!property_exists($this, $name)) {
             throw new MemberAccessException("Column '{$name}' of '".get_class($this)."' does not exist.");
         }
-    }    
+    }   
+     * 
+     */ 
 
     /**
      * @return array

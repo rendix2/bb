@@ -134,7 +134,7 @@ class UserPresenter extends AdminPresenter
     {
         parent::renderDefault($page);
         
-        $this->template->roles = Authorizator::ROLES;
+        $this->template->roles = \App\Authorization\Authorizator::ROLES;
     }
 
     /**
@@ -166,7 +166,7 @@ class UserPresenter extends AdminPresenter
         $this->gf->addFilter('user_post_count', 'user_post_count', GridFilter::FROM_TO_INT);
         $this->gf->addFilter('user_topic_count', 'user_topic_count', GridFilter::FROM_TO_INT);
         $this->gf->addFilter('user_thank_count', 'user_thank_count', GridFilter::FROM_TO_INT);
-        $this->gf->addFilter('user_role_id', 'user_role_id', GridFilter::CHECKBOX_LIST, Authorizator::ROLES);
+        $this->gf->addFilter('user_role_id', 'user_role_id', GridFilter::CHECKBOX_LIST, \App\Authorization\Authorizator::ROLES);
         $this->gf->addFilter('user_active', 'user_active', GridFilter::CHECKBOX_LIST, [0 => 'Not active', 1 => 'Active']);
         $this->gf->addFilter('user_register_time', 'user_register_time', GridFilter::DATE_TIME);
         $this->gf->addFilter('user_last_login_time', 'user_last_login_time', GridFilter::DATE_TIME);
@@ -195,7 +195,7 @@ class UserPresenter extends AdminPresenter
         $form->addText('user_name', 'User name:')->setRequired(true);
         $form->addEmail('user_email', 'User mail:')->setRequired(true);
         $form->addGroup('user_settings');
-        $form->addSelect('user_role_id', 'User role:', Authenticator::ROLES);
+        $form->addSelect('user_role_id', 'User role:', \App\Authorization\Authorizator::ROLES);
         $form->addSelect('user_lang_id', 'User language:', $this->languagesManager->getAllPairsCached('lang_name'));
         $form->addTextArea('user_signature', 'User signature:');
         //$form->addUpload('user_avatar', 'User avatar:');

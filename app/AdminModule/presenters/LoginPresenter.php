@@ -113,7 +113,7 @@ class LoginPresenter extends BasePresenter
                 $values->user_password
             );
             
-            if (!$this->getUser()->isInRole(Authenticator::ROLES[5])) {
+            if (!$this->getUser()->isInRole(\App\Authorization\Authorizator::ROLES[5])) {
                 throw new AuthenticationException('You are not admin.');
             }
             

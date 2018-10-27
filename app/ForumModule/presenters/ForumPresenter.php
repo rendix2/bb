@@ -79,6 +79,47 @@ final class ForumPresenter extends Base\ForumPresenter
     }
 
     /**
+     * action default
+     * 
+     * @param int $category_id
+     * @param int $forum_id
+     * @param int $page
+     */
+    public function actionDefault($category_id, $forum_id, $page = 1)
+    {
+        $category   = $this->checkCategoryParam($category_id);
+        $forum      = $this->checkForumParam($forum_id, $category_id);
+        
+        $forumScope = $this->loadForum($forum); 
+        
+        $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_VIEW);
+
+        $forumSettings = $this->forumSettings->get();        
+        $topics        = $this->topicsManager->getFluentJoinedUsersJoinedLastPostByForum($forum_id);
+        
+        if (isset($this['gridFilter'])) {
+            $this->getComponent('gridFilter');
+        }
+
+        $this->gf->applyWhere($topics);        
+        $this->gf->applyOrderBy($topics);
+
+        $paginator = new PaginatorControl($topics, $forumSettings['pagination']['itemsPerPage'], $forumSettings['pagination']['itemsAroundPagination'], $page);
+
+        $this->addComponent($paginator, 'paginator');
+
+        if (!$paginator->getCount()) {
+            $this->flashMessage('No topics.', self::FLASH_MESSAGE_DANGER);
+        }
+
+        $this->template->canAddTopic    = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_ADD);
+        $this->template->canDeleteTopic = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_DELETE);
+        
+        $this->template->forum  = $forum;
+        $this->template->topics = $topics->fetchAll();
+    }
+
+    /**
      * renders topics
      *
      * @param int $category_id
@@ -88,54 +129,15 @@ final class ForumPresenter extends Base\ForumPresenter
      */
     public function renderDefault($category_id, $forum_id, $page = 1)
     {
-        $category   = $this->checkCategoryParam($category_id);
-        $forum      = $this->checkForumParam($forum_id, $category_id);
-        $forumScope = $this->loadForum($forum);        
-        
-        if (!$this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_VIEW)) {
-            $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
-        }
-
-        $forumSettings = $this->forumSettings->get();        
-        $topics        = $this->topicsManager->getFluentJoinedUsersJoinedLastPostByForum($forum_id);
-        
-        if (isset($this['gridFilter'])) {
-            $this->getComponent('gridFilter');
-        }
-             
-        \Netpromotion\Profiler\Profiler::start('aply where');
-        $this->gf->applyWhere($topics);
-        \Netpromotion\Profiler\Profiler::finish('aply where');
-        
-        \Netpromotion\Profiler\Profiler::start('aply order by');
-        $this->gf->applyOrderBy($topics);
-        \Netpromotion\Profiler\Profiler::finish('aply order by');
-        
-        \Netpromotion\Profiler\Profiler::start('Pagination');
-        $paginator = new PaginatorControl($topics, $forumSettings['pagination']['itemsPerPage'], $forumSettings['pagination']['itemsAroundPagination'], $page);
-
-        $this->addComponent($paginator, 'paginator');
-
-        if (!$paginator->getCount()) {
-            $this->flashMessage('No topics.', self::FLASH_MESSAGE_DANGER);
-        }      
-        \Netpromotion\Profiler\Profiler::finish('Pagination');
-        
         $moderators = $this->moderatorsManager->getAllJoinedByRight($forum_id);
         
         if (!$moderators) {
             $this->flashMessage('No moderators in forum.', self::FLASH_MESSAGE_INFO);
         }
 
-        \Netpromotion\Profiler\Profiler::start('send to template');
-        $this->template->logViews    = $this->topicSetting->get()['logViews'];
-        $this->template->forum       = $forum;
-        $this->template->topics      = $topics->fetchAll();
-        $this->template->subForums   = $this->getManager()->getByParent($forum_id);
         $this->template->moderators  = $moderators;
-        $this->template->canAddTopic = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_ADD);
-        $this->template->canDeleteTopic = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_DELETE);
-        \Netpromotion\Profiler\Profiler::finish('send to template');
+        $this->template->subForums   = $this->getManager()->getByParent($forum_id);
+        $this->template->logViews    = $this->topicSetting->get()['logViews'];
     }
 
     /**
@@ -156,6 +158,10 @@ final class ForumPresenter extends Base\ForumPresenter
         $this->template->forum = $forum;
     }
 
+    /**
+     * 
+     * @return GridFilter
+     */
     protected function createComponentGridFilter()
     {
         $this->gf->setTranslator($this->getForumTranslator());

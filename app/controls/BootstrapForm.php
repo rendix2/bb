@@ -75,7 +75,7 @@ class BootstrapForm extends Form
     public function __construct(
         $columnCount = 6,
         $columnType = 'sm',
-        $labelColumnCount = 7,
+        $labelColumnCount = 6,
         $ajax = false,
         IContainer $parent = null,
         $name = null

@@ -2,7 +2,6 @@
 
 namespace App\ForumModule\Presenters;
 
-use App\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;

@@ -135,7 +135,7 @@ class ThanksFacade
             );
         }
 
-        return $this->thanksManager->deleteByTopic($topic->topic_id);
+        return $this->thanksManager->deleteByTopic($topic->getTopic_id());
     }
 
     /**

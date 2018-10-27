@@ -1,10 +1,10 @@
-{define title}{_menu_forum} {$forum->forum_name}{/define}
+{define title}{_menu_forum} {$forum->getForum_name()}{/define}
 
 {block content}
 
     <div class="col-sm-12">
         <div class="float-left">
-            <h1>{_forum}: {$forum->forum_name}</h1>
+            <h1>{_forum}: {$forum->getForum_name()}</h1>
         </div>
         {if $canAddTopic}
             <div class="float-right">

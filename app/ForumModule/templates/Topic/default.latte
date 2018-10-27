@@ -1,14 +1,14 @@
-{define title}{_Topic} {$topic->topic_name}{/define}
+{define title}{_Topic} {$topic->getTopic_name()}{/define}
 
 {block content}
 
     <div class="col-sm-12">
         <div class="float-left">
-            <h1>{_Topic} {$topic->topic_name}</h1>
-            <h6>{_topic_post_count}: {$topic->topic_post_count}</h6>
+            <h1>{_Topic} {$topic->getTopic_name()}</h1>
+            <h6>{_topic_post_count}: {$topic->getTopic_post_count()}</h6>
         </div>
         <div class="float-right">
-            {if $canAddPost && !$topic->topic_locked }
+            {if $canAddPost && !$topic->getTopic_locked()}
                 <a class="btn btn-primary"
                    href="{link Post:edit, $category_id, $forum_id, $topic_id}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
@@ -126,7 +126,7 @@
                                 </div>
                                 <div class="col-sm-3">
                                     
-                                    {if $topic->topic_locked}
+                                    {if $topic->getTopic_locked()}
                                         <span class="badge badge-secondary">{_topic_locked}</span>
                                     {elseif $post->post_locked}
                                         <span class="badge badge-secondary">{_post_locked}</span>

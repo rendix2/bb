@@ -116,7 +116,7 @@ class TopicWatchFacade
             );
         }
         
-        return $this->topicWatchManager->deleteByLeft($topic->topic_id);
+        return $this->topicWatchManager->deleteByLeft($topic->getTopic_id());
     }
     
     /**

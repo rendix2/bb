@@ -2,7 +2,6 @@
 
 namespace App\Presenters\Base;
 
-use App\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Controls\MenuControl;
 use App\Models\BansManager;
@@ -133,7 +132,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         $user     = $this->getUser();
         
         // if not main admin or role is not admin, so you can not ban admin, if some problem....
-        if ($user->getId() !== 1 || !in_array(Authorizator::ROLES[5], $this->getUser()->getRoles(), true)) {
+        if ($user->getId() !== 1 || !in_array(\App\Authorization\Authorizator::ROLES[5], $this->getUser()->getRoles(), true)) {
             foreach ($bans as $ban) {
                 if ($identity && $this->getUser()->isLoggedIn()) {
                     if ($ban->ban_email === $identity->getData()['user_email'] || $ban->ban_user_name === $identity->getData()['user_name']) {

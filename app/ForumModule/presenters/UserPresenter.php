@@ -266,7 +266,7 @@ class UserPresenter extends BaseForumPresenter
      * @param int $user_id
      * @param int $page
      */
-    public function renderPosts($user_id, $page = 1)
+    public function actionPosts($user_id, $page = 1)
     {
         $user = $this->checkUserParam($user_id);
 
@@ -310,7 +310,7 @@ class UserPresenter extends BaseForumPresenter
         $this->template->watchTotalCount = $this->topicWatchManager->getCount();
         $this->template->userData        = $user;
         $this->template->rank            = $rankUser;
-        $this->template->roles           = \App\Authorizator::ROLES;
+        $this->template->roles           = \App\Authorization\Authorizator::ROLES;
         $this->template->isFavourite     = $this->favouriteUsersManager->fullCheck($this->getUser()->getId(), $user_id);
         $this->template->user_id         = $user_id;
         $this->template->favourites      = $this->favouriteUsersManager->getAllJoinedByLeft($user_id);
@@ -321,7 +321,7 @@ class UserPresenter extends BaseForumPresenter
      * @param int $user_id
      * @param int $page
      */
-    public function renderThanks($user_id, $page = 1)
+    public function actionThanks($user_id, $page = 1)
     {
         $user = $this->checkUserParam($user_id);
 
@@ -340,7 +340,7 @@ class UserPresenter extends BaseForumPresenter
      * @param int $user_id user_id
      * @param int $page    page
      */
-    public function renderTopics($user_id, $page = 1)
+    public function actionTopics($user_id, $page = 1)
     {
         $user = $this->checkUserParam($user_id);
 
@@ -359,7 +359,7 @@ class UserPresenter extends BaseForumPresenter
      * @param int $user_id
      * @param int $page
      */
-    public function renderWatches($user_id, $page = 1)
+    public function actionWatches($user_id, $page = 1)
     {
         $user = $this->checkUserParam($user_id);
         
@@ -378,7 +378,7 @@ class UserPresenter extends BaseForumPresenter
     /**
      * @param int $page
      */
-    public function renderList($page)
+    public function actionList($page)
     {
         $users = $this->getManager()->getAllFluent();
         

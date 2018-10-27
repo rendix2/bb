@@ -250,7 +250,7 @@ class PostFacade
                 
         // last post
         if ($topic->getTopic_last_post_id() === (int)$post->getPost_id() && $topic->getTopic_first_post_id() !== (int)$post->getPost_id()) {
-            $last_post = $this->postsManager->getLastByTopic($post->post_topic_id);
+            $last_post = $this->postsManager->getLastByTopic($post->getPost_topic_id());
 
             if ($last_post) {
                 $this->topicsManager->update($post->getPost_topic_id(), ArrayHash::from([

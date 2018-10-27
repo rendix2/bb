@@ -6,7 +6,7 @@ use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\PollControl;
 use App\Controls\PaginatorControl;
-use App\Controls\TopicJumpToForumForm;
+use App\Forms\TopicJumpToForumForm;
 use App\Forms\TopicFastReplyForm;
 use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
@@ -269,14 +269,13 @@ class TopicPresenter extends BaseForumPresenter
     }
 
     /**
-     * renders posts in topic
-     *
+     * 
      * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
      * @param int $page
      */
-    public function renderDefault($category_id, $forum_id, $topic_id, $page = 1)
+    public function actionDefault($category_id, $forum_id, $topic_id, $page = 1)
     {
         $category = $this->checkCategoryParam($category_id);
         $forum    = $this->checkForumParam($forum_id, $category_id);
@@ -301,7 +300,6 @@ class TopicPresenter extends BaseForumPresenter
             $this->redirect('Forum:default', $category_id, $forum_id);
         }
 
-        $user_id   = $this->getUser()->getId();        
         $posts     = $data->orderBy('post_id', dibi::ASC)->fetchAll();
         $postsNew  = [];
         $postScope = null;
@@ -318,18 +316,32 @@ class TopicPresenter extends BaseForumPresenter
             $postsNew[] = $postDibi;
         }
         
-        $this->template->avatarsDir = $this->avatars->getTemplateDir();
-        $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $user_id);
-        $this->template->ranks      = $this->rankManager->getAllCached();
-        $this->template->posts      = $postsNew;
-        $this->template->thanks     = $this->thanksManager->getAllJoinedUserByTopic($topic_id);
-        $this->template->topic      = $topic;
+        $this->template->posts = $postsNew;
+        $this->template->topic = $topic;
         
         $this->template->canAddPost    = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_ADD);        
         $this->template->canDeletePost = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_DELETE);
         $this->template->canFastReply  = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_FAST_REPLY);
         $this->template->canThankTopic = $this->isAllowed($topicScope, \App\Authorization\Scopes\Topic::ACTION_THANK);
+    }
+
+    /**
+     * renders posts in topic
+     *
+     * @param int $category_id
+     * @param int $forum_id
+     * @param int $topic_id
+     * @param int $page
+     */
+    public function renderDefault($category_id, $forum_id, $topic_id, $page = 1)
+    {
+        $user_id = $this->getUser()->getId();
         
+        $this->template->avatarsDir = $this->avatars->getTemplateDir();
+        $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $user_id);
+        $this->template->ranks      = $this->rankManager->getAllCached();
+        
+        $this->template->thanks     = $this->thanksManager->getAllJoinedUserByTopic($topic_id);                       
         $this->template->signatureDelimiter = $this->postSettings->get()['signatureDelimiter'];
     }
 
@@ -680,7 +692,7 @@ class TopicPresenter extends BaseForumPresenter
      */
     protected function createComponentJumpToForum()
     {
-        return new TopicJumpToForumForm($this->forumsManager);
+        return new TopicJumpToForumForm($this->forumsManager, $this->getForumTranslator());
     }
 
     /**

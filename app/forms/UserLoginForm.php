@@ -120,7 +120,6 @@ class UserLoginForm extends Control
     {
         try {
             $user = $this->user;
-            $user->setAuthenticator($this->authenticator);
 
             $user->login(
                 $values->user_name,

@@ -18,18 +18,6 @@ use Nette\Utils\ArrayHash;
 class Authenticator implements IAuthenticator
 {
     /**
-     * @var array
-     */
-    const ROLES
-        = [
-            1 => 'guest',
-            2 => 'registered',
-            3 => 'moderator',
-            4 => 'juniorAdmin',
-            5 => 'admin'
-        ];
-    
-    /**
      * @var UsersManager $usersManager
      */
     private $usersManager;

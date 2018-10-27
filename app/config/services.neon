@@ -1,5 +1,3 @@
 services:
     Authenticator:
         class: App\Authenticator
-    Authorizator:
-        class: App\Authorizator
