@@ -441,6 +441,20 @@ class TopicPresenter extends BaseForumPresenter
         
         $this->template->thanks = $thanks;
     }
+    
+    /**
+     * 
+     * @param int $category_id
+     * @param int $forum_id
+     * @param int $topic_id
+     * @param int $post_id
+     */
+    public function renderFiles($category_id, $forum_id, $topic_id)
+    {
+        $category = $this->checkCategoryParam($category_id);
+        $forum    = $this->checkForumParam($forum_id, $category_id);
+        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+    }    
 
     /**
      *

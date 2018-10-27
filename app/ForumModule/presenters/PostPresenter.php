@@ -227,6 +227,21 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
 
         $this->template->posts = $postHistory;
     }
+
+    /**
+     * 
+     * @param int $category_id
+     * @param int $forum_id
+     * @param int $topic_id
+     * @param int $post_id
+     */
+    public function actionDownloadFile($category_id, $forum_id, $topic_id, $post_id, $file_id)
+    {
+        $category = $this->checkCategoryParam($category_id);
+        $forum    = $this->checkForumParam($forum_id, $category_id);
+        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        $post     = $this->checkPostParam($post_id, $category_id, $forum_id, $topic_id);
+    }
     
     /**
      * @return BootstrapForm

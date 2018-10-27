@@ -436,6 +436,11 @@ class UserPresenter extends BaseForumPresenter
         $this->template->type  = 5;
         $this->template->users = $users;
     }
+    
+    public function actionFiles($user_id, $page = 1)
+    {
+        
+    }
 
     public function renderRegister()
     {
