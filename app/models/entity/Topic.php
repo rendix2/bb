@@ -335,7 +335,7 @@ class Topic extends \App\Models\Entity\Base\Entity
         }
 
         if (isset($values->topic_post_count)) {
-            $topic->setTopic_page_count($values->topic_post_count);
+            $topic->setTopic_post_count($values->topic_post_count);
         }
 
         if (isset($values->topic_add_time)) {

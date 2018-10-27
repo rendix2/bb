@@ -308,9 +308,8 @@ class TopicPresenter extends BaseForumPresenter
             $post      = \App\Models\Entity\Post::setFromRow($postDibi);
             $postScope = new \App\Authorization\Scopes\Post($post, $topicScope, $topic);
             
-            $postDibi->canDelete = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_DELETE);
-            $postDibi->canEdit = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_EDIT);
-            //$postDibi->canEdit = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_EDIT);
+            $postDibi->canDelete  = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_DELETE);
+            $postDibi->canEdit    = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_EDIT);
             $postDibi->canHistory = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_HISTORY);
            
             $postsNew[] = $postDibi;
@@ -341,7 +340,7 @@ class TopicPresenter extends BaseForumPresenter
         $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $user_id);
         $this->template->ranks      = $this->rankManager->getAllCached();
         
-        $this->template->thanks     = $this->thanksManager->getAllJoinedUserByTopic($topic_id);                       
+        //$this->template->thanks     = $this->thanksManager->getAllJoinedUserByTopic($topic_id);                       
         $this->template->signatureDelimiter = $this->postSettings->get()['signatureDelimiter'];
     }
 

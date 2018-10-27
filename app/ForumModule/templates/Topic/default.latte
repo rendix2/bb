@@ -26,21 +26,11 @@
         </div>
     </div>
 
-    {if $thanks}
         <div class="col-sm-12">
-            <div class="float-left">
-
-                <span>{_user_who_thank}</span>
-
-                {foreach $thanks as $thank}
-                    <a href="{link User:profile, $thank->user_id}">{$thank->user_name}</a>
-                    {if !$iterator->isLast()},{/if}
-                {/foreach}
-                
+            <div class="float-left">                
                 <a href="{link Topic:thanks, $category_id, $forum_id, $topic_id}">{_topic_thanks}</a>
             </div>
         </div>
-    {/if}
 
     <div class="col-sm-12 main">
         <div class="float-left">

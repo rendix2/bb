@@ -86,6 +86,6 @@ class Authenticator implements IAuthenticator
                 'user_email'           => $userData->user_email
             ];
 
-        return new Identity($userData->user_id, self::ROLES[$userData->user_role_id], $data);
+        return new Identity($userData->user_id, Authorization\Authorizator::ROLES[$userData->user_role_id], $data);
     }
 }
