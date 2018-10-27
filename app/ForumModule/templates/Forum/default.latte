@@ -41,13 +41,15 @@
         </div>
         <div class="float-right">
             <a href="{link Forum:rules, $category_id, $forum_id}">{_forum_rules}</a>
-            
+
+            {if count($moderators)}
             <br>
             {_moderators}:
             
-            {foreach $moderators as $moderator}
-                <a href="{link User:profile $moderator->user_id}">{$moderator->user_name}</a>
-            {/foreach}
+                {foreach $moderators as $moderator}
+                    <a href="{link User:profile $moderator->user_id}">{$moderator->user_name}</a>
+                {/foreach}
+            {/if}
         </div>
         <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
             {control gridFilter}

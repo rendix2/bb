@@ -220,11 +220,13 @@ class GridFilter extends Control
             case self::TEXT_EQUAL:
             case self::TEXT_LIKE:
             case self::TEXT_FULTEXT:
-                $this->form->addText($columnName, $text);
+                $this->form->addText($columnName, $text)
+                    ->setAttribute('placeholder', $text);
                 break;            
             case self::INT_EQUAL:
             case self::INT_LIKE:
                 $this->form->addText($columnName, $text)
+                    ->setAttribute('placeholder', $text)
                     ->setRequired(false)
                     ->addRule(Form::INTEGER);
                 break;           
