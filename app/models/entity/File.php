@@ -18,7 +18,14 @@ class File extends Entity
      * @var int $file_id
      */
     private $file_id;
-    
+ 
+    /**
+     *
+     * @var string $file_orig_name
+     * 
+     */
+    private $file_orig_name;
+
     /**
      *
      * @var string $file_name
@@ -42,6 +49,11 @@ class File extends Entity
         return $this->file_id;
     }
 
+    public function getFile_orig_name()
+    {
+        return $this->file_orig_name;
+    }
+        
     public function getFile_name()
     {
         return $this->file_name;
@@ -60,6 +72,12 @@ class File extends Entity
     public function setFile_id($file_id)
     {
         $this->file_id = $file_id;
+        return $this;
+    }
+    
+    public function setFile_orig_name($file_orig_name)
+    {
+        $this->file_orig_name = $file_orig_name;
         return $this;
     }
 
@@ -81,7 +99,10 @@ class File extends Entity
         return $this;
     }
 
-        
+    /**
+     * 
+     * @return []
+     */
     public function getArray()
     {
         $res = [];
@@ -89,6 +110,10 @@ class File extends Entity
         if (isset($this->file_id)) {
             $res['file_id'] = $this->file_id;
         }
+        
+        if (isset($this->file_orig_name)) {
+            $res['file_orig_name'] = $this->file_orig_name;
+        }        
         
         if (isset($this->file_name)) {
             $res['file_name'] = $this->file_name;
@@ -105,12 +130,22 @@ class File extends Entity
         return $res;
     }
     
+    /**
+     * 
+     * @param ArrayHash $values
+     * 
+     * @return \App\Models\Entity\File
+     */
     public static function setFromArrayHash(ArrayHash $values)
     {
         $file = new File();
         
         if (isset($values->file_id)) {
             $file->setFile_id($values->file_id);
+        }
+        
+        if (isset($this->file_orig_name)) {
+            $this->setFile_orig_name($this->file_orig_name);
         }
         
         if (isset($values->file_name)) {
@@ -128,6 +163,12 @@ class File extends Entity
         return $file;
     }
     
+    /**
+     * 
+     * @param Row $values
+     * 
+     * @return \App\Models\Entity\File
+     */
     public static function setFromRow(Row $values)
     {
         $file = new File();
@@ -135,6 +176,10 @@ class File extends Entity
         if (isset($values->file_id)) {
             $file->setFile_id($values->file_id);
         }
+        
+        if (isset($this->file_orig_name)) {
+            $this->setFile_orig_name($this->file_orig_name);
+        }        
         
         if (isset($values->file_name)) {
             $file->setFile_name($values->file_name);

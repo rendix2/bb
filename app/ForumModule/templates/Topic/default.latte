@@ -158,6 +158,21 @@
                                 <h6>{$post->user_signature}</h6>
                             </div>
                         </div>
+                            
+                        {if count($post->post_files)}    
+                        <div class="card">
+                            <div class="card-header">{_post_files}</div>
+                            <div class="card-block">
+                                {foreach $post->post_files as $file}
+                                    {$file->file_orig_name} ({$file->file_size|bytes})
+                                    
+                                    <a href="{link Post:downloadFile $category_id, $forum_id, $topic_id, $post->post_id, $file->file_id}">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                {/foreach}
+                            </div>                            
+                        </div>        
+                        {/if}    
                     </div>
                 </div>
             </div>

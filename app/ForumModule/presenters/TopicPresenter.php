@@ -11,6 +11,7 @@ use App\Forms\TopicFastReplyForm;
 use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\PostFacade;
+use App\Models\Posts2FilesManager;
 use App\Models\PollsFacade;
 use App\Models\RanksManager;
 use App\Models\ReportsManager;
@@ -121,6 +122,13 @@ class TopicPresenter extends BaseForumPresenter
      * @inject
      */
     public $pollsFacade;
+    
+    /**
+     *
+     * @var Posts2FilesManager $posts2FilesManager
+     * @inject
+     */
+    public $posts2FilesManager;
 
     /**
      *
@@ -304,7 +312,8 @@ class TopicPresenter extends BaseForumPresenter
         $posts     = $data->orderBy('post_id', dibi::ASC)->fetchAll();
         $postsNew  = [];
         $postScope = null;
-                
+        $posts_ids = [];
+
         foreach ($posts as $postDibi) {
             $post      = \App\Models\Entity\Post::setFromRow($postDibi);
             $postScope = new \App\Authorization\Scopes\Post($post, $topicScope, $topic);
@@ -313,9 +322,22 @@ class TopicPresenter extends BaseForumPresenter
             $postDibi->canEdit    = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_EDIT);
             $postDibi->canHistory = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_HISTORY);
            
-            $postsNew[] = $postDibi;
+            $postsNew[]  = $postDibi;
+            $posts_ids[] = $post->getPost_id();
         }
         
+        $files = $this->posts2FilesManager->getAllJoinedByLefts($posts_ids);
+        
+        foreach ($postsNew as $post) {
+            $post->post_files = [];
+            
+            foreach ($files as $file) {
+                if ($post->post_id === $file->post_id) {
+                    $post->post_files[] = $file;
+                }
+            }
+        }
+                
         $this->template->posts = $postsNew;
         $this->template->topic = $topic;
         

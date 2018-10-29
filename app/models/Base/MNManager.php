@@ -124,7 +124,7 @@ abstract class MNManager extends Manager
             ->where('%n = %i', $this->leftKey, $left_id);
     }
 
-        /**
+    /**
      * @param int $left_id
      *
      * @return Row[]
@@ -133,6 +133,27 @@ abstract class MNManager extends Manager
     {
         return $this->getAllFluentByLeft($left_id)->fetchAll();
     }
+    
+    /**
+     * @param array $left_id
+     *
+     * @return Row[]
+     */
+    public function getAllByLefts(array $left_id)
+    {
+        return $this->getAllFluentByLefts($left_id)->fetchAll();
+    } 
+    
+    /**
+     * @param array $left_id
+     *
+     * @return Fluent
+     */
+    public function getAllFluentByLefts(array $left_id)
+    {
+        return $this->getAllFluent()
+            ->where('%n IN %in', $this->leftKey, $left_id);
+    }    
     
     /**
      * @param int $left_id
@@ -151,6 +172,34 @@ abstract class MNManager extends Manager
             ->on($aliasR . '.' . $this->right->getPrimaryKey() . ' = [relation.' . $this->rightKey . ']')
             ->where('[relation.' . $this->leftKey . '] = %i', $left_id);
     }
+    
+    /**
+     * @param array $left_id
+     *
+     * @return Fluent
+     */
+    public function getFluentJoinedByLefts(array $left_id)
+    {
+        $aliasR = self::createAlias($this->right->getTable());
+
+        return $this->dibi->select('*')
+            ->from($this->table)
+            ->as('relation')
+            ->innerJoin($this->right->getTable())
+            ->as($aliasR)
+            ->on($aliasR . '.' . $this->right->getPrimaryKey() . ' = [relation.' . $this->rightKey . ']')
+            ->where('[relation.' . $this->leftKey . '] IN %in', $left_id);
+    }
+
+    /**
+     * @param array $left_id
+     *
+     * @return Row[]
+     */
+    public function getAllJoinedByLefts(array $left_id)
+    {
+        return $this->getFluentJoinedByLefts($left_id)->fetchAll();
+    }    
 
     /**
      * @param int $left_id
@@ -173,7 +222,7 @@ abstract class MNManager extends Manager
             ->fetchPairs(null, $this->right->getPrimaryKey());
     }
     
-        /**
+    /**
      * @param int $right_id
      *
      * @return Fluent
@@ -183,6 +232,28 @@ abstract class MNManager extends Manager
         return $this->getAllFluent()
             ->where('%n = %i', $this->rightKey, $right_id);
     }
+    
+    /**
+     * @param array $right_id
+     *
+     * @return Fluent
+     */
+    public function getAllFluentByRights(array $right_id)
+    {
+        return $this->getAllFluent()
+            ->where('%n IN %in', $this->rightKey, $right_id);
+    }  
+    
+    /**
+     * @param array $right_id
+     *
+     * @return Row[]
+     */
+    public function getAllByRights(array $right_id)
+    {
+        return $this->getAllFluentByRights($right_id)
+                ->fetchAll();
+    }    
 
     /**
      * @param int $right_id
@@ -211,6 +282,35 @@ abstract class MNManager extends Manager
             ->on($aliasL . '.' . $this->left->getPrimaryKey() . ' = [relation.' . $this->leftKey . ']')
             ->where('[relation.' . $this->rightKey . '] = %i', $right_id);
     }
+    
+    /**
+     * @param array $right_id
+     *
+     * @return Fluent
+     */
+    public function getFluentJoinedByRights(array $right_id)
+    {
+        $aliasL = self::createAlias($this->left->getTable());
+
+        return $this->dibi->select('*')
+            ->from($this->table)
+            ->as('relation')
+            ->innerJoin($this->left->getTable())
+            ->as($aliasL)
+            ->on($aliasL . '.' . $this->left->getPrimaryKey() . ' = [relation.' . $this->leftKey . ']')
+            ->where('[relation.' . $this->rightKey . '] IN %in', $right_id);
+    }
+    
+    /**
+     * @param array $right_id
+     *
+     * @return Row[]
+     */
+    public function getAllJoinedByRights(array $right_id)
+    {
+        return $this->getFluentJoinedByRights($right_id)
+            ->fetchAll();
+    }    
 
     /**
      * @param int $right_id
@@ -238,7 +338,7 @@ abstract class MNManager extends Manager
      * @param int $left_id
      * @param int $right_id
      *
-     * @return Row[]
+     * @return Row
      */
     public function getAllFull($left_id, $right_id)
     {
@@ -255,16 +355,16 @@ abstract class MNManager extends Manager
             ->as('relation')
             ->where('[relation.' . $this->leftKey . '] = %i', $left_id)
             ->where('[relation.' . $this->rightKey . '] = %i', $right_id)
-            ->fetchAll();
+            ->fetch();
     }    
 
     /**
      * @param int $left_id
      * @param int $right_id
      *
-     * @return Row[]
+     * @return Row
      */
-    public function getFullJoined($left_id, $right_id)
+    public function getAllFullJoined($left_id, $right_id)
     {
         $aliasL = self::createAlias($this->left->getTable());
         $aliasR = self::createAlias($this->right->getTable());
@@ -281,11 +381,11 @@ abstract class MNManager extends Manager
             ->as($aliasL)
             ->on($aliasL . '.' . $this->left->getPrimaryKey() . ' = [relation.' . $this->leftKey . ']')
             ->innerJoin($this->right->getTable())
-            ->as($aliasL)
+            ->as($aliasR)
             ->on($aliasR . '.' . $this->right->getPrimaryKey() . ' = [relation.' . $this->rightKey . ']')
             ->where('[relation.' . $this->leftKey . '] = %i', $left_id)
             ->where('[relation.' . $this->rightKey . '] = %i', $right_id)
-            ->fetchAll();
+            ->fetch();
     }
 
     /**

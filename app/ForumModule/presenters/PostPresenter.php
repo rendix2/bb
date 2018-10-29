@@ -12,6 +12,7 @@ use App\Models\PostsManager;
 use App\Models\ReportsManager;
 use App\Models\TopicWatchManager;
 use App\Models\PollsFacade;
+use App\Models\Posts2FilesManager;
 use App\Settings\PostSetting;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
@@ -86,7 +87,13 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      * @inject
      */
     public $pollsFacade;
-
+    
+    /**
+     *
+     * @var Posts2FilesManager $posts2FilesManager
+     * @inject
+     */
+    public $posts2FilesManager;
     /**
      * @param PostsManager $manager
      */
@@ -242,6 +249,18 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
         $post     = $this->checkPostParam($post_id, $category_id, $forum_id, $topic_id);
+        
+        $file = $this->posts2FilesManager->getAllFullJoined($post_id, $file_id);
+        
+        if (!$file) {
+            $this->error('File was not found.');
+        }
+        
+        $sep = DIRECTORY_SEPARATOR;
+        
+        $fileRespone = new \Nette\Application\Responses\FileResponse($this->postSetting->get()['filesDir'] . $sep . $file->file_name . '.' . $file->file_extension, $file->file_orig_name);
+        
+        $this->sendResponse($fileRespone);
     }
     
     /**
@@ -340,6 +359,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
                 
                 $postFile = new \App\Models\Entity\File();
                 $postFile->setFile_id($file->post_file_id);
+                $postFile->setFile_orig_name($postFileArrayHash->getName());
                 $postFile->setFile_name($hash);
                 $postFile->setFile_extension($extension);
                 $postFile->setFile_size($postFileArrayHash->getSize());
