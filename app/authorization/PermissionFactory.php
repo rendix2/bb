@@ -88,6 +88,9 @@ class PermissionFactory
         $this->allow($permission, Scopes\Forum::ROLE_MODERATOR, Scopes\Topic::ACTION_DELETE);
         $this->allow($permission, Scopes\Forum::ROLE_MODERATOR, Scopes\Post::ACTION_DELETE);
         
+        $this->allow($permission, Scopes\Forum::ROLE_MODERATOR, Scopes\Forum::ACTION_POST_UPDATE);
+        $this->allow($permission, Scopes\Forum::ROLE_MODERATOR, Scopes\Forum::ACTION_TOPIC_UPDATE);
+        
 
         
         $permission->allow(Identity::ROLE_ADMIN, Permission::ALL, Permission::ALL);

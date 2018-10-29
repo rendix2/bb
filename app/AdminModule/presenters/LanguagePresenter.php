@@ -33,6 +33,16 @@ class LanguagePresenter extends AdminPresenter
     {
         parent::__construct($manager);
     }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->usersManager = null;
+        
+        parent::__destruct();
+    }
 
     /**
      * @param int|null $id

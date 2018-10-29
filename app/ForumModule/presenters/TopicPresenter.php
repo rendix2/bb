@@ -151,6 +151,7 @@ class TopicPresenter extends BaseForumPresenter
         $this->reportManager     = null;
         $this->postSettings      = null;
         $this->storage           = null;
+        $this->pollsFacade       = null;
         
         parent::__destruct();
     }
@@ -383,7 +384,7 @@ class TopicPresenter extends BaseForumPresenter
                 $this['editForm-answers']->setValues($pollAnswers);
             }
             
-            $this['editForm']->setDefaults(['post_title' => $topic->topic_name, 'post_text' => $post->post_text]);
+            $this['editForm']->setDefaults(['post_title' => $topic->getTopic_name(), 'post_text' => $post->post_text]);
         }
     }
 

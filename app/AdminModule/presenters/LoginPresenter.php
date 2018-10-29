@@ -117,7 +117,6 @@ class LoginPresenter extends BasePresenter
                 throw new AuthenticationException('You are not admin.');
             }
             
-            
             $this->sessionManager->delete($this->getUser()->getId());
             $this->sessionManager->add(
                 ArrayHash::from(

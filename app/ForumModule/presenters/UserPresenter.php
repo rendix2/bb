@@ -390,7 +390,7 @@ class UserPresenter extends BaseForumPresenter
         }
         
         $this->template->type  = 1;
-        $this->template->users = $users;
+        $this->template->users = $users->fetchAll();
     }
 
     /**
@@ -412,7 +412,7 @@ class UserPresenter extends BaseForumPresenter
         }
         
         $this->template->type  = 3;
-        $this->template->users = $users;
+        $this->template->users = $users->fetchAll();
     }
 
     /**
@@ -434,7 +434,7 @@ class UserPresenter extends BaseForumPresenter
         }
         
         $this->template->type  = 5;
-        $this->template->users = $users;
+        $this->template->users = $users->fetchAll();
     }
     
     public function actionFiles($user_id, $page = 1)

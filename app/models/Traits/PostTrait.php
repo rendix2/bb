@@ -59,9 +59,12 @@ trait PostTrait
             $this->error('Category param does not match.', IResponse::S403_FORBIDDEN);
         }
 
+        /*
         if ($post->getPost_user_id() !== $this->getUser()->getId()) {
             $this->error('You are not author of post.', IResponse::S403_FORBIDDEN);
         }
+         * 
+         */
 
         if ($post->getPost_locked()) {
             $this->error('Post is locked.', IResponse::S403_FORBIDDEN);

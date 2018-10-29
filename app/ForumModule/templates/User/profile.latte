@@ -62,8 +62,8 @@
             <div class="card">
                 <div class="card-header">{_user_avatar}</div>
                 <div class="card-block">
-                    <img src="{$basePath}{$avatarsDir}/{$userData->user_avatar}" class="img-fluid"
-                         alt="{$userData->user_name}" title="{$userData->user_name}">
+                    <img src="{$basePath}{$avatarsDir}/{$userData->getUser_avatar()}" class="img-fluid"
+                         alt="{$userData->getUser_name()}" title="{$userData->getUser_name()}">
                 </div>
             </div>
         </div>

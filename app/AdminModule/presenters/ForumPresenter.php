@@ -53,7 +53,6 @@ class ForumPresenter extends AdminPresenter
      * @inject
      */
     public $moderatorsManager;
-    
         
     /**
      *
@@ -84,7 +83,11 @@ class ForumPresenter extends AdminPresenter
      */
     public function __destruct()
     {
+        $this->categoriesManager = null;
+        $this->topicsManager     = null;
+        $this->postsManager      = null;
         $this->moderatorsManager = null;
+        $this->usersManager      = null;
         $this->forumFacade       = null;
         
         parent::__destruct();

@@ -96,7 +96,13 @@ class Post extends Entity
      * @var int $post_order
      */    
     private $post_order;
-
+    
+    /**
+     *
+     * @var File[] $files
+     */
+    private $post_files;
+        
     public function getPost_id()
     {
         return $this->post_id;
@@ -167,6 +173,11 @@ class Post extends Entity
         return $this->post_order;
     }
 
+    public function getPost_files()
+    {
+        return $this->post_files;
+    }
+    
     public function setPost_id($post_id)
     {
         $this->post_id = self::makeInt($post_id);
@@ -250,6 +261,12 @@ class Post extends Entity
         $this->post_order = self::makeInt($post_order);
         return $this;
     }
+    
+    public function setPost_files(array $files = [])
+    {
+        $this->post_files = $files;
+        return $this;
+    }    
 
     /**
      * 
@@ -316,8 +333,6 @@ class Post extends Entity
         if (isset($values->post_order)) {
             $post->setPost_order($values->post_order);
         }
-        
-        \Tracy\Debugger::barDump($post);
       
         return $post;
     }

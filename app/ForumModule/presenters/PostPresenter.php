@@ -17,6 +17,7 @@ use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Forms\Controls\SubmitButton;
+use Nette\Forms\Container;
 use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;
 
@@ -254,6 +255,17 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         $form->addTextAreaHtml('post_text', 'Text', 0, 15)->setRequired(true);
         $form->addSubmit('send', 'Send');
         $form->addSubmit('preview', 'Preview')->onClick[] = [$this, 'preview'];
+        
+        $files = $form->addDynamic('files', function (Container $file) {
+            $file->addHidden('post_file_id');
+            $file->addUpload('post_file', 'File:');                
+            $file->addSubmit('remove', 'Remove file')
+                   ->setValidationScope(false) # disables validation
+                   ->addRemoveOnClick();
+        }, 1);
+        $files->addSubmit('add', 'Add file')
+                ->setValidationScope(false) # disables validation
+                ->addCreateOnClick(true);
 
         $form->onSuccess[]  = [$this, 'editFormSuccess'];
         $form->onValidate[] = [$this, 'onValidate'];
@@ -307,13 +319,44 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         $post_id     = $this->getParameter('post_id');
         $user_id     = $this->getUser()->getId();
         
+        if(count($values->files)) {
+            $postFiles = [];
+            $filesDir = $this->postSetting->get()['filesDir'];
+            
+            /**
+             * @var \Nette\Http\FileUpload $file
+            */
+            foreach ($values->files as $file) {
+                
+                $postFileArrayHash = $file->post_file;
+                
+                $extension = \App\Models\Manager::getFileExtension($postFileArrayHash->getName());
+                $hash      = \App\Models\Manager::getRandomString();
+                $sep       = DIRECTORY_SEPARATOR;
+                
+                if ($postFileArrayHash->isOk()) {
+                    $postFileArrayHash->move($filesDir . $sep .$hash . '.'. $extension);
+                }
+                
+                $postFile = new \App\Models\Entity\File();
+                $postFile->setFile_id($file->post_file_id);
+                $postFile->setFile_name($hash);
+                $postFile->setFile_extension($extension);
+                $postFile->setFile_size($postFileArrayHash->getSize());
+                
+                $postFiles[] = $postFile;
+            }
+        } else {
+            $postFiles = [];
+        }
+        
         if ($post_id) {
             $postOldDibi = $this->getManager()->getById($post_id);
             $postOld     = \App\Models\Entity\Post::setFromRow($postOldDibi);
             
             $postNew = new \App\Models\Entity\Post();
             $postNew->setPost_id($post_id)
-                    ->setPost_user_id($user_id)
+                    ->setPost_user_id($postOld->getPost_user_id())
                     ->setPost_category_id($category_id)
                     ->setPost_forum_id($forum_id)
                     ->setPost_topic_id($topic_id)
@@ -325,7 +368,8 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
                     ->setPost_edit_count($postOld->getPost_edit_count() + 1)
                     ->setPost_last_edit_time(time())
                     ->setPost_locked($postNew->getPost_locked())
-                    ->setPost_order($postOld->getPost_order());
+                    ->setPost_order($postOld->getPost_order())
+                    ->setPost_files($postFiles);
                                           
             $result = $this->postFacade->update($postNew);
         } else {
@@ -337,8 +381,9 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
                  ->setPost_title($values->post_title)
                  ->setPost_text($values->post_text)
                  ->setPost_add_user_ip($this->getHttpRequest()->getRemoteAddress())
-                 ->setPost_order(1);
-            
+                 ->setPost_order(1)
+                 ->setPost_files($postFiles);
+
             $result = $this->postFacade->add($post);
             $emails = $this->topicWatchManager->getAllJoinedByLeft($topic_id);
             

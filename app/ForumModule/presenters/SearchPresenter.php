@@ -45,6 +45,14 @@ class SearchPresenter extends BaseForumPresenter
     {
         parent::__construct($userManager);
     }
+    
+    public function __destruct()
+    {
+        $this->topicsManager = null;
+        $this->postsManager  = null;
+        
+        parent::__destruct();
+    }
 
     /**
      * @return BootstrapForm

@@ -32,7 +32,6 @@ class CategoryPresenter extends Base\ForumPresenter
     public function __destruct()
     {
         $this->categoriesManager = null;        
-        $this->forumsManager     = null;
         
         parent::__destruct();
     }

@@ -72,14 +72,14 @@ class UserPresenter extends AdminPresenter
      * @var Avatars $avatar
      * @inject
      */
-    public $avatar;
+    public $avatars;
     
     /**
      *
      * @var Ranks $rank
      * @inject
      */
-    public $rank;
+    public $ranks;
 
     /**
      * moderators manager
@@ -113,13 +113,18 @@ class UserPresenter extends AdminPresenter
         parent::__construct($manager);
     }
     
-    public function __destruct() {
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->forumsManager         = null;
         $this->languagesManager      = null;
         $this->group2UserManager     = null;
         $this->groupsManager         = null;
         $this->users2ForumsManager   = null;
-        $this->avatar                = null;
-        $this->rank                  = null;
+        $this->avatars                = null;
+        $this->ranks                  = null;
         $this->moderatorsManager     = null;
         $this->changePasswordFactory = null;
         $this->deleteAvatarFactory   = null;
@@ -148,8 +153,8 @@ class UserPresenter extends AdminPresenter
             $this[self::FORM_NAME]->setDefaults(['user_role_id' => 2]);
         }
         
-        $this->template->avatarsDir = $this->avatar->getTemplateDir();
-        $this->template->ranksDir   = $this->rank->getTemplateDir();
+        $this->template->avatarsDir = $this->avatars->getTemplateDir();
+        $this->template->ranksDir   = $this->ranks->getTemplateDir();
     }
 
     /**

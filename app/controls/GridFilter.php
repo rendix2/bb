@@ -125,13 +125,11 @@ class GridFilter extends Control
     public function applyOrderBy(Fluent $fluent)
     {
         foreach ($this->getParameters() as $columnName => $sortType) {
-            if (!$sortType || !strpos('sort_', $columnName)) {
-                continue;
-            }
-            
-            $columnName = $this->checkFTI(str_replace('sort_', '', $columnName));
+            if (!empty($sortType) || strpos($columnName, 'sort_') === 0 ) {
+                $columnName = $this->checkFTI(str_replace('sort_', '', $columnName));
 
-            $fluent->orderBy($columnName, $sortType);
+                $fluent->orderBy($columnName, $sortType);
+            }
         }
     }
     
@@ -181,7 +179,12 @@ class GridFilter extends Control
                     break;
                 case self::INT_LIKE:
                 case self::TEXT_LIKE:
-                    $fluent->where('%n LIKE %~like~', $columnName, $value);                
+                    if (isset($val['data']['alias'])) {
+                        $fluent->where('%n LIKE %~like~', $val['data']['alias'], $value);
+                    } else {
+                        $fluent->where('%n LIKE %~like~', $columnName, $value);
+                    }
+                    
                     break;
                 case self::FROM_TO_INT:
                     if (strpos($col, '_Xfrom')) {
@@ -275,6 +278,7 @@ class GridFilter extends Control
            $this->filters[$columnName] = [
                     'type'     => $type,
                     'text'     => $text,
+                    'data'     => $data
                 ]; 
         }                
     }
@@ -405,7 +409,9 @@ class GridFilter extends Control
                 $section[$name] = $values[$name];
             }
         }
+        
+        $url = $this->presenter->getHttpRequest()->getUrl();
 
-        $this->redirect('this');
+        $this->presenter->redirectUrl($url);
     }
 }

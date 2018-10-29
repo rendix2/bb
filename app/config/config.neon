@@ -53,6 +53,7 @@ parameters:
         cache:
             totalPosts: 1 hour
             primaryKey: 10 day
+        filesDir: %wwwDir%/postFiles
         minLength: 5 # int or null
         maxLength: 100000 # int or null
         minUserTimeInterval: 20

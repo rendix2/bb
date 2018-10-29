@@ -50,6 +50,7 @@ class CategoryPresenter extends AdminPresenter
     public function __destruct()
     {
         $this->categoryFacade = null;
+        $this->forumsManager  = null;
         
         parent::__destruct();
     }
@@ -83,10 +84,7 @@ class CategoryPresenter extends AdminPresenter
 
             $this[self::FORM_NAME]->setDefaults($item);
 
-            $forums = $this->forumsManager->createForums(
-                $this->forumsManager->getFluentByCategory($id)->fetchAll(),
-                0
-            );
+            $forums = $this->forumsManager->getAllByCategory($id);
 
             if (!$forums) {
                 $this->flashMessage('No forums in this category.', self::FLASH_MESSAGE_WARNING);

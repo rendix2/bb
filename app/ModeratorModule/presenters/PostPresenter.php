@@ -33,6 +33,13 @@ class PostPresenter extends ModeratorPresenter
      * @inject
      */
     public $postFacade;
+    
+    /**
+     *
+     * @var TopicsManager $topicsManager
+     * @inject
+     */
+    public $topicsManager;
 
     /**
      * PostPresenter constructor.
@@ -50,7 +57,7 @@ class PostPresenter extends ModeratorPresenter
      */
     public function renderHistory($post_id)
     {
-        $this->template->posts = $this->postsHistoryManager->getAllJoinedByPost($post_id);
+        $this->template->posts = $this->postsHistoryManager->getByPost($post_id);
     }
 
     /**
@@ -73,7 +80,7 @@ class PostPresenter extends ModeratorPresenter
      */
     protected function createComponentGridFilter()
     {
-        return null;
+        return $this->gf;
     }
 
     /**

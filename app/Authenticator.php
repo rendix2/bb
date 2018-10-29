@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\LanguagesManager;
+use App\Models\ModeratorsManager;
 use App\Models\UsersManager;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
@@ -26,6 +27,12 @@ class Authenticator implements IAuthenticator
      * @var LanguagesManager $languagesManager
      */
     private $languagesManager;
+    
+    /**
+     *
+     * @var ModeratorsManager $moderatorsManager
+     */
+    private $moderatorsManager;
 
     /**
      * Authenticator constructor.
@@ -33,16 +40,24 @@ class Authenticator implements IAuthenticator
      * @param UsersManager     $usersManger
      * @param LanguagesManager $languageManager
      */
-    public function __construct(UsersManager $usersManger, LanguagesManager $languageManager)
-    {
-        $this->usersManager     = $usersManger;
-        $this->languagesManager = $languageManager;
+    public function __construct(
+            UsersManager $usersManger,
+            LanguagesManager $languageManager,
+            ModeratorsManager $moderatorsManager
+    ) {
+        $this->usersManager      = $usersManger;
+        $this->languagesManager  = $languageManager;
+        $this->moderatorsManager = $moderatorsManager;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
-        $this->usersManager     = null;
-        $this->languagesManager = null;
+        $this->usersManager      = null;
+        $this->languagesManager  = null;
+        $this->moderatorsManager = null;
     }
 
     /**
@@ -78,12 +93,15 @@ class Authenticator implements IAuthenticator
                
         $this->usersManager->update($userData->user_id, ArrayHash::from(['user_last_login_time' => time()]));
         
+        $moderators = $this->moderatorsManager->getPairsByLeft($userData->user_id);
+        
         $data =
             [
                 'user_name'            => $userData->user_name,
                 'lang_file_name'       => $langData->lang_file_name,
                 'user_last_login_time' => $userData->user_last_login_time,
-                'user_email'           => $userData->user_email
+                'user_email'           => $userData->user_email,
+                'moderator'            => $moderators
             ];
 
         return new Identity($userData->user_id, Authorization\Authorizator::ROLES[$userData->user_role_id], $data);

@@ -84,6 +84,17 @@ class PostFacade
      * @var TopicsSetting $topicSettings
      */
     private $topicSettings;
+    
+    /**
+     *
+     * @var FilesManager $filesManager
+     */
+    private $filesManager;
+    
+    /**
+     * @var Posts2FilesManager $posts2FilesManger
+     */
+    private $posts2FilesManger;
 
     /**
      *
@@ -99,6 +110,8 @@ class PostFacade
      * @param TopicWatchFacade    $topicWatchFacade
      * @param PollsFacade         $pollsFacade
      * @param TopicsSetting       $topicSettings
+     * @param FilesManager        $filesManager
+     * @param Posts2FilesManager  $posts2FilesManger
      */
     public function __construct(
         PostsManager $postsManager,
@@ -112,7 +125,9 @@ class PostFacade
         ThanksFacade $thanksFacade,
         TopicWatchFacade $topicWatchFacade,
         PollsFacade $pollsFacade,
-        TopicsSetting $topicSettings
+        TopicsSetting $topicSettings,
+        FilesManager $filesManager,
+        Posts2FilesManager $posts2FilesManger    
     ) {
         $this->postsManager        = $postsManager;
         $this->topicsManager       = $topicsManager;
@@ -126,6 +141,8 @@ class PostFacade
         $this->topicWatchFacade    = $topicWatchFacade;
         $this->pollsFacade         = $pollsFacade;
         $this->topicSettings       = $topicSettings;
+        $this->filesManager        = $filesManager;
+        $this->posts2FilesManger   = $posts2FilesManger;
     }
     
     public function __destruct()
@@ -141,6 +158,8 @@ class PostFacade
         $this->thanksFacade        = null;
         $this->topicWatchFacade    = null;
         $this->topicSettings       = null;
+        $this->filesManager        = null;
+        $this->posts2FilesManger   = null;
     }
 
     /**
@@ -157,6 +176,20 @@ class PostFacade
         
         $topicDibi = $this->topicsManager->getById($topic_id);
         $topic     = Entity\Topic::setFromRow($topicDibi);
+        
+        $files     = $post->getPost_files();
+        $files_ids = [];
+        
+        if ($files) {
+            foreach ($files as $file) {
+                $file_id = $this->filesManager->add($file->getArrayHash());
+                
+                $file->setFile_id($file_id);
+                $files_ids[] = $file->getFile_id();                
+            }
+            
+            $this->posts2FilesManger->addByLeft($post_id, $files_ids);
+        }
 
         $this->topicsManager->update(
             $topic_id,
@@ -204,15 +237,18 @@ class PostFacade
     {
         //$myPost = clone $post;
         //unset($myPost->post_id);
-
-        $update = $this->postsManager->update($post->getPost_id(), $post->getArrayHash());
+        
         $add    = $this->postsHistoryManager->add(ArrayHash::from([
                 'post_id'           => $post->getPost_id(),
                 'post_user_id'      => $post->getPost_user_id(),
                 'post_title'        => $post->getPost_title(),
                 'post_text'         => $post->getPost_text(),
                 'post_history_time' => time()
-            ]));
+        ]));
+
+        $post->setPost_user_id(null);
+        
+        $update = $this->postsManager->update($post->getPost_id(), $post->getArrayHash());
 
         return $update && $add;
     }

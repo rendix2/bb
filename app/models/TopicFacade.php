@@ -446,7 +446,7 @@ class TopicFacade
      */
     public function update(Entity\Topic $topic)
     {
-        $res = $this->topicsManager->update($topic->getTopic_id(), ArrayHash::from(['topic_name' => $topic->topic_name]));
+        $res = $this->topicsManager->update($topic->getTopic_id(), ArrayHash::from(['topic_name' => $topic->getTopic_name()]));
 
         $this->postsManager->update($topic->getPost()->getPost_id(), ArrayHash::from(['post_text' => $topic->getPost()->getPost_text()]));
         

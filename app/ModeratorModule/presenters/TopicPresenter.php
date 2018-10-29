@@ -19,6 +19,8 @@ use Nette\Utils\ArrayHash;
 class TopicPresenter extends ModeratorPresenter
 {
     
+    use \App\Models\Traits\ForumsTrait;
+    
     /**
      *
      * @var TopicFacade $topicFacade
@@ -58,7 +60,7 @@ class TopicPresenter extends ModeratorPresenter
      */
     protected function createComponentGridFilter()
     {
-        return null;
+        return $this->gf;
     }
 
     /**
@@ -138,6 +140,12 @@ class TopicPresenter extends ModeratorPresenter
      */
     public function renderTopics($forum_id)
     {
+        //$forum = $this->checkForumParam($forum_id);
+        //$forumScope = $this->loadForum($forum);
+        
+        //$this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_UPDATE);
+        
+        
         $this->template->topics = $this->getManager()->getAllByForum($forum_id);
     }
     

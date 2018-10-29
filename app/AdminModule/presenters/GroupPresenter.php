@@ -64,6 +64,8 @@ class GroupPresenter extends AdminPresenter
     {
         $this->users2GroupsManager  = null;
         $this->forums2groupsManager = null;
+        $this->forumsManager        = null;
+        $this->usersManager         = null;
         
         parent::__destruct();
     }

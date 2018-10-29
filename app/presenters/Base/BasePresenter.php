@@ -191,18 +191,20 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     protected function createComponentMenuAdmin()
     {
         $leftMenu = [
-            0 => ['presenter' => ':Admin:Index:', 'title' => 'menu_index'],
-            1 => ['presenter' => ':Admin:Forum:', 'title' => 'menu_forums'],
-            2 => ['presenter' => ':Admin:Category:', 'title' => 'menu_categories'],
-            3 => ['presenter' => ':Admin:User:', 'title' => 'menu_users'],
-            4 => ['presenter' => ':Admin:Avatar:', 'title' => 'menu_avatar'],
-            5 => ['presenter' => ':Admin:Email:', 'title' => 'menu_emails'],
-            6 => ['presenter' => ':Admin:Cache:', 'title' => 'menu_cache'],
-            7 => ['presenter' => ':Admin:Language:', 'title' => 'menu_language'],
-            8 => ['presenter' => ':Admin:Group:', 'title' => 'menu_groups'],
-            9 => ['presenter' => ':Admin:Rank:', 'title' => 'menu_ranks'],
-            10 => ['presenter' => ':Admin:Report:', 'title' => 'menu_reports'],
-            11 => ['presenter' => ':Admin:Ban:', 'title' => 'menu_bans'],
+            0 =>  ['presenter' => ':Admin:Index:',    'title' => 'menu_index'],
+            1 =>  ['presenter' => ':Admin:Forum:',    'title' => 'menu_forums'],
+            2 =>  ['presenter' => ':Admin:Category:', 'title' => 'menu_categories'],
+            3 =>  ['presenter' => ':Admin:User:',     'title' => 'menu_users'],
+            4 =>  ['presenter' => ':Admin:Avatar:',   'title' => 'menu_avatar'],
+            5 =>  ['presenter' => ':Admin:Email:',    'title' => 'menu_emails'],
+            6 =>  ['presenter' => ':Admin:Cache:',    'title' => 'menu_cache'],
+            7 =>  ['presenter' => ':Admin:Language:', 'title' => 'menu_language'],
+            8 =>  ['presenter' => ':Admin:Group:',    'title' => 'menu_groups'],
+            9 =>  ['presenter' => ':Admin:Rank:',     'title' => 'menu_ranks'],
+            10 => ['presenter' => ':Admin:Report:',   'title' => 'menu_reports'],
+            11 => ['presenter' => ':Admin:Ban:',      'title' => 'menu_bans'],
+            12 => ['presenter' => ':Admin:Smilies:',  'title' => 'menu_smilies'],
+            13 => ['presenter' => ':Admin:File:',     'title' => 'menu_files'],
             /*12 => ['presenter' => ':Admin:Config:Index:default', 'title' => 'menu_config',
                 'submenu' => [0 => ['presenter' => ':Admin:Config:Database:dumps', 'title' => 'menu_database']]
             ],*/
