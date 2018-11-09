@@ -79,7 +79,16 @@ class UserLoginForm extends Control
         $this->session           = $session;
     }
     
-    public function render()
+    public function __destruct() {
+        $this->backlink          = null;
+        $this->translatorFactory = null;
+        $this->user              = null;
+        $this->sessionsManager   = null;
+        $this->authenticator     = null;
+        $this->session           = null;
+    }
+
+        public function render()
     {
         $this['loginForm']->render();
     }
@@ -111,7 +120,6 @@ class UserLoginForm extends Control
     {
         try {
             $user = $this->user;
-            $user->setAuthenticator($this->authenticator);
 
             $user->login(
                 $values->user_name,
@@ -125,6 +133,7 @@ class UserLoginForm extends Control
                     'session_from'    => time()
                 ];
             
+            $this->sessionsManager->delete($user->getId());
             $this->sessionsManager->add(ArrayHash::from($addArray));
             $user->setExpiration('1 hour');
             $this->flashMessage(

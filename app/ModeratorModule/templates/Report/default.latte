@@ -34,8 +34,13 @@
                     <td>
                         <a href="{link Report:edit, $item->report_id}">{$item->report_id}</a>
                     </td>
+                    <td>
+                        <a href="{link :Forum:User:profile $item->user_id}">{$item->user_name}</a>
+                    </td>
                     <td>{$item->report_time|date:'%d.%m.%Y %H:%M:%S'}</td>
-                    <td>{$item->user_name}</td>
+                    <td>
+                        <a href="{link :Forum:User:profile $item->reported_user_id}">{$item->reported_user_name}</a>
+                    </td>
                     <td>{$item->forum_name}</td>
                     <td>{$item->topic_name}</td>
                     <td>{$item->post_title}</td>

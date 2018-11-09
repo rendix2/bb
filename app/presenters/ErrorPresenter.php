@@ -31,6 +31,14 @@ class ErrorPresenter implements Nette\Application\IPresenter
     {
         $this->logger = $logger;
     }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->logger = null;
+    }
 
     /**
      * @param Request $request

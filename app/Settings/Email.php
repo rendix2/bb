@@ -7,28 +7,6 @@ namespace App\Settings;
  *
  * @author rendix2
  */
-class Email
+class Email extends Setting
 {
-    
-    /**
-     * @var array $mail
-     */
-    private $mail;
-    
-    /**
-     * @param array $mail
-     */
-    public function __construct($mail)
-    {
-        $this->mail = $mail;
-    }
-    
-    /**
-     *
-     * @return array
-     */
-    public function getMail()
-    {
-        return $this->mail;
-    }
 }

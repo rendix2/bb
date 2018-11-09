@@ -77,6 +77,18 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     }
     
     /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->gf      = null;
+        $this->title   = null;
+        $this->manager = null;
+        
+        parent::__destruct();
+    }
+
+    /**
      *
      * @return CrudManager
      */
@@ -162,35 +174,6 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     }
 
     /**
-     * @param Form      $form   form
-     * @param ArrayHash $values values
-     */
-    public function editFormSuccess(Form $form, ArrayHash $values)
-    {
-        $id = $this->getParameter('id');
-
-        try {
-            if ($id) {
-                $result = $this->getManager()->update($id, $values);
-            } else {
-                $result = $id = $this->getManager()->add($values);
-            }
-
-            if ($result) {
-                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
-            } else {
-                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
-            }
-        } catch (DriverException $e) {
-            $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
-            
-            \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
-        }
-
-        $this->redirect(':' . $this->getName() . ':default');
-    }
-
-    /**
      * @param GridFilter $gridFilter
      */
     public function injectGridFilter(GridFilter $gridFilter)
@@ -225,27 +208,20 @@ abstract class CrudPresenter extends AuthenticatedPresenter
 
         $this->redirect(':' . $this->getName() . ':default');
     }
-
-    /**
+    
+   /**
      * @param int $page
      */
-    public function renderDefault($page = 1)
+    public function actionDefault($page = 1)
     {
         if (isset($this['gridFilter'])) {
             $this->getComponent('gridFilter');
         }
         
         $items = $this->getManager()->getAllFluent();
-        
-        foreach ($this->gf->getWhere() as $where) {
-            if (isset($where['value'])) {
-                $items->where('[' . $where['column'] . '] ' . $where['type'] . ' ' . $where['strint'], $where['value']);
-            }
-        }
 
-        foreach ($this->gf->getOrderBy() as $column => $type) {
-            $items->orderBy($column, $type);
-        }
+        $this->gf->applyWhere($items);
+        $this->gf->applyOrderBy($items);
         
         $paginator = new PaginatorControl($items, static::ITEMS_PER_PAGE, 5, $page);
         $this->addComponent($paginator, 'paginator');
@@ -253,10 +229,17 @@ abstract class CrudPresenter extends AuthenticatedPresenter
         if (!$paginator->getCount()) {           
             $this->flashMessage(sprintf('No %s.', $this->getTitle()), self::FLASH_MESSAGE_DANGER);
         }
-       
-        $this->template->items      = $items->fetchAll();
-        $this->template->title      = $this->getTitleOnDefault();
+               
+        $this->template->items      = $items->fetchAll();        
         $this->template->countItems = $paginator->getCount();
+    }
+
+    /**
+     * @param int $page
+     */
+    public function renderDefault($page = 1)
+    {
+        $this->template->title = $this->getTitleOnDefault();
     }
     
     /**
@@ -288,4 +271,33 @@ abstract class CrudPresenter extends AuthenticatedPresenter
             $this[self::FORM_NAME]->setDefaults([]);
         }
     }
+    
+    /**
+     * @param Form      $form   form
+     * @param ArrayHash $values values
+     */
+    public function editFormSuccess(Form $form, ArrayHash $values)
+    {
+        $id = $this->getParameter('id');
+
+        try {
+            if ($id) {
+                $result = $this->getManager()->update($id, $values);
+            } else {
+                $result = $id = $this->getManager()->add($values);
+            }
+
+            if ($result) {
+                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+            } else {
+                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
+            }
+        } catch (DriverException $e) {
+            $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
+            
+            \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
+        }
+
+        $this->redirect(':' . $this->getName() . ':default');
+    }    
 }

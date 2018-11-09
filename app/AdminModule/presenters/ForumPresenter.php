@@ -26,11 +26,40 @@ use Nette\Utils\ArrayHash;
  */
 class ForumPresenter extends AdminPresenter
 {   
+    
+    /**
+     *
+     * @var CategoriesManager $categoriesManager
+     * @inject
+     */
+    public $categoriesManager;
+
+    /**
+     *
+     * @var TopicsManager $topicsManager
+     * @inject
+     */
+    public $topicsManager;
+    
+    /**
+     *
+     * @var PostsManager $postsManager
+     * @inject
+     */
+    public $postsManager;
+
     /**
      * @var ModeratorsManager $moderatorsManager
      * @inject
      */
     public $moderatorsManager;
+        
+    /**
+     *
+     * @var UsersManager $usersManager
+     * @inject
+     */
+    public $usersManager;
     
     /**
      *
@@ -49,6 +78,24 @@ class ForumPresenter extends AdminPresenter
         parent::__construct($manager);
     }
     
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->categoriesManager = null;
+        $this->topicsManager     = null;
+        $this->postsManager      = null;
+        $this->moderatorsManager = null;
+        $this->usersManager      = null;
+        $this->forumFacade       = null;
+        
+        parent::__destruct();
+    }
+
+    /**
+     * 
+     */
     public function handleReorder()
     {
         // todo
@@ -127,7 +174,7 @@ class ForumPresenter extends AdminPresenter
     public function actionDelete($id)
     {
        $forumDibi = $this->getManager()->getById($id);
-       $forum     = \App\Models\Entity\Forum::get($forumDibi);
+       $forum     = \App\Models\Entity\Forum::setFromRow($forumDibi);
 
         $result = $this->forumFacade->delete($forum);
 
@@ -148,6 +195,7 @@ class ForumPresenter extends AdminPresenter
         $form = $this->getBootstrapForm();
 
         $form->addGroup('forum');
+        
         $form->addText('forum_name', 'Forum name:')
             ->setRequired(true);
         $form->addSelect('forum_parent_id', 'Forum parent:', [0 => '-'] + $this->getManager()->getAllPairs('forum_name'))->setTranslator(null);
@@ -165,10 +213,11 @@ class ForumPresenter extends AdminPresenter
         
         $form->addTextArea('forum_rules', 'Forum rules:');
         $form->addCheckbox('forum_active', 'Forum active:');
-        $form->addCheckbox('forum_fast_reply', 'Forum enable fast reply:');
-
+        
         $form->addGroup('user');
+        
         $form->addCheckbox('forum_thank', 'Forum thank:');
+        $form->addCheckbox('forum_fast_reply', 'Forum enable fast reply:');
         $form->addCheckbox('forum_post_add', 'Forum add post:');
         $form->addCheckbox('forum_post_delete', 'Forum post delete:');
         $form->addCheckbox('forum_post_update', 'Forum post update:');
@@ -235,28 +284,7 @@ class ForumPresenter extends AdminPresenter
             if ($id) {
                 $result = $this->forumFacade->update($id, $values);
             } else {
-                $forum = new \App\Models\Entity\Forum(
-                    $id,
-                    $values->forum_category_id, 
-                    $values->forum_name, 
-                    $values->forum_description,
-                    $values->forum_active, 
-                    $values->forum_parent_id, 
-                    0,
-                    $values->forum_thank,
-                    0, 
-                    0, 
-                    $values->forum_post_add,
-                    $values->forum_post_delete,
-                    $values->forum_post_update, 
-                    $values->forum_topic_add,
-                    $values->forum_topic_update,
-                    $values->forum_topic_delete, 
-                    $values->forum_rules, 
-                    null,
-                   null
-                );
-                
+                $forum = \App\Models\Entity\Forum::setFromArrayHash($values);
                 
                 $result = $id = $this->forumFacade->add($forum);
             }

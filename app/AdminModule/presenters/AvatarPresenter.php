@@ -32,11 +32,21 @@ class AvatarPresenter extends AdminPresenter
     {
         parent::__construct($manager);
     }
+    
+    /**
+     *
+     */
+    public function __destruct()
+    {
+        $this->avatars = null;
+        
+        parent::__destruct();
+    }
 
     /**
      * @param int $page
      */
-    public function renderDefault($page = 1)
+    public function actionDefault($page = 1)
     {
         $avatars   = $this->getManager()->getAllFluent()->where('[user_avatar] IS NOT NULL');
         $paginator = new PaginatorControl($avatars, 2, 5, $page);
@@ -46,11 +56,19 @@ class AvatarPresenter extends AdminPresenter
         if (!$paginator->getCount()) {
             $this->flashMessage('No avatars.', self::FLASH_MESSAGE_DANGER);
         }
-                
-        $this->template->avatarsSize = $this->avatars->getDirSize();
-        $this->template->avatarsDir  = $this->avatars->getSPLDir()->getBasename();
+
         $this->template->avatars     = $avatars->fetchAll();
         $this->template->countItems  = $paginator->getCount();
+    }
+    
+    /**
+     * 
+     * @param int $page
+     */
+    public function renderDefault($page = 1)
+    {
+        $this->template->avatarsSize = $this->avatars->getDirSize();
+        $this->template->avatarsDir  = $this->avatars->getSPLDir()->getBasename();
     }
 
     /**

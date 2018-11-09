@@ -2,73 +2,217 @@
 
 namespace App\Models\Entity;
 
+use App\Models\Entity\Base\Entity;
+use Dibi\Row;
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of Category
  *
- * @author rendi
+ * @author rendix2
  */
-class Category extends \App\Models\Entity\Base\Entity
+class Category extends Entity
 {
-    public $category_id;
-    
-    public $category_parent_id;
-    
-    public $category_name;
-    
-    public $category_active;
-
-    public $category_left;
-    
-    public $category_right;
-
-    public $category_order;
+    /**
+     *
+     * @var int $category_id
+     */
+    private $category_id;
     
     /**
-     * 
-     * @param int    $category_id
-     * @param int    $category_parent_id
-     * @param string $category_name
-     * @param bool   $category_active
-     * @param int    $category_left
-     * @param int    $category_right
-     * @param int    $category_order
+     *
+     * @var int $category_parent_id
      */
-    public function __construct(
-        $category_id,
-        $category_parent_id,    
-        $category_name,
-        $category_active,
-        $category_left,
-        $category_right,
-        $category_order            
-    ) {
-        $this->category_id        = (int)$category_id;
-        $this->category_parent_id = (int)$category_parent_id;
-        $this->category_name      = $category_name;
-        $this->category_active    = (bool)$category_active;
-        $this->category_left      = $category_left === null ? null : (int)$category_left;
-        $this->category_right     = $category_right === null ? null : (int)$category_right;
-        $this->category_order     = (int)$category_order;
-    }
+    private $category_parent_id;
     
     /**
-     * 
-     * @param \Dibi\Row $values
-     * 
-     * @return \App\Models\Entity\Category
-     */
-    public static function get(\Dibi\Row $values)
+     *
+     * @var string $category_name
+     */    
+    private $category_name;
+    
+    /**
+     *
+     * @var bool $category_active
+     */    
+    private $category_active;
+
+    /**
+     *
+     * @var int $category_left
+     */    
+    private $category_left;
+    
+    /**
+     *
+     * @var int $category_right
+     */    
+    private $category_right;
+
+    /**
+     *
+     * @var int $category_order
+     */    
+    private $category_order;
+    
+    public function getCategory_id()
     {
-        return new Category(
-            $values->category_id,
-            $values->category_parent_id,
-            $values->category_name,
-            $values->category_active,
-            $values->category_left,
-            $values->category_right, 
-            $values->category_order
-        );
-    }    
+        return $this->category_id;
+    }
+
+    public function getCategory_parent_id()
+    {
+        return $this->category_parent_id;
+    }
+
+    public function getCategory_name()
+    {
+        return $this->category_name;
+    }
+
+    public function getCategory_active()
+    {
+        return $this->category_active;
+    }
+
+    public function getCategory_left()
+    {
+        return $this->category_left;
+    }
+
+    public function getCategory_right()
+    {
+        return $this->category_right;
+    }
+
+    public function getCategory_order()
+    {
+        return $this->category_order;
+    }
+
+    public function setCategory_id($category_id)
+    {
+        $this->category_id = self::makeInt($category_id);
+        return $this;
+    }
+
+    public function setCategory_parent_id($category_parent_id)
+    {
+        $this->category_parent_id = self::makeInt($category_parent_id);
+        return $this;
+    }
+
+    public function setCategory_name($category_name)
+    {
+        $this->category_name = $category_name;
+        return $this;
+    }
+
+    public function setCategory_active($category_active)
+    {
+        $this->category_active = self::makeBool($category_active);
+        return $this;
+    }
+
+    public function setCategory_left($category_left)
+    {
+        $this->category_left = self::makeInt($category_left);
+        return $this;
+    }
+
+    public function setCategory_right($category_right)
+    {
+        $this->category_right = self::makeInt($category_right);
+        return $this;
+    }
+
+    public function setCategory_order($category_order)
+    {
+        $this->category_order = self::makeInt($category_order);
+        return $this;
+    }
+
+    /**
+     * 
+     * @param Row $values
+     * 
+     * @return Category
+     */
+    public static function setFromRow(Row $values)
+    {
+        $category = new Category();
+        
+        if (isset($values->category_id)) {
+            $category->setCategory_id($values->category_id);
+        }
+        
+        if (isset($values->category_parent_id)) {
+            $category->setCategory_parent_id($values->category_parent_id);
+        }
+        
+        if (isset($values->category_name)) {
+            $category->setCategory_name($values->category_name);
+        }
+         
+        if (isset($values->category_active)) {
+            $category->setCategory_active($values->category_active);
+        }
+        
+        if (isset($values->category_left)) {
+            $category->setCategory_left($values->category_left);
+        }
+        
+        if (isset($values->category_right)) {
+            $category->setCategory_right($values->category_right);
+        }
+        
+        if (isset($values->category_order)) {
+            $category->setCategory_order($values->category_order);
+        }
+
+        return $category;
+    } 
+    
+    /**
+     * 
+     * @param ArrayHash $values
+     * 
+     * @return Category
+     */
+    public static function setFromArrayHash(ArrayHash $values)
+    {
+        $category = new Category();
+        
+        if (isset($values->category_id)) {
+            $category->setCategory_id($values->category_id);
+        }
+        
+        if (isset($values->category_parent_id)) {
+            $category->setCategory_parent_id($values->category_parent_id);
+        }
+        
+        if (isset($values->category_name)) {
+            $category->setCategory_name($values->category_name);
+        }
+         
+        if (isset($values->category_active)) {
+            $category->setCategory_active($values->category_active);
+        }
+        
+        if (isset($values->category_left)) {
+            $category->setCategory_left($values->category_left);
+        }
+        
+        if (isset($values->category_right)) {
+            $category->setCategory_right($values->category_right);
+        }
+        
+        if (isset($values->category_order)) {
+            $category->setCategory_order($values->category_order);
+        }
+
+        return $category;
+    }
     
     public function getArray()
     {        

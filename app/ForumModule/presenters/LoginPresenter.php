@@ -5,14 +5,12 @@ namespace App\ForumModule\Presenters;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Models\Manager;
-use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
 use App\Forms\UserLoginForm;
 use App\Translator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
 
 /**
  * Description of LoginPresenter
@@ -44,9 +42,22 @@ class LoginPresenter extends BasePresenter
      * @var Translator $translator
      */
     private $translator;
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->backlink      = null;
+        $this->userLoginForm = null;
+        $this->bbMailer      = null;
+        $this->translator    = null;
+        
+        parent::__destruct();
+    }
 
     /**
-     * LoginPresenter constructor.
+     * LoginPresenter startup.
      */
     public function startup()
     {

@@ -10,29 +10,8 @@ use Nette\Utils\DateTime;
  *
  * @author rendix2
  */
-class StartDay
+class StartDay extends Setting
 {
-    private $startDay;
-
-    /**
-     * StartDay constructor.
-     *
-     * @param string $startDay
-     */
-    public function __construct($startDay)
-    {
-        $this->startDay = $startDay;
-        
-        //\Tracy\Debugger::barDump($this->getDiff());
-    }
-
-    /**
-     * @return string
-     */
-    public function getStartDay()
-    {
-        return $this->startDay;
-    }
     
     /**
      *
@@ -40,7 +19,7 @@ class StartDay
      */
     public function getDiff()
     {
-        $start = new DateTime($this->startDay);
+        $start = new DateTime($this->get());
         $end   = new DateTime();
                 
         return $end->diff($start);

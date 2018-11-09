@@ -17,6 +17,12 @@ use App\Models\UsersManager;
  */
 class LanguagePresenter extends AdminPresenter
 {
+    /**
+     *
+     * @var UsersManager $usersManager
+     * @inject
+     */
+    public $usersManager;
 
     /**
      * LanguagePresenter constructor.
@@ -26,6 +32,16 @@ class LanguagePresenter extends AdminPresenter
     public function __construct(LanguagesManager $manager)
     {
         parent::__construct($manager);
+    }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->usersManager = null;
+        
+        parent::__destruct();
     }
 
     /**

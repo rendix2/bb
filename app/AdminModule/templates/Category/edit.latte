@@ -1,3 +1,5 @@
+{define title}{_menu_category}{/define}
+
 {block content}
 
     <div class="col-sm-12">
@@ -20,20 +22,13 @@
                 <div class="card h-100">
                     <div class="card-header">{_menu_forums}</div>
                     <div class="card-block p-3">
-                        {block forums}
-                            <ul>
-                                {foreach $forums as $forum}
-                                    <li>
-                                        <a href="{link Forum:edit, $forum->forum_id}">{$forum->forum_name}</a>
-                                    </li>
-
-                                    {if is_array($forum['childs'])}
-                                        {include forums, forums => $forum['childs']}
-                                    {/if}
-
-                                {/foreach}
-                            </ul>
-                        {/block}
+                        <ul>
+                        {foreach $forums as $forum}
+                            <li>
+                                <a href="{link Forum:edit, $forum->forum_id}">{$forum->forum_name}</a>
+                            </li>
+                        {/foreach}
+                        </ul>
                     </div>
                 </div>
             </div>

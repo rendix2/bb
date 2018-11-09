@@ -2,11 +2,11 @@
 
 namespace App\ForumModule\Presenters;
 
-use App\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\UserSearchControl;
+use App\Forms\ReportForm;
 use App\Models\PmManager;
 use App\Models\ReportsManager;
 use App\Models\UsersManager;
@@ -24,11 +24,6 @@ use Tracy\Debugger;
  */
 class PmPresenter extends CrudPresenter
 {
-    /**
-     * @var Authorizator $authorizator
-     * @inject
-     */
-    public $authorizator;   
     
     /**
      * @var ReportsManager $reportsManager
@@ -36,6 +31,14 @@ class PmPresenter extends CrudPresenter
      */
     public $reportsManager;
     
+    /**
+     *
+     * @var UsersManager $usersManager
+     * @inject
+     */
+    public $usersManager;
+
+
     /**
      *
      * @var ITranslator $translator
@@ -53,6 +56,17 @@ class PmPresenter extends CrudPresenter
     }
     
     /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->reportsManager = null;
+        $this->translator     = null;
+        
+        parent::__destruct();
+    }
+
+        /**
      *
      * @param mixed $element
      */
@@ -119,7 +133,7 @@ class PmPresenter extends CrudPresenter
      */
     protected function createComponentReportForm()
     {
-        return new \ReportForm($this->reportsManager);
+        return new ReportForm($this->reportsManager);
     }
     
     /**

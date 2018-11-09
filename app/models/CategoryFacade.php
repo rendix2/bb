@@ -44,18 +44,26 @@ class CategoryFacade
         $this->forumsManager     = $forumsManager;
     }
     
-    /**
+    public function __destruct()
+    {
+        $this->categoriesManager = null;
+        $this->forumsManager     = null;
+        $this->forumFacade       = null;
+    }
+
+        /**
      *
      * @param Entity\Category $category
      */
     public function add(Entity\Category $category)
     {
-        $category->category_id = $this->categoriesManager->getMptt()
-            ->add($category->category_parent_id, $category->category_name);
+        $category_id = $this->categoriesManager->getMptt()->add($category->category_parent_id, $category->category_name);
         
-        $this->categoriesManager->update($category->category_id, $category->getArrayHash());
+        $category->setCategory_id($category_id);
         
-        return $category->category_id;
+        $this->categoriesManager->update($category->getCategory_id(), $category->getArrayHash());
+        
+        return $category->getCategory_id();
     }
     
     /**

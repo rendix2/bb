@@ -5,6 +5,4 @@ services:
         class: App\Controls\BBMailer
     GridFilter:
         factory: App\Controls\GridFilter
-        setup:
-            - factory 
     

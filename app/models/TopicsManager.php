@@ -93,6 +93,8 @@ class TopicsManager extends CrudManager
     public function findByTopicName($topic_name)
     {
         return $this->getAllFluent()
+            ->innerJoin(self::USERS_TABLE)
+            ->on('[topic_user_id] = user_id')
             ->where('MATCH([topic_name]) AGAINST (%s IN BOOLEAN MODE)', $topic_name)
             ->fetchAll();
     }

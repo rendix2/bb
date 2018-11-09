@@ -1,3 +1,5 @@
+{define title}{_menu_pm}{/define}
+
 {block content}
 <div class="col-sm-12">
     <div class="float-left">
@@ -27,7 +29,9 @@
 </div>
 
 <div class="col-sm-12">
-    <a href="{plink Pm:report, $id}">{_pm_report}</a>
+    <a href="{plink Pm:report, $id}" title="{_pm_report}">
+        <i class="fas fa-exclamation"></i>
+    </a>
 </div>
 
 <div class="col-sm-12">

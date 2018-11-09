@@ -4,6 +4,7 @@ namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BreadCrumbControl;
+use App\Controls\GridFilter;
 use App\Models\SmilesManager;
 
 /**

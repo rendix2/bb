@@ -43,6 +43,16 @@ class CategoriesManager extends CrudManager
     }
     
     /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->mptt = null;        
+        
+        parent::__destruct();
+    }
+
+    /**
      *
      * @return Zebra_Mptt
      */
@@ -120,7 +130,7 @@ class CategoriesManager extends CrudManager
         
         foreach ($categories as $category) {
             $tmp = [];
-            $tmp['link']   = 'Index:category';
+            $tmp['link']   = ':Forum:Category:default';
             $tmp['params'] = ['category_id' => $category->category_id];
             $tmp['text']   = $category->category_name;
             $tmp['t']      = 0;

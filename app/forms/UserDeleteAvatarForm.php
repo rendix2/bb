@@ -57,6 +57,14 @@ class UserDeleteAvatarForm extends Control
         $this->user        = $user;
         $this->translator  = $translator;
     }
+    
+    public function __destruct()
+    {
+        $this->userManager = null;
+        $this->avatars     = null;
+        $this->user        = null;
+        $this->translator  = null;
+    }
 
     /**
      * renders avatars delete control

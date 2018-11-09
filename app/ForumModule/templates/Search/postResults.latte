@@ -1,3 +1,5 @@
+{define title}{_"Search post"}{/define}
+
 {block content}
 
     <div class="col-sm-12">
@@ -10,7 +12,7 @@
         {control searchPostForm}
     </div>        
 
-    {if count($postData)}
+    {if count($posts)}
         <div class="col-sm-12 main">
             <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
                 <thead>
@@ -19,19 +21,19 @@
                         <th>{_topic_id}</th>
                         <th>{_topic_name}</th>
                         <th>{_post_title}</th>
-                        <th>{_post_text}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {foreach $postData as $data}
+                    {foreach $posts as $post}
                         <tr>
-                            <td>{$data->post_id}</td>
                             <td>
-                                <a href="{link Topic:default $data->topic_forum_id, $data->topic_id}">{$data->post_topic_id}</a>
+                                <a href="{link Topic:default#post_{$post->post_id}, $post->topic_category_id, $post->topic_forum_id, $post->topic_id, $post->topic_page_count}">{$post->post_id}</a>                            
                             </td>
-                            <td>{$data->topic_name}</td>
-                            <td>{$data->post_title}</td>
-                            <td>{$data->post_text}</td>
+                            <td>
+                                <a href="{link Topic:default, $post->topic_category_id, $post->topic_forum_id, $post->topic_id}">{$post->post_topic_id}</a>
+                            </td>
+                            <td>{$post->topic_name}</td>
+                            <td>{$post->post_title}</td>
                         </tr>
                     {/foreach}
                 </tbody>

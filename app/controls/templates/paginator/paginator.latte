@@ -1,5 +1,5 @@
 {if $paginator->getPageCount() > 1}   
-        <nav aria-label="Page navigation example">
+    <div class="form-row">
         <ul class="pagination">
             {if !$paginator->first}
 
@@ -90,5 +90,7 @@
                 {* No next pages END *}
             {/if}
         </ul>
-        </nav>   
+
+        {control pagination}
+    </div>
 {/if}

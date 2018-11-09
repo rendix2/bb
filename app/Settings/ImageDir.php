@@ -59,8 +59,6 @@ abstract class ImageDir
     {
         $this->dir = $dir;
 
-        Debugger::barDump($this->dir);
-
         if (!file_exists($this->dir[self::DIR]) && !is_dir($this->dir[self::DIR])) {
             mkdir($this->dir[self::DIR]);
         }

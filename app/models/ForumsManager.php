@@ -47,6 +47,16 @@ class ForumsManager extends CrudManager
     }
     
     /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->mptt = null;        
+        
+        parent::__destruct();
+    }    
+    
+    /**
      *
      * @return Zebra_Mptt
      */

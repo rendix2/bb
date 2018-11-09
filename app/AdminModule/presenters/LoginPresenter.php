@@ -47,6 +47,18 @@ class LoginPresenter extends BasePresenter
      */
     public $userLoginFormFactory;
 
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->backlink             = null;
+        $this->translator           = null;
+        $this->sessionManager       = null;
+        $this->userLoginFormFactory = null;
+        
+        parent::__destruct();
+    }
 
     /**
      *
@@ -101,10 +113,11 @@ class LoginPresenter extends BasePresenter
                 $values->user_password
             );
             
-            if (!$this->getUser()->isInRole(Authenticator::ROLES[5])) {
+            if (!$this->getUser()->isInRole(\App\Authorization\Authorizator::ROLES[5])) {
                 throw new AuthenticationException('You are not admin.');
             }
             
+            $this->sessionManager->delete($this->getUser()->getId());
             $this->sessionManager->add(
                 ArrayHash::from(
                     [

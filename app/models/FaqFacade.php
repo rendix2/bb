@@ -33,6 +33,12 @@ class FaqFacade
         $this->faqManager        = $faqManager;
         $this->faqAnswersManager = $faqAnswersManager;
     }
+    
+    public function __destruct()
+    {
+        $this->faqManager        = null;
+        $this->faqAnswersManager = null;
+    }
 
     /**
      * @param ArrayHash $item_data

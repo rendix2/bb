@@ -37,6 +37,18 @@ class IndexPresenter extends BasePresenter
      * @inject
      */
     public $cacheDir;
+    
+    /**
+     * 
+     */
+    public function __destruct() 
+    {
+        $this->sessionsManager = null;
+        $this->avatar          = null;
+        $this->cacheDir        = null;
+        
+        parent::__destruct();
+    }
 
     /**
      *

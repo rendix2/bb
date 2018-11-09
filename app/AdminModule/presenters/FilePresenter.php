@@ -3,9 +3,9 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Models\PostFilesManager;
-use Nette\Application\UI\Form;
 use App\Controls\GridFilter;
+use App\Models\FilesManager;
+use Nette\Application\UI\Form;
 
 /**
  * Description of Files
@@ -17,9 +17,9 @@ class FilePresenter extends AdminPresenter
     /**
      * FilePresenter constructor.
      *
-     * @param PostFilesManager $manager
+     * @param FilesManager $manager
      */
-    public function __construct(PostFilesManager $manager)
+    public function __construct(FilesManager $manager)
     {
         parent::__construct($manager);
     }

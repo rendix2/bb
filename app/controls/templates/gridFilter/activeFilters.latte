@@ -1,7 +1,18 @@
-{block content}
-<br><span>Used filters:</span><br>
-    
-    {foreach $filters as $filter}
-        <span class="badge badge-primary">{_$filter['column']}</span>
+{if count($filters)}
+<br><span>{_gridfilter_used_filters}:</span><br>
+{/if}
+
+    {foreach $filters as $column => $text}
+        <div>
+            <span class="badge badge-primary">{_$text}
+
+            {if strstr  ($column, 'Xto')}
+                ({_To})
+            {elseif strstr  ($column, 'Xfrom')}
+                ({_From})
+            {/if}
+
+            </span>
+            <a href="{link storno!, $column}">{_Cancel}</a>
+        </div>
     {/foreach}
-{/block}

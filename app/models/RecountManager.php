@@ -36,6 +36,13 @@ class RecountManager extends Manager
 
         $this->usersManager = $usersManager;
     }
+    
+    public function __destruct()
+    {
+        $this->usersManager = null;
+        
+        parent::__destruct();
+    }
 
     public function recountUsersPostCount()
     {

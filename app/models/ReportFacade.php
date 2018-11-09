@@ -47,13 +47,21 @@ class ReportFacade
         PostsManager $postsManager,
         ReportsManager $reportsManager
     ) {
-        $this->forumsManager = $forumsManager;
-        $this->topicsManager     = $topicsManager;
-        $this->postsManager      = $postsManager;
-        $this->reportManager     = $reportsManager;
+        $this->forumsManager  = $forumsManager;
+        $this->topicsManager  = $topicsManager;
+        $this->postsManager   = $postsManager;
+        $this->reportManager  = $reportsManager;
     }
     
-    /**
+    public function __destruct()
+    {
+        $this->forumsManager  = null;
+        $this->topicsManager  = null;
+        $this->postsManager   = null;
+        $this->reportManager  = null;
+    }
+
+        /**
      *
      * @param int $category_id
      *
@@ -79,7 +87,7 @@ class ReportFacade
         $topics = $this->topicsManager->getAllByForum($forum_id);
         
         foreach ($topics as $topicDibi) {
-            $topic = Entity\Topic::get($topicDibi);
+            $topic = Entity\Topic::setFromRow($topicDibi);
             $this->deleteByTopic($topic);
         }
         
@@ -94,7 +102,7 @@ class ReportFacade
      */
     public function deleteByTopic(Entity\Topic $topic)
     {
-        $posts     = $this->postsManager->getByTopic($topic->topic_id);
+        $posts     = $this->postsManager->getByTopic($topic->getTopic_id());
         $posts_ids = [];
         
         foreach ($posts as $post) {
@@ -102,7 +110,7 @@ class ReportFacade
         }
         
         $this->reportManager->deleteByPosts($posts_ids);
-        return $this->reportManager->deleteByTopic($topic->topic_id);
+        return $this->reportManager->deleteByTopic($topic->getTopic_id());
     }
 
     /**

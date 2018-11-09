@@ -1,10 +1,8 @@
-{block content}
-
 {form gridFilter}
     {input send, 'style' => 'display:none'}
     <tr>
         {var $fti = false}
-        {foreach $type as $name => $val} 
+        {foreach $filters as $name => $val} 
 
             {if $fti == true}
                 {var $fti = false}
@@ -12,27 +10,29 @@
             {/if}
 
             <th>{_$val['text']}
-                {if $val['type'] != 'empty'} 
-                    {var $p       = $params}
-                    {var $destroy = $params}
-                    {var $name2   = $gf->checkFTI($name)}
+                
+                {if $val['type'] !== $type_empty}
+                    
+                    {var $sortParams = $control->getParameters()}
+                    {var $cancelParams = $control->getParameters()}
+                    {var $columnName = $control->checkFTI($name)}
 
-                    {if $gf->getParameter('sort_'.$name2) == 'ASC'}                    
-                        {var $p['sort_'.$name2] = 'DESC'}
-                        <a href="{$gf->link('this', $p)}">{_sort_desc}</a>
-                    {else}{* if $gf->getParameter('sort_'.$name2) == 'DESC'} *}
-                        {var $p['sort_'.$name2] = 'ASC'}
-                        <a href="{$gf->link('this', $p)}">{_sort_asc}</a>                
+                    {if $control->getParameter('sort_'.$columnName) == 'ASC'}                    
+                        {var $sortParams['sort_'.$columnName] = 'DESC'}
+                        <a href="{$control->link('this', $sortParams)}">{_sort_desc}</a>
+                    {else}
+                        {var $sortParams['sort_'.$columnName] = 'ASC'}
+                        <a href="{$control->link('this', $sortParams)}">{_sort_asc}</a>                
                     {/if}
 
-                    {if isset($destroy['sort_'.$name2]) && $destroy['sort_'.$name2] != null}
-                        {var $destroy['sort_'.$name2] = null}
-                        <a href="{$gf->link('this', $destroy)}">{_Cancel}</a>
+                    {if isset($cancelParams['sort_'.$columnName]) && $cancelParams['sort_'.$columnName] != null}
+                        {var $cancelParams['sort_'.$columnName] = null}
+                        <a href="{$control->link('this', $cancelParams)}">{_Cancel}</a>
                     {/if}
                 {/if}
             </th>
 
-            {if ($val['type'] == 'FTI' || $val['type'] == 'date') && preg_match('#_Xfrom$#', $name)  }
+            {if ($val['type'] === $type_fti || $val['type'] === $type_date) && preg_match('#_Xfrom$#', $name)  }
                 {var $fti = true}
             {/if}
 
@@ -40,20 +40,20 @@
     </tr>
     <tr>
         {var $fti = false}
-        {foreach $type as $name => $val}
+        {foreach $filters as $name => $val}
             {if $fti == true}
                 {var $fti = false}
                 {continueIf true}
             {/if}
 
-            {if $val['type'] === 'empty'}
+            {if $val['type'] === $type_empty}
                 <td></td>
-            {elseif ($val['type'] == 'FTI' || $val['type'] == 'date') && preg_match('#_Xfrom$#', $name) }
+            {elseif ($val['type'] === $type_fti || $val['type'] === $type_date) && preg_match('#_Xfrom$#', $name) }
                 {var $toName = str_replace('_Xfrom', '_Xto', $name)}
                 {var $fti = true}
                 <td>{input $name}{input $toName}</td>    
 
-            {elseif $val['type'] != 'empty' && ($val['type'] != 'FTI' || $val['type'] != 'date') } 
+            {elseif $val['type'] !== $type_empty && ($val['type'] !== $type_fti || $val['type'] !== $type_date) } 
                 <td>{input $name}</td>                
             {else}
                 <td></td>
@@ -61,4 +61,3 @@
         {/foreach}
     </tr>
 {/form}
-{/block}

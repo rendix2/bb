@@ -42,6 +42,8 @@ services:
         class: App\Models\FaqAnswersManager
     FaqFacade:
         class: App\Models\FaqFacade
+    FilesManager:
+        class: App\Models\FilesManager
     BanManager:
         class: App\Models\BansManager
     SmilesManager:
@@ -60,8 +62,14 @@ services:
         class: App\Models\PmFacade
     RecountManager:
         class: App\Models\RecountManager
-    PostFilesManager:
-        class: App\Models\PostFilesManager
+    Posts2FilesManager:
+        class: App\Models\Posts2FilesManager
+    PostsHistoryManager:
+        class: App\Models\PostsHistoryManager
+    LogsManager:
+        class: App\Models\LogsManager
+    UserFavouriteUsersManager:
+        class: App\Models\FavouriteUsersManager
     PostFacade:
         class: App\Models\PostFacade
     TopicFacade:
@@ -74,13 +82,9 @@ services:
         class: App\Models\UserFacade
     ThanksFacade:
         class: App\Models\ThanksFacade
-    UserFavouriteUsers:
-        class: App\Models\FavouriteUsersManager
-    PostsHistoryManager:
-        class: App\Models\PostsHistoryManager
-    LogsManager:
-        class: App\Models\LogsManager
     TopicWatchFacade:
         class: App\Models\TopicWatchFacade
     ReportFacade:
         class: App\Models\ReportFacade
+    PollsFacade:
+        class: App\Models\PollsFacade

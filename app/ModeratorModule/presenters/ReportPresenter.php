@@ -45,10 +45,12 @@ class ReportPresenter extends ModeratorPresenter
         
         $gf = $this->gf;
         $gf->addFilter('report_id', 'report_id', GridFilter::INT_EQUAL);
+        $gf->addFilter('user_name', 'report_user_id', GridFilter::TEXT_LIKE, ['alias' => 'u.user_name']);
         $gf->addFilter('report_time', 'report_time', GridFilter::DATE_TIME);
-        $gf->addFilter('user_name', 'user_name', GridFilter::TEXT_LIKE);
+        $gf->addFilter('reported_user_name', 'user_name', GridFilter::TEXT_LIKE, ['alias' => 'u2.user_name']);
         $gf->addFilter('forum_name', 'forum_name', GridFilter::TEXT_LIKE);
         $gf->addFilter('topic_name', 'topic_name', GridFilter::TEXT_LIKE);
+        $gf->addFilter('report_pm_id', 'report_pm_id', GridFilter::TEXT_LIKE);
         $gf->addFilter('post_title', 'post_title', GridFilter::TEXT_LIKE);
         $gf->addFilter(null, null, GridFilter::NOTHING);
         

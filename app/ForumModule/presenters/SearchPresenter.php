@@ -10,6 +10,8 @@ use App\Forms\SearchPostForm;
 use App\Forms\SearchTopicForm;
 use App\Forms\SearchUserForm;
 use App\Models\UsersManager;
+use App\Models\TopicsManager;
+use App\Models\PostsManager;
 
 /**
  * Description of SearchPresenter
@@ -20,6 +22,21 @@ use App\Models\UsersManager;
 class SearchPresenter extends BaseForumPresenter
 {
     /**
+     *
+     * @var TopicsManager $topicsManager
+     * @inject
+     */
+    public $topicsManager;
+    
+    /**
+     *
+     * @var PostsManager $postsManager
+     * @inject
+     */
+    public $postsManager;
+
+
+    /**
      * SearchPresenter constructor.
      *
      * @param UsersManager $userManager
@@ -28,13 +45,21 @@ class SearchPresenter extends BaseForumPresenter
     {
         parent::__construct($userManager);
     }
+    
+    public function __destruct()
+    {
+        $this->topicsManager = null;
+        $this->postsManager  = null;
+        
+        parent::__destruct();
+    }
 
     /**
      * @return BootstrapForm
      */
     public function createComponentSearchPostForm()
     {
-        return new SearchPostForm();
+        return new SearchPostForm($this->getForumTranslator());
     }
 
     /**
@@ -42,7 +67,7 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function createComponentSearchTopicForm()
     {
-        return new SearchTopicForm();
+        return new SearchTopicForm($this->getForumTranslator());
     }
 
     /**
@@ -50,7 +75,7 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function createComponentSearchUserForm()
     {
-        return new SearchUserForm();
+        return new SearchUserForm($this->getForumTranslator());
     }
 
     /**
@@ -65,15 +90,15 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function renderPostResults($q)
     {
-        $result = $this->postsManager->findPosts($q);
+        $topics = $this->postsManager->findPosts($q);
 
-        if (!$result) {
+        if (!$topics) {
             $this->flashMessage('Post was not found.', self::FLASH_MESSAGE_WARNING);
         }
 
         $this['searchPostForm-searchPostForm']->setDefaults(['search_post' => $q]);
 
-        $this->template->postData = $result;
+        $this->template->posts = $topics;
     }
 
     /**
@@ -81,15 +106,15 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function renderTopicResults($q)
     {
-        $result = $this->topicsManager->findByTopicName($q);
+        $topics = $this->topicsManager->findByTopicName($q);
 
-        if (!$result) {
+        if (!$topics) {
             $this->flashMessage('Topics was not found.', self::FLASH_MESSAGE_WARNING);
         }
 
         $this['searchTopicForm-searchTopicForm']->setDefaults(['search_topic' => $q]);
 
-        $this->template->topicData = $result;
+        $this->template->topics = $topics;
     }
 
     /**
@@ -97,15 +122,15 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function renderUserResults($q)
     {
-        $result = $this->getManager()->findLikeByUserName($q);
+        $users = $this->getManager()->findLikeByUserName($q);
 
-        if (!$result) {
+        if (!$users) {
             $this->flashMessage('User was not found.', self::FLASH_MESSAGE_WARNING);
         }
 
         $this['searchUserForm-searchUserForm']->setDefaults(['search_user' => $q]);
 
-        $this->template->userData = $result;
+        $this->template->users = $users;
     }
 
     /**

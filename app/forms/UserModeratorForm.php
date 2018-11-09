@@ -6,7 +6,9 @@ use App\Controls\BootstrapForm;
 use App\Models\ForumsManager;
 use App\Models\ModeratorsManager;
 use Nette\Application\UI\Control;
+use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of UserModeratorForm
@@ -15,13 +17,30 @@ use Nette\Localization\ITranslator;
  */
 class UserModeratorForm extends Control
 {
+    /**
+     *
+     * @var ITranslator $translator
+     */
     private $translator;
     
+    /**
+     *
+     * @var ModeratorsManager $moderatorsManager,
+     */
     private $moderatorsManager;
     
+    /**
+     *
+     * @var ForumsManager $forumsManager
+     */
     private $forumsManager;
 
-    
+    /**
+     * 
+     * @param ForumsManager     $forumsManager
+     * @param ModeratorsManager $moderatorsManager
+     * @param ITranslator       $translator
+     */
     public function __construct(
             ForumsManager $forumsManager,
             ModeratorsManager $moderatorsManager,
@@ -32,6 +51,16 @@ class UserModeratorForm extends Control
         $this->translator        = $translator;
     }
     
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->translator        = null;
+        $this->moderatorsManager = null;
+        $this->forumsManager     = null;
+    }
+
     /**
      * 
      */
@@ -68,11 +97,11 @@ class UserModeratorForm extends Control
     public function moderatorsSuccess(Form $form, ArrayHash $values)
     {
         $moderators  = $form->getHttpData($form::DATA_TEXT, 'moderators[]');
-        $user_id = $this->getParameter('id');
+        $user_id = $this->presenter->getParameter('id');
 
         $this->moderatorsManager->addByLeft((int) $user_id, array_values($moderators));
-        $this->flashMessage('Forums saved.', self::FLASH_MESSAGE_SUCCESS);
-        $this->redirect('User:edit', $user_id);
+        $this->presenter->flashMessage('Forum was saved.', \App\Presenters\Base\BasePresenter::FLASH_MESSAGE_SUCCESS);
+        $this->presenter->redirect('User:edit', $user_id);
     }
     
 }

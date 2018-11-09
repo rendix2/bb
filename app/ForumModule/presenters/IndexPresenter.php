@@ -2,7 +2,6 @@
 
 namespace App\ForumModule\Presenters;
 
-use App\Controls\BreadCrumbControl;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
@@ -10,7 +9,6 @@ use App\Models\ModeratorsManager;
 use App\Models\PostsManager;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
-use dibi;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Utils\ArrayHash;
@@ -24,6 +22,11 @@ use Tracy\Debugger;
  */
 class IndexPresenter extends BaseForumPresenter
 {
+    //use \App\Models\Traits\ForumsTrait;
+    //use \App\Models\Traits\TopicsTrait;    
+    //use \App\Models\Traits\PostTrait;
+    use \App\Models\Traits\UsersTrait;
+    
     /**
      * @var string
      */
@@ -76,9 +79,23 @@ class IndexPresenter extends BaseForumPresenter
      *
      * @param CategoriesManager $categoriesManager
      */
-    public function __construct(CategoriesManager $categoriesManager)
+    public function __construct(CategoriesManager $categoriesManager, IStorage $storage)
     {
         parent::__construct($categoriesManager);
+        
+        $this->cache = new Cache($storage, self::CACHE_NAMESPACE);
+    }
+    
+    public function __destruct()
+    {
+        $this->forumsManager    = null;
+        $this->topicsManager    = null;
+        $this->postsManager     = null;
+        $this->usersManager     = null;
+        $this->cache            = null;
+        $this->moderatorManager = null;
+
+        parent::__destruct();
     }
 
     /**
@@ -87,37 +104,6 @@ class IndexPresenter extends BaseForumPresenter
     public function getCache()
     {
         return $this->cache;
-    }
-
-    /**
-     * @param IStorage $storage
-     */
-    public function injectCache(IStorage $storage)
-    {
-        $this->cache = new Cache($storage, self::CACHE_NAMESPACE);
-    }
-
-    /**
-     * renders categories
-     *
-     * @param int $category_id
-     */
-    public function renderCategory($category_id)
-    {
-        $category = $this->checkCategoryParam($category_id);
-
-        $forums = $this->forumsManager
-                ->getFluentByCategory($category_id)
-                ->orderBy('forum_left', dibi::ASC)
-                ->fetchAll();
-
-        $this->template->forums = [];
-
-        if ($forums) {
-            $this->template->forums = $this->forumsManager->createForums($forums, $forums[0]->forum_parent_id);
-        } else {
-            $this->flashMessage('No forums in this category.', self::FLASH_MESSAGE_DANGER);
-        }
     }
 
     /**
@@ -215,18 +201,5 @@ class IndexPresenter extends BaseForumPresenter
         $this->template->totalPosts     = $this->postsManager->getCountCached();
         $this->template->totalTopics    = $this->topicsManager->getCountCached();
         $this->template->data           = $result;
-    }
-
-    /**
-     * @return BreadCrumbControl
-     */
-    protected function createComponentBreadCrumbCategory()
-    {
-        $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['text' => 'menu_category']
-        ];
-
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
 }

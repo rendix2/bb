@@ -71,7 +71,7 @@ class BBMailer
     ) {
         $this->mailer  = $mailer;
         $this->message = new Message();
-        $this->message->setFrom($email->getMail());
+        $this->message->setFrom($email->get());
         
         $this->manager      = $manager;
         $this->mails2users  = $mails2users;

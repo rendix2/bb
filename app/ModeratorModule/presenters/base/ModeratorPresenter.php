@@ -17,17 +17,13 @@ use App\Models\ModeratorsManager;
  */
 abstract class ModeratorPresenter extends CrudPresenter
 {
+    use \App\Authorization\AuthorizationPresenter;
+    
     /**
      *
      * @var ITranslator $adminTranslator
      */
     private $translator;
-
-    /**
-     * @var Authorizator $authorizator
-     * @inject
-     */
-    public $authorizator;
     
     /**
      *
@@ -61,6 +57,7 @@ abstract class ModeratorPresenter extends CrudPresenter
     {
         parent::startup();
 
+        /*
         $user  = new User();
         $admin = new User();
         $forum = new Forum();
@@ -74,6 +71,7 @@ abstract class ModeratorPresenter extends CrudPresenter
         }
          *
          */
+        /*
         $canAccess = false;
         
         foreach ($enabledRoles as $role) {
@@ -86,6 +84,8 @@ abstract class ModeratorPresenter extends CrudPresenter
         if (!$canAccess) {
              $this->error('You are not in moderator role!s');
         }
+         * 
+         */
         
         $this->translator = $this->translatorFactory->forumTranslatorFactory();
         //$this->template->setTranslator($this->translator);

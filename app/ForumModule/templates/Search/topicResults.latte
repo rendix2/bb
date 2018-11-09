@@ -1,3 +1,5 @@
+{define title}{_"Search topic"}{/define}
+
 {block content}
 
     <div class="col-sm-12">
@@ -10,22 +12,25 @@
         {control searchTopicForm}
     </div>
 
-    {if count($topicData)}
+    {if count($topics)}
         <div class="col-sm-12 main">
             <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
                 <thead>
                     <tr>
                         <th>{_topic_id}</th>
                         <th>{_topic_name}</th>
+                        <th>{_user_name}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {foreach $topicData as $data}
+                    {foreach $topics as $topic}
                         <tr>
                             <td>
-                                <a href="{link Topic:default, $data->topic_category_id, $data->topic_forum_id, $data->topic_id}">{$data->topic_id}</a>
+                                <a href="{link Topic:default, $topic->topic_category_id, $topic->topic_forum_id, $topic->topic_id}">{$topic->topic_id}</a>
                             </td>
-                            <td>{$data->topic_name}</td>
+                            <td>{$topic->topic_name}</td>
+                            <td>
+                                <a href="{link User:profile, $topic->user_id}">{$topic->user_name}</a>
                         </tr>
                     {/foreach}
                 </tbody>
@@ -35,7 +40,7 @@
 
     <div class="col-sm-12">
         <div class="float-left">
-            {control  breadCrumbTopicResults}
+            {control breadCrumbTopicResults}
         </div>
     </div>
 

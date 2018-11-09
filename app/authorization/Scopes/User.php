@@ -11,12 +11,16 @@ use App\Authorization\Identity;
  */
 class User {
     
-    public function __construct()
+    /**
+     * 
+     * @param Identity $identity
+     */
+    public function __construct(Identity $identity)
     {
-        $this->identity = new Identity();
+        $this->identity = $identity;
     }
 
-        /**
+    /**
      * @var Identity $identity
      */
     private $identity;

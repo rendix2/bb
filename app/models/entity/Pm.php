@@ -2,82 +2,244 @@
 
 namespace App\Models\Entity;
 
+use App\Models\Entity\Base\Entity;
+use Dibi\Row;
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of Pm
  *
- * @author rendi
+ * @author rendix2
  */
-class Pm extends \App\Models\Entity\Base\Entity
+class Pm extends Entity
 {
-    
-    public $pm_id;
-    
-    public $pm_user_id_from;
-    
-    public $pm_user_id_to;
-    
-    public $pm_subject;
-    
-    public $pm_text;
-    
-    public $pm_status;
-    
-    public $pm_time_sent;
-    
-    public $pm_time_read;
+    /**
+     *
+     * @var int $pm_id
+     */
+    private $pm_id;
     
     /**
-     * 
-     * @param int    $pm_id
-     * @param int    $pm_user_id_from
-     * @param int    $pm_user_id_to
-     * @param string $pm_subject
-     * @param string $pm_text
-     * @param string $pm_status
-     * @param int    $pm_time_sent
-     * @param int    $pm_time_read
-     */
-    public function __construct(
-        $pm_id,
-        $pm_user_id_from,    
-        $pm_user_id_to,
-        $pm_subject,    
-        $pm_text,    
-        $pm_status,    
-        $pm_time_sent,
-        $pm_time_read
-    ) {
-        $this->pm_id           = $pm_id;
-        $this->pm_user_id_from = $pm_user_id_from;
-        $this->pm_user_id_to   = $pm_user_id_to;
-        $this->pm_subject      = $pm_subject;
-        $this->pm_text         = $pm_text;
-        $this->pm_status       = $pm_status;
-        $this->pm_time_sent    = $pm_time_sent;
-        $this->pm_time_read    = $pm_time_read;
-    }
+     *
+     * @var int $pm_user_id_from
+     */    
+    private $pm_user_id_from;
     
     /**
-     * 
-     * @param \Dibi\Row $values
-     * 
-     * @return \App\Models\Entity\Pm
-     */
-    public function get(\Dibi\Row $values)
+     *
+     * @var int $pm_user_id_to
+     */    
+    private $pm_user_id_to;
+    
+    /**
+     *
+     * @var string $pm_subject
+     */    
+    private $pm_subject;
+    
+    /**
+     *
+     * @var int $pm_text
+     */    
+    private $pm_text;
+    
+    /**
+     *
+     * @var string $pm_status
+     */    
+    private $pm_status;
+    
+    /**
+     *
+     * @var int $pm_time_sent
+     */    
+    private $pm_time_sent;
+    
+    /**
+     *
+     * @var int $pm_time_read
+     */    
+    private $pm_time_read;
+    
+    public function getPm_id()
     {
-        return new Pm(
-            $values->pm_id,
-            $values->pm_user_id_from,
-            $values->pm_user_id_to,
-            $values->pm_subject,
-            $values->pm_text,
-            $values->pm_status,
-            $values->pm_time_sent,
-            $values->pm_time_read                
-        );
+        return $this->pm_id;
+    }
+
+    public function getPm_user_id_from()
+    {
+        return $this->pm_user_id_from;
+    }
+
+    public function getPm_user_id_to()
+    {
+        return $this->pm_user_id_to;
+    }
+
+    public function getPm_subject()
+    {
+        return $this->pm_subject;
+    }
+
+    public function getPm_text()
+    {
+        return $this->pm_text;
+    }
+
+    public function getPm_status()
+    {
+        return $this->pm_status;
+    }
+
+    public function getPm_time_sent()
+    {
+        return $this->pm_time_sent;
+    }
+
+    public function getPm_time_read()
+    {
+        return $this->pm_time_read;
+    }
+
+    public function setPm_id($pm_id)
+    {
+        $this->pm_id = $pm_id;
+        return $this;
+    }
+
+    public function setPm_user_id_from($pm_user_id_from)
+    {
+        $this->pm_user_id_from = self::makeInt($pm_user_id_from);
+        return $this;
+    }
+
+    public function setPm_user_id_to($pm_user_id_to)
+    {
+        $this->pm_user_id_to = self::makeInt($pm_user_id_to);
+        return $this;
+    }
+
+    public function setPm_subject($pm_subject)
+    {
+        $this->pm_subject = $pm_subject;
+        return $this;
+    }
+
+    public function setPm_text($pm_text)
+    {
+        $this->pm_text = $pm_text;
+        return $this;
+    }
+
+    public function setPm_status($pm_status)
+    {
+        $this->pm_status = $pm_status;
+        return $this;
+    }
+
+    public function setPm_time_sent($pm_time_sent)
+    {
+        $this->pm_time_sent = self::makeInt($pm_time_sent);
+        return $this;
+    }
+
+    public function setPm_time_read($pm_time_read)
+    {
+        $this->pm_time_read = self::makeInt($pm_time_read);
+        return $this;
+    }    
+    
+    /**
+     * 
+     * @param Row $values
+     * 
+     * @return Pm
+     */
+    public function setFromRow(Row $values)
+    {
+        $pm = new Pm();
+        
+        if (isset($values->pm_id)) {
+            $pm->setPm_id($values->pm_id);
+        }
+        
+        if (isset($values->pm_user_id_from)) {
+            $pm->setPm_user_id_from($values->pm_user_id_from);
+        }
+        
+        if (isset($values->pm_user_id_to)) {
+            $pm->setPm_user_id_to($values->pm_user_id_to);
+        }
+        
+        if (isset($values->pm_subject)) {
+            $pm->setPm_subject($values->pm_subject);
+        }
+        
+        if (isset($values->pm_tex)) {
+            $pm->setPm_text_from($values->pm_tex);
+        }
+        
+        if (isset($values->pm_status)) {
+            $pm->setPm_status($values->pm_status);
+        }
+        
+        if (isset($values->pm_time_read)) {
+            $pm->setPm_time_read($values->pm_time_read);           
+        }
+        
+        if (isset($values->pm_time_sent)) {
+            $pm->setPm_time_sent($values->pm_time_sent);
+        }
+                   
+        return $pm;
     }
     
     /**
+     * 
+     * @param ArrayHash $values
+     * 
+     * @return Pm
+     */
+    public function setFromArrayHash(ArrayHash $values)
+    {
+        $pm = new Pm();
+        
+        if (isset($values->pm_id)) {
+            $pm->setPm_id($values->pm_id);
+        }
+        
+        if (isset($values->pm_user_id_from)) {
+            $pm->setPm_user_id_from($values->pm_user_id_from);
+        }
+        
+        if (isset($values->pm_user_id_to)) {
+            $pm->setPm_user_id_to($values->pm_user_id_to);
+        }
+        
+        if (isset($values->pm_subject)) {
+            $pm->setPm_subject($values->pm_subject);
+        }
+        
+        if (isset($values->pm_tex)) {
+            $pm->setPm_text_from($values->pm_tex);
+        }
+        
+        if (isset($values->pm_status)) {
+            $pm->setPm_status($values->pm_status);
+        }
+        
+        if (isset($values->pm_time_read)) {
+            $pm->setPm_time_read($values->pm_time_read);           
+        }
+        
+        if (isset($values->pm_time_sent)) {
+            $pm->setPm_time_sent($values->pm_time_sent);
+        }
+                   
+        return $pm;      
+    }
+
+        /**
      * 
      * @return array
      */

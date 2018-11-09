@@ -21,6 +21,16 @@ abstract class AuthenticatedPresenter extends BasePresenter
      * @inject
      */
     public $sessionsManager;
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->sessionsManager = null;
+        
+        parent::__destruct();
+    }
 
     /**
      *
@@ -35,6 +45,8 @@ abstract class AuthenticatedPresenter extends BasePresenter
             $this->sessionsManager->updateByUser($user->getId(), ArrayHash::from(['session_last_activity' => time()]));
         } else {
             if ($user->logoutReason === IUserStorage::INACTIVITY) {
+                $this->sessionsManager->deleteBySession($this->getSession()->getId());
+                $this->sessionsManager->deleteByUser($user->id);
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
             }
 

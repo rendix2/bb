@@ -75,6 +75,12 @@ class TopicFacade
      * @var ReportFacade $reportFacade
      */
     private $reportFacade;
+    
+    /**
+     *
+     * @var PollsFacade $pollsFacade
+     */
+    private $pollsFacade;
 
     /**
      *
@@ -101,7 +107,8 @@ class TopicFacade
         ReportsManager $reportsManager,
         TopicWatchFacade $topicWatchFacade,
         ThanksFacade $thanksFacade,
-        ReportFacade $reportFacade
+        ReportFacade $reportFacade,
+        PollsFacade $pollsFacade
     ) {
         $this->topicsManager     = $topicsManager;
         $this->topicWatchManager = $topicWatchManager;
@@ -114,6 +121,23 @@ class TopicFacade
         $this->topicWatchFacade  = $topicWatchFacade;
         $this->thanksFacade      = $thanksFacade;
         $this->reportFacade      = $reportFacade;
+        $this->pollsFacade       = $pollsFacade;
+    }
+    
+    public function __destruct()
+    {
+        $this->topicsManager     = null;
+        $this->topicWatchManager = null;
+        $this->postsManager      = null;
+        $this->usersManager      = null;
+        $this->thanksManager     = null;
+        $this->postFacade        = null;
+        $this->forumsManager     = null;
+        $this->reportsManager    = null;
+        $this->topicWatchFacade  = null;
+        $this->thanksFacade      = null;
+        $this->reportFacade      = null;
+        $this->pollsFacade       = null;
     }
 
     /**
@@ -125,18 +149,26 @@ class TopicFacade
     public function add(Entity\Topic $topic)
     {
         $topic_id = $this->topicsManager->add($topic->getArrayHash());
-        $topic->post->post_topic_id = $topic_id;
+        $topic->setTopic_id($topic_id);
+        $topic->getPost()->setPost_topic_id($topic_id);
+        
+        if ($topic->getPoll()) {            
+            $topic->getPoll()->setPoll_topic_id($topic_id);
+            
+            $this->pollsFacade->add($topic->getPoll());
+        }
+        $this->topicWatchManager->add([$topic->getTopic_user_id()], $topic_id);
 
-        $this->topicWatchManager->add([$topic->topic_user_id], $topic_id);
-
-        $post_id = $this->postFacade->add($topic->post);
+        $post_id = $this->postFacade->add($topic->getPost());
+        
+        $topic->getPost()->setPost_id($post_id);
 
         $this->topicsManager->update(
             $topic_id,
             ArrayHash::from(['topic_first_post_id' => $post_id, 'topic_last_post_id' => $post_id])
         );
 
-        $this->usersManager->update($topic->topic_user_id, ArrayHash::from(
+        $this->usersManager->update($topic->getTopic_user_id(), ArrayHash::from(
             [
                 'user_topic_count%sql' => 'user_topic_count + 1',
                 'user_watch_count%sql' => 'user_watch_count + 1'
@@ -144,7 +176,7 @@ class TopicFacade
         ));
 
         $this->forumsManager->update(
-            $topic->topic_forum_id,
+            $topic->getTopic_forum_id(),
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1'])
         );
 
@@ -161,12 +193,16 @@ class TopicFacade
     {
         $this->thanksFacade->deleteByTopic($topic);
         $this->topicWatchFacade->deleteByTopic($topic);        
-        $this->reportFacade->deleteByTopic($topic);        
+        $this->reportFacade->deleteByTopic($topic);
+        
+        if ($topic->getPoll()) {
+            $this->pollsFacade->delete($topic->getPoll());
+        }
         
         $this->usersManager
-                ->update($topic->topic_user_id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
+                ->update($topic->getTopic_user_id(), ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
         
-        $posts = $this->postsManager->getCountOfUsersByTopicId($topic->topic_id);
+        $posts = $this->postsManager->getCountOfUsersByTopicId($topic->getTopic_id());
         $users = [];
         
         foreach ($posts as $post) {
@@ -176,11 +212,11 @@ class TopicFacade
         }        
 
         $this->forumsManager->update(
-            $topic->topic_forum_id,
+            $topic->getTopic_forum_id(),
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1'])
         );
 
-        return $this->topicsManager->delete($item_id);
+        return $this->topicsManager->delete($topic->getTopic_id());
     }
 
     /**
@@ -410,9 +446,27 @@ class TopicFacade
      */
     public function update(Entity\Topic $topic)
     {
-        $res = $this->topicsManager->update($topic->topic_id, ArrayHash::from(['topic_name' => $topic->post_title]));
+        $res = $this->topicsManager->update($topic->getTopic_id(), ArrayHash::from(['topic_name' => $topic->getTopic_name()]));
 
-        $this->postsManager->update($topic->post->post_id, ArrayHash::from(['post_text' => $topic->post->post_text]));
+        $this->postsManager->update($topic->getPost()->getPost_id(), ArrayHash::from(['post_text' => $topic->getPost()->getPost_text()]));
+        
+        $pollsManager = $this->pollsFacade->getPollsManager();
+        $topicHasPoll = $pollsManager->getByTopic($topic->getTopic_id());
+
+        if ($topicHasPoll) {
+            $poll = $topic->getPoll();
+            $poll->setPoll_topic_id($topic->getTopic_id());
+            
+            if($poll->poll_question) {            
+                $this->pollsFacade->update($poll);
+            } else {
+                $this->pollsFacade->delete($poll);
+            }
+        } else {
+            if ($topic->getPoll()) {
+                $this->pollsFacade->add($topic->getPoll());
+            }
+        }
 
         return $res;
     }

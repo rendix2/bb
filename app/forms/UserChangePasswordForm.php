@@ -63,7 +63,15 @@ class UserChangePasswordForm extends Control
         $this->users       = $users;
     }
     
-    /**
+    public function __destruct()
+    {
+        $this->userManager = null;
+        $this->translator  = null;
+        $this->user        = null;
+        $this->users       = null;
+    }
+
+        /**
      * renders control
      */
     public function render()
@@ -117,7 +125,7 @@ class UserChangePasswordForm extends Control
             $form->addError('Last password is incorrect.');
         }
 
-        if (mb_strlen($values->user_password) <= $this->users->getUser()['minUserPasswordLength']) {
+        if (mb_strlen($values->user_password) <= $this->users->get()['minUserPasswordLength']) {
             $form->addError('Password is not long enough.');
         }
 

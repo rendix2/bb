@@ -7,28 +7,6 @@ namespace App\Settings;
  *
  * @author rendix2
  */
-class Users
+class Users extends Setting
 {
-    /**
-     * @var array $user
-     */
-    private $user;
-
-    /**
-     * Users constructor.
-     *
-     * @param array $user
-     */
-    public function __construct(array $user)
-    {
-        $this->user = $user;
-    }
-
-    /**
-     * @return array
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
 }

@@ -1,7 +1,9 @@
 {block content}
 
-<table>
-    
+<table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
+    <thead class="thead-light">
+        {control gridFilter}
+    </thead>
 {foreach $forums as $forum}
     <tr>
         <td>
@@ -10,8 +12,7 @@
         <td>{$forum->forum_name}</td>
         <td>
             <a href="{plink Forum:edit, $forum->forum_id}">Editovat</a>
-        </td>
-            
+        </td>            
     </tr>
 {/foreach}
 <table>

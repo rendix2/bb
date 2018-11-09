@@ -15,9 +15,19 @@ class Topic implements \App\Authorization\IAuthorizationScope
 
     const ROLE_AUTHOR = 'Topic:author';
     
+    const ROLE_THANKER= 'Topic:thanker';
+    
+    const ROLE_NOT_THANKER = 'Topic:notThnanker';
+    
+    const ROLE_DELETER = 'Topic:deleter';
+    
+    const ROLE_EDITOR = 'Topic:Editor';
+    
+    const ACTION_VIEW   = [self::class, 'view'];
     const ACTION_ADD    = [self::class, 'add'];
     const ACTION_EDIT   = [self::class, 'edit'];
     const ACTION_DELETE = [self::class, 'delete'];
+    const ACTION_THANK  = [self::class, 'thank'];
     
     /**
      * @var int $id;
@@ -27,23 +37,33 @@ class Topic implements \App\Authorization\IAuthorizationScope
     /**
      * @var Forum $forum
      */
-    private $forum;
+    private $forumScope;
     
     /**
      * @var User $author
      */
     private $author;
+    
+    private $thanks;
+    
+    /**
+     *
+     * @var \App\Models\Entity\Topic $topic
+     */
+    private $topicEntity;
 
     /**
      * Topic constructor.
      *
      * @param User  $author
-     * @param Forum $forum
+     * @param Forum $forumScope
      */
-    public function __construct(User $author, Forum $forum)
+    public function __construct(\App\Models\Entity\Topic $topicEntity, User $author, Forum $forumScope, $thanks)
     {
+        $this->topicEntity  = $topicEntity;
         $this->author = $author;
-        $this->forum  = $forum;
+        $this->forumScope  = $forumScope;
+        $this->thanks = $thanks;
     }
 
     /**
@@ -53,14 +73,41 @@ class Topic implements \App\Authorization\IAuthorizationScope
      */
     public function getIdentityRoles(Identity $identity)
     {
-        $roles = [];
-                
-        if ($this->author->getIdentity() === $identity) {
-            $roles[] = self::ROLE_AUTHOR;
+        if ($this->topicEntity->getTopic_locked()) {
+            return $this->forumScope->getIdentityRoles($identity);
         }
         
-        Debugger::barDump(array_merge($roles, $this->forum->getIdentityRoles($identity)));
+        $roles = [];
         
-        return array_merge($roles, $this->forum->getIdentityRoles($identity));
+        $isAuthor = $this->author->getIdentity()->getId() === $identity->getId();
+                
+        if ($isAuthor && in_array(Forum::ROLE_FORUM_TOPIC_ADDER, $this->forumScope->getIdentityRoles($identity))) {
+            $roles[] = self::ROLE_AUTHOR;
+        }
+                
+        if ($isAuthor && in_array(Forum::ROLE_FORUM_TOPIC_DELETER, $this->forumScope->getIdentityRoles($identity))) {
+            $roles[] = self::ROLE_DELETER;
+        }
+        
+        if ($isAuthor && in_array(Forum::ROLE_FORUM_TOPIC_UPDATER, $this->forumScope->getIdentityRoles($identity))) {
+            $roles[] = self::ROLE_EDITOR;
+        }
+        
+        $canThank = true;
+
+        foreach ($this->thanks as $thank) {            
+            if ($thank->thank_user_id === $identity->getId()){
+                $canThank = false;
+                break;
+            }
+        }
+        
+        if ($canThank) {
+            $roles[] = self::ROLE_THANKER;
+        } else {
+            $roles[] = self::ROLE_NOT_THANKER;
+        }        
+        
+        return array_merge($this->forumScope->getIdentityRoles($identity), $roles);
     }
 }

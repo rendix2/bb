@@ -4,14 +4,14 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
+use App\Controls\PollControl;
 use App\Controls\PaginatorControl;
-use App\Controls\TopicJumpToForumForm;
+use App\Forms\TopicJumpToForumForm;
 use App\Forms\TopicFastReplyForm;
+use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Models\CategoriesManager;
-use App\Models\ForumsManager;
 use App\Models\PostFacade;
-use App\Models\PostsManager;
+use App\Models\PollsFacade;
 use App\Models\RanksManager;
 use App\Models\ReportsManager;
 use App\Models\ThanksFacade;
@@ -26,6 +26,7 @@ use dibi;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
+use Nette\Forms\Container;
 use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
@@ -38,7 +39,11 @@ use Tracy\Debugger;
  */
 class TopicPresenter extends BaseForumPresenter
 {
-    
+    use \App\Models\Traits\CategoriesTrait;
+    //use \App\Models\Traits\ForumsTrait;
+    //use \App\Models\Traits\TopicsTrait;
+    //use \App\Models\Traits\PostTrait;
+
     /**
      * @var TopicsSetting $topicSetting
      * @inject
@@ -109,6 +114,13 @@ class TopicPresenter extends BaseForumPresenter
      * @inject
      */
     public $storage;
+    
+    /**
+     *
+     * @var PollsFacade $pollsFacade
+     * @inject
+     */
+    public $pollsFacade;
 
     /**
      *
@@ -120,6 +132,31 @@ class TopicPresenter extends BaseForumPresenter
     }
 
     /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->categoriesManager = null;
+        $this->forumsManager     = null;
+        $this->topicsManager     = null;
+        $this->postsManager      = null;
+        $this->topicSetting      = null;
+        $this->avatars           = null;
+        $this->topicWatchManager = null;
+        $this->thanksManager     = null;
+        $this->rankManager       = null;
+        $this->topicFacade       = null;
+        $this->thanksFacade      = null;
+        $this->postFacade        = null;
+        $this->reportManager     = null;
+        $this->postSettings      = null;
+        $this->storage           = null;
+        $this->pollsFacade       = null;
+        
+        parent::__destruct();
+    }
+
+        /**
      * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
@@ -170,23 +207,20 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function actionThank($category_id, $forum_id, $topic_id)
     {
-        if (!$this->getUser()->isAllowed($forum_id, 'topic_thank')) {
-            $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
-        }
-
-        $category = $this->checkCategoryParam($category_id);
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-        $user_id  = $this->getUser()->getId();
+        $category   = $this->checkCategoryParam($category_id);
+        $forum      = $this->checkForumParam($forum_id, $category_id);
+        $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        $user_id    = $this->getUser()->getId();        
+        $forumScope = $this->loadForum($forum);
         
-        $thank = new \App\Models\Entity\Thank(
-            null,
-            $forum_id,
-            $topic_id,
-            $user_id,
-            time(),
-            $this->getHttpRequest()->getRemoteAddress()
-        );
+        $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_THANK);
+
+        $thank = new \App\Models\Entity\Thank();
+        $thank->setThank_forum_id($forum_id)
+              ->setThank_topic_id($topic_id)
+              ->setThank_user_id($user_id)
+              ->setThank_time(time())
+              ->setThank_user_ip($this->getHttpRequest()->getRemoteAddress());
 
         $res = $this->thanksFacade->add($thank);
         
@@ -205,17 +239,26 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function actionDelete($category_id, $forum_id, $topic_id, $page)
     {
-        if (!$this->getUser()->isAllowed($forum_id, 'topic_delete')) {
-            $this->error('Not allowed.', IResponse::S403_FORBIDDEN);
+        $category   = $this->checkCategoryParam($category_id);
+        $forum      = $this->checkForumParam($forum_id, $category_id);
+        $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        
+        $pollDibi   = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
+        
+        if ($pollDibi) {
+            $pollTimeStamp = $pollDibi->poll_time_to;
+            unset($pollDibi->poll_time_to);
+        
+            $pollEntity = \App\Models\Entity\Poll::setFromRow($pollDibi);
+            $pollEntity->setPoll_time_to(\Nette\Utils\DateTime::from($pollTimeStamp));
+        
+            $topic->setPoll($pollEntity);
         }
-
-        $category = $this->checkCategoryParam($category_id);
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-
-        if ($topic->topic_user_id !== $this->getUser()->getId()) {
-            $this->error('You are not author of topic.', IResponse::S403_FORBIDDEN);
-        }
+        
+        $forumScope = $this->loadForum($forum);
+        $topicScope = $this->loadTopic($forum, $topic);
+        
+        $this->requireAccess($topicScope, \App\Authorization\Scopes\Topic::ACTION_DELETE);
 
         $res = $this->topicFacade->delete($topic);
         
@@ -224,6 +267,62 @@ class TopicPresenter extends BaseForumPresenter
         }
         
         $this->redirect('Forum:default', $category_id, $forum_id, $page);
+    }
+
+    /**
+     * 
+     * @param int $category_id
+     * @param int $forum_id
+     * @param int $topic_id
+     * @param int $page
+     */
+    public function actionDefault($category_id, $forum_id, $topic_id, $page = 1)
+    {
+        $category = $this->checkCategoryParam($category_id);
+        $forum    = $this->checkForumParam($forum_id, $category_id);
+        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        
+        $forumScope = $this->loadForum($forum);
+        $topicScope = $this->loadTopic($forum, $topic);
+
+        $data = $this->postsManager->getFluentByTopicJoinedUser($topic_id);
+
+        if ($this->topicSetting->get()['logViews']) {
+            $this->getManager()->update($topic_id, ArrayHash::from(['topic_view_count%sql' => 'topic_view_count + 1']));
+        }
+
+        $topicSettings = $this->topicSetting->get();
+        
+        $pagination = new PaginatorControl($data, $topicSettings['pagination']['itemsPerPage'], $topicSettings['pagination']['itemsAroundPagination'], $page);
+        $this->addComponent($pagination, 'paginator');
+
+        if (!$pagination->getCount()) {
+            $this->flashMessage('No posts.', self::FLASH_MESSAGE_WARNING);
+            $this->redirect('Forum:default', $category_id, $forum_id);
+        }
+
+        $posts     = $data->orderBy('post_id', dibi::ASC)->fetchAll();
+        $postsNew  = [];
+        $postScope = null;
+                
+        foreach ($posts as $postDibi) {
+            $post      = \App\Models\Entity\Post::setFromRow($postDibi);
+            $postScope = new \App\Authorization\Scopes\Post($post, $topicScope, $topic);
+            
+            $postDibi->canDelete  = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_DELETE);
+            $postDibi->canEdit    = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_EDIT);
+            $postDibi->canHistory = $this->isAllowed($postScope, \App\Authorization\Scopes\Post::ACTION_HISTORY);
+           
+            $postsNew[] = $postDibi;
+        }
+        
+        $this->template->posts = $postsNew;
+        $this->template->topic = $topic;
+        
+        $this->template->canAddPost    = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_ADD);        
+        $this->template->canDeletePost = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_DELETE);
+        $this->template->canFastReply  = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_FAST_REPLY);
+        $this->template->canThankTopic = $this->isAllowed($topicScope, \App\Authorization\Scopes\Topic::ACTION_THANK);
     }
 
     /**
@@ -236,35 +335,13 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function renderDefault($category_id, $forum_id, $topic_id, $page = 1)
     {
-        $category = $this->checkCategoryParam($category_id);
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-
-        $data = $this->postsManager->getFluentByTopicJoinedUser($topic_id);
-
-        if ($this->topicSetting->canLogView()) {
-            $this->getManager()->update($topic_id, ArrayHash::from(['topic_view_count%sql' => 'topic_view_count + 1']));
-        }
-
-        $pagination = new PaginatorControl($data, 10, 5, $page);
-        $this->addComponent($pagination, 'paginator');
-
-        if (!$pagination->getCount()) {
-            $this->flashMessage('No posts.', self::FLASH_MESSAGE_WARNING);
-            $this->redirect('Forum:default', $category_id, $forum_id);
-        }
-
         $user_id = $this->getUser()->getId();
-
+        
         $this->template->avatarsDir = $this->avatars->getTemplateDir();
         $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $user_id);
         $this->template->ranks      = $this->rankManager->getAllCached();
-        $this->template->posts      = $data->orderBy('post_id', dibi::ASC)->fetchAll();
-        $this->template->canThank   = $this->thanksManager->canUserThank($forum_id, $topic_id, $user_id);
-        $this->template->thanks     = $this->thanksManager->getAllJoinedUserByTopic($topic_id);
-        $this->template->forum      = $forum;
-        $this->template->topic      = $topic;
         
+        //$this->template->thanks     = $this->thanksManager->getAllJoinedUserByTopic($topic_id);                       
         $this->template->signatureDelimiter = $this->postSettings->get()['signatureDelimiter'];
     }
 
@@ -275,8 +352,15 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function renderEdit($category_id, $forum_id, $topic_id = null)
     {
-        $category = $this->checkCategoryParam($category_id);
-        $forum    = $this->checkForumParam($forum_id, $category_id);        
+        $category   = $this->checkCategoryParam($category_id);
+        $forum      = $this->checkForumParam($forum_id, $category_id);
+        $forumScope = $this->loadForum($forum);
+
+        if ($topic_id) {
+            $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_UPDATE);
+        } else {
+            $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_ADD);
+        }
 
         $topic = [];
         $post  = [];
@@ -290,7 +374,17 @@ class TopicPresenter extends BaseForumPresenter
                 $this->error('Post was not found.');
             }
 
-            $this['editForm']->setDefaults(['post_title' => $topic->topic_name, 'post_text' => $post->post_text]);
+            $poll = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
+                        
+            if ($poll) {
+                $this['editForm']->setDefaults(['poll_question' => $poll->poll_question, 'poll_time_to' => date('d.m.Y', $poll->poll_time_to)]);
+                
+                $pollAnswers = $this->pollsFacade->getPollsAnswersManager()->getAllByPoll($poll->poll_id);
+
+                $this['editForm-answers']->setValues($pollAnswers);
+            }
+            
+            $this['editForm']->setDefaults(['post_title' => $topic->getTopic_name(), 'post_text' => $post->post_text]);
         }
     }
 
@@ -347,6 +441,20 @@ class TopicPresenter extends BaseForumPresenter
         
         $this->template->thanks = $thanks;
     }
+    
+    /**
+     * 
+     * @param int $category_id
+     * @param int $forum_id
+     * @param int $topic_id
+     * @param int $post_id
+     */
+    public function renderFiles($category_id, $forum_id, $topic_id)
+    {
+        $category = $this->checkCategoryParam($category_id);
+        $forum    = $this->checkForumParam($forum_id, $category_id);
+        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+    }    
 
     /**
      *
@@ -356,12 +464,32 @@ class TopicPresenter extends BaseForumPresenter
     {
         $form = $this->getBootstrapForm();
 
+        // form
+        $form->addGroup('Topic');
         $form->addText('post_title', 'Title')->setRequired(true);
         $form->addTextAreaHtml('post_text', 'Text', 0, 15)->setRequired(true);
+        
         $form->addSubmit('send', 'Send');
         
-        $form->onSuccess[] = [$this,'editFormSuccess'];
+        $form->addGroup('Poll');
+        // poll       
+        
+        $form->addText('poll_question', 'Question');
+        $form->addTbDatePicker('poll_time_to', 'Finish');
+        
+        $answers = $form->addDynamic('answers', function (Container $answer) {
+            $answer->addHidden('poll_answer_id');
+            $answer->addText('poll_answer', 'Answer');                
+            $answer->addSubmit('remove', 'Remove answer')
+                   ->setValidationScope(FALSE) # disables validation
+                   ->addRemoveOnClick();
+        }, 1);
+        $answers->addSubmit('add', 'Add answer')
+                ->setValidationScope(FALSE) # disables validation
+                ->addCreateOnClick(true);
 
+        $form->onSuccess[] = [$this,'editFormSuccess'];
+        
         return $form;
     }
     
@@ -376,84 +504,78 @@ class TopicPresenter extends BaseForumPresenter
         $topic_id    = $this->getParameter('topic_id');
         $user_id     = $this->getUser()->getId();
         $page        = $this->getParameter('page');
+        
+        if ($values->poll_question) {        
+            $pollAnswers = [];
+        
+            foreach ($values->answers as $answer) {   
+                $pollAnswer = \App\Models\Entity\PollAnswer::setFromArrayHash($answer);
+                
+                if ($pollAnswer->getPoll_answer()) {
+                    $pollAnswers[] = $pollAnswer;
+                }                                
+            }
+        
+            $poll = \App\Models\Entity\Poll::setFromArrayHash($values);
+            $poll->setPollAnswers($pollAnswers);;
+        } else {
+            $poll = null;
+        }
 
         if ($topic_id) {
             $oldTopicDibi = $this->getManager()->getById($topic_id);
-            $oldTopic     = \App\Models\Entity\Topic::get($oldTopicDibi);
+            $oldTopic     = \App\Models\Entity\Topic::setFromRow($oldTopicDibi);
             
-            $firstPost = $this->postsManager->getFirstByTopic($oldTopicDibi->topic_id);
+            $firstPost = $this->postsManager->getFirstByTopic($oldTopicDibi->topic_id);           
+            $pollDibi = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
             
-            $post = new \App\Models\Entity\Post(
-                $firstPost->post_id,
-                $firstPost->post_user_id,
-                $firstPost->post_category_id,
-                $firstPost->post_forum_id,
-                $firstPost->post_topic_id,
-                $firstPost->post_title, 
-                $values->post_text,
-                $firstPost->post_add_time, 
-                $firstPost->post_add_user_ip, 
-                $firstPost->post_edit_user_ip,
-                $firstPost->post_edit_count, 
-                $firstPost->post_last_edit_time, 
-                $firstPost->post_locked,
-                $firstPost->post_order
-            );
+            if ($pollDibi) {
+                $poll->setPoll_id($pollDibi->poll_id);
+            }
             
-            $topic = new \App\Models\Entity\Topic(
-                $topic_id,
-                $category_id,
-                $forum_id,
-                $user_id,
-                $values->post_title, 
-                $oldTopic->topic_post_count,
-                $oldTopic->topic_add_time,
-                $oldTopic->topic_locked,
-                $oldTopic->topic_view_count,
-                $oldTopic->topic_first_post_id,
-                $oldTopic->topic_first_user_id,
-                $oldTopic->topic_last_post_id,
-                $oldTopic->topic_last_user_id, 
-                $oldTopic->topic_order,
-                $post
-            );
+            if ($poll) {
+                foreach ($poll->getPollAnswers() as $answer) {
+                    $answer->setPoll_id($pollDibi->poll_id);;
+                }
+            }
+            
+            $post = \App\Models\Entity\Post::setFromRow($firstPost);
+            $post->setPost_text($values->post_text);
+            
+            $topic = \App\Models\Entity\Topic::setFromRow($oldTopicDibi);
+            $topic->setTopic_id($topic_id)
+                  ->setTopic_category_id($category_id)
+                  ->setTopic_forum_id($forum_id)
+                  ->setTopic_user_id($user_id)
+                  ->setTopic_name($values->post_title)
+                  ->setPost($post)
+                  ->setPoll($poll);
             
             $res = $this->topicFacade->update($topic);
-        } else {
-            $post = new \App\Models\Entity\Post(
-                null,
-                $user_id,
-                $category_id,
-                $forum_id,
-                $topic_id,
-                $values->post_title, 
-                $values->post_text,
-                time(), 
-                $this->getHttpRequest()->getRemoteAddress(),
-                '',
-                0, 
-                0, 
-                0,
-                1
-            );
-
-            $topic = new \App\Models\Entity\Topic(
-                $topic_id,
-                $category_id,
-                $forum_id, 
-                $user_id, 
-                $values->post_title, 
-                0,
-                time(), 
-                0, 
-                0,
-                0,
-                $user_id,
-                0,
-                $user_id,
-                1, 
-                $post
-            );
+        } else {            
+            $post = new \App\Models\Entity\Post();
+            $post->setPost_user_id($user_id)
+                 ->setPost_category_id($category_id)
+                 ->setPost_forum_id($forum_id)
+                 ->setPost_topic_id($topic_id)
+                 ->setPost_title($values->post_title)
+                 ->setPost_text($values->post_text)
+                 ->setPost_add_time(time())
+                 ->setPost_add_user_ip($this->getHttpRequest()->getRemoteAddress())
+                 ->setPost_order(1);
+            
+            $topic = new \App\Models\Entity\Topic();
+            
+            $topic->setTopic_category_id($category_id)
+                  ->setTopic_forum_id($forum_id)
+                  ->setTopic_user_id($user_id)
+                  ->setTopic_name($values->post_title)
+                  ->setTopic_add_time(time())
+                  ->setTopic_first_user_id($user_id)
+                  ->setTopic_last_user_id($user_id)
+                  ->setTopic_page_count(1)
+                  ->setPoll($poll)
+                  ->setPost($post);
             
             $res = $topic_id = $this->topicFacade->add($topic);
         }
@@ -469,6 +591,19 @@ class TopicPresenter extends BaseForumPresenter
         
         $this->redirect(':Forum:Topic:default', $category_id, $forum_id, (string)$topic_id, $page);
     }
+    
+    /**
+     * 
+     * @return PollControl
+     */
+    protected function createComponentPoll()
+    {
+        return new PollControl($this->pollsFacade, $this->user, $this->getForumTranslator());
+    }
+    
+    /**
+     * bread crumbs
+     */
 
     /**
      * @return BreadCrumbControl
@@ -571,7 +706,7 @@ class TopicPresenter extends BaseForumPresenter
      */
     protected function createComponentJumpToForum()
     {
-        return new TopicJumpToForumForm($this->forumsManager);
+        return new TopicJumpToForumForm($this->forumsManager, $this->getForumTranslator());
     }
 
     /**
@@ -587,6 +722,6 @@ class TopicPresenter extends BaseForumPresenter
      */
     protected function createComponentReportForm()
     {
-        return new \ReportForm($this->reportManager);
+        return new ReportForm($this->reportManager);
     }    
 }

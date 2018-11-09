@@ -72,6 +72,18 @@ class RegisterPresenter extends BasePresenter
         $this->userFacade      = $userFacade;
     }
     
+    public function __destruct()
+    {
+        $this->translator = null;
+        $this->languageManager = null;
+        $this->pmManager       = null;
+        $this->bbMailer        = null;
+        $this->storage         = null;
+        $this->userFacade      = null;
+        
+        parent::__destruct();
+    }
+
     public function startup()
     {
         parent::startup();
@@ -134,25 +146,14 @@ class RegisterPresenter extends BasePresenter
      */
     public function registerUserSuccess(Form $form, ArrayHash $values)
     {        
-        $user = new \App\Models\Entity\User(
-            null,
-            $values->user_name,
-            $values->user_password,
-            $values->user_email,
-            '',
-            0,
-            0,
-            0,
-            0,
-            0,
-            $values->user_lang_id,
-            2,
-            '',
-            time(),
-            0,
-            0,
-            Manager::getRandomString()
-        );
+        $user = new \App\Models\Entity\User();
+        $user->setUser_name($values->user_name)
+             ->setUser_password($values->user_password)
+             ->setUser_email($values->user_email)
+             ->setUser_lang_id($values->user_lang_id)
+             ->setUser_register_time(time())
+             ->setUser_role_id(2)
+             ->setUser_activation_key(Manager::getRandomString());
 
         $res = $this->userFacade->add($user);
 

@@ -9,12 +9,31 @@ namespace App\Authorization;
  */
 class Identity
 {
-
+    const ROLE_HOST = 'host';
+    
+    const ROLE_REGISTERED = 'registered';
+    
     const ROLE_ADMIN = 'admin';
     
     private $id;
     
-    private $roles = [];
+    private $roles;
+
+    /**
+     * 
+     * @param type $id
+     * @param type $roles
+     */
+    public function __construct($id, $roles)
+    {
+        $this->id     = $id;
+        $this->roles = $roles;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return array

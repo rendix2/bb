@@ -63,7 +63,7 @@ class DatabasePresenter extends AdminPresenter
      */
     public function renderDumps()
     {
-        $sqls = Finder::findFiles('*.sql')->in($this->databaseDir->getDatabaseBackupDir());
+        $sqls = Finder::findFiles('*.sql')->in($this->databaseDir->get());
         
         if (!count($sqls)) {
             $this->flashMessage('No files to download.', self::FLASH_MESSAGE_WARNING);
@@ -77,7 +77,7 @@ class DatabasePresenter extends AdminPresenter
      */
     public function actionDeleteDump($name)
     {
-        FileSystem::delete($this->databaseDir->getDatabaseBackupDir() . DIRECTORY_SEPARATOR . $name);
+        FileSystem::delete($this->databaseDir->get() . DIRECTORY_SEPARATOR . $name);
         $this->redirect(':Admin:Config:Database:dumps');
     }
 
@@ -86,7 +86,7 @@ class DatabasePresenter extends AdminPresenter
      */
     public function actionDownloadDump($name)
     {
-        $this->sendResponse(new FileResponse($this->databaseDir->getDatabaseBackupDir() . DIRECTORY_SEPARATOR . $name));
+        $this->sendResponse(new FileResponse($this->databaseDir->get() . DIRECTORY_SEPARATOR . $name));
     }
 
     /**
@@ -95,7 +95,7 @@ class DatabasePresenter extends AdminPresenter
     public function actionExportDatabase()
     {
         $time = time();
-        $path = $this->databaseDir->getDatabaseBackupDir() . DIRECTORY_SEPARATOR . 'dump-'.$time.'.sql';
+        $path = $this->databaseDir->get() . DIRECTORY_SEPARATOR . 'dump-'.$time.'.sql';
                 
         $this->exporter->start($path);
 

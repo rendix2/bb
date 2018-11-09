@@ -9,4 +9,4 @@ services:
 
     PremissionFactory:
         class: App\Authorization\PermissionFactory
-    - App\Authorization\Authorizator(@App\Authorization\PermissionFactory::create())
+    Authorizator: App\Authorization\Authorizator(@App\Authorization\PermissionFactory::create())

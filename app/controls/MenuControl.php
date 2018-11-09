@@ -42,6 +42,13 @@ class MenuControl extends Control
         $this->rightMenu  = $rightMenu;
     }
     
+    public function __destruct()
+    {
+        $this->translator = null;
+        $this->leftMenu   = null;
+        $this->rightMenu  = null;
+    }
+
     public function render()
     {
         $template = $this->template;

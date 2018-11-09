@@ -13,6 +13,7 @@ use App\Forms\UserChangePasswordForm;
 use App\Forms\UserChangeUserNameForm;
 use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserResetPasswordForm;
+use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\FavouriteUsersManager;
 use App\Models\LanguagesManager;
@@ -41,7 +42,11 @@ use Nette\Utils\DateTime;
  */
 class UserPresenter extends BaseForumPresenter
 {
-     /**
+    use \App\Models\Traits\UsersTrait;
+    //use \App\Models\Traits\TopicsTrait;
+    //use \App\Models\Traits\PostTrait;
+    
+    /**
      * @var LanguagesManager $languageManager
      * @inject
      */
@@ -141,6 +146,32 @@ class UserPresenter extends BaseForumPresenter
     {
         parent::__construct($manager);
     }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {    
+    $this->usersManager          = null;
+    $this->topicsManager         = null;
+    $this->postsManager          = null;
+    $this->languageManager       = null;
+    $this->rankManager           = null;
+    $this->topicWatchManager     = null;
+    $this->thanksManager         = null;
+    $this->avatar                = null;
+    $this->rank                  = null;
+    $this->moderatorsManager     = null;
+    $this->bbMailer              = null;
+    $this->changePasswordFactory = null;
+    $this->deleteAvatarFactory   = null;
+    $this->favouriteUsersManager = null;
+    $this->startDay              = null;
+    $this->users                 = null;
+    $this->reportsManager        = null;
+        
+        parent::__destruct();
+    }
 
     /**
      *
@@ -235,7 +266,7 @@ class UserPresenter extends BaseForumPresenter
      * @param int $user_id
      * @param int $page
      */
-    public function renderPosts($user_id, $page = 1)
+    public function actionPosts($user_id, $page = 1)
     {
         $user = $this->checkUserParam($user_id);
 
@@ -261,13 +292,13 @@ class UserPresenter extends BaseForumPresenter
         $rankUser = null;
 
         foreach ($ranks as $rank) {
-            if ($user->user_post_count >= $rank->rank_from && $user->user_post_count <= $rank->rank_to) {
+            if ($user->getUser_post_count() >= $rank->rank_from && $user->getUser_post_count() <= $rank->rank_to) {
                 $rankUser = $rank;
                 break;
             }
         }
         
-        $reg = DateTime::from($user->user_register_time);
+        $reg = DateTime::from($user->getUser_register_time());
         $now = new DateTime();
         
         $this->template->ranksDir        = $this->rank->getTemplateDir();
@@ -279,7 +310,7 @@ class UserPresenter extends BaseForumPresenter
         $this->template->watchTotalCount = $this->topicWatchManager->getCount();
         $this->template->userData        = $user;
         $this->template->rank            = $rankUser;
-        $this->template->roles           = \App\Authorizator::ROLES;
+        $this->template->roles           = \App\Authorization\Authorizator::ROLES;
         $this->template->isFavourite     = $this->favouriteUsersManager->fullCheck($this->getUser()->getId(), $user_id);
         $this->template->user_id         = $user_id;
         $this->template->favourites      = $this->favouriteUsersManager->getAllJoinedByLeft($user_id);
@@ -290,7 +321,7 @@ class UserPresenter extends BaseForumPresenter
      * @param int $user_id
      * @param int $page
      */
-    public function renderThanks($user_id, $page = 1)
+    public function actionThanks($user_id, $page = 1)
     {
         $user = $this->checkUserParam($user_id);
 
@@ -309,7 +340,7 @@ class UserPresenter extends BaseForumPresenter
      * @param int $user_id user_id
      * @param int $page    page
      */
-    public function renderTopics($user_id, $page = 1)
+    public function actionTopics($user_id, $page = 1)
     {
         $user = $this->checkUserParam($user_id);
 
@@ -328,7 +359,7 @@ class UserPresenter extends BaseForumPresenter
      * @param int $user_id
      * @param int $page
      */
-    public function renderWatches($user_id, $page = 1)
+    public function actionWatches($user_id, $page = 1)
     {
         $user = $this->checkUserParam($user_id);
         
@@ -347,7 +378,7 @@ class UserPresenter extends BaseForumPresenter
     /**
      * @param int $page
      */
-    public function renderList($page)
+    public function actionList($page)
     {
         $users = $this->getManager()->getAllFluent();
         
@@ -359,7 +390,7 @@ class UserPresenter extends BaseForumPresenter
         }
         
         $this->template->type  = 1;
-        $this->template->users = $users;
+        $this->template->users = $users->fetchAll();
     }
 
     /**
@@ -367,7 +398,7 @@ class UserPresenter extends BaseForumPresenter
      */
     public function renderModeratorList($page)
     {
-        $this->template->setFile(__DIR__.'/../templates/User/list.latte');
+        $this->setView('list');
         
                 $users = $this->getManager()
                 ->getAllFluent()
@@ -381,7 +412,7 @@ class UserPresenter extends BaseForumPresenter
         }
         
         $this->template->type  = 3;
-        $this->template->users = $users;
+        $this->template->users = $users->fetchAll();
     }
 
     /**
@@ -389,7 +420,7 @@ class UserPresenter extends BaseForumPresenter
      */
     public function renderAdminList($page)
     {
-        $this->template->setFile(__DIR__.'/../templates/User/list.latte');
+        $this->setView('list');
         
         $users = $this->getManager()
                 ->getAllFluent()
@@ -403,7 +434,12 @@ class UserPresenter extends BaseForumPresenter
         }
         
         $this->template->type  = 5;
-        $this->template->users = $users;
+        $this->template->users = $users->fetchAll();
+    }
+    
+    public function actionFiles($user_id, $page = 1)
+    {
+        
     }
 
     public function renderRegister()
@@ -429,7 +465,7 @@ class UserPresenter extends BaseForumPresenter
      */
     protected function createComponentReportUserForm()
     {
-        return new \ReportForm($this->reportsManager);
+        return new ReportForm($this->reportsManager);
     }
 
     /**
@@ -479,7 +515,7 @@ class UserPresenter extends BaseForumPresenter
     protected function createComponentEditUserForm()
     {
         $form         = $this->getBootstrapForm();
-        $userSettings = $this->users->getUser();
+        $userSettings = $this->users->get();
 
         $form->addText(
             'user_name',
@@ -513,6 +549,14 @@ class UserPresenter extends BaseForumPresenter
 
         return $form;
     }
+    
+    /**	
+     * @param Form      $form	
+     * @param ArrayHash $values	
+     */	
+    public function editUserOnValidate(Form $form, ArrayHash $values)	
+    {	
+    }    
     
     /**
      * @param Form      $form

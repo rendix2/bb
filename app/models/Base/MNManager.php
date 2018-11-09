@@ -84,7 +84,18 @@ abstract class MNManager extends Manager
         }
     }
     
-    /**
+    public function __destruct()
+    {
+        $this->left     = null;
+        $this->right    = null;
+        $this->table    = null;
+        $this->leftKey  = null;
+        $this->rightKey = null;
+                
+        parent::__destruct();
+    }
+
+        /**
      * @param string $tableName
      *
      * @return bool|string
@@ -222,6 +233,30 @@ abstract class MNManager extends Manager
         return $this->getFluentJoinedByRight($right_id)
             ->fetchPairs(null, $this->left->getPrimaryKey());
     }
+    
+    /**
+     * @param int $left_id
+     * @param int $right_id
+     *
+     * @return Row[]
+     */
+    public function getAllFull($left_id, $right_id)
+    {
+        $aliasL = self::createAlias($this->left->getTable());
+        $aliasR = self::createAlias($this->right->getTable());
+
+        if ($aliasL === $aliasR) {
+            $aliasL = $this->left->getTable();
+            $aliasR = $this->right->getTable();
+        }
+
+        return $this->dibi->select('*')
+            ->from($this->table)
+            ->as('relation')
+            ->where('[relation.' . $this->leftKey . '] = %i', $left_id)
+            ->where('[relation.' . $this->rightKey . '] = %i', $right_id)
+            ->fetchAll();
+    }    
 
     /**
      * @param int $left_id
@@ -239,7 +274,7 @@ abstract class MNManager extends Manager
             $aliasR = $this->right->getTable();
         }
 
-        return $this->dibi->select($aliasL . '.*')
+        return $this->dibi->select('*')
             ->from($this->table)
             ->as('relation')
             ->innerJoin($this->left->getTable())
@@ -314,8 +349,15 @@ abstract class MNManager extends Manager
             $data[$this->leftKey][]  = $left_id !== null ? (int)$left_id : (int)$value;
             $data[$this->rightKey][] = $right_id !== null ? (int)$right_id : (int)$value;
         }
+        
+        \Tracy\Debugger::barDump($data, '$Đata');
                 
-        return $this->dibi->query('INSERT INTO %n %m', $this->table, $data);
+        return $this->addNative($data);
+    }
+    
+    public function addNative(array $values)
+    {        
+         return $this->dibi->query('INSERT INTO %n %m', $this->table, $values);
     }
 
     /**

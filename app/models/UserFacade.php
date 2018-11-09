@@ -146,6 +146,25 @@ class UserFacade
         $this->translatorFactory    = $translatorFactory;
         $this->pmFacade             = $pmFacade;
     }
+    
+    public function __destruct()
+    {
+        $this->usersManager         = null;
+        $this->postsManager         = null;
+        $this->postsHistoryManager  = null;
+        $this->postFacade           = null;
+        $this->topicWatchManager    = null;
+        //$this->users2SessionManager = $users2SessionManager;
+        $this->mails2UsersManager   = null;
+        $this->moderatorsManager    = null;
+        $this->reportsManager       = null;
+        $this->sessionsManager      = null;
+        $this->thanksManager        = null;
+        $this->users2ForumsManager  = null;
+        $this->users2GroupsManager  = null;
+        $this->translatorFactory    = null;
+        $this->pmFacade             = null;        
+    }
 
     /**
      *

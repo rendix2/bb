@@ -34,6 +34,11 @@ abstract class CrudManager extends Manager //implements ICrudManager
      * @var string
      */
     const CACHE_PAIRS = 'pairs';
+    
+    /**
+     * @var string
+     */
+    const CACHE_ONE = 'one';
 
     /**
      * @var string $table
@@ -72,7 +77,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     public function __construct(Connection $dibi, IStorage $storage)
     {
         parent::__construct($dibi);
-
+        
         $this->storage = $storage;
         
         $table = $this->getNameOfTableFromClass();
@@ -95,6 +100,20 @@ abstract class CrudManager extends Manager //implements ICrudManager
         $this->columnNames  = $this->getColumnsQuery();
     }
     
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->table        = null;
+        $this->primaryKey   = null;
+        $this->managerCache = null;
+        $this->storage      = null;
+        $this->columnNames  = null;
+       
+        parent::__destruct();
+    }
+
     /**
      *
      * @param string $column
@@ -233,10 +252,35 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function getById($item_id)
     {
+        if (!is_numeric($item_id)) {
+            throw new \InvalidArgumentException('Not numeric argument');
+        }
+        
         return $this->getAllFluent()
             ->where('%n = %i', $this->primaryKey, $item_id)
             ->fetch();
     }
+
+    /**
+     * @param int $item_id
+     *
+     * @return Row|false
+     */
+    public function getByIdCached($item_id)
+    {
+        $key          = self::CACHE_ONE . '_' . $item_id;
+        $cachedValues = $this->managerCache->load($key);
+        
+        if ($cachedValues === null) {
+            $this->managerCache->save(
+                $key,
+                $cachedValues = $this->getById($item_id),
+                [Cache::EXPIRE => '1 hour']
+            );
+        }
+
+        return $cachedValues;
+    }    
 
     /**
      * @param array $item_id
@@ -424,6 +468,12 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function delete($item_id)
     {
+        if (!is_numeric($item_id)) {
+            throw new \InvalidArgumentException('Not numeric argument');
+        }
+        
+        $this->deleteCache($item_id);
+        
         return $this->deleteFluent()
             ->where('%n = %i', $this->primaryKey, $item_id)
             ->execute();
@@ -432,11 +482,21 @@ abstract class CrudManager extends Manager //implements ICrudManager
     /**
      *
      */
-    protected function deleteCache()
+    protected function deleteCache($item_id = null)
     {
         $this->managerCache->remove(self::CACHE_ALL_KEY);
         $this->managerCache->remove(self::CACHE_PAIRS);
         $this->managerCache->remove(self::CACHE_COUNT_KEY);
+        
+        if ($item_id) {
+            if (is_array($item_id)) {
+                foreach ($item_id as $item) {
+                    $this->managerCache->remove(self::CACHE_ONE . '_' . $item);
+                }
+            } else {
+                $this->managerCache->remove(self::CACHE_ONE . '_' . $item_id);
+            }
+        }
     }
 
     /**
@@ -446,7 +506,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function deleteMulti(array $item_id)
     {
-        $this->deleteCache();
+        $this->deleteCache($item_id);
 
         return $this->dibi
             ->delete($this->table)
@@ -462,7 +522,11 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function update($item_id, ArrayHash $item_data)
     {
-        $this->deleteCache();
+        if (!is_numeric($item_id)) {
+            throw new \InvalidArgumentException('Not numeric argument');
+        }
+        
+        $this->deleteCache($item_id);
         
         $newData = clone $item_data;
         
@@ -482,7 +546,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function updateMulti(array $item_id, ArrayHash $item_data)
     {
-        $this->deleteCache();
+        $this->deleteCache($item_id);
 
         return $this->dibi
             ->update($this->table, $item_data)

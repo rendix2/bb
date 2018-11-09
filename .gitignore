@@ -10,6 +10,9 @@ log
 build
 nbproject/
 www/avatars/*
+www/ranks/*
+www/postFiles/*
+.idea
 idea
 /.idea
 .idea/codeStyles/codeStyleSettings.xml

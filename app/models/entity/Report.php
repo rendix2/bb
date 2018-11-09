@@ -2,92 +2,293 @@
 
 namespace App\Models\Entity;
 
+use App\Models\Entity\Base\Entity;
+use Dibi\Row;
+use Nette\Utils\ArrayHash;
+
 /**
  * Description of Report
  *
- * @author rendi
+ * @author rendix2
  */
-class Report extends \App\Models\Entity\Base\Entity
+class Report extends Entity
 {
-    public $report_id;
+    /**
+     *
+     * @var int $report_id
+     */
+    private $report_id;
     
-    public $report_user_id;
+    /**
+     *
+     * @var int $report_user_id 
+     */    
+    private $report_user_id;
     
-    public $report_forum_id;
+    /**
+     *
+     * @var int $report_forum_id 
+     */    
+    private $report_forum_id;
     
-    public $report_topic_id;
+    /**
+     *
+     * @var int $report_topic_id
+     */    
+    private $report_topic_id;
     
-    public $report_post_id;
-    
-    public $report_reported_user_id;     
-    
-    public $report_pm_id;
-    
-    public $report_text;
-    
-    public $report_time;
-    
-    public $report_status;
+    /**
+     *
+     * @var int $report_post_id
+     */    
+    private $report_post_id;
 
     /**
-     * 
-     * @param int $report_id
-     * @param int $report_user_id
-     * @param int $report_forum_id
-     * @param int $report_topic_id
-     * @param int $report_post_id
-     * @param int $report_reported_user_id
-     * @param int $report_pm_id
-     * @param string $report_text
-     * @param int $report_time
-     * @param int $report_status
-     */
-    public function __construct(
-        $report_id,
-        $report_user_id,    
-        $report_forum_id,
-        $report_topic_id,
-        $report_post_id,
-        $report_reported_user_id,      
-        $report_pm_id,
-        $report_text,    
-        $report_time,    
-        $report_status
-    ) {
-        $this->report_id               = $report_id === null ? null : (int)$report_id;
-        $this->report_user_id          = $report_user_id === null ? null : (int)$report_user_id;
-        $this->report_forum_id         = $report_forum_id === null ? null : (int)$report_forum_id;
-        $this->report_topic_id         = $report_topic_id === null ? null : (int)$report_topic_id;
-        $this->report_post_id          = $report_post_id === null ? null : (int)$report_post_id;
-        $this->report_reported_user_id = $report_reported_user_id === null ? null : (int)$report_reported_user_id;
-        $this->report_pm_id            = $report_pm_id === null ? null : (int)$report_pm_id;
-        $this->report_text             = $report_text === null ? null : $report_text;
-        $this->report_time             = $report_time === null ? null : (int)$report_time;
-        $this->report_status           = $report_status === null ? null : (int)$report_status;
+     *
+     * @var int $report_reported_user_id
+     */    
+    private $report_reported_user_id;     
+    
+    /**
+     *
+     * @var int $report_pm_id 
+     */    
+    private $report_pm_id;
+    
+    /**
+     *
+     * @var string $report_text
+     */    
+    private $report_text;
+    
+    /**
+     *
+     * @var int $report_time 
+     */    
+    private $report_time;
+    
+    /**
+     *
+     * @var string $report_status
+     */    
+    private $report_status;
+    
+    public function getReport_id()
+    {
+        return $this->report_id;
     }
+
+    public function getReport_user_id()
+    {
+        return $this->report_user_id;
+    }
+
+    public function getReport_forum_id()
+    {
+        return $this->report_forum_id;
+    }
+
+    public function getReport_topic_id()
+    {
+        return $this->report_topic_id;
+    }
+
+    public function getReport_post_id()
+    {
+        return $this->report_post_id;
+    }
+
+    public function getReport_reported_user_id()
+    {
+        return $this->report_reported_user_id;
+    }
+
+    public function getReport_pm_id()
+    {
+        return $this->report_pm_id;
+    }
+
+    public function getReport_text()
+    {
+        return $this->report_text;
+    }
+
+    public function getReport_time()
+    {
+        return $this->report_time;
+    }
+
+    public function getReport_status()
+    {
+        return $this->report_status;
+    }
+
+    public function setReport_id($report_id)
+    {
+        $this->report_id = self::makeInt($report_id);
+        return $this;
+    }
+
+    public function setReport_user_id($report_user_id)
+    {
+        $this->report_user_id = self::makeInt($report_user_id);
+        return $this;
+    }
+
+    public function setReport_forum_id($report_forum_id)
+    {
+        $this->report_forum_id = self::makeInt($report_forum_id);
+        return $this;
+    }
+
+    public function setReport_topic_id($report_topic_id)
+    {
+        $this->report_topic_id = self::makeInt($report_topic_id);
+        return $this;
+    }
+
+    public function setReport_post_id($report_post_id)
+    {
+        $this->report_post_id = self::makeInt($report_post_id);
+        return $this;
+    }
+
+    public function setReport_reported_user_id($report_reported_user_id)
+    {
+        $this->report_reported_user_id = self::makeInt($report_reported_user_id);
+        return $this;
+    }
+
+    public function setReport_pm_id($report_pm_id)
+    {
+        $this->report_pm_id = self::makeInt($report_pm_id);
+        return $this;
+    }
+
+    public function setReport_text($report_text)
+    {
+        $this->report_text = $report_text;
+        return $this;
+    }
+
+    public function setReport_time($report_time)
+    {
+        $this->report_time = self::makeInt($report_time);
+        return $this;
+    }
+
+    public function setReport_status($report_status)
+    {
+        $this->report_status = $report_status;
+        return $this;
+    }    
     
     /**
      * 
-     * @param \Dibi\Row $values
+     * @param Row $values
      * 
-     * @return \App\Models\Entity\Report
+     * @return Report
      */
-    public static function get(\Dibi\Row $values)
+    public static function setFromRow(Row $values)
     {
-        return new Report(
-            $values->report_id,
-            $values->report_user_id,
-            $values->report_forum_id,
-            $values->report_topic_id,
-            $values->report_post_id,
-            $values->report_reported_user_id, 
-            $values->report_pm_id,
-            $values->report_text,
-            $values->report_time,
-            $values->report_status
-        );
+        $report = new Report();
+        
+        if (isset($values->report_id)) {
+           $report->setReport_id($values->report_id); 
+        }
+        
+        if (isset($values->report_user_id)) {
+           $report->setReport_user_id($values->report_user_id); 
+        }
+
+        if (isset($values->report_forum_id)) {
+           $report->setReport_forum_id($values->report_forum_id); 
+        }
+
+        if (isset($values->report_topic_id)) {
+           $report->setReport_topic_id($values->report_topic_id); 
+        }
+
+        if (isset($values->report_post_id)) {
+           $report->setReport_post_id($values->report_post_id); 
+        }
+
+        if (isset($values->report_reported_user_id)) {
+           $report->setReport_reported_user_id($values->report_reported_user_id); 
+        }
+
+        if (isset($values->report_pm_id)) {
+           $report->setReport_pm_id($values->report_pm_id); 
+        }
+
+        if (isset($values->report_text)) {
+           $report->setReport_text($values->report_text); 
+        }
+
+        if (isset($values->report_time)) {
+           $report->setReport_time($values->report_time); 
+        }
+
+        if (isset($values->report_status)) {
+           $report->setReport_status($values->report_status); 
+        }
+        
+       return $report;
     }     
     
+    /**
+     * 
+     * @param ArrayHash $values
+     * 
+     * @return Report
+     */
+    public function setFromArrayHash(ArrayHash $values)
+    {
+        $report = new Report();
+        
+        if (isset($values->report_id)) {
+           $report->setReport_id($values->report_id); 
+        }
+        
+        if (isset($values->report_user_id)) {
+           $report->setReport_user_id($values->report_user_id); 
+        }
+
+        if (isset($values->report_forum_id)) {
+           $report->setReport_forum_id($values->report_forum_id); 
+        }
+
+        if (isset($values->report_topic_id)) {
+           $report->setReport_topic_id($values->report_topic_id); 
+        }
+
+        if (isset($values->report_post_id)) {
+           $report->setReport_post_id($values->report_post_id); 
+        }
+
+        if (isset($values->report_reported_user_id)) {
+           $report->setReport_reported_user_id($values->report_reported_user_id); 
+        }
+
+        if (isset($values->report_pm_id)) {
+           $report->setReport_pm_id($values->report_pm_id); 
+        }
+
+        if (isset($values->report_text)) {
+           $report->setReport_text($values->report_text); 
+        }
+
+        if (isset($values->report_time)) {
+           $report->setReport_time($values->report_time); 
+        }
+
+        if (isset($values->report_status)) {
+           $report->setReport_status($values->report_status); 
+        }
+        
+       return $report;
+    }
+
     /**
      * 
      * @return array

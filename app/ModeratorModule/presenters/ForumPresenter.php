@@ -3,6 +3,7 @@
 namespace App\ModeratorModule\Presenters;
 
 use App\Controls\BootstrapForm;
+use App\Controls\GridFilter;
 use App\Models\ForumsManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 
@@ -24,7 +25,10 @@ class ForumPresenter extends ModeratorPresenter
         parent::__construct($manager);
     }
 
-    /**
+    public function actionDefault($page = 1) {        
+    }
+
+        /**
      * @param int $page
      */
     public function renderDefault($page = 1)
@@ -49,6 +53,14 @@ class ForumPresenter extends ModeratorPresenter
      */
     protected function createComponentGridFilter()
     {
-        return null;
+        $this->gf->setTranslator($this->getTranslator());
+
+        $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
+        //$this->gf->addFilter('forum_id', 'forum_id', GridFilter::INT_EQUAL);
+        $this->gf->addFilter('forum_name', 'forum_name', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('edit', null, GridFilter::NOTHING);
+        $this->gf->addFilter('delete', null, GridFilter::NOTHING);
+        
+        return $this->gf;
     }
 }

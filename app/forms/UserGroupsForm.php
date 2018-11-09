@@ -7,6 +7,8 @@ use App\Models\GroupsManager;
 use App\Models\Users2GroupsManager;
 use Nette\Application\UI\Control;
 use Nette\Localization\ITranslator;
+use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
 /**
  * Description of UserGroupsForm
  *
@@ -46,6 +48,13 @@ class UserGroupsForm extends Control
         $this->users2GroupsManager = $users2GroupsManager;
         $this->translator          = $translator;
     }
+    
+    public function __destruct()
+    {
+        $this->groupsManager       = null;
+        $this->users2GroupsManager = null;
+        $this->translator          = null;
+    }
 
     /**
      * 
@@ -83,11 +92,11 @@ class UserGroupsForm extends Control
     public function groupSuccess(Form $form, ArrayHash $values)
     {
         $groups  = $form->getHttpData($form::DATA_TEXT, 'group[]');
-        $user_id = $this->getParameter('id');
-
+        $user_id = $this->presenter->getParameter('id');
+        
         $this->users2GroupsManager->addByLeft((int) $user_id, array_values($groups));
-        $this->flashMessage('Groups saved.', self::FLASH_MESSAGE_SUCCESS);
-        $this->redirect('User:edit', $user_id);
+        $this->presenter->flashMessage('Group was saved.', \App\Presenters\Base\BasePresenter::FLASH_MESSAGE_SUCCESS);
+        $this->presenter->redirect('User:edit', $user_id);
     }
     
 }

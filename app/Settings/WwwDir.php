@@ -8,20 +8,6 @@ namespace App\Settings;
  * @package App\Controls
  * @author rendix2
  */
-class WwwDir
+class WwwDir extends Setting
 {
-    /**
-     * @var string $wwwDir
-     */
-    public $wwwDir;
-
-    /**
-     * WwwDir constructor.
-     *
-     * @param string $wwwDir
-     */
-    public function __construct($wwwDir)
-    {
-        $this->wwwDir = $wwwDir;
-    }
 }

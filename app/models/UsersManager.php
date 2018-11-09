@@ -43,8 +43,16 @@ class UsersManager extends CrudManager
 
         $this->avatars = $avatars;
     }
+    
+    public function __destruct()
+    {
+        $this->avatars = null;
+        
+        parent::__destruct();
+    }
 
-    /**
+
+        /**
      * @param int $lang_id
      *
      * @return Row[]

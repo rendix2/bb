@@ -40,7 +40,7 @@ class Translator implements ITranslator
         $this->module = $module;
         $this->lang   = $lang;
         $separator    = DIRECTORY_SEPARATOR;
-        $this->tr     = parse_ini_file($appDir->appDir . $separator . $this->module . 'Module' . $separator . 'languages' . $separator . $this->lang . '.ini');
+        $this->tr     = parse_ini_file($appDir->get() . $separator . $this->module . 'Module' . $separator . 'languages' . $separator . $this->lang . '.ini');
     }
 
     /**

@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Forms;
+
 use App\Controls\BootstrapForm;
 use App\Models\ReportsManager;
 use Nette\Application\UI\Form;
@@ -24,13 +26,18 @@ class ReportForm extends Control
      * 
      * @param ReportsManager $reportsManager
      */
-    public function __construct(ReportsManager $reportsManager) {
+    public function __construct(ReportsManager $reportsManager)
+    {
         parent::__construct();
         
         $this->reportsManager = $reportsManager;
     }
     
-    /**
+    public function __destruct() {
+        $this->reportsManager = null;
+    }
+
+        /**
      * 
      */
     public function render()
@@ -67,35 +74,34 @@ class ReportForm extends Control
         $pm_id            = $this->presenter->getParameter('pm_iid');
         $user_id          = $this->presenter->getUser()->getId();
 
-        $report = new App\Models\Entity\Report(
-            null,
-            $user_id,
-            $forum_id,
-            $topic_id,
-            $post_id,
-            $reported_user_id,
-            $pm_id,
-            $values->report_text, 
-            time(), 
-            0
-        );
+        $report = new \App\Models\Entity\Report();
+        $report->setReport_forum_id($forum_id)
+               ->setReport_topic_id($topic_id)
+               ->setReport_post_id($post_id)
+               ->setReport_reported_user_id($reported_user_id)
+               ->setReport_user_id($user_id)
+               ->setReport_pm_id($pm_id)
+               ->setReport_text($values->report_text)
+               ->setReport_time(time())
+               ->setReport_status(0);
+            
 
         $res = $this->reportsManager->add($report->getArrayHash());
 
         if ($res) {
-            $this->presenter->flashMessage('Report was saved.', App\Presenters\Base\BasePresenter::FLASH_MESSAGE_SUCCESS);
+            $this->presenter->flashMessage('Report was saved.', \App\Presenters\Base\BasePresenter::FLASH_MESSAGE_SUCCESS);
         }
 
         
         $presenter = $this->presenter;
         
-        if ($presenter instanceof App\ForumModule\Presenters\PostPresenter) {
+        if ($presenter instanceof \App\ForumModule\Presenters\PostPresenter) {
             $this->presenter->redirect('Topic:default', $category_id, $forum_id, $topic_id, $page);
-        } elseif ($presenter instanceof App\ForumModule\Presenters\TopicPresenter) {
+        } elseif ($presenter instanceof \App\ForumModule\Presenters\TopicPresenter) {
             $this->presenter->redirect('Forum:default', $category_id, $forum_id, $page);
-        } elseif ($presenter instanceof App\ForumModule\Presenters\PmPresenter){
+        } elseif ($presenter instanceof \App\ForumModule\Presenters\PmPresenter){
             $this->presenter->redirect('Pm:default');
-        } elseif ($presenter instanceof App\ForumModule\Presenters\UserPresenter) {
+        } elseif ($presenter instanceof \App\ForumModule\Presenters\UserPresenter) {
             $this->presenter->redirect('User:profile', $reported_user_id);
         }
     }

@@ -1,6 +1,6 @@
 {block content}
 
-<table>
+<table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
     {foreach $topics as $topic}
         <tr>
             <td>{$topic->topic_id}</td>
@@ -9,7 +9,7 @@
                 <a href="{plink Post:posts, $topic->topic_id}">Příspěvky</a>
             </td>
             <td>
-                <a href="{plink :Forum:Topic:default $topic->topic_forum_id, $topic->topic_id}">Prohlídnout</a>
+                <a href="{plink :Forum:Topic:default $topic->topic_category_id, $topic->topic_forum_id, $topic->topic_id}" target="_blank">Prohlídnout</a>
             <td>
                 <a href="{plink Topic:edit, $topic->topic_id}">Moderovat</a>                
             </td>

@@ -35,9 +35,14 @@ parameters:
     crud:
         cache:
             primaryKey: 10 days
-    topics:
+    categories:
+    forums:
         pagination:
             itemsPerPage: 25
+            itemsAroundPagination: 5
+    topics:
+        pagination:
+            itemsPerPage: 4
             itemsAroundPagination: 5
         cache:
             lastTopic: 1 hour
@@ -45,12 +50,10 @@ parameters:
             primaryKey: 10 day
         logViews: true
     posts:
-        pagination:
-            itemsPerPage: 25
-            itemsAroundPagination: 5
         cache:
             totalPosts: 1 hour
             primaryKey: 10 day
+        filesDir: %wwwDir%/postFiles
         minLength: 5 # int or null
         maxLength: 100000 # int or null
         minUserTimeInterval: 20
@@ -106,6 +109,7 @@ extensions:
     dibi: Dibi\Bridges\Nette\DibiExtension22
     recaptcha: ReCaptchaControl\DI\Extension
     tbDatePicker: RadekDostal\NetteComponents\DateTimePicker\TbDatePicker\DI\TbDatePickerExtension
+    replicator: Kdyby\Replicator\DI\ReplicatorExtension
  
 tbDatePicker:
   format: j. n. Y

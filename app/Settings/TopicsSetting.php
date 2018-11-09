@@ -7,28 +7,6 @@ namespace App\Settings;
  *
  * @author rendix2
  */
-class TopicsSetting
+class TopicsSetting extends Setting
 {
-    /**
-     * @var array $topic
-     */
-    private $topic;
-
-    /**
-     * TopicsSetting constructor.
-     *
-     * @param array $topic
-     */
-    public function __construct(array $topic)
-    {
-        $this->topic = $topic;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function canLogView()
-    {
-        return $this->topic['logViews'];
-    }
 }

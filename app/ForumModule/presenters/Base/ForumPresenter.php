@@ -6,8 +6,11 @@ use App\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Models\Manager;
 use App\Models\PmManager;
+use App\Models\ModeratorsManager;
+use App\Models\ThanksManager;
 use App\Presenters\Base\AuthenticatedPresenter;
 use Nette\Localization\ITranslator;
+use App\Authorization\Authorizator as Aauthorizator;
 
 /**
  * Description of ForumPresenter
@@ -16,18 +19,53 @@ use Nette\Localization\ITranslator;
  */
 abstract class ForumPresenter extends AuthenticatedPresenter
 {
+    
+    use \App\Models\Traits\PostTrait;
+    use \App\Models\Traits\TopicsTrait;    
+    use \App\Models\Traits\ForumsTrait;
+    
+    
+    /**
+     *
+     * @var ModeratorsManager $moderators
+     * @inject
+     */
+    public $moderators;
+    
+    /**
+     *
+     * @var ThanksManager $thanksManager
+     * @inject
+     */
+    public $thanksManager;
+
+
+    /**
+     * @var Aauthorizator $authorizator
+     * @inject 
+     */
+    public $authorizator;
+    
+    /**
+     * @var \App\Models\Users2GroupsManager $users2GroupsManager
+     * @inject
+     */
+    public $users2GroupsManager;
+    
+    /**
+     *
+     * @var \App\Models\Users2ForumsManager $users2ForumsManager
+     * @inject
+     */
+    public $users2ForumsManager;
+
+
     /**
      * Translator
      *
      * @var ITranslator $forumTranslator
      */
     private $forumTranslator;
-
-    /**
-     * @var Authorizator $authorizator
-     * @inject
-     */
-    public $authorizator;
     
     /**
      * @var PmManager $pmManager
@@ -52,6 +90,15 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         $this->manager = $manager;
     }
     
+    public function __destruct() {
+        $this->forumTranslator = null;
+        $this->authorizator    = null;
+        $this->pmManager       = null;
+        $this->manager         = null;
+        
+        parent::__destruct();
+    }
+
     /**
      *
      * @return Manager
@@ -111,9 +158,8 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     public function startup()
     {
         parent::startup();
-        
+
         $this->forumTranslator = $this->translatorFactory->forumTranslatorFactory();
-        $this->getUser()->setAuthorizator($this->authorizator->getAcl());
         
         $this->template->pm_count = $this->pmManager->getCountSent();
     }
@@ -127,4 +173,62 @@ abstract class ForumPresenter extends AuthenticatedPresenter
 
         $this->template->setTranslator($this->forumTranslator);
     }
+    
+    protected function getLoggedInUser()
+    {        
+        $identity = new \App\Authorization\Identity($this->user->id, $this->user->roles);
+        
+        return new \App\Authorization\Scopes\User($identity);
+    }
+    
+    protected function loadCategory($id)
+    {
+        return new \App\Authorization\Scopes\Category();
+    }
+    
+    protected function loadForum(\App\Models\Entity\Forum $forum)
+    {        
+        $moderators = $this->moderators->getAllByRight($forum->getForum_id());
+        $moderatorsI = [];
+        
+        foreach ($moderators as $moderator) {
+            $moderatorIdentity = new \App\Authorization\Identity($moderator->user_id, \App\Authorization\Scopes\Forum::ROLE_MODERATOR);
+            $moderatorUser     = new \App\Authorization\Scopes\User($moderatorIdentity);
+            
+            $moderatorsI[] = $moderatorUser;
+        }
+                
+        return new \App\Authorization\Scopes\Forum($forum, $moderatorsI, $this->users2GroupsManager, $this->users2ForumsManager); 
+    }    
+    
+    protected function loadTopic(\App\Models\Entity\Forum $forum, \App\Models\Entity\Topic $topic)
+    {
+        
+        $topicIdentity = new \App\Authorization\Identity($topic->getTopic_first_user_id(), [\App\Authorization\Scopes\Topic::ROLE_AUTHOR]);        
+        $topicAuthor   = new \App\Authorization\Scopes\User($topicIdentity);
+        
+        $thanks = $this->thanksManager->getAllByTopic($topic->getTopic_id());
+        
+        return new \App\Authorization\Scopes\Topic($topic, $topicAuthor, $this->loadForum($forum), $thanks);
+    }    
+    
+    protected function loadPost(\App\Models\Entity\Forum $forumEntity, \App\Models\Entity\Topic $topicEntity, \App\Models\Entity\Post $postEntity)
+    {
+        $postIdentity  = new \App\Authorization\Identity($postEntity->getPost_user_id(), [\App\Authorization\Scopes\Post::ROLE_AUTHOR]);        
+        $postAuthor    = new \App\Authorization\Scopes\User($postIdentity);
+                        
+        return new \App\Authorization\Scopes\Post($postEntity, $this->loadTopic($forumEntity, $topicEntity), $topicEntity);
+    }
+        
+    protected function requireAccess(\App\Authorization\IAuthorizationScope $scope, array $action)
+    {
+        if (!$this->isAllowed($scope, $action)) {
+            throw new \Exception();
+        }
+    }
+
+    protected function isAllowed(\App\Authorization\IAuthorizationScope $scope, array $action)
+    {
+        return $this->authorizator->isAllowed($this->getLoggedInUser()->getIdentity(), $scope, $action);
+    }        
 }

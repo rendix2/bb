@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\LanguagesManager;
+use App\Models\ModeratorsManager;
 use App\Models\UsersManager;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
@@ -18,18 +19,6 @@ use Nette\Utils\ArrayHash;
 class Authenticator implements IAuthenticator
 {
     /**
-     * @var array
-     */
-    const ROLES
-        = [
-            1 => 'guest',
-            2 => 'registered',
-            3 => 'moderator',
-            4 => 'juniorAdmin',
-            5 => 'admin'
-        ];
-    
-    /**
      * @var UsersManager $usersManager
      */
     private $usersManager;
@@ -38,6 +27,12 @@ class Authenticator implements IAuthenticator
      * @var LanguagesManager $languagesManager
      */
     private $languagesManager;
+    
+    /**
+     *
+     * @var ModeratorsManager $moderatorsManager
+     */
+    private $moderatorsManager;
 
     /**
      * Authenticator constructor.
@@ -45,10 +40,24 @@ class Authenticator implements IAuthenticator
      * @param UsersManager     $usersManger
      * @param LanguagesManager $languageManager
      */
-    public function __construct(UsersManager $usersManger, LanguagesManager $languageManager)
+    public function __construct(
+            UsersManager $usersManger,
+            LanguagesManager $languageManager,
+            ModeratorsManager $moderatorsManager
+    ) {
+        $this->usersManager      = $usersManger;
+        $this->languagesManager  = $languageManager;
+        $this->moderatorsManager = $moderatorsManager;
+    }
+    
+    /**
+     * 
+     */
+    public function __destruct()
     {
-        $this->usersManager     = $usersManger;
-        $this->languagesManager = $languageManager;
+        $this->usersManager      = null;
+        $this->languagesManager  = null;
+        $this->moderatorsManager = null;
     }
 
     /**
@@ -84,14 +93,17 @@ class Authenticator implements IAuthenticator
                
         $this->usersManager->update($userData->user_id, ArrayHash::from(['user_last_login_time' => time()]));
         
+        $moderators = $this->moderatorsManager->getPairsByLeft($userData->user_id);
+        
         $data =
             [
                 'user_name'            => $userData->user_name,
                 'lang_file_name'       => $langData->lang_file_name,
                 'user_last_login_time' => $userData->user_last_login_time,
-                'user_email'           => $userData->user_email
+                'user_email'           => $userData->user_email,
+                'moderator'            => $moderators
             ];
 
-        return new Identity($userData->user_id, self::ROLES[$userData->user_role_id], $data);
+        return new Identity($userData->user_id, Authorization\Authorizator::ROLES[$userData->user_role_id], $data);
     }
 }
