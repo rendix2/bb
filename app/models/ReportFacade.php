@@ -109,11 +109,7 @@ class ReportFacade
     public function deleteByTopic(TopicEntity $topic)
     {
         $posts     = $this->postsManager->getFluentByTopic($topic->getTopic_id());
-        $posts_ids = [];
-        
-        foreach ($posts as $post) {
-            $posts_ids[] = $post->post_id;
-        }
+        $posts_ids = \App\Utils::arrayObjectColumn($posts, 'post_id');
         
         $this->reportManager->deleteByPosts($posts_ids);
         return $this->reportManager->deleteByTopic($topic->getTopic_id());

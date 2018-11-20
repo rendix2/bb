@@ -58,9 +58,6 @@ class UserGroupsForm extends Control
 
     /**
      *
-    
-    /**
-     * 
      */
     public function __destruct()
     {

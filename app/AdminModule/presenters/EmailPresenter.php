@@ -121,11 +121,7 @@ class EmailPresenter extends AdminPresenter
     public function sendFormSuccess(Form $form, ArrayHash $values)
     {
         $users      = $this->usersManager->getAll();
-        $usersMails = [];
-
-        foreach ($users as $user) {
-            $usersMails[] = $user->user_email;
-        }
+        $usersMails = \App\Utils::arrayObjectColumn($users, 'user_email');
 
         $this->bbMailer->addRecipients($usersMails);
         $this->bbMailer->setSubject($values->email_subject);

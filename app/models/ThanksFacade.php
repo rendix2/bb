@@ -126,11 +126,7 @@ class ThanksFacade
     public function deleteByTopic(TopicEntity $topic)
     {
         $thanks   = $this->thanksManager->getAllByTopic($topic->getTopic_id());
-        $user_ids = [];
-
-        foreach ($thanks as $thank) {
-            $user_ids[] = $thank->thank_user_id;
-        }
+        $user_ids = \App\Utils::arrayObjectColumn($thanks, 'thank_user_id');
 
         if (count($user_ids)) {
             $this->usersManager->updateMulti(

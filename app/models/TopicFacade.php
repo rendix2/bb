@@ -262,12 +262,8 @@ class TopicFacade
             return false;
         }
         
-        $post_ids = [];
+        $post_ids = \App\Utils::arrayObjectColumn($posts, 'post_id');
         $posts    = $this->postsManager->getFluentByTopic($topic_id);
-
-        foreach ($posts as $post) {
-            $post_ids[] = $post->post_id;
-        }
 
         $this->forumsManager->update($source_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1', 'forum_post_count%sql' => 'forum_post_count - ' . $topic->topic_post_count]));
         $this->forumsManager->update($target_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1', 'forum_post_count%sql' => 'forum_post_count + ' . $topic->topic_post_count]));
@@ -288,15 +284,12 @@ class TopicFacade
      */
     public function splitFrom($topic_from_id, $topic_target_id, $from_post_id)
     {
-        $post_ids = [];
         $posts = $this->postsManager->getAllFluent()
             ->where('[post_topic_id] = %i', $topic_from_id)
             ->where('[post_id] > %i', $from_post_id)
             ->fetchAll();
-
-        foreach ($posts as $post) {
-            $post_ids[] = $post->post_id;
-        }
+        
+        $post_ids = \App\Utils::arrayObjectColumn($posts, 'post_id');
 
         return $this->mergeWithPosts($topic_target_id, $post_ids);
     }
@@ -310,15 +303,12 @@ class TopicFacade
      */
     public function splitTo($topic_from_id, $topic_target_id, $to_post_id)
     {
-        $post_ids = [];
         $posts = $this->postsManager->getAllFluent()
             ->where('[post_topic_id] = %i', $topic_from_id)
             ->where('[post_id] < %i', $to_post_id)
             ->fetchAll();
 
-        foreach ($posts as $post) {
-            $post_ids[] = $post->post_id;
-        }
+        $post_ids = \App\Utils::arrayObjectColumn($posts, 'post_id');
 
         return $this->mergeWithPosts($topic_target_id, $post_ids);
     }
@@ -346,10 +336,6 @@ class TopicFacade
             return false;
         }
 
-        $post_ids          = [];
-        $thanksFromUsers   = [];
-        $thanksTargetUsers = [];
-        
         $posts  = $this->postsManager->getFluentByTopic($topic_from_id);
         $thanks = $this->thanksManager->getAllByTopic($topic_from_id);
 
@@ -357,13 +343,8 @@ class TopicFacade
         $topicWatches = $this->topicWatchManager->getPairsByLeft($topic_from_id);
         $targetThanks = $this->thanksManager->getAllByTopic($topic_target_id);
 
-        foreach ($thanks as $thanksFrom) {
-            $thanksFromUsers[] = $thanksFrom->thank_user_id;
-        }
-              
-        foreach ($targetThanks as $thanksTarget) {
-            $thanksTargetUsers[] = $thanksTarget->thank_user_id;
-        }
+        $thanksFromUsers   = \App\Utils::arrayObjectColumn($thanks, 'thank_user_id');
+        $thanksTargetUsers = \App\Utils::arrayObjectColumn($targetThanks, 'thank_user_id');
         
         $same_thanks     = array_intersect($thanksTargetUsers, $thanksFromUsers);
         $missing_thanks = array_diff($thanksFromUsers, $thanksTargetUsers);
@@ -380,16 +361,8 @@ class TopicFacade
         $topicsWatchesFrom    = $this->topicWatchManager->getAllByLeft($topic_from_id);
         $topicsWatchesTarget  = $this->topicWatchManager->getAllByLeft($topic_target_id);
 
-        $topic_watch_from_user_ids   = [];
-        $topic_watch_target_user_ids = [];
-
-        foreach ($topicsWatchesFrom as $topicsWatchFrom) {
-            $topic_watch_from_user_ids[] = $topicsWatchFrom->user_id;
-        }
-
-        foreach ($topicsWatchesTarget as $topicWatchTarget) {
-            $topic_watch_target_user_ids[] = $topicWatchTarget->user_id;
-        }
+        $topic_watch_from_user_ids   = \App\Utils::arrayObjectColumn($topicsWatchesFrom, 'user_id');
+        $topic_watch_target_user_ids = \App\Utils::arrayObjectColumn($topicsWatchesTarget, 'user_id');
 
         $same_watches    = array_intersect($topic_watch_from_user_ids, $topic_watch_target_user_ids);
         $missing_watches = array_diff($topic_watch_target_user_ids, $topic_watch_from_user_ids);
@@ -417,9 +390,7 @@ class TopicFacade
         $this->topicWatchManager->mergeByLeft($topic_target_id, $topicWatches);
         $this->topicWatchManager->deleteByLeft($topic_from_id);
         
-        foreach ($posts as $post) {
-            $post_ids[] = $post->post_id;
-        }
+        $post_ids = \App\Utils::arrayObjectColumn($posts, 'post_id');
 
         $this->mergeWithPosts($topic_target_id, $post_ids);
         $this->topicsManager->delete($topic_from_id);

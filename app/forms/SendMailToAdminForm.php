@@ -104,11 +104,7 @@ class SendMailToAdminForm extends Control
                 ->where('[user_role_id] = %i', 5)
                 ->fetchAll();
         
-        $adminsMails = [];
-        
-        foreach ($admins as $admin) {
-            $adminsMails[] = $admin->user_email;
-        }
+        $adminsMails = \App\Utils::arrayObjectColumn($admins, 'user_email');
         
         $this->bbMailer->addRecipients($adminsMails);
         $this->bbMailer->setSubject($values->mail_subject);

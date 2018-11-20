@@ -76,6 +76,7 @@ class CategoryFacade
      * @param int       $item_id
      * @param ArrayHash $item_data
      *
+     * @return bool
      */
     public function update($item_id, ArrayHash $item_data)
     {

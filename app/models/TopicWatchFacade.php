@@ -112,11 +112,7 @@ class TopicWatchFacade
     public function deleteByTopic(TopicEntity $topic)
     {
         $topicsWatches = $this->topicWatchManager->getAllByLeft($topic->getTopic_id());
-        $user_ids      = [];
-
-        foreach ($topicsWatches as $topicsWatch) {
-            $user_ids[] = $topicsWatch->user_id;
-        }
+        $user_ids      = \App\Utils::arrayObjectColumn($topicsWatches, 'user_id');
 
         if (count($user_ids)) {
             $this->usersManager->updateMulti(

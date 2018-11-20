@@ -165,14 +165,9 @@ class BBMailer
             'mail_time'    => time()
         ];
         
-        $emails   = $this->usersManager->getAllByEmails($this->recipients);
-        $email_id = $this->manager->add(ArrayHash::from($item_data));
-        
-        $emailsArray = [];
-        
-        foreach ($emails as $email) {
-            $emailsArray[] = $email->user_id;
-        }
+        $emails      = $this->usersManager->getAllByEmails($this->recipients);
+        $email_id    = $this->manager->add(ArrayHash::from($item_data));        
+        $emailsArray = \App\Utils::arrayObjectColumn($emails, 'user_id');
         
         $this->mails2users->addByLeft($email_id, $emailsArray);
     }
