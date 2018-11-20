@@ -6,6 +6,8 @@ use App\Authorization\Authorizator;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
+use App\Controls\ChangePasswordControl;
+use App\Controls\DeleteAvatarControl;
 use App\Controls\PaginatorControl;
 use App\Forms\ReportForm;
 use App\Forms\SendMailToAdminForm;
@@ -19,7 +21,6 @@ use App\Models\LanguagesManager;
 use App\Models\ModeratorsManager;
 use App\Models\RanksManager;
 use App\Models\ReportsManager;
-use App\Models\ThanksManager;
 use App\Models\TopicWatchManager;
 use App\Models\Traits\UsersTrait;
 use App\Models\UsersManager;
@@ -64,12 +65,6 @@ class UserPresenter extends BaseForumPresenter
      * @inject
      */
     public $topicWatchManager;
-
-    /**
-     * @var ThanksManager $thanksManager
-     * @inject
-     */
-    public $thanksManager;
     
     /**
      * @var Avatars $avatar
@@ -147,12 +142,12 @@ class UserPresenter extends BaseForumPresenter
     {
         parent::__construct($manager);
     }
-    
+
     /**
-     * 
+     *
      */
     public function __destruct()
-    {    
+    {
         $this->usersManager          = null;
         $this->topicsManager         = null;
         $this->postsManager          = null;
@@ -170,7 +165,7 @@ class UserPresenter extends BaseForumPresenter
         $this->startDay              = null;
         $this->users                 = null;
         $this->reportsManager        = null;
-        
+
         parent::__destruct();
     }
 
@@ -293,7 +288,9 @@ class UserPresenter extends BaseForumPresenter
         $rankUser = null;
 
         foreach ($ranks as $rank) {
-            if ($user->getUser_post_count() >= $rank->rank_from && $user->getUser_post_count() <= $rank->rank_to) {
+            $post_count = $user->getUser_post_count();
+
+            if ($post_count >= $rank->rank_from && $post_count <= $rank->rank_to) {
                 $rankUser = $rank;
                 break;
             }
@@ -401,9 +398,9 @@ class UserPresenter extends BaseForumPresenter
     {
         $this->setView('list');
         
-        $users = $this->getManager()
-            ->getAllFluent()
-            ->where('[user_role_id] = %i', 3);
+                $users = $this->getManager()
+                ->getAllFluent()
+                ->where('[user_role_id] = %i', 3);
         
         $pag = new PaginatorControl($users, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
@@ -437,17 +434,26 @@ class UserPresenter extends BaseForumPresenter
         $this->template->type  = 5;
         $this->template->users = $users->fetchAll();
     }
-    
+
+    /**
+     * @param int $user_id
+     * @param int $page
+     */
     public function actionFiles($user_id, $page = 1)
     {
-        
     }
 
+    /**
+     *
+     */
     public function renderRegister()
     {
         // todo
     }
-    
+
+    /**
+     *
+     */
     public function renderSendMailToAdmin()
     {
         // TODO
@@ -462,7 +468,7 @@ class UserPresenter extends BaseForumPresenter
     }
 
     /**
-     * @return BootstrapForm
+     * @return ReportForm
      */
     protected function createComponentReportUserForm()
     {
@@ -531,8 +537,8 @@ class UserPresenter extends BaseForumPresenter
             'user_avatar',
             'User avatar:'
         )->setAttribute('title', 'Max width: '.$this->avatar->getMaxWidth().'px, max height: '.$this->avatar->getMaxHeight().'px')
-         ->setRequired(false)
-         ->addRule(Form::IMAGE, 'user_avatar_file_rule');
+                ->setRequired(false)
+                ->addRule(Form::IMAGE, 'user_avatar_file_rule');
         $form->addTextArea('user_signature', 'User signature:');
         $form->addSubmit(
             'send',
@@ -552,12 +558,12 @@ class UserPresenter extends BaseForumPresenter
     }
     
     /**	
-     * @param Form      $form	
-     * @param ArrayHash $values	
+     * @param Form      $form
+     * @param ArrayHash $values
      */	
-    public function editUserOnValidate(Form $form, ArrayHash $values)	
-    {	
-    }    
+    public function editUserOnValidate(Form $form, ArrayHash $values)
+    {
+    }
     
     /**
      * @param Form      $form

@@ -56,7 +56,7 @@ class PmPresenter extends CrudPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -66,7 +66,7 @@ class PmPresenter extends CrudPresenter
         parent::__destruct();
     }
 
-        /**
+    /**
      *
      * @param mixed $element
      */
@@ -215,7 +215,7 @@ class PmPresenter extends CrudPresenter
             2 => ['text' => 'pm_report']
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->translator);        
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     /**

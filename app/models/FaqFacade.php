@@ -49,7 +49,6 @@ class FaqFacade
      */
     public function add(ArrayHash $item_data)
     {
-        
     }
 
     /**
@@ -57,6 +56,5 @@ class FaqFacade
      */
     public function delete($item_id)
     {
-        
     }
 }

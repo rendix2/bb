@@ -22,9 +22,9 @@ trait PostTrait
     public $postsManager;
         
     /**
-     * 
+     *
      * @param int $post_id
-     * @param imt $category_id
+     * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
      * 
@@ -38,7 +38,7 @@ trait PostTrait
         
         if (!is_numeric($post_id)) {
             $this->error('Post param is not numeric.');
-        }        
+        }
 
         $postDibi = $this->postsManager->getById($post_id);
 

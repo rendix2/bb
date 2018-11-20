@@ -38,7 +38,7 @@ class UserModeratorForm extends Control
     private $forumsManager;
 
     /**
-     * 
+     *
      * @param ForumsManager     $forumsManager
      * @param ModeratorsManager $moderatorsManager
      * @param ITranslator       $translator
@@ -49,14 +49,14 @@ class UserModeratorForm extends Control
         ITranslator       $translator
     ) {
         parent::__construct();
-        
+
         $this->forumsManager     = $forumsManager;
         $this->moderatorsManager = $moderatorsManager;
         $this->translator        = $translator;
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -66,10 +66,10 @@ class UserModeratorForm extends Control
     }
 
     /**
-     * 
+     *
      */
     public function render()
-    {   
+    {
         $sep = DIRECTORY_SEPARATOR;
         
         $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'userModeratorForm.latte');
@@ -79,7 +79,7 @@ class UserModeratorForm extends Control
         $this->template->myModerators = $this->moderatorsManager->getPairsByLeft($this->getPresenter()->getParameter('id'));
         
         $this->template->render();
-    }    
+    }
 
     /**
      * @return BootstrapForm

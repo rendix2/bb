@@ -16,10 +16,10 @@ trait ForumsTrait
      * @var ForumsManager $forumsManager
      * @inject
      */
-    public $forumsManager;  
+    public $forumsManager;
     
     /**
-     * 
+     *
      * @param int $forum_id
      * @param int $category_id
      * 
@@ -56,5 +56,5 @@ trait ForumsTrait
         }
 
         return $forum;
-    }   
+    }
 }

@@ -97,6 +97,7 @@ class TopicFacade
      * @param TopicWatchFacade  $topicWatchFacade
      * @param ThanksFacade      $thanksFacade
      * @param ReportFacade      $reportFacade
+     * @param PollsFacade       $pollsFacade
      */
     public function __construct(
         TopicsManager     $topicsManager,
@@ -144,7 +145,7 @@ class TopicFacade
 
     /**
      *
-     * @param ArrayHash $topic
+     * @param Entity\Topic $topic
      *
      * @return Result|int
      */
@@ -154,7 +155,7 @@ class TopicFacade
         $topic->setTopic_id($topic_id);
         $topic->getPost()->setPost_topic_id($topic_id);
         
-        if ($topic->getPoll()) {            
+        if ($topic->getPoll()) {
             $topic->getPoll()->setPoll_topic_id($topic_id);
             
             $this->pollsFacade->add($topic->getPoll());
@@ -194,7 +195,7 @@ class TopicFacade
     public function delete(TopicEntity $topic)
     {
         $this->thanksFacade->deleteByTopic($topic);
-        $this->topicWatchFacade->deleteByTopic($topic);        
+        $this->topicWatchFacade->deleteByTopic($topic);
         $this->reportFacade->deleteByTopic($topic);
         
         if ($topic->getPoll()) {
@@ -202,16 +203,16 @@ class TopicFacade
         }
         
         $this->usersManager
-                ->update($topic->getTopic_user_id(), ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
+            ->update($topic->getTopic_user_id(), ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
         
         $posts = $this->postsManager->getCountOfUsersByTopicId($topic->getTopic_id());
         $users = [];
         
         foreach ($posts as $post) {
             $users[] = $post->post_user_id;
-            
+
             $this->usersManager->update($post->post_user_id, ArrayHash::from(['user_post_count%sql' => 'user_post_count - ' . $post->post_count]));
-        }        
+        }
 
         $this->forumsManager->update(
             $topic->getTopic_forum_id(),
@@ -244,6 +245,8 @@ class TopicFacade
      *
      * @param int $topic_id
      * @param int $target_forum_id
+     *
+     * @return bool|Result|int
      */
     public function move($topic_id, $target_forum_id)
     {
@@ -269,7 +272,7 @@ class TopicFacade
         $this->forumsManager->update($source_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1', 'forum_post_count%sql' => 'forum_post_count - ' . $topic->topic_post_count]));
         $this->forumsManager->update($target_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1', 'forum_post_count%sql' => 'forum_post_count + ' . $topic->topic_post_count]));
         
-        $this->postsManager->updateMulti($post_ids, ArrayHash::from(['post_forum_id' => $target_forum_id]));        
+        $this->postsManager->updateMulti($post_ids, ArrayHash::from(['post_forum_id' => $target_forum_id]));
         $this->reportsManager->updateByTopic($topic_id, ArrayHash::from(['report_forum_id' => $target_forum_id]));
         $this->thanksManager->updateByTopic($topic_id, ArrayHash::from(['thank_forum_id' => $target_forum_id]));
         
@@ -323,6 +326,8 @@ class TopicFacade
     /**
      * @param int $topic_from_id
      * @param int $topic_target_id
+     *
+     * @return bool
      */
     public function mergeTwoTopics($topic_from_id, $topic_target_id)
     {
@@ -460,7 +465,7 @@ class TopicFacade
             $poll = $topic->getPoll();
             $poll->setPoll_topic_id($topic->getTopic_id());
             
-            if($poll->poll_question) {            
+            if ($poll->poll_question) {
                 $this->pollsFacade->update($poll);
             } else {
                 $this->pollsFacade->delete($poll);

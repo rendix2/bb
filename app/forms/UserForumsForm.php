@@ -23,21 +23,21 @@ class UserForumsForm extends Control
      * @var ForumsManager $forumsManager
      */
     private $forumsManager;
-    
+
     /**
      *
-     * @var Users2ForumsManager $users2ForumsManager,
+     * @var Users2ForumsManager $users2ForumsManager
      */
     private $users2ForumsManager;
-    
+
     /**
      *
-     * @var ITranslator $translator 
+     * @var ITranslator $translator
      */
-    private $translator;   
-    
+    private $translator;
+
     /**
-     * 
+     *
      * @param ForumsManager       $forumsManager
      * @param Users2ForumsManager $users2ForumsManager
      * @param ITranslator         $translator
@@ -67,7 +67,7 @@ class UserForumsForm extends Control
     public function render()
     {
         $sep = DIRECTORY_SEPARATOR;
-        
+
         $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'userForumsForm.latte');
         $this->template->setTranslator($this->translator);
 
@@ -76,20 +76,20 @@ class UserForumsForm extends Control
         $forums = $this->users2ForumsManager->getAllByLeft($id);
 
         foreach ($forums as $permission) {
-            $data[$permission->forum_id]['post_add']     = $permission->post_add;
-            $data[$permission->forum_id]['post_update']    = $permission->post_update;
-            $data[$permission->forum_id]['post_delete']  = $permission->post_delete;
-            $data[$permission->forum_id]['topic_add']    = $permission->topic_add;
-            $data[$permission->forum_id]['topic_update']   = $permission->topic_update;
-            $data[$permission->forum_id]['topic_delete'] = $permission->topic_delete;
-            $data[$permission->forum_id]['topic_thank']  = $permission->topic_thank;
-            $data[$permission->forum_id]['topic_fast_reply']  = $permission->topic_fast_reply;
+            $data[$permission->forum_id]['post_add']         = $permission->post_add;
+            $data[$permission->forum_id]['post_update']      = $permission->post_update;
+            $data[$permission->forum_id]['post_delete']      = $permission->post_delete;
+            $data[$permission->forum_id]['topic_add']        = $permission->topic_add;
+            $data[$permission->forum_id]['topic_update']     = $permission->topic_update;
+            $data[$permission->forum_id]['topic_delete']     = $permission->topic_delete;
+            $data[$permission->forum_id]['topic_thank']      = $permission->topic_thank;
+            $data[$permission->forum_id]['topic_fast_reply'] = $permission->topic_fast_reply;
         }
 
         $this->template->countOfUsers = $this->users2ForumsManager->getCountByRight($id);
-        $this->template->permissions  = $data; 
-         $this->template->forums      = $this->forumsManager->createForums($this->forumsManager->getAllCached(), 0);
-                
+        $this->template->permissions  = $data;
+        $this->template->forums       = $this->forumsManager->createForums($this->forumsManager->getAllCached(), 0);
+
         $this->template->render();
     }
     
@@ -113,9 +113,9 @@ class UserForumsForm extends Control
         }
 
         return $result;
-    }    
-    
-   /**
+    }
+
+    /**
      * @return BootstrapForm
      */
     public function createComponentForumsForm()
@@ -135,7 +135,7 @@ class UserForumsForm extends Control
     {
         $forums  = $form->getHttpData($form::DATA_TEXT, 'forums[]');
         $user_id = $this->presenter->getParameter('id');
-        
+
         $post_add         = $form->getHttpData($form::DATA_TEXT, 'post_add[]');
         $post_update      = $form->getHttpData($form::DATA_TEXT, 'post_update[]');
         $post_delete      = $form->getHttpData($form::DATA_TEXT, 'post_delete[]');
@@ -145,9 +145,8 @@ class UserForumsForm extends Control
         $forum_id         = $form->getHttpData($form::DATA_TEXT, 'forum_id[]');
         $topic_thank      = $form->getHttpData($form::DATA_TEXT, 'topic_thank[]');
         $topic_fast_reply = $form->getHttpData($form::DATA_TEXT, 'topic_fast_reply[]');
-        
-        $count = $this->forumsManager->getCount();
 
+        $count  = $this->forumsManager->getCount();
         $users  = [];
         $forums = [];
 
@@ -168,11 +167,33 @@ class UserForumsForm extends Control
             'forum_id'         => $forums,
             'user_id'          => $users
         ];
-        
+
         $this->users2ForumsManager->deleteByLeft($user_id);
         $this->users2ForumsManager->addNative($permission);
         
         $this->presenter->flashMessage('Forum was saved.', BasePresenter::FLASH_MESSAGE_SUCCESS);
         $this->presenter->redirect('User:edit', $user_id);
-    }    
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
+    private function map(array $data)
+    {
+        $result = [];
+
+        foreach ($this->forumsManager->getAllCached() as $value) {
+            $result[$value->forum_id] = false;
+
+            foreach ($data as $value2) {
+                if ($value->forum_id === (int)$value2) {
+                    $result[$value->forum_id] = true;
+                }
+            }
+        }
+
+        return $result;
+    }
 }

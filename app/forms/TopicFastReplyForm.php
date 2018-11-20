@@ -60,7 +60,7 @@ class TopicFastReplyForm extends Control
         IRequest          $request
     ) {
         parent::__construct();
-        
+
         $this->translatorFactory = $translatorFactory;
         $this->user              = $user;
         $this->postFacade        = $postFacade;

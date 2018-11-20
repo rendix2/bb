@@ -73,7 +73,7 @@ class PermissionFactory
         $this->allow($permission, ForumScope::ROLE_FORUM_POST_ADDER, ForumScope::ACTION_POST_ADD);  
         $this->allow($permission, ForumScope::ROLE_FORUM_TOPIC_ADDER, ForumScope::ACTION_TOPIC_ADD);
         
-        //$this->allow($permission, Scopes\Forum::ROLE_FORUM_POST_UPDATER, Scopes\Forum::ACTION_POST_UPDATE);  
+        //$this->allow($permission, Scopes\Forum::ROLE_FORUM_POST_UPDATER, Scopes\Forum::ACTION_POST_UPDATE);
         //$this->allow($permission, Scopes\Forum::ROLE_FORUM_TOPIC_UPDATER, Scopes\Forum::ACTION_TOPIC_UPDATE);
         
         $this->allow($permission, ForumScope::ROLE_FORUM_POST_DELETER, ForumScope::ACTION_POST_DELETE);
@@ -123,6 +123,6 @@ class PermissionFactory
     {
         list($resource, $privilege) = $action;
         $permission->deny($role, $resource, $privilege);
-    }    
+    }
 }
 

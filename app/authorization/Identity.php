@@ -19,9 +19,9 @@ class Identity
     private $roles;
 
     /**
-     * 
-     * @param type $id
-     * @param type $roles
+     *
+     * @param int $id
+     * @param array $roles
      */
     public function __construct($id, $roles)
     {
@@ -39,7 +39,6 @@ class Identity
     }
 
     /**
-     * 
      * @return int
      */
     public function getId()

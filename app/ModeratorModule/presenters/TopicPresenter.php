@@ -150,5 +150,4 @@ class TopicPresenter extends ModeratorPresenter
         
         $this->template->topics = $this->getManager()->getAllByForum($forum_id);
     }
-    
 }

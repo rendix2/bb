@@ -188,7 +188,7 @@ class PostFacade
                 $file_id = $this->filesManager->add($file->getArrayHash());
                 
                 $file->setFile_id($file_id);
-                $files_ids[] = $file->getFile_id();                
+                $files_ids[] = $file->getFile_id();
             }
             
             $this->posts2FilesManger->addByLeft($post_id, $files_ids);
@@ -231,8 +231,7 @@ class PostFacade
     }
 
     /**
-     * @param int       $item_id
-     * @param ArrayHash $item_data
+     * @param Entity\Post $post
      *
      * @return bool
      */
@@ -240,13 +239,13 @@ class PostFacade
     {
         //$myPost = clone $post;
         //unset($myPost->post_id);
-        
-        $add    = $this->postsHistoryManager->add(ArrayHash::from([
-                'post_id'           => $post->getPost_id(),
-                'post_user_id'      => $post->getPost_user_id(),
-                'post_title'        => $post->getPost_title(),
-                'post_text'         => $post->getPost_text(),
-                'post_history_time' => time()
+
+        $add = $this->postsHistoryManager->add(ArrayHash::from([
+            'post_id' => $post->getPost_id(),
+            'post_user_id' => $post->getPost_user_id(),
+            'post_title' => $post->getPost_title(),
+            'post_text' => $post->getPost_text(),
+            'post_history_time' => time()
         ]));
 
         $post->setPost_user_id(null);
@@ -272,7 +271,7 @@ class PostFacade
             ArrayHash::from([
                 'topic_post_count%sql' => 'topic_post_count - 1',
                 'topic_page_count'     => ceil(($topic->getTopic_post_count() - 1) / $this->topicSettings->get()['pagination']['itemsPerPage'])
-                ])
+            ])
         );
 
         $this->thanksFacade->deleteByPost($post);
@@ -285,7 +284,7 @@ class PostFacade
         );
         
         // recount last post info
-        $res = $this->postsManager->delete($post->getPost_id());        
+        $res = $this->postsManager->delete($post->getPost_id());
                 
         // last post
         if ($topic->getTopic_last_post_id() === (int)$post->getPost_id() && $topic->getTopic_first_post_id() !== (int)$post->getPost_id()) {
@@ -295,7 +294,7 @@ class PostFacade
                 $this->topicsManager->update($post->getPost_topic_id(), ArrayHash::from([
                     'topic_last_post_id' => $last_post->post_id,
                     'topic_last_user_id' => $last_post->post_user_id
-                ]));                
+                ]));
             }
         } elseif ($topic->getTopic_first_post_id() === (int)$post->getPost_id() && $topic->getTopic_last_post_id() !== (int)$post->getPost_id()) {
             $first_post = $this->postsManager->getFirstByTopic($post->getPost_topic_id());
@@ -304,7 +303,7 @@ class PostFacade
                 $this->topicsManager->update($post->getPost_topic_id(), ArrayHash::from([
                     'topic_first_post_id' => $first_post->post_id,
                     'topic_first_user_id' => $first_post->post_user_id
-                ]));                
+                ]));
             }
         } elseif ($topic->getTopic_last_post_id() === $topic->getTopic_first_post_id() && $topic->getTopic_first_post_id() === (int)$post->getPost_id()) {
             $this->forumsManager->update($post->getPost_forum_id(), ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
@@ -340,10 +339,10 @@ class PostFacade
     }
     
     /**
-     * 
+     *
      * @param int $post_id
      * @param int $target_topic_id
-     * 
+     *
      * @return boolean
      */
     public function move($post_id, $target_topic_id)
@@ -352,7 +351,7 @@ class PostFacade
        
         if (!$post) {
             return false;
-        }     
+        }
         
         $target_topic = $this->topicsManager->getById($target_topic_id);
         
@@ -361,7 +360,7 @@ class PostFacade
         }
         
         $source_topic_id = $post->post_topic_id;
-        $source_forum_id = $post->post_forum_id;        
+        $source_forum_id = $post->post_forum_id;
                 
         $target_forum_id = $target_topic->topic_forum_id;
        

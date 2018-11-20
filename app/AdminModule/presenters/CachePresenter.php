@@ -32,6 +32,7 @@ class CachePresenter extends AdminPresenter
      * CachePresenter constructor.
      *
      * @param CacheManager $manager
+     * @param IStorage     $storage
      */
     public function __construct(CacheManager $manager, IStorage $storage)
     {

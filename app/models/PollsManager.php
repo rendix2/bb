@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Crud\CrudManager;
+use Dibi\Row;
 
 /**
  * Description of PollsManager
@@ -14,9 +15,9 @@ class PollsManager extends CrudManager
 {
 
     /**
-     * 
+     *
      * @param int $topic_id
-     * 
+     *
      * @return Row
      */
     public function getByTopic($topic_id)

@@ -3,12 +3,12 @@
 namespace App\Controls;
 
 use Dibi\Fluent;
+use Exception;
 use InvalidArgumentException;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Http\Session;
 use Nette\Localization\ITranslator;
-use Nette\Neon\Exception;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
 
@@ -33,7 +33,7 @@ class GridFilter extends Control
     /**
      * @var string
      */
-    const TEXT_FULTEXT = 'tf';
+    const TEXT_FULLTEXT = 'tf';
     
     /**
      * @var string
@@ -67,7 +67,7 @@ class GridFilter extends Control
     
     /**
      * @var string
-     */    
+     */
     const SESSION_PREFIX = 'grid_filter_';
 
     /**
@@ -93,6 +93,8 @@ class GridFilter extends Control
 
     /**
      * GridFilter constructor.
+     *
+     * @param Session $session
      */
     public function __construct(Session $session)
     {
@@ -104,7 +106,7 @@ class GridFilter extends Control
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -123,28 +125,32 @@ class GridFilter extends Control
     }
 
     /**
-     * @return array
+     * @return void
      */
     public function applyOrderBy(Fluent $fluent)
     {
         foreach ($this->getParameters() as $columnName => $sortType) {
-            if (!empty($sortType) || strpos($columnName, 'sort_') === 0 ) {
+            if (!empty($sortType) || strpos($columnName, 'sort_') === 0) {
                 $columnName = $this->checkFTI(str_replace('sort_', '', $columnName));
 
                 $fluent->orderBy($columnName, $sortType);
             }
         }
     }
-    
+
+    /**
+     *
+     * @return array
+     */
     public function getColumnsSearchedBy()
     {
-        $sessionName = self::SESSION_PREFIX . $this->presenter->name. ':' . $this->presenter->action;        
-        $where       = [];        
+        $sessionName = self::SESSION_PREFIX . $this->presenter->name. ':' . $this->presenter->action;
+        $where       = [];
         
-        foreach ($this->filters as $columnName => $val) {   
+        foreach ($this->filters as $columnName => $val) {
             $value = $this->session->getSection($sessionName)->{$columnName};
-            
-            if ((is_string($value) && mb_strlen($value)) || (is_array($value) && count($value)) || $value ) {
+
+            if ((is_string($value) && mb_strlen($value)) || (is_array($value) && count($value)) || $value) {
                 $where[$columnName] = $val['text'];
             }
         }
@@ -169,9 +175,9 @@ class GridFilter extends Control
             }
                 
             $columnName = $this->checkFTI($col);
-                               
-            switch($val['type']) {
-                case self::TEXT_FULTEXT:
+
+            switch ($val['type']) {
+                case self::TEXT_FULLTEXT:
                     $fluent->where('MATCH(%n) AGAINST (%s IN BOOLEAN MODE)', $columnName, $value);
                     break;
                 case self::TEXT_EQUAL:
@@ -192,7 +198,7 @@ class GridFilter extends Control
                 case self::FROM_TO_INT:
                     if (strpos($col, '_Xfrom')) {
                         $fluent->where('%n >= %i', $columnName, $value);
-                    } else if (strpos($col, '_Xto')) {
+                    } elseif (strpos($col, '_Xto')) {
                         $fluent->where('%n <= %i', $columnName, $value);
                     }
                     break;
@@ -201,7 +207,7 @@ class GridFilter extends Control
                         
                     if (strpos($col, '_Xfrom')) {
                         $fluent->where('%n >= %i', $columnName, $time->getTimestamp());
-                    } else if (strpos($col, '_Xto')) {
+                    } elseif (strpos($col, '_Xto')) {
                         $fluent->where('%n <= %i', $columnName, $time->getTimestamp());
                     }
                     break;
@@ -218,24 +224,26 @@ class GridFilter extends Control
      * @param string $columnName
      * @param string $text
      * @param string $type
-     * @param array  $data
+     * @param array $data
+     *
+     * @throws \InvalidArgumentException
      */
     public function addFilter($columnName, $text, $type, array $data = [])
     {
         switch ($type) {
             case self::TEXT_EQUAL:
             case self::TEXT_LIKE:
-            case self::TEXT_FULTEXT:
+            case self::TEXT_FULLTEXT:
                 $this->form->addText($columnName, $text)
                     ->setAttribute('placeholder', $text);
-                break;            
+                break;
             case self::INT_EQUAL:
             case self::INT_LIKE:
                 $this->form->addText($columnName, $text)
                     ->setAttribute('placeholder', $text)
                     ->setRequired(false)
                     ->addRule(Form::INTEGER);
-                break;           
+                break;
             case self::NOTHING:
                 break;
             case self::FROM_TO_INT:
@@ -256,8 +264,8 @@ class GridFilter extends Control
                     ->setAttribute('placeholder', 'From')
                     ->setAttribute('class', 'mb-1');
                 $this->form->addTbDatePicker($columnName. '_Xto', $text)
-                        ->setAttribute('placeholder', 'To');             
-                break;    
+                        ->setAttribute('placeholder', 'To');
+                break;
             
             case self::CHECKBOX_LIST:
                 $this->form->addCheckboxList($columnName, $text, $data);
@@ -266,24 +274,24 @@ class GridFilter extends Control
                 throw new InvalidArgumentException('Unknow filter type.');
         
         }
-        
+
         if ($type === self::DATE_TIME || $type === self::FROM_TO_INT) {
-                $this->filters[$columnName. '_Xfrom'] = [
-                    'type'     => $type,
-                    'text'     => $text,
-                ];
-                
-                $this->filters[$columnName. '_Xto'] = [
-                    'type'     => $type,
-                    'text'     => $text,
-                ];             
+            $this->filters[$columnName . '_Xfrom'] = [
+                'type' => $type,
+                'text' => $text,
+            ];
+
+            $this->filters[$columnName . '_Xto'] = [
+                'type' => $type,
+                'text' => $text,
+            ];
         } else {
-           $this->filters[$columnName] = [
-                    'type'     => $type,
-                    'text'     => $text,
-                    'data'     => $data
-                ]; 
-        }                
+            $this->filters[$columnName] = [
+                'type' => $type,
+                'text' => $text,
+                'data' => $data
+            ];
+        }
     }
 
     /**
@@ -328,6 +336,8 @@ class GridFilter extends Control
 
     /**
      * renders grid filter
+     *
+     * @throws Exception
      */
     public function render()
     {

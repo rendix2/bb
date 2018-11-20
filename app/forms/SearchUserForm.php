@@ -34,7 +34,7 @@ class SearchUserForm extends Control
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -72,6 +72,5 @@ class SearchUserForm extends Control
     public function searchUserFormSuccess(Form $form, ArrayHash $values)
     {
         $this->presenter->redirect('Search:userResults', $values->search_user);
-    }    
-    
+    }
 }

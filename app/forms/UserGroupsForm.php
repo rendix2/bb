@@ -10,6 +10,7 @@ use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
+
 /**
  * Description of UserGroupsForm
  *
@@ -27,19 +28,21 @@ class UserGroupsForm extends Control
 
     /**
      *
-     * @var Users2GroupsManager 
+     * @var Users2GroupsManager
      */
     private $users2GroupsManager;
     
     /**
      *
-     * @var ITranslator $translator 
+     * @var ITranslator $translator
      */
     private $translator;
-    
+
     /**
-     * 
+     *
+     * @param GroupsManager       $groupsManager
      * @param Users2GroupsManager $users2GroupsManager
+     * @param ITranslator         $translator
      */
     public function __construct(
         GroupsManager       $groupsManager,
@@ -52,6 +55,9 @@ class UserGroupsForm extends Control
         $this->users2GroupsManager = $users2GroupsManager;
         $this->translator          = $translator;
     }
+
+    /**
+     *
     
     /**
      * 
@@ -64,10 +70,10 @@ class UserGroupsForm extends Control
     }
 
     /**
-     * 
+     *
      */
     public function render()
-    {   
+    {
         $sep = DIRECTORY_SEPARATOR;
         
         $this->template->setFile(__DIR__ . $sep. 'templates' . $sep . 'userGroupsForm.latte');
@@ -105,5 +111,4 @@ class UserGroupsForm extends Control
         $this->presenter->flashMessage('Group was saved.', BasePresenter::FLASH_MESSAGE_SUCCESS);
         $this->presenter->redirect('User:edit', $user_id);
     }
-    
 }

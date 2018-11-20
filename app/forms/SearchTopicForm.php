@@ -42,7 +42,7 @@ class SearchTopicForm extends Control
     }    
 
     /**
-     * 
+     *
      */
     public function render()
     {
@@ -71,5 +71,5 @@ class SearchTopicForm extends Control
     public function searchTopicFormSuccess(Form $form, ArrayHash $values)
     {
         $this->presenter->redirect('Search:topicResults', $values->search_topic);
-    }    
+    }
 }

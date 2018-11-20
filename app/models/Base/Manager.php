@@ -30,7 +30,7 @@ abstract class Manager extends Tables
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

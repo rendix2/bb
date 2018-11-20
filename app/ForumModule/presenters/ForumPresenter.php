@@ -63,7 +63,7 @@ final class ForumPresenter extends BaseForumPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -80,7 +80,7 @@ final class ForumPresenter extends BaseForumPresenter
 
     /**
      * action default
-     * 
+     *
      * @param int $category_id
      * @param int $forum_id
      * @param int $page
@@ -90,18 +90,18 @@ final class ForumPresenter extends BaseForumPresenter
         $category   = $this->checkCategoryParam($category_id);
         $forum      = $this->checkForumParam($forum_id, $category_id);
         
-        $forumScope = $this->loadForum($forum); 
+        $forumScope = $this->loadForum($forum);
         
         $this->requireAccess($forumScope, ForumScope::ACTION_VIEW);
 
-        $forumSettings = $this->forumSettings->get();        
+        $forumSettings = $this->forumSettings->get();
         $topics        = $this->topicsManager->getFluentByForumJoinedUsersJoinedLastPost($forum_id);
         
         if (isset($this['gridFilter'])) {
             $this->getComponent('gridFilter');
         }
 
-        $this->gf->applyWhere($topics);        
+        $this->gf->applyWhere($topics);
         $this->gf->applyOrderBy($topics);
 
         $paginator = new PaginatorControl($topics, $forumSettings['pagination']['itemsPerPage'], $forumSettings['pagination']['itemsAroundPagination'], $page);
@@ -125,7 +125,6 @@ final class ForumPresenter extends BaseForumPresenter
      * @param int $category_id
      * @param int $forum_id
      * @param int $page
-     * @param string|null $q
      */
     public function renderDefault($category_id, $forum_id, $page = 1)
     {
@@ -159,7 +158,7 @@ final class ForumPresenter extends BaseForumPresenter
     }
 
     /**
-     * 
+     *
      * @return GridFilter
      */
     protected function createComponentGridFilter()

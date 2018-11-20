@@ -28,7 +28,7 @@ class TopicWatchFacade
     
     /**
      *
-     * @var TopicsManager $topicsManager 
+     * @var TopicsManager $topicsManager
      */
     private $topicsManager;
 
@@ -92,11 +92,11 @@ class TopicWatchFacade
     }
 
     /**
-     * 
+     *
      * @param int $forum_id
      */
     public function deleteByForum($forum_id)
-    {        
+    {
         $topics = $this->topicsManager->getAllByForum($forum_id);
         
         foreach ($topics as $topicDibi) {
@@ -127,7 +127,7 @@ class TopicWatchFacade
         
         return $this->topicWatchManager->deleteByLeft($topic->getTopic_id());
     }
-    
+
     /**
      *
      * @param PostEntity $post
@@ -143,9 +143,9 @@ class TopicWatchFacade
                 $check = $this->topicWatchManager->fullCheck($post->getPost_topic_id(), $ps->post_user_id);
 
                 if ($check) {
-                    $this->topicWatchManager->delete($post->getPost_topic_id(), $ps->post_user_id);                    
+                    $this->topicWatchManager->delete($post->getPost_topic_id(), $ps->post_user_id);
                     $this->usersManager->update($post->getPost_user_id(), ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1']));
-                }                                
+                }
             }
         }        
     }

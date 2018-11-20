@@ -31,7 +31,8 @@ class TopicJumpToForumForm extends Control
     /**
      * JumpToForumControl constructor.
      *
-     * @param ForumsManager $forumManager
+     * @param ForumsManager                   $forumManager
+     * @param \Nette\Localization\ITranslator $translator
      */
     public function __construct(
         ForumsManager $forumManager,
@@ -44,7 +45,7 @@ class TopicJumpToForumForm extends Control
     }
 
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -59,7 +60,7 @@ class TopicJumpToForumForm extends Control
     {
         $sep = DIRECTORY_SEPARATOR;
         
-        $template = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'topicJumpToForum.latte');        
+        $template = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'topicJumpToForum.latte');
         
         $template->render();
     }
@@ -87,7 +88,7 @@ class TopicJumpToForumForm extends Control
     public function jumpToForumSuccess(Form $form, ArrayHash $values)
     {
         $forum = $this->forumManager->getById($values->forum_id);
-        
+
         $this->presenter
             ->redirect(
                 ':Forum:Forum:default',

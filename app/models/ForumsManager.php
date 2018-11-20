@@ -47,7 +47,7 @@ class ForumsManager extends CrudManager {
     }
 
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -55,7 +55,7 @@ class ForumsManager extends CrudManager {
 
         parent::__destruct();
     }
-
+    
     /**
      *
      * @return Zebra_Mptt

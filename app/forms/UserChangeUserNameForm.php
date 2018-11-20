@@ -5,9 +5,10 @@ namespace App\Forms;
 use App\Controls\BootstrapForm;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
-use Nette\Application\UI\Control;
+use App\Models\UsersManager;
 use Nette\Application\UI\Form;
 use Nette\Security\User;
+use \Nette\Application\UI\Control;
 use Nette\Utils\ArrayHash;
 
 /**

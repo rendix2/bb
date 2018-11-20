@@ -116,7 +116,10 @@ class PaginatorControl extends Control
     {
         return $this->paginator;
     }
-    
+
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentPagination()
     {
         $form = new BootstrapForm(9, 'sm', 2);

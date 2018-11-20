@@ -24,7 +24,7 @@ use Tracy\ILogger;
  * @package App\AdminModule\Presenters
  */
 class CategoryPresenter extends AdminPresenter
-{    
+{
     /**
      *
      * @var CategoryFacade $categoryFacade
@@ -49,7 +49,7 @@ class CategoryPresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -60,7 +60,7 @@ class CategoryPresenter extends AdminPresenter
     }
 
     /**
-     * 
+     *
      * @param int $page
      */
     public function renderDefault($page = 1)
@@ -122,42 +122,7 @@ class CategoryPresenter extends AdminPresenter
         $form->addCheckbox('category_active', 'Category active:');
 
         return $this->addSubmitB($form);
-    }
-    
-    /**
-     * @param Form      $form   form
-     * @param ArrayHash $values values
-     */
-    public function editFormSuccess(Form $form, ArrayHash $values)
-    {
-        $id = $this->getParameter('id');
-
-        try {
-            if ($id) {
-                $result = $this->categoryFacade->update($id, $values);
-            } else {
-                $category = new CategoryEntity();
-                $category->setCategory_parent_id($values->category_parent_id)
-                         ->setCategory_name($values->category_name)
-                         ->setCategory_active($values->category_active)
-                         ->setCategory_order(0);
-                
-                $result = $id = $this->categoryFacade->add($category);
-            }
-
-            if ($result) {
-                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
-            } else {
-                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
-            }
-        } catch (DriverException $e) {
-            $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
-            
-            Debugger::log($e->getMessage(), ILogger::CRITICAL);
-        }
-
-        $this->redirect(':' . $this->getName() . ':default');
-    }      
+    }     
     
     /**
      *
@@ -201,5 +166,40 @@ class CategoryPresenter extends AdminPresenter
         ];
         
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+    }
+
+    /**
+     * @param Form      $form   form
+     * @param ArrayHash $values values
+     */
+    public function editFormSuccess(Form $form, ArrayHash $values)
+    {
+        $id = $this->getParameter('id');
+
+        try {
+            if ($id) {
+                $result = $this->categoryFacade->update($id, $values);
+            } else {
+                $category = new \App\Models\Entity\Category();
+                $category->setCategory_parent_id($values->category_parent_id)
+                         ->setCategory_name($values->category_name)
+                         ->setCategory_active($values->category_active)
+                         ->setCategory_order(0);
+                
+                $result = $id = $this->categoryFacade->add($category);
+            }
+
+            if ($result) {
+                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+            } else {
+                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
+            }
+        } catch (DriverException $e) {
+            $this->flashMessage('There was some problem during saving into database. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
+            
+            \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
+        }
+
+        $this->redirect(':' . $this->getName() . ':default');
     }
 }

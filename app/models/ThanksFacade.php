@@ -103,7 +103,7 @@ class ThanksFacade
     }
 
     /**
-     * 
+     *
      * @param int $forum_id
      */
     public function deleteByForum($forum_id)
@@ -114,7 +114,7 @@ class ThanksFacade
             $topic = TopicEntity::setFromRow($topicDibi);
             
             $this->deleteByTopic($topic);
-        }                
+        }
     }
 
     /**
@@ -134,8 +134,8 @@ class ThanksFacade
 
         if (count($user_ids)) {
             $this->usersManager->updateMulti(
-                    $user_ids,
-                    ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1'])
+                $user_ids,
+                ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1'])
             );
         }
 

@@ -9,7 +9,7 @@ namespace App\Models;
  * @package App\Models
  */
 class PmFacade 
-{    
+{
     /**
      *
      * @var PmManager $pmManager
@@ -17,10 +17,10 @@ class PmFacade
     private $pmManager;
 
     /**
-     * 
+     *
      * @param PmManager $pmManager
      */
-    public function __construct(PmManager $pmManager) 
+    public function __construct(PmManager $pmManager)
     {
         $this->pmManager = $pmManager;
     }

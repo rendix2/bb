@@ -17,7 +17,7 @@ abstract class Setting
     private $setting;
     
     /**
-     * 
+     *
      * @param string|array $setting
      */
     public function __construct($setting)
@@ -34,7 +34,7 @@ abstract class Setting
     }
 
     /**
-     * 
+     *
      * @return string|array
      */
     public function get()

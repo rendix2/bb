@@ -54,7 +54,7 @@ class PollsFacade
     }
     
     /**
-     * 
+     *
      * @return PollsManager
      */
     public function getPollsManager()
@@ -63,7 +63,7 @@ class PollsFacade
     }
     
     /**
-     * 
+     *
      * @return PollsAnswersManager
      */
     public function getPollsAnswersManager()
@@ -72,7 +72,7 @@ class PollsFacade
     }
     
     /**
-     * 
+     *
      * @return PollsVotesManager
      */
     public function getPollsVotesManager()
@@ -111,7 +111,7 @@ class PollsFacade
                 $this->pollsAnswersManager->update($answer->getPoll_answer_id(), $answer->getArrayHash());
             } else {
                 $this->pollsAnswersManager->add($answer->getArrayHash());
-            }            
+            }
         }
     }
 

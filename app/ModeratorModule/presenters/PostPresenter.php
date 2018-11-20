@@ -20,7 +20,7 @@ use Nette\Utils\ArrayHash;
  * @package App\ModeratorModule\Presenters
  */
 class PostPresenter extends ModeratorPresenter
-{    
+{
     /**
      *
      * @var PostsHistoryManager $postsHistoryManager

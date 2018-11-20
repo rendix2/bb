@@ -42,7 +42,7 @@ class SearchPostForm extends Control
     }
 
     /**
-     * 
+     *
      */
     public function render()
     {
@@ -62,7 +62,7 @@ class SearchPostForm extends Control
         $form->onSuccess[] = [$this, 'searchPostFormSuccess'];
 
         return $form;
-    }    
+    }
     
     /**
      * @param Form      $form

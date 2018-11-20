@@ -16,7 +16,7 @@ trait CategoriesTrait {
      * @var CategoriesManager $categoriesManager
      * @inject
      */
-    public $categoriesManager;      
+    public $categoriesManager;
     
     /**
      * 

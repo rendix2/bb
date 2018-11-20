@@ -73,7 +73,7 @@ class ForumFacade
     
     /**
      * 
-     * @param type $item_id
+     * @param int $item_id
      * @param ArrayHash $item_data
      * 
      * @return bool
@@ -89,7 +89,7 @@ class ForumFacade
         }
         
         return $this->forumsManager->update($item_id, $item_data);
-    }    
+    }
 
     /**
      * @param ForumEntity $forum

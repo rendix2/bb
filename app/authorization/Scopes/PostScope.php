@@ -50,7 +50,7 @@ class PostScope implements IAuthorizationScope
      * @param User $author
      * @param TopicEntity $topicScope
      */
-    public function __construct(PostEntity $post, TopicEntity $topicScope, TopicEntity $topicEntity)
+    public function __construct(PostEntity $post, TopicScope $topicScope, TopicEntity $topicEntity)
     {
         $this->post        = $post;
         $this->topicScope  = $topicScope;

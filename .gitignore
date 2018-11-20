@@ -14,6 +14,11 @@ www/ranks/*
 www/postFiles/*
 .idea
 idea
+/.idea
+.idea/codeStyles/codeStyleSettings.xml
+.idea/codeStyles/codeStyleConfig.xml
+
+.idea/*
 nbproject
 
 core

@@ -93,7 +93,7 @@ class UserLoginForm extends Control
         $this->session           = null;
     }
 
-        public function render()
+    public function render()
     {
         $this['loginForm']->render();
     }

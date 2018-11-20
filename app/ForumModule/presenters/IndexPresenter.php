@@ -19,7 +19,7 @@ use Nette\Caching\IStorage;
 class IndexPresenter extends BaseForumPresenter
 {
     //use \App\Models\Traits\ForumsTrait;
-    //use \App\Models\Traits\TopicsTrait;    
+    //use \App\Models\Traits\TopicsTrait;
     //use \App\Models\Traits\PostTrait;
     use UsersTrait;
     
@@ -74,6 +74,7 @@ class IndexPresenter extends BaseForumPresenter
      * IndexPresenter constructor.
      *
      * @param CategoriesManager $categoriesManager
+     * @param IStorage          $storage
      */
     public function __construct(CategoriesManager $categoriesManager, IStorage $storage)
     {
@@ -81,9 +82,9 @@ class IndexPresenter extends BaseForumPresenter
         
         $this->cache = new Cache($storage, self::CACHE_NAMESPACE);
     }
-    
+
     /**
-     * 
+     *
      */
     public function __destruct()
     {

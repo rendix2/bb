@@ -49,7 +49,7 @@ class LoginPresenter extends BasePresenter
     public $userLoginFormFactory;
 
     /**
-     * 
+     *
      */
     public function __destruct()
     {

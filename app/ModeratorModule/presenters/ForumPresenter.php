@@ -34,7 +34,7 @@ class ForumPresenter extends ModeratorPresenter
     {
     }
 
-        /**
+    /**
      * @param int $page
      */
     public function renderDefault($page = 1)
@@ -55,7 +55,7 @@ class ForumPresenter extends ModeratorPresenter
     
     /**
      *
-     * @return null
+     * @return GridFilter
      */
     protected function createComponentGridFilter()
     {

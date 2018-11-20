@@ -532,7 +532,7 @@ abstract class MNManager extends Manager
      * 
      * @param array $values
      * 
-     * @return type
+     * @return Result|int
      */
     public function addNative(array $values)
     {        
@@ -577,17 +577,17 @@ abstract class MNManager extends Manager
     }
     
     /**
-     * 
+     *
      * @param int   $left_id
      * @param array $values
      */
     public function mergeByLeft($left_id, array $values)
     {
-        $left_values = $this->getPairsByLeft($left_id);        
+        $left_values = $this->getPairsByLeft($left_id);
         $diff        = array_diff($values, $left_values);
         
         if (count($diff)) {
-            $this->add($diff, $left_id, null);          
+            $this->add($diff, $left_id, null);
         }
     }    
 
@@ -605,13 +605,13 @@ abstract class MNManager extends Manager
     }
     
     /**
-     * 
+     *
      * @param int   $right_id
      * @param array $values
      */
     public function mergeByRight($right_id, array $values)
     {
-        $right_values = $this->getPairsByRight($right_id);        
+        $right_values = $this->getPairsByRight($right_id);
         $diff         = array_diff($values, $right_values);
         
         if (count($diff)) {

@@ -19,7 +19,7 @@ class User
     private $identity;
     
     /**
-     * 
+     *
      * @param Identity $identity
      */
     public function __construct(Identity $identity)

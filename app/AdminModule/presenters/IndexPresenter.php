@@ -40,9 +40,9 @@ class IndexPresenter extends BasePresenter
     public $cacheDir;
     
     /**
-     * 
+     *
      */
-    public function __destruct() 
+    public function __destruct()
     {
         $this->sessionsManager = null;
         $this->avatar          = null;

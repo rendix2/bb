@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Crud\CrudManager;
+use Dibi\Row;
 
 /**
  * Description of PollVotesManager

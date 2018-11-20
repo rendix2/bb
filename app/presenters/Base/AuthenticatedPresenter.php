@@ -24,7 +24,7 @@ abstract class AuthenticatedPresenter extends BasePresenter
     public $sessionsManager;
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

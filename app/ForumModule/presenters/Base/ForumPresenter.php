@@ -6,9 +6,9 @@ use App\Authorization\Authorizator as Aauthorizator;
 use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
 use App\Authorization\Scopes\CategoryScope;
-use App\Authorization\Scopes\ForumScope as Forum2;
-use App\Authorization\Scopes\PostScope as Post2;
-use App\Authorization\Scopes\TopicScope as Topic2;
+use App\Authorization\Scopes\ForumScope;
+use App\Authorization\Scopes\PostScope;
+use App\Authorization\Scopes\TopicScope;
 use App\Authorization\Scopes\User;
 use App\Controls\BootstrapForm;
 use App\Models\Entity\ForumEntity;
@@ -39,7 +39,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     use PostTrait;
     use TopicsTrait;    
     use ForumsTrait;
-    
+
     /**
      *
      * @var ModeratorsManager $moderators
@@ -56,7 +56,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
 
     /**
      * @var Aauthorizator $authorizator
-     * @inject 
+     * @inject
      */
     public $authorizator;
     
@@ -104,7 +104,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -190,53 +190,83 @@ abstract class ForumPresenter extends AuthenticatedPresenter
 
         $this->template->setTranslator($this->translator);
     }
-    
+
+    /**
+     * @return User
+     */
     protected function getLoggedInUser()
     {        
         $identity = new Identity($this->user->id, $this->user->roles);
         
         return new User($identity);
     }
-    
+
+    /**
+     * @param $id
+     * 
+     * @return Category
+     */
     protected function loadCategory($id)
     {
         return new CategoryScope();
     }
-    
+
+
+    /**
+     * @param ForumEntity $forum
+     * 
+     * @return ForumScope
+     */
     protected function loadForum(ForumEntity $forum)
-    {        
+    {
         $moderators = $this->moderators->getAllByRight($forum->getForum_id());
         $moderatorsI = [];
         
         foreach ($moderators as $moderator) {
-            $moderatorIdentity = new Identity($moderator->user_id, Forum2::ROLE_MODERATOR);
+            $moderatorIdentity = new Identity($moderator->user_id, ForumScope::ROLE_MODERATOR);
             $moderatorUser     = new User($moderatorIdentity);
             
             $moderatorsI[] = $moderatorUser;
         }
                 
-        return new Forum2($forum, $moderatorsI, $this->users2GroupsManager, $this->users2ForumsManager); 
+        return new ForumScope($forum, $moderatorsI, $this->users2GroupsManager, $this->users2ForumsManager); 
     }    
     
+    /**
+     * @param ForumEntity $forum
+     * @param TopicEntity $topic
+     * 
+     * @return TopicScope
+     */
     protected function loadTopic(ForumEntity $forum, TopicEntity $topic)
     {
-        
-        $topicIdentity = new Identity($topic->getTopic_first_user_id(), [Topic2::ROLE_AUTHOR]);        
+        $topicIdentity = new Identity($topic->getTopic_first_user_id(), [TopicScope::ROLE_AUTHOR]);        
         $topicAuthor   = new User($topicIdentity);
         
         $thanks = $this->thanksManager->getAllByTopic($topic->getTopic_id());
         
-        return new Topic2($topic, $topicAuthor, $this->loadForum($forum), $thanks);
+        return new TopicScope($topic, $topicAuthor, $this->loadForum($forum), $thanks);
     }    
     
+    /**
+     * @param \App\Models\Entity\ForumEntity $forumEntity
+     * @param \App\Models\Entity\TopicEntity $topicEntity
+     * @param \App\Models\Entity\PostEntity $postEntity
+            
+     * @return \App\Authorization\Scopes\Post
+     */
     protected function loadPost(ForumEntity $forumEntity, TopicEntity $topicEntity, PostEntity $postEntity)
     {
-        $postIdentity  = new Identity($postEntity->getPost_user_id(), [Post2::ROLE_AUTHOR]);        
-        $postAuthor    = new User($postIdentity);
+        $postIdentity  = new Identity($postEntity->getPost_user_id(), [PostScope::ROLE_AUTHOR]);
                         
-        return new Post2($postEntity, $this->loadTopic($forumEntity, $topicEntity), $topicEntity);
+        return new PostScope($postEntity, $this->loadTopic($forumEntity, $topicEntity), $topicEntity);
     }
-        
+
+    /**
+     * @param IAuthorizationScope $scope
+     * @param array               $action
+     * @throws Exception
+     */
     protected function requireAccess(IAuthorizationScope $scope, array $action)
     {
         if (!$this->isAllowed($scope, $action)) {
@@ -244,8 +274,13 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         }
     }
 
+    /**
+     * @param IAuthorizationScope $scope
+     * @param array               $action
+     * @return bool
+     */
     protected function isAllowed(IAuthorizationScope $scope, array $action)
     {
         return $this->authorizator->isAllowed($this->getLoggedInUser()->getIdentity(), $scope, $action);
-    }        
+    }
 }

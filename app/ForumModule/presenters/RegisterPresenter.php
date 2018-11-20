@@ -9,7 +9,6 @@ use App\Models\LanguagesManager;
 use App\Models\Manager;
 use App\Models\PmManager;
 use App\Models\UserFacade;
-use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
@@ -33,7 +32,7 @@ class RegisterPresenter extends BasePresenter
     /**
      * @var LanguagesManager $languageManager
      */
-    private $languageManager;   
+    private $languageManager;
 
     /**
      * @var PmManager $pmManager
@@ -62,7 +61,6 @@ class RegisterPresenter extends BasePresenter
      * RegisterPresenter constructor.
      *
      * @param LanguagesManager $languageManger
-     * @param UsersManager     $usersManager
      * @param UserFacade       $userFacade
      */
     public function __construct(LanguagesManager $languageManger, UserFacade $userFacade)
@@ -152,7 +150,7 @@ class RegisterPresenter extends BasePresenter
      * @param ArrayHash $values
      */
     public function registerUserSuccess(Form $form, ArrayHash $values)
-    {        
+    {
         $user = new UserEntity();
         $user->setUser_name($values->user_name)
              ->setUser_password($values->user_password)
