@@ -2,11 +2,11 @@
 
 namespace App\Forms;
 
-use Nette\Application\UI\Control;
-use App\Services\TranslatorFactory;
 use App\Controls\BootstrapForm;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
+use App\Services\TranslatorFactory;
+use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -14,6 +14,7 @@ use Nette\Utils\ArrayHash;
  * Description of ResetPasswordForm
  *
  * @author rendix2
+ * @package App\Forms
  */
 class UserResetPasswordForm extends Control
 {
@@ -34,14 +35,19 @@ class UserResetPasswordForm extends Control
      * @param TranslatorFactory $translatorFactory
      * @param UsersManager      $usersManager
      */
-    public function __construct(TranslatorFactory $translatorFactory, UsersManager $usersManager)
-    {
+    public function __construct(
+        TranslatorFactory $translatorFactory,
+        UsersManager      $usersManager
+    ) {
         parent::__construct();
         
         $this->translateFactory = $translatorFactory;
         $this->usersManager     = $usersManager;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->translateFactory = null;
@@ -62,7 +68,7 @@ class UserResetPasswordForm extends Control
     protected function createComponentResetPasswordForm()
     {
         $form = BootstrapForm::create();
-        $form->setTranslator($this->translateFactory->forumTranslatorFactory());
+        $form->setTranslator($this->translateFactory->createForumTranslatorFactory());
         $form->addEmail(
             'user_email',
             'User email:'
@@ -85,7 +91,7 @@ class UserResetPasswordForm extends Control
      */
     public function resetPasswordFormSuccess(Form $form, ArrayHash $values)
     {
-        $found_mail = $this->usersManager->getByEmail($values->user_email);
+        $found_mail = $this->usersManager->getAllByEmail($values->user_email);
 
         if ($found_mail) {
             // send mail!

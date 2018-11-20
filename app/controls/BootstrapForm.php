@@ -22,9 +22,9 @@ use Nette\Forms\Controls\TextBase;
 /**
  * Class BootstrapForm
  *
- * @package Controls\forms
- * @author  Tomáš Babický tomas.babicky@layoutmaschine.de
+ * @author rendix2
  * @method type addReCaptcha($name, $label, $error) Description
+ * @package App\Controls
  *
  */
 class BootstrapForm extends Form
@@ -73,12 +73,12 @@ class BootstrapForm extends Form
      * @api
      */
     public function __construct(
-        $columnCount = 6,
-        $columnType = 'sm',
-        $labelColumnCount = 6,
-        $ajax = false,
+        $columnCount       = 6,
+        $columnType        = 'sm',
+        $labelColumnCount  = 6,
+        $ajax              = false,
         IContainer $parent = null,
-        $name = null
+        $name              = null
     ) {
         parent::__construct(
             $parent,

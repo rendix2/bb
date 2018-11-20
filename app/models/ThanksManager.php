@@ -12,6 +12,7 @@ use Nette\Utils\ArrayHash;
  * Description of ThanksManager
  *
  * @author rendix2
+ * @package App\Models
  */
 class ThanksManager extends CrudManager
 {
@@ -56,7 +57,7 @@ class ThanksManager extends CrudManager
      *
      * @return Row[]
      */
-    public function getAllJoinedUserByTopic($topic_id)
+    public function getAllByTopicJoinedUser($topic_id)
     {
         return $this->getAllFluent()
             ->as('t')
@@ -72,7 +73,7 @@ class ThanksManager extends CrudManager
      *
      * @return Fluent
      */
-    public function getFluentJoinedTopicByUser($user_id)
+    public function getFluentByUserJoinedTopic($user_id)
     {
         return $this->getAllFluent()
             ->as('th')
@@ -126,34 +127,28 @@ class ThanksManager extends CrudManager
     
     /**
      *
-     * @param int $topic_id
+     * @param int       $topic_id
      * @param ArrayHash $item_data
      *
      * @return bool
      */
     public function updateByTopic($topic_id, ArrayHash $item_data)
     {
-        $this->deleteCache();
-
-        return $this->dibi
-            ->update($this->getTable(), $item_data)
+        return $this->updateFluent($item_data)
             ->where('[thank_topic_id] = %i', $topic_id)
             ->execute();
     }
     
     /**
      *
-     * @param int $user_id
+     * @param int       $user_id
      * @param ArrayHash $item_data
      *
      * @return bool
      */
     public function updateByUser($user_id, ArrayHash $item_data)
     {
-        $this->deleteCache();
-
-        return $this->dibi
-            ->update($this->getTable(), $item_data)
+        return $this->updateFluent($item_data)
             ->where('[thank_user_id] = %i', $user_id)
             ->execute();
     }
@@ -167,10 +162,7 @@ class ThanksManager extends CrudManager
      */
     public function updateMultiByUser(array $user_id, ArrayHash $item_data)
     {
-        $this->deleteCache();
-
-        return $this->dibi
-            ->update($this->getTable(), $item_data)
+        return $this->updateFluent($item_data)
             ->where('[thank_user_id] IN %in', $user_id)
             ->execute();
     } 
@@ -182,7 +174,7 @@ class ThanksManager extends CrudManager
      *
      * @return bool
      */
-    public function deleteByUserAndTopic(array $user_ids, $topic_id)
+    public function deleteByUsersAndTopic(array $user_ids, $topic_id)
     {
         return $this->deleteFluent()
                 ->where('[thank_user_id] IN %in', $user_ids)
@@ -191,16 +183,14 @@ class ThanksManager extends CrudManager
     }
 
     /**
-     * @param $user_id
-     * @param $topic_id
+     * @param int $user_id
+     * @param int $topic_id
      *
      * @return Row|false
      */
     public function getByUserAndTopic($user_id, $topic_id)
     {
-        return $this->dibi
-                ->select('*')
-                ->from($this->getTable())
+        return $this->getAllFluent()
                 ->where('[thank_user_id] = %i', $user_id)
                 ->where('[thank_topic_id] = %i', $topic_id)
                 ->fetch();

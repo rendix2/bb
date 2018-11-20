@@ -2,21 +2,24 @@
 
 namespace App\Forms;
 
-use App\Presenters\Base\BasePresenter;
 use App\Controls\BootstrapForm;
-use App\Services\TranslatorFactory;
+use App\Models\Entity\PostEntity;
 use App\Models\PostFacade;
+use App\Presenters\Base\BasePresenter;
+use App\Services\TranslatorFactory;
+use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-use Nette\Utils\ArrayHash;
-use Nette\Security\User;
 use Nette\Http\IRequest;
+use Nette\Security\User;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of TopicFastReplyForm
  *
  * @author rendix2
+ * @package App\Forms
  */
-class TopicFastReplyForm extends \Nette\Application\UI\Control
+class TopicFastReplyForm extends Control
 {
     /**
      *
@@ -50,8 +53,12 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
      * @param PostFacade        $postFacade
      * @param IRequest          $request
      */
-    public function __construct(TranslatorFactory $translatorFactory, User $user, PostFacade $postFacade, IRequest $request)
-    {
+    public function __construct(
+        TranslatorFactory $translatorFactory,
+        User              $user,
+        PostFacade        $postFacade,
+        IRequest          $request
+    ) {
         parent::__construct();
         
         $this->translatorFactory = $translatorFactory;
@@ -60,6 +67,9 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
         $this->request           = $request;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->translatorFactory = null;
@@ -68,18 +78,21 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
         $this->request           = null;
     }
 
-        public function render()
+    /**
+     * 
+     */
+    public function render()
     {
         $this['fastReply']->render();
     }
 
-        /**
+    /**
      * @return BootstrapForm
      */
     protected function createComponentFastReply()
     {
         $form = BootstrapForm::create();
-        $form->setTranslator($this->translatorFactory->forumTranslatorFactory());
+        $form->setTranslator($this->translatorFactory->createForumTranslatorFactory());
 
         $form->addGroup('Fast reply');
         $form->addTextArea('post_text');
@@ -100,9 +113,9 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
         $forum_id    = $this->presenter->getParameter('forum_id');
         $topic_id    = $this->presenter->getParameter('topic_id');
         $page        = $this->presenter->getParameter('page');
-        $user_id     = $this->user->getId();
+        $user_id     = $this->user->id;
         
-        $post = new \App\Models\Entity\Post();
+        $post = new PostEntity();
         $post->setPost_user_id($user_id)
              ->setPost_category_id($category_id)
              ->setPost_forum_id($forum_id)

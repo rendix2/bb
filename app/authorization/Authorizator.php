@@ -2,12 +2,15 @@
 
 namespace App\Authorization;
 
+use Generator;
 use Nette\Security\IAuthorizator;
+use Tracy\Debugger;
 
 /**
  * Description of Authorizator
  *
  * @author rendix2
+ * @package App\Authorization
  */
 class Authorizator
 {
@@ -30,21 +33,26 @@ class Authorizator
     {
         $this->authorizator = $authorizator;
     }
+    
+    /**
+     * 
+     */
+    public function __destruct() 
+    {
+        $this->authorizator = null;
+    }
 
     /**
      * @param Identity            $identity
      * @param IAuthorizationScope $scope
      *
-     * @return \Generator
+     * @return Generator
      */
     private function getRoles(Identity $identity, IAuthorizationScope $scope)
     {
-        //\Tracy\Debugger::barDump($identity->getRoles(), '$identity->getRoles()');
-        //\Tracy\Debugger::barDump($scope->getIdentityRoles($identity), '$scope->getIdentityRoles($identity)');
-        
         //globální role
         foreach ($identity->getRoles() as $role) {
-           // yield $role; //yield používám, jelikoz když to matchne globální roli, je zbytečné se ptát scope na dynamické role
+            yield $role; //yield používám, jelikoz když to matchne globální roli, je zbytečné se ptát scope na dynamické role
         }
 
         foreach ($scope->getIdentityRoles($identity) as $role) {
@@ -64,13 +72,6 @@ class Authorizator
         list($resource, $privilege) = $action;
 
         foreach ($this->getRoles($identity, $scope) as $role) {
-            //\Tracy\Debugger::barDump($this->authorizator->isAllowed($role, $resource, $privilege), '$this->authorizator->isAllowed($role, $resource, $privilege)');
-            \Tracy\Debugger::barDump($role, '$role');
-            \Tracy\Debugger::barDump($resource, '$resource');
-            \Tracy\Debugger::barDump($privilege, '$privilege');
-            \Tracy\Debugger::barDump($this->authorizator->isAllowed($role, $resource, $privilege, '$this->authorizator->isAllowed($role, $resource, $privilege'));
-            
-            
             if ($this->authorizator->isAllowed($role, $resource, $privilege)) {
                 return true;
             }

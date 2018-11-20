@@ -14,6 +14,7 @@ use Nette\Utils\FileSystem;
  * Description of RanksManager
  *
  * @author rendix2
+ * @package App\Models
  */
 class RanksManager extends CrudManager
 {
@@ -41,6 +42,9 @@ class RanksManager extends CrudManager
         $this->ranks = $ranks;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->ranks = null;

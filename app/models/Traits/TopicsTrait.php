@@ -2,7 +2,7 @@
 
 namespace App\Models\Traits;
 
-use App\Models\Entity\Topic;
+use App\Models\Entity\TopicEntity;
 use App\Models\TopicsManager;
 use Nette\Http\IResponse;
 
@@ -26,7 +26,7 @@ trait TopicsTrait
      * @param int $category_id
      * @param int $forum_id
      * 
-     * @return Topic
+     * @return TopicEntity
      */
     public function checkTopicParam($topic_id, $category_id, $forum_id)
     {
@@ -45,7 +45,7 @@ trait TopicsTrait
             $this->error('Topic was not found.');
         }
         
-        $topic = Topic::setFromRow($topicDibi);
+        $topic = TopicEntity::setFromRow($topicDibi);
 
         if ($topic->getTopic_category_id() !== (int)$category_id) {
             $this->error('Category param does not match.');

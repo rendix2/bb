@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Entity\PostEntity;
+use App\Models\Entity\ThankEntity;
+use App\Models\Entity\TopicEntity;
 use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
@@ -9,6 +12,7 @@ use Nette\Utils\ArrayHash;
  * Description of ThanksFacade
  *
  * @author rendix2
+ * @package App\Models
  */
 class ThanksFacade
 {
@@ -48,8 +52,8 @@ class ThanksFacade
      */
     public function __construct(
         ThanksManager $thanksManager,
-        UsersManager $usersManager,
-        PostsManager $postsManager,
+        UsersManager  $usersManager,
+        PostsManager  $postsManager,
         TopicsManager $topicsManager,
         ForumsManager $forumsManager
     ) {
@@ -71,11 +75,11 @@ class ThanksFacade
 
     /**
      *
-     * @param ArrayHash $item_data
+     * @param Thank $thank
      *
      * @return Result|int
      */
-    public function add(Entity\Thank $thank)
+    public function add(ThankEntity $thank)
     {
         $this->usersManager->update(
             $thank->getThank_user_id(),
@@ -93,7 +97,7 @@ class ThanksFacade
     {
         $forums = $this->forumsManager->getAllByCategory($category_id);
         
-        foreach ($forums as $forums) {
+        foreach ($forums as $forum) {
             $this->deleteByForum($forum->forum_id);
         }
     }
@@ -107,7 +111,7 @@ class ThanksFacade
         $topics = $this->topicsManager->getAllByForum($forum_id);
         
         foreach ($topics as $topicDibi) {
-            $topic = Entity\Topic::setFromRow($topicDibi);
+            $topic = TopicEntity::setFromRow($topicDibi);
             
             $this->deleteByTopic($topic);
         }                
@@ -115,11 +119,11 @@ class ThanksFacade
 
     /**
      *
-     * @param Entity\Topic $topic
+     * @param TopicEntity $topic
      *
      * @return int
      */
-    public function deleteByTopic(Entity\Topic $topic)
+    public function deleteByTopic(TopicEntity $topic)
     {
         $thanks   = $this->thanksManager->getAllByTopic($topic->getTopic_id());
         $user_ids = [];
@@ -140,28 +144,20 @@ class ThanksFacade
 
     /**
      *
-     * @param Entity\Post $post
+     * @param PostEntity $post
      *
      * @return bool
      */
-    public function deleteByPost(Entity\Post $post)
+    public function deleteByPost(PostEntity $post)
     {        
         $count = $this->postsManager->getCountByUser($post->getPost_topic_id(), $post->getPost_user_id());       
 
         if ($count === 1 || $count === 0) {
             $this->usersManager->update($post->getPost_user_id(), ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1']));
 
-            return $this->thanksManager->deleteByUserAndTopic([$post->getPost_user_id()], $post->getPost_topic_id());
+            return $this->thanksManager->deleteByUsersAndTopic([$post->getPost_user_id()], $post->getPost_topic_id());
         } else {
             return false;
         }
-    }
-
-    /**
-     *
-     * @param int $user_id
-     */
-    public function deleteByUser($user_id)
-    {
     }
 }

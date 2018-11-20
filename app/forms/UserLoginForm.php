@@ -4,20 +4,21 @@ namespace App\Forms;
 
 use App\Authenticator;
 use App\Controls\BootstrapForm;
-use App\Services\TranslatorFactory;
 use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
-use Nette\Security\AuthenticationException;
-use Nette\Security\User;
+use App\Services\TranslatorFactory;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-use Nette\Utils\ArrayHash;
 use Nette\Http\Session;
+use Nette\Security\AuthenticationException;
+use Nette\Security\User;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of UserLoginForm
  *
  * @author rendix2
+ * @package App\Forms
  */
 class UserLoginForm extends Control
 {
@@ -35,7 +36,7 @@ class UserLoginForm extends Control
     
     /**
      *
-     * @var \Nette\Security\User $user
+     * @var User $user
      */
     private $user;
     
@@ -65,21 +66,25 @@ class UserLoginForm extends Control
      */
     public function __construct(
         TranslatorFactory $translatorFactory,
-        User $user,
-        SessionsManager $sessionsManager,
-        Authenticator $authenticator,
-        Session $session
+        User              $user,
+        SessionsManager   $sessionsManager,
+        Authenticator     $authenticator,
+        Session           $session
     ) {
         parent::__construct();
         
         $this->translatorFactory = $translatorFactory;
         $this->user              = $user;
-        $this->sessionsManager  = $sessionsManager;
+        $this->sessionsManager   = $sessionsManager;
         $this->authenticator     = $authenticator;
         $this->session           = $session;
     }
     
-    public function __destruct() {
+    /**
+     * 
+     */
+    public function __destruct()
+    {
         $this->backlink          = null;
         $this->translatorFactory = null;
         $this->user              = null;
@@ -99,7 +104,7 @@ class UserLoginForm extends Control
     protected function createComponentLoginForm()
     {
         $form = BootstrapForm::create();
-        $form->setTranslator($this->translatorFactory->forumTranslatorFactory());
+        $form->setTranslator($this->translatorFactory->createForumTranslatorFactory());
 
         $form->addText('user_name', 'Login:');
         $form->addPassword('user_password', 'Password:');
@@ -129,11 +134,11 @@ class UserLoginForm extends Control
             $addArray =
                 [
                     'session_key'     => $this->session->getId(),
-                    'session_user_id' => $this->user->getId(),
+                    'session_user_id' => $this->user->id,
                     'session_from'    => time()
                 ];
             
-            $this->sessionsManager->delete($user->getId());
+            $this->sessionsManager->delete($user->id);
             $this->sessionsManager->add(ArrayHash::from($addArray));
             $user->setExpiration('1 hour');
             $this->flashMessage(

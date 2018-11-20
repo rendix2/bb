@@ -5,6 +5,7 @@ namespace App\Forms;
 use App\Controls\BootstrapForm;
 use App\Models\ForumsManager;
 use App\Models\ModeratorsManager;
+use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
@@ -14,6 +15,7 @@ use Nette\Utils\ArrayHash;
  * Description of UserModeratorForm
  *
  * @author rendix2
+ * @package App\Forms
  */
 class UserModeratorForm extends Control
 {
@@ -42,10 +44,12 @@ class UserModeratorForm extends Control
      * @param ITranslator       $translator
      */
     public function __construct(
-            ForumsManager $forumsManager,
-            ModeratorsManager $moderatorsManager,
-            ITranslator $translator
+        ForumsManager     $forumsManager,
+        ModeratorsManager $moderatorsManager,
+        ITranslator       $translator
     ) {
+        parent::__construct();
+        
         $this->forumsManager     = $forumsManager;
         $this->moderatorsManager = $moderatorsManager;
         $this->translator        = $translator;
@@ -100,8 +104,7 @@ class UserModeratorForm extends Control
         $user_id = $this->presenter->getParameter('id');
 
         $this->moderatorsManager->addByLeft((int) $user_id, array_values($moderators));
-        $this->presenter->flashMessage('Forum was saved.', \App\Presenters\Base\BasePresenter::FLASH_MESSAGE_SUCCESS);
+        $this->presenter->flashMessage('Forum was saved.', BasePresenter::FLASH_MESSAGE_SUCCESS);
         $this->presenter->redirect('User:edit', $user_id);
     }
-    
 }

@@ -4,20 +4,24 @@ namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
+use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Models\CategoriesManager;
-use App\Models\ForumsManager;
-use App\Controls\BreadCrumbControl;
 use App\Models\CategoryFacade;
-
+use App\Models\Entity\CategoryEntity;
+use App\Models\ForumsManager;
+use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 /**
  * Description of CategoryPresenter
  *
  * @author rendix2
  * @method CategoriesManager getManager()
+ * @package App\AdminModule\Presenters
  */
 class CategoryPresenter extends AdminPresenter
 {    
@@ -55,7 +59,7 @@ class CategoryPresenter extends AdminPresenter
         parent::__destruct();
     }
 
-        /**
+    /**
      * 
      * @param int $page
      */
@@ -121,12 +125,47 @@ class CategoryPresenter extends AdminPresenter
     }
     
     /**
+     * @param Form      $form   form
+     * @param ArrayHash $values values
+     */
+    public function editFormSuccess(Form $form, ArrayHash $values)
+    {
+        $id = $this->getParameter('id');
+
+        try {
+            if ($id) {
+                $result = $this->categoryFacade->update($id, $values);
+            } else {
+                $category = new CategoryEntity();
+                $category->setCategory_parent_id($values->category_parent_id)
+                         ->setCategory_name($values->category_name)
+                         ->setCategory_active($values->category_active)
+                         ->setCategory_order(0);
+                
+                $result = $id = $this->categoryFacade->add($category);
+            }
+
+            if ($result) {
+                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+            } else {
+                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
+            }
+        } catch (DriverException $e) {
+            $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
+            
+            Debugger::log($e->getMessage(), ILogger::CRITICAL);
+        }
+
+        $this->redirect(':' . $this->getName() . ':default');
+    }      
+    
+    /**
      *
      * @return GridFilter
      */
     protected function createComponentGridFilter()
     {
-        $this->gf->setTranslator($this->getAdminTranslator());
+        $this->gf->setTranslator($this->getTranslator());
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('category_id', 'category_id', GridFilter::INT_EQUAL);
@@ -147,7 +186,7 @@ class CategoryPresenter extends AdminPresenter
             1 => ['text' => 'menu_categories']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
     
     /**
@@ -156,46 +195,11 @@ class CategoryPresenter extends AdminPresenter
     protected function createComponentBreadCrumbEdit()
     {
         $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            0 => ['link' => 'Index:default',    'text' => 'menu_index'],
             1 => ['link' => 'Category:default', 'text' => 'menu_categories'],
-            2 => ['link' => 'Category:edit', 'text' => 'menu_category'],
+            2 => ['link' => 'Category:edit',    'text' => 'menu_category'],
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
-    
-    /**
-     * @param Form      $form   form
-     * @param ArrayHash $values values
-     */
-    public function editFormSuccess(Form $form, ArrayHash $values)
-    {
-        $id = $this->getParameter('id');
-
-        try {
-            if ($id) {
-                $result = $this->categoryFacade->update($id, $values);
-            } else {
-                $category = new \App\Models\Entity\Category();
-                $category->setCategory_parent_id($values->category_parent_id)
-                         ->setCategory_name($values->category_name)
-                         ->setCategory_active($values->category_active)
-                         ->setCategory_order(0);
-                
-                $result = $id = $this->categoryFacade->add($category);
-            }
-
-            if ($result) {
-                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
-            } else {
-                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
-            }
-        } catch (DriverException $e) {
-            $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
-            
-            \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
-        }
-
-        $this->redirect(':' . $this->getName() . ':default');
-    }    
 }

@@ -2,6 +2,7 @@
 
 namespace App\ModeratorModule\Presenters;
 
+use App\Controls\GridFilter;
 use App\Models\UsersManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 
@@ -10,6 +11,7 @@ use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
  *
  * @author rendix2
  * @method UsersManager getManager()
+ * @package App\ModeratorModule\Presenters
  */
 class UserPresenter extends ModeratorPresenter
 {
@@ -33,7 +35,7 @@ class UserPresenter extends ModeratorPresenter
     
     /**
      *
-     * @return null
+     * @return GridFilter
      */
     protected function createComponentGridFilter()
     {

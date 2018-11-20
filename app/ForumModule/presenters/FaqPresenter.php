@@ -10,6 +10,8 @@ use App\Presenters\crud\CrudPresenter;
  * Description of FaqPresenter
  *
  * @author rendix2
+ * @method FaqManager getManager()
+ * @package App\ForumModule\Presenters
  */
 class FaqPresenter extends CrudPresenter
 {

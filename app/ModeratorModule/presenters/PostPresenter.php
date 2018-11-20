@@ -3,11 +3,11 @@
 namespace App\ModeratorModule\Presenters;
 
 use App\Controls\BootstrapForm;
+use App\Controls\GridFilter;
+use App\Models\PostFacade;
 use App\Models\PostsHistoryManager;
 use App\Models\PostsManager;
-use App\Models\PostFacade;
 use App\Models\TopicsManager;
-use App\Models\UsersManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -17,6 +17,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendix2
  * @method PostsManager getManager()
+ * @package App\ModeratorModule\Presenters
  */
 class PostPresenter extends ModeratorPresenter
 {    
@@ -76,7 +77,7 @@ class PostPresenter extends ModeratorPresenter
     
     /**
      *
-     * @return null
+     * @return GridFilter
      */
     protected function createComponentGridFilter()
     {
@@ -159,6 +160,6 @@ class PostPresenter extends ModeratorPresenter
      */
     public function renderPosts($topic_id)
     {
-        $this->template->posts = $this->getManager()->getByTopic($topic_id)->fetchAll();
+        $this->template->posts = $this->getManager()->getFluentByTopic($topic_id)->fetchAll();
     }
 }

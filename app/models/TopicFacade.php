@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Entity\TopicEntity;
 use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
@@ -9,6 +10,7 @@ use Nette\Utils\ArrayHash;
  * Description of TopicFacade
  *
  * @author rendix2
+ * @package App\Models
  */
 class TopicFacade
 {
@@ -97,18 +99,18 @@ class TopicFacade
      * @param ReportFacade      $reportFacade
      */
     public function __construct(
-        TopicsManager $topicsManager,
+        TopicsManager     $topicsManager,
         TopicWatchManager $topicWatchManager,
-        PostsManager $postsManager,
-        UsersManager $usersManager,
-        ThanksManager $thanksManager,
-        ForumsManager $forumsManager,
-        PostFacade $postFacade,
-        ReportsManager $reportsManager,
-        TopicWatchFacade $topicWatchFacade,
-        ThanksFacade $thanksFacade,
-        ReportFacade $reportFacade,
-        PollsFacade $pollsFacade
+        PostsManager      $postsManager,
+        UsersManager      $usersManager,
+        ThanksManager     $thanksManager,
+        ForumsManager     $forumsManager,
+        PostFacade        $postFacade,
+        ReportsManager    $reportsManager,
+        TopicWatchFacade  $topicWatchFacade,
+        ThanksFacade      $thanksFacade,
+        ReportFacade      $reportFacade,
+        PollsFacade       $pollsFacade
     ) {
         $this->topicsManager     = $topicsManager;
         $this->topicWatchManager = $topicWatchManager;
@@ -146,7 +148,7 @@ class TopicFacade
      *
      * @return Result|int
      */
-    public function add(Entity\Topic $topic)
+    public function add(TopicEntity $topic)
     {
         $topic_id = $this->topicsManager->add($topic->getArrayHash());
         $topic->setTopic_id($topic_id);
@@ -185,11 +187,11 @@ class TopicFacade
 
     /**
      *
-     * @param Entity\Topic $topic
+     * @param TopicEntity $topic
      *
      * @return Result|int
      */
-    public function delete(Entity\Topic $topic)
+    public function delete(TopicEntity $topic)
     {
         $this->thanksFacade->deleteByTopic($topic);
         $this->topicWatchFacade->deleteByTopic($topic);        
@@ -227,7 +229,7 @@ class TopicFacade
      */
     public function copy($topic_id, $target_forum_id = null)
     {
-        $posts        = $this->postsManager->getByTopic($topic_id);
+        $posts        = $this->postsManager->getFluentByTopic($topic_id);
         $new_topic_id = $this->topicsManager->copy($topic_id, $target_forum_id);
 
         foreach ($posts as $post) {
@@ -258,7 +260,7 @@ class TopicFacade
         }
         
         $post_ids = [];
-        $posts    = $this->postsManager->getByTopic($topic_id);
+        $posts    = $this->postsManager->getFluentByTopic($topic_id);
 
         foreach ($posts as $post) {
             $post_ids[] = $post->post_id;
@@ -343,7 +345,7 @@ class TopicFacade
         $thanksFromUsers   = [];
         $thanksTargetUsers = [];
         
-        $posts  = $this->postsManager->getByTopic($topic_from_id);
+        $posts  = $this->postsManager->getFluentByTopic($topic_from_id);
         $thanks = $this->thanksManager->getAllByTopic($topic_from_id);
 
         // thanks begin
@@ -366,7 +368,7 @@ class TopicFacade
             ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1'])
         );
 
-        $this->thanksManager->deleteByUserAndTopic($same_thanks, $topic_from_id);
+        $this->thanksManager->deleteByUsersAndTopic($same_thanks, $topic_from_id);
         // thanks end
 
         // topics watches begin
@@ -440,11 +442,12 @@ class TopicFacade
     }
 
     /**
-     * @param int $item_id
      *
-     * @param ArrayHash $item_data
+     * @param TopicEntity $topic
+     * 
+     * @return bool
      */
-    public function update(Entity\Topic $topic)
+    public function update(TopicEntity $topic)
     {
         $res = $this->topicsManager->update($topic->getTopic_id(), ArrayHash::from(['topic_name' => $topic->getTopic_name()]));
 

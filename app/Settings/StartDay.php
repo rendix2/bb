@@ -9,6 +9,7 @@ use Nette\Utils\DateTime;
  * Description of StartDay
  *
  * @author rendix2
+ * @package App\Settings
  */
 class StartDay extends Setting
 {

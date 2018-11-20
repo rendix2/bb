@@ -10,6 +10,7 @@ use Nette\Localization\ITranslator;
  * Description of Translator
  *
  * @author rendix2
+ * @package App
  */
 class Translator implements ITranslator
 {
@@ -32,15 +33,15 @@ class Translator implements ITranslator
      * Translator constructor.
      *
      * @param AppDir $appDir
-     * @param        $module
-     * @param        $lang
+     * @param string $module
+     * @param string $lang
      */
     public function __construct(AppDir $appDir, $module, $lang)
     {
         $this->module = $module;
         $this->lang   = $lang;
-        $separator    = DIRECTORY_SEPARATOR;
-        $this->tr     = parse_ini_file($appDir->get() . $separator . $this->module . 'Module' . $separator . 'languages' . $separator . $this->lang . '.ini');
+        $sep          = DIRECTORY_SEPARATOR;
+        $this->tr     = parse_ini_file($appDir->get() . $sep . $this->module . 'Module' . $sep . 'languages' . $sep . $this->lang . '.ini');
     }
 
     /**

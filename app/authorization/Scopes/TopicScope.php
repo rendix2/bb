@@ -2,26 +2,24 @@
 
 namespace App\Authorization\Scopes;
 
+use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
-use Tracy\Debugger;
+use App\Models\Entity\TopicEntity;
 
 /**
  * Description of Topic
  *
  * @author rendix2
+ * @package App\Authorization\Scopes
  */
-class Topic implements \App\Authorization\IAuthorizationScope
+class TopicScope implements IAuthorizationScope
 {
 
-    const ROLE_AUTHOR = 'Topic:author';
-    
-    const ROLE_THANKER= 'Topic:thanker';
-    
-    const ROLE_NOT_THANKER = 'Topic:notThnanker';
-    
-    const ROLE_DELETER = 'Topic:deleter';
-    
-    const ROLE_EDITOR = 'Topic:Editor';
+    const ROLE_AUTHOR      = 'Topic:author';    
+    const ROLE_THANKER     = 'Topic:thanker';    
+    const ROLE_NOT_THANKER = 'Topic:notThnanker';    
+    const ROLE_DELETER     = 'Topic:deleter';    
+    const ROLE_EDITOR      = 'Topic:Editor';
     
     const ACTION_VIEW   = [self::class, 'view'];
     const ACTION_ADD    = [self::class, 'add'];
@@ -35,7 +33,7 @@ class Topic implements \App\Authorization\IAuthorizationScope
     private $id;
     
     /**
-     * @var Forum $forum
+     * @var ForumScope $forum
      */
     private $forumScope;
     
@@ -48,7 +46,7 @@ class Topic implements \App\Authorization\IAuthorizationScope
     
     /**
      *
-     * @var \App\Models\Entity\Topic $topic
+     * @var TopicEntity $topic
      */
     private $topicEntity;
 
@@ -56,14 +54,29 @@ class Topic implements \App\Authorization\IAuthorizationScope
      * Topic constructor.
      *
      * @param User  $author
-     * @param Forum $forumScope
+     * @param ForumScope $forumScope
      */
-    public function __construct(\App\Models\Entity\Topic $topicEntity, User $author, Forum $forumScope, $thanks)
-    {
+    public function __construct(
+            TopicEntity $topicEntity,
+            User $author, 
+            ForumScope $forumScope,
+            $thanks
+    ) {
         $this->topicEntity  = $topicEntity;
-        $this->author = $author;
-        $this->forumScope  = $forumScope;
-        $this->thanks = $thanks;
+        $this->author       = $author;
+        $this->forumScope   = $forumScope;
+        $this->thanks       = $thanks;
+    }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->forumScope  = null;
+        $this->topicEntity = null;
+        $this->author      = null;
+        $this->thanks      = null;
     }
 
     /**
@@ -81,15 +94,15 @@ class Topic implements \App\Authorization\IAuthorizationScope
         
         $isAuthor = $this->author->getIdentity()->getId() === $identity->getId();
                 
-        if ($isAuthor && in_array(Forum::ROLE_FORUM_TOPIC_ADDER, $this->forumScope->getIdentityRoles($identity))) {
+        if ($isAuthor && in_array(ForumScope::ROLE_FORUM_TOPIC_ADDER, $this->forumScope->getIdentityRoles($identity))) {
             $roles[] = self::ROLE_AUTHOR;
         }
                 
-        if ($isAuthor && in_array(Forum::ROLE_FORUM_TOPIC_DELETER, $this->forumScope->getIdentityRoles($identity))) {
+        if ($isAuthor && in_array(ForumScope::ROLE_FORUM_TOPIC_DELETER, $this->forumScope->getIdentityRoles($identity))) {
             $roles[] = self::ROLE_DELETER;
         }
         
-        if ($isAuthor && in_array(Forum::ROLE_FORUM_TOPIC_UPDATER, $this->forumScope->getIdentityRoles($identity))) {
+        if ($isAuthor && in_array(ForumScope::ROLE_FORUM_TOPIC_UPDATER, $this->forumScope->getIdentityRoles($identity))) {
             $roles[] = self::ROLE_EDITOR;
         }
         

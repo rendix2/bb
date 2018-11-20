@@ -10,7 +10,9 @@ use Nette\Application\UI\Form;
 /**
  * Description of Files
  *
- * @author rendi
+ * @author rendix2
+ * @method FilesManager getManager()
+ * @package App\AdminModule\Presenters
  */
 class FilePresenter extends AdminPresenter
 {
@@ -37,7 +39,7 @@ class FilePresenter extends AdminPresenter
      */
     protected function createComponentGridFilter()
     {
-        $this->gf->setTranslator($this->getAdminTranslator());
+        $this->gf->setTranslator($this->getTranslator());
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
 

@@ -15,6 +15,7 @@ use Nette\Utils\ArrayHash;
  * Description of Authenticator
  *
  * @author rendix2
+ * @package App
  */
 class Authenticator implements IAuthenticator
 {
@@ -37,12 +38,13 @@ class Authenticator implements IAuthenticator
     /**
      * Authenticator constructor.
      *
-     * @param UsersManager     $usersManger
-     * @param LanguagesManager $languageManager
+     * @param UsersManager      $usersManger
+     * @param LanguagesManager  $languageManager
+     * @param ModeratorsManager $moderatorsManager
      */
     public function __construct(
-            UsersManager $usersManger,
-            LanguagesManager $languageManager,
+            UsersManager      $usersManger,
+            LanguagesManager  $languageManager,
             ModeratorsManager $moderatorsManager
     ) {
         $this->usersManager      = $usersManger;

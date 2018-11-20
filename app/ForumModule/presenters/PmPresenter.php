@@ -14,13 +14,13 @@ use App\Presenters\crud\CrudPresenter;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
 
 /**
  * Description of PmPresenter
  *
  * @author rendix2
  * @method PmManager getManager()
+ * @package App\ForumModule\Presenters
  */
 class PmPresenter extends CrudPresenter
 {
@@ -72,7 +72,7 @@ class PmPresenter extends CrudPresenter
      */
     public function checkRequirements($element)
     {
-        $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
+        $this->user->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         
         parent::checkRequirements($element);
     }
@@ -84,7 +84,7 @@ class PmPresenter extends CrudPresenter
     {
         parent::startup();
 
-        $this->translator = $this->translatorFactory->forumTranslatorFactory();
+        $this->translator = $this->translatorFactory->createForumTranslatorFactory();
 
         $this->template->setTranslator($this->translator);
 
@@ -129,7 +129,8 @@ class PmPresenter extends CrudPresenter
     }
 
     /**
-     *
+     * 
+     * @return ReportForm
      */
     protected function createComponentReportForm()
     {
@@ -162,7 +163,6 @@ class PmPresenter extends CrudPresenter
         return new UserSearchControl($this->usersManager, $this->translator);
     }
     
-    
     /**
      * @return BreadCrumbControl
      */
@@ -183,7 +183,7 @@ class PmPresenter extends CrudPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Pm:default', 'text' => 'menu_pms'],
+            1 => ['link' => 'Pm:default',    'text' => 'menu_pms'],
             2 => ['text' => 'menu_pm']
         ];
         
@@ -197,7 +197,7 @@ class PmPresenter extends CrudPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Pm:default', 'text' => 'menu_pms'],
+            1 => ['link' => 'Pm:default',    'text' => 'menu_pms'],
             2 => ['text' => 'pm_add_new']
         ];
         
@@ -211,7 +211,7 @@ class PmPresenter extends CrudPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Pm:default', 'text' => 'menu_pms'],
+            1 => ['link' => 'Pm:default',    'text' => 'menu_pms'],
             2 => ['text' => 'pm_report']
         ];
         
@@ -252,7 +252,7 @@ class PmPresenter extends CrudPresenter
             $form->addError('We are missing recipients user ID', true);
         }
         
-        if ((int)$values->pm_user_id_to === $this->getUser()->getId()) {
+        if ((int)$values->pm_user_id_to === $this->user->id) {
             $form->addError('You cannot send PM to yourself.', true);
         }
     }
@@ -264,8 +264,8 @@ class PmPresenter extends CrudPresenter
      */
     public function editFormSuccess(Form $form, ArrayHash $values)
     {
-        $values->pm_user_id_from = $this->getUser()->getId();
-        $values->pm_time_sent = time();
+        $values->pm_user_id_from = $this->user->id;
+        $values->pm_time_sent    = time();
         unset($values->user_name);
         
         parent::editFormSuccess($form, $values);

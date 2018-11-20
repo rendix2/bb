@@ -10,14 +10,15 @@ use Nette\Utils\ArrayHash;
  * Description of AuthenticatedPresenter
  *
  * @author rendix2
+ * @package App\Presenters\Base
  */
 abstract class AuthenticatedPresenter extends BasePresenter
 {
     
     /**
-     * session manager
+     * sessions manager
      *
-     * @var SessionsManager $sessionManager
+     * @var SessionsManager $sessionsManager
      * @inject
      */
     public $sessionsManager;
@@ -39,10 +40,10 @@ abstract class AuthenticatedPresenter extends BasePresenter
     {
         parent::startup();
 
-        $user = $this->getUser();
+        $user = $this->user;
 
-        if ($user->isLoggedIn()) {
-            $this->sessionsManager->updateByUser($user->getId(), ArrayHash::from(['session_last_activity' => time()]));
+        if ($user->loggedIn) {
+            $this->sessionsManager->updateByUser($user->id, ArrayHash::from(['session_last_activity' => time()]));
         } else {
             if ($user->logoutReason === IUserStorage::INACTIVITY) {
                 $this->sessionsManager->deleteBySession($this->getSession()->getId());

@@ -10,11 +10,14 @@ use App\Presenters\Base\AuthenticatedPresenter;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 /**
  * Description of CrudPresenter
  *
  * @author rendix2
+ * @package App\Presenters\crud
  */
 abstract class CrudPresenter extends AuthenticatedPresenter
 {
@@ -34,7 +37,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     const FORM_ON_VALIDATE = 'onValidate';
     
     /**
-     * @var string
+     * @var int
      */
     const ITEMS_PER_PAGE = 20;
     
@@ -295,7 +298,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
         } catch (DriverException $e) {
             $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
             
-            \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
+            Debugger::log($e->getMessage(), ILogger::CRITICAL);
         }
 
         $this->redirect(':' . $this->getName() . ':default');

@@ -5,7 +5,8 @@ namespace App\Settings;
 /**
  * Description of Setting
  *
- * @author rendi
+ * @author rendix2
+ * @package App\Settings
  */
 abstract class Setting 
 {
@@ -24,6 +25,9 @@ abstract class Setting
         $this->setting = $setting;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->setting = null;

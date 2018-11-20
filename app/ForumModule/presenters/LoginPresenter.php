@@ -4,10 +4,10 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
+use App\Forms\UserLoginForm;
 use App\Models\Manager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
-use App\Forms\UserLoginForm;
 use App\Translator;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -16,6 +16,7 @@ use Nette\Utils\ArrayHash;
  * Description of LoginPresenter
  *
  * @author rendix2
+ * @package App\ForumModule\Presenters
  */
 class LoginPresenter extends BasePresenter
 {
@@ -63,7 +64,7 @@ class LoginPresenter extends BasePresenter
     {
         parent::startup();
 
-        $this->translator = $this->translatorFactory->forumTranslatorFactory();
+        $this->translator = $this->translatorFactory->createForumTranslatorFactory();
     }
 
     /**
@@ -72,7 +73,7 @@ class LoginPresenter extends BasePresenter
      */
     public function checkRequirements($element)
     {
-        $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
+        $this->user->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         
         parent::checkRequirements($element);
     }
@@ -85,7 +86,7 @@ class LoginPresenter extends BasePresenter
     {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->translatorFactory->forumTranslatorFactory());
+        $this->template->setTranslator($this->translatorFactory->createForumTranslatorFactory());
     }
 
     /**
@@ -101,7 +102,7 @@ class LoginPresenter extends BasePresenter
             $ok = false;
         }
 
-        if ($this->getUser()->isLoggedIn()) {
+        if ($this->user->loggedIn) {
             $this->flashMessage('You are logged in!', self::FLASH_MESSAGE_DANGER);
             $ok = false;
         }
@@ -159,12 +160,12 @@ class LoginPresenter extends BasePresenter
     }
 
     /**
-     * @param Form $form
+     * @param Form      $form
      * @param ArrayHash $values
      */
     public function reactivateFormSuccess(Form $form, ArrayHash $values)
     {
-        $user = $this->usersManager->getByEmail($values->user_email);
+        $user = $this->usersManager->getAllByEmail($values->user_email);
 
         if ($user) {
             $user = $user[0];

@@ -14,9 +14,9 @@ use Zebra_Mptt;
  * Description of ForumManager
  *
  * @author rendix2
+ * @package App\Models
  */
-class ForumsManager extends CrudManager
-{
+class ForumsManager extends CrudManager {
 
     /**
      * @var Zebra_Mptt $mptt
@@ -34,7 +34,7 @@ class ForumsManager extends CrudManager
     public function __construct(Connection $dibi, IStorage $storage)
     {
         parent::__construct($dibi, $storage);
-        
+
         $this->mptt = new Zebra_Mptt(
             $dibi,
             $this->getTable(),
@@ -45,17 +45,17 @@ class ForumsManager extends CrudManager
             'forum_parent_id'
         );
     }
-    
+
     /**
      * 
      */
     public function __destruct()
     {
-        $this->mptt = null;        
-        
+        $this->mptt = null;
+
         parent::__destruct();
-    }    
-    
+    }
+
     /**
      *
      * @return Zebra_Mptt
@@ -75,7 +75,7 @@ class ForumsManager extends CrudManager
         return $this->getAllFluent()
             ->where('[forum_category_id] = %i', $category_id);
     }
-    
+
     /**
      *
      * @param int $category_id
@@ -84,7 +84,8 @@ class ForumsManager extends CrudManager
      */
     public function getAllByCategory($category_id)
     {
-        return $this->getFluentByCategory($category_id)->fetchAll();
+        return $this->getFluentByCategory($category_id)
+            ->fetchAll();
     }
 
     /**
@@ -92,7 +93,7 @@ class ForumsManager extends CrudManager
      *
      * @return array
      */
-    public function getByParent($forum_id)
+    public function getAllByParent($forum_id)
     {
         return $this->getAllFluent()
             ->where('[forum_parent_id] = %i', $forum_id)
@@ -107,29 +108,29 @@ class ForumsManager extends CrudManager
     public function getParentForumsByForumId($forum_id)
     {
         return $this->dibi
-            ->select('f2.*')
-            ->from($this->getTable())
-            ->as('f1')
-            ->innerJoin($this->getTable())
-            ->as('f2')
-            ->on('[f1.forum_parent_id] = [f2.forum_id]')
-            ->where('[f1.forum_id] = %i', $forum_id)
-            ->fetch();
+                        ->select('f2.*')
+                        ->from($this->getTable())
+                        ->as('f1')
+                        ->innerJoin($this->getTable())
+                        ->as('f2')
+                        ->on('[f1.forum_parent_id] = [f2.forum_id]')
+                        ->where('[f1.forum_id] = %i', $forum_id)
+                        ->fetch();
     }
-    
+
     /**
      * @param int $category_id
      *
      * @return Row[]
      */
-    public function getForumsFirstLevel($category_id)
+    public function getAllForumsFirstLevel($category_id)
     {
         return $this->getAllFluent()
-            ->where('[forum_category_id] = %i', $category_id)
-            ->where('[forum_active] = %i', 1)
-            ->where('[forum_parent_id] = %i', 0)
-            ->orderBy('forum_order', dibi::ASC)
-            ->fetchAll();
+                        ->where('[forum_category_id] = %i', $category_id)
+                        ->where('[forum_active] = %i', 1)
+                        ->where('[forum_parent_id] = %i', 0)
+                        ->orderBy('forum_order', dibi::ASC)
+                        ->fetchAll();
     }
 
     /**
@@ -144,10 +145,9 @@ class ForumsManager extends CrudManager
 
         foreach ($forums as $forum) {
             if ($forum->forum_parent_id === $forum_parent_id) {
-                $result[$forum->forum_id]           = $forum;
+                $result[$forum->forum_id] = $forum;
                 $result[$forum->forum_id]['childs'] = $this->createForums(
-                    $forums,
-                    $forum->forum_id
+                        $forums, $forum->forum_id
                 );
             }
         }
@@ -177,19 +177,20 @@ class ForumsManager extends CrudManager
     public function getBreadCrumb($forum_id)
     {
         $forums = $this->mptt->getBreadCrumb($forum_id);
-        
+
         $bcForum = [];
-        
+
         foreach ($forums as $forum) {
             $tmp = [];
-            $tmp['link']   = 'Forum:default';
-            $tmp['params'] = ['category_id' => $forum->forum_category_id, 'forum_id' => $forum->forum_id, ];
-            $tmp['text']   = $forum->forum_name;
-            $tmp['t']      = 0;
-            
+            $tmp['link'] = 'Forum:default';
+            $tmp['params'] = ['category_id' => $forum->forum_category_id, 'forum_id' => $forum->forum_id,];
+            $tmp['text'] = $forum->forum_name;
+            $tmp['t'] = 0;
+
             $bcForum[] = $tmp;
         }
-        
+
         return $bcForum;
     }
+
 }

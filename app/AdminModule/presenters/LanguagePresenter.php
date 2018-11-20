@@ -3,7 +3,6 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Models\LanguagesManager;
@@ -14,6 +13,7 @@ use App\Models\UsersManager;
  *
  * @author rendix2
  * @method LanguagesManager getManager()
+ * @package App\AdminModule\Presenters
  */
 class LanguagePresenter extends AdminPresenter
 {
@@ -60,7 +60,7 @@ class LanguagePresenter extends AdminPresenter
      */
     protected function createComponentGridFilter()
     {
-        $this->gf->setTranslator($this->getAdminTranslator());
+        $this->gf->setTranslator($this->getTranslator());
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('lang_id', 'lang_id', GridFilter::INT_EQUAL);
@@ -93,7 +93,7 @@ class LanguagePresenter extends AdminPresenter
             1 => ['text' => 'menu_languages']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -102,11 +102,11 @@ class LanguagePresenter extends AdminPresenter
     protected function createComponentBreadCrumbEdit()
     {
         $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            0 => ['link' => 'Index:default',    'text' => 'menu_index'],
             1 => ['link' => 'Language:default', 'text' => 'menu_languages'],
-            2 => ['link' => 'Language:edit', 'text' => 'menu_language'],
+            2 => ['link' => 'Language:edit',    'text' => 'menu_language'],
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 }

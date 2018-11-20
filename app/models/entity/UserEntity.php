@@ -1,18 +1,19 @@
 <?php
 
+namespace App\Models\Entity;
+
 use App\Models\Entity\Base\Entity;
-use App\Models\Entity\User;
+use App\Models\Entity\UserEntity;
 use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
-namespace App\Models\Entity;
-
 /**
- * Description of User
+ * Description of UserEntity
  *
  * @author rendix2
+ * @package App\Models\Entity
  */
-class User extends \App\Models\Entity\Base\Entity
+class UserEntity extends Entity
 {
 
     /**
@@ -307,11 +308,11 @@ class User extends \App\Models\Entity\Base\Entity
      * 
      * @param Row $values
      * 
-     * @return User
+     * @return UserEntity
      */
-    public static function setFromRow(\Dibi\Row $values)
+    public static function setFromRow(Row $values)
     {
-        $user = new User();
+        $user = new UserEntity();
 
         if (isset($values->user_id)) {
             $user->setUser_id($values->user_id);
@@ -386,7 +387,7 @@ class User extends \App\Models\Entity\Base\Entity
 
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $user = new User();
+        $user = new UserEntity();
 
         if (isset($values->user_id)) {
             $user->setUser_id($values->user_id);

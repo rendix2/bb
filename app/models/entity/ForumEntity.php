@@ -7,11 +7,12 @@ use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
 /**
- * Description of Forum
+ * Description of ForumEntity
  *
- * @author rendi
+ * @author rendix2
+ * @package App\Models\Entity
  */
-class Forum extends Entity
+class ForumEntity extends Entity
 {
     /**
      *
@@ -357,11 +358,11 @@ class Forum extends Entity
      * 
      * @param Row $values
      * 
-     * @return Forum
+     * @return ForumEntity
      */
     public static function setFromRow(Row $values)
     {
-        $forum = new Forum();
+        $forum = new ForumEntity();
         
         if (isset($values->forum_id)) {
             $forum->setForum_id($values->forum_id);
@@ -450,11 +451,11 @@ class Forum extends Entity
      * 
      * @param ArrayHash $values
      * 
-     * @return Forum
+     * @return ForumEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $forum = new Forum();
+        $forum = new ForumEntity();
         
         if (isset($values->forum_id)) {
             $forum->setForum_id($values->forum_id);

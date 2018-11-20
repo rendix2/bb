@@ -5,8 +5,8 @@ namespace App\Settings;
 /**
  * Class AppDir
  *
- * @package App\Controls
  * @author rendix2
+ * @package App\Settings
  */
 class AppDir extends Setting
 {

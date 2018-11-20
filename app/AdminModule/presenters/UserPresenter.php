@@ -3,18 +3,15 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Authenticator;
-use App\Authorizator;
+use App\Authorization\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
-use App\Controls\DeleteAvatarControl;
 use App\Controls\GridFilter;
+use App\Forms\UserChangePasswordForm;
+use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserForumsForm;
 use App\Forms\UserGroupsForm;
 use App\Forms\UserModeratorForm;
-use App\Forms\ChangePasswordForm;
-use App\Forms\UserChangePasswordForm;
-use App\Forms\UserDeleteAvatarForm;
 use App\Models\ForumsManager;
 use App\Models\GroupsManager;
 use App\Models\LanguagesManager;
@@ -26,14 +23,13 @@ use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
 use App\Settings\Avatars;
 use App\Settings\Ranks;
-use Nette\Application\UI\Form;
-use Nette\Utils\ArrayHash;
 
 /**
  * Description of UserPresenter
  *
  * @author rendix2
  * @method UsersManager getManager()
+ * @package App\AdminModule\Presenters
  */
 class UserPresenter extends AdminPresenter
 {
@@ -123,8 +119,8 @@ class UserPresenter extends AdminPresenter
         $this->group2UserManager     = null;
         $this->groupsManager         = null;
         $this->users2ForumsManager   = null;
-        $this->avatars                = null;
-        $this->ranks                  = null;
+        $this->avatars               = null;
+        $this->ranks                 = null;
         $this->moderatorsManager     = null;
         $this->changePasswordFactory = null;
         $this->deleteAvatarFactory   = null;
@@ -139,11 +135,11 @@ class UserPresenter extends AdminPresenter
     {
         parent::renderDefault($page);
         
-        $this->template->roles = \App\Authorization\Authorizator::ROLES;
+        $this->template->roles = Authorizator::ROLES;
     }
 
     /**
-     * @param null $id
+     * @param int|null $id
      */
     public function renderEdit($id = null)
     {
@@ -156,6 +152,27 @@ class UserPresenter extends AdminPresenter
         $this->template->avatarsDir = $this->avatars->getTemplateDir();
         $this->template->ranksDir   = $this->ranks->getTemplateDir();
     }
+    
+    /**
+     * @return BootStrapForm
+     */
+    protected function createComponentEditForm()
+    {
+        $form = $this->getBootstrapForm();
+
+        $form->addGroup('user_data');
+        $form->addText('user_name', 'User name:')->setRequired(true);
+        $form->addEmail('user_email', 'User mail:')->setRequired(true);
+        $form->addGroup('user_settings');
+        $form->addSelect('user_role_id', 'User role:', Authorizator::ROLES);
+        $form->addSelect('user_lang_id', 'User language:', $this->languagesManager->getAllPairsCached('lang_name'));
+        $form->addTextArea('user_signature', 'User signature:');
+        //$form->addUpload('user_avatar', 'User avatar:');
+
+        $form->addCheckbox('user_active', 'User active:');
+
+        return $this->addSubmitB($form);
+    }    
 
     /**
      *
@@ -163,7 +180,7 @@ class UserPresenter extends AdminPresenter
      */
     protected function createComponentGridFilter()
     {
-        $this->gf->setTranslator($this->getAdminTranslator());
+        $this->gf->setTranslator($this->getTranslator());
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('user_id', 'user_id', GridFilter::INT_EQUAL);
@@ -171,7 +188,7 @@ class UserPresenter extends AdminPresenter
         $this->gf->addFilter('user_post_count', 'user_post_count', GridFilter::FROM_TO_INT);
         $this->gf->addFilter('user_topic_count', 'user_topic_count', GridFilter::FROM_TO_INT);
         $this->gf->addFilter('user_thank_count', 'user_thank_count', GridFilter::FROM_TO_INT);
-        $this->gf->addFilter('user_role_id', 'user_role_id', GridFilter::CHECKBOX_LIST, \App\Authorization\Authorizator::ROLES);
+        $this->gf->addFilter('user_role_id', 'user_role_id', GridFilter::CHECKBOX_LIST, Authorizator::ROLES);
         $this->gf->addFilter('user_active', 'user_active', GridFilter::CHECKBOX_LIST, [0 => 'Not active', 1 => 'Active']);
         $this->gf->addFilter('user_register_time', 'user_register_time', GridFilter::DATE_TIME);
         $this->gf->addFilter('user_last_login_time', 'user_last_login_time', GridFilter::DATE_TIME);
@@ -188,27 +205,6 @@ class UserPresenter extends AdminPresenter
     {
         return $this->changePasswordFactory->getAdmin();
     }
-
-    /**
-     * @return BootStrapForm
-     */
-    protected function createComponentEditForm()
-    {
-        $form = $this->getBootstrapForm();
-
-        $form->addGroup('user_data');
-        $form->addText('user_name', 'User name:')->setRequired(true);
-        $form->addEmail('user_email', 'User mail:')->setRequired(true);
-        $form->addGroup('user_settings');
-        $form->addSelect('user_role_id', 'User role:', \App\Authorization\Authorizator::ROLES);
-        $form->addSelect('user_lang_id', 'User language:', $this->languagesManager->getAllPairsCached('lang_name'));
-        $form->addTextArea('user_signature', 'User signature:');
-        //$form->addUpload('user_avatar', 'User avatar:');
-
-        $form->addCheckbox('user_active', 'User active:');
-
-        return $this->addSubmitB($form);
-    }
     
     /**
      * 
@@ -219,7 +215,7 @@ class UserPresenter extends AdminPresenter
         return new UserGroupsForm(
             $this->groupsManager,
             $this->group2UserManager,
-            $this->getAdminTranslator()
+            $this->getTranslator()
         );
     }
     
@@ -232,7 +228,7 @@ class UserPresenter extends AdminPresenter
         return new UserForumsForm(
             $this->forumsManager,
             $this->users2ForumsManager,
-            $this->getAdminTranslator()
+            $this->getTranslator()
         );
     }
 
@@ -252,7 +248,7 @@ class UserPresenter extends AdminPresenter
         return new UserModeratorForm(
             $this->forumsManager,
             $this->moderatorsManager,
-            $this->getAdminTranslator()
+            $this->getTranslator()
         );
     }
 
@@ -266,7 +262,7 @@ class UserPresenter extends AdminPresenter
             1 => ['text' => 'menu_users']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -276,10 +272,10 @@ class UserPresenter extends AdminPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:default', 'text' => 'menu_users'],
-            2 => ['link' => 'User:edit', 'text' => 'menu_user'],
+            1 => ['link' => 'User:default',  'text' => 'menu_users'],
+            2 => ['link' => 'User:edit',     'text' => 'menu_user'],
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 }

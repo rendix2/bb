@@ -2,12 +2,17 @@
 
 namespace App\Models\Entity;
 
+use App\Models\Entity\Base\Entity;
+use Dibi\Row;
+use Nette\Utils\ArrayHash;
+
 /**
- * Description of PollVote
+ * Description of PollVoteEntity
  *
  * @author rendix2
+ * @package App\Models\Entity
  */
-class PollVote extends Base\Entity
+class PollVoteEntity extends Entity
 {
      /**
      *
@@ -79,13 +84,13 @@ class PollVote extends Base\Entity
     
     /**
      * 
-     * @param \Dibi\Row $values
+     * @param Row $values
      * 
-     * @return \App\Models\Entity\PollVote
+     * @return PollVoteEntity
      */
-    public static function setFromRow(\Dibi\Row $values)
+    public static function setFromRow(Row $values)
     {
-        $pollVote = new PollVote();
+        $pollVote = new PollVoteEntity();
         
         if (isset($values->poll_vote_id)) {
             $pollVote->setPoll_vote_id($values->poll_vote_id);
@@ -109,13 +114,13 @@ class PollVote extends Base\Entity
 
         /**
      * 
-     * @param \Dibi\Row $values
+     * @param Row $values
      * 
-     * @return \App\Models\Entity\PollVote
+     * @return PollVoteEntity
      */
-    public static function setFromArrayHash(\Nette\Utils\ArrayHash $values)
+    public static function setFromArrayHash(ArrayHash $values)
     {
-        $pollVote = new PollVote();
+        $pollVote = new PollVoteEntity();
         
         if (isset($values->poll_vote_id)) {
             $pollVote->setPoll_vote_id($values->poll_vote_id);

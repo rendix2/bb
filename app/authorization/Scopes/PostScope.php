@@ -4,18 +4,21 @@ namespace App\Authorization\Scopes;
 
 use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
+use App\Models\Entity\PostEntity;
+use App\Models\Entity\TopicEntity;
 
 /**
  * Description of Post
  *
  * @author rendix2
+ * @package App\Authorization\Scopes
  */
-class Post implements IAuthorizationScope
+class PostScope implements IAuthorizationScope
 {
 
-    const ROLE_AUTHOR = 'Post:author';
-    const ROLE_DELETER = 'Post:deleter';
-    const ROLE_EDITOR = 'Post:editor';
+    const ROLE_AUTHOR    = 'Post:author';
+    const ROLE_DELETER   = 'Post:deleter';
+    const ROLE_EDITOR    = 'Post:editor';
     const ROLE_HISTORIER = 'Post:historier';
     
     const ACTION_VIEW    = [self::class, 'view'];
@@ -25,44 +28,43 @@ class Post implements IAuthorizationScope
     const ACTION_HISTORY = [self::class, 'history'];
     
     /**
-     * @var int $id;
-     */
-    private $id;
-    
-    /**
      *
-     * @var Topic $topic
+     * @var TopicEntity $topic
      */
     private $topicScope;
     
     /**
      *
-     * @var User $author
-     */
-    private $author;
-    
-    /**
-     *
-     * @var \App\Models\Entity\Post $post
+     * @var PostEntity $post
      */
     private $post;
     
     /**
      *
-     * @var \App\Models\Entity\Topic $topicEntity
+     * @var TopicEntity $topicEntity
      */
     private $topicEntity;
     
     /**
      * 
      * @param User $author
-     * @param Topic $topicScope
+     * @param TopicEntity $topicScope
      */
-    public function __construct(\App\Models\Entity\Post $post, \App\Authorization\Scopes\Topic $topicScope, \App\Models\Entity\Topic $topicEntity)
+    public function __construct(PostEntity $post, TopicEntity $topicScope, TopicEntity $topicEntity)
     {
         $this->post        = $post;
         $this->topicScope  = $topicScope;
         $this->topicEntity = $topicEntity;
+    }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->post        = null;
+        $this->topicEntity = null;
+        $this->topicEntity = null;
     }
 
     /**
@@ -88,15 +90,15 @@ class Post implements IAuthorizationScope
             $roles[] = self::ROLE_HISTORIER;
         }
         
-        if ($isAuthor && in_array(Forum::ROLE_FORUM_POST_ADDER, $this->topicScope->getIdentityRoles($identity))) {
+        if ($isAuthor && in_array(ForumScope::ROLE_FORUM_POST_ADDER, $this->topicScope->getIdentityRoles($identity))) {
             $roles[] = self::ROLE_AUTHOR;
         }
         
-        if ($isAuthor && in_array(Forum::ROLE_FORUM_POST_DELETER, $this->topicScope->getIdentityRoles($identity))) {
+        if ($isAuthor && in_array(ForumScope::ROLE_FORUM_POST_DELETER, $this->topicScope->getIdentityRoles($identity))) {
             $roles[] = self::ROLE_DELETER;
         }
         
-        if ($isAuthor && in_array(Forum::ROLE_FORUM_POST_UPDATER, $this->topicScope->getIdentityRoles($identity))) {
+        if ($isAuthor && in_array(ForumScope::ROLE_FORUM_POST_UPDATER, $this->topicScope->getIdentityRoles($identity))) {
             $roles[] = self::ROLE_EDITOR;
         }
                 

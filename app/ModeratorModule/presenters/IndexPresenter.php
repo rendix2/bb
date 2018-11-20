@@ -10,6 +10,7 @@ use Nette\Localization\ITranslator;
  * Description of IndexPresenter
  *
  * @author rendix2
+ * @package App\ModeratorModule\Presenters
  */
 class IndexPresenter extends BasePresenter
 {
@@ -45,37 +46,8 @@ class IndexPresenter extends BasePresenter
     public function startup()
     {
         parent::startup();
-
-        /*
-        $user  = new User();
-        $admin = new User();
-        $forum = new Forum();
-        $topic = new Topic($user, $forum);
-
-        $enabledRoles = ['admin', 'juniorAdmin', 'moderator'];
-
-        /*
-        if ( !$this->getUser()->isInRole('admin') || !$this->getUser()->isInRole('moderator')) {
-            $this->error('You are not in moderator role!s');
-        }
-         *
-         */
-        /*
-        $canAccess = false;
-
-        foreach ($enabledRoles as $role) {
-            if (in_array($role, $this->getUser()->getRoles(), true)) {
-                $canAccess = true;
-                break;
-            }
-        }
-
-        if (!$canAccess) {
-             $this->error('You are not in moderator role!s');
-        }
-        */
         
-        $this->translator = $this->translatorFactory->forumTranslatorFactory();
+        $this->translator = $this->translatorFactory->createForumTranslatorFactory();
         $this->template->setTranslator($this->translator);
     }
 }

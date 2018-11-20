@@ -9,6 +9,7 @@ use SplFileInfo;
  * Description of Manager
  *
  * @author rendix2
+ * @package App\Models
  */
 abstract class Manager extends Tables
 {

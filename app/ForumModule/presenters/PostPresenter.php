@@ -2,39 +2,53 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Authorization\Scopes\ForumScope;
+use App\Authorization\Scopes\PostScope as Post2;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Forms\ReportForm;
+use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
+use App\Models\Entity\FileEntity;
+use App\Models\Entity\PollEntityEntity;
+use App\Models\Entity\PostEntity;
+use App\Models\Manager;
+use App\Models\PollsFacade;
 use App\Models\PostFacade;
+use App\Models\Posts2FilesManager;
 use App\Models\PostsHistoryManager;
 use App\Models\PostsManager;
 use App\Models\ReportsManager;
 use App\Models\TopicWatchManager;
-use App\Models\PollsFacade;
-use App\Models\Posts2FilesManager;
+use App\Models\Traits\CategoriesTrait;
+use App\Models\Traits\UsersTrait;
 use App\Settings\PostSetting;
+use Nette\Application\AbortException;
+use Nette\Application\BadRequestException;
+use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
-use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Container;
-use Nette\Http\IResponse;
+use Nette\Forms\Controls\SubmitButton;
+use Nette\Http\FileUpload;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\DateTime;
 
 /**
  * Description of PostPresenter
  *
  * @author rendix2
  * @method PostsManager getManager()
+ * @package App\ForumModule\Presenters
  */
-class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
+class PostPresenter extends BaseForumPresenter
 {
-    use \App\Models\Traits\CategoriesTrait;
+    use CategoriesTrait;
     //use \App\Models\Traits\ForumsTrait;
     //use \App\Models\Traits\TopicsTrait;
     //use \App\Models\Traits\PostTrait;
-    use \App\Models\Traits\UsersTrait;
+    use UsersTrait;
 
     /**
      * @var TopicWatchManager $topicWatchManager
@@ -94,6 +108,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      * @inject
      */
     public $posts2FilesManager;
+    
     /**
      * @param PostsManager $manager
      */
@@ -129,8 +144,9 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      * @param int $topic_id
      * @param int $post_id
      * @param int $page
-     * @throws \Nette\Application\AbortException
-     * @throws \Nette\Application\BadRequestException
+     * 
+     * @throws AbortException
+     * @throws BadRequestException
      */
     public function actionDelete($category_id, $forum_id, $topic_id, $post_id, $page)
     {
@@ -145,8 +161,8 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
             $pollTimeStamp = $pollDibi->poll_time_to;
             unset($pollDibi->poll_time_to);
         
-            $pollEntity = \App\Models\Entity\Poll::setFromRow($pollDibi);
-            $pollEntity->setPoll_time_to(\Nette\Utils\DateTime::from($pollTimeStamp));
+            $pollEntity = PollEntityEntity::setFromRow($pollDibi);
+            $pollEntity->setPoll_time_to(DateTime::from($pollTimeStamp));
         
             $topic->setPoll($pollEntity);
         }
@@ -155,7 +171,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         $topicScpe  = $this->loadTopic($forum, $topic);
         $postScope  = $this->loadPost($forum, $topic, $post);
         
-        $this->requireAccess($postScope, \App\Authorization\Scopes\Post::ACTION_DELETE);
+        $this->requireAccess($postScope, Post2::ACTION_DELETE);
 
         $res = $this->postFacade->delete($topic, $post);
 
@@ -170,9 +186,9 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
 
     /**
      *
-     * @param int $category_id
-     * @param int $forum_id
-     * @param int $topic_id
+     * @param int      $category_id
+     * @param int      $forum_id
+     * @param int      $topic_id
      * @param int|null $post_id
      */
     public function renderEdit($category_id, $forum_id, $topic_id, $post_id = null)
@@ -183,9 +199,9 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         $forumScope = $this->loadForum($forum);
         
         if ($post_id === null) {                            
-            $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_ADD);
+            $this->requireAccess($forumScope, ForumScope::ACTION_POST_ADD);
         } else {
-            $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_UPDATE);
+            $this->requireAccess($forumScope, ForumScope::ACTION_POST_UPDATE);
         }
 
         // post check
@@ -250,7 +266,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
         $post     = $this->checkPostParam($post_id, $category_id, $forum_id, $topic_id);
         
-        $file = $this->posts2FilesManager->getAllFullJoined($post_id, $file_id);
+        $file = $this->posts2FilesManager->getFullJoined($post_id, $file_id);
         
         if (!$file) {
             $this->error('File was not found.');
@@ -258,7 +274,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         
         $sep = DIRECTORY_SEPARATOR;
         
-        $fileRespone = new \Nette\Application\Responses\FileResponse($this->postSetting->get()['filesDir'] . $sep . $file->file_name . '.' . $file->file_extension, $file->file_orig_name);
+        $fileRespone = new FileResponse($this->postSetting->get()['filesDir'] . $sep . $file->file_name . '.' . $file->file_extension, $file->file_orig_name);
         
         $this->sendResponse($fileRespone);
     }
@@ -295,7 +311,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
     /**
      *
      * @param SubmitButton $submit
-     * @param ArrayHash $values
+     * @param ArrayHash    $values
      */
     public function preview(SubmitButton $submit, ArrayHash $values)
     {
@@ -312,7 +328,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      */
     public function onValidate(Form $form, ArrayHash $values)
     {
-        $user_id            = $this->getUser()->getId();
+        $user_id            = $this->user->id;
         $user               = $this->usersManager->getById($user_id);
         $minTimeInterval    = $this->postSetting->get()['minUserTimeInterval'];
         $doublePostInterval = $this->postSetting->get()['minDoublePostTimeInterval'];
@@ -336,28 +352,28 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         $forum_id    = $this->getParameter('forum_id');
         $topic_id    = $this->getParameter('topic_id');
         $post_id     = $this->getParameter('post_id');
-        $user_id     = $this->getUser()->getId();
+        $user_id     = $this->user->id;
         
         if(count($values->files)) {
             $postFiles = [];
             $filesDir = $this->postSetting->get()['filesDir'];
             
             /**
-             * @var \Nette\Http\FileUpload $file
+             * @var FileUpload $file
             */
             foreach ($values->files as $file) {
                 
                 $postFileArrayHash = $file->post_file;
                 
-                $extension = \App\Models\Manager::getFileExtension($postFileArrayHash->getName());
-                $hash      = \App\Models\Manager::getRandomString();
+                $extension = Manager::getFileExtension($postFileArrayHash->getName());
+                $hash      = Manager::getRandomString();
                 $sep       = DIRECTORY_SEPARATOR;
                 
                 if ($postFileArrayHash->isOk()) {
                     $postFileArrayHash->move($filesDir . $sep .$hash . '.'. $extension);
                 }
                 
-                $postFile = new \App\Models\Entity\File();
+                $postFile = new FileEntity();
                 $postFile->setFile_id($file->post_file_id);
                 $postFile->setFile_orig_name($postFileArrayHash->getName());
                 $postFile->setFile_name($hash);
@@ -372,9 +388,9 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         
         if ($post_id) {
             $postOldDibi = $this->getManager()->getById($post_id);
-            $postOld     = \App\Models\Entity\Post::setFromRow($postOldDibi);
+            $postOld     = PostEntity::setFromRow($postOldDibi);
             
-            $postNew = new \App\Models\Entity\Post();
+            $postNew = new PostEntity();
             $postNew->setPost_id($post_id)
                     ->setPost_user_id($postOld->getPost_user_id())
                     ->setPost_category_id($category_id)
@@ -393,7 +409,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
                                           
             $result = $this->postFacade->update($postNew);
         } else {
-            $post = new \App\Models\Entity\Post();
+            $post = new PostEntity();
             $post->setPost_user_id($user_id)
                  ->setPost_category_id($category_id)
                  ->setPost_forum_id($forum_id)
@@ -405,12 +421,12 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
                  ->setPost_files($postFiles);
 
             $result = $this->postFacade->add($post);
-            $emails = $this->topicWatchManager->getAllJoinedByLeft($topic_id);
+            $emails = $this->topicWatchManager->getAllByLeftJoined($topic_id);
             
             $emailsArray = [];
             
             foreach ($emails as $email) {
-                if ($this->getUser()->getIdentity()->getId() === $email->user_id) {
+                if ($user_id === $email->user_id) {
                     continue;
                 }
                 
@@ -419,10 +435,10 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
             
             if (count($emailsArray)) {
                 $this->bbMailer->addRecipients($emailsArray);
-                $this->bbMailer->setSubject($this->getForumTranslator()->translate('topic_watch_mail_subject'));
+                $this->bbMailer->setSubject($this->getTranslator()->translate('topic_watch_mail_subject'));
                 $this->bbMailer->setText(
                     sprintf(
-                        $this->getForumTranslator()->translate('topic_watch_mail_text'),
+                        $this->getTranslator()->translate('topic_watch_mail_text'),
                         $this->link('//Topic:default', $category_id, $forum_id, $topic_id)
                     )
                 );
@@ -466,7 +482,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         
         
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -488,7 +504,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
                 [['text' => 'report_post']]
         );         
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -511,7 +527,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
                 [['text' => 'post_history']]
         );           
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
     
     /**

@@ -12,6 +12,7 @@ use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
  *
  * @author rendix2
  * @method ForumsManager getManager()
+ * @package App\ModeratorModule\Presenters
  */
 class ForumPresenter extends ModeratorPresenter
 {
@@ -25,7 +26,12 @@ class ForumPresenter extends ModeratorPresenter
         parent::__construct($manager);
     }
 
-    public function actionDefault($page = 1) {        
+    /**
+     * 
+     * @param int $page
+     */
+    public function actionDefault($page = 1)
+    {
     }
 
         /**
@@ -33,7 +39,7 @@ class ForumPresenter extends ModeratorPresenter
      */
     public function renderDefault($page = 1)
     {
-        $this->template->forums = $this->moderatorsManager->getAllJoinedByLeft($this->getUser()->getId());
+        $this->template->forums = $this->moderatorsManager->getAllByLeftJoined($this->user->id);
     }
 
     /**

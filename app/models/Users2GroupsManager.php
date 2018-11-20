@@ -9,6 +9,7 @@ use Dibi\Row;
  * Description of Group2User
  *
  * @author rendix2
+ * @package App\Models
  */
 class Users2GroupsManager extends MNManager
 {

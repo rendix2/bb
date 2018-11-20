@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Entity\CategoryEntity;
 use Nette\Utils\ArrayHash;
 
 /**
  * Description of CategoryFacade
  *
  * @author rendix2
+ * @package App\Models
  */
 class CategoryFacade
 {
@@ -36,14 +38,17 @@ class CategoryFacade
      */
     public function __construct(
         CategoriesManager $categoriesManager,
-        ForumFacade $forumFacade,
-        ForumsManager $forumsManager
+        ForumFacade       $forumFacade,
+        ForumsManager     $forumsManager
     ) {
         $this->categoriesManager = $categoriesManager;
         $this->forumFacade       = $forumFacade;
         $this->forumsManager     = $forumsManager;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->categoriesManager = null;
@@ -51,11 +56,11 @@ class CategoryFacade
         $this->forumFacade       = null;
     }
 
-        /**
+    /**
      *
-     * @param Entity\Category $category
+     * @param CategoryEntity $category
      */
-    public function add(Entity\Category $category)
+    public function add(CategoryEntity $category)
     {
         $category_id = $this->categoriesManager->getMptt()->add($category->category_parent_id, $category->category_name);
         
@@ -68,7 +73,7 @@ class CategoryFacade
     
     /**
      * 
-     * @param type $item_id
+     * @param int       $item_id
      * @param ArrayHash $item_data
      * 
      * @return type

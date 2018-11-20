@@ -4,28 +4,24 @@ namespace App\ForumModule\Presenters;
 
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\CategoriesManager;
-use App\Models\ForumsManager;
 use App\Models\ModeratorsManager;
-use App\Models\PostsManager;
-use App\Models\TopicsManager;
-use App\Models\UsersManager;
+use App\Models\Traits\UsersTrait;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
-use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
 
 /**
  * Description of IndexPresenter¨
  *
  * @author rendix2
  * @method CategoriesManager getManager()
+ * @package App\ForumModule\Presenters
  */
 class IndexPresenter extends BaseForumPresenter
 {
     //use \App\Models\Traits\ForumsTrait;
     //use \App\Models\Traits\TopicsTrait;    
     //use \App\Models\Traits\PostTrait;
-    use \App\Models\Traits\UsersTrait;
+    use UsersTrait;
     
     /**
      * @var string
@@ -72,7 +68,7 @@ class IndexPresenter extends BaseForumPresenter
      * @var ModeratorsManager $moderatorManager
      * @inject
      */
-    public $moderatorManager;
+    public $moderatorsManager;
 
     /**
      * IndexPresenter constructor.
@@ -86,14 +82,17 @@ class IndexPresenter extends BaseForumPresenter
         $this->cache = new Cache($storage, self::CACHE_NAMESPACE);
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
-        $this->forumsManager    = null;
-        $this->topicsManager    = null;
-        $this->postsManager     = null;
-        $this->usersManager     = null;
-        $this->cache            = null;
-        $this->moderatorManager = null;
+        $this->forumsManager     = null;
+        $this->topicsManager     = null;
+        $this->postsManager      = null;
+        $this->usersManager      = null;
+        $this->cache             = null;
+        $this->moderatorsManager = null;
 
         parent::__destruct();
     }
@@ -114,8 +113,8 @@ class IndexPresenter extends BaseForumPresenter
         $categories      = $this->getManager()->getActiveCategoriesCached();
         $result          = [];
 
-        if ($this->getUser()->getIdentity()) {
-            $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
+        if ($this->user->identity) {
+            $last_login_time = $this->user->identity->getData()['user_last_login_time'];
         } else {
             // we do not show any new posts
             $last_login_time = time() + 1;
@@ -123,7 +122,7 @@ class IndexPresenter extends BaseForumPresenter
 
         foreach ($categories as $category) {
             $category->forums = [];
-            $forums           = $this->forumsManager->getForumsFirstLevel($category->category_id);
+            $forums           = $this->forumsManager->getAllForumsFirstLevel($category->category_id);
 
             $result['cats'][$category->category_id] = $category;
 
@@ -140,7 +139,7 @@ class IndexPresenter extends BaseForumPresenter
                     $this->topicsManager->getNewerTopicsCached($forum->forum_id, $last_login_time)
                 );
 
-                $moderators = $this->moderatorManager->getAllJoinedByRight($forum->forum_id);
+                $moderators = $this->moderatorsManager->getAllByRightJoined($forum->forum_id);
 
                 foreach ($moderators as $moderator) {
                     unset($moderator->user_password);

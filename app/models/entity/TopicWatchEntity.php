@@ -1,18 +1,19 @@
 <?php
 
-use App\Models\Entity\TopicWatch;
+namespace App\Models\Entity;
+
+use App\Models\Entity\TopicWatchEntity;
 use Dibi\Row;
 use Nette\Neon\Entity;
 use Nette\Utils\ArrayHash;
 
-namespace App\Models\Entity;
-
 /**
- * Description of TopicWatch
+ * Description of TopicWatchEntity
  *
  * @author rendix2
+ * @package App\Models\Entity
  */
-class TopicWatch extends Entity
+class TopicWatchEntity extends Entity
 {
     /**
      *
@@ -69,11 +70,11 @@ class TopicWatch extends Entity
      * 
      * @param Row $values
      * 
-     * @return TopicWatch
+     * @return TopicWatchEntity
      */
     public static function setFromRow(Row $values)
     {
-        $topicWatch = new TopicWatch();
+        $topicWatch = new TopicWatchEntity();
         $topicWatch->setId($values->id)
                    ->setTopic_id($values->topic_id)
                    ->setUser_id($values->user_id);
@@ -85,11 +86,11 @@ class TopicWatch extends Entity
      * 
      * @param ArrayHash $values
      * 
-     * @return TopicWatch
+     * @return TopicWatchEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $topicWatch = new TopicWatch();
+        $topicWatch = new TopicWatchEntity();
         $topicWatch->setId($values->id)
                    ->setTopic_id($values->topic_id)
                    ->setUser_id($values->user_id);

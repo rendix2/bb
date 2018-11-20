@@ -7,11 +7,12 @@ use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
 /**
- * Description of Category
+ * Description of CategoryEntity
  *
  * @author rendix2
+ * @package App\Models\Entity
  */
-class Category extends Entity
+class CategoryEntity extends Entity
 {
     /**
      *
@@ -136,11 +137,11 @@ class Category extends Entity
      * 
      * @param Row $values
      * 
-     * @return Category
+     * @return CategoryEntity
      */
     public static function setFromRow(Row $values)
     {
-        $category = new Category();
+        $category = new CategoryEntity();
         
         if (isset($values->category_id)) {
             $category->setCategory_id($values->category_id);
@@ -177,11 +178,11 @@ class Category extends Entity
      * 
      * @param ArrayHash $values
      * 
-     * @return Category
+     * @return CategoryEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $category = new Category();
+        $category = new CategoryEntity();
         
         if (isset($values->category_id)) {
             $category->setCategory_id($values->category_id);

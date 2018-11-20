@@ -2,9 +2,10 @@
 
 namespace App;
 
-use Nette;
+use Nette\Application\IRouter;
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
+use Nette\StaticClass;
 
 /**
  * Class RouterFactory
@@ -13,10 +14,10 @@ use Nette\Application\Routers\RouteList;
  */
 class RouterFactory
 {
-    use Nette\StaticClass;
+    use StaticClass;
 
     /**
-     * @return Nette\Application\IRouter
+     * @return IRouter
      */
     public static function createRouter()
     {

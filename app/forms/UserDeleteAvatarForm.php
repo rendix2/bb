@@ -16,6 +16,7 @@ use Nette\Utils\ArrayHash;
  * Description of DeleteAvatarControl
  *
  * @author rendix2
+ * @package App\Forms
  */
 class UserDeleteAvatarForm extends Control
 {
@@ -48,8 +49,12 @@ class UserDeleteAvatarForm extends Control
      * @param User         $user
      * @param ITranslator  $translator
      */
-    public function __construct(UsersManager $userManager, Avatars $avatars, User $user, ITranslator $translator)
-    {
+    public function __construct(
+        UsersManager $userManager,
+        Avatars      $avatars,
+        User         $user,
+        ITranslator  $translator
+    ) {
         parent::__construct();
 
         $this->userManager = $userManager;
@@ -58,6 +63,9 @@ class UserDeleteAvatarForm extends Control
         $this->translator  = $translator;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->userManager = null;
@@ -96,7 +104,7 @@ class UserDeleteAvatarForm extends Control
     public function deleteAvatarSuccess(Form $form, ArrayHash $values)
     {
         if (isset($values->delete_avatar) && $values->delete_avatar === true) {
-            $user = $this->userManager->getById($this->user->getId());
+            $user = $this->userManager->getById($this->user->id);
 
             if ($user->user_avatar) {
                 $this->userManager->removeAvatarFile($user->user_avatar);

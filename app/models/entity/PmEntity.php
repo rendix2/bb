@@ -7,11 +7,12 @@ use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
 /**
- * Description of Pm
+ * Description of PmEntity
  *
  * @author rendix2
+ * @package App\Models\Entity
  */
-class Pm extends Entity
+class PmEntity extends Entity
 {
     /**
      *
@@ -153,11 +154,11 @@ class Pm extends Entity
      * 
      * @param Row $values
      * 
-     * @return Pm
+     * @return PmEntity
      */
     public function setFromRow(Row $values)
     {
-        $pm = new Pm();
+        $pm = new PmEntity();
         
         if (isset($values->pm_id)) {
             $pm->setPm_id($values->pm_id);
@@ -198,11 +199,11 @@ class Pm extends Entity
      * 
      * @param ArrayHash $values
      * 
-     * @return Pm
+     * @return PmEntity
      */
     public function setFromArrayHash(ArrayHash $values)
     {
-        $pm = new Pm();
+        $pm = new PmEntity();
         
         if (isset($values->pm_id)) {
             $pm->setPm_id($values->pm_id);

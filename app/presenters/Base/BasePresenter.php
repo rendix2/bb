@@ -2,16 +2,19 @@
 
 namespace App\Presenters\Base;
 
+use App\Authorization\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Controls\MenuControl;
 use App\Models\BansManager;
 use App\Services\TranslatorFactory;
 use Nette;
 use Nette\Http\IResponse;
-use Nextras\Application\UI\SecuredLinksPresenterTrait;
 
 /**
  * Base presenter for all application presenters.
+ * 
+ * @author rendix2
+ * @package App\Presenters\Base
  */
 abstract class BasePresenter extends Nette\Application\UI\Presenter
 {
@@ -128,13 +131,14 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     private function banUser()
     {
         $bans     = $this->banManager->getAllCached();
-        $identity = $this->getUser()->getIdentity();
-        $user     = $this->getUser();
+        $user     = $this->user;
+        $identity = $user->getIdentity();
+        
         
         // if not main admin or role is not admin, so you can not ban admin, if some problem....
-        if ($user->getId() !== 1 || !in_array(\App\Authorization\Authorizator::ROLES[5], $this->getUser()->getRoles(), true)) {
+        if ($user->id !== 1 || !in_array(Authorizator::ROLES[5], $user->roles, true)) {
             foreach ($bans as $ban) {
-                if ($identity && $this->getUser()->isLoggedIn()) {
+                if ($identity && $user->loggedIn) {
                     if ($ban->ban_email === $identity->getData()['user_email'] || $ban->ban_user_name === $identity->getData()['user_name']) {
                         $this->error('Banned', IResponse::S403_FORBIDDEN);
                     }
@@ -152,13 +156,13 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      */
     protected function checkLoggedIn()
     {
-        $identity = $this->getUser()->getIdentity();
+        $identity = $this->user->identity;
         
         if (!$identity) {
             return false;
         }
         
-        return $this->getUser()->isLoggedIn();
+        return $this->user->loggedIn;
     }
 
     /**
@@ -166,7 +170,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      */
     protected function checkUserLoggedIn()
     {
-        return $this->checkAdminLoggedIn() && !in_array('guest', $this->getUser()->getRoles(), true);
+        return $this->checkAdminLoggedIn() && !in_array('guest', $this->user->roles, true);
     }
 
     /**
@@ -174,7 +178,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      */
     protected function checkJuniorAdminLoggedIn()
     {
-        return $this->checkLoggedIn() && $this->getUser()->isInRole('juniorAdmin');
+        return $this->checkLoggedIn() && $this->user->isInRole('juniorAdmin');
     }
 
     /**
@@ -182,7 +186,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      */
     protected function checkAdminLoggedIn()
     {
-        return $this->checkLoggedIn() && $this->getUser()->isInRole('admin');
+        return $this->checkLoggedIn() && $this->user->isInRole('admin');
     }
 
     /**
@@ -215,6 +219,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             1 => ['presenter' => ':Forum:Index:default', 'title' => 'menu_forum'],
         ];
 
-        return new MenuControl($this->translatorFactory->adminTranslatorFactory(), $leftMenu, $rightMenu);
+        return new MenuControl($this->translatorFactory->createAdminTranslatorFactory(), $leftMenu, $rightMenu);
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\ForumModule\Presenters;
 
-use App\Models\CategoriesManager;
 use App\Controls\BreadCrumbControl;
+use App\ForumModule\Presenters\Base\ForumPresenter;
+use App\Models\CategoriesManager;
+use App\Models\Traits\CategoriesTrait;
 use dibi;
 
 /**
@@ -11,10 +13,11 @@ use dibi;
  *
  * @author rendix2
  * @method CategoriesManager getManager()
+ * @package App\ForumModule\Presenters
  */
-class CategoryPresenter extends Base\ForumPresenter
+class CategoryPresenter extends ForumPresenter
 {
-    use \App\Models\Traits\CategoriesTrait;
+    use CategoriesTrait;
     //use \App\Models\Traits\ForumsTrait;
     
     /**
@@ -76,6 +79,6 @@ class CategoryPresenter extends Base\ForumPresenter
             1 => ['text' => 'menu_category']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }    
 }

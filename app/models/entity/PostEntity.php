@@ -7,11 +7,12 @@ use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
 /**
- * Description of Post
+ * Description of PostEntity
  *
  * @author rendix2
+ * @package App\Models\Entity
  */
-class Post extends Entity
+class PostEntity extends Entity
 {
     /**
      *
@@ -99,7 +100,7 @@ class Post extends Entity
     
     /**
      *
-     * @var File[] $files
+     * @var FileEntity[] $files
      */
     private $post_files;
         
@@ -272,11 +273,11 @@ class Post extends Entity
      * 
      * @param Row $values
      * 
-     * @return Post
+     * @return PostEntity
      */
     public static function setFromRow(Row $values)
     {
-        $post = new Post();
+        $post = new PostEntity();
         
         if (isset($values->post_id)) {
             $post->setPost_id($values->post_id);
@@ -341,11 +342,11 @@ class Post extends Entity
      * 
      * @param ArrayHash $values
      * 
-     * @return Post
+     * @return PostEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $post = new Post();
+        $post = new PostEntity();
         
         if (isset($values->post_id)) {
             $post->setPost_id($values->post_id);

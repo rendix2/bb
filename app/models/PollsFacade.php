@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\Entity\Poll;
+use App\Models\Entity\PollEntityEntity;
 
 /**
  * Description of PollsFacade
  *
  * @author rendix2
+ * @package App\Models
  */
 class PollsFacade
 {
@@ -36,16 +37,17 @@ class PollsFacade
      * @param PollsVotesManager   $pollsVotesManager
      */
     public function __construct(
-        PollsManager $pollsManager,
+        PollsManager        $pollsManager,
         PollsAnswersManager $pollsAnswersManager,
-        PollsVotesManager $pollsVotesManager
+        PollsVotesManager   $pollsVotesManager
     ) {
         $this->pollsManager        = $pollsManager;
         $this->pollsAnswersManager = $pollsAnswersManager;
         $this->pollsVotesManager   = $pollsVotesManager;
     }
     
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->pollsManager        = null;
         $this->pollsAnswersManager = null;
         $this->pollsVotesManager   = null;
@@ -80,9 +82,9 @@ class PollsFacade
 
     /**
      * 
-     * @param Poll $poll
+     * @param PollEntityEntity $poll
      */
-    public function add(Poll $poll)
+    public function add(PollEntityEntity $poll)
     {        
         $poll_id = $this->pollsManager->add($poll->getArrayHash());
         
@@ -96,9 +98,9 @@ class PollsFacade
     
     /**
      * 
-     * @param Poll $poll
+     * @param PollEntityEntity $poll
      */
-    public function update(Poll $poll)
+    public function update(PollEntityEntity $poll)
     {
         $this->pollsManager->update($poll->getPoll_id(), $poll->getArrayHash());
         
@@ -114,9 +116,9 @@ class PollsFacade
     }
 
     /**
-     * @param Poll $poll
+     * @param PollEntityEntity $poll
      */
-    public function delete(Poll $poll)
+    public function delete(PollEntityEntity $poll)
     {
         $this->pollsManager->delete($poll->getPoll_id());
         $this->pollsAnswersManager->deleteByPoll($poll->getPoll_id());

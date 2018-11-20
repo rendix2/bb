@@ -8,6 +8,7 @@ use Nette\Localization\ITranslator;
  * Description of MenuControl
  *
  * @author rendix2
+ * @package App\Controls
  */
 class MenuControl extends Control
 {
@@ -30,11 +31,14 @@ class MenuControl extends Control
      * MenuControl constructor.
      *
      * @param ITranslator $translator
-     * @param array $leftMenu
-     * @param array $rightMenu
+     * @param array       $leftMenu
+     * @param array       $rightMenu
      */
-    public function __construct(ITranslator $translator, array $leftMenu = [], array $rightMenu = [])
-    {
+    public function __construct(
+        ITranslator $translator,
+        array       $leftMenu = [],
+        array       $rightMenu = []
+    ) {
         parent::__construct();
         
         $this->translator = $translator;
@@ -42,6 +46,9 @@ class MenuControl extends Control
         $this->rightMenu  = $rightMenu;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->translator = null;
@@ -49,6 +56,9 @@ class MenuControl extends Control
         $this->rightMenu  = null;
     }
 
+    /**
+     * 
+     */
     public function render()
     {
         $template = $this->template;

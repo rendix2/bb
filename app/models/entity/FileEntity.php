@@ -7,11 +7,12 @@ use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
 /**
- * Description of File
+ * Description of FileEntity
  *
- * @author rendi
+ * @author rendix2
+ * @package App\Models\Entity
  */
-class File extends Entity
+class FileEntity extends Entity
 {
     /**
      *
@@ -134,11 +135,11 @@ class File extends Entity
      * 
      * @param ArrayHash $values
      * 
-     * @return \App\Models\Entity\File
+     * @return FileEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $file = new File();
+        $file = new FileEntity();
         
         if (isset($values->file_id)) {
             $file->setFile_id($values->file_id);
@@ -167,11 +168,11 @@ class File extends Entity
      * 
      * @param Row $values
      * 
-     * @return \App\Models\Entity\File
+     * @return FileEntity
      */
     public static function setFromRow(Row $values)
     {
-        $file = new File();
+        $file = new FileEntity();
         
         if (isset($values->file_id)) {
             $file->setFile_id($values->file_id);

@@ -9,6 +9,7 @@ use Dibi\Fluent;
 use Dibi\Result;
 use Dibi\Row;
 use Exception;
+use InvalidArgumentException;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Utils\ArrayHash;
@@ -17,6 +18,7 @@ use Nette\Utils\ArrayHash;
  * Description of CrudManager
  *
  * @author rendix2
+ * @package App\Models\Crud
  */
 abstract class CrudManager extends Manager //implements ICrudManager
 {
@@ -145,15 +147,23 @@ abstract class CrudManager extends Manager //implements ICrudManager
 
         return $query;
     }
+    
+    /**
+     * @return Fluent
+     */
+    public function getAllFluent()
+    {
+        return $this->dibi
+            ->select('*')
+            ->from($this->table);
+    }    
 
     /**
      * @return array
      */
     public function getAll()
     {
-        return $this->dibi
-            ->select('*')
-            ->from($this->table)
+        return $this->getAllFluent()
             ->fetchAll();
     }
 
@@ -173,16 +183,6 @@ abstract class CrudManager extends Manager //implements ICrudManager
         }
 
         return $cached;
-    }
-
-    /**
-     * @return Fluent
-     */
-    public function getAllFluent()
-    {
-        return $this->dibi
-            ->select('*')
-            ->from($this->table);
     }
 
     /*
@@ -218,7 +218,8 @@ abstract class CrudManager extends Manager //implements ICrudManager
     public function getAllPairs($second)
     {
         return $this->dibi
-            ->select($this->getPrimaryKey() . ', ' . $second)
+            ->select($this->getPrimaryKey())
+            ->select($second)
             ->from($this->getTable())
             ->fetchPairs($this->getPrimaryKey(), $second);
     }
@@ -253,7 +254,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     public function getById($item_id)
     {
         if (!is_numeric($item_id)) {
-            throw new \InvalidArgumentException('Not numeric argument');
+            throw new InvalidArgumentException('Not numeric argument.');
         }
         
         return $this->getAllFluent()
@@ -303,6 +304,25 @@ abstract class CrudManager extends Manager //implements ICrudManager
             ->select('COUNT(*)')
             ->from($this->table);
     }
+    
+    /**
+     * @return Fluent
+     */
+    public function getCountPrimaryKeyFluent()
+    {
+        return $this->dibi
+            ->select('COUNT('.$this->primaryKey.')')
+            ->from($this->table);
+    }
+    
+    /**
+     * @return int
+     */
+    public function getCountPrimaryKey()
+    {
+        return $this->getCountPrimaryKeyFluent()
+            ->fetchSingle();
+    }    
 
     /**
      * @return int
@@ -469,7 +489,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     public function delete($item_id)
     {
         if (!is_numeric($item_id)) {
-            throw new \InvalidArgumentException('Not numeric argument');
+            throw new InvalidArgumentException('Not numeric argument');
         }
         
         $this->deleteCache($item_id);
@@ -480,7 +500,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     }
 
     /**
-     *
+     * @param int|null $item_id 
      */
     protected function deleteCache($item_id = null)
     {
@@ -506,12 +526,26 @@ abstract class CrudManager extends Manager //implements ICrudManager
      */
     public function deleteMulti(array $item_id)
     {
-        $this->deleteCache($item_id);
-
-        return $this->dibi
-            ->delete($this->table)
+        return $this->deleteFluent()
             ->where('[%n IN %in', $this->primaryKey, $item_id)
             ->execute(dibi::AFFECTED_ROWS);
+    }
+    
+    /**
+     * 
+     * @param int       $item_id
+     * @param ArrayHash $item_data
+     * 
+     * @return int
+     * 
+     * @throws InvalidArgumentException
+     */
+    public function updateFluent(ArrayHash $item_data)
+    {
+        $this->deleteCache();
+        
+        return $this->dibi
+            ->update($this->table, $item_data);
     }
 
     /**
@@ -523,19 +557,14 @@ abstract class CrudManager extends Manager //implements ICrudManager
     public function update($item_id, ArrayHash $item_data)
     {
         if (!is_numeric($item_id)) {
-            throw new \InvalidArgumentException('Not numeric argument');
+            throw new InvalidArgumentException('Not numeric argument');
         }
         
         $this->deleteCache($item_id);
         
-        $newData = clone $item_data;
-        
-        unset($newData[$this->primaryKey]);
-
-        return $this->dibi
-                ->update($this->table, $newData)
-                ->where('%n = %i', $this->primaryKey, $item_id)
-                ->execute(dibi::AFFECTED_ROWS);
+        return $this->updateFluent($item_data)
+            ->where('%n = %i', $this->primaryKey, $item_id)
+            ->execute(dibi::AFFECTED_ROWS);
     }
 
     /**
@@ -547,9 +576,8 @@ abstract class CrudManager extends Manager //implements ICrudManager
     public function updateMulti(array $item_id, ArrayHash $item_data)
     {
         $this->deleteCache($item_id);
-
-        return $this->dibi
-            ->update($this->table, $item_data)
+        
+        return $this->updateFluent($item_id, $item_data)
             ->where('%n IN %in', $this->primaryKey, $item_id)
             ->execute(dibi::AFFECTED_ROWS);
     }

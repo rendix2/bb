@@ -3,17 +3,18 @@
 namespace App\Forms;
 
 use App\Controls\BootstrapForm;
-use App\Presenters\Base\BasePresenter;
 use App\Models\UsersManager;
+use App\Presenters\Base\BasePresenter;
+use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Security\User;
-use \Nette\Application\UI\Control;
 use Nette\Utils\ArrayHash;
 
 /**
  * Description of ChangeUserNameForm
  *
  * @author rendix2
+ * @package App\Forms
  */
 class UserChangeUserNameForm extends Control
 {
@@ -43,13 +44,19 @@ class UserChangeUserNameForm extends Control
         $this->user         = $user;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->usersManager = null;
         $this->user         = null;
     }
 
-        public function render()
+    /**
+     * 
+     */
+    public function render()
     {
         $this['changeUserNameForm']->render();
     }
@@ -77,7 +84,7 @@ class UserChangeUserNameForm extends Control
      */
     public function changeUserNameOnValidate(Form $form, ArrayHash $values)
     {
-        if (count($this->usersManager->getByUserName($values->user_name))) {
+        if (count($this->usersManager->checkUserNameExists($values->user_name))) {
             $form->addError('User already exists.');
         }
     }
@@ -89,7 +96,7 @@ class UserChangeUserNameForm extends Control
      */
     public function changeUserNameSuccess(Form $form, ArrayHash $values)
     {
-        $result = $this->usersManager->update($this->user->getId(), $values);
+        $result = $this->usersManager->update($this->user->id, $values);
         
         if ($result) {
             $this->presenter->flashMessage('User name was changed.', BasePresenter::FLASH_MESSAGE_SUCCESS);

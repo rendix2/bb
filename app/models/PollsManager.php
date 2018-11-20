@@ -8,6 +8,7 @@ use App\Models\Crud\CrudManager;
  * Description of PollsManager
  *
  * @author rendix2
+ * @package App\Models
  */
 class PollsManager extends CrudManager
 {
@@ -15,6 +16,7 @@ class PollsManager extends CrudManager
     /**
      * 
      * @param int $topic_id
+     * 
      * @return Row
      */
     public function getByTopic($topic_id)

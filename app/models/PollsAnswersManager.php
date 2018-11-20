@@ -8,10 +8,17 @@ use App\Models\Crud\CrudManager;
  * Description of PollsAnswersManager
  *
  * @author rendix2
+ * @package App\Models
  */
 class PollsAnswersManager extends CrudManager
 {
-    
+ 
+    /**
+     * 
+     * @param int $poll_id
+     * 
+     * @return bool
+     */
     public function deleteByPoll($poll_id)
     {
         return $this->deleteFluent()
@@ -19,6 +26,12 @@ class PollsAnswersManager extends CrudManager
                 ->execute();
     }
     
+    /**
+     * 
+     * @param int $poll_id
+     * 
+     * @return Row[]
+     */
     public function getAllByPoll($poll_id) 
     {
         return $this->getAllFluent()

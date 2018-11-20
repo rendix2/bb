@@ -20,6 +20,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendix2
  * @method GroupsManager getManager()
+ * @package App\AdminModule\Presenters
  */
 class GroupPresenter extends AdminPresenter
 {
@@ -71,20 +72,20 @@ class GroupPresenter extends AdminPresenter
     }
 
     /**
-     * @param array $data
+     * @param array $added_forum_row
      *
      * @return array
      */
-    private function map(array $data)
+    private function map(array $added_forum_row)
     {
         $result = [];
 
-        foreach ($this->forumsManager->getAllCached() as $value) {
-            $result[$value->forum_id] = false;
+        foreach ($this->forumsManager->getAllCached() as $forum) {
+            $result[$forum->forum_id] = false;
             
-            foreach ($data as $value2) {
-                if ($value->forum_id === (int)$value2) {
-                    $result[$value->forum_id] = true;
+            foreach ($added_forum_row as $forum_row) {
+                if ($forum->forum_id === (int)$forum_row) {
+                    $result[$forum->forum_id] = true;
                 }
             }
         }
@@ -124,23 +125,23 @@ class GroupPresenter extends AdminPresenter
             }
         }
 
-        $data   = [];
+        $permission   = [];
         $forums = $this->forums2groupsManager->getAllByRight($id);
 
-        foreach ($forums as $permission) {
-            $data[$permission->forum_id]['post_add']     = $permission->post_add;
-            $data[$permission->forum_id]['post_update']    = $permission->post_update;
-            $data[$permission->forum_id]['post_delete']  = $permission->post_delete;
-            $data[$permission->forum_id]['topic_add']    = $permission->topic_add;
-            $data[$permission->forum_id]['topic_update']   = $permission->topic_update;
-            $data[$permission->forum_id]['topic_delete'] = $permission->topic_delete;
-            $data[$permission->forum_id]['topic_thank']  = $permission->topic_thank;
-            $data[$permission->forum_id]['topic_fast_reply']  = $permission->topic_fast_reply;
+        foreach ($forums as $forum) {
+            $permission[$forum->forum_id]['post_add']         = $forum->post_add;
+            $permission[$forum->forum_id]['post_update']      = $forum->post_update;
+            $permission[$forum->forum_id]['post_delete']      = $forum->post_delete;
+            $permission[$forum->forum_id]['topic_add']        = $forum->topic_add;
+            $permission[$forum->forum_id]['topic_update']     = $forum->topic_update;
+            $permission[$forum->forum_id]['topic_delete']     = $forum->topic_delete;
+            $permission[$forum->forum_id]['topic_thank']      = $forum->topic_thank;
+            $permission[$forum->forum_id]['topic_fast_reply'] = $forum->topic_fast_reply;
         }
 
         $this->template->countOfUsers = $this->users2GroupsManager->getCountByRight($id);
         $this->template->forums       = $this->forumsManager->createForums($this->forumsManager->getAll(), 0);
-        $this->template->permissions  = $data;
+        $this->template->permissions  = $permission;
     }
 
     /**
@@ -164,7 +165,7 @@ class GroupPresenter extends AdminPresenter
      */
     protected function createComponentGridFilter()
     {
-        $this->gf->setTranslator($this->getAdminTranslator());
+        $this->gf->setTranslator($this->getTranslator());
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('group_id', 'group_id', GridFilter::INT_EQUAL);
@@ -192,7 +193,7 @@ class GroupPresenter extends AdminPresenter
      */
     protected function createComponentUserSearch()
     {
-        return new UserSearchControl($this->usersManager, $this->getAdminTranslator());
+        return new UserSearchControl($this->usersManager, $this->getTranslator());
     }
 
     /**
@@ -231,25 +232,26 @@ class GroupPresenter extends AdminPresenter
         $count    = $this->forumsManager->getCount();
         $group_id = $this->getParameter('id');
 
+        $forumsData = $this->forumsManager->getAllCached();
         $groups = [];
         $forums = [];
 
-        foreach ($this->forumsManager->getAllCached() as $forum) {
+        foreach ($forumsData as $forum) {
             $forums[$forum->forum_id] = $forum->forum_id;
             $groups[$forum->forum_id] = (int)$group_id;
         }
 
         $data = [
-            'post_add'     => $this->map(array_pad($post_add, $count + 1, 0)),
-            'post_update'    => $this->map(array_pad($post_update, $count + 1, 0)),
-            'post_delete'  => $this->map(array_pad($post_delete, $count + 1, 0)),
-            'topic_add'    => $this->map(array_pad($topic_add, $count + 1, 0)),
-            'topic_update'   => $this->map(array_pad($topic_update, $count + 1, 0)),
-            'topic_delete' => $this->map(array_pad($topic_delete, $count + 1, 0)),
-            'topic_thank'  => $this->map(array_pad($topic_thank, $count + 1, 0)),
-            'topic_fast_reply'  => $this->map(array_pad($topic_fast_reply, $count + 1, 0)),
-            'forum_id'     => $forums,
-            'group_id'     => $groups
+            'post_add'         => $this->map(array_pad($post_add, $count + 1, 0)),
+            'post_update'      => $this->map(array_pad($post_update, $count + 1, 0)),
+            'post_delete'      => $this->map(array_pad($post_delete, $count + 1, 0)),
+            'topic_add'        => $this->map(array_pad($topic_add, $count + 1, 0)),
+            'topic_update'     => $this->map(array_pad($topic_update, $count + 1, 0)),
+            'topic_delete'     => $this->map(array_pad($topic_delete, $count + 1, 0)),
+            'topic_thank'      => $this->map(array_pad($topic_thank, $count + 1, 0)),
+            'topic_fast_reply' => $this->map(array_pad($topic_fast_reply, $count + 1, 0)),
+            'forum_id'         => $forums,
+            'group_id'         => $groups
         ];
         
         $this->forums2groupsManager->addForums2group($group_id, $data);
@@ -265,7 +267,7 @@ class GroupPresenter extends AdminPresenter
             1 => ['text' => 'menu_groups']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -276,9 +278,9 @@ class GroupPresenter extends AdminPresenter
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'Group:default', 'text' => 'menu_groups'],
-            2 => ['link' => 'Group:edit', 'text' => 'menu_group'],
+            2 => ['link' => 'Group:edit',    'text' => 'menu_group'],
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 }

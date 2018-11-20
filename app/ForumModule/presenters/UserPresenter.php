@@ -2,35 +2,35 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Authorization\Authorizator;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
-use App\Controls\ChangePasswordControl;
-use App\Controls\DeleteAvatarControl;
 use App\Controls\PaginatorControl;
+use App\Forms\ReportForm;
 use App\Forms\SendMailToAdminForm;
 use App\Forms\UserChangePasswordForm;
 use App\Forms\UserChangeUserNameForm;
 use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserResetPasswordForm;
-use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\FavouriteUsersManager;
 use App\Models\LanguagesManager;
 use App\Models\ModeratorsManager;
-use App\Models\PostsManager;
 use App\Models\RanksManager;
 use App\Models\ReportsManager;
 use App\Models\ThanksManager;
-use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
+use App\Models\Traits\UsersTrait;
 use App\Models\UsersManager;
 use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
 use App\Settings\Avatars;
 use App\Settings\Ranks;
+use App\Settings\StartDay;
 use App\Settings\Users;
 use Nette\Application\UI\Form;
+use Nette\InvalidArgumentException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
 
@@ -39,10 +39,11 @@ use Nette\Utils\DateTime;
  *
  * @author rendix2
  * @method UsersManager getManager()
+ * @package App\ForumModule\Presenters
  */
 class UserPresenter extends BaseForumPresenter
 {
-    use \App\Models\Traits\UsersTrait;
+    use UsersTrait;
     //use \App\Models\Traits\TopicsTrait;
     //use \App\Models\Traits\PostTrait;
     
@@ -118,7 +119,7 @@ class UserPresenter extends BaseForumPresenter
     
     /**
      *
-     * @var \App\Settings\StartDay $startDay
+     * @var StartDay $startDay
      * @inject
      */
     public $startDay;
@@ -152,23 +153,23 @@ class UserPresenter extends BaseForumPresenter
      */
     public function __destruct()
     {    
-    $this->usersManager          = null;
-    $this->topicsManager         = null;
-    $this->postsManager          = null;
-    $this->languageManager       = null;
-    $this->rankManager           = null;
-    $this->topicWatchManager     = null;
-    $this->thanksManager         = null;
-    $this->avatar                = null;
-    $this->rank                  = null;
-    $this->moderatorsManager     = null;
-    $this->bbMailer              = null;
-    $this->changePasswordFactory = null;
-    $this->deleteAvatarFactory   = null;
-    $this->favouriteUsersManager = null;
-    $this->startDay              = null;
-    $this->users                 = null;
-    $this->reportsManager        = null;
+        $this->usersManager          = null;
+        $this->topicsManager         = null;
+        $this->postsManager          = null;
+        $this->languageManager       = null;
+        $this->rankManager           = null;
+        $this->topicWatchManager     = null;
+        $this->thanksManager         = null;
+        $this->avatar                = null;
+        $this->rank                  = null;
+        $this->moderatorsManager     = null;
+        $this->bbMailer              = null;
+        $this->changePasswordFactory = null;
+        $this->deleteAvatarFactory   = null;
+        $this->favouriteUsersManager = null;
+        $this->startDay              = null;
+        $this->users                 = null;
+        $this->reportsManager        = null;
         
         parent::__destruct();
     }
@@ -186,8 +187,8 @@ class UserPresenter extends BaseForumPresenter
      */
     public function actionLogout()
     {
-        $this->sessionsManager->deleteBySession($this->getSession()->getId());
-        $this->getUser()->logout(true);
+        $this->sessionsManager->deleteBySession($this->session->getId());
+        $this->user->logout(true);
 
         $this->flashMessage('Successfully logged out.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('Index:default');
@@ -208,7 +209,7 @@ class UserPresenter extends BaseForumPresenter
     {
         $user = $this->checkUserParam($user_id);
 
-        $res = $this->favouriteUsersManager->addByLeft($this->getUser()->getId(), [$user_id]);
+        $res = $this->favouriteUsersManager->addByLeft($this->user->id, [$user_id]);
         
         if ($res) {
             $this->flashMessage('User was added to favourites.', self::FLASH_MESSAGE_SUCCESS);
@@ -225,7 +226,7 @@ class UserPresenter extends BaseForumPresenter
     {
         $user = $this->checkUserParam($user_id);
 
-        $res = $this->favouriteUsersManager->fullDelete($this->getUser()->getId(), $user_id);
+        $res = $this->favouriteUsersManager->delete($this->user->id, $user_id);
         
         if ($res) {
             $this->flashMessage('User was deleted from favourites.', self::FLASH_MESSAGE_SUCCESS);
@@ -240,11 +241,11 @@ class UserPresenter extends BaseForumPresenter
      */
     public function renderEdit()
     {
-        $user     = $this->getUser();
+        $user     = $this->user;
         $userData = [];
 
-        if ($user->isLoggedIn()) {
-            $userData = $this->getManager()->getById($user->getId());
+        if ($user->loggedIn) {
+            $userData = $this->getManager()->getById($user->id);
         }
 
         $this['editUserForm']->setDefaults($userData);
@@ -270,7 +271,7 @@ class UserPresenter extends BaseForumPresenter
     {
         $user = $this->checkUserParam($user_id);
 
-        $posts = $this->postsManager->getByUser($user_id);
+        $posts = $this->postsManager->getFluentByUser($user_id);
         $pag   = new PaginatorControl($posts, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
 
@@ -303,17 +304,17 @@ class UserPresenter extends BaseForumPresenter
         
         $this->template->ranksDir        = $this->rank->getTemplateDir();
         $this->template->avatarsDir      = $this->avatar->getTemplateDir();
-        $this->template->moderatorForums = $this->moderatorsManager->getAllJoinedByLeft($user_id);
+        $this->template->moderatorForums = $this->moderatorsManager->getAllByLeftJoined($user_id);
         $this->template->thankCount      = $this->thanksManager->getCountCached();
         $this->template->topicCount      = $this->topicsManager->getCountCached();
         $this->template->postCount       = $this->postsManager->getCountCached();
         $this->template->watchTotalCount = $this->topicWatchManager->getCount();
         $this->template->userData        = $user;
         $this->template->rank            = $rankUser;
-        $this->template->roles           = \App\Authorization\Authorizator::ROLES;
-        $this->template->isFavourite     = $this->favouriteUsersManager->fullCheck($this->getUser()->getId(), $user_id);
+        $this->template->roles           = Authorizator::ROLES;
+        $this->template->isFavourite     = $this->favouriteUsersManager->fullCheck($this->user->id, $user_id);
         $this->template->user_id         = $user_id;
-        $this->template->favourites      = $this->favouriteUsersManager->getAllJoinedByLeft($user_id);
+        $this->template->favourites      = $this->favouriteUsersManager->getAllByLeftJoined($user_id);
         $this->template->runningDays     = $reg->diff($now)->days;
     }
 
@@ -325,7 +326,7 @@ class UserPresenter extends BaseForumPresenter
     {
         $user = $this->checkUserParam($user_id);
 
-        $thanks = $this->thanksManager->getFluentJoinedTopicByUser($user_id);
+        $thanks = $this->thanksManager->getFluentByUserJoinedTopic($user_id);
         $pag    = new PaginatorControl($thanks, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
 
@@ -363,7 +364,7 @@ class UserPresenter extends BaseForumPresenter
     {
         $user = $this->checkUserParam($user_id);
         
-        $watches = $this->topicWatchManager->getFluentJoinedByRight($user_id);
+        $watches = $this->topicWatchManager->getFluentByRightJoined($user_id);
         
         $pag    = new PaginatorControl($watches, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
@@ -400,9 +401,9 @@ class UserPresenter extends BaseForumPresenter
     {
         $this->setView('list');
         
-                $users = $this->getManager()
-                ->getAllFluent()
-                ->where('[user_role_id] = %i', 3);
+        $users = $this->getManager()
+            ->getAllFluent()
+            ->where('[user_role_id] = %i', 3);
         
         $pag = new PaginatorControl($users, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
@@ -453,7 +454,7 @@ class UserPresenter extends BaseForumPresenter
     }
 
     /**
-     * @param $user_id
+     * @param int $user_id
      */
     public function actionReport($user_id)
     {
@@ -506,7 +507,7 @@ class UserPresenter extends BaseForumPresenter
      */
     protected function createComponentChangeUserNameForm()
     {
-        return new UserChangeUserNameForm($this->getManager(), $this->getUser());
+        return new UserChangeUserNameForm($this->getManager(), $this->user);
     }
        
     /**
@@ -530,8 +531,8 @@ class UserPresenter extends BaseForumPresenter
             'user_avatar',
             'User avatar:'
         )->setAttribute('title', 'Max width: '.$this->avatar->getMaxWidth().'px, max height: '.$this->avatar->getMaxHeight().'px')
-                ->setRequired(false)
-                ->addRule(Form::IMAGE, 'user_avatar_file_rule');
+         ->setRequired(false)
+         ->addRule(Form::IMAGE, 'user_avatar_file_rule');
         $form->addTextArea('user_signature', 'User signature:');
         $form->addSubmit(
             'send',
@@ -564,23 +565,24 @@ class UserPresenter extends BaseForumPresenter
      */
     public function editUserFormSuccess(Form $form, ArrayHash $values)
     {
-        $user = $this->getUser();
+        $user    = $this->user;
+        $user_id = $user->id;
         
         try {
-            $move = $this->getManager()->moveAvatar($values->user_avatar, $user->getId());
+            $move = $this->getManager()->moveAvatar($values->user_avatar, $user_id);
             
             if ($move !== UsersManager::NOT_UPLOADED) {
                 $values->user_avatar = $move;
             } else {
                 unset($values->user_avatar);
             }
-        } catch (\Nette\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $this->flashMessage($e->getMessage());
             unset($values->user_avatar);
         }
 
-        if ($user->isLoggedIn()) {
-            $result = $this->getManager()->update($user->getId(), $values);
+        if ($user->loggedIn) {
+            $result = $this->getManager()->update($user_id, $values);
         } else {
             $result = $this->getManager()->add($values);
         }
@@ -608,7 +610,7 @@ class UserPresenter extends BaseForumPresenter
             1 => ['text' => 'menu_user']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -618,12 +620,12 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list', 'text' => 'menu_users'],
-            2 => ['link' => 'User:profile', 'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
+            1 => ['link' => 'User:list',     'text' => 'menu_users'],
+            2 => ['link' => 'User:profile',  'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
             3 => ['text' => 'menu_posts']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -633,11 +635,11 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            1 => ['link' => 'User:list',     'text' => 'menu_users'],
             2 => ['text' => 'menu_user']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -648,11 +650,11 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            1 => ['link' => 'User:list',     'text' => 'menu_users'],
             2 => ['text' => 'user_admin_contact']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -663,12 +665,12 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list', 'text' => 'menu_users'],
-            2 => ['link' => 'User:profile', 'params' => [$this->getParameter('user_id')], 'text' => 'menu_user'],
+            1 => ['link' => 'User:list',     'text' => 'menu_users'],
+            2 => ['link' => 'User:profile',  'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
             3 => ['text' => 'Thanks']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -679,12 +681,12 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list', 'text' => 'menu_users'],
-            2 => ['link' => 'User:profile', 'params' => [$this->getParameter('user_id')], 'text' => 'menu_user'],
+            1 => ['link' => 'User:list',     'text' => 'menu_users'],
+            2 => ['link' => 'User:profile',  'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
             3 => ['text' => 'menu_topics']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -695,12 +697,12 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list', 'text' => 'menu_users'],
-            2 => ['link' => 'User:profile', 'params' => [$this->getParameter('user_id')], 'text' => 'menu_user'],
+            1 => ['link' => 'User:list',     'text' => 'menu_users'],
+            2 => ['link' => 'User:profile',  'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
             3 => ['text' => 'watches']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
     
     /**
@@ -711,11 +713,11 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list', 'text' => 'menu_users'],
-            2 => ['link' => 'User:profile', 'params' => [$this->getParameter('user_id')], 'text' => 'menu_user'],
+            1 => ['link' => 'User:list',     'text' => 'menu_users'],
+            2 => ['link' => 'User:profile',  'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
             3 => ['text' => 'Report user']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 }

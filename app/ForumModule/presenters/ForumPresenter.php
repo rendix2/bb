@@ -2,27 +2,27 @@
 
 namespace App\ForumModule\Presenters;
 
+use App\Authorization\Scopes\ForumScope;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
-use App\Forms\ForumSearchInForumForm;
-use App\Models\CategoriesManager;
+use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\ForumsManager;
 use App\Models\ModeratorsManager;
-use App\Models\TopicsManager;
+use App\Models\Traits\CategoriesTrait;
 use App\Settings\ForumSettings;
 use App\Settings\TopicsSetting;
-use Nette\Http\IResponse;
 
 /**
  * Description of ForumPresenter
  *
  * @author rendix2
  * @method ForumsManager getManager()
+ * @package App\ForumModule\Presenters
  */
-final class ForumPresenter extends Base\ForumPresenter
+final class ForumPresenter extends BaseForumPresenter
 {
-    use \App\Models\Traits\CategoriesTrait;
+    use CategoriesTrait;
     //use \App\Models\Traits\ForumsTrait;
     //use \App\Models\Traits\TopicsTrait;
     
@@ -92,10 +92,10 @@ final class ForumPresenter extends Base\ForumPresenter
         
         $forumScope = $this->loadForum($forum); 
         
-        $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_VIEW);
+        $this->requireAccess($forumScope, ForumScope::ACTION_VIEW);
 
         $forumSettings = $this->forumSettings->get();        
-        $topics        = $this->topicsManager->getFluentJoinedUsersJoinedLastPostByForum($forum_id);
+        $topics        = $this->topicsManager->getFluentByForumJoinedUsersJoinedLastPost($forum_id);
         
         if (isset($this['gridFilter'])) {
             $this->getComponent('gridFilter');
@@ -112,8 +112,8 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->flashMessage('No topics.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $this->template->canAddTopic    = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_ADD);
-        $this->template->canDeleteTopic = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_DELETE);
+        $this->template->canAddTopic    = $this->isAllowed($forumScope, ForumScope::ACTION_TOPIC_ADD);
+        $this->template->canDeleteTopic = $this->isAllowed($forumScope, ForumScope::ACTION_TOPIC_DELETE);
         
         $this->template->forum  = $forum;
         $this->template->topics = $topics->fetchAll();
@@ -129,14 +129,14 @@ final class ForumPresenter extends Base\ForumPresenter
      */
     public function renderDefault($category_id, $forum_id, $page = 1)
     {
-        $moderators = $this->moderatorsManager->getAllJoinedByRight($forum_id);
+        $moderators = $this->moderatorsManager->getAllByRightJoined($forum_id);
         
         if (!$moderators) {
             $this->flashMessage('No moderators in forum.', self::FLASH_MESSAGE_INFO);
         }
 
         $this->template->moderators  = $moderators;
-        $this->template->subForums   = $this->getManager()->getByParent($forum_id);
+        $this->template->subForums   = $this->getManager()->getAllByParent($forum_id);
         $this->template->logViews    = $this->topicSetting->get()['logViews'];
     }
 
@@ -164,7 +164,7 @@ final class ForumPresenter extends Base\ForumPresenter
      */
     protected function createComponentGridFilter()
     {
-        $this->gf->setTranslator($this->getForumTranslator());
+        $this->gf->setTranslator($this->getTranslator());
         
         $this->gf->addFilter('topic_id', 'topic_id', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('topic_name', 'topic_name', GridFilter::TEXT_LIKE);
@@ -188,7 +188,7 @@ final class ForumPresenter extends Base\ForumPresenter
             $this->getManager()->getBreadCrumb($this->getParameter('forum_id'))
         );
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -203,6 +203,6 @@ final class ForumPresenter extends Base\ForumPresenter
             [['link' => 'Forum:rules', 'text' => 'forum_rules', 'params' => [$this->getParameter('category_id'), $this->getParameter('forum_id')]]]
         );
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 }

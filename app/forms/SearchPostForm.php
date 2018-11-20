@@ -5,32 +5,42 @@ namespace App\Forms;
 use App\Controls\BootstrapForm;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
+use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
 
 /**
  * Description of SearchPostForm
  *
- * @author rendi
+ * @author rendix2
+ * @package App\Forms
  */
 class SearchPostForm extends Control
 {
     /**
      *
-     * @var \Nette\Localization\ITranslator $translator 
+     * @var ITranslator $translator 
      */
     private $translator;
     
     /**
      * 
-     * @param \Nette\Localization\ITranslator $translator
+     * @param ITranslator $translator
      */
-    public function __construct(\Nette\Localization\ITranslator $translator)
+    public function __construct(ITranslator $translator)
     {                
         parent::__construct();
         
         $this->translator = $translator;
     }
-    
+
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->translator = null;        
+    }
+
     /**
      * 
      */

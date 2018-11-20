@@ -2,8 +2,8 @@
 
 namespace App\Models\Traits;
 
+use App\Models\Entity\UserEntity;
 use App\Models\UsersManager;
-use Nette\Http\IResponse;
 
 /**
  * Description of UsersTrait
@@ -23,7 +23,7 @@ trait UsersTrait
      * 
      * @param int $user_id
      * 
-     * @return \App\Models\Entity\User
+     * @return UserEntity
      */
     public function checkUserParam($user_id)
     {
@@ -41,6 +41,6 @@ trait UsersTrait
             $this->error('User was not found.');
         }
         
-        return \App\Models\Entity\User::setFromRow($userDibi);
+        return UserEntity::setFromRow($userDibi);
     }    
 }

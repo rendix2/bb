@@ -1,17 +1,19 @@
 <?php
 
-use App\Models\Entity\Thank;
+namespace App\Models\Entity;
+
+use App\Models\Entity\Base\Entity;
+use App\Models\Entity\ThankEntity;
 use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
-namespace App\Models\Entity;
-
 /**
- * Description of Thank
+ * Description of ThankEntity
  *
- * @author rendi
+ * @author rendix2
+ * @package App\Models\Entity
  */
-class Thank extends Base\Entity
+class ThankEntity extends Entity
 {
     /**
      *
@@ -119,11 +121,11 @@ class Thank extends Base\Entity
      * 
      * @param Row $values
      * 
-     * @return Thank
+     * @return ThankEntity
      */
     public static function setFromRow(Row $values)
     {
-        $thank = new Thank();
+        $thank = new ThankEntity();
         
         if (isset($values->thank_id)) {
             $thank->setThank_id($values->thank_id);
@@ -156,11 +158,11 @@ class Thank extends Base\Entity
      * 
      * @param ArrayHash $values
      * 
-     * @return Thank
+     * @return ThankEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $thank = new Thank();
+        $thank = new ThankEntity();
         
         if (isset($values->thank_id)) {
             $thank->setThank_id($values->thank_id);

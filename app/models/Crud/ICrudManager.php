@@ -6,7 +6,6 @@ use Dibi\Connection;
 use Dibi\Fluent;
 use Dibi\Result;
 use Dibi\Row;
-
 use Nette\Caching\IStorage;
 use Nette\Utils\ArrayHash;
 
@@ -14,6 +13,7 @@ use Nette\Utils\ArrayHash;
  * Description of ICrudManager
  *
  * @author rendix2
+ * @package App\Models\Crud
  */
 interface ICrudManager
 {
@@ -103,7 +103,7 @@ interface ICrudManager
     public function delete($item_id);
 
     /**
-     *
+     * @param int|null $item_id
      */
     public function deleteCache($item_id = null);
 

@@ -3,9 +3,10 @@
 namespace App\ModeratorModule\Presenters;
 
 use App\Controls\BootstrapForm;
-use App\Models\ForumsManager;
-use App\Models\TopicsManager;
+use App\Controls\GridFilter;
 use App\Models\TopicFacade;
+use App\Models\TopicsManager;
+use App\Models\Traits\ForumsTrait;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -15,11 +16,12 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendix2
  * @method TopicsManager getManager()
+ * @package App\ModeratorModule\Presenters
  */
 class TopicPresenter extends ModeratorPresenter
 {
     
-    use \App\Models\Traits\ForumsTrait;
+    use ForumsTrait;
     
     /**
      *
@@ -56,7 +58,7 @@ class TopicPresenter extends ModeratorPresenter
     
     /**
      *
-     * @return null
+     * @return GridFilter
      */
     protected function createComponentGridFilter()
     {

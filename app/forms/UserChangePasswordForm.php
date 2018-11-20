@@ -17,6 +17,7 @@ use Nette\Utils\ArrayHash;
  * Description of ChangePasswordControl
  *
  * @author rendix2
+ * @package App\Forms
  */
 class UserChangePasswordForm extends Control
 {
@@ -53,8 +54,12 @@ class UserChangePasswordForm extends Control
      * @param User         $user
      * @param Users        $users
      */
-    public function __construct(UsersManager $userManager, ITranslator $translator, User $user, Users $users)
-    {
+    public function __construct(
+        UsersManager $userManager,
+        ITranslator  $translator,
+        User         $user,
+        Users        $users
+    ) {
         parent::__construct();
 
         $this->userManager = $userManager;
@@ -115,7 +120,7 @@ class UserChangePasswordForm extends Control
             $form->addError('Empty last password.');
         }
 
-        $user = $this->userManager->getById($this->user->getId());
+        $user = $this->userManager->getById($this->user->id);
 
         if (!$user) {
             $form->addError('User not exists!');
@@ -141,7 +146,7 @@ class UserChangePasswordForm extends Control
     public function changePasswordSuccess(Form $form, ArrayHash $values)
     {
         $result = $this->userManager->update(
-            $this->user->getId(),
+            $this->user->id,
             ArrayHash::from(
                 ['user_password' => Passwords::hash($values->user_password)]
             )

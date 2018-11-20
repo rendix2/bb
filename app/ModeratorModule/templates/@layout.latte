@@ -23,7 +23,7 @@
             <li class="nav-item {if $presenter->getName() === 'Forum:Index' || $presenter->getName() === 'Forum:Post' || $presenter->getName() === 'Forum:Forum' }active{/if}">
                 <a class="nav-link" href="{link Index:default}">Index</a></li>
 
-            {if $user->isLoggedIn()}
+            {if $user->loggedIn}
                 <li class="nav-item">
                     <a class="nav-link" href="{plink User:logout}">{_logout}</a>
                 </li>

@@ -3,8 +3,7 @@
 namespace App\Models\Traits;
 
 use App\Models\CategoriesManager;
-
-use Nette\Http\IResponse;
+use App\Models\Entity\CategoryEntity;
 
 /**
  * Description of CategoriesTrait
@@ -23,7 +22,7 @@ trait CategoriesTrait {
      * 
      * @param int $category_id
      * 
-     * @return \App\Models\Entity\Category
+     * @return CategoryEntity
      */
     public function checkCategoryParam($category_id)
     {
@@ -42,7 +41,7 @@ trait CategoriesTrait {
             $this->error('Category was not found.');
         }
         
-        $category = \App\Models\Entity\Category::setFromRow($categoryDibi);
+        $category = CategoryEntity::setFromRow($categoryDibi);
 
         if (!$category->getCategory_active()) {
             $this->error('Category is not active.');

@@ -5,6 +5,7 @@ namespace App\Forms;
 use App\Controls\BootstrapForm;
 use App\Models\ForumsManager;
 use App\Models\Users2ForumsManager;
+use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
@@ -14,6 +15,7 @@ use Nette\Utils\ArrayHash;
  * Description of UserForumsForm
  *
  * @author rendix2
+ * @package App\Forms
  */
 class UserForumsForm extends Control
 {
@@ -41,15 +43,20 @@ class UserForumsForm extends Control
      * @param ITranslator         $translator
      */
     public function __construct(
-        ForumsManager $forumsManager,
+        ForumsManager       $forumsManager,
         Users2ForumsManager $users2ForumsManager,
-        ITranslator $translator
-    ) {        
+        ITranslator         $translator
+    ) {   
+        parent::__construct();
+        
         $this->forumsManager       = $forumsManager;
         $this->users2ForumsManager = $users2ForumsManager;
         $this->translator          = $translator;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->forumsManager       = null;
@@ -57,7 +64,7 @@ class UserForumsForm extends Control
         $this->translator          = null;
     }
 
-        public function render()
+    public function render()
     {
         $sep = DIRECTORY_SEPARATOR;
         
@@ -87,20 +94,20 @@ class UserForumsForm extends Control
     }
     
     /**
-     * @param array $data
+     * @param array $added_forum_row
      *
      * @return array
      */
-    private function map(array $data)
+    private function map(array $added_forum_row)
     {
         $result = [];
         
-        foreach ($this->forumsManager->getAllCached() as $value) {
-            $result[$value->forum_id] = false;
+        foreach ($this->forumsManager->getAllCached() as $forum) {
+            $result[$forum->forum_id] = false;
             
-            foreach ($data as $value2) {
-                if ($value->forum_id === (int)$value2) {
-                    $result[$value->forum_id] = true;
+            foreach ($added_forum_row as $forum_row) {
+                if ($forum->forum_id === (int)$forum_row) {
+                    $result[$forum->forum_id] = true;
                 }
             }
         }
@@ -146,10 +153,10 @@ class UserForumsForm extends Control
 
         foreach ($this->forumsManager->getAllCached() as $forum) {
             $forums[$forum->forum_id] = $forum->forum_id;
-            $users[$forum->forum_id] = (int)$user_id;
+            $users[$forum->forum_id]  = (int)$user_id;
         }
 
-        $data = [
+        $permission = [
             'post_add'         => $this->map(array_pad($post_add, $count + 1, 0)),
             'post_update'      => $this->map(array_pad($post_update, $count + 1, 0)),
             'post_delete'      => $this->map(array_pad($post_delete, $count + 1, 0)),
@@ -163,9 +170,9 @@ class UserForumsForm extends Control
         ];
         
         $this->users2ForumsManager->deleteByLeft($user_id);
-        $this->users2ForumsManager->addNative($data);
+        $this->users2ForumsManager->addNative($permission);
         
-        $this->presenter->flashMessage('Forum was saved.', \App\Presenters\Base\BasePresenter::FLASH_MESSAGE_SUCCESS);
+        $this->presenter->flashMessage('Forum was saved.', BasePresenter::FLASH_MESSAGE_SUCCESS);
         $this->presenter->redirect('User:edit', $user_id);
     }    
 }

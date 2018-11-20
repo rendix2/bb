@@ -8,6 +8,7 @@ use Nette\Utils\ArrayHash;
  * Description of FaqFacade
  *
  * @author rendix2
+ * @package App\Models
  */
 class FaqFacade
 {
@@ -34,6 +35,9 @@ class FaqFacade
         $this->faqAnswersManager = $faqAnswersManager;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->faqManager        = null;

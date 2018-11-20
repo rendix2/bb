@@ -2,9 +2,8 @@
 
 namespace App\Models\Traits;
 
-use App\Models\Entity\Forum;
+use App\Models\Entity\ForumEntity;
 use App\Models\ForumsManager;
-use Nette\Http\IResponse;
 
 /**
  * Description of ForumsTrait
@@ -24,8 +23,8 @@ trait ForumsTrait
      * @param int $forum_id
      * @param int $category_id
      * 
-     * @return \App\Models\Entity\Forum
-     * ¨
+     * @return \App\Models\Entity\ForumEntity
+     *
      */
     public function checkForumParam($forum_id, $category_id = null)
     {
@@ -44,7 +43,7 @@ trait ForumsTrait
             $this->error('Forum was not found.');
         }
         
-        $forum = Forum::setFromRow($forumDibi);
+        $forum = ForumEntity::setFromRow($forumDibi);
 
         if ($category_id) {
             if ($forum->getForum_category_id() !== (int)$category_id) {

@@ -10,6 +10,8 @@ use Nette\Utils\Html;
 /**
  * Check box control. Allows the user to select a true or false condition.
  *
+ * @author rendix2
+ * @package App\Controls
  * @property Rule $rules Description
  */
 class CheckBox extends NetteCheckbox
@@ -25,6 +27,7 @@ class CheckBox extends NetteCheckbox
     public function __construct($name, $caption = null)
     {
         parent::__construct($caption);
+        
         $this->control->type = 'checkbox';
         $this->wrapper       = Html::el();
         $this->setOption('type', 'checkbox');

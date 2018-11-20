@@ -10,6 +10,7 @@ use Nette\Utils\ArrayHash;
  * Description of SessionsManager
  *
  * @author rendix2
+ * @package App\Models
  */
 class SessionsManager extends CrudManager
 {
@@ -73,10 +74,7 @@ class SessionsManager extends CrudManager
      */
     public function updateBySessionsKey($session_key, ArrayHash $session_data)
     {
-        $this->deleteCache();
-
-        return $this->dibi
-                ->update($this->getTable(), $session_data)
+        return $this->updateFluent($session_data)
                 ->where('[session_key] = %s', $session_key)
                 ->execute();
     }
@@ -87,10 +85,7 @@ class SessionsManager extends CrudManager
      */
     public function updateByUser($user_id, ArrayHash $session_data)
     {
-        $this->deleteCache();
-
-        $this->dibi
-                ->update($this->getTable(), $session_data)
+        return $this->updateFluent($session_data)
                 ->where('[session_user_id] = %i', $user_id)
                 ->execute();
     }

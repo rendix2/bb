@@ -4,12 +4,16 @@ namespace App\Controls;
 
 use Dibi\Fluent;
 use Nette\Application\UI\Control;
+use Nette\Application\UI\Form;
+use Nette\Http\Url;
+use Nette\Utils\ArrayHash;
 use Nette\Utils\Paginator;
 
 /**
  * Class PaginatorControl
  *
- * @package App\controls\forms
+ * @author rendix2
+ * @package App\Controls
  */
 class PaginatorControl extends Control
 {
@@ -51,7 +55,7 @@ class PaginatorControl extends Control
     /**
      * PaginatorControl constructor.
      *
-     * @param Fluent &$data
+     * @param Fluent $data
      * @param int    $itemsPerPage
      * @param int    $itemsAround
      * @param int    $page
@@ -121,16 +125,16 @@ class PaginatorControl extends Control
         $form->addInteger('page', '')
                 ->setAttribute('placeholder', 'Page')
                 ->setRequired(false)
-                ->addRule(\Nette\Application\UI\Form::RANGE, 'Ivalid range', [1, $this->paginator->getPageCount()]);
+                ->addRule(Form::RANGE, 'Ivalid range', [1, $this->paginator->getPageCount()]);
         
         $form->onSuccess[] = [$this, 'paginationSuccess'];
         
         return $form;
     }
     
-    public function paginationSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
+    public function paginationSuccess(Form $form, ArrayHash $values)
     {
-        $url = new \Nette\Http\Url($this->presenter->getHttpRequest()->getUrl());
+        $url = new Url($this->presenter->getHttpRequest()->getUrl());
         $url->setQueryParameter('page', $values->page);
 
         $this->presenter->redirectUrl($url);

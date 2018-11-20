@@ -3,10 +3,12 @@
 namespace App\Controls;
 
 use Dibi\Fluent;
+use InvalidArgumentException;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Http\Session;
 use Nette\Localization\ITranslator;
+use Nette\Neon\Exception;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
 
@@ -14,6 +16,7 @@ use Nette\Utils\DateTime;
  * Description of GridFilter
  *
  * @author rendix2
+ * @package App\Controls
  */
 class GridFilter extends Control
 {
@@ -260,7 +263,7 @@ class GridFilter extends Control
                 $this->form->addCheckboxList($columnName, $text, $data);
                 break;
             default :
-                throw new \InvalidArgumentException('Unknow filter type.');
+                throw new InvalidArgumentException('Unknow filter type.');
         
         }
         

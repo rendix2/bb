@@ -6,6 +6,7 @@ use App\Settings\AppDir;
 use App\Settings\DefaultLanguage;
 use App\Translator;
 use Nette\Security\User;
+use Nette\Localization\ITranslator;
 
 /**
  * Description of TranslatorFactory
@@ -33,6 +34,17 @@ class TranslatorFactory
      * @var DefaultLanguage $defaultLanguage
      */
     private $defaultLanguage;
+    
+    /**
+     *
+     * @var ITranslator $forumTranslator
+     */
+    private $forumTranslator;
+    
+    /**
+     * @var ITranslator $adminTranslator
+     */
+    private $adminTranslator;
 
     /**
      * TranslatorFactory constructor.
@@ -41,11 +53,16 @@ class TranslatorFactory
      * @param AppDir          $appDir
      * @param DefaultLanguage $defaultLanguage
      */
-    public function __construct(User $user, AppDir $appDir, DefaultLanguage $defaultLanguage)
-    {
+    public function __construct(
+        User            $user,
+        AppDir          $appDir,
+        DefaultLanguage $defaultLanguage
+    ) {
         $this->user            = $user;
         $this->appDir          = $appDir;
         $this->defaultLanguage = $defaultLanguage;
+        $this->forumTranslator = null;
+        $this->adminTranslator = null;
         
         $this->setLang();
     }
@@ -59,6 +76,8 @@ class TranslatorFactory
         $this->lang            = null;
         $this->appDir          = null;
         $this->defaultLanguage = null;
+        $this->forumTranslator = null;
+        $this->adminTranslator = null;
     }
 
     /**
@@ -66,7 +85,7 @@ class TranslatorFactory
      */
     private function setLang()
     {
-        $identity = $this->user->getIdentity();
+        $identity = $this->user->id;
         $lang = '';
         
         if ($identity) {
@@ -81,16 +100,24 @@ class TranslatorFactory
     /**
      * @return Translator
      */
-    public function adminTranslatorFactory()
+    public function createAdminTranslatorFactory()
     {
-        return new Translator($this->appDir, 'Admin', $this->lang);
+        if (!$this->adminTranslator) {
+            $this->adminTranslator = new Translator($this->appDir, 'Admin', $this->lang);   
+        }
+        
+        return $this->adminTranslator;
     }
 
     /**
      * @return Translator
      */
-    public function forumTranslatorFactory()
+    public function createForumTranslatorFactory()
     {
-        return new Translator($this->appDir, 'Forum', $this->lang);
+        if (!$this->forumTranslator) {
+            $this->forumTranslator = new Translator($this->appDir, 'Forum', $this->lang);
+        }
+        
+        return $this->forumTranslator;
     }
 }

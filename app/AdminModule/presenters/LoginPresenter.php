@@ -2,21 +2,22 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\Authenticator;
+use App\Authorization\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Forms\UserLoginForm;
+use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
 use App\Translator;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
 use Nette\Utils\ArrayHash;
-use App\Models\SessionsManager;
 
 /**
  * Description of LoginPresenter
  *
  * @author rendix2
+ * @package App\AdminModule\Presenters
  */
 class LoginPresenter extends BasePresenter
 {
@@ -66,7 +67,7 @@ class LoginPresenter extends BasePresenter
      */
     public function checkRequirements($element)
     {
-        $this->getUser()->getStorage()->setNamespace(self::BECK_END_NAMESPACE);
+        $this->user->getStorage()->setNamespace(self::BECK_END_NAMESPACE);
         
         parent::checkRequirements($element);
     }
@@ -78,7 +79,7 @@ class LoginPresenter extends BasePresenter
     {
         parent::startup();
         
-        $this->translator = $this->translatorFactory->adminTranslatorFactory();
+        $this->translator = $this->translatorFactory->createAdminTranslatorFactory();
         $this->template->setTranslator($this->translator);
     }
 
@@ -107,26 +108,24 @@ class LoginPresenter extends BasePresenter
     {
         // check if user is admin
         try {
-            $user = $this->getUser();
+            $user = $this->user;
+            
             $user->login(
                 $values->user_name,
                 $values->user_password
             );
             
-            if (!$this->getUser()->isInRole(\App\Authorization\Authorizator::ROLES[5])) {
+            if (!$user->isInRole(Authorizator::ROLES[5])) {
                 throw new AuthenticationException('You are not admin.');
             }
             
-            $this->sessionManager->delete($this->getUser()->getId());
-            $this->sessionManager->add(
-                ArrayHash::from(
-                    [
-                        'session_key'     => $this->getSession()->getId(),
-                        'session_user_id' => $this->getUser()->getId(),
-                        'session_from'    => time()
-                    ]
-                )
-            );
+            $sessionEntity = new \App\Models\Entity\SessionEntity();
+            $sessionEntity->setSession_key($this->session->getId())
+                          ->setSession_user_id($user->id)
+                          ->setSession_from(time());
+            
+            $this->sessionManager->deleteByUser($user->id);
+            $this->sessionManager->add($sessionEntity->getArrayHash());
             $user->setExpiration('1 hour');
             $this->flashMessage(
                 'Successfully admin logged in.',

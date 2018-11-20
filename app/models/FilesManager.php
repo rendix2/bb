@@ -5,7 +5,8 @@ namespace App\Models;
 /**
  * Description of FilesManager
  *
- * @author rendi
+ * @author rendix2
+ * @package App\Models
  */
 class FilesManager extends Crud\CrudManager
 {

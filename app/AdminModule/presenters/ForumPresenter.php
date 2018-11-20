@@ -4,25 +4,28 @@ namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
+use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Models\CategoriesManager;
+use App\Models\Entity\ForumEntity;
+use App\Models\ForumFacade;
 use App\Models\ForumsManager;
+use App\Models\ModeratorsManager;
 use App\Models\PostsManager;
 use App\Models\TopicsManager;
 use App\Models\UsersManager;
-use App\Models\ModeratorsManager;
-use App\Models\ForumFacade;
-use App\Controls\BreadCrumbControl;
-
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 /**
  * Description of ForumPresenter
  *
  * @author rendix2
  * @method ForumsManager getManager()
+ * @package App\AdminModule\Presenters
  */
 class ForumPresenter extends AdminPresenter
 {   
@@ -131,7 +134,7 @@ class ForumPresenter extends AdminPresenter
             $this[self::FORM_NAME]->setDefaults($item);
 
             $subForums = $this->getManager()
-                ->createForums($this->getManager()->getByParent($id), (int)$id);
+                ->createForums($this->getManager()->getAllByParent($id), (int)$id);
 
             if (!$subForums) {
                 $this->flashMessage('No sub forums.', self::FLASH_MESSAGE_WARNING);
@@ -151,7 +154,7 @@ class ForumPresenter extends AdminPresenter
                 $userData = false;
             }
             
-            $moderators = $this->moderatorsManager->getAllJoinedByRight($id);
+            $moderators = $this->moderatorsManager->getAllByRightJoined($id);
 
             $this->template->topicData  = $lastTopic;
             $this->template->lastPost   = $lastPost;
@@ -174,7 +177,7 @@ class ForumPresenter extends AdminPresenter
     public function actionDelete($id)
     {
        $forumDibi = $this->getManager()->getById($id);
-       $forum     = \App\Models\Entity\Forum::setFromRow($forumDibi);
+       $forum     = ForumEntity::setFromRow($forumDibi);
 
         $result = $this->forumFacade->delete($forum);
 
@@ -229,12 +232,43 @@ class ForumPresenter extends AdminPresenter
     }
     
     /**
+     * @param Form      $form   form
+     * @param ArrayHash $values values
+     */
+    public function editFormSuccess(Form $form, ArrayHash $values)
+    {
+        $id = $this->getParameter('id');
+
+        try {
+            if ($id) {
+                $result = $this->forumFacade->update($id, $values);
+            } else {
+                $forum = ForumEntity::setFromArrayHash($values);
+                
+                $result = $id = $this->forumFacade->add($forum);
+            }
+
+            if ($result) {
+                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+            } else {
+                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
+            }
+        } catch (DriverException $e) {
+            $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
+            
+            Debugger::log($e->getMessage(), ILogger::CRITICAL);
+        }
+
+        $this->redirect(':' . $this->getName() . ':default');
+    }    
+    
+    /**
      *
      * @return GridFilter
      */
     protected function createComponentGridFilter()
     {
-        $this->gf->setTranslator($this->getAdminTranslator());
+        $this->gf->setTranslator($this->getTranslator());
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('forum_id', 'forum_id', GridFilter::INT_EQUAL);
@@ -255,7 +289,7 @@ class ForumPresenter extends AdminPresenter
             1 => ['text' => 'menu_forums']
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
     
     /**
@@ -266,40 +300,9 @@ class ForumPresenter extends AdminPresenter
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'Forum:default', 'text' => 'menu_forums'],
-            2 => ['link' => 'Forum:edit', 'text' => 'menu_forum'],
+            2 => ['link' => 'Forum:edit',    'text' => 'menu_forum'],
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
-    }
-    
-    /**
-     * @param Form      $form   form
-     * @param ArrayHash $values values
-     */
-    public function editFormSuccess(Form $form, ArrayHash $values)
-    {
-        $id = $this->getParameter('id');
-
-        try {
-            if ($id) {
-                $result = $this->forumFacade->update($id, $values);
-            } else {
-                $forum = \App\Models\Entity\Forum::setFromArrayHash($values);
-                
-                $result = $id = $this->forumFacade->add($forum);
-            }
-
-            if ($result) {
-                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
-            } else {
-                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
-            }
-        } catch (DriverException $e) {
-            $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
-            
-            \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
-        }
-
-        $this->redirect(':' . $this->getName() . ':default');
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 }

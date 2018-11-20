@@ -2,9 +2,9 @@
 
 namespace App\AdminModule\ConfigModule\Presenters;
 
-use App\Settings\Avatars;
 use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
+use App\Settings\Avatars;
 
 /**
  * Description of IndexPresenter
@@ -36,15 +36,17 @@ class IndexPresenter extends BasePresenter
      */
     public function checkRequirements($element)
     {
-        $this->getUser()->getStorage()->setNamespace(self::BECK_END_NAMESPACE);
+        $user = $this->user;
+        
+        $user->getStorage()->setNamespace(self::BECK_END_NAMESPACE);
         
         parent::checkRequirements($element);
 
-        if (!$this->getUser()->isLoggedIn()) {
+        if (!$user->loggedIn) {
             $this->error('You are not logged in.');
         }
 
-        if (!$this->getUser()->isInRole('admin')) {
+        if (!$user->isInRole('admin')) {
             $this->error('You are not admin.');
         }
     }
@@ -56,7 +58,7 @@ class IndexPresenter extends BasePresenter
     {
         parent::beforeRender();
         
-        $this->template->setTranslator($this->translatorFactory->adminTranslatorFactory());
+        $this->template->setTranslator($this->translatorFactory->createAdminTranslatorFactory());
     }
 
     /**

@@ -13,6 +13,7 @@ use Nette\Utils\ArrayHash;
  * Description of TopicsManager
  *
  * @author rendix2
+ * @package App\Models
  */
 class TopicsManager extends CrudManager
 {
@@ -90,7 +91,7 @@ class TopicsManager extends CrudManager
      *
      * @return array
      */
-    public function findByTopicName($topic_name)
+    public function findByTopicNameJoinedUser($topic_name)
     {
         return $this->getAllFluent()
             ->innerJoin(self::USERS_TABLE)
@@ -104,7 +105,7 @@ class TopicsManager extends CrudManager
      *
      * @return Fluent
      */
-    public function getFluentJoinedUsersJoinedLastPostByForum($forum_id)
+    public function getFluentByForumJoinedUsersJoinedLastPost($forum_id)
     {
         return $this->getAllFluent()
             ->as('t')
@@ -159,27 +160,5 @@ class TopicsManager extends CrudManager
         }
 
         return $this->add(ArrayHash::from($topic->toArray()));
-    }
-
-    /**
-     * @param Fluent $fluent
-     * @param string $text
-     * @param int    $forum_id
-     *
-     * @return Fluent
-     *
-     */
-    public function findTopic(Fluent $fluent, $text, $forum_id)
-    {
-        $fluent = $fluent->where('topic_id IN',
-            $this->dibi
-                ->select('post_topic_id')
-                ->from(self::POSTS_TABLE)
-                ->where('(MATCH(post_title, post_text) AGAINST (%s IN BOOLEAN MODE)', $text)
-                ->where('[post_forum_id] = %i)', $forum_id)
-                ->where('1=1 OR MATCH(topic_name) AGAINST (%s IN BOOLEAN MODE)', $text)
-        );
-
-        return $fluent;
     }
 }

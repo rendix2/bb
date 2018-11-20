@@ -2,12 +2,17 @@
 
 namespace App\Authorization;
 
+use App\Authorization\Scopes\CategoryScope;
+use App\Authorization\Scopes\ForumScope;
+use App\Authorization\Scopes\PostScope;
+use App\Authorization\Scopes\TopicScope;
 use Nette\Security\Permission;
 
 /**
  * Description of PermissionFactory
  *
  * @author rendix2
+ * @package App\Authorization
  */
 class PermissionFactory
 {
@@ -18,78 +23,78 @@ class PermissionFactory
     {
         $permission = new Permission();
         
-        $permission->addResource(Scopes\Category::class);
-        $permission->addResource(Scopes\Forum::class);
-        $permission->addResource(Scopes\Topic::class);
-        $permission->addResource(Scopes\Post::class);
+        $permission->addResource(CategoryScope::class);
+        $permission->addResource(ForumScope::class);
+        $permission->addResource(TopicScope::class);
+        $permission->addResource(PostScope::class);
         
-        $permission->addRole(Scopes\Topic::ROLE_THANKER); // can thank
-        $permission->addRole(Scopes\Topic::ROLE_NOT_THANKER); // cant thank
+        $permission->addRole(TopicScope::ROLE_THANKER); // can thank
+        $permission->addRole(TopicScope::ROLE_NOT_THANKER); // cant thank
         
         $permission->addRole(Identity::ROLE_HOST);
-        $permission->addRole(Identity::ROLE_REGISTERED, [Identity::ROLE_HOST, Scopes\Topic::ROLE_NOT_THANKER]);
+        $permission->addRole(Identity::ROLE_REGISTERED, [Identity::ROLE_HOST, TopicScope::ROLE_NOT_THANKER]);
                 
-        $permission->addRole(Scopes\Forum::ROLE_FORUM_VIEWER, [Identity::ROLE_REGISTERED]);
-        $permission->addRole(Scopes\Forum::ROLE_FORUM_THANKER, [Identity::ROLE_REGISTERED]);
-        $permission->addRole(Scopes\Forum::ROLE_FORUM_FAST_REPLIER, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(ForumScope::ROLE_FORUM_VIEWER, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(ForumScope::ROLE_FORUM_THANKER, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(ForumScope::ROLE_FORUM_FAST_REPLIER, [Identity::ROLE_REGISTERED]);
         
-        $permission->addRole(Scopes\Forum::ROLE_FORUM_POST_ADDER, [Identity::ROLE_REGISTERED]);
-        $permission->addRole(Scopes\Forum::ROLE_FORUM_POST_UPDATER, [Identity::ROLE_REGISTERED]);
-        $permission->addRole(Scopes\Forum::ROLE_FORUM_POST_DELETER, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(ForumScope::ROLE_FORUM_POST_ADDER, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(ForumScope::ROLE_FORUM_POST_UPDATER, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(ForumScope::ROLE_FORUM_POST_DELETER, [Identity::ROLE_REGISTERED]);
         
-        $permission->addRole(Scopes\Forum::ROLE_FORUM_TOPIC_ADDER, [Identity::ROLE_REGISTERED]);
-        $permission->addRole(Scopes\Forum::ROLE_FORUM_TOPIC_UPDATER, [Identity::ROLE_REGISTERED]);
-        $permission->addRole(Scopes\Forum::ROLE_FORUM_TOPIC_DELETER, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(ForumScope::ROLE_FORUM_TOPIC_ADDER, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(ForumScope::ROLE_FORUM_TOPIC_UPDATER, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(ForumScope::ROLE_FORUM_TOPIC_DELETER, [Identity::ROLE_REGISTERED]);
         
-        $permission->addRole(Scopes\Post::ROLE_AUTHOR, [Identity::ROLE_REGISTERED]);
-        $permission->addRole(Scopes\Topic::ROLE_AUTHOR, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(PostScope::ROLE_AUTHOR, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(TopicScope::ROLE_AUTHOR, [Identity::ROLE_REGISTERED]);
         
-        $permission->addRole(Scopes\Post::ROLE_EDITOR, [Identity::ROLE_REGISTERED]);
-        $permission->addRole(Scopes\Topic::ROLE_EDITOR, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(PostScope::ROLE_EDITOR, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(TopicScope::ROLE_EDITOR, [Identity::ROLE_REGISTERED]);
         
-        $permission->addRole(Scopes\Post::ROLE_DELETER, [Identity::ROLE_REGISTERED]);
-        $permission->addRole(Scopes\Topic::ROLE_DELETER, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(PostScope::ROLE_DELETER, [Identity::ROLE_REGISTERED]);
+        $permission->addRole(TopicScope::ROLE_DELETER, [Identity::ROLE_REGISTERED]);
         
-        $permission->addRole(Scopes\Post::ROLE_HISTORIER);
+        $permission->addRole(PostScope::ROLE_HISTORIER);
         
-        $permission->addRole(Scopes\Forum::ROLE_MODERATOR, [Scopes\Post::ROLE_AUTHOR, Scopes\Post::ROLE_DELETER, Scopes\Post::ROLE_EDITOR, Scopes\Topic::ROLE_AUTHOR, Scopes\Topic::ROLE_DELETER, Scopes\Topic::ROLE_EDITOR]);
+        $permission->addRole(ForumScope::ROLE_MODERATOR, [PostScope::ROLE_AUTHOR, PostScope::ROLE_DELETER, PostScope::ROLE_EDITOR, TopicScope::ROLE_AUTHOR, TopicScope::ROLE_DELETER, TopicScope::ROLE_EDITOR]);
         
-        $permission->addRole(Identity::ROLE_ADMIN, [Scopes\Forum::ROLE_MODERATOR]);
+        $permission->addRole(Identity::ROLE_ADMIN, [ForumScope::ROLE_MODERATOR]);
         
-        $this->deny($permission, Scopes\Topic::ROLE_NOT_THANKER, Scopes\Topic::ACTION_THANK);
+        $this->deny($permission, TopicScope::ROLE_NOT_THANKER, TopicScope::ACTION_THANK);
         //$this->deny($permission, Identity::ROLE_REGISTERED, Scopes\Post::ACTION_DELETE);
         //$this->deny($permission, Identity::ROLE_REGISTERED, Scopes\Topic::ACTION_DELETE);
         
         
-        $this->allow($permission, Identity::ROLE_HOST, Scopes\Post::ACTION_VIEW);
-        $this->allow($permission, Identity::ROLE_HOST, Scopes\Topic::ACTION_VIEW);
-        $this->allow($permission, Identity::ROLE_HOST, Scopes\Forum::ACTION_VIEW);
+        $this->allow($permission, Identity::ROLE_HOST, PostScope::ACTION_VIEW);
+        $this->allow($permission, Identity::ROLE_HOST, TopicScope::ACTION_VIEW);
+        $this->allow($permission, Identity::ROLE_HOST, ForumScope::ACTION_VIEW);
                
-        $this->allow($permission, Scopes\Forum::ROLE_FORUM_POST_ADDER, Scopes\Forum::ACTION_POST_ADD);  
-        $this->allow($permission, Scopes\Forum::ROLE_FORUM_TOPIC_ADDER, Scopes\Forum::ACTION_TOPIC_ADD);
+        $this->allow($permission, ForumScope::ROLE_FORUM_POST_ADDER, ForumScope::ACTION_POST_ADD);  
+        $this->allow($permission, ForumScope::ROLE_FORUM_TOPIC_ADDER, ForumScope::ACTION_TOPIC_ADD);
         
         //$this->allow($permission, Scopes\Forum::ROLE_FORUM_POST_UPDATER, Scopes\Forum::ACTION_POST_UPDATE);  
         //$this->allow($permission, Scopes\Forum::ROLE_FORUM_TOPIC_UPDATER, Scopes\Forum::ACTION_TOPIC_UPDATE);
         
-        $this->allow($permission, Scopes\Forum::ROLE_FORUM_POST_DELETER, Scopes\Forum::ACTION_POST_DELETE);
-        $this->allow($permission, Scopes\Forum::ROLE_FORUM_TOPIC_DELETER, Scopes\Forum::ACTION_TOPIC_DELETE);
+        $this->allow($permission, ForumScope::ROLE_FORUM_POST_DELETER, ForumScope::ACTION_POST_DELETE);
+        $this->allow($permission, ForumScope::ROLE_FORUM_TOPIC_DELETER, ForumScope::ACTION_TOPIC_DELETE);
         
-        $this->allow($permission, Scopes\Forum::ROLE_FORUM_THANKER, Scopes\Forum::ACTION_THANK);
-        $this->allow($permission, Scopes\Topic::ROLE_THANKER, Scopes\Topic::ACTION_THANK);
+        $this->allow($permission, ForumScope::ROLE_FORUM_THANKER, ForumScope::ACTION_THANK);
+        $this->allow($permission, TopicScope::ROLE_THANKER, TopicScope::ACTION_THANK);
         
-        $this->allow($permission, Scopes\Post::ROLE_EDITOR, Scopes\Post::ACTION_EDIT);
-        $this->allow($permission, Scopes\Topic::ROLE_EDITOR, Scopes\Topic::ACTION_EDIT);
+        $this->allow($permission, PostScope::ROLE_EDITOR, PostScope::ACTION_EDIT);
+        $this->allow($permission, TopicScope::ROLE_EDITOR, TopicScope::ACTION_EDIT);
                 
-        $this->allow($permission, Scopes\Post::ROLE_DELETER, Scopes\Post::ACTION_DELETE);                     
-        $this->allow($permission, Scopes\Topic::ROLE_DELETER, Scopes\Topic::ACTION_DELETE);
+        $this->allow($permission, PostScope::ROLE_DELETER, PostScope::ACTION_DELETE);                     
+        $this->allow($permission, TopicScope::ROLE_DELETER, TopicScope::ACTION_DELETE);
         
-        $this->allow($permission, Scopes\Post::ROLE_HISTORIER, Scopes\Post::ACTION_HISTORY);
+        $this->allow($permission, PostScope::ROLE_HISTORIER, PostScope::ACTION_HISTORY);
         
-        $this->allow($permission, Scopes\Forum::ROLE_MODERATOR, Scopes\Topic::ACTION_DELETE);
-        $this->allow($permission, Scopes\Forum::ROLE_MODERATOR, Scopes\Post::ACTION_DELETE);
+        $this->allow($permission, ForumScope::ROLE_MODERATOR, TopicScope::ACTION_DELETE);
+        $this->allow($permission, ForumScope::ROLE_MODERATOR, PostScope::ACTION_DELETE);
         
-        $this->allow($permission, Scopes\Forum::ROLE_MODERATOR, Scopes\Forum::ACTION_POST_UPDATE);
-        $this->allow($permission, Scopes\Forum::ROLE_MODERATOR, Scopes\Forum::ACTION_TOPIC_UPDATE);
+        $this->allow($permission, ForumScope::ROLE_MODERATOR, ForumScope::ACTION_POST_UPDATE);
+        $this->allow($permission, ForumScope::ROLE_MODERATOR, ForumScope::ACTION_TOPIC_UPDATE);
         
 
         

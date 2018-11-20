@@ -14,8 +14,8 @@ use Nette\Utils\ArrayHash;
 /**
  * Class RecountManager
  *
+ * @author  rendix2
  * @package App\Models
- * @author  Tomáš Babický tomas.babicky@websta.de
  */
 class RecountManager extends Manager
 {
@@ -37,6 +37,9 @@ class RecountManager extends Manager
         $this->usersManager = $usersManager;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->usersManager = null;
@@ -44,17 +47,23 @@ class RecountManager extends Manager
         parent::__destruct();
     }
 
+    /**
+     * 
+     */
     public function recountUsersPostCount()
     {
         $posts = $this->dibi
-            ->select('COUNT(post_id) as post_count, post_user_id')
+            ->select('COUNT(post_id)')
+            ->as('post_count')
+            ->select('post_user_id')
             ->from(self::POSTS_TABLE)
             ->groupBy('post_user_id')
             ->orderBy('post_user_id')
             ->fetchAll();
 
         $users = $this->dibi
-            ->select('user_id, user_post_count')
+            ->select('user_id')
+            ->select('user_post_count')
             ->from(self::USERS_TABLE)
             ->orderBy('user_id')
             ->fetchAll();
@@ -75,17 +84,23 @@ class RecountManager extends Manager
         }
     }
 
+    /**
+     * 
+     */
     public function recountUsersTopicCount()
     {
         $topics = $this->dibi
-            ->select('COUNT(topic_id) as topic_count, topic_user_id')
+            ->select('COUNT(topic_id)')
+            ->as('topic_count')
+            ->select('topic_user_id')
             ->from(self::TOPICS_TABLE)
             ->groupBy('topic_user_id')
             ->orderBy('topic_user_id')
             ->fetchAll();
 
         $users = $this->dibi
-            ->select('user_id, user_topic_count')
+            ->select('user_id')
+            ->select('user_topic_count')
             ->from(self::USERS_TABLE)
             ->orderBy('user_id')
             ->fetchAll();
@@ -106,17 +121,23 @@ class RecountManager extends Manager
         }
     }
 
+    /**
+     * 
+     */
     public function recountUsersTopicWatchCount()
     {
         $topics = $this->dibi
-            ->select('COUNT(thank_topic_id) as topic_thank_count, thank_user_id')
+            ->select('COUNT(thank_topic_id)')
+            ->as('topic_thank_count')
+            ->select('thank_user_id')
             ->from(self::TOPIC_WATCH_TABLE)
             ->groupBy('thank_user_id')
             ->orderBy('thank_user_id')
             ->fetchAll();
 
         $users = $this->dibi
-            ->select('user_id, user_thank_count')
+            ->select('user_id')
+            ->select('user_thank_count')
             ->from(self::USERS_TABLE)
             ->orderBy('user_id')
             ->fetchAll();

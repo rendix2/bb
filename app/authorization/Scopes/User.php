@@ -8,8 +8,15 @@ use App\Authorization\Identity;
  * Description of User
  *
  * @author rendix2
+ * @package App\Authorization\Scopes
  */
-class User {
+class User
+{
+    
+    /**
+     * @var Identity $identity
+     */
+    private $identity;
     
     /**
      * 
@@ -19,11 +26,14 @@ class User {
     {
         $this->identity = $identity;
     }
-
+    
     /**
-     * @var Identity $identity
+     * 
      */
-    private $identity;
+    public function __destruct()
+    {
+        $this->identity = null;
+    }
 
     /**
      * @return Identity

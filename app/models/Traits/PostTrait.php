@@ -2,6 +2,7 @@
 
 namespace App\Models\Traits;
 
+use App\Models\Entity\PostEntity;
 use App\Models\PostsManager;
 use Nette\Http\IResponse;
 
@@ -27,7 +28,7 @@ trait PostTrait
      * @param int $forum_id
      * @param int $topic_id
      * 
-     * @return \App\Models\Entity\Post
+     * @return PostEntity
      */
     public function checkPostParam($post_id, $category_id, $forum_id, $topic_id)
     {
@@ -45,7 +46,7 @@ trait PostTrait
             $this->error('Post was not found.');
         }
         
-        $post = \App\Models\Entity\Post::setFromRow($postDibi);        
+        $post = PostEntity::setFromRow($postDibi);        
 
         if ($post->getPost_category_id() !== (int)$category_id) {
             $this->error('Category param does not match.', IResponse::S403_FORBIDDEN);
@@ -58,13 +59,6 @@ trait PostTrait
         if ($post->getPost_topic_id() !== (int)$topic_id) {
             $this->error('Category param does not match.', IResponse::S403_FORBIDDEN);
         }
-
-        /*
-        if ($post->getPost_user_id() !== $this->getUser()->getId()) {
-            $this->error('You are not author of post.', IResponse::S403_FORBIDDEN);
-        }
-         * 
-         */
 
         if ($post->getPost_locked()) {
             $this->error('Post is locked.', IResponse::S403_FORBIDDEN);

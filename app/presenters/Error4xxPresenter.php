@@ -3,8 +3,8 @@
 namespace App\Presenters;
 
 use App\Presenters\Base\BasePresenter;
-use Nette;
 use Nette\Application\BadRequestException;
+use Nette\Application\Request;
 
 /**
  * Class Error4xxPresenter
@@ -20,7 +20,7 @@ class Error4xxPresenter extends BasePresenter
     {
         parent::startup();
         if (!$this->getRequest()
-            ->isMethod(Nette\Application\Request::FORWARD)) {
+            ->isMethod(Request::FORWARD)) {
             $this->error();
         }
     }

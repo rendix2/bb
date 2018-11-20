@@ -10,6 +10,7 @@ use Nette\Localization\ITranslator;
  * Description of AdminPresenter¨
  *
  * @author rendix2
+ * @package App\AdminModule\Presenters\Base
  */
 abstract class AdminPresenter extends CrudPresenter
 {
@@ -33,15 +34,17 @@ abstract class AdminPresenter extends CrudPresenter
      */
     public function checkRequirements($element)
     {
-        $this->getUser()->getStorage()->setNamespace(self::BECK_END_NAMESPACE);
+        $user = $this->user;
+        
+        $user->getStorage()->setNamespace(self::BECK_END_NAMESPACE);
         
         parent::checkRequirements($element);
 
-        if ($this->getName() !== 'Login' && !$this->getUser()->isLoggedIn()) {
+        if ($this->name !== 'Login' && !$user->loggedIn) {
             $this->redirect(':Admin:Login:default');
         }
 
-        if (!$this->getUser()->isInRole('admin')) {
+        if (!$user->isInRole('admin')) {
             $this->error('You are not admin.');
         }
     }
@@ -53,7 +56,7 @@ abstract class AdminPresenter extends CrudPresenter
     {
         parent::startup();
 
-        $this->adminTranslator = $this->translatorFactory->adminTranslatorFactory();
+        $this->adminTranslator = $this->translatorFactory->createAdminTranslatorFactory();
     }
 
     /**
@@ -69,7 +72,7 @@ abstract class AdminPresenter extends CrudPresenter
     /**
      * @return ITranslator
      */
-    public function getAdminTranslator()
+    public function getTranslator()
     {
         return $this->adminTranslator;
     }
@@ -81,7 +84,7 @@ abstract class AdminPresenter extends CrudPresenter
     public function getBootstrapForm()
     {
         $bf = parent::getBootstrapForm();
-        $bf->setTranslator($this->getAdminTranslator());
+        $bf->setTranslator($this->getTranslator());
         
         return $bf;
     }
@@ -93,7 +96,7 @@ abstract class AdminPresenter extends CrudPresenter
     public function createBootstrapForm()
     {
         $bf = BootstrapForm::create();
-        $bf->setTranslator($this->getAdminTranslator());
+        $bf->setTranslator($this->getTranslator());
         
         return $bf;
     }

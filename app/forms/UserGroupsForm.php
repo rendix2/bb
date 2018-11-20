@@ -5,14 +5,16 @@ namespace App\Forms;
 use App\Controls\BootstrapForm;
 use App\Models\GroupsManager;
 use App\Models\Users2GroupsManager;
+use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
-use Nette\Localization\ITranslator;
 use Nette\Application\UI\Form;
+use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
 /**
  * Description of UserGroupsForm
  *
- * @author rendi
+ * @author rendix2
+ * @package App\Forms
  */
 class UserGroupsForm extends Control
 {
@@ -40,15 +42,20 @@ class UserGroupsForm extends Control
      * @param Users2GroupsManager $users2GroupsManager
      */
     public function __construct(
-        GroupsManager $groupsManager,
+        GroupsManager       $groupsManager,
         Users2GroupsManager $users2GroupsManager,
-        ITranslator $translator
+        ITranslator         $translator
     ){
+        parent::__construct();
+        
         $this->groupsManager       = $groupsManager;
         $this->users2GroupsManager = $users2GroupsManager;
         $this->translator          = $translator;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->groupsManager       = null;
@@ -95,7 +102,7 @@ class UserGroupsForm extends Control
         $user_id = $this->presenter->getParameter('id');
         
         $this->users2GroupsManager->addByLeft((int) $user_id, array_values($groups));
-        $this->presenter->flashMessage('Group was saved.', \App\Presenters\Base\BasePresenter::FLASH_MESSAGE_SUCCESS);
+        $this->presenter->flashMessage('Group was saved.', BasePresenter::FLASH_MESSAGE_SUCCESS);
         $this->presenter->redirect('User:edit', $user_id);
     }
     

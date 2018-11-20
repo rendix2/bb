@@ -11,6 +11,7 @@ use Nette\Utils\ArrayHash;
  * Description of ReportsManager
  *
  * @author rendix2
+ * @package App\Models
  */
 class ReportsManager extends CrudManager
 {
@@ -20,7 +21,8 @@ class ReportsManager extends CrudManager
      */
     public function getAllFluent()
     {
-        return $this->dibi->select('r.*, u.*, f.*, t.*, p.* , u2.user_id AS reported_user_id, u2.user_name as reported_user_name')
+        return $this->dibi
+            ->select('r.*, u.*, f.*, t.*, p.* , u2.user_id AS reported_user_id, u2.user_name as reported_user_name')
             ->from($this->getTable())
             ->as('r')
             ->leftJoin(self::FORUM_TABLE)
@@ -114,9 +116,9 @@ class ReportsManager extends CrudManager
      */
     public function updateByPost($post_id, ArrayHash $item_data)
     {
-        $this->deleteCache();
-
-        return $this->dibi->update($this->getTable(), $item_data)->where('[report_post_id] = %i', $post_id)->execute();
+        return $this->updateFluent($item_data)
+            ->where('[report_post_id] = %i', $post_id)
+            ->execute();
     }    
 
     /**
@@ -128,21 +130,22 @@ class ReportsManager extends CrudManager
      */
     public function updateByTopic($topic_id, ArrayHash $item_data)
     {
-        $this->deleteCache();
-
-        return $this->dibi->update($this->getTable(), $item_data)->where('[report_topic_id] = %i', $topic_id)->execute();
+        return $this->updateFluent($item_data)
+            ->where('[report_topic_id] = %i', $topic_id)
+            ->execute();
     }
     
     /**
      * 
-     * @param int $forum_id
+     * @param int       $forum_id
      * @param ArrayHash $item_data
-     * @return type)
+     * 
+     * @return bool
      */
     public function updateByForum($forum_id, ArrayHash $item_data)
     {
-        $this->deleteCache();
-
-        return $this->dibi->update($this->getTable(), $item_data)->where('[report_forum_id] = %i', $forum_id)->execute();
+        return $this->updateFluent($item_data)
+            ->where('[report_forum_id] = %i', $forum_id)
+            ->execute();
     }    
 }

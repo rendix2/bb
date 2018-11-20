@@ -8,13 +8,14 @@ use Dibi\Connection;
  * Description of PostFilesManager
  *
  * @author rendix2
+ * @package App\Models
  */
 class Posts2FilesManager extends MNManager
 {
     
     /**
      * 
-     * @param Connection         $dibi
+     * @param Connection   $dibi
      * @param PostsManager $left
      * @param FilesManager $right
      */

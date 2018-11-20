@@ -16,6 +16,7 @@ use Nette\Utils\FileSystem;
  * Description of UserManager
  *
  * @author rendix2
+ * @package App\Models
  */
 class UsersManager extends CrudManager
 {
@@ -37,13 +38,19 @@ class UsersManager extends CrudManager
      * @param IStorage   $storage
      * @param Avatars    $avatars
      */
-    public function __construct(Connection $dibi, IStorage $storage, Avatars $avatars)
-    {
+    public function __construct(
+        Connection $dibi,
+        IStorage   $storage,
+        Avatars    $avatars
+    ) {
         parent::__construct($dibi, $storage);
 
         $this->avatars = $avatars;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->avatars = null;
@@ -52,12 +59,12 @@ class UsersManager extends CrudManager
     }
 
 
-        /**
+    /**
      * @param int $lang_id
      *
      * @return Row[]
      */
-    public function getByLang($lang_id)
+    public function getAllByLang($lang_id)
     {
         return $this->getAllFluent()
                 ->where('[user_lang_id] = %i', $lang_id)
@@ -81,7 +88,7 @@ class UsersManager extends CrudManager
      *
      * @return Row[]
      */
-    public function getByRole($role_id)
+    public function getAllByRole($role_id)
     {
         return $this->getAllFluent()
                 ->where('[user_role_id] = %i', $role_id)
@@ -156,11 +163,10 @@ class UsersManager extends CrudManager
     /**
      *
      * @param string $user_name
-     * @todo ->select('')
      *
      * @return bool
      */
-    public function getByUserName($user_name)
+    public function checkUserNameExists($user_name)
     {
         return $this->getAllFluent()
             ->where('[user_name] = %s', $user_name)
@@ -173,7 +179,7 @@ class UsersManager extends CrudManager
      *
      * @return Row[]
      */
-    public function getByEmail($email)
+    public function getAllByEmail($email)
     {
         return $this->getAllFluent()
                 ->where('[user_email] = %s', $email)
@@ -186,7 +192,7 @@ class UsersManager extends CrudManager
      *
      * @return Row[]
      */
-    public function getByEmails(array $emails)
+    public function getAllByEmails(array $emails)
     {
         return $this->getAllFluent()
                 ->where('[user_email] IN %in', $emails)

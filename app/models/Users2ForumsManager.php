@@ -8,6 +8,7 @@ use Dibi\Connection;
  * Description of Users2Forums
  *
  * @author rendix2
+ * @package App\Models
  */
 class Users2ForumsManager extends MNManager
 {

@@ -18,7 +18,7 @@
     <body>                   
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark mb-1">
             <div class="container-fluid">
-                {if $user->isLoggedIn()}
+                {if $user->loggedIn}
                     {control menuAdmin}
                 {else}
                 <ul class="navbar-nav navbar-left">

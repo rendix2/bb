@@ -8,6 +8,7 @@ use Dibi\Connection;
  * Description of ModeratorsManager
  *
  * @author rendix2
+ * @package App\Models
  */
 class ModeratorsManager extends MNManager
 {
@@ -19,8 +20,12 @@ class ModeratorsManager extends MNManager
      * @param ForumsManager $right
      * @param string        $tableName
      */
-    public function __construct(Connection $dibi, UsersManager $left, ForumsManager $right, $tableName = 'moderators')
-    {
+    public function __construct(
+        Connection    $dibi,
+        UsersManager  $left,
+        ForumsManager $right,
+        $tableName = self::MODERATORS_TABLE
+    ) {
         parent::__construct($dibi, $left, $right, $tableName);
     }
 }

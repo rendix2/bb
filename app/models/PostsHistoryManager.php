@@ -10,6 +10,7 @@ use Dibi\Row;
  * Description of PostsHistoryManager
  *
  * @author rendix2
+ * @package App\Models
  */
 class PostsHistoryManager extends CrudManager
 {

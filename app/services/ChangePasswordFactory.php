@@ -39,16 +39,16 @@ class ChangePasswordFactory
     
     /**
      *
-     * @param UsersManager $userManager
+     * @param UsersManager      $userManager
      * @param TranslatorFactory $translatorFactory
-     * @param User $user
-     * @param Users $users
+     * @param User              $user
+     * @param Users             $users
      */
     public function __construct(
-        UsersManager $userManager,
+        UsersManager      $userManager,
         TranslatorFactory $translatorFactory,
-        User $user,
-        Users $users
+        User              $user,
+        Users             $users
     ) {
         $this->userManager       = $userManager;
         $this->user              = $user;
@@ -56,6 +56,9 @@ class ChangePasswordFactory
         $this->translatorFactory = $translatorFactory;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->userManager       = null;
@@ -72,7 +75,7 @@ class ChangePasswordFactory
     {
         return new UserChangePasswordForm(
             $this->userManager,
-            $this->translatorFactory->forumTranslatorFactory(),
+            $this->translatorFactory->createForumTranslatorFactory(),
             $this->user,
             $this->users
         );
@@ -86,7 +89,7 @@ class ChangePasswordFactory
     {
         return new UserChangePasswordForm(
             $this->userManager,
-            $this->translatorFactory->adminTranslatorFactory(),
+            $this->translatorFactory->createAdminTranslatorFactory(),
             $this->user,
             $this->users
         );

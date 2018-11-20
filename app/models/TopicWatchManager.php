@@ -13,12 +13,13 @@ use Dibi\Connection;
 /**
  * Class Topics2Users
  *
+ * @author rendix2
  * @package App\Models
  */
 class TopicWatchManager extends MNManager
 {
     /**
-     * Topics2Users constructor.
+     * TopicWatchManager constructor.
      *
      * @param Connection    $dibi
      * @param TopicsManager $left
@@ -26,9 +27,9 @@ class TopicWatchManager extends MNManager
      * @param string   $tableName
      */
     public function __construct(
-        Connection $dibi,
+        Connection    $dibi,
         TopicsManager $left,
-        UsersManager $right,
+        UsersManager  $right,
         $tableName = self::TOPIC_WATCH_TABLE
     ) {
         parent::__construct($dibi, $left, $right, $tableName);

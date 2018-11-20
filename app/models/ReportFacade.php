@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Entity\TopicEntity;
+
 /**
  * Description of ReportFacade
  *
  * @author rendix2
+ * @package App\Models
  */
 class ReportFacade
 {
@@ -42,9 +45,9 @@ class ReportFacade
      * @param ReportsManager $reportsManager
      */
     public function __construct(
-        ForumsManager $forumsManager,
-        TopicsManager $topicsManager,
-        PostsManager $postsManager,
+        ForumsManager  $forumsManager,
+        TopicsManager  $topicsManager,
+        PostsManager   $postsManager,
         ReportsManager $reportsManager
     ) {
         $this->forumsManager  = $forumsManager;
@@ -53,6 +56,9 @@ class ReportFacade
         $this->reportManager  = $reportsManager;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->forumsManager  = null;
@@ -87,7 +93,7 @@ class ReportFacade
         $topics = $this->topicsManager->getAllByForum($forum_id);
         
         foreach ($topics as $topicDibi) {
-            $topic = Entity\Topic::setFromRow($topicDibi);
+            $topic = TopicEntity::setFromRow($topicDibi);
             $this->deleteByTopic($topic);
         }
         
@@ -96,13 +102,13 @@ class ReportFacade
     
     /**
      *
-     * @param Entity\Topic $topic
+     * @param TopicEntity $topic
      *
      * @return  bool
      */
-    public function deleteByTopic(Entity\Topic $topic)
+    public function deleteByTopic(TopicEntity $topic)
     {
-        $posts     = $this->postsManager->getByTopic($topic->getTopic_id());
+        $posts     = $this->postsManager->getFluentByTopic($topic->getTopic_id());
         $posts_ids = [];
         
         foreach ($posts as $post) {

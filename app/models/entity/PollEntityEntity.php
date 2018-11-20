@@ -7,11 +7,12 @@ use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
 /**
- * Description of Poll
+ * Description of PollEntity
  *
  * @author rendix2
+ * @package App\Models\Entity
  */
-class Poll extends Entity
+class PollEntityEntity extends Entity
 {
     /**
      *
@@ -39,7 +40,7 @@ class Poll extends Entity
     
     /**
      *
-     * @var PollAnswer[] $pollAnswers
+     * @var PollAnswerEntity[] $pollAnswers
      */
     private $pollAnswers;
 
@@ -102,11 +103,11 @@ class Poll extends Entity
      * 
      * @param Row $values
      * 
-     * @return Poll
+     * @return PollEntityEntity
      */
     public static function setFromRow(Row $values)
     { 
-        $poll = new Poll();
+        $poll = new PollEntityEntity();
         
        if (isset($values->poll_id)) {
            $poll->setPoll_id($values->poll_id);
@@ -131,11 +132,11 @@ class Poll extends Entity
      * 
      * @param Row $values
      * 
-     * @return Poll
+     * @return PollEntityEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $poll = new Poll();
+        $poll = new PollEntityEntity();
         
        if (isset($values->poll_id)) {
            $poll->setPoll_id($values->poll_id);

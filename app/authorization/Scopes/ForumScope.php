@@ -5,14 +5,17 @@ namespace App\Authorization\Scopes;
 use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
 use App\Authorization\Scopes\User;
+use App\Models\Entity\ForumEntity;
 use App\Models\Users2ForumsManager;
+use App\Models\Users2GroupsManager;
 
 /**
  * Description of Forum
  *
  * @author rendix2
+ * @package App\Authorization\Scopes
  */
-class Forum implements IAuthorizationScope
+class ForumScope implements IAuthorizationScope
 {
 
     const ROLE_MODERATOR = 'Forum:moderator';
@@ -51,7 +54,7 @@ class Forum implements IAuthorizationScope
     
     /**
      *
-     * @var \App\Models\Users2GroupsManager $users2GroupsManager
+     * @var Users2GroupsManager $users2GroupsManager
      */
     private $users2GroupsManager;
     
@@ -61,17 +64,37 @@ class Forum implements IAuthorizationScope
     
     private $users2ForumsManager;
     
+
     /**
      * 
-     * @param int $id
-     * @param User[] $moderators
+     * @param ForumEntity         $forumEntity
+     * @param type $moderators
+     * @param Users2GroupsManager $users2GroupsManager
+     * @param Users2ForumsManager $users2ForumsManager
      */
-    public function __construct(\App\Models\Entity\Forum $forumEntity, $moderators, \App\Models\Users2GroupsManager $users2GroupsManager, Users2ForumsManager $users2ForumsManager)
-    {
+    public function __construct(
+            ForumEntity $forumEntity,
+            $moderators,
+            Users2GroupsManager $users2GroupsManager,
+            Users2ForumsManager $users2ForumsManager
+    ) {
         $this->forumEntity         = $forumEntity;
         $this->moderators          = $moderators;
         $this->users2GroupsManager = $users2GroupsManager;
         $this->users2ForumsManager = $users2ForumsManager;
+    }
+    
+    /**
+     * 
+     */
+    public function __destruct()
+    {
+        $this->moderators          = null;        
+        $this->forumEntity         = null;
+        $this->users2GroupsManager = null;        
+        $this->groupPermission     = null;        
+        $this->userPermission      = null;
+        $this->users2ForumsManager = null;        
     }
 
     /**

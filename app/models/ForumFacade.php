@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Entity\ForumEntity;
+use App\Models\Entity\TopicEntity;
 use Nette\Utils\ArrayHash;
 
 /**
  * Description of ForumFacade
  *
  * @author rendix2
+ * @package App\Models
  */
 class ForumFacade
 {
@@ -37,7 +40,7 @@ class ForumFacade
      */
     public function __construct(
         ForumsManager $forumsManager,
-        TopicFacade $topicFacade,
+        TopicFacade   $topicFacade,
         TopicsManager $topicsManager
     ) {
         $this->forumsManager = $forumsManager;
@@ -53,11 +56,11 @@ class ForumFacade
     }
 
     /**
-     * @param Entity\Forum $forum
+     * @param ForumEntity $forum
      *
-     * @return mixed
+     * @return int
      */
-    public function add(Entity\Forum $forum)
+    public function add(ForumEntity $forum)
     {
         $forum_id = $this->forumsManager->getMptt()->add($forum->getForum_parent_id(), $forum->getForum_name());
         
@@ -73,7 +76,7 @@ class ForumFacade
      * @param type $item_id
      * @param ArrayHash $item_data
      * 
-     * @return type
+     * @return bool
      */
     public function update($item_id, ArrayHash $item_data)
     {
@@ -89,23 +92,23 @@ class ForumFacade
     }    
 
     /**
-     * @param Entity\Forum $forum
+     * @param ForumEntity $forum
      *
      * @return bool
      */
-    public function delete(Entity\Forum $forum)
+    public function delete(ForumEntity $forum)
     {
-        $forums = $this->forumsManager->getByParent($forum->getForum_id());
+        $forums = $this->forumsManager->getAllByParent($forum->getForum_id());
 
         foreach ($forums as $forumDibi) {
-            $forum = Entity\Forum::setFromRow($forumDibi);
+            $forum = ForumEntity::setFromRow($forumDibi);
             $this->delete($forum);
         }
 
         $topics = $this->topicsManager->getAllByForum($forum->getForum_id());
         
         foreach ($topics as $topicDibi) {
-            $topic = Entity\Topic::setFromRow($topicDibi);
+            $topic = TopicEntity::setFromRow($topicDibi);
             
             $this->topicFacade->delete($topic);
         }

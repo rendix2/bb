@@ -6,12 +6,14 @@ use App\Controls\BootstrapForm;
 use App\Models\ForumsManager;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
+use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
 
 /**
  * Description of JumpToForumControl
  *
  * @author rendix2
+ * @package App\Forms
  */
 class TopicJumpToForumForm extends Control
 {
@@ -31,8 +33,10 @@ class TopicJumpToForumForm extends Control
      *
      * @param ForumsManager $forumManager
      */
-    public function __construct(ForumsManager $forumManager, \Nette\Localization\ITranslator $translator)
-    {
+    public function __construct(
+        ForumsManager $forumManager,
+        ITranslator   $translator
+    ) {
         parent::__construct();
 
         $this->forumManager = $forumManager;
@@ -45,6 +49,7 @@ class TopicJumpToForumForm extends Control
     public function __destruct()
     {
         $this->forumManager = null;
+        $this->translator   = null;
     }
 
     /**

@@ -1,7 +1,10 @@
 <?php
 namespace App\Controls;
 
+use App\Models\Entity\PollVoteEntity;
 use App\Models\PollsFacade;
+use App\Presenters\Base\BasePresenter;
+use Dibi\UniqueConstraintViolationException;
 use Nette\Application\UI\Control;
 use Nette\Localization\ITranslator;
 use Nette\Security\User;
@@ -10,6 +13,7 @@ use Nette\Security\User;
  * Description of PollControl
  *
  * @author rendix2
+ * @package App\Controls
  */
 class PollControl extends Control
 {
@@ -38,8 +42,11 @@ class PollControl extends Control
      * @param User $user
      * @param ITranslator $translator
      */
-    public function __construct(PollsFacade $pollsFacade, User $user, ITranslator $translator)
-    {
+    public function __construct(
+        PollsFacade $pollsFacade,
+        User        $user,
+        ITranslator $translator
+    ) {
         parent::__construct();
         
         $this->user        = $user;
@@ -49,22 +56,32 @@ class PollControl extends Control
     
     /**
      * 
+     */
+    public function __destruct()
+    {
+        $this->pollsFacade = null;
+        $this->user        = null;
+        $this->translator  = null;
+    }
+
+    /**
+     * 
      * @param int $poll_id
      * @param int $poll_answer_id
      */
     public function handleVote($poll_id, $poll_answer_id)
     {        
-        $pollVote = new \App\Models\Entity\PollVote();
+        $pollVote = new PollVoteEntity();
         $pollVote->setPoll_id($poll_id)
                  ->setPoll_answer_id($poll_answer_id)
                  ->setPoll_user_id($this->user->id);
         
         try {
             $this->pollsFacade->getPollsVotesManager()->add($pollVote->getArrayHash());
-            $this->presenter->flashMessage('Vote was saved.', \App\Presenters\Base\BasePresenter::FLASH_MESSAGE_SUCCESS);
+            $this->presenter->flashMessage('Vote was saved.', BasePresenter::FLASH_MESSAGE_SUCCESS);
             $this->presenter->redirect('this');
-        } catch (\Dibi\UniqueConstraintViolationException $e) {
-            $this->presenter->flashMessage('You have already voted.', \App\Presenters\Base\BasePresenter::FLASH_MESSAGE_WARNING);
+        } catch (UniqueConstraintViolationException $e) {
+            $this->presenter->flashMessage('You have already voted.', BasePresenter::FLASH_MESSAGE_WARNING);
         }
     }
 

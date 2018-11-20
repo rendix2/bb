@@ -2,18 +2,19 @@
 
 namespace App\Models\Entity\Base;
 
-use Nette\MemberAccessException;
+use Nette\SmartObject;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
 
 /**
  * Description of Entity
  *
- * @author rendi
+ * @author rendix2
+ * @package App\Models\Entity\Base
  */
 abstract class Entity
 {
-    use \Nette\SmartObject;
+    use SmartObject;
     
     /**
      * 
@@ -34,71 +35,6 @@ abstract class Entity
             $this->{$key} = null;
         }
     }
-
-    /**
-     * 
-     * @param string $name
-     * @param mixed  $value
-     * 
-     * @throws MemberAccessException
-     */
-    /*
-    public function __set($name, $value)
-    {
-        if (!property_exists($this, $name)) {
-            throw new MemberAccessException("Column '{$name}' of '".get_class($this)."' does not exist.");
-        }
-    }
-     *
-     */
-
-    /**
-     * 
-     * @param string $name
-     * 
-     * @throws MemberAccessException
-     */
-    /*
-    public function __get($name)
-    {
-        if (!property_exists($this, $name)) {
-            throw new MemberAccessException("Column {$name} of '".get_class($this)."' does not exist.");
-        }
-    }
-     *
-     */
-    
-    /**
-     * 
-     * @param string $name
-     * 
-     * @throws MemberAccessException
-     */
-    /*
-    public function __isset($name)
-    {
-        if (!property_exists($this, $name)) {
-            throw new MemberAccessException("Column '{$name}' of '".get_class($this)."' does not exist.");
-        }
-    }
-     *
-     */
-    
-    /**
-     * 
-     * @param string $name
-     * 
-     * @throws MemberAccessException
-     */
-    /*
-    public function __unset($name)
-    {
-        if (!property_exists($this, $name)) {
-            throw new MemberAccessException("Column '{$name}' of '".get_class($this)."' does not exist.");
-        }
-    }   
-     * 
-     */ 
 
     /**
      * @return array

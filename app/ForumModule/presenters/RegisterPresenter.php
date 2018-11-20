@@ -4,6 +4,7 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
+use App\Models\Entity\UserEntity;
 use App\Models\LanguagesManager;
 use App\Models\Manager;
 use App\Models\PmManager;
@@ -14,13 +15,13 @@ use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Localization\ITranslator;
-use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;
 
 /**
  * Description of RegisterPresenter
  *
  * @author rendix2
+ * @package App\ForumModule\Presenters
  */
 class RegisterPresenter extends BasePresenter
 {
@@ -72,6 +73,9 @@ class RegisterPresenter extends BasePresenter
         $this->userFacade      = $userFacade;
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->translator = null;
@@ -84,11 +88,14 @@ class RegisterPresenter extends BasePresenter
         parent::__destruct();
     }
 
+    /**
+     * 
+     */
     public function startup()
     {
         parent::startup();
         
-        $this->translator = $this->translatorFactory->forumTranslatorFactory();
+        $this->translator = $this->translatorFactory->createForumTranslatorFactory();
                 
         $this->template->setTranslator($this->translator);
     }
@@ -132,7 +139,7 @@ class RegisterPresenter extends BasePresenter
             $form->addError('User name is already taken.');
         }
         
-        $user_email = $this->usersManager->getByEmail($values->user_email);
+        $user_email = $this->usersManager->getAllByEmail($values->user_email);
         
         if ($user_email) {
             $form->addError('User email is already taken.');
@@ -146,7 +153,7 @@ class RegisterPresenter extends BasePresenter
      */
     public function registerUserSuccess(Form $form, ArrayHash $values)
     {        
-        $user = new \App\Models\Entity\User();
+        $user = new UserEntity();
         $user->setUser_name($values->user_name)
              ->setUser_password($values->user_password)
              ->setUser_email($values->user_email)

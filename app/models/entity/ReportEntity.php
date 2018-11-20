@@ -7,11 +7,12 @@ use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
 /**
- * Description of Report
+ * Description of ReportEntity
  *
  * @author rendix2
+ * @package App\Models\Entity
  */
-class Report extends Entity
+class ReportEntity extends Entity
 {
     /**
      *
@@ -187,11 +188,11 @@ class Report extends Entity
      * 
      * @param Row $values
      * 
-     * @return Report
+     * @return ReportEntity
      */
     public static function setFromRow(Row $values)
     {
-        $report = new Report();
+        $report = new ReportEntity();
         
         if (isset($values->report_id)) {
            $report->setReport_id($values->report_id); 
@@ -240,11 +241,11 @@ class Report extends Entity
      * 
      * @param ArrayHash $values
      * 
-     * @return Report
+     * @return ReportEntity
      */
     public function setFromArrayHash(ArrayHash $values)
     {
-        $report = new Report();
+        $report = new ReportEntity();
         
         if (isset($values->report_id)) {
            $report->setReport_id($values->report_id); 

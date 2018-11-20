@@ -40,9 +40,9 @@ class MpttFactory
      * @param ForumsManager     $forumsManager
      */
     public function __construct(
-        Connection $dibi,
+        Connection        $dibi,
         CategoriesManager $categoriesManager,
-        ForumsManager $forumsManager
+        ForumsManager     $forumsManager
     ) {
         $this->categoriesManager = $categoriesManager;
         $this->forumsManager     = $forumsManager;

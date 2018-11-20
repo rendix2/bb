@@ -23,13 +23,13 @@
             <li class="nav-item {if $presenter->getName() === 'Forum:Index'}active{/if}">
                 <a class="nav-link" href="{link Index:default}">Index</a></li>
 
-            {if $user->isLoggedIn()}
+            {if $user->loggedIn}
                 <li class="nav-item {if $presenter->getName() === 'Forum:User' && $presenter->getAction() === 'edit'}active{/if}">
                     <a class="nav-link" href="{link User:edit}">{_user_settings}</a>
                 </li>
-                <li class="nav-item {if $presenter->getName() === 'Forum:User' && $presenter->getAction() !== 'edit' && $user_id == $user->getId()}active{/if}">
+                <li class="nav-item {if $presenter->getName() === 'Forum:User' && $presenter->getAction() !== 'edit' && $user_id == $user->id}active{/if}">
                       <a class="nav-link"
-                       href="{link User:profile $user->getId()}">{$user->getIdentity()->getData()['user_name']}</a>
+                       href="{link User:profile $user->id}">{$user->identity->getData()['user_name']}</a>
                 </li>
                 <li class="nav-item {if $presenter->getName() === 'Forum:Search'}active{/if}">
                     <a class="nav-link" href="{link Search:default}">{_menu_search}</a>

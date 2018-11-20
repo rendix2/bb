@@ -8,6 +8,7 @@ use Dibi\Connection;
  * Description of Mails2UsersManager
  *
  * @author rendix2
+ * @package App\Models
  */
 class Mails2UsersManager extends MNManager
 {

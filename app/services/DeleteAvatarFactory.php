@@ -40,15 +40,15 @@ class DeleteAvatarFactory
     
     /**
      *
-     * @param UsersManager $usersManager
-     * @param Avatars $avatars
-     * @param User $user
+     * @param UsersManager      $usersManager
+     * @param Avatars           $avatars
+     * @param User              $user
      * @param TranslatorFactory $translatorFactory
      */
     public function __construct(
-        UsersManager $usersManager,
-        Avatars $avatars,
-        User $user,
+        UsersManager      $usersManager,
+        Avatars           $avatars,
+        User              $user,
         TranslatorFactory $translatorFactory
     ) {
         $this->userManager       = $usersManager;
@@ -78,7 +78,7 @@ class DeleteAvatarFactory
             $this->userManager,
             $this->avatars,
             $this->user,
-            $this->translatorFactory->forumTranslatorFactory()
+            $this->translatorFactory->createForumTranslatorFactory()
         );
     }
     
@@ -92,7 +92,7 @@ class DeleteAvatarFactory
             $this->userManager,
             $this->avatars,
             $this->user,
-            $this->translatorFactory->adminTranslatorFactory()
+            $this->translatorFactory->createAdminTranslatorFactory()
         );
     }
 }

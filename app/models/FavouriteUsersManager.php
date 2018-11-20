@@ -8,6 +8,7 @@ use Dibi\Connection;
  * Description of FavouriteUsers
  *
  * @author rendix2
+ * @package App\Models
  */
 class FavouriteUsersManager extends MNManager
 {
@@ -22,12 +23,12 @@ class FavouriteUsersManager extends MNManager
      * @param null         $rightKey
      */
     public function __construct(
-        Connection $dibi,
+        Connection   $dibi,
         UsersManager $left,
         UsersManager $right,
         $tableName = self::FAVOURITE_USERS_TABLE,
-        $leftKey = null,
-        $rightKey = null
+        $leftKey   = null,
+        $rightKey  = null
     ) {
         $right = clone $right;
         

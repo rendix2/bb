@@ -2,22 +2,22 @@
 
 namespace App\ForumModule\Presenters;
 
-
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
-use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Forms\SearchPostForm;
 use App\Forms\SearchTopicForm;
 use App\Forms\SearchUserForm;
-use App\Models\UsersManager;
-use App\Models\TopicsManager;
+use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\PostsManager;
+use App\Models\TopicsManager;
+use App\Models\UsersManager;
 
 /**
  * Description of SearchPresenter
  *
  * @author rendix2
  * @method UsersManager getManager()
+ * @package App\ForumModule\Presenters
  */
 class SearchPresenter extends BaseForumPresenter
 {
@@ -35,7 +35,6 @@ class SearchPresenter extends BaseForumPresenter
      */
     public $postsManager;
 
-
     /**
      * SearchPresenter constructor.
      *
@@ -46,36 +45,15 @@ class SearchPresenter extends BaseForumPresenter
         parent::__construct($userManager);
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->topicsManager = null;
         $this->postsManager  = null;
         
         parent::__destruct();
-    }
-
-    /**
-     * @return BootstrapForm
-     */
-    public function createComponentSearchPostForm()
-    {
-        return new SearchPostForm($this->getForumTranslator());
-    }
-
-    /**
-     * @return BootstrapForm
-     */
-    public function createComponentSearchTopicForm()
-    {
-        return new SearchTopicForm($this->getForumTranslator());
-    }
-
-    /**
-     * @return BootstrapForm
-     */
-    public function createComponentSearchUserForm()
-    {
-        return new SearchUserForm($this->getForumTranslator());
     }
 
     /**
@@ -90,7 +68,7 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function renderPostResults($q)
     {
-        $topics = $this->postsManager->findPosts($q);
+        $topics = $this->postsManager->findPostsJoinedTopic($q);
 
         if (!$topics) {
             $this->flashMessage('Post was not found.', self::FLASH_MESSAGE_WARNING);
@@ -106,7 +84,7 @@ class SearchPresenter extends BaseForumPresenter
      */
     public function renderTopicResults($q)
     {
-        $topics = $this->topicsManager->findByTopicName($q);
+        $topics = $this->topicsManager->findByTopicNameJoinedUser($q);
 
         if (!$topics) {
             $this->flashMessage('Topics was not found.', self::FLASH_MESSAGE_WARNING);
@@ -132,6 +110,39 @@ class SearchPresenter extends BaseForumPresenter
 
         $this->template->users = $users;
     }
+    
+    /**
+     * forms
+     */
+    
+    /**
+     * @return BootstrapForm
+     */
+    public function createComponentSearchPostForm()
+    {
+        return new SearchPostForm($this->getTranslator());
+    }
+
+    /**
+     * @return BootstrapForm
+     */
+    public function createComponentSearchTopicForm()
+    {
+        return new SearchTopicForm($this->getTranslator());
+    }
+
+    /**
+     * @return BootstrapForm
+     */
+    public function createComponentSearchUserForm()
+    {
+        return new SearchUserForm($this->getTranslator());
+    }
+    
+    
+    /**
+     * BREADCRUMBS
+     */
 
     /**
      * @return BreadCrumbControl
@@ -143,7 +154,7 @@ class SearchPresenter extends BaseForumPresenter
             1 => ['text' => 'menu_search']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -152,12 +163,12 @@ class SearchPresenter extends BaseForumPresenter
     protected function createComponentBreadCrumbPostResults()
     {
         $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            0 => ['link' => 'Index:default',  'text' => 'menu_index'],
             1 => ['link' => 'Search:default', 'text' => 'menu_search'],
             2 => ['text' => 'menu_post']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -166,12 +177,12 @@ class SearchPresenter extends BaseForumPresenter
     protected function createComponentBreadCrumbTopicResults()
     {
         $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            0 => ['link' => 'Index:default',  'text' => 'menu_index'],
             1 => ['link' => 'Search:default', 'text' => 'menu_search'],
             2 => ['text' => 'menu_topic']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -180,11 +191,11 @@ class SearchPresenter extends BaseForumPresenter
     protected function createComponentBreadCrumbUserResults()
     {
         $breadCrumb = [
-            0 => ['link' => 'Index:default', 'text' => 'menu_index'],
+            0 => ['link' => 'Index:default',  'text' => 'menu_index'],
             1 => ['link' => 'Search:default', 'text' => 'menu_search'],
             2 => ['text' => 'menu_user']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 }

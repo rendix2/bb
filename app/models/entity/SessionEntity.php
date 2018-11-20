@@ -7,11 +7,12 @@ use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
 /**
- * Description of Session
+ * Description of SessionEntity
  *
- * @author rendi
+ * @author rendix2
+ * @package App\Models\Entity
  */
-class Session extends Entity
+class SessionEntity extends Entity
 {
     /**
      *
@@ -102,11 +103,11 @@ class Session extends Entity
      * 
      * @param Row $values
      * 
-     * @return Session
+     * @return SessionEntity
      */
     public static function setFromRow(Row $values)
     {
-        $session = new Session();
+        $session = new SessionEntity();
       
         if (isset($values->session_id)) {
             $session->setSession_id($values->session_id);
@@ -135,11 +136,11 @@ class Session extends Entity
      * 
      * @param ArrayHash $values
      * 
-     * @return Session
+     * @return SessionEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $session = new Session();
+        $session = new SessionEntity();
       
         if (isset($values->session_id)) {
             $session->setSession_id($values->session_id);

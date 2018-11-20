@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Entity\UserEntity;
 use App\Services\TranslatorFactory;
-use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
 /**
  * Description of UserFacade
  *
  * @author rendix2
+ * @package App\Models
  */
 class UserFacade
 {
@@ -114,21 +115,21 @@ class UserFacade
      * @param PmFacade            $pmFacade
      */
     public function __construct(
-        PostsManager $postsManager,
+        PostsManager        $postsManager,
         PostsHistoryManager $postsHistoryManager,
-        PostFacade $postFacade,
-        Mails2UsersManager $mails2UsersManager,
-        ModeratorsManager $moderatorsManager,
-        ReportsManager $reportsManager,
-        SessionsManager $sessionsManager,
-        ThanksManager $thanksManager,
-        TopicWatchManager $topicWatchManager,
+        PostFacade          $postFacade,
+        Mails2UsersManager  $mails2UsersManager,
+        ModeratorsManager   $moderatorsManager,
+        ReportsManager      $reportsManager,
+        SessionsManager     $sessionsManager,
+        ThanksManager       $thanksManager,
+        TopicWatchManager   $topicWatchManager,
         Users2ForumsManager $users2ForumsManager,
         Users2GroupsManager $users2GroupsManager,
         //Users2SessionsManager $users2SessionManager,
-        UsersManager $usersManager,
-        TranslatorFactory $translatorFactory,
-        PmFacade $pmFacade
+        UsersManager        $usersManager,
+        TranslatorFactory   $translatorFactory,
+        PmFacade            $pmFacade
     ) {
         $this->usersManager         = $usersManager;
         $this->postsManager         = $postsManager;
@@ -180,7 +181,7 @@ class UserFacade
             $this->usersManager->removeAvatarFile($user->user_avatar);
         }
 
-        $posts = $this->postsManager->getByUser($item_id)->fetchAll();
+        $posts = $this->postsManager->getFluentByUser($item_id)->fetchAll();
                 
         foreach ($posts as $post) {
             $this->postFacade->delete($post->post_id);
@@ -202,25 +203,24 @@ class UserFacade
     }
 
     /**
-     * @param Entity\User $user
+     * @param UserEntity $user
      *
-     * @return Result|int
+     * @return int
      */
-    public function add(Entity\User $user)
+    public function add(UserEntity $user)
     {
         $user_id         = $this->usersManager->add($user->getArrayHash());
-        $forumTranslator = $this->translatorFactory->forumTranslatorFactory();
+        $forumTranslator = $this->translatorFactory->createForumTranslatorFactory();
+        
+        $pmEntity = new Entity\PmEntity();
+        $pmEntity->setPm_user_id_from(1)
+                 ->setPm_user_id_to($user_id)
+                 ->setPm_subject($forumTranslator->translate('welcome_pm_subject'))
+                 ->setPm_text(sprintf($forumTranslator->translate('welcome_pm_text'), $user->user_name))
+                 ->setPm_status('sent')
+                 ->setPm_time_sent(time());
 
-        $welcome_pm_data = [
-            'pm_user_id_from' => 1,
-            'pm_user_id_to'   => $user_id,
-            'pm_subject'      => $forumTranslator->translate('welcome_pm_subject'),
-            'pm_text'         => sprintf($forumTranslator->translate('welcome_pm_text'), $user->user_name),
-            'pm_status'       => 'sent',
-            'pm_time_sent'    => time()
-        ];
-
-        $this->pmManager->add(ArrayHash::from($welcome_pm_data));
+        $this->pmManager->add($pmEntity->getArrayHash());
 
         return $user_id;
     }

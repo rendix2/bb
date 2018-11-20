@@ -5,6 +5,7 @@ namespace App\AdminModule\Presenters;
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
+use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Models\Mails2UsersManager;
 use App\Models\MailsManager;
@@ -12,13 +13,13 @@ use Nette\Application\UI\Form;
 use Nette\InvalidArgumentException;
 use Nette\Mail\FallbackMailerException;
 use Nette\Utils\ArrayHash;
-use App\Controls\BreadCrumbControl;
 
 /**
  * Description of EmailPresenter
  *
  * @author rendix2
  * @method MailsManager getManager()
+ * @package App\AdminModule\Presenters
  */
 class EmailPresenter extends AdminPresenter
 {
@@ -64,7 +65,7 @@ class EmailPresenter extends AdminPresenter
     {
         parent::renderEdit($id);
 
-        $this->template->emails = $this->mail2UsersManager->getAllJoinedByLeft($id);
+        $this->template->emails = $this->mail2UsersManager->getAllByLeftJoined($id);
     }
     
     /**
@@ -73,7 +74,7 @@ class EmailPresenter extends AdminPresenter
      */
     protected function createComponentGridFilter()
     {
-        $this->gf->setTranslator($this->getAdminTranslator());
+        $this->gf->setTranslator($this->getTranslator());
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('mail_id', 'mail_id', GridFilter::INT_EQUAL);
@@ -89,7 +90,7 @@ class EmailPresenter extends AdminPresenter
     protected function createComponentEditForm()
     {
         $form = $this->getBootstrapForm();
-        $form->setTranslator($this->getAdminTranslator());
+        $form->setTranslator($this->getTranslator());
 
         $form->addText('mail_subject', 'mail_subject:')->setDisabled();
         $form->addTextArea('mail_text', 'mail_text:')->setDisabled();
@@ -153,7 +154,7 @@ class EmailPresenter extends AdminPresenter
             1 => ['text' => 'menu_emails']
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
     
     /**
@@ -164,10 +165,10 @@ class EmailPresenter extends AdminPresenter
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'Email:default', 'text' => 'menu_emails'],
-            2 => ['link' => 'Email:edit', 'text' => 'menu_email'],
+            2 => ['link' => 'Email:edit',    'text' => 'menu_email'],
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
     
     /**
@@ -178,9 +179,9 @@ class EmailPresenter extends AdminPresenter
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['link' => 'Email:default', 'text' => 'menu_emails'],
-            2 => ['link' => 'Email:send', 'text' => 'mail_send'],
+            2 => ['link' => 'Email:send',    'text' => 'mail_send'],
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 }

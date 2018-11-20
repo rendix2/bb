@@ -9,6 +9,7 @@ use SplFileInfo;
  * Description of CacheDir
  *
  * @author rendix2
+ * @package App\Settings
  */
 class CacheDir extends Setting
 {

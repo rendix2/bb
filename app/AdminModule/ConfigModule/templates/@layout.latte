@@ -19,7 +19,7 @@
         <div class="container-fluid">
             <ul class="navbar-nav navbar-left">
 
-            {if $user->isLoggedIn()}
+            {if $user->loggedIn}
                 <li class="nav-item">
                     <a class="nav-link" href="{link :Admin:Index:default}">{_menu_index}</a>
                 </li>

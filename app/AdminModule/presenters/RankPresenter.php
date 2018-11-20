@@ -16,6 +16,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendix2
  * @method RanksManager getManager()
+ * @package App\AdminModule\Presenters
  */
 class RankPresenter extends AdminPresenter
 {
@@ -59,23 +60,6 @@ class RankPresenter extends AdminPresenter
         parent::renderEdit($id);
         
         $this->template->ranksDir = $this->ranks->getTemplateDir();
-    }
-    
-    /**
-     *
-     * @return GridFilter
-     */
-    protected function createComponentGridFilter()
-    {
-        $this->gf->setTranslator($this->getAdminTranslator());
-
-        $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
-        $this->gf->addFilter('rank_id', 'rank_id', GridFilter::INT_EQUAL);
-        $this->gf->addFilter('rank_name', 'rank_name', GridFilter::TEXT_LIKE);
-        $this->gf->addFilter('edit', null, GridFilter::NOTHING);
-        $this->gf->addFilter('delete', null, GridFilter::NOTHING);
-            
-        return $this->gf;
     }
 
     /**
@@ -131,7 +115,7 @@ class RankPresenter extends AdminPresenter
             ->moveRank(
                 $values->rank_file,
                 $this->getParameter('id')
-            );
+        );
 
         if ($move !== RanksManager::NOT_UPLOADED) {
             $values->rank_file = $move;
@@ -143,6 +127,23 @@ class RankPresenter extends AdminPresenter
     }
 
     /**
+     *
+     * @return GridFilter
+     */
+    protected function createComponentGridFilter()
+    {
+        $this->gf->setTranslator($this->getTranslator());
+
+        $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
+        $this->gf->addFilter('rank_id', 'rank_id', GridFilter::INT_EQUAL);
+        $this->gf->addFilter('rank_name', 'rank_name', GridFilter::TEXT_LIKE);
+        $this->gf->addFilter('edit', null, GridFilter::NOTHING);
+        $this->gf->addFilter('delete', null, GridFilter::NOTHING);
+            
+        return $this->gf;
+    }    
+
+    /**
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbAll()
@@ -152,7 +153,7 @@ class RankPresenter extends AdminPresenter
             1 => ['text' => 'menu_ranks']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
     /**
@@ -162,10 +163,10 @@ class RankPresenter extends AdminPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Rank:default', 'text' => 'menu_ranks'],
-            2 => ['link' => 'Rank:edit', 'text' => 'menu_rank'],
+            1 => ['link' => 'Rank:default',  'text' => 'menu_ranks'],
+            2 => ['link' => 'Rank:edit',     'text' => 'menu_rank'],
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 }

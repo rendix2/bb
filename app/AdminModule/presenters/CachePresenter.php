@@ -4,6 +4,7 @@ namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
+use App\Controls\GridFilter;
 use App\Models\CacheManager;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
@@ -16,6 +17,7 @@ use Nette\Utils\ArrayHash;
  *
  * @author rendix2
  * @method CacheManager getManager()
+ * @package App\AdminModule\Presenters
  */
 class CachePresenter extends AdminPresenter
 {
@@ -38,6 +40,9 @@ class CachePresenter extends AdminPresenter
         $this->cache = new Cache($storage);
     }
     
+    /**
+     * 
+     */
     public function __destruct()
     {
         $this->cache = null;
@@ -51,9 +56,11 @@ class CachePresenter extends AdminPresenter
     public function startup()
     {
         parent::startup();
+        
+        $user = $this->user;
 
-        if (!$this->user->isLoggedIn()) {
-            if ($this->user->logoutReason === IUserStorage::INACTIVITY) {
+        if (!$user->loggedIn) {
+            if ($user->logoutReason === IUserStorage::INACTIVITY) {
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
             }
 
@@ -68,7 +75,7 @@ class CachePresenter extends AdminPresenter
     {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->translatorFactory->adminTranslatorFactory());
+        $this->template->setTranslator($this->translatorFactory->createAdminTranslatorFactory());
     }
 
     /**
@@ -87,15 +94,6 @@ class CachePresenter extends AdminPresenter
     }
     
     /**
-     * 
-     * @return null
-     */
-    protected function createComponentGridFilter()
-    {
-        return $this->gf;
-    }    
-    
-    /**
      * deletes ALL cache
      *
      * @param Form      $form
@@ -106,5 +104,14 @@ class CachePresenter extends AdminPresenter
         $this->cache->clean([Cache::ALL => Cache::ALL]);
         $this->flashMessage('Cache was deleted.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('this');
+    }
+    
+    /**
+     * 
+     * @return GridFilter
+     */
+    protected function createComponentGridFilter()
+    {
+        return $this->gf;
     }
 }

@@ -1,20 +1,21 @@
 <?php
 
+namespace App\Models\Entity;
+
 use App\Models\Entity\Base\Entity;
-use App\Models\Entity\Poll;
-use App\Models\Entity\Post;
-use App\Models\Entity\Topic;
+use App\Models\Entity\PollEntityEntity;
+use App\Models\Entity\PostEntity;
+use App\Models\Entity\TopicEntity;
 use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
-namespace App\Models\Entity;
-
 /**
- * Description of Topic
+ * Description of TopicEntity
  *
  * @author rendix2
+ * @package App\Models\Entity
  */
-class Topic extends \App\Models\Entity\Base\Entity
+class TopicEntity extends Entity
 {
     /**
      *
@@ -107,13 +108,13 @@ class Topic extends \App\Models\Entity\Base\Entity
 
     /**
      *
-     * @var Post $post
+     * @var PostEntity $post
      */
     private $post;
     
     /**
      *
-     * @var Poll $poll
+     * @var PollEntityEntity $poll
      */
     private $poll;
     
@@ -292,13 +293,13 @@ class Topic extends \App\Models\Entity\Base\Entity
         return $this;
     }
 
-    public function setPost(Post $post = null)
+    public function setPost(PostEntity $post = null)
     {
         $this->post = $post;
         return $this;
     }
 
-    public function setPoll(Poll $poll = null)
+    public function setPoll(PollEntityEntity $poll = null)
     {
         $this->poll = $poll;
         return $this;
@@ -308,11 +309,11 @@ class Topic extends \App\Models\Entity\Base\Entity
      * 
      * @param Row $values
      * 
-     * @return Topic
+     * @return TopicEntity
      */
-    public static function setFromRow(\Dibi\Row $values)
+    public static function setFromRow(Row $values)
     {
-        $topic = new Topic();
+        $topic = new TopicEntity();
         
         if (isset($values->topic_id)) {
             $topic->setTopic_id($values->topic_id);
@@ -379,7 +380,7 @@ class Topic extends \App\Models\Entity\Base\Entity
     
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $topic = new Topic();
+        $topic = new TopicEntity();
         
         if (isset($values->topic_id)) {
             $topic->setTopic_id($values->topic_id);

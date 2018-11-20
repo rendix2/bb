@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Entity\PostEntity;
+use App\Models\Entity\TopicEntity;
+use App\Settings\TopicsSetting;
 use Dibi\Result;
 use Nette\Utils\ArrayHash;
-use App\Settings\TopicsSetting;
 
 /**
  * Description of PostFacade
  *
  * @author rendix2
+ * @package App\Models
  */
 class PostFacade
 {
@@ -114,20 +117,20 @@ class PostFacade
      * @param Posts2FilesManager  $posts2FilesManger
      */
     public function __construct(
-        PostsManager $postsManager,
-        TopicsManager $topicsManager,
-        TopicWatchManager $topicWatchManager,
-        UsersManager $usersManager,
-        ReportsManager $reportsManager,
-        ForumsManager $forumsManager,
+        PostsManager        $postsManager,
+        TopicsManager       $topicsManager,
+        TopicWatchManager   $topicWatchManager,
+        UsersManager        $usersManager,
+        ReportsManager      $reportsManager,
+        ForumsManager       $forumsManager,
         PostsHistoryManager $postsHistoryManager,
-        ThanksManager $thanksManager,
-        ThanksFacade $thanksFacade,
-        TopicWatchFacade $topicWatchFacade,
-        PollsFacade $pollsFacade,
-        TopicsSetting $topicSettings,
-        FilesManager $filesManager,
-        Posts2FilesManager $posts2FilesManger    
+        ThanksManager       $thanksManager,
+        ThanksFacade        $thanksFacade,
+        TopicWatchFacade    $topicWatchFacade,
+        PollsFacade         $pollsFacade,
+        TopicsSetting       $topicSettings,
+        FilesManager        $filesManager,
+        Posts2FilesManager  $posts2FilesManger    
     ) {
         $this->postsManager        = $postsManager;
         $this->topicsManager       = $topicsManager;
@@ -163,11 +166,11 @@ class PostFacade
     }
 
     /**
-     * @param ArrayHash $post
+     * @param PostEntity $post
      *
      * @return Result|int
      */
-    public function add(Entity\Post $post)
+    public function add(PostEntity $post)
     {
         $post_id  = $this->postsManager->add($post->getArrayHash());
         $user_id  = $post->getPost_user_id();
@@ -175,7 +178,7 @@ class PostFacade
         $topic_id = $post->getPost_topic_id();
         
         $topicDibi = $this->topicsManager->getById($topic_id);
-        $topic     = Entity\Topic::setFromRow($topicDibi);
+        $topic     = TopicEntity::setFromRow($topicDibi);
         
         $files     = $post->getPost_files();
         $files_ids = [];
@@ -233,7 +236,7 @@ class PostFacade
      *
      * @return bool
      */
-    public function update(Entity\Post $post)
+    public function update(PostEntity $post)
     {
         //$myPost = clone $post;
         //unset($myPost->post_id);
@@ -258,7 +261,7 @@ class PostFacade
      *
      * @return Result|int
      */
-    public function delete(Entity\Topic $topic, Entity\Post $post)
+    public function delete(TopicEntity $topic, PostEntity $post)
     {
         $this->usersManager->update(
             $post->getPost_user_id(),
@@ -367,7 +370,7 @@ class PostFacade
             $this->topicsManager->update($target_topic_id, ArrayHash::from(['topic_post_count%sql' => 'topic_post_count + 1']));
         }
         
-        if ($source_forum_id!== $target_forum_id) {
+        if ($source_forum_id !== $target_forum_id) {
             $this->forumsManager->update($source_forum_id, ArrayHash::from(['forum_post_count%sql' => 'forum_post_count - 1']));
             $this->forumsManager->update($target_forum_id, ArrayHash::from(['forum_post_count%sql' => 'forum_post_count + 1']));
         }

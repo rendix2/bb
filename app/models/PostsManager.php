@@ -13,6 +13,7 @@ use Nette\Utils\ArrayHash;
  * Description of PostManager
  *
  * @author rendix2
+ * @package App\Models
  */
 class PostsManager extends CrudManager
 {
@@ -23,9 +24,7 @@ class PostsManager extends CrudManager
      */
     public function getCountByCategory($category_id)
     {
-        return $this->dibi
-            ->select('COUNT(post_id)')
-            ->from($this->getTable())
+        return $this->getCountPrimaryKeyFluent()
             ->where('[post_category_id] = %i', $category_id)
             ->fetchSingle();
     }
@@ -37,9 +36,7 @@ class PostsManager extends CrudManager
      */
     public function getCountByForum($forum_id)
     {
-        return $this->dibi
-                ->select('COUNT(post_id)')
-                ->from($this->getTable())
+        return $this->getCountPrimaryKeyFluent()
                 ->where('[post_forum_id] = %i', $forum_id)
                 ->fetchSingle();
     }
@@ -51,9 +48,7 @@ class PostsManager extends CrudManager
      */
     public function getCountByTopic($topic_id)
     {
-        return $this->dibi
-                ->select('COUNT(post_id)')
-                ->from($this->getTable())
+        return $this->getCountPrimaryKeyFluent()
                 ->where('[post_topic_id] = %i', $topic_id)
                 ->fetchSingle();
     }
@@ -212,7 +207,7 @@ class PostsManager extends CrudManager
      *
      * @return Fluent
      */
-    public function getByTopic($topic_id)
+    public function getFluentByTopic($topic_id)
     {
         return $this->getAllFluent()
             ->where('[post_topic_id] = %i', $topic_id);
@@ -223,10 +218,10 @@ class PostsManager extends CrudManager
      *
      * @return Fluent
      */
-    public function getByUser($user_id)
+    public function getFluentByUser($user_id)
     {
         return $this->getAllFluent()
-                ->where('[post_user_id] = %i', $user_id);
+            ->where('[post_user_id] = %i', $user_id);
     }
      
 
@@ -235,7 +230,7 @@ class PostsManager extends CrudManager
      *
      * @return array
      */
-    public function findPosts($post_text)
+    public function findPostsJoinedTopic($post_text)
     {
         return $this->getAllFluent()
             ->as('p')

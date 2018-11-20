@@ -6,6 +6,7 @@ namespace App\Authorization;
  * Description of IAuthorizationScope
  *
  * @author rendix2
+ * @package App\Authorization
  */
 interface IAuthorizationScope
 {

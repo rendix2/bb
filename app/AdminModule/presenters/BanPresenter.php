@@ -4,15 +4,16 @@ namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
-use App\Models\BansManager;
-use App\Controls\GridFilter;
 use App\Controls\BreadCrumbControl;
+use App\Controls\GridFilter;
+use App\Models\BansManager;
 
 /**
  * Description of BanPresenter
  *
  * @author rendix2
  * @method BansManager getManager()
+ * @package App\AdminModule\Presenters
  */
 class BanPresenter extends AdminPresenter
 {
@@ -45,7 +46,7 @@ class BanPresenter extends AdminPresenter
      */
     protected function createComponentGridFilter()
     {
-        $this->gf->setTranslator($this->getAdminTranslator());
+        $this->gf->setTranslator($this->getTranslator());
             
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('ban_id', 'ban_id', GridFilter::INT_EQUAL);
@@ -68,7 +69,7 @@ class BanPresenter extends AdminPresenter
             1 => ['text' => 'menu_bans']
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
     
     /**
@@ -78,10 +79,10 @@ class BanPresenter extends AdminPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Ban:default', 'text' => 'menu_bans'],
-            2 => ['link' => 'Ban:default', 'text' => 'menu_ban'],
+            1 => ['link' => 'Ban:default',   'text' => 'menu_bans'],
+            2 => ['link' => 'Ban:default',   'text' => 'menu_ban'],
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getAdminTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 }

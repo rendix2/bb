@@ -11,6 +11,8 @@ use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
  * Description of ReportPresenter
  *
  * @author rendix2
+ * @method ReportsManager getManager()
+ * @package App\ModeratorModule\Presenters
  */
 class ReportPresenter extends ModeratorPresenter
 {

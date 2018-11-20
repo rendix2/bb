@@ -6,7 +6,9 @@ use App\Models\Mails2UsersManager;
 use App\Models\MailsManager;
 use App\Models\UsersManager;
 use App\Settings\Email;
+use Exception;
 use Latte\Engine;
+use Nette\Mail\FallbackMailer;
 use Nette\Mail\IMailer;
 use Nette\Mail\Message;
 use Nette\Utils\ArrayHash;
@@ -15,6 +17,7 @@ use Nette\Utils\ArrayHash;
  * Description of BBMailer
  *
  * @author rendix2
+ * @package App\Controls
  */
 class BBMailer
 {
@@ -63,11 +66,11 @@ class BBMailer
      * @param UsersManager       $usersManager
      */
     public function __construct(
-        IMailer $mailer,
-        MailsManager $manager,
-        Email $email,
+        IMailer            $mailer,
+        MailsManager       $manager,
+        Email              $email,
         Mails2UsersManager $mails2users,
-        UsersManager $usersManager
+        UsersManager       $usersManager
     ) {
         $this->mailer  = $mailer;
         $this->message = new Message();
@@ -134,20 +137,18 @@ class BBMailer
     {
 //        $smtp       = new \Nette\Mail\SmtpMailer($config);
 //        $sendMailer = new \Nette\Mail\SendmailMailer();
-       
         
-        $this->saveMailHistory();
-        
-        $mailer = new \Nette\Mail\FallbackMailer([
+        $mailer = new FallbackMailer([
 //            $smtp,
             $this->mailer
         ]);
         
         try {
             $mailer->send($this->message);
+            $this->saveMailHistory();
             
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -164,7 +165,7 @@ class BBMailer
             'mail_time'    => time()
         ];
         
-        $emails   = $this->usersManager->getByEmails($this->recipients);
+        $emails   = $this->usersManager->getAllByEmails($this->recipients);
         $email_id = $this->manager->add(ArrayHash::from($item_data));
         
         $emailsArray = [];

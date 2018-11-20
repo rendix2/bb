@@ -4,20 +4,21 @@ namespace App\Models;
 
 use App\Models\Crud\CrudManager;
 use dibi;
-use Dibi\Row;
 use Dibi\Connection;
-use Zebra_Mptt;
+use Dibi\Row;
 use Nette\Caching\IStorage;
+use Zebra_Mptt;
 
 /**
  * Class CategoriesManager
  *
+ * @author rendix2
  * @package App\Models
  */
 class CategoriesManager extends CrudManager
 {
     /**
-     * @var \Zebra_Mptt $mptt
+     * @var Zebra_Mptt $mptt
      */
     private $mptt;
 
@@ -64,7 +65,7 @@ class CategoriesManager extends CrudManager
     /**
      * @return array
      */
-    public function getActiveCategories()
+    public function getAllActiveCategories()
     {
         return $this->getAllFluent()
             ->where('[category_active] = %i', 1)
@@ -81,7 +82,7 @@ class CategoriesManager extends CrudManager
         $cached = $this->managerCache->load($key);
 
         if (!$cached) {
-            $this->managerCache->save($key, $cached = $this->getActiveCategories());
+            $this->managerCache->save($key, $cached = $this->getAllActiveCategories());
         }
 
         return $cached;
@@ -92,7 +93,7 @@ class CategoriesManager extends CrudManager
      *
      * @return Row|false
      */
-    public function getByForum($forum_id)
+    public function getByForumJoinedForum($forum_id)
     {
         return $this->getAllFluent()
             ->as('c')
@@ -118,7 +119,7 @@ class CategoriesManager extends CrudManager
     }
 
     /**
-     * @param $category_id
+     * @param int $category_id
      *
      * @return array
      */
@@ -126,7 +127,7 @@ class CategoriesManager extends CrudManager
     {
         $categories = $this->mptt->getBreadCrumb($category_id);
         
-        $bcCat = [];
+        $breadCrumbCategory = [];
         
         foreach ($categories as $category) {
             $tmp = [];
@@ -135,9 +136,9 @@ class CategoriesManager extends CrudManager
             $tmp['text']   = $category->category_name;
             $tmp['t']      = 0;
             
-            $bcCat[] = $tmp;
+            $breadCrumbCategory[] = $tmp;
         }
         
-        return $bcCat;
+        return $breadCrumbCategory;
     }
 }
