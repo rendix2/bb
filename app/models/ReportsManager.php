@@ -106,25 +106,25 @@ class ReportsManager extends CrudManager
     }
     
     /**
-     * 
+     *
      * @param int $post_id
      * @param ArrayHash $item_data
-     * 
-     * @return type
+     *
+     * @return bool
      */
     public function updateByPost($post_id, ArrayHash $item_data)
     {
         $this->deleteCache();
 
         return $this->dibi->update($this->getTable(), $item_data)->where('[report_post_id] = %i', $post_id)->execute();
-    }    
+    }
 
     /**
      *
      * @param int       $topic_id
      * @param ArrayHash $item_data
      *
-     * @return bool
+     * @return Result|int
      */
     public function updateByTopic($topic_id, ArrayHash $item_data)
     {
@@ -132,17 +132,19 @@ class ReportsManager extends CrudManager
 
         return $this->dibi->update($this->getTable(), $item_data)->where('[report_topic_id] = %i', $topic_id)->execute();
     }
-    
+
     /**
-     * 
-     * @param int $forum_id
+     *
+     * @param int       $forum_id
      * @param ArrayHash $item_data
-     * @return type)
+     *
+     * @return Result|int
+
      */
     public function updateByForum($forum_id, ArrayHash $item_data)
     {
         $this->deleteCache();
 
         return $this->dibi->update($this->getTable(), $item_data)->where('[report_forum_id] = %i', $forum_id)->execute();
-    }    
+    }
 }

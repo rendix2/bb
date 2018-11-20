@@ -21,7 +21,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
 {
     
     use \App\Models\Traits\PostTrait;
-    use \App\Models\Traits\TopicsTrait;    
+    use \App\Models\Traits\TopicsTrait;
     use \App\Models\Traits\ForumsTrait;
     
     
@@ -42,7 +42,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
 
     /**
      * @var Aauthorizator $authorizator
-     * @inject 
+     * @inject
      */
     public $authorizator;
     
@@ -89,8 +89,12 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         
         $this->manager = $manager;
     }
-    
-    public function __destruct() {
+
+    /**
+     *
+     */
+    public function __destruct()
+    {
         $this->forumTranslator = null;
         $this->authorizator    = null;
         $this->pmManager       = null;
@@ -173,21 +177,32 @@ abstract class ForumPresenter extends AuthenticatedPresenter
 
         $this->template->setTranslator($this->forumTranslator);
     }
-    
+
+    /**
+     * @return \App\Authorization\Scopes\User
+     */
     protected function getLoggedInUser()
-    {        
+    {
         $identity = new \App\Authorization\Identity($this->user->id, $this->user->roles);
         
         return new \App\Authorization\Scopes\User($identity);
     }
-    
+
+    /**
+     * @param $id
+     * @return \App\Authorization\Scopes\Category
+     */
     protected function loadCategory($id)
     {
         return new \App\Authorization\Scopes\Category();
     }
-    
+
+    /**
+     * @param \App\Models\Entity\Forum $forum
+     * @return \App\Authorization\Scopes\Forum
+     */
     protected function loadForum(\App\Models\Entity\Forum $forum)
-    {        
+    {
         $moderators = $this->moderators->getAllByRight($forum->getForum_id());
         $moderatorsI = [];
         
@@ -199,27 +214,43 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         }
                 
         return new \App\Authorization\Scopes\Forum($forum, $moderatorsI, $this->users2GroupsManager, $this->users2ForumsManager); 
-    }    
-    
+    }
+
+    /**
+     * @param \App\Models\Entity\Forum $forum
+     * @param \App\Models\Entity\Topic $topic
+     * @return \App\Authorization\Scopes\Topic
+     */
     protected function loadTopic(\App\Models\Entity\Forum $forum, \App\Models\Entity\Topic $topic)
     {
         
-        $topicIdentity = new \App\Authorization\Identity($topic->getTopic_first_user_id(), [\App\Authorization\Scopes\Topic::ROLE_AUTHOR]);        
+        $topicIdentity = new \App\Authorization\Identity($topic->getTopic_first_user_id(), [\App\Authorization\Scopes\Topic::ROLE_AUTHOR]);
         $topicAuthor   = new \App\Authorization\Scopes\User($topicIdentity);
         
         $thanks = $this->thanksManager->getAllByTopic($topic->getTopic_id());
         
         return new \App\Authorization\Scopes\Topic($topic, $topicAuthor, $this->loadForum($forum), $thanks);
-    }    
-    
+    }
+
+    /**
+     * @param \App\Models\Entity\Forum $forumEntity
+     * @param \App\Models\Entity\Topic $topicEntity
+     * @param \App\Models\Entity\Post $postEntity
+     * @return \App\Authorization\Scopes\Post
+     */
     protected function loadPost(\App\Models\Entity\Forum $forumEntity, \App\Models\Entity\Topic $topicEntity, \App\Models\Entity\Post $postEntity)
     {
-        $postIdentity  = new \App\Authorization\Identity($postEntity->getPost_user_id(), [\App\Authorization\Scopes\Post::ROLE_AUTHOR]);        
+        $postIdentity  = new \App\Authorization\Identity($postEntity->getPost_user_id(), [\App\Authorization\Scopes\Post::ROLE_AUTHOR]);
         $postAuthor    = new \App\Authorization\Scopes\User($postIdentity);
                         
         return new \App\Authorization\Scopes\Post($postEntity, $this->loadTopic($forumEntity, $topicEntity), $topicEntity);
     }
-        
+
+    /**
+     * @param \App\Authorization\IAuthorizationScope $scope
+     * @param array $action
+     * @throws \Exception
+     */
     protected function requireAccess(\App\Authorization\IAuthorizationScope $scope, array $action)
     {
         if (!$this->isAllowed($scope, $action)) {
@@ -227,8 +258,13 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         }
     }
 
+    /**
+     * @param \App\Authorization\IAuthorizationScope $scope
+     * @param array $action
+     * @return bool
+     */
     protected function isAllowed(\App\Authorization\IAuthorizationScope $scope, array $action)
     {
         return $this->authorizator->isAllowed($this->getLoggedInUser()->getIdentity(), $scope, $action);
-    }        
+    }
 }

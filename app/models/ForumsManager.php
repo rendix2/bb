@@ -47,14 +47,14 @@ class ForumsManager extends CrudManager
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
-        $this->mptt = null;        
-        
+        $this->mptt = null;
+
         parent::__destruct();
-    }    
+    }
     
     /**
      *

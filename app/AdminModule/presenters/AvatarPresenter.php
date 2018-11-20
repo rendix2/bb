@@ -95,11 +95,11 @@ class AvatarPresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      * @return null
      */
     protected function createComponentGridFilter()
     {
         return null;
-    }    
+    }
 }

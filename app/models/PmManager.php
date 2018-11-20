@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Models\Crud\CrudManager;
-use Dibi\Fluent;
 use Dibi\Connection;
-use Nette\Security\User;
+use Dibi\Fluent;
 use Nette\Caching\IStorage;
+use Nette\Security\User;
 
 /**
  * Description of PMManager
@@ -21,16 +21,25 @@ class PmManager extends CrudManager
      * @var User $user
      */
     private $user;
-    
+
+    /**
+     * PmManager constructor.
+     *
+     * @param Connection $dibi
+     * @param IStorage   $storage
+     * @param User       $user
+     *
+     * @throws \Exception
+     */
     public function __construct(
         Connection $dibi,
-        IStorage $storage,
-        User $user)
-    {
+        IStorage   $storage,
+        User       $user
+    ) {
         parent::__construct($dibi, $storage);
-        
+
         $this->user = $user;
-    }    
+    }
 
     /**
      * @return Fluent
@@ -38,11 +47,11 @@ class PmManager extends CrudManager
     public function getAllFluent()
     {
         return parent::getAllFluent()
-                ->as('pm')
-                ->innerJoin(self::USERS_TABLE)
-                ->as('u')
-                ->on('pm.pm_user_id_from = u.user_id')
-                ->where('pm.pm_user_id_to = %i', $this->user->id);
+            ->as('pm')
+            ->innerJoin(self::USERS_TABLE)
+            ->as('u')
+            ->on('pm.pm_user_id_from = u.user_id')
+            ->where('pm.pm_user_id_to = %i', $this->user->id);
     }
     
     /**
@@ -52,14 +61,15 @@ class PmManager extends CrudManager
     public function getCountSent()
     {
         return parent::getCountFluent()
-                ->where('pm_user_id_to = %i', $this->user->id)
-                ->where('pm_status = %s', 'sent')
-                ->fetchSingle();
+            ->where('pm_user_id_to = %i', $this->user->id)
+            ->where('pm_status = %s', 'sent')
+            ->fetchSingle();
     }
     
     /**
-     * 
+     *
      * @param int $user_id
+     *
      * @return bool
      */
     public function deleteByUserFrom($user_id)
@@ -70,8 +80,9 @@ class PmManager extends CrudManager
     }
     
     /**
-     * 
+     *
      * @param int $user_id
+     *
      * @return bool
      */
     public function deleteByUserTo($user_id)
@@ -79,5 +90,5 @@ class PmManager extends CrudManager
         return $this->deleteFluent()
             ->where('[pm_user_id_to] = %i', $user_id)
             ->execute();
-    }    
+    }
 }

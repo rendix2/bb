@@ -4,14 +4,14 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
-use App\Controls\PollControl;
 use App\Controls\PaginatorControl;
-use App\Forms\TopicJumpToForumForm;
-use App\Forms\TopicFastReplyForm;
+use App\Controls\PollControl;
 use App\Forms\ReportForm;
+use App\Forms\TopicFastReplyForm;
+use App\Forms\TopicJumpToForumForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Models\PostFacade;
 use App\Models\PollsFacade;
+use App\Models\PostFacade;
 use App\Models\RanksManager;
 use App\Models\ReportsManager;
 use App\Models\ThanksFacade;
@@ -27,9 +27,7 @@ use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Forms\Container;
-use Nette\Http\IResponse;
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
 
 /**
  * Description of TopicPresenter
@@ -62,12 +60,6 @@ class TopicPresenter extends BaseForumPresenter
      * @inject
      */
     public $topicWatchManager;
-    
-    /**
-     * @var ThanksManager $thanksManager
-     * @inject
-     */
-    public $thanksManager;
 
     /**
      * @var RanksManager $rankManager
@@ -132,7 +124,7 @@ class TopicPresenter extends BaseForumPresenter
     }
 
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -156,7 +148,7 @@ class TopicPresenter extends BaseForumPresenter
         parent::__destruct();
     }
 
-        /**
+    /**
      * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
@@ -210,7 +202,7 @@ class TopicPresenter extends BaseForumPresenter
         $category   = $this->checkCategoryParam($category_id);
         $forum      = $this->checkForumParam($forum_id, $category_id);
         $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-        $user_id    = $this->getUser()->getId();        
+        $user_id    = $this->getUser()->getId();
         $forumScope = $this->loadForum($forum);
         
         $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_THANK);
@@ -319,7 +311,7 @@ class TopicPresenter extends BaseForumPresenter
         $this->template->posts = $postsNew;
         $this->template->topic = $topic;
         
-        $this->template->canAddPost    = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_ADD);        
+        $this->template->canAddPost    = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_ADD);
         $this->template->canDeletePost = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_DELETE);
         $this->template->canFastReply  = $this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_FAST_REPLY);
         $this->template->canThankTopic = $this->isAllowed($topicScope, \App\Authorization\Scopes\Topic::ACTION_THANK);
@@ -341,14 +333,14 @@ class TopicPresenter extends BaseForumPresenter
         $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $user_id);
         $this->template->ranks      = $this->rankManager->getAllCached();
         
-        //$this->template->thanks     = $this->thanksManager->getAllJoinedUserByTopic($topic_id);                       
+        //$this->template->thanks     = $this->thanksManager->getAllJoinedUserByTopic($topic_id);
         $this->template->signatureDelimiter = $this->postSettings->get()['signatureDelimiter'];
     }
 
     /**
-     * @param $category_id
-     * @param int $forum_id
-     * @param int $topic_id
+     * @param int      $category_id
+     * @param int      $forum_id
+     * @param int|null $topic_id
      */
     public function renderEdit($category_id, $forum_id, $topic_id = null)
     {
@@ -443,7 +435,7 @@ class TopicPresenter extends BaseForumPresenter
     }
     
     /**
-     * 
+     *
      * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
@@ -454,7 +446,7 @@ class TopicPresenter extends BaseForumPresenter
         $category = $this->checkCategoryParam($category_id);
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-    }    
+    }
 
     /**
      *
@@ -472,20 +464,20 @@ class TopicPresenter extends BaseForumPresenter
         $form->addSubmit('send', 'Send');
         
         $form->addGroup('Poll');
-        // poll       
+        // poll
         
         $form->addText('poll_question', 'Question');
         $form->addTbDatePicker('poll_time_to', 'Finish');
         
         $answers = $form->addDynamic('answers', function (Container $answer) {
             $answer->addHidden('poll_answer_id');
-            $answer->addText('poll_answer', 'Answer');                
+            $answer->addText('poll_answer', 'Answer');
             $answer->addSubmit('remove', 'Remove answer')
-                   ->setValidationScope(FALSE) # disables validation
+                   ->setValidationScope(false) # disables validation
                    ->addRemoveOnClick();
         }, 1);
         $answers->addSubmit('add', 'Add answer')
-                ->setValidationScope(FALSE) # disables validation
+                ->setValidationScope(false) # disables validation
                 ->addCreateOnClick(true);
 
         $form->onSuccess[] = [$this,'editFormSuccess'];
@@ -505,19 +497,19 @@ class TopicPresenter extends BaseForumPresenter
         $user_id     = $this->getUser()->getId();
         $page        = $this->getParameter('page');
         
-        if ($values->poll_question) {        
+        if ($values->poll_question) {
             $pollAnswers = [];
         
-            foreach ($values->answers as $answer) {   
+            foreach ($values->answers as $answer) {
                 $pollAnswer = \App\Models\Entity\PollAnswer::setFromArrayHash($answer);
                 
                 if ($pollAnswer->getPoll_answer()) {
                     $pollAnswers[] = $pollAnswer;
-                }                                
+                }
             }
         
             $poll = \App\Models\Entity\Poll::setFromArrayHash($values);
-            $poll->setPollAnswers($pollAnswers);;
+            $poll->setPollAnswers($pollAnswers);
         } else {
             $poll = null;
         }
@@ -526,8 +518,8 @@ class TopicPresenter extends BaseForumPresenter
             $oldTopicDibi = $this->getManager()->getById($topic_id);
             $oldTopic     = \App\Models\Entity\Topic::setFromRow($oldTopicDibi);
             
-            $firstPost = $this->postsManager->getFirstByTopic($oldTopicDibi->topic_id);           
-            $pollDibi = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
+            $firstPost = $this->postsManager->getFirstByTopic($oldTopicDibi->topic_id);
+            $pollDibi  = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
             
             if ($pollDibi) {
                 $poll->setPoll_id($pollDibi->poll_id);
@@ -535,7 +527,7 @@ class TopicPresenter extends BaseForumPresenter
             
             if ($poll) {
                 foreach ($poll->getPollAnswers() as $answer) {
-                    $answer->setPoll_id($pollDibi->poll_id);;
+                    $answer->setPoll_id($pollDibi->poll_id);
                 }
             }
             
@@ -552,7 +544,7 @@ class TopicPresenter extends BaseForumPresenter
                   ->setPoll($poll);
             
             $res = $this->topicFacade->update($topic);
-        } else {            
+        } else {
             $post = new \App\Models\Entity\Post();
             $post->setPost_user_id($user_id)
                  ->setPost_category_id($category_id)
@@ -593,7 +585,7 @@ class TopicPresenter extends BaseForumPresenter
     }
     
     /**
-     * 
+     *
      * @return PollControl
      */
     protected function createComponentPoll()
@@ -611,10 +603,10 @@ class TopicPresenter extends BaseForumPresenter
     protected function createComponentBreadCrumbAll()
     {
         $breadCrumb = array_merge(
-                [['link' => 'Index:default', 'text' => 'menu_index']],
-                $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
-                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
-                [['text' => 'menu_topic']]
+            [['link' => 'Index:default', 'text' => 'menu_index']],
+            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            [['text' => 'menu_topic']]
         );
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
@@ -641,18 +633,18 @@ class TopicPresenter extends BaseForumPresenter
     protected function createComponentBreadCrumbReport()
     {
         $breadCrumb = array_merge(
-                [['link' => 'Index:default', 'text' => 'menu_index']],
-                $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
-                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
-                [['link'   => 'Topic:default',
-                  'params' => [
-                      $this->getParameter('category_id'),
-                      $this->getParameter('forum_id'),
-                      $this->getParameter('topic_id')
-                  ],
-                  'text'   => 'menu_topic']],
-                [['text' => 'report_topic']]
-        );        
+            [['link' => 'Index:default', 'text' => 'menu_index']],
+            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            [['link' => 'Topic:default',
+                'params' => [
+                    $this->getParameter('category_id'),
+                    $this->getParameter('forum_id'),
+                    $this->getParameter('topic_id')
+                ],
+                'text' => 'menu_topic']],
+            [['text' => 'report_topic']]
+        );
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
@@ -663,18 +655,18 @@ class TopicPresenter extends BaseForumPresenter
     protected function createComponentBreadCrumbThanks()
     {
         $breadCrumb = array_merge(
-                [['link' => 'Index:default', 'text' => 'menu_index']],
-                $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
-                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
-                [['link'   => 'Topic:default',
-                  'params' => [
-                      $this->getParameter('category_id'),
-                      $this->getParameter('forum_id'),
-                      $this->getParameter('topic_id')
-                  ],
-                  'text'   => 'menu_topic']],
-                [['text' => 'Thanks']]
-        );        
+            [['link' => 'Index:default', 'text' => 'menu_index']],
+            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            [['link' => 'Topic:default',
+                'params' => [
+                    $this->getParameter('category_id'),
+                    $this->getParameter('forum_id'),
+                    $this->getParameter('topic_id')
+                ],
+                'text' => 'menu_topic']],
+            [['text' => 'Thanks']]
+        );
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
@@ -685,18 +677,18 @@ class TopicPresenter extends BaseForumPresenter
     protected function createComponentBreadCrumbWatchers()
     {
         $breadCrumb = array_merge(
-                [['link' => 'Index:default', 'text' => 'menu_index']],
-                $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
-                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
-                [['link'   => 'Topic:default',
-                  'params' => [
-                      $this->getParameter('category_id'),
-                      $this->getParameter('forum_id'),
-                      $this->getParameter('topic_id')
-                  ],
-                  'text'   => 'menu_topic']],
-                [['text' => 'watches']]
-        );         
+            [['link' => 'Index:default', 'text' => 'menu_index']],
+            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            [['link' => 'Topic:default',
+                'params' => [
+                    $this->getParameter('category_id'),
+                    $this->getParameter('forum_id'),
+                    $this->getParameter('topic_id')
+                ],
+                'text' => 'menu_topic']],
+            [['text' => 'watches']]
+        );
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
@@ -718,10 +710,10 @@ class TopicPresenter extends BaseForumPresenter
     }
 
     /**
-     * @return BootstrapForm
+     * @return ReportForm
      */
     protected function createComponentReportForm()
     {
         return new ReportForm($this->reportManager);
-    }    
+    }
 }

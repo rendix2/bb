@@ -2,10 +2,6 @@
 
 namespace App\ModeratorModule\Presenters\Base;
 
-use App\Authorization\Authorizator;
-use App\Authorization\Scopes\Forum;
-use App\Authorization\Scopes\Topic;
-use App\Authorization\Scopes\User;
 use App\Presenters\crud\CrudPresenter;
 use Nette\Localization\ITranslator;
 use App\Models\ModeratorsManager;

@@ -25,7 +25,7 @@ use Nette\Utils\ArrayHash;
  * @method ForumsManager getManager()
  */
 class ForumPresenter extends AdminPresenter
-{   
+{
     
     /**
      *
@@ -94,7 +94,7 @@ class ForumPresenter extends AdminPresenter
     }
 
     /**
-     * 
+     *
      */
     public function handleReorder()
     {
@@ -102,7 +102,7 @@ class ForumPresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      * @param int $page
      */
     public function renderDefault($page = 1)
@@ -110,7 +110,7 @@ class ForumPresenter extends AdminPresenter
         parent::renderDefault($page);
         
         $this->template->tree = $this->getManager()->getMptt()->get_tree(0);
-    }    
+    }
 
     /**
      * @param int|null $id
@@ -185,7 +185,7 @@ class ForumPresenter extends AdminPresenter
         }
 
         $this->redirect(':' . $this->getName() . ':default');
-    }    
+    }
 
     /**
      * @return BootstrapForm

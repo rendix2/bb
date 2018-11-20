@@ -112,7 +112,10 @@ class PaginatorControl extends Control
     {
         return $this->paginator;
     }
-    
+
+    /**
+     * @return BootstrapForm
+     */
     protected function createComponentPagination()
     {
         $form = new BootstrapForm(9, 'sm', 2);
@@ -121,13 +124,17 @@ class PaginatorControl extends Control
         $form->addInteger('page', '')
                 ->setAttribute('placeholder', 'Page')
                 ->setRequired(false)
-                ->addRule(\Nette\Application\UI\Form::RANGE, 'Ivalid range', [1, $this->paginator->getPageCount()]);
+                ->addRule(\Nette\Application\UI\Form::RANGE, 'Invalid range', [1, $this->paginator->getPageCount()]);
         
         $form->onSuccess[] = [$this, 'paginationSuccess'];
         
         return $form;
     }
-    
+
+    /**
+     * @param \Nette\Application\UI\Form $form
+     * @param \Nette\Utils\ArrayHash     $values
+     */
     public function paginationSuccess(\Nette\Application\UI\Form $form, \Nette\Utils\ArrayHash $values)
     {
         $url = new \Nette\Http\Url($this->presenter->getHttpRequest()->getUrl());

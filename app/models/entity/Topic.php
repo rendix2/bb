@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\Entity\Base\Entity;
 use App\Models\Entity\Poll;
 use App\Models\Entity\Post;
 use App\Models\Entity\Topic;
-use Dibi\Row;
-use Nette\Utils\ArrayHash;
 
 namespace App\Models\Entity;
+
+use Dibi\Row;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of Topic
@@ -116,87 +116,138 @@ class Topic extends \App\Models\Entity\Base\Entity
      * @var Poll $poll
      */
     private $poll;
-    
+
+    /**
+     * @return int
+     */
     public function getTopic_id()
     {
         return $this->topic_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_category_id()
     {
         return $this->topic_category_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_forum_id()
     {
         return $this->topic_forum_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_user_id()
     {
         return $this->topic_user_id;
     }
 
+    /**
+     * @return string
+     */
     public function getTopic_name()
     {
         return $this->topic_name;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_post_count()
     {
         return $this->topic_post_count;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_add_time()
     {
         return $this->topic_add_time;
     }
 
+    /**
+     * @return bool
+     */
     public function getTopic_locked()
     {
         return $this->topic_locked;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_view_count()
     {
         return $this->topic_view_count;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_first_post_id()
     {
         return $this->topic_first_post_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_first_user_id()
     {
         return $this->topic_first_user_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_last_post_id()
     {
         return $this->topic_last_post_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_last_user_id()
     {
         return $this->topic_last_user_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_order()
     {
         return $this->topic_order;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_page_count()
     {
         return $this->topic_page_count;
     }
 
+    /**
+     * @return Post
+     */
     public function getPost()
     {
         return $this->post;
     }
 
+    /**
+     * @return Poll
+     */
     public function getPoll()
     {
         return $this->poll;
@@ -208,6 +259,10 @@ class Topic extends \App\Models\Entity\Base\Entity
         return $this;
     }
 
+    /**
+     * @param $topic_category_id
+     * @return $this
+     */
     public function setTopic_category_id($topic_category_id)
     {
         $this->topic_category_id = self::makeInt($topic_category_id);
@@ -238,6 +293,10 @@ class Topic extends \App\Models\Entity\Base\Entity
         return $this;
     }
 
+    /**
+     * @param $topic_add_time
+     * @return $this
+     */
     public function setTopic_add_time($topic_add_time)
     {
         $this->topic_add_time = self::makeInt($topic_add_time);
@@ -292,12 +351,20 @@ class Topic extends \App\Models\Entity\Base\Entity
         return $this;
     }
 
+    /**
+     * @param Post|null $post
+     * @return $this
+     */
     public function setPost(Post $post = null)
     {
         $this->post = $post;
         return $this;
     }
 
+    /**
+     * @param Poll|null $poll
+     * @return $this
+     */
     public function setPoll(Poll $poll = null)
     {
         $this->poll = $poll;
@@ -376,7 +443,11 @@ class Topic extends \App\Models\Entity\Base\Entity
         
         return $topic;
     }
-    
+
+    /**
+     * @param ArrayHash $values
+     * @return Topic
+     */
     public static function setFromArrayHash(ArrayHash $values)
     {
         $topic = new Topic();

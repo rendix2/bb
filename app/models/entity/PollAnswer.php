@@ -85,15 +85,15 @@ class PollAnswer extends Entity
 
         if (isset($values->poll_answer)) {
             $pollAnswer->setPoll_answer($values->poll_answer);
-        }        
+        }
         
         return $pollAnswer;
     }
     
     /**
-     * 
-     * @param Row $values
-     * 
+     *
+     * @param ArrayHash $values
+     *
      * @return PollAnswer
      */
     public static function setFromArrayHash(ArrayHash $values)
@@ -110,14 +110,14 @@ class PollAnswer extends Entity
 
         if (isset($values->poll_answer)) {
             $pollAnswer->setPoll_answer($values->poll_answer);
-        }        
+        }
         
         return $pollAnswer;
-    }    
+    }
 
     /**
-     * 
-     * @return [] 
+     *
+     * @return array
      */
     public function getArray()
     {
@@ -133,7 +133,7 @@ class PollAnswer extends Entity
 
         if (isset($this->poll_answer)) {
             $res['poll_answer'] = $this->poll_answer;
-        }        
+        }
      
         return $res;
     }

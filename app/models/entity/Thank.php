@@ -1,10 +1,11 @@
 <?php
 
 use App\Models\Entity\Thank;
-use Dibi\Row;
-use Nette\Utils\ArrayHash;
 
 namespace App\Models\Entity;
+
+use Dibi\Row;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of Thank
@@ -48,67 +49,109 @@ class Thank extends Base\Entity
      * @var string $thank_user_ip 
      */    
     private $thank_user_ip;
-    
+
+    /**
+     * @return int
+     */
     public function getThank_id()
     {
         return $this->thank_id;
     }
 
+    /**
+     * @return int
+     */
     public function getThank_forum_id()
     {
         return $this->thank_forum_id;
     }
 
+    /**
+     * @return int
+     */
     public function getThank_topic_id()
     {
         return $this->thank_topic_id;
     }
 
+    /**
+     * @return int
+     */
     public function getThank_user_id()
     {
         return $this->thank_user_id;
     }
 
+    /**
+     * @return int
+     */
     public function getThank_time()
     {
         return $this->thank_time;
     }
 
+    /**
+     * @return string
+     */
     public function getThank_user_ip()
     {
         return $this->thank_user_ip;
     }
 
+    /**
+     * @param $thank_id
+     * @return $this
+     */
     public function setThank_id($thank_id)
     {
         $this->thank_id = $thank_id;
         return $this;
     }
 
+    /**
+     * @param $thank_forum_id
+     * @return $this
+     */
     public function setThank_forum_id($thank_forum_id)
     {
         $this->thank_forum_id = self::makeInt($thank_forum_id);
         return $this;
     }
 
+    /**
+     * @param $thank_topic_id
+     * @return $this
+     */
     public function setThank_topic_id($thank_topic_id)
     {
         $this->thank_topic_id = self::makeInt($thank_topic_id);
         return $this;
     }
 
+    /**
+     * @param $thank_user_id
+     * @return $this
+     */
     public function setThank_user_id($thank_user_id)
     {
         $this->thank_user_id = self::makeInt($thank_user_id);
         return $this;
     }
 
+    /**
+     * @param $thank_time
+     * @return $this
+     */
     public function setThank_time($thank_time)
     {
         $this->thank_time = self::makeInt($thank_time);
         return $this;
     }
 
+    /**
+     * @param $thank_user_ip
+     * @return $this
+     */
     public function setThank_user_ip($thank_user_ip)
     {
         $this->thank_user_ip = $thank_user_ip;

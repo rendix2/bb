@@ -2,7 +2,6 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\Authenticator;
 use App\Controls\BootstrapForm;
 use App\Forms\UserLoginForm;
 use App\Presenters\Base\BasePresenter;
@@ -48,7 +47,7 @@ class LoginPresenter extends BasePresenter
     public $userLoginFormFactory;
 
     /**
-     * 
+     *
      */
     public function __destruct()
     {

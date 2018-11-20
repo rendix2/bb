@@ -1,11 +1,10 @@
 <?php
 
-use App\Models\Entity\TopicWatch;
-use Dibi\Row;
-use Nette\Neon\Entity;
-use Nette\Utils\ArrayHash;
-
 namespace App\Models\Entity;
+
+use App\Models\Entity\Base\Entity;
+use Dibi\Row;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of TopicWatch
@@ -32,33 +31,54 @@ class TopicWatch extends Entity
      */
     private $user_id;
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_id()
     {
         return $this->topic_id;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_id()
     {
         return $this->user_id;
     }
 
+    /**
+     * @param $id
+     * @return $this
+     */
     public function setId($id)
     {
         $this->id = self::makeInt($id);
         return $this;
     }
 
+    /**
+     * @param $topic_id
+     * @return $this
+     */
     public function setTopic_id($topic_id)
     {
         $this->topic_id = self::makeInt($topic_id);
         return $this;
     }
 
+    /**
+     * @param $user_id
+     * @return $this
+     */
     public function setUser_id($user_id)
     {
         $this->user_id = self::makeInt($user_id);
@@ -66,25 +86,25 @@ class TopicWatch extends Entity
     }
     
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return TopicWatch
      */
     public static function setFromRow(Row $values)
     {
         $topicWatch = new TopicWatch();
         $topicWatch->setId($values->id)
-                   ->setTopic_id($values->topic_id)
-                   ->setUser_id($values->user_id);
-        
+            ->setTopic_id($values->topic_id)
+            ->setUser_id($values->user_id);
+
         return $topicWatch;
-    } 
+    }
     
     /**
-     * 
+     *
      * @param ArrayHash $values
-     * 
+     *
      * @return TopicWatch
      */
     public static function setFromArrayHash(ArrayHash $values)
@@ -94,11 +114,11 @@ class TopicWatch extends Entity
                    ->setTopic_id($values->topic_id)
                    ->setUser_id($values->user_id);
         
-        return $topicWatch;        
+        return $topicWatch;
     }
 
-        /**
-     * 
+    /**
+     *
      * @return array
      */
     public function getArray()
@@ -118,5 +138,5 @@ class TopicWatch extends Entity
         }
         
         return $res;
-    }   
+    }
 }

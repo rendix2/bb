@@ -14,7 +14,6 @@ use App\Presenters\crud\CrudPresenter;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
 
 /**
  * Description of PmPresenter
@@ -56,7 +55,7 @@ class PmPresenter extends CrudPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -66,7 +65,7 @@ class PmPresenter extends CrudPresenter
         parent::__destruct();
     }
 
-        /**
+    /**
      *
      * @param mixed $element
      */
@@ -215,7 +214,7 @@ class PmPresenter extends CrudPresenter
             2 => ['text' => 'pm_report']
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->translator);        
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     /**

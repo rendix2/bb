@@ -2,10 +2,8 @@
 
 namespace App\Settings;
 
-use Doctrine\Common\Util\Debug;
 use Nette\Utils\Finder;
 use SplFileInfo;
-use Tracy\Debugger;
 
 /**
  * Description of ImageDir

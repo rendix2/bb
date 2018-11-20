@@ -18,14 +18,14 @@ trait TopicsTrait
      * @var TopicsManager $topicsManager
      * @inject
      */
-    public $topicsManager;  
+    public $topicsManager;
     
     /**
-     * 
+     *
      * @param int $topic_id
      * @param int $category_id
      * @param int $forum_id
-     * 
+     *
      * @return Topic
      */
     public function checkTopicParam($topic_id, $category_id, $forum_id)

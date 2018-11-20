@@ -22,7 +22,7 @@ class Post extends Entity
     /**
      *
      * @var int $post_user_id
-     */    
+     */
     private $post_user_id;
 
     /**
@@ -102,166 +102,271 @@ class Post extends Entity
      * @var File[] $files
      */
     private $post_files;
-        
+
+    /**
+     * @return int
+     */
     public function getPost_id()
     {
         return $this->post_id;
     }
 
+    /**
+     * @return int
+     */
     public function getPost_user_id()
     {
         return $this->post_user_id;
     }
 
+    /**
+     * @return int
+     */
     public function getPost_category_id()
     {
         return $this->post_category_id;
     }
 
+    /**
+     * @return int
+     */
     public function getPost_forum_id()
     {
         return $this->post_forum_id;
     }
 
+    /**
+     * @return int
+     */
     public function getPost_topic_id()
     {
         return $this->post_topic_id;
     }
 
+    /**
+     * @return string
+     */
     public function getPost_title()
     {
         return $this->post_title;
     }
 
+    /**
+     * @return string
+     */
     public function getPost_text()
     {
         return $this->post_text;
     }
 
+    /**
+     * @return int
+     */
     public function getPost_add_time()
     {
         return $this->post_add_time;
     }
 
+    /**
+     * @return string
+     */
     public function getPost_add_user_ip()
     {
         return $this->post_add_user_ip;
     }
 
+    /**
+     * @return string
+     */
     public function getPost_edit_user_ip()
     {
         return $this->post_edit_user_ip;
     }
 
+    /**
+     * @return int
+     */
     public function getPost_edit_count()
     {
         return $this->post_edit_count;
     }
 
+    /**
+     * @return int
+     */
     public function getPost_last_edit_time()
     {
         return $this->post_last_edit_time;
     }
 
+    /**
+     * @return int
+     */
     public function getPost_locked()
     {
         return $this->post_locked;
     }
 
+    /**
+     * @return int
+     */
     public function getPost_order()
     {
         return $this->post_order;
     }
 
+    /**
+     * @return File[]
+     */
     public function getPost_files()
     {
         return $this->post_files;
     }
-    
+
+    /**
+     * @param $post_id
+     * @return $this
+     */
     public function setPost_id($post_id)
     {
         $this->post_id = self::makeInt($post_id);
         return $this;
     }
 
+    /**
+     * @param $post_user_id
+     * @return $this
+     */
     public function setPost_user_id($post_user_id)
     {
         $this->post_user_id = self::makeInt($post_user_id);
         return $this;
     }
 
+    /**
+     * @param $post_category_id
+     * @return $this
+     */
     public function setPost_category_id($post_category_id)
     {
         $this->post_category_id = self::makeInt($post_category_id);
         return $this;
     }
 
+    /**
+     * @param $post_forum_id
+     * @return $this
+     */
     public function setPost_forum_id($post_forum_id)
     {
         $this->post_forum_id = self::makeInt($post_forum_id);
         return $this;
     }
 
+    /**
+     * @param $post_topic_id
+     * @return $this
+     */
     public function setPost_topic_id($post_topic_id)
     {
         $this->post_topic_id = self::makeInt($post_topic_id);
         return $this;
     }
 
+    /**
+     * @param $post_title
+     * @return $this
+     */
     public function setPost_title($post_title)
     {
         $this->post_title = $post_title;
         return $this;
     }
 
+    /**
+     * @param $post_text
+     * @return $this
+     */
     public function setPost_text($post_text)
     {
         $this->post_text = $post_text;
         return $this;
     }
 
+    /**
+     * @param $post_add_time
+     * @return $this
+     */
     public function setPost_add_time($post_add_time)
     {
         $this->post_add_time = self::makeInt($post_add_time);
         return $this;
     }
 
+    /**
+     * @param $post_add_user_ip
+     * @return $this
+     */
     public function setPost_add_user_ip($post_add_user_ip)
     {
         $this->post_add_user_ip = $post_add_user_ip;
         return $this;
     }
 
+    /**
+     * @param $post_edit_user_ip
+     * @return $this
+     */
     public function setPost_edit_user_ip($post_edit_user_ip)
     {
         $this->post_edit_user_ip = $post_edit_user_ip;
         return $this;
     }
 
+    /**
+     * @param $post_edit_count
+     * @return $this
+     */
     public function setPost_edit_count($post_edit_count)
     {
         $this->post_edit_count = self::makeInt($post_edit_count);
         return $this;
     }
 
+    /**
+     * @param $post_last_edit_time
+     * @return $this
+     */
     public function setPost_last_edit_time($post_last_edit_time)
     {
         $this->post_last_edit_time = self::makeInt($post_last_edit_time);
         return $this;
     }
 
+    /**
+     * @param $post_locked
+     * @return $this
+     */
     public function setPost_locked($post_locked)
     {
         $this->post_locked = self::makeBool($post_locked);
         return $this;
     }
 
+    /**
+     * @param $post_order
+     * @return $this
+     */
     public function setPost_order($post_order)
     {
         $this->post_order = self::makeInt($post_order);
         return $this;
     }
-    
+
+    /**
+     * @param array $files
+     * @return $this
+     */
     public function setPost_files(array $files = [])
     {
         $this->post_files = $files;
@@ -406,6 +511,9 @@ class Post extends Entity
         return $post;        
     }
 
+    /**
+     * @return array
+     */
     public function getArray()
     {
         $res = [];

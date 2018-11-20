@@ -65,10 +65,10 @@ class PermissionFactory
         $this->allow($permission, Identity::ROLE_HOST, Scopes\Topic::ACTION_VIEW);
         $this->allow($permission, Identity::ROLE_HOST, Scopes\Forum::ACTION_VIEW);
                
-        $this->allow($permission, Scopes\Forum::ROLE_FORUM_POST_ADDER, Scopes\Forum::ACTION_POST_ADD);  
+        $this->allow($permission, Scopes\Forum::ROLE_FORUM_POST_ADDER, Scopes\Forum::ACTION_POST_ADD);
         $this->allow($permission, Scopes\Forum::ROLE_FORUM_TOPIC_ADDER, Scopes\Forum::ACTION_TOPIC_ADD);
         
-        //$this->allow($permission, Scopes\Forum::ROLE_FORUM_POST_UPDATER, Scopes\Forum::ACTION_POST_UPDATE);  
+        //$this->allow($permission, Scopes\Forum::ROLE_FORUM_POST_UPDATER, Scopes\Forum::ACTION_POST_UPDATE);
         //$this->allow($permission, Scopes\Forum::ROLE_FORUM_TOPIC_UPDATER, Scopes\Forum::ACTION_TOPIC_UPDATE);
         
         $this->allow($permission, Scopes\Forum::ROLE_FORUM_POST_DELETER, Scopes\Forum::ACTION_POST_DELETE);
@@ -80,7 +80,7 @@ class PermissionFactory
         $this->allow($permission, Scopes\Post::ROLE_EDITOR, Scopes\Post::ACTION_EDIT);
         $this->allow($permission, Scopes\Topic::ROLE_EDITOR, Scopes\Topic::ACTION_EDIT);
                 
-        $this->allow($permission, Scopes\Post::ROLE_DELETER, Scopes\Post::ACTION_DELETE);                     
+        $this->allow($permission, Scopes\Post::ROLE_DELETER, Scopes\Post::ACTION_DELETE);
         $this->allow($permission, Scopes\Topic::ROLE_DELETER, Scopes\Topic::ACTION_DELETE);
         
         $this->allow($permission, Scopes\Post::ROLE_HISTORIER, Scopes\Post::ACTION_HISTORY);
@@ -118,6 +118,6 @@ class PermissionFactory
     {
         list($resource, $privilege) = $action;
         $permission->deny($role, $resource, $privilege);
-    }    
+    }
 }
 

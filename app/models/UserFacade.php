@@ -92,7 +92,7 @@ class UserFacade
     
     /**
      *
-     * @var PmFacade $pmFacade 
+     * @var PmFacade $pmFacade
      */
     private $pmFacade;
 
@@ -163,7 +163,7 @@ class UserFacade
         $this->users2ForumsManager  = null;
         $this->users2GroupsManager  = null;
         $this->translatorFactory    = null;
-        $this->pmFacade             = null;        
+        $this->pmFacade             = null;
     }
 
     /**
@@ -205,6 +205,7 @@ class UserFacade
      * @param Entity\User $user
      *
      * @return Result|int
+     * @throws \Nette\InvalidArgumentException
      */
     public function add(Entity\User $user)
     {

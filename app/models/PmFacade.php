@@ -8,7 +8,7 @@ namespace App\Models;
  * @author rendi
  */
 class PmFacade 
-{    
+{
     /**
      *
      * @var PmManager $pmManager
@@ -16,10 +16,10 @@ class PmFacade
     private $pmManager;
 
     /**
-     * 
+     *
      * @param PmManager $pmManager
      */
-    public function __construct(PmManager $pmManager) 
+    public function __construct(PmManager $pmManager)
     {
         $this->pmManager = $pmManager;
     }
@@ -29,7 +29,10 @@ class PmFacade
         $this->pmManager = null;
     }
 
-        public function delete($user_id)
+    /**
+     * @param int $user_id
+     */
+    public function delete($user_id)
     {
         $this->pmManager->deleteByUserFrom($user_id);
         $this->pmManager->deleteByUserTo($user_id);

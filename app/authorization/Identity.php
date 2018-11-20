@@ -20,9 +20,9 @@ class Identity
     private $roles;
 
     /**
-     * 
-     * @param type $id
-     * @param type $roles
+     *
+     * @param int $id
+     * @param array $roles
      */
     public function __construct($id, $roles)
     {
@@ -30,6 +30,9 @@ class Identity
         $this->roles = $roles;
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;

@@ -16,23 +16,23 @@ class SearchUserForm extends Control
 {
     /**
      *
-     * @var \Nette\Localization\ITranslator $translator 
+     * @var \Nette\Localization\ITranslator $translator
      */
     private $translator;
     
     /**
-     * 
+     *
      * @param \Nette\Localization\ITranslator $translator
      */
     public function __construct(\Nette\Localization\ITranslator $translator)
-    {                
+    {
         parent::__construct();
         
         $this->translator = $translator;
     }
     
     /**
-     * 
+     *
      */
     public function render()
     {
@@ -62,6 +62,5 @@ class SearchUserForm extends Control
     public function searchUserFormSuccess(Form $form, ArrayHash $values)
     {
         $this->presenter->redirect('Search:userResults', $values->search_user);
-    }    
-    
+    }
 }

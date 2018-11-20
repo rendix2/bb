@@ -3,7 +3,6 @@
 namespace App\ModeratorModule\Presenters;
 
 use App\Controls\BootstrapForm;
-use App\Models\ForumsManager;
 use App\Models\TopicsManager;
 use App\Models\TopicFacade;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
@@ -148,5 +147,4 @@ class TopicPresenter extends ModeratorPresenter
         
         $this->template->topics = $this->getManager()->getAllByForum($forum_id);
     }
-    
 }

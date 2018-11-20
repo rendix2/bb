@@ -36,8 +36,8 @@ class SmiliesPresenter extends AdminPresenter
     }
     
     /**
-     * 
-     * @return null
+     *
+     * @return GridFilter
      */
     protected function createComponentGridFilter()
     {
@@ -46,7 +46,7 @@ class SmiliesPresenter extends AdminPresenter
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
 
         return $this->gf;
-    }    
+    }
 
     /**
      * @return BreadCrumbControl

@@ -49,7 +49,7 @@ class UserChangeUserNameForm extends Control
         $this->user         = null;
     }
 
-        public function render()
+    public function render()
     {
         $this['changeUserNameForm']->render();
     }

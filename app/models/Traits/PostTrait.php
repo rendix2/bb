@@ -21,12 +21,12 @@ trait PostTrait
     public $postsManager;
         
     /**
-     * 
+     *
      * @param int $post_id
-     * @param imt $category_id
+     * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
-     * 
+     *
      * @return \App\Models\Entity\Post
      */
     public function checkPostParam($post_id, $category_id, $forum_id, $topic_id)
@@ -37,7 +37,7 @@ trait PostTrait
         
         if (!is_numeric($post_id)) {
             $this->error('Post param is not numeric.');
-        }        
+        }
 
         $postDibi = $this->postsManager->getById($post_id);
 
@@ -45,7 +45,7 @@ trait PostTrait
             $this->error('Post was not found.');
         }
         
-        $post = \App\Models\Entity\Post::setFromRow($postDibi);        
+        $post = \App\Models\Entity\Post::setFromRow($postDibi);
 
         if ($post->getPost_category_id() !== (int)$category_id) {
             $this->error('Category param does not match.', IResponse::S403_FORBIDDEN);
@@ -63,7 +63,7 @@ trait PostTrait
         if ($post->getPost_user_id() !== $this->getUser()->getId()) {
             $this->error('You are not author of post.', IResponse::S403_FORBIDDEN);
         }
-         * 
+         *
          */
 
         if ($post->getPost_locked()) {

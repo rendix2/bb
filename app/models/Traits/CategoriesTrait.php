@@ -4,8 +4,6 @@ namespace App\Models\Traits;
 
 use App\Models\CategoriesManager;
 
-use Nette\Http\IResponse;
-
 /**
  * Description of CategoriesTrait
  *
@@ -17,7 +15,7 @@ trait CategoriesTrait {
      * @var CategoriesManager $categoriesManager
      * @inject
      */
-    public $categoriesManager;      
+    public $categoriesManager;
     
     /**
      * 

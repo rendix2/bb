@@ -18,11 +18,9 @@ use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\FavouriteUsersManager;
 use App\Models\LanguagesManager;
 use App\Models\ModeratorsManager;
-use App\Models\PostsManager;
 use App\Models\RanksManager;
 use App\Models\ReportsManager;
 use App\Models\ThanksManager;
-use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
 use App\Models\UsersManager;
 use App\Services\ChangePasswordFactory;
@@ -63,12 +61,6 @@ class UserPresenter extends BaseForumPresenter
      * @inject
      */
     public $topicWatchManager;
-
-    /**
-     * @var ThanksManager $thanksManager
-     * @inject
-     */
-    public $thanksManager;
     
     /**
      * @var Avatars $avatar
@@ -146,30 +138,30 @@ class UserPresenter extends BaseForumPresenter
     {
         parent::__construct($manager);
     }
-    
+
     /**
-     * 
+     *
      */
     public function __destruct()
-    {    
-    $this->usersManager          = null;
-    $this->topicsManager         = null;
-    $this->postsManager          = null;
-    $this->languageManager       = null;
-    $this->rankManager           = null;
-    $this->topicWatchManager     = null;
-    $this->thanksManager         = null;
-    $this->avatar                = null;
-    $this->rank                  = null;
-    $this->moderatorsManager     = null;
-    $this->bbMailer              = null;
-    $this->changePasswordFactory = null;
-    $this->deleteAvatarFactory   = null;
-    $this->favouriteUsersManager = null;
-    $this->startDay              = null;
-    $this->users                 = null;
-    $this->reportsManager        = null;
-        
+    {
+        $this->usersManager          = null;
+        $this->topicsManager         = null;
+        $this->postsManager          = null;
+        $this->languageManager       = null;
+        $this->rankManager           = null;
+        $this->topicWatchManager     = null;
+        $this->thanksManager         = null;
+        $this->avatar                = null;
+        $this->rank                  = null;
+        $this->moderatorsManager     = null;
+        $this->bbMailer              = null;
+        $this->changePasswordFactory = null;
+        $this->deleteAvatarFactory   = null;
+        $this->favouriteUsersManager = null;
+        $this->startDay              = null;
+        $this->users                 = null;
+        $this->reportsManager        = null;
+
         parent::__destruct();
     }
 
@@ -292,7 +284,9 @@ class UserPresenter extends BaseForumPresenter
         $rankUser = null;
 
         foreach ($ranks as $rank) {
-            if ($user->getUser_post_count() >= $rank->rank_from && $user->getUser_post_count() <= $rank->rank_to) {
+            $post_count = $user->getUser_post_count();
+
+            if ($post_count >= $rank->rank_from && $post_count <= $rank->rank_to) {
                 $rankUser = $rank;
                 break;
             }
@@ -436,17 +430,26 @@ class UserPresenter extends BaseForumPresenter
         $this->template->type  = 5;
         $this->template->users = $users->fetchAll();
     }
-    
+
+    /**
+     * @param $user_id
+     * @param int $page
+     */
     public function actionFiles($user_id, $page = 1)
     {
-        
     }
 
+    /**
+     *
+     */
     public function renderRegister()
     {
         // todo
     }
-    
+
+    /**
+     *
+     */
     public function renderSendMailToAdmin()
     {
         // TODO
@@ -461,7 +464,7 @@ class UserPresenter extends BaseForumPresenter
     }
 
     /**
-     * @return BootstrapForm
+     * @return ReportForm
      */
     protected function createComponentReportUserForm()
     {
@@ -551,12 +554,12 @@ class UserPresenter extends BaseForumPresenter
     }
     
     /**	
-     * @param Form      $form	
-     * @param ArrayHash $values	
+     * @param Form      $form
+     * @param ArrayHash $values
      */	
-    public function editUserOnValidate(Form $form, ArrayHash $values)	
-    {	
-    }    
+    public function editUserOnValidate(Form $form, ArrayHash $values)
+    {
+    }
     
     /**
      * @param Form      $form

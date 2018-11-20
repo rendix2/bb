@@ -9,10 +9,10 @@ use App\Authorization\Identity;
  *
  * @author rendix2
  */
-class User {
-    
+class User
+{
     /**
-     * 
+     *
      * @param Identity $identity
      */
     public function __construct(Identity $identity)

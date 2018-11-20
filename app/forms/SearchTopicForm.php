@@ -16,23 +16,23 @@ class SearchTopicForm extends Control
 {
     /**
      *
-     * @var \Nette\Localization\ITranslator $translator 
+     * @var \Nette\Localization\ITranslator $translator
      */
     private $translator;
     
     /**
-     * 
+     *
      * @param \Nette\Localization\ITranslator $translator
      */
     public function __construct(\Nette\Localization\ITranslator $translator)
-    {                
+    {
         parent::__construct();
         
         $this->translator = $translator;
     }
 
     /**
-     * 
+     *
      */
     public function render()
     {
@@ -61,5 +61,5 @@ class SearchTopicForm extends Control
     public function searchTopicFormSuccess(Form $form, ArrayHash $values)
     {
         $this->presenter->redirect('Search:topicResults', $values->search_topic);
-    }    
+    }
 }

@@ -33,7 +33,7 @@ class PollControl extends Control
     private $translator;
 
     /**
-     * 
+     *
      * @param PollsFacade $pollsFacade
      * @param User $user
      * @param ITranslator $translator
@@ -48,12 +48,12 @@ class PollControl extends Control
     }
     
     /**
-     * 
+     *
      * @param int $poll_id
      * @param int $poll_answer_id
      */
     public function handleVote($poll_id, $poll_answer_id)
-    {        
+    {
         $pollVote = new \App\Models\Entity\PollVote();
         $pollVote->setPoll_id($poll_id)
                  ->setPoll_answer_id($poll_answer_id)
@@ -88,7 +88,7 @@ class PollControl extends Control
                 foreach ($pollVotes as $vote) {
                     if ($vote->poll_answer_id === $answer->poll_answer_id) {
                         $answer->count += 1;
-                    }    
+                    }
                 }
             }
            
@@ -98,7 +98,7 @@ class PollControl extends Control
                 if ($vote->poll_user_id === $this->user->id) {
                     $canVote = false;
                     break;
-                }       
+                }
             }
             
             $template->poll        = $poll;

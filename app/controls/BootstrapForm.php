@@ -99,11 +99,11 @@ class BootstrapForm extends Form
      */
     public function __destruct()
     {
-        $this->columnCount      = null;
-        $this->columnType       = null;
+        $this->columnCount = null;
+        $this->columnType = null;
         $this->labelColumnCount = null;
-        $this->ajax             = null;
-    }    
+        $this->ajax = null;
+    }
 
     /**
      * @return BootstrapForm
@@ -162,9 +162,9 @@ class BootstrapForm extends Form
     }
     
     /**
-     * 
+     *
      * @param bool $ajax
-     * 
+     *
      * @return BootstrapForm
      */
     public function setAjax($ajax) 

@@ -6,19 +6,18 @@ use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Forms\ReportForm;
+use App\Models\PollsFacade;
 use App\Models\PostFacade;
 use App\Models\PostsHistoryManager;
 use App\Models\PostsManager;
 use App\Models\ReportsManager;
 use App\Models\TopicWatchManager;
-use App\Models\PollsFacade;
 use App\Settings\PostSetting;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
-use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Container;
-use Nette\Http\IResponse;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -122,8 +121,6 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      * @param int $topic_id
      * @param int $post_id
      * @param int $page
-     * @throws \Nette\Application\AbortException
-     * @throws \Nette\Application\BadRequestException
      */
     public function actionDelete($category_id, $forum_id, $topic_id, $post_id, $page)
     {
@@ -145,7 +142,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         }
         
         $forumScope = $this->loadForum($forum);
-        $topicScpe  = $this->loadTopic($forum, $topic);
+        $topicScope = $this->loadTopic($forum, $topic);
         $postScope  = $this->loadPost($forum, $topic, $post);
         
         $this->requireAccess($postScope, \App\Authorization\Scopes\Post::ACTION_DELETE);
@@ -163,9 +160,9 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
 
     /**
      *
-     * @param int $category_id
-     * @param int $forum_id
-     * @param int $topic_id
+     * @param int      $category_id
+     * @param int      $forum_id
+     * @param int      $topic_id
      * @param int|null $post_id
      */
     public function renderEdit($category_id, $forum_id, $topic_id, $post_id = null)
@@ -175,7 +172,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
         $forumScope = $this->loadForum($forum);
         
-        if ($post_id === null) {                            
+        if ($post_id === null) {
             $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_ADD);
         } else {
             $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_POST_UPDATE);
@@ -230,11 +227,12 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
     }
 
     /**
-     * 
+     *
      * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
      * @param int $post_id
+     * @param int $file_id
      */
     public function actionDownloadFile($category_id, $forum_id, $topic_id, $post_id, $file_id)
     {
@@ -258,7 +256,7 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         
         $files = $form->addDynamic('files', function (Container $file) {
             $file->addHidden('post_file_id');
-            $file->addUpload('post_file', 'File:');                
+            $file->addUpload('post_file', 'File:');
             $file->addSubmit('remove', 'Remove file')
                    ->setValidationScope(false) # disables validation
                    ->addRemoveOnClick();
@@ -318,8 +316,8 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
         $topic_id    = $this->getParameter('topic_id');
         $post_id     = $this->getParameter('post_id');
         $user_id     = $this->getUser()->getId();
-        
-        if(count($values->files)) {
+
+        if (count($values->files)) {
             $postFiles = [];
             $filesDir = $this->postSetting->get()['filesDir'];
             
@@ -327,7 +325,6 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
              * @var \Nette\Http\FileUpload $file
             */
             foreach ($values->files as $file) {
-                
                 $postFileArrayHash = $file->post_file;
                 
                 $extension = \App\Models\Manager::getFileExtension($postFileArrayHash->getName());
@@ -428,23 +425,21 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbEdit()
-    {       
+    {
         $breadCrumb = array_merge(
-                [['link' => 'Index:default', 'text' => 'menu_index']],
-                $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
-                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
-                [['link'   => 'Topic:default',
-                  'text'   => 'menu_topic',
-                  'params' => [
-                      $this->getParameter('category_id'),
-                      $this->getParameter('forum_id'),
-                      $this->getParameter('topic_id')
-                  ]
-                ]],
-                [['text' => 'menu_post']]
-        );      
-        
-        
+            [['link' => 'Index:default', 'text' => 'menu_index']],
+            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            [['link' => 'Topic:default',
+                'text' => 'menu_topic',
+                'params' => [
+                    $this->getParameter('category_id'),
+                    $this->getParameter('forum_id'),
+                    $this->getParameter('topic_id')
+                ]
+            ]],
+            [['text' => 'menu_post']]
+        );
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
@@ -453,20 +448,20 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbReport()
-    {        
+    {
         $breadCrumb = array_merge(
-                [['link' => 'Index:default', 'text' => 'menu_index']],
-                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
-                [['link'   => 'Topic:default',
-                  'text'   => 'menu_topic',
-                  'params' => [
-                      $this->getParameter('category_id'),
-                      $this->getParameter('forum_id'),
-                      $this->getParameter('topic_id')
-                  ]
-                ]],
-                [['text' => 'report_post']]
-        );         
+            [['link' => 'Index:default', 'text' => 'menu_index']],
+            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            [['link' => 'Topic:default',
+                'text' => 'menu_topic',
+                'params' => [
+                    $this->getParameter('category_id'),
+                    $this->getParameter('forum_id'),
+                    $this->getParameter('topic_id')
+                ]
+            ]],
+            [['text' => 'report_post']]
+        );
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
@@ -477,28 +472,28 @@ class PostPresenter extends \App\ForumModule\Presenters\Base\ForumPresenter
     protected function createComponentBreadCrumbHistory()
     {
         $breadCrumb = array_merge(
-                [['link' => 'Index:default', 'text' => 'menu_index']],
-                $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
-                $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
-                [['link'   => 'Topic:default',
-                  'text'   => 'menu_topic',
-                  'params' => [
-                      $this->getParameter('category_id'),
-                      $this->getParameter('forum_id'),
-                      $this->getParameter('topic_id')
-                  ]
-                ]],
-                [['text' => 'post_history']]
-        );           
+            [['link' => 'Index:default', 'text' => 'menu_index']],
+            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            [['link' => 'Topic:default',
+                'text' => 'menu_topic',
+                'params' => [
+                    $this->getParameter('category_id'),
+                    $this->getParameter('forum_id'),
+                    $this->getParameter('topic_id')
+                ]
+            ]],
+            [['text' => 'post_history']]
+        );
 
         return new BreadCrumbControl($breadCrumb, $this->getForumTranslator());
     }
     
     /**
-     * @return BootstrapForm
+     * @return ReportForm
      */
     protected function createComponentReportForm()
     {
         return new ReportForm($this->reportManager);
-    }    
+    }
 }

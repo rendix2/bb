@@ -3,7 +3,6 @@
 namespace App\Authorization\Scopes;
 
 use App\Authorization\Identity;
-use Tracy\Debugger;
 
 /**
  * Description of Topic
@@ -55,8 +54,10 @@ class Topic implements \App\Authorization\IAuthorizationScope
     /**
      * Topic constructor.
      *
-     * @param User  $author
-     * @param Forum $forumScope
+     * @param \App\Models\Entity\Topic $topicEntity
+     * @param User                     $author
+     * @param Forum                    $forumScope
+     * @param                          $thanks
      */
     public function __construct(\App\Models\Entity\Topic $topicEntity, User $author, Forum $forumScope, $thanks)
     {
@@ -81,22 +82,22 @@ class Topic implements \App\Authorization\IAuthorizationScope
         
         $isAuthor = $this->author->getIdentity()->getId() === $identity->getId();
                 
-        if ($isAuthor && in_array(Forum::ROLE_FORUM_TOPIC_ADDER, $this->forumScope->getIdentityRoles($identity))) {
+        if ($isAuthor && in_array(Forum::ROLE_FORUM_TOPIC_ADDER, $this->forumScope->getIdentityRoles($identity), true)) {
             $roles[] = self::ROLE_AUTHOR;
         }
                 
-        if ($isAuthor && in_array(Forum::ROLE_FORUM_TOPIC_DELETER, $this->forumScope->getIdentityRoles($identity))) {
+        if ($isAuthor && in_array(Forum::ROLE_FORUM_TOPIC_DELETER, $this->forumScope->getIdentityRoles($identity), true)) {
             $roles[] = self::ROLE_DELETER;
         }
         
-        if ($isAuthor && in_array(Forum::ROLE_FORUM_TOPIC_UPDATER, $this->forumScope->getIdentityRoles($identity))) {
+        if ($isAuthor && in_array(Forum::ROLE_FORUM_TOPIC_UPDATER, $this->forumScope->getIdentityRoles($identity), true)) {
             $roles[] = self::ROLE_EDITOR;
         }
         
         $canThank = true;
 
-        foreach ($this->thanks as $thank) {            
-            if ($thank->thank_user_id === $identity->getId()){
+        foreach ($this->thanks as $thank) {
+            if ($thank->thank_user_id === $identity->getId()) {
                 $canThank = false;
                 break;
             }
@@ -106,7 +107,7 @@ class Topic implements \App\Authorization\IAuthorizationScope
             $roles[] = self::ROLE_THANKER;
         } else {
             $roles[] = self::ROLE_NOT_THANKER;
-        }        
+        }
         
         return array_merge($this->forumScope->getIdentityRoles($identity), $roles);
     }

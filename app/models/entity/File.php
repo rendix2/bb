@@ -27,7 +27,7 @@ class File extends Entity
     
     /**
      *
-     * @var string $file_extesions
+     * @var string $file_extension
      */
     private $file_extension;
     
@@ -37,51 +37,81 @@ class File extends Entity
      */
     private $file_size;
 
+    /**
+     * @return int
+     */
     public function getFile_id()
     {
         return $this->file_id;
     }
 
+    /**
+     * @return string
+     */
     public function getFile_name()
     {
         return $this->file_name;
     }
 
+    /**
+     * @return string
+     */
     public function getFile_extension()
     {
         return $this->file_extension;
     }
 
+    /**
+     * @return int
+     */
     public function getFile_size()
     {
         return $this->file_size;
     }
 
+    /**
+     * @param $file_id
+     * @return $this
+     */
     public function setFile_id($file_id)
     {
         $this->file_id = $file_id;
         return $this;
     }
 
+    /**
+     * @param $file_name
+     * @return $this
+     */
     public function setFile_name($file_name)
     {
         $this->file_name = $file_name;
         return $this;
     }
 
+    /**
+     * @param $file_extension
+     * @return $this
+     */
     public function setFile_extension($file_extension)
     {
         $this->file_extension = $file_extension;
         return $this;
     }
 
+    /**
+     * @param $file_size
+     * @return $this
+     */
     public function setFile_size($file_size)
     {
         $this->file_size = $file_size;
         return $this;
     }
 
-        
+    /**
+     * @return array
+     */
     public function getArray()
     {
         $res = [];
@@ -100,11 +130,15 @@ class File extends Entity
 
         if (isset($this->file_size)) {
             $res['file_size'] = $this->file_size;
-        }  
+        }
         
         return $res;
     }
-    
+
+    /**
+     * @param ArrayHash $values
+     * @return File
+     */
     public static function setFromArrayHash(ArrayHash $values)
     {
         $file = new File();
@@ -123,11 +157,15 @@ class File extends Entity
 
         if (isset($values->file_size)) {
             $file->setFile_size($values->file_size);
-        }      
+        }
         
         return $file;
     }
-    
+
+    /**
+     * @param Row $values
+     * @return File
+     */
     public static function setFromRow(Row $values)
     {
         $file = new File();
@@ -146,9 +184,8 @@ class File extends Entity
 
         if (isset($values->file_size)) {
             $file->setFile_size($values->file_size);
-        }      
-        
-        return $file;
-    }    
+        }
 
+        return $file;
+    }
 }

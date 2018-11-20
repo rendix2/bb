@@ -8,7 +8,6 @@ use App\Models\BansManager;
 use App\Services\TranslatorFactory;
 use Nette;
 use Nette\Http\IResponse;
-use Nextras\Application\UI\SecuredLinksPresenterTrait;
 
 /**
  * Base presenter for all application presenters.

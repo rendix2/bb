@@ -16,7 +16,7 @@ abstract class Entity
     use \Nette\SmartObject;
     
     /**
-     * 
+     *
      */
     public function __construct()
     {
@@ -26,7 +26,7 @@ abstract class Entity
     }
 
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -36,10 +36,10 @@ abstract class Entity
     }
 
     /**
-     * 
+     *
      * @param string $name
      * @param mixed  $value
-     * 
+     *
      * @throws MemberAccessException
      */
     /*
@@ -53,9 +53,9 @@ abstract class Entity
      */
 
     /**
-     * 
+     *
      * @param string $name
-     * 
+     *
      * @throws MemberAccessException
      */
     /*
@@ -69,9 +69,9 @@ abstract class Entity
      */
     
     /**
-     * 
+     *
      * @param string $name
-     * 
+     *
      * @throws MemberAccessException
      */
     /*
@@ -85,9 +85,9 @@ abstract class Entity
      */
     
     /**
-     * 
+     *
      * @param string $name
-     * 
+     *
      * @throws MemberAccessException
      */
     /*
@@ -96,27 +96,28 @@ abstract class Entity
         if (!property_exists($this, $name)) {
             throw new MemberAccessException("Column '{$name}' of '".get_class($this)."' does not exist.");
         }
-    }   
-     * 
-     */ 
+    }
+     *
+     */
 
     /**
      * @return array
      */
-    abstract function getArray();
+    abstract public function getArray();
 
     /**
-     * 
+     *
      * @return ArrayHash
      */
     public function getArrayHash()
     {
         return ArrayHash::from($this->getArray());
-    }    
+    }
     
     /**
-     * 
+     *
      * @param mixed $var
+     *
      * @return bool|null
      */
     public static function makeBool($var)
@@ -125,24 +126,24 @@ abstract class Entity
     }
     
     /**
-     * 
+     *
      * @param mixed $var
-     * 
+     *
      * @return int|null
      */
     public static function makeInt($var)
     {
         return $var === null ? null : (int) $var;
-    }    
+    }
    
     /**
-     * 
+     *
      * @param DateTime $var
-     * 
+     *
      * @return int|null
      */
     public static function makeTimestamp(DateTime $var = null)
     {
         return $var === null ? null : $var->getTimestamp();
-    }    
+    }
 }

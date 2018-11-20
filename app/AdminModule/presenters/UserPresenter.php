@@ -3,7 +3,6 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Authenticator;
 use App\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
@@ -26,8 +25,6 @@ use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
 use App\Settings\Avatars;
 use App\Settings\Ranks;
-use Nette\Application\UI\Form;
-use Nette\Utils\ArrayHash;
 
 /**
  * Description of UserPresenter
@@ -103,7 +100,7 @@ class UserPresenter extends AdminPresenter
      */
     public $deleteAvatarFactory;
 
-        /**
+    /**
      * UserPresenter constructor.
      *
      * @param UsersManager $manager
@@ -114,7 +111,7 @@ class UserPresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -147,7 +144,7 @@ class UserPresenter extends AdminPresenter
      */
     public function renderEdit($id = null)
     {
-        parent::renderEdit($id); 
+        parent::renderEdit($id);
         
         if (!$id) {
             $this[self::FORM_NAME]->setDefaults(['user_role_id' => 2]);
@@ -211,7 +208,7 @@ class UserPresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      * @return UserGroupsForm
      */
     protected function createComponentGroupForm()
@@ -224,7 +221,7 @@ class UserPresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      * @return UserForumsForm
      */
     protected function createComponentForumsForm()
@@ -245,7 +242,7 @@ class UserPresenter extends AdminPresenter
     }
 
     /**
-     * @return BootstrapForm
+     * @return UserModeratorForm
      */
     protected function createComponentModeratorsForm()
     {

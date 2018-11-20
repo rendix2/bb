@@ -36,23 +36,25 @@ class UserModeratorForm extends Control
     private $forumsManager;
 
     /**
-     * 
+     *
      * @param ForumsManager     $forumsManager
      * @param ModeratorsManager $moderatorsManager
      * @param ITranslator       $translator
      */
     public function __construct(
-            ForumsManager $forumsManager,
-            ModeratorsManager $moderatorsManager,
-            ITranslator $translator
+        ForumsManager     $forumsManager,
+        ModeratorsManager $moderatorsManager,
+        ITranslator       $translator
     ) {
+        parent::__construct();
+
         $this->forumsManager     = $forumsManager;
         $this->moderatorsManager = $moderatorsManager;
         $this->translator        = $translator;
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -62,10 +64,10 @@ class UserModeratorForm extends Control
     }
 
     /**
-     * 
+     *
      */
     public function render()
-    {   
+    {
         $sep = DIRECTORY_SEPARATOR;
         
         $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'userModeratorForm.latte');
@@ -75,7 +77,7 @@ class UserModeratorForm extends Control
         $this->template->myModerators = $this->moderatorsManager->getPairsByLeft($this->getPresenter()->getParameter('id'));
         
         $this->template->render();
-    }    
+    }
 
     /**
      * @return BootstrapForm
@@ -103,5 +105,4 @@ class UserModeratorForm extends Control
         $this->presenter->flashMessage('Forum was saved.', \App\Presenters\Base\BasePresenter::FLASH_MESSAGE_SUCCESS);
         $this->presenter->redirect('User:edit', $user_id);
     }
-    
 }

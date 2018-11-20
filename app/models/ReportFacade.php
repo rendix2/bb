@@ -65,7 +65,7 @@ class ReportFacade
      *
      * @param int $category_id
      *
-     * @return bool
+     * @return void
      */
     public function deleteByCategory($category_id)
     {

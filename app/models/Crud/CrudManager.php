@@ -101,7 +101,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -116,8 +116,8 @@ abstract class CrudManager extends Manager //implements ICrudManager
 
     /**
      *
-     * @param string $column
-     * @param string $value
+     * @param string       $column
+     * @param string|array $value
      *
      * @return Fluent
      * @throws Exception
@@ -480,7 +480,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     }
 
     /**
-     *
+     * @param int|null $item_id
      */
     protected function deleteCache($item_id = null)
     {

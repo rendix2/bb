@@ -6,13 +6,10 @@ use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
 use App\Forms\ForumSearchInForumForm;
-use App\Models\CategoriesManager;
 use App\Models\ForumsManager;
 use App\Models\ModeratorsManager;
-use App\Models\TopicsManager;
 use App\Settings\ForumSettings;
 use App\Settings\TopicsSetting;
-use Nette\Http\IResponse;
 
 /**
  * Description of ForumPresenter
@@ -63,7 +60,7 @@ final class ForumPresenter extends Base\ForumPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -80,7 +77,7 @@ final class ForumPresenter extends Base\ForumPresenter
 
     /**
      * action default
-     * 
+     *
      * @param int $category_id
      * @param int $forum_id
      * @param int $page
@@ -90,18 +87,18 @@ final class ForumPresenter extends Base\ForumPresenter
         $category   = $this->checkCategoryParam($category_id);
         $forum      = $this->checkForumParam($forum_id, $category_id);
         
-        $forumScope = $this->loadForum($forum); 
+        $forumScope = $this->loadForum($forum);
         
         $this->requireAccess($forumScope, \App\Authorization\Scopes\Forum::ACTION_VIEW);
 
-        $forumSettings = $this->forumSettings->get();        
+        $forumSettings = $this->forumSettings->get();
         $topics        = $this->topicsManager->getFluentJoinedUsersJoinedLastPostByForum($forum_id);
         
         if (isset($this['gridFilter'])) {
             $this->getComponent('gridFilter');
         }
 
-        $this->gf->applyWhere($topics);        
+        $this->gf->applyWhere($topics);
         $this->gf->applyOrderBy($topics);
 
         $paginator = new PaginatorControl($topics, $forumSettings['pagination']['itemsPerPage'], $forumSettings['pagination']['itemsAroundPagination'], $page);
@@ -125,7 +122,6 @@ final class ForumPresenter extends Base\ForumPresenter
      * @param int $category_id
      * @param int $forum_id
      * @param int $page
-     * @param string|null $q
      */
     public function renderDefault($category_id, $forum_id, $page = 1)
     {
@@ -159,7 +155,7 @@ final class ForumPresenter extends Base\ForumPresenter
     }
 
     /**
-     * 
+     *
      * @return GridFilter
      */
     protected function createComponentGridFilter()

@@ -208,8 +208,8 @@ abstract class CrudPresenter extends AuthenticatedPresenter
 
         $this->redirect(':' . $this->getName() . ':default');
     }
-    
-   /**
+
+    /**
      * @param int $page
      */
     public function actionDefault($page = 1)
@@ -217,20 +217,20 @@ abstract class CrudPresenter extends AuthenticatedPresenter
         if (isset($this['gridFilter'])) {
             $this->getComponent('gridFilter');
         }
-        
+
         $items = $this->getManager()->getAllFluent();
 
         $this->gf->applyWhere($items);
         $this->gf->applyOrderBy($items);
-        
+
         $paginator = new PaginatorControl($items, static::ITEMS_PER_PAGE, 5, $page);
         $this->addComponent($paginator, 'paginator');
-        
-        if (!$paginator->getCount()) {           
+
+        if (!$paginator->getCount()) {
             $this->flashMessage(sprintf('No %s.', $this->getTitle()), self::FLASH_MESSAGE_DANGER);
         }
-               
-        $this->template->items      = $items->fetchAll();        
+
+        $this->template->items      = $items->fetchAll();
         $this->template->countItems = $paginator->getCount();
     }
 
@@ -241,7 +241,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     {
         $this->template->title = $this->getTitleOnDefault();
     }
-    
+
     /**
      * @param int|null $id
      */
@@ -255,11 +255,11 @@ abstract class CrudPresenter extends AuthenticatedPresenter
             $item = $this->getManager()->getById($id);
 
             if (!$item) {
-                $this->error('Item $' . $this->getTitle() . '['.$id.'] was not found.');
+                $this->error('Item $' . $this->getTitle() . '[' . $id . '] was not found.');
             }
 
             $this[self::FORM_NAME]->setDefaults($item);
-            
+
             $this->template->item_id = $id;
             $this->template->item    = $item;
             $this->template->title   = $this->getTitleOnEdit();
@@ -293,11 +293,11 @@ abstract class CrudPresenter extends AuthenticatedPresenter
                 $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
             }
         } catch (DriverException $e) {
-            $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
+            $this->flashMessage('There was some problem during saving into database. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
             
             \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
         }
 
         $this->redirect(':' . $this->getName() . ':default');
-    }    
+    }
 }

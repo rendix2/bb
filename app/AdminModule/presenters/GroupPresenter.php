@@ -39,7 +39,7 @@ class GroupPresenter extends AdminPresenter
      * @var ForumsManager $forumsManager
      * @inject
      */
-    public $forumsManager;    
+    public $forumsManager;
 
     /**
      * @var UsersManager $usersManager
@@ -58,7 +58,7 @@ class GroupPresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

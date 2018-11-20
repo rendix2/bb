@@ -52,11 +52,12 @@ class Post implements IAuthorizationScope
      * @var \App\Models\Entity\Topic $topicEntity
      */
     private $topicEntity;
-    
+
     /**
-     * 
-     * @param User $author
-     * @param Topic $topicScope
+     *
+     * @param \App\Models\Entity\Post  $post
+     * @param Topic                    $topicScope
+     * @param \App\Models\Entity\Topic $topicEntity
      */
     public function __construct(\App\Models\Entity\Post $post, \App\Authorization\Scopes\Topic $topicScope, \App\Models\Entity\Topic $topicEntity)
     {
@@ -80,7 +81,7 @@ class Post implements IAuthorizationScope
             return $this->topicScope->getIdentityRoles($identity);
         }
         
-        $roles = [];        
+        $roles = [];
         
         $isAuthor = $this->post->getPost_user_id() === $identity->getId();
         
@@ -88,15 +89,15 @@ class Post implements IAuthorizationScope
             $roles[] = self::ROLE_HISTORIER;
         }
         
-        if ($isAuthor && in_array(Forum::ROLE_FORUM_POST_ADDER, $this->topicScope->getIdentityRoles($identity))) {
+        if ($isAuthor && in_array(Forum::ROLE_FORUM_POST_ADDER, $this->topicScope->getIdentityRoles($identity), true)) {
             $roles[] = self::ROLE_AUTHOR;
         }
         
-        if ($isAuthor && in_array(Forum::ROLE_FORUM_POST_DELETER, $this->topicScope->getIdentityRoles($identity))) {
+        if ($isAuthor && in_array(Forum::ROLE_FORUM_POST_DELETER, $this->topicScope->getIdentityRoles($identity), true)) {
             $roles[] = self::ROLE_DELETER;
         }
         
-        if ($isAuthor && in_array(Forum::ROLE_FORUM_POST_UPDATER, $this->topicScope->getIdentityRoles($identity))) {
+        if ($isAuthor && in_array(Forum::ROLE_FORUM_POST_UPDATER, $this->topicScope->getIdentityRoles($identity), true)) {
             $roles[] = self::ROLE_EDITOR;
         }
                 

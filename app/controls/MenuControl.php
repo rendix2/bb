@@ -4,6 +4,7 @@ namespace App\Controls;
 
 use Nette\Application\UI\Control;
 use Nette\Localization\ITranslator;
+
 /**
  * Description of MenuControl
  *

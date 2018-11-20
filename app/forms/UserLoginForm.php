@@ -79,7 +79,8 @@ class UserLoginForm extends Control
         $this->session           = $session;
     }
     
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->backlink          = null;
         $this->translatorFactory = null;
         $this->user              = null;
@@ -88,7 +89,7 @@ class UserLoginForm extends Control
         $this->session           = null;
     }
 
-        public function render()
+    public function render()
     {
         $this['loginForm']->render();
     }

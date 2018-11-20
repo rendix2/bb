@@ -23,7 +23,7 @@ class ReportForm extends Control
     private $reportsManager;
     
     /**
-     * 
+     *
      * @param ReportsManager $reportsManager
      */
     public function __construct(ReportsManager $reportsManager)
@@ -33,12 +33,13 @@ class ReportForm extends Control
         $this->reportsManager = $reportsManager;
     }
     
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->reportsManager = null;
     }
 
-        /**
-     * 
+    /**
+     *
      */
     public function render()
     {
@@ -99,11 +100,10 @@ class ReportForm extends Control
             $this->presenter->redirect('Topic:default', $category_id, $forum_id, $topic_id, $page);
         } elseif ($presenter instanceof \App\ForumModule\Presenters\TopicPresenter) {
             $this->presenter->redirect('Forum:default', $category_id, $forum_id, $page);
-        } elseif ($presenter instanceof \App\ForumModule\Presenters\PmPresenter){
+        } elseif ($presenter instanceof \App\ForumModule\Presenters\PmPresenter) {
             $this->presenter->redirect('Pm:default');
         } elseif ($presenter instanceof \App\ForumModule\Presenters\UserPresenter) {
             $this->presenter->redirect('User:profile', $reported_user_id);
         }
     }
-    
 }

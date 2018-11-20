@@ -44,15 +44,16 @@ class PollsFacade
         $this->pollsAnswersManager = $pollsAnswersManager;
         $this->pollsVotesManager   = $pollsVotesManager;
     }
-    
-    public function __destruct() {
+
+    public function __destruct()
+    {
         $this->pollsManager        = null;
         $this->pollsAnswersManager = null;
         $this->pollsVotesManager   = null;
     }
     
     /**
-     * 
+     *
      * @return PollsManager
      */
     public function getPollsManager()
@@ -61,7 +62,7 @@ class PollsFacade
     }
     
     /**
-     * 
+     *
      * @return PollsAnswersManager
      */
     public function getPollsAnswersManager()
@@ -70,7 +71,7 @@ class PollsFacade
     }
     
     /**
-     * 
+     *
      * @return PollsVotesManager
      */
     public function getPollsVotesManager()
@@ -79,11 +80,11 @@ class PollsFacade
     }
 
     /**
-     * 
+     *
      * @param Poll $poll
      */
     public function add(Poll $poll)
-    {        
+    {
         $poll_id = $this->pollsManager->add($poll->getArrayHash());
         
         $poll->setPoll_id($poll_id);
@@ -95,7 +96,7 @@ class PollsFacade
     }
     
     /**
-     * 
+     *
      * @param Poll $poll
      */
     public function update(Poll $poll)
@@ -109,7 +110,7 @@ class PollsFacade
                 $this->pollsAnswersManager->update($answer->getPoll_answer_id(), $answer->getArrayHash());
             } else {
                 $this->pollsAnswersManager->add($answer->getArrayHash());
-            }            
+            }
         }
     }
 

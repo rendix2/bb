@@ -7,7 +7,6 @@ use App\Models\PostsHistoryManager;
 use App\Models\PostsManager;
 use App\Models\PostFacade;
 use App\Models\TopicsManager;
-use App\Models\UsersManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -19,7 +18,7 @@ use Nette\Utils\ArrayHash;
  * @method PostsManager getManager()
  */
 class PostPresenter extends ModeratorPresenter
-{    
+{
     /**
      *
      * @var PostsHistoryManager $postsHistoryManager

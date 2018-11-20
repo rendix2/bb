@@ -15,5 +15,4 @@ interface IAuthorizationScope
      * @return mixed
      */
     public function getIdentityRoles(Identity $identity);
-    
 }

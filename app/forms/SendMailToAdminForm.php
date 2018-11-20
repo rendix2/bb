@@ -58,7 +58,7 @@ class SendMailToAdminForm extends Control
     }
 
     /**
-     * 
+     *
      */
     public function render()
     {

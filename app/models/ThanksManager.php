@@ -173,7 +173,7 @@ class ThanksManager extends CrudManager
             ->update($this->getTable(), $item_data)
             ->where('[thank_user_id] IN %in', $user_id)
             ->execute();
-    } 
+    }
     
     /**
      *

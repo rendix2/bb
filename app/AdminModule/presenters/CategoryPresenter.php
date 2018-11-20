@@ -20,7 +20,7 @@ use Nette\Utils\ArrayHash;
  * @method CategoriesManager getManager()
  */
 class CategoryPresenter extends AdminPresenter
-{    
+{
     /**
      *
      * @var CategoryFacade $categoryFacade
@@ -45,7 +45,7 @@ class CategoryPresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -55,8 +55,8 @@ class CategoryPresenter extends AdminPresenter
         parent::__destruct();
     }
 
-        /**
-     * 
+    /**
+     *
      * @param int $page
      */
     public function renderDefault($page = 1)
@@ -191,11 +191,11 @@ class CategoryPresenter extends AdminPresenter
                 $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
             }
         } catch (DriverException $e) {
-            $this->flashMessage('There was some problem during saving into databse. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
+            $this->flashMessage('There was some problem during saving into database. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
             
             \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
         }
 
         $this->redirect(':' . $this->getName() . ':default');
-    }    
+    }
 }

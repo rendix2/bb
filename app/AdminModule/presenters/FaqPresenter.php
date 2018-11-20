@@ -3,6 +3,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
+use App\Controls\GridFilter;
 use App\Models\FaqManager;
 
 /**
@@ -33,10 +34,10 @@ class FaqPresenter extends AdminPresenter
     
     /**
      *
-     * @return null
+     * @return GridFilter
      */
     protected function createComponentGridFilter()
     {
-        return null;
-    }    
+        return $this->gf;
+    }
 }

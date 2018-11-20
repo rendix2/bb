@@ -19,7 +19,7 @@ abstract class AdminPresenter extends CrudPresenter
     private $adminTranslator;
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

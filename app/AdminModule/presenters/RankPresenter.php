@@ -41,7 +41,7 @@ class RankPresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

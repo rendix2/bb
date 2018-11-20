@@ -37,13 +37,14 @@ class Authenticator implements IAuthenticator
     /**
      * Authenticator constructor.
      *
-     * @param UsersManager     $usersManger
-     * @param LanguagesManager $languageManager
+     * @param UsersManager      $usersManger
+     * @param LanguagesManager  $languageManager
+     * @param ModeratorsManager $moderatorsManager
      */
     public function __construct(
-            UsersManager $usersManger,
-            LanguagesManager $languageManager,
-            ModeratorsManager $moderatorsManager
+        UsersManager      $usersManger,
+        LanguagesManager  $languageManager,
+        ModeratorsManager $moderatorsManager
     ) {
         $this->usersManager      = $usersManger;
         $this->languagesManager  = $languageManager;
@@ -51,7 +52,7 @@ class Authenticator implements IAuthenticator
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

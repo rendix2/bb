@@ -44,7 +44,7 @@ class LoginPresenter extends BasePresenter
     private $translator;
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

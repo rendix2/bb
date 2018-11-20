@@ -2,7 +2,6 @@
 
 namespace App\ForumModule\Presenters;
 
-
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
@@ -22,21 +21,6 @@ use App\Models\PostsManager;
 class SearchPresenter extends BaseForumPresenter
 {
     /**
-     *
-     * @var TopicsManager $topicsManager
-     * @inject
-     */
-    public $topicsManager;
-    
-    /**
-     *
-     * @var PostsManager $postsManager
-     * @inject
-     */
-    public $postsManager;
-
-
-    /**
      * SearchPresenter constructor.
      *
      * @param UsersManager $userManager
@@ -55,7 +39,7 @@ class SearchPresenter extends BaseForumPresenter
     }
 
     /**
-     * @return BootstrapForm
+     * @return SearchPostForm
      */
     public function createComponentSearchPostForm()
     {
@@ -63,7 +47,7 @@ class SearchPresenter extends BaseForumPresenter
     }
 
     /**
-     * @return BootstrapForm
+     * @return SearchTopicForm
      */
     public function createComponentSearchTopicForm()
     {
@@ -71,7 +55,7 @@ class SearchPresenter extends BaseForumPresenter
     }
 
     /**
-     * @return BootstrapForm
+     * @return SearchUserForm
      */
     public function createComponentSearchUserForm()
     {

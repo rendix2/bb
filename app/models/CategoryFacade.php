@@ -51,9 +51,11 @@ class CategoryFacade
         $this->forumFacade       = null;
     }
 
-        /**
+    /**
      *
      * @param Entity\Category $category
+     *
+     * @return int
      */
     public function add(Entity\Category $category)
     {
@@ -67,11 +69,10 @@ class CategoryFacade
     }
     
     /**
-     * 
-     * @param type $item_id
+     *
+     * @param int       $item_id
      * @param ArrayHash $item_data
-     * 
-     * @return type
+     *
      */
     public function update($item_id, ArrayHash $item_data)
     {

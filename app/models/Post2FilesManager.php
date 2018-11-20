@@ -13,7 +13,7 @@ class Posts2FilesManager extends MNManager
 {
     
     /**
-     * 
+     *
      * @param Connection         $dibi
      * @param PostsManager $left
      * @param FilesManager $right

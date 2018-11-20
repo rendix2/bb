@@ -256,7 +256,7 @@ abstract class MNManager extends Manager
             ->where('[relation.' . $this->leftKey . '] = %i', $left_id)
             ->where('[relation.' . $this->rightKey . '] = %i', $right_id)
             ->fetchAll();
-    }    
+    }
 
     /**
      * @param int $left_id
@@ -349,14 +349,17 @@ abstract class MNManager extends Manager
             $data[$this->leftKey][]  = $left_id !== null ? (int)$left_id : (int)$value;
             $data[$this->rightKey][] = $right_id !== null ? (int)$right_id : (int)$value;
         }
-        
-        \Tracy\Debugger::barDump($data, '$Đata');
                 
         return $this->addNative($data);
     }
-    
+
+    /**
+     * @param array $values
+     *
+     * @return Result|int
+     */
     public function addNative(array $values)
-    {        
+    {
          return $this->dibi->query('INSERT INTO %n %m', $this->table, $values);
     }
 
@@ -472,28 +475,28 @@ abstract class MNManager extends Manager
     }
     
     /**
-     * 
+     *
      * @param int   $left_id
      * @param array $values
      */
     public function mergeByLeft($left_id, array $values)
     {
-        $left_values = $this->getPairsByLeft($left_id);        
+        $left_values = $this->getPairsByLeft($left_id);
         $diff        = array_diff($values, $left_values);
         
         if (count($diff)) {
-            $this->add($diff, $left_id, null);          
+            $this->add($diff, $left_id, null);
         }
     }
     
     /**
-     * 
+     *
      * @param int   $right_id
      * @param array $values
      */
     public function mergeByRight($right_id, array $values)
     {
-        $right_values = $this->getPairsByRight($right_id);        
+        $right_values = $this->getPairsByRight($right_id);
         $diff         = array_diff($values, $right_values);
         
         if (count($diff)) {

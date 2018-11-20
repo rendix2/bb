@@ -25,7 +25,7 @@ class TopicWatchFacade
     
     /**
      *
-     * @var TopicsManager $topicsManager 
+     * @var TopicsManager $topicsManager
      */
     private $topicsManager;
 
@@ -45,13 +45,16 @@ class TopicWatchFacade
      *
      * @param UsersManager      $usersManager
      * @param TopicWatchManager $topicWatchManager
+     * @param TopicsManager     $topicsManager
+     * @param ForumsManager     $forumsManager
+     * @param PostsManager      $postsManager
      */
     public function __construct(
-        UsersManager $usersManager,
+        UsersManager      $usersManager,
         TopicWatchManager $topicWatchManager,
-        TopicsManager $topicsManager,
-        ForumsManager $forumsManager,
-        PostsManager $postsManager
+        TopicsManager     $topicsManager,
+        ForumsManager     $forumsManager,
+        PostsManager      $postsManager
     ) {
         $this->usersManager      = $usersManager;
         $this->topicWatchManager = $topicWatchManager;
@@ -83,11 +86,11 @@ class TopicWatchFacade
     }
 
     /**
-     * 
+     *
      * @param int $forum_id
      */
     public function deleteByForum($forum_id)
-    {        
+    {
         $topics = $this->topicsManager->getAllByForum($forum_id);
         
         foreach ($topics as $topicDibi) {
@@ -99,6 +102,8 @@ class TopicWatchFacade
     /**
      *
      * @param Entity\Topic $topic
+     *
+     * @return \Dibi\Result|int
      */
     public function deleteByTopic(Entity\Topic $topic)
     {
@@ -118,13 +123,13 @@ class TopicWatchFacade
         
         return $this->topicWatchManager->deleteByLeft($topic->getTopic_id());
     }
-    
+
     /**
      *
      * @param Entity\Post $post
      */
     public function deleteByPost(Entity\Post $post)
-    {       
+    {
         $postCount = $this->postsManager->getCountOfUsersByTopicId($post->getPost_topic_id());
 
         foreach ($postCount as $ps) {
@@ -134,11 +139,11 @@ class TopicWatchFacade
                 $check = $this->topicWatchManager->fullCheck($post->getPost_topic_id(), $ps->post_user_id);
 
                 if ($check) {
-                    $this->topicWatchManager->fullDelete($post->getPost_topic_id(), $ps->post_user_id);                    
+                    $this->topicWatchManager->fullDelete($post->getPost_topic_id(), $ps->post_user_id);
                     $this->usersManager->update($post->getPost_user_id(), ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1']));
-                }                                
+                }
             }
-        }        
+        }
     }
 
     /**
@@ -147,6 +152,5 @@ class TopicWatchFacade
      */
     public function deleteByUser($user_id)
     {
-        
     }
 }

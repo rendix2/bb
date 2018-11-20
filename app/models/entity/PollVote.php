@@ -33,44 +33,72 @@ class PollVote extends Base\Entity
      */
     private $poll_user_id;
 
+    /**
+     * @return int
+     */
     public function getPoll_vote_id()
     {
         return $this->poll_vote_id;
     }
 
+    /**
+     * @return int
+     */
     public function getPoll_id()
     {
         return $this->poll_id;
     }
 
+    /**
+     * @return int
+     */
     public function getPoll_answer_id()
     {
         return $this->poll_answer_id;
     }
 
+    /**
+     * @return int
+     */
     public function getPoll_user_id()
     {
         return $this->poll_user_id;
     }
 
+    /**
+     * @param $poll_vote_id
+     * @return $this
+     */
     public function setPoll_vote_id($poll_vote_id)
     {
         $this->poll_vote_id = self::makeInt($poll_vote_id);
         return $this;
     }
 
+    /**
+     * @param $poll_id
+     * @return $this
+     */
     public function setPoll_id($poll_id)
     {
         $this->poll_id = self::makeInt($poll_id);
         return $this;
     }
 
+    /**
+     * @param $poll_answer_id
+     * @return $this
+     */
     public function setPoll_answer_id($poll_answer_id)
     {
         $this->poll_answer_id = self::makeInt($poll_answer_id);
         return $this;
     }
 
+    /**
+     * @param $poll_user_id
+     * @return $this
+     */
     public function setPoll_user_id($poll_user_id)
     {
         $this->poll_user_id = self::makeInt($poll_user_id);
@@ -101,16 +129,16 @@ class PollVote extends Base\Entity
 
         if (isset($values->poll_user_id)) {
             $pollVote->setPoll_user_id($values->poll_user_id);
-        }        
+        }
                       
         return $pollVote;
     }
 
 
-        /**
-     * 
-     * @param \Dibi\Row $values
-     * 
+    /**
+     *
+     * @param \Nette\Utils\ArrayHash $values
+     *
      * @return \App\Models\Entity\PollVote
      */
     public static function setFromArrayHash(\Nette\Utils\ArrayHash $values)
@@ -131,14 +159,14 @@ class PollVote extends Base\Entity
 
         if (isset($values->poll_user_id)) {
             $pollVote->setPoll_user_id($values->poll_user_id);
-        }        
+        }
                       
         return $pollVote;
-    }    
+    }
 
     /**
-     * 
-     * @return []
+     *
+     * @return array
      */
     public function getArray()
     {
@@ -158,7 +186,7 @@ class PollVote extends Base\Entity
         
         if (isset($this->poll_user_id)) {
             $res['poll_user_id'] = $this->poll_user_id;
-        }            
+        }
      
         return $res;
     }

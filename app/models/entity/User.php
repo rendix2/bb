@@ -1,9 +1,6 @@
 <?php
 
-use App\Models\Entity\Base\Entity;
 use App\Models\Entity\User;
-use Dibi\Row;
-use Nette\Utils\ArrayHash;
 
 namespace App\Models\Entity;
 
@@ -14,7 +11,6 @@ namespace App\Models\Entity;
  */
 class User extends \App\Models\Entity\Base\Entity
 {
-
     /**
      *
      * @var int $user_id
@@ -116,86 +112,137 @@ class User extends \App\Models\Entity\Base\Entity
      */
     private $user_activation_key;
 
+    /**
+     * @return int
+     */
     public function getUser_id()
     {
         return $this->user_id;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_name()
     {
         return $this->user_name;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_password()
     {
         return $this->user_password;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_email()
     {
         return $this->user_email;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_signature()
     {
         return $this->user_signature;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_active()
     {
         return $this->user_active;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_post_count()
     {
         return $this->user_post_count;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_topic_count()
     {
         return $this->user_topic_count;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_thank_count()
     {
         return $this->user_thank_count;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_watch_count()
     {
         return $this->user_watch_count;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_lang_id()
     {
         return $this->user_lang_id;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_role_id()
     {
         return $this->user_role_id;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_avatar()
     {
         return $this->user_avatar;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_register_time()
     {
         return $this->user_register_time;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_last_login_time()
     {
         return $this->user_last_login_time;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_last_post_time()
     {
         return $this->user_last_post_time;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_activation_key()
     {
         return $this->user_activation_key;
@@ -219,6 +266,10 @@ class User extends \App\Models\Entity\Base\Entity
         return $this;
     }
 
+    /**
+     * @param $user_email
+     * @return $this
+     */
     public function setUser_email($user_email)
     {
         $this->user_email = $user_email;
@@ -231,6 +282,10 @@ class User extends \App\Models\Entity\Base\Entity
         return $this;
     }
 
+    /**
+     * @param $user_active
+     * @return $this
+     */
     public function setUser_active($user_active)
     {
         $this->user_active = self::makeBool($user_active);
@@ -273,6 +328,10 @@ class User extends \App\Models\Entity\Base\Entity
         return $this;
     }
 
+    /**
+     * @param $user_avatar
+     * @return $this
+     */
     public function setUser_avatar($user_avatar)
     {
         $this->user_avatar = $user_avatar;
@@ -297,6 +356,10 @@ class User extends \App\Models\Entity\Base\Entity
         return $this;
     }
 
+    /**
+     * @param $user_activation_key
+     * @return $this
+     */
     public function setUser_activation_key($user_activation_key)
     {
         $this->user_activation_key = $user_activation_key;
@@ -384,6 +447,10 @@ class User extends \App\Models\Entity\Base\Entity
         return $user;
     }
 
+    /**
+     * @param ArrayHash $values
+     * @return User
+     */
     public static function setFromArrayHash(ArrayHash $values)
     {
         $user = new User();

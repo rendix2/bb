@@ -4,15 +4,9 @@ namespace App\ForumModule\Presenters;
 
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\CategoriesManager;
-use App\Models\ForumsManager;
 use App\Models\ModeratorsManager;
-use App\Models\PostsManager;
-use App\Models\TopicsManager;
-use App\Models\UsersManager;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
-use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
 
 /**
  * Description of IndexPresenter¨
@@ -23,7 +17,7 @@ use Tracy\Debugger;
 class IndexPresenter extends BaseForumPresenter
 {
     //use \App\Models\Traits\ForumsTrait;
-    //use \App\Models\Traits\TopicsTrait;    
+    //use \App\Models\Traits\TopicsTrait;
     //use \App\Models\Traits\PostTrait;
     use \App\Models\Traits\UsersTrait;
     
@@ -78,6 +72,7 @@ class IndexPresenter extends BaseForumPresenter
      * IndexPresenter constructor.
      *
      * @param CategoriesManager $categoriesManager
+     * @param IStorage          $storage
      */
     public function __construct(CategoriesManager $categoriesManager, IStorage $storage)
     {
@@ -85,7 +80,10 @@ class IndexPresenter extends BaseForumPresenter
         
         $this->cache = new Cache($storage, self::CACHE_NAMESPACE);
     }
-    
+
+    /**
+     *
+     */
     public function __destruct()
     {
         $this->forumsManager    = null;

@@ -118,21 +118,7 @@ class CrudNullManager extends CrudManager implements ICrudManager
     /**
      * @return string
      */
-    private function getNameOfTableFromClass()
-    {
-    }
-
-    /**
-     * @return string
-     */
     public function getPrimaryKey()
-    {
-    }
-
-    /**
-     * @return string
-     */
-    private function getPrimaryKeyQuery()
     {
     }
 

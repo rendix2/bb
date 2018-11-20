@@ -3,7 +3,6 @@
 namespace App\Models\Traits;
 
 use App\Models\UsersManager;
-use Nette\Http\IResponse;
 
 /**
  * Description of UsersTrait
@@ -42,5 +41,5 @@ trait UsersTrait
         }
         
         return \App\Models\Entity\User::setFromRow($userDibi);
-    }    
+    }
 }

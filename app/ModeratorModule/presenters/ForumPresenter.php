@@ -25,10 +25,14 @@ class ForumPresenter extends ModeratorPresenter
         parent::__construct($manager);
     }
 
-    public function actionDefault($page = 1) {        
+    /**
+     * @param int $page
+     */
+    public function actionDefault($page = 1)
+    {
     }
 
-        /**
+    /**
      * @param int $page
      */
     public function renderDefault($page = 1)
@@ -49,7 +53,7 @@ class ForumPresenter extends ModeratorPresenter
     
     /**
      *
-     * @return null
+     * @return GridFilter
      */
     protected function createComponentGridFilter()
     {

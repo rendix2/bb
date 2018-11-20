@@ -4,7 +4,6 @@ namespace App\Models\Traits;
 
 use App\Models\Entity\Forum;
 use App\Models\ForumsManager;
-use Nette\Http\IResponse;
 
 /**
  * Description of ForumsTrait
@@ -17,15 +16,15 @@ trait ForumsTrait
      * @var ForumsManager $forumsManager
      * @inject
      */
-    public $forumsManager;  
+    public $forumsManager;
     
     /**
-     * 
+     *
      * @param int $forum_id
      * @param int $category_id
-     * 
+     *
      * @return \App\Models\Entity\Forum
-     * ¨
+     *
      */
     public function checkForumParam($forum_id, $category_id = null)
     {
@@ -57,5 +56,5 @@ trait ForumsTrait
         }
 
         return $forum;
-    }   
+    }
 }

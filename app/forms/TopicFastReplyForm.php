@@ -2,14 +2,14 @@
 
 namespace App\Forms;
 
-use App\Presenters\Base\BasePresenter;
 use App\Controls\BootstrapForm;
-use App\Services\TranslatorFactory;
 use App\Models\PostFacade;
+use App\Presenters\Base\BasePresenter;
+use App\Services\TranslatorFactory;
 use Nette\Application\UI\Form;
-use Nette\Utils\ArrayHash;
-use Nette\Security\User;
 use Nette\Http\IRequest;
+use Nette\Security\User;
+use Nette\Utils\ArrayHash;
 
 /**
  * Description of TopicFastReplyForm
@@ -50,10 +50,14 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
      * @param PostFacade        $postFacade
      * @param IRequest          $request
      */
-    public function __construct(TranslatorFactory $translatorFactory, User $user, PostFacade $postFacade, IRequest $request)
-    {
+    public function __construct(
+        TranslatorFactory $translatorFactory,
+        User              $user,
+        PostFacade        $postFacade,
+        IRequest          $request
+    ) {
         parent::__construct();
-        
+
         $this->translatorFactory = $translatorFactory;
         $this->user              = $user;
         $this->postFacade        = $postFacade;
@@ -68,7 +72,7 @@ class TopicFastReplyForm extends \Nette\Application\UI\Control
         $this->request           = null;
     }
 
-        public function render()
+    public function render()
     {
         $this['fastReply']->render();
     }
