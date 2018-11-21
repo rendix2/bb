@@ -46,7 +46,7 @@ class UserSearchControl extends Control
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -54,7 +54,7 @@ class UserSearchControl extends Control
         $this->translator   = null;
     }
 
-        /**
+    /**
      * renders controls
      */
     public function render()

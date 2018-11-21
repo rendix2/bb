@@ -50,15 +50,15 @@ class DatabasePresenter extends AdminPresenter
     }
 
     /**
-     * 
+     *
      * @return null
      */
     protected function createComponentGridFilter()
     {
-        return null;
+        return $this->gf;
     }
 
-        /**
+    /**
      *
      */
     public function renderDumps()

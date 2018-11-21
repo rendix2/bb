@@ -18,28 +18,28 @@ class SearchTopicForm extends Control
 {
     /**
      *
-     * @var ITranslator $translator 
+     * @var ITranslator $translator
      */
     private $translator;
     
     /**
-     * 
+     *
      * @param ITranslator $translator
      */
     public function __construct(ITranslator $translator)
-    {                
+    {
         parent::__construct();
         
         $this->translator = $translator;
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
-        $this->translator = null;        
-    }    
+        $this->translator = null;
+    }
 
     /**
      *

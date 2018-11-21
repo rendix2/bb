@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Entity\UserEntity;
 use App\Services\TranslatorFactory;
-use Nette\Utils\ArrayHash;
 
 /**
  * Description of UserFacade

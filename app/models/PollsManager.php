@@ -23,7 +23,7 @@ class PollsManager extends CrudManager
     public function getByTopic($topic_id)
     {
         return $this->getAllFluent()
-                ->where('[poll_topic_id] = %i', $topic_id)
-                ->fetch();
+            ->where('[poll_topic_id] = %i', $topic_id)
+            ->fetch();
     }
 }

@@ -15,10 +15,10 @@ use App\Models\Entity\TopicEntity;
 class TopicScope implements IAuthorizationScope
 {
 
-    const ROLE_AUTHOR      = 'Topic:author';    
-    const ROLE_THANKER     = 'Topic:thanker';    
-    const ROLE_NOT_THANKER = 'Topic:notThnanker';    
-    const ROLE_DELETER     = 'Topic:deleter';    
+    const ROLE_AUTHOR      = 'Topic:author';
+    const ROLE_THANKER     = 'Topic:thanker';
+    const ROLE_NOT_THANKER = 'Topic:notThnanker';
+    const ROLE_DELETER     = 'Topic:deleter';
     const ROLE_EDITOR      = 'Topic:Editor';
     
     const ACTION_VIEW   = [self::class, 'view'];
@@ -53,14 +53,16 @@ class TopicScope implements IAuthorizationScope
     /**
      * Topic constructor.
      *
-     * @param User  $author
+     * @param TopicEntity $topicEntity
+     * @param User        $author
      * @param ForumScope $forumScope
+     * @param $thanks
      */
     public function __construct(
-            TopicEntity $topicEntity,
-            User $author, 
-            ForumScope $forumScope,
-            $thanks
+        TopicEntity $topicEntity,
+        User        $author,
+        ForumScope  $forumScope,
+        $thanks
     ) {
         $this->topicEntity  = $topicEntity;
         $this->author       = $author;
@@ -69,7 +71,7 @@ class TopicScope implements IAuthorizationScope
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -108,8 +110,8 @@ class TopicScope implements IAuthorizationScope
         
         $canThank = true;
 
-        foreach ($this->thanks as $thank) {            
-            if ($thank->thank_user_id === $identity->getId()){
+        foreach ($this->thanks as $thank) {
+            if ($thank->thank_user_id === $identity->getId()) {
                 $canThank = false;
                 break;
             }
@@ -119,7 +121,7 @@ class TopicScope implements IAuthorizationScope
             $roles[] = self::ROLE_THANKER;
         } else {
             $roles[] = self::ROLE_NOT_THANKER;
-        }        
+        }
         
         return array_merge($this->forumScope->getIdentityRoles($identity), $roles);
     }

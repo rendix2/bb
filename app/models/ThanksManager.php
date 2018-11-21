@@ -165,7 +165,7 @@ class ThanksManager extends CrudManager
         return $this->updateFluent($item_data)
             ->where('[thank_user_id] IN %in', $user_id)
             ->execute();
-    } 
+    }
     
     /**
      *

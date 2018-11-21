@@ -19,49 +19,49 @@ class PmEntity extends Entity
      * @var int $pm_id
      */
     private $pm_id;
-    
+
     /**
      *
      * @var int $pm_user_id_from
-     */    
+     */
     private $pm_user_id_from;
-    
+
     /**
      *
      * @var int $pm_user_id_to
-     */    
+     */
     private $pm_user_id_to;
-    
+
     /**
      *
      * @var string $pm_subject
-     */    
+     */
     private $pm_subject;
-    
+
     /**
      *
      * @var int $pm_text
-     */    
+     */
     private $pm_text;
-    
+
     /**
      *
      * @var string $pm_status
-     */    
+     */
     private $pm_status;
-    
+
     /**
      *
      * @var int $pm_time_sent
-     */    
+     */
     private $pm_time_sent;
-    
+
     /**
      *
      * @var int $pm_time_read
-     */    
+     */
     private $pm_time_read;
-    
+
     public function getPm_id()
     {
         return $this->pm_id;
@@ -148,12 +148,12 @@ class PmEntity extends Entity
     {
         $this->pm_time_read = self::makeInt($pm_time_read);
         return $this;
-    }    
+    }
     
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return PmEntity
      */
     public function setFromRow(Row $values)
@@ -185,7 +185,7 @@ class PmEntity extends Entity
         }
         
         if (isset($values->pm_time_read)) {
-            $pm->setPm_time_read($values->pm_time_read);           
+            $pm->setPm_time_read($values->pm_time_read);
         }
         
         if (isset($values->pm_time_sent)) {
@@ -194,54 +194,54 @@ class PmEntity extends Entity
                    
         return $pm;
     }
-    
+
     /**
-     * 
+     *
      * @param ArrayHash $values
-     * 
+     *
      * @return PmEntity
      */
     public function setFromArrayHash(ArrayHash $values)
     {
         $pm = new PmEntity();
-        
+
         if (isset($values->pm_id)) {
             $pm->setPm_id($values->pm_id);
         }
-        
+
         if (isset($values->pm_user_id_from)) {
             $pm->setPm_user_id_from($values->pm_user_id_from);
         }
-        
+
         if (isset($values->pm_user_id_to)) {
             $pm->setPm_user_id_to($values->pm_user_id_to);
         }
-        
+
         if (isset($values->pm_subject)) {
             $pm->setPm_subject($values->pm_subject);
         }
-        
+
         if (isset($values->pm_tex)) {
             $pm->setPm_text_from($values->pm_tex);
         }
-        
+
         if (isset($values->pm_status)) {
             $pm->setPm_status($values->pm_status);
         }
-        
+
         if (isset($values->pm_time_read)) {
-            $pm->setPm_time_read($values->pm_time_read);           
+            $pm->setPm_time_read($values->pm_time_read);
         }
-        
+
         if (isset($values->pm_time_sent)) {
             $pm->setPm_time_sent($values->pm_time_sent);
         }
-                   
-        return $pm;      
+
+        return $pm;
     }
 
-        /**
-     * 
+    /**
+     *
      * @return array
      */
     public function getArray()
@@ -270,15 +270,15 @@ class PmEntity extends Entity
 
         if (isset($this->pm_status)) {
             $res['pm_status'] = $this->pm_status;
-        }   
+        }
         
         if (isset($this->pm_time_sent)) {
             $res['pm_time_sent'] = $this->pm_time_sent;
-        }      
+        }
 
         if (isset($this->pm_status)) {
             $res['pm_time_read'] = $this->pm_time_read;
-        }              
+        }
         
         return $res;
     }

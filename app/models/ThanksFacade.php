@@ -75,7 +75,7 @@ class ThanksFacade
 
     /**
      *
-     * @param Thank $thank
+     * @param ThankEntity $thank
      *
      * @return Result|int
      */
@@ -145,8 +145,8 @@ class ThanksFacade
      * @return bool
      */
     public function deleteByPost(PostEntity $post)
-    {        
-        $count = $this->postsManager->getCountByUser($post->getPost_topic_id(), $post->getPost_user_id());       
+    {
+        $count = $this->postsManager->getCountByUser($post->getPost_topic_id(), $post->getPost_user_id());
 
         if ($count === 1 || $count === 0) {
             $this->usersManager->update($post->getPost_user_id(), ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1']));

@@ -44,11 +44,12 @@ class PostScope implements IAuthorizationScope
      * @var TopicEntity $topicEntity
      */
     private $topicEntity;
-    
+
     /**
-     * 
-     * @param User $author
-     * @param TopicEntity $topicScope
+     *
+     * @param PostEntity  $post
+     * @param TopicScope  $topicScope
+     * @param TopicEntity $topicEntity
      */
     public function __construct(PostEntity $post, TopicScope $topicScope, TopicEntity $topicEntity)
     {
@@ -58,12 +59,12 @@ class PostScope implements IAuthorizationScope
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
         $this->post        = null;
-        $this->topicEntity = null;
+        $this->topicScope  = null;
         $this->topicEntity = null;
     }
 
@@ -82,7 +83,7 @@ class PostScope implements IAuthorizationScope
             return $this->topicScope->getIdentityRoles($identity);
         }
         
-        $roles = [];        
+        $roles = [];
         
         $isAuthor = $this->post->getPost_user_id() === $identity->getId();
         

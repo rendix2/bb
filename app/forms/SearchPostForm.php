@@ -23,22 +23,22 @@ class SearchPostForm extends Control
     private $translator;
     
     /**
-     * 
+     *
      * @param ITranslator $translator
      */
     public function __construct(ITranslator $translator)
-    {                
+    {
         parent::__construct();
         
         $this->translator = $translator;
     }
 
     /**
-     * 
+     *
      */
     public function __destruct()
     {
-        $this->translator = null;        
+        $this->translator = null;
     }
 
     /**

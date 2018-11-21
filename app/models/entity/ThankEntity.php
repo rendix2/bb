@@ -3,7 +3,6 @@
 namespace App\Models\Entity;
 
 use App\Models\Entity\Base\Entity;
-use App\Models\Entity\ThankEntity;
 use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
@@ -125,74 +124,74 @@ class ThankEntity extends Entity
      */
     public static function setFromRow(Row $values)
     {
-        $thank = new ThankEntity();
+        $thankEntity = new ThankEntity();
         
         if (isset($values->thank_id)) {
-            $thank->setThank_id($values->thank_id);
+            $thankEntity->setThank_id($values->thank_id);
         }
         
         if (isset($values->thank_forum_id)) {
-            $thank->setThank_forum_id($values->thank_forum_id);
+            $thankEntity->setThank_forum_id($values->thank_forum_id);
         }
         
         if (isset($values->thank_topic_id)) {
-            $thank->setThank_topic_id($values->thank_topic_id);
+            $thankEntity->setThank_topic_id($values->thank_topic_id);
         }
         
         if (isset($values->thank_user_id)) {
-            $thank->setThank_user_id($values->thank_user_id);
+            $thankEntity->setThank_user_id($values->thank_user_id);
         }
         
         if (isset($values->thank_time)) {
-            $thank->setThank_time($values->thank_time);
+            $thankEntity->setThank_time($values->thank_time);
         }
         
         if (isset($values->thank_user_ip)) {
-            $thank->setThank_user_ip($values->thank_user_ip);
+            $thankEntity->setThank_user_ip($values->thank_user_ip);
         }
 
-        return $thank;
-    }  
+        return $thankEntity;
+    }
     
     /**
-     * 
+     *
      * @param ArrayHash $values
-     * 
+     *
      * @return ThankEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $thank = new ThankEntity();
+        $thankEntity = new ThankEntity();
         
         if (isset($values->thank_id)) {
-            $thank->setThank_id($values->thank_id);
+            $thankEntity->setThank_id($values->thank_id);
         }
         
         if (isset($values->thank_forum_id)) {
-            $thank->setThank_forum_id($values->thank_forum_id);
+            $thankEntity->setThank_forum_id($values->thank_forum_id);
         }
         
         if (isset($values->thank_topic_id)) {
-            $thank->setThank_topic_id($values->thank_topic_id);
+            $thankEntity->setThank_topic_id($values->thank_topic_id);
         }
         
         if (isset($values->thank_user_id)) {
-            $thank->setThank_user_id($values->thank_user_id);
+            $thankEntity->setThank_user_id($values->thank_user_id);
         }
         
         if (isset($values->thank_time)) {
-            $thank->setThank_time($values->thank_time);
+            $thankEntity->setThank_time($values->thank_time);
         }
         
         if (isset($values->thank_user_ip)) {
-            $thank->setThank_user_ip($values->thank_user_ip);
+            $thankEntity->setThank_user_ip($values->thank_user_ip);
         }
 
-        return $thank;
+        return $thankEntity;
     }
 
     /**
-     * 
+     *
      * @return array
      */
     public function getArray()
@@ -221,7 +220,7 @@ class ThankEntity extends Entity
 
         if (isset($this->thank_user_ip)) {
             $res['thank_user_ip'] = $this->thank_user_ip;
-        }        
+        }
         
         return $res;
     }

@@ -21,7 +21,7 @@ class CategoryPresenter extends ForumPresenter
     //use \App\Models\Traits\ForumsTrait;
     
     /**
-     * 
+     *
      * @param CategoriesManager $manager
      */
     public function __construct(CategoriesManager $manager)
@@ -30,26 +30,26 @@ class CategoryPresenter extends ForumPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
-        $this->categoriesManager = null;        
+        $this->categoriesManager = null;
         
         parent::__destruct();
     }
 
     /**
-     * 
+     *
      * @param int $category_id
      */
     public function renderDefault($category_id = 0)
     {
-        $category   = $this->checkCategoryParam($category_id);        
+        $category   = $this->checkCategoryParam($category_id);
         $categories = $this->getManager()->getMptt()->get_tree($category_id);
         $forums = $this->forumsManager
                 ->getFluentByCategory($category_id)
-                ->orderBy('forum_left', dibi::ASC)                
+                ->orderBy('forum_left', dibi::ASC)
                 ->fetchAll();
 
         if ($forums) {
@@ -62,7 +62,7 @@ class CategoryPresenter extends ForumPresenter
         
         if ($categories) {
             $this->template->categories = $categories;
-        } else {            
+        } else {
             $this->template->categories = [];
             
             $this->flashMessage('No subcategories.', self::FLASH_MESSAGE_DANGER);
@@ -80,5 +80,5 @@ class CategoryPresenter extends ForumPresenter
         ];
 
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
-    }    
+    }
 }

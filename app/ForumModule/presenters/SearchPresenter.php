@@ -8,8 +8,6 @@ use App\Forms\SearchPostForm;
 use App\Forms\SearchTopicForm;
 use App\Forms\SearchUserForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Models\PostsManager;
-use App\Models\TopicsManager;
 use App\Models\UsersManager;
 
 /**
@@ -32,7 +30,7 @@ class SearchPresenter extends BaseForumPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -100,9 +98,9 @@ class SearchPresenter extends BaseForumPresenter
     /**
      * forms
      */
-    
+
     /**
-     * @return BootstrapForm
+     * @return SearchPostForm
      */
     public function createComponentSearchPostForm()
     {
@@ -110,7 +108,7 @@ class SearchPresenter extends BaseForumPresenter
     }
 
     /**
-     * @return BootstrapForm
+     * @return SearchTopicForm
      */
     public function createComponentSearchTopicForm()
     {
@@ -118,14 +116,13 @@ class SearchPresenter extends BaseForumPresenter
     }
 
     /**
-     * @return BootstrapForm
+     * @return SearchUserForm
      */
     public function createComponentSearchUserForm()
     {
         return new SearchUserForm($this->getTranslator());
     }
-    
-    
+
     /**
      * BREADCRUMBS
      */

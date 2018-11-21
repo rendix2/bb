@@ -18,16 +18,16 @@ class SearchUserForm extends Control
 {
     /**
      *
-     * @var ITranslator $translator 
+     * @var ITranslator $translator
      */
     private $translator;
     
     /**
-     * 
+     *
      * @param ITranslator $translator
      */
     public function __construct(ITranslator $translator)
-    {                
+    {
         parent::__construct();
         
         $this->translator = $translator;
@@ -38,11 +38,11 @@ class SearchUserForm extends Control
      */
     public function __destruct()
     {
-        $this->translator = null;        
-    }    
+        $this->translator = null;
+    }
     
     /**
-     * 
+     *
      */
     public function render()
     {

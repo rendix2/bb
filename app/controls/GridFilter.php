@@ -125,6 +125,8 @@ class GridFilter extends Control
     }
 
     /**
+     * @param Fluent $fluent
+     *
      * @return void
      */
     public function applyOrderBy(Fluent $fluent)
@@ -159,7 +161,9 @@ class GridFilter extends Control
     }
 
     /**
-     * @return array
+     * @param Fluent $fluent
+     *
+     * @return void
      */
     public function applyWhere(Fluent $fluent)
     {
@@ -270,9 +274,8 @@ class GridFilter extends Control
             case self::CHECKBOX_LIST:
                 $this->form->addCheckboxList($columnName, $text, $data);
                 break;
-            default :
+            default:
                 throw new InvalidArgumentException('Unknow filter type.');
-        
         }
 
         if ($type === self::DATE_TIME || $type === self::FROM_TO_INT) {
@@ -324,7 +327,7 @@ class GridFilter extends Control
     }
     
     /**
-     * 
+     *
      * @param string $column
      */
     public function handleStorno($column)
@@ -346,10 +349,9 @@ class GridFilter extends Control
         }
         
         $sep         = DIRECTORY_SEPARATOR;
-        $sessionName = self::SESSION_PREFIX . $this->presenter->name. ':' . $this->presenter->action;               
+        $sessionName = self::SESSION_PREFIX . $this->presenter->name. ':' . $this->presenter->action;
         $template    = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'gridFilter' . $sep . 'gridFilter.latte');
-        
-        
+
         $template->setTranslator($this->translator);
 
         foreach ($this->filters as $column => $value) {

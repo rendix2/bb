@@ -42,7 +42,7 @@ class CachePresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -108,7 +108,7 @@ class CachePresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      * @return GridFilter
      */
     protected function createComponentGridFilter()

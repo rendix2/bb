@@ -8,7 +8,7 @@ namespace App\Models;
  * @author rendix2
  * @package App\Models
  */
-class PmFacade 
+class PmFacade
 {
     /**
      *
@@ -26,7 +26,7 @@ class PmFacade
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -34,7 +34,7 @@ class PmFacade
     }
 
     /**
-     * 
+     *
      * @param int $user_id
      */
     public function delete($user_id)

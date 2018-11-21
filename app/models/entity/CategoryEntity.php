@@ -29,31 +29,31 @@ class CategoryEntity extends Entity
     /**
      *
      * @var string $category_name
-     */    
+     */
     private $category_name;
     
     /**
      *
      * @var bool $category_active
-     */    
+     */
     private $category_active;
 
     /**
      *
      * @var int $category_left
-     */    
+     */
     private $category_left;
     
     /**
      *
      * @var int $category_right
-     */    
+     */
     private $category_right;
 
     /**
      *
      * @var int $category_order
-     */    
+     */
     private $category_order;
     
     public function getCategory_id()
@@ -134,89 +134,89 @@ class CategoryEntity extends Entity
     }
 
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return CategoryEntity
      */
     public static function setFromRow(Row $values)
     {
-        $category = new CategoryEntity();
+        $categoryEntity = new CategoryEntity();
         
         if (isset($values->category_id)) {
-            $category->setCategory_id($values->category_id);
+            $categoryEntity->setCategory_id($values->category_id);
         }
         
         if (isset($values->category_parent_id)) {
-            $category->setCategory_parent_id($values->category_parent_id);
+            $categoryEntity->setCategory_parent_id($values->category_parent_id);
         }
         
         if (isset($values->category_name)) {
-            $category->setCategory_name($values->category_name);
+            $categoryEntity->setCategory_name($values->category_name);
         }
          
         if (isset($values->category_active)) {
-            $category->setCategory_active($values->category_active);
+            $categoryEntity->setCategory_active($values->category_active);
         }
         
         if (isset($values->category_left)) {
-            $category->setCategory_left($values->category_left);
+            $categoryEntity->setCategory_left($values->category_left);
         }
         
         if (isset($values->category_right)) {
-            $category->setCategory_right($values->category_right);
+            $categoryEntity->setCategory_right($values->category_right);
         }
         
         if (isset($values->category_order)) {
-            $category->setCategory_order($values->category_order);
+            $categoryEntity->setCategory_order($values->category_order);
         }
 
-        return $category;
-    } 
+        return $categoryEntity;
+    }
     
     /**
-     * 
+     *
      * @param ArrayHash $values
-     * 
+     *
      * @return CategoryEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $category = new CategoryEntity();
+        $categoryEntity = new CategoryEntity();
         
         if (isset($values->category_id)) {
-            $category->setCategory_id($values->category_id);
+            $categoryEntity->setCategory_id($values->category_id);
         }
         
         if (isset($values->category_parent_id)) {
-            $category->setCategory_parent_id($values->category_parent_id);
+            $categoryEntity->setCategory_parent_id($values->category_parent_id);
         }
         
         if (isset($values->category_name)) {
-            $category->setCategory_name($values->category_name);
+            $categoryEntity->setCategory_name($values->category_name);
         }
          
         if (isset($values->category_active)) {
-            $category->setCategory_active($values->category_active);
+            $categoryEntity->setCategory_active($values->category_active);
         }
         
         if (isset($values->category_left)) {
-            $category->setCategory_left($values->category_left);
+            $categoryEntity->setCategory_left($values->category_left);
         }
         
         if (isset($values->category_right)) {
-            $category->setCategory_right($values->category_right);
+            $categoryEntity->setCategory_right($values->category_right);
         }
         
         if (isset($values->category_order)) {
-            $category->setCategory_order($values->category_order);
+            $categoryEntity->setCategory_order($values->category_order);
         }
 
-        return $category;
+        return $categoryEntity;
     }
     
     public function getArray()
-    {        
+    {
         $res = [];
         
         if (isset($this->category_id)) {
@@ -244,5 +244,5 @@ class CategoryEntity extends Entity
         }
         
         return $res;
-    }    
+    }
 }

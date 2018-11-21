@@ -5,6 +5,7 @@ namespace App\AdminModule\Presenters;
 use App\Authorization\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Forms\UserLoginForm;
+use App\Models\Entity\SessionEntity;
 use App\Models\SessionsManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
@@ -63,7 +64,7 @@ class LoginPresenter extends BasePresenter
 
     /**
      *
-     * @param type $element
+     * @param mxied $element
      */
     public function checkRequirements($element)
     {
@@ -119,7 +120,7 @@ class LoginPresenter extends BasePresenter
                 throw new AuthenticationException('You are not admin.');
             }
             
-            $sessionEntity = new \App\Models\Entity\SessionEntity();
+            $sessionEntity = new SessionEntity();
             $sessionEntity->setSession_key($this->session->getId())
                           ->setSession_user_id($user->id)
                           ->setSession_from(time());

@@ -56,7 +56,7 @@ class SendMailToAdminForm extends Control
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

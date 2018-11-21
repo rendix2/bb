@@ -41,5 +41,5 @@ class FaqPresenter extends AdminPresenter
     protected function createComponentGridFilter()
     {
         return $this->gf;
-    }    
+    }
 }

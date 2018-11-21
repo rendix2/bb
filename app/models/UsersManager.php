@@ -49,7 +49,7 @@ class UsersManager extends CrudManager
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -57,7 +57,6 @@ class UsersManager extends CrudManager
         
         parent::__destruct();
     }
-
 
     /**
      * @param int $lang_id
@@ -67,8 +66,8 @@ class UsersManager extends CrudManager
     public function getAllByLang($lang_id)
     {
         return $this->getAllFluent()
-                ->where('[user_lang_id] = %i', $lang_id)
-                ->fetchAll();
+            ->where('[user_lang_id] = %i', $lang_id)
+            ->fetchAll();
     }
 
     /**
@@ -79,8 +78,8 @@ class UsersManager extends CrudManager
     public function getByName($user_name)
     {
         return $this->getAllFluent()
-                ->where('[user_name] = %s', $user_name)
-                ->fetch();
+            ->where('[user_name] = %s', $user_name)
+            ->fetch();
     }
 
     /**
@@ -91,8 +90,8 @@ class UsersManager extends CrudManager
     public function getAllByRole($role_id)
     {
         return $this->getAllFluent()
-                ->where('[user_role_id] = %i', $role_id)
-                ->fetchAll();
+            ->where('[user_role_id] = %i', $role_id)
+            ->fetchAll();
     }
 
     /**
@@ -115,8 +114,8 @@ class UsersManager extends CrudManager
     public function getCountByRole($role_id)
     {
         return $this->getCountFluent()
-                ->where('[user_role_id] = %i', $role_id)
-                ->fetchSingle();
+            ->where('[user_role_id] = %i', $role_id)
+            ->fetchSingle();
     }
 
     /**
@@ -132,7 +131,7 @@ class UsersManager extends CrudManager
     }
 
     /**
-     * @param int    $user_id
+     * @param int $user_id
      * @param string $key
      *
      * @return mixed
@@ -159,7 +158,7 @@ class UsersManager extends CrudManager
             ->where('[user_name] LIKE %~like~', $user_name)
             ->fetchAll();
     }
-    
+
     /**
      *
      * @param string $user_name
@@ -169,10 +168,10 @@ class UsersManager extends CrudManager
     public function checkUserNameExists($user_name)
     {
         return $this->getAllFluent()
-            ->where('[user_name] = %s', $user_name)
-            ->fetchSingle() === 1;
+                ->where('[user_name] = %s', $user_name)
+                ->fetchSingle() === 1;
     }
-    
+
     /**
      *
      * @param string $email
@@ -182,10 +181,10 @@ class UsersManager extends CrudManager
     public function getAllByEmail($email)
     {
         return $this->getAllFluent()
-                ->where('[user_email] = %s', $email)
-                ->fetchAll();
+            ->where('[user_email] = %s', $email)
+            ->fetchAll();
     }
-    
+
     /**
      *
      * @param array $emails
@@ -195,8 +194,8 @@ class UsersManager extends CrudManager
     public function getAllByEmails(array $emails)
     {
         return $this->getAllFluent()
-                ->where('[user_email] IN %in', $emails)
-                ->fetchAll();
+            ->where('[user_email] IN %in', $emails)
+            ->fetchAll();
     }
 
     /**

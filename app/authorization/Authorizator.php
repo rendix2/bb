@@ -4,7 +4,6 @@ namespace App\Authorization;
 
 use Generator;
 use Nette\Security\IAuthorizator;
-use Tracy\Debugger;
 
 /**
  * Description of Authorizator
@@ -35,9 +34,9 @@ class Authorizator
     }
     
     /**
-     * 
+     *
      */
-    public function __destruct() 
+    public function __destruct()
     {
         $this->authorizator = null;
     }

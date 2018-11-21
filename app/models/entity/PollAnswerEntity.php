@@ -67,58 +67,58 @@ class PollAnswerEntity extends Entity
     }
 
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return PollAnswerEntity
      */
     public static function setFromRow(Row $values)
     {
-        $pollAnswer = new PollAnswerEntity();
+        $pollAnswerEntity = new PollAnswerEntity();
         
         if (isset($values->poll_answer_id)) {
-            $pollAnswer->setPoll_answer_id($values->poll_answer_id);
+            $pollAnswerEntity->setPoll_answer_id($values->poll_answer_id);
         }
         
         if (isset($values->poll_id)) {
-            $pollAnswer->setPoll_id($values->poll_id);
+            $pollAnswerEntity->setPoll_id($values->poll_id);
         }
 
         if (isset($values->poll_answer)) {
-            $pollAnswer->setPoll_answer($values->poll_answer);
-        }        
+            $pollAnswerEntity->setPoll_answer($values->poll_answer);
+        }
         
-        return $pollAnswer;
+        return $pollAnswerEntity;
     }
     
     /**
-     * 
-     * @param Row $values
-     * 
+     *
+     * @param ArrayHash $values
+     *
      * @return PollAnswerEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $pollAnswer = new PollAnswerEntity();
+        $pollAnswerEntity = new PollAnswerEntity();
         
         if (isset($values->poll_answer_id)) {
-            $pollAnswer->setPoll_answer_id($values->poll_answer_id);
+            $pollAnswerEntity->setPoll_answer_id($values->poll_answer_id);
         }
         
         if (isset($values->poll_id)) {
-            $pollAnswer->setPoll_id($values->poll_id);
+            $pollAnswerEntity->setPoll_id($values->poll_id);
         }
 
         if (isset($values->poll_answer)) {
-            $pollAnswer->setPoll_answer($values->poll_answer);
-        }        
+            $pollAnswerEntity->setPoll_answer($values->poll_answer);
+        }
         
-        return $pollAnswer;
-    }    
+        return $pollAnswerEntity;
+    }
 
     /**
-     * 
-     * @return [] 
+     *
+     * @return array
      */
     public function getArray()
     {
@@ -134,7 +134,7 @@ class PollAnswerEntity extends Entity
 
         if (isset($this->poll_answer)) {
             $res['poll_answer'] = $this->poll_answer;
-        }        
+        }
      
         return $res;
     }

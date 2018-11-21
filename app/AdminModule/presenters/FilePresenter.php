@@ -43,7 +43,6 @@ class FilePresenter extends AdminPresenter
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
 
-        return $this->gf;        
+        return $this->gf;
     }
-
 }

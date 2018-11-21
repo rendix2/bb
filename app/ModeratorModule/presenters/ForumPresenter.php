@@ -27,7 +27,7 @@ class ForumPresenter extends ModeratorPresenter
     }
 
     /**
-     * 
+     *
      * @param int $page
      */
     public function actionDefault($page = 1)

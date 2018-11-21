@@ -47,7 +47,7 @@ class CategoryFacade
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -59,6 +59,7 @@ class CategoryFacade
     /**
      *
      * @param CategoryEntity $category
+     * @return int
      */
     public function add(CategoryEntity $category)
     {
@@ -72,7 +73,7 @@ class CategoryFacade
     }
     
     /**
-     * 
+     *
      * @param int       $item_id
      * @param ArrayHash $item_data
      *

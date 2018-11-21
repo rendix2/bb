@@ -21,9 +21,9 @@ class SessionsManager extends CrudManager
     public function getCountOfLoggedUsers()
     {
         return $this->dibi
-                ->select('COUNT(DISTINCT session_user_id)')
-                ->from($this->getTable())
-                ->fetchSingle();
+            ->select('COUNT(DISTINCT session_user_id)')
+            ->from($this->getTable())
+            ->fetchSingle();
     }
 
     /**
@@ -32,14 +32,14 @@ class SessionsManager extends CrudManager
     public function getLoggedUsers()
     {
         return $this->dibi
-                ->select('')
-                ->distinct('session_user_id, user_id, user_name, session_from, session_last_activity')
-                ->from($this->getTable())
-                ->as('s')
-                ->innerJoin(self::USERS_TABLE)
-                ->as('u')
-                ->on('[s.session_user_id] = [u.user_id]')
-                ->fetchAll();
+            ->select('')
+            ->distinct('session_user_id, user_id, user_name, session_from, session_last_activity')
+            ->from($this->getTable())
+            ->as('s')
+            ->innerJoin(self::USERS_TABLE)
+            ->as('u')
+            ->on('[s.session_user_id] = [u.user_id]')
+            ->fetchAll();
     }
 
     /**
@@ -50,8 +50,8 @@ class SessionsManager extends CrudManager
     public function deleteBySession($session_id)
     {
         return $this->deleteFluent()
-                ->where('[session_key] = %s', $session_id)
-                ->execute();
+            ->where('[session_key] = %s', $session_id)
+            ->execute();
     }
 
     /**
@@ -62,8 +62,8 @@ class SessionsManager extends CrudManager
     public function deleteByUser($user_id)
     {
         return $this->deleteFluent()
-                ->where('[session_user_id] = %i', $user_id)
-                ->execute();
+            ->where('[session_user_id] = %i', $user_id)
+            ->execute();
     }
 
     /**
@@ -75,19 +75,21 @@ class SessionsManager extends CrudManager
     public function updateBySessionsKey($session_key, ArrayHash $session_data)
     {
         return $this->updateFluent($session_data)
-                ->where('[session_key] = %s', $session_key)
-                ->execute();
+            ->where('[session_key] = %s', $session_key)
+            ->execute();
     }
 
     /**
-     * @param                        $user_id
-     * @param ArrayHash              $session_data
+     * @param           $user_id
+     * @param ArrayHash $session_data
+     *
+     * @return bool
      */
     public function updateByUser($user_id, ArrayHash $session_data)
     {
         return $this->updateFluent($session_data)
-                ->where('[session_user_id] = %i', $user_id)
-                ->execute();
+            ->where('[session_user_id] = %i', $user_id)
+            ->execute();
     }
     
     /**

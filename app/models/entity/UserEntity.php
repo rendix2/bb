@@ -3,7 +3,6 @@
 namespace App\Models\Entity;
 
 use App\Models\Entity\Base\Entity;
-use App\Models\Entity\UserEntity;
 use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
@@ -71,19 +70,19 @@ class UserEntity extends Entity
     
     /**
      *
-     * @var int $user_watch_count 
+     * @var int $user_watch_count
      */
     private $user_watch_count;
     
     /**
      *
-     * @var int $user_lang_id 
+     * @var int $user_lang_id
      */
     private $user_lang_id;
     
     /**
      *
-     * @var int $user_role_id 
+     * @var int $user_role_id
      */
     private $user_role_id;
     
@@ -113,7 +112,7 @@ class UserEntity extends Entity
     
     /**
      *
-     * @var string $user_activation_key 
+     * @var string $user_activation_key
      */
     private $user_activation_key;
 
@@ -305,163 +304,163 @@ class UserEntity extends Entity
     }
 
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return UserEntity
      */
     public static function setFromRow(Row $values)
     {
-        $user = new UserEntity();
+        $userEntity = new UserEntity();
 
         if (isset($values->user_id)) {
-            $user->setUser_id($values->user_id);
+            $userEntity->setUser_id($values->user_id);
         }
 
         if (isset($values->user_name)) {
-            $user->setUser_name($values->user_name);
+            $userEntity->setUser_name($values->user_name);
         }
 
         if (isset($values->user_password)) {
-            $user->setUser_password($values->user_password);
+            $userEntity->setUser_password($values->user_password);
         }
 
         if (isset($values->user_email)) {
-            $user->setUser_email($values->user_email);
+            $userEntity->setUser_email($values->user_email);
         }
 
         if (isset($values->user_signature)) {
-            $user->setUser_signature($values->user_signature);
+            $userEntity->setUser_signature($values->user_signature);
         }
 
         if (isset($values->user_active)) {
-            $user->setUser_active($values->user_active);
+            $userEntity->setUser_active($values->user_active);
         }
 
         if (isset($values->user_post_count)) {
-            $user->setUser_post_count($values->user_post_count);
+            $userEntity->setUser_post_count($values->user_post_count);
         }
 
         if (isset($values->user_topic_count)) {
-            $user->setUser_topic_count($values->user_topic_count);
+            $userEntity->setUser_topic_count($values->user_topic_count);
         }
 
         if (isset($values->user_thank_count)) {
-            $user->setUser_thank_count($values->user_thank_count);
+            $userEntity->setUser_thank_count($values->user_thank_count);
         }
 
         if (isset($values->user_watch_count)) {
-            $user->setUser_watch_count($values->user_watch_count);
+            $userEntity->setUser_watch_count($values->user_watch_count);
         }
 
         if (isset($values->user_lang_id)) {
-            $user->setUser_lang_id($values->user_lang_id);
+            $userEntity->setUser_lang_id($values->user_lang_id);
         }
 
         if (isset($values->user_role_id)) {
-            $user->setUser_role_id($values->user_role_id);
+            $userEntity->setUser_role_id($values->user_role_id);
         }
 
         if (isset($values->user_avatar)) {
-            $user->setUser_avatar($values->user_avatar);
+            $userEntity->setUser_avatar($values->user_avatar);
         }
 
         if (isset($values->user_register_time)) {
-            $user->setUser_register_time($values->user_register_time);
+            $userEntity->setUser_register_time($values->user_register_time);
         }
 
         if (isset($values->user_last_login_time)) {
-            $user->setUser_last_login_time($values->user_last_login_time);
+            $userEntity->setUser_last_login_time($values->user_last_login_time);
         }
 
         if (isset($values->user_last_post_time)) {
-            $user->setUser_last_post_time($values->user_last_post_time);
+            $userEntity->setUser_last_post_time($values->user_last_post_time);
         }
 
         if (isset($values->user_activation_key)) {
-            $user->setUser_activation_key($values->user_activation_key);
+            $userEntity->setUser_activation_key($values->user_activation_key);
         }
 
-        return $user;
+        return $userEntity;
     }
 
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $user = new UserEntity();
+        $userEntity = new UserEntity();
 
         if (isset($values->user_id)) {
-            $user->setUser_id($values->user_id);
+            $userEntity->setUser_id($values->user_id);
         }
 
         if (isset($values->user_name)) {
-            $user->setUser_name($values->user_name);
+            $userEntity->setUser_name($values->user_name);
         }
 
         if (isset($values->user_password)) {
-            $user->setUser_password($values->user_password);
+            $userEntity->setUser_password($values->user_password);
         }
 
         if (isset($values->user_email)) {
-            $user->setUser_email($values->user_email);
+            $userEntity->setUser_email($values->user_email);
         }
 
         if (isset($values->user_signature)) {
-            $user->setUser_signature($values->user_signature);
+            $userEntity->setUser_signature($values->user_signature);
         }
 
         if (isset($values->user_active)) {
-            $user->setUser_active($values->user_active);
+            $userEntity->setUser_active($values->user_active);
         }
 
         if (isset($values->user_post_count)) {
-            $user->setUser_post_count($values->user_post_count);
+            $userEntity->setUser_post_count($values->user_post_count);
         }
 
         if (isset($values->user_topic_count)) {
-            $user->setUser_topic_count($values->user_topic_count);
+            $userEntity->setUser_topic_count($values->user_topic_count);
         }
 
         if (isset($values->user_thank_count)) {
-            $user->setUser_thank_count($values->user_thank_count);
+            $userEntity->setUser_thank_count($values->user_thank_count);
         }
 
         if (isset($values->user_watch_count)) {
-            $user->setUser_watch_count($values->user_watch_count);
+            $userEntity->setUser_watch_count($values->user_watch_count);
         }
 
         if (isset($values->user_lang_id)) {
-            $user->setUser_lang_id($values->user_lang_id);
+            $userEntity->setUser_lang_id($values->user_lang_id);
         }
 
         if (isset($values->user_role_id)) {
-            $user->setUser_role_id($values->user_role_id);
+            $userEntity->setUser_role_id($values->user_role_id);
         }
 
         if (isset($values->user_avatar)) {
-            $user->setUser_avatar($values->user_avatar);
+            $userEntity->setUser_avatar($values->user_avatar);
         }
 
         if (isset($values->user_register_time)) {
-            $user->setUser_register_time($values->user_register_time);
+            $userEntity->setUser_register_time($values->user_register_time);
         }
 
         if (isset($values->user_last_login_time)) {
-            $user->setUser_last_login_time($values->user_last_login_time);
+            $userEntity->setUser_last_login_time($values->user_last_login_time);
         }
 
         if (isset($values->user_last_post_time)) {
-            $user->setUser_last_post_time($values->user_last_post_time);
+            $userEntity->setUser_last_post_time($values->user_last_post_time);
         }
 
         if (isset($values->user_activation_key)) {
-            $user->setUser_activation_key($values->user_activation_key);
+            $userEntity->setUser_activation_key($values->user_activation_key);
         }
 
-        return $user;
+        return $userEntity;
     }
 
     /**
-     * 
+     *
      * @return array
      */
     public function getArray()

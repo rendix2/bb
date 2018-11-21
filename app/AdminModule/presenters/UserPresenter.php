@@ -172,7 +172,7 @@ class UserPresenter extends AdminPresenter
         $form->addCheckbox('user_active', 'User active:');
 
         return $this->addSubmitB($form);
-    }    
+    }
 
     /**
      *

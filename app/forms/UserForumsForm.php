@@ -46,7 +46,7 @@ class UserForumsForm extends Control
         ForumsManager       $forumsManager,
         Users2ForumsManager $users2ForumsManager,
         ITranslator         $translator
-    ) {   
+    ) {
         parent::__construct();
         
         $this->forumsManager       = $forumsManager;
@@ -55,7 +55,7 @@ class UserForumsForm extends Control
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -173,27 +173,5 @@ class UserForumsForm extends Control
         
         $this->presenter->flashMessage('Forum was saved.', BasePresenter::FLASH_MESSAGE_SUCCESS);
         $this->presenter->redirect('User:edit', $user_id);
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return array
-     */
-    private function map(array $data)
-    {
-        $result = [];
-
-        foreach ($this->forumsManager->getAllCached() as $value) {
-            $result[$value->forum_id] = false;
-
-            foreach ($data as $value2) {
-                if ($value->forum_id === (int)$value2) {
-                    $result[$value->forum_id] = true;
-                }
-            }
-        }
-
-        return $result;
     }
 }

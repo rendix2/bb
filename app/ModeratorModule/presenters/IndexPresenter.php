@@ -27,7 +27,7 @@ class IndexPresenter extends BasePresenter
      */
     public function __construct(PostsManager $manager)
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
     
     /**

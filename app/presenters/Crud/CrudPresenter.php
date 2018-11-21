@@ -80,7 +80,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     }
     
     /**
-     * 
+     * CrudPresenter destructor.
      */
     public function __destruct()
     {

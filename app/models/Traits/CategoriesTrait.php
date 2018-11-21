@@ -19,9 +19,9 @@ trait CategoriesTrait {
     public $categoriesManager;
     
     /**
-     * 
+     *
      * @param int $category_id
-     * 
+     *
      * @return CategoryEntity
      */
     public function checkCategoryParam($category_id)

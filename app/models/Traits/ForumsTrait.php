@@ -22,8 +22,8 @@ trait ForumsTrait
      *
      * @param int $forum_id
      * @param int $category_id
-     * 
-     * @return \App\Models\Entity\ForumEntity
+     *
+     * @return ForumEntity
      *
      */
     public function checkForumParam($forum_id, $category_id = null)

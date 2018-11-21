@@ -141,7 +141,7 @@ class RankPresenter extends AdminPresenter
         $this->gf->addFilter('delete', null, GridFilter::NOTHING);
             
         return $this->gf;
-    }    
+    }
 
     /**
      * @return BreadCrumbControl

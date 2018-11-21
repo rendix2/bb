@@ -250,6 +250,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
      * @param int $item_id
      *
      * @return Row|false
+     * @throws InvalidArgumentException
      */
     public function getById($item_id)
     {
@@ -281,7 +282,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
         }
 
         return $cachedValues;
-    }    
+    }
 
     /**
      * @param array $item_id
@@ -322,7 +323,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     {
         return $this->getCountPrimaryKeyFluent()
             ->fetchSingle();
-    }    
+    }
 
     /**
      * @return int
@@ -485,6 +486,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
      * @param int $item_id
      *
      * @return Result|int
+     * @throws InvalidArgumentException
      */
     public function delete($item_id)
     {
@@ -530,15 +532,12 @@ abstract class CrudManager extends Manager //implements ICrudManager
             ->where('[%n IN %in', $this->primaryKey, $item_id)
             ->execute(dibi::AFFECTED_ROWS);
     }
-    
+
     /**
-     * 
-     * @param int       $item_id
+     *
      * @param ArrayHash $item_data
-     * 
-     * @return int
-     * 
-     * @throws InvalidArgumentException
+     *
+     * @return Fluent
      */
     public function updateFluent(ArrayHash $item_data)
     {
@@ -549,10 +548,11 @@ abstract class CrudManager extends Manager //implements ICrudManager
     }
 
     /**
-     * @param int       $item_id
+     * @param int $item_id
      * @param ArrayHash $item_data
      *
      * @return Result|int
+     * @throws InvalidArgumentException
      */
     public function update($item_id, ArrayHash $item_data)
     {
@@ -577,7 +577,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     {
         $this->deleteCache($item_id);
         
-        return $this->updateFluent($item_id, $item_data)
+        return $this->updateFluent($item_data)
             ->where('%n IN %in', $this->primaryKey, $item_id)
             ->execute(dibi::AFFECTED_ROWS);
     }
