@@ -85,7 +85,7 @@ class PermissionFactory
         $this->allow($permission, PostScope::ROLE_EDITOR, PostScope::ACTION_EDIT);
         $this->allow($permission, TopicScope::ROLE_EDITOR, TopicScope::ACTION_EDIT);
                 
-        $this->allow($permission, PostScope::ROLE_DELETER, PostScope::ACTION_DELETE);                     
+        $this->allow($permission, PostScope::ROLE_DELETER, PostScope::ACTION_DELETE);
         $this->allow($permission, TopicScope::ROLE_DELETER, TopicScope::ACTION_DELETE);
         
         $this->allow($permission, PostScope::ROLE_HISTORIER, PostScope::ACTION_HISTORY);

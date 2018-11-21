@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Entity\PollEntityEntity;
+use App\Models\Entity\PollEntity;
 
 /**
  * Description of PollsFacade
@@ -81,11 +81,11 @@ class PollsFacade
     }
 
     /**
-     * 
-     * @param PollEntityEntity $poll
+     *
+     * @param PollEntity $poll
      */
-    public function add(PollEntityEntity $poll)
-    {        
+    public function add(PollEntity $poll)
+    {
         $poll_id = $this->pollsManager->add($poll->getArrayHash());
         
         $poll->setPoll_id($poll_id);
@@ -97,10 +97,10 @@ class PollsFacade
     }
     
     /**
-     * 
-     * @param PollEntityEntity $poll
+     *
+     * @param PollEntity $poll
      */
-    public function update(PollEntityEntity $poll)
+    public function update(PollEntity $poll)
     {
         $this->pollsManager->update($poll->getPoll_id(), $poll->getArrayHash());
         
@@ -116,9 +116,9 @@ class PollsFacade
     }
 
     /**
-     * @param PollEntityEntity $poll
+     * @param PollEntity $poll
      */
-    public function delete(PollEntityEntity $poll)
+    public function delete(PollEntity $poll)
     {
         $this->pollsManager->delete($poll->getPoll_id());
         $this->pollsAnswersManager->deleteByPoll($poll->getPoll_id());

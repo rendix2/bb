@@ -2,7 +2,6 @@
 
 namespace App\Models\Entity;
 
-use App\Models\Entity\TopicWatchEntity;
 use Dibi\Row;
 use Nette\Neon\Entity;
 use Nette\Utils\ArrayHash;
@@ -67,39 +66,39 @@ class TopicWatchEntity extends Entity
     }
     
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return TopicWatchEntity
      */
     public static function setFromRow(Row $values)
     {
-        $topicWatch = new TopicWatchEntity();
-        $topicWatch->setId($values->id)
+        $topicWatchEntity = new TopicWatchEntity();
+        $topicWatchEntity->setId($values->id)
                    ->setTopic_id($values->topic_id)
                    ->setUser_id($values->user_id);
         
-        return $topicWatch;
-    } 
+        return $topicWatchEntity;
+    }
     
     /**
-     * 
+     *
      * @param ArrayHash $values
-     * 
+     *
      * @return TopicWatchEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $topicWatch = new TopicWatchEntity();
-        $topicWatch->setId($values->id)
+        $topicWatchEntity = new TopicWatchEntity();
+        $topicWatchEntity->setId($values->id)
                    ->setTopic_id($values->topic_id)
                    ->setUser_id($values->user_id);
         
-        return $topicWatch;        
+        return $topicWatchEntity;
     }
 
-        /**
-     * 
+    /**
+     *
      * @return array
      */
     public function getArray()
@@ -119,5 +118,5 @@ class TopicWatchEntity extends Entity
         }
         
         return $res;
-    }   
+    }
 }

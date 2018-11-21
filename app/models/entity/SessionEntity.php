@@ -100,73 +100,73 @@ class SessionEntity extends Entity
     }
 
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return SessionEntity
      */
     public static function setFromRow(Row $values)
     {
-        $session = new SessionEntity();
+        $sessionEntity = new SessionEntity();
       
         if (isset($values->session_id)) {
-            $session->setSession_id($values->session_id);
+            $sessionEntity->setSession_id($values->session_id);
         }
         
         if (isset($values->session_user_id)) {
-            $session->setSession_user_id($values->session_user_id);
+            $sessionEntity->setSession_user_id($values->session_user_id);
         }
         
         if (isset($values->session_key)) {
-            $session->setSession_key($values->session_key);
+            $sessionEntity->setSession_key($values->session_key);
         }
         
         if (isset($values->session_from)) {
-            $session->setSession_from($values->session_from);
+            $sessionEntity->setSession_from($values->session_from);
         }
         
         if (isset($values->session_last_activity)) {
-            $session->setSession_last_activity($values->session_last_activity);
+            $sessionEntity->setSession_last_activity($values->session_last_activity);
         }
         
-        return $session;
+        return $sessionEntity;
     }
     
     /**
-     * 
+     *
      * @param ArrayHash $values
-     * 
+     *
      * @return SessionEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $session = new SessionEntity();
+        $sessionEntity = new SessionEntity();
       
         if (isset($values->session_id)) {
-            $session->setSession_id($values->session_id);
+            $sessionEntity->setSession_id($values->session_id);
         }
         
         if (isset($values->session_user_id)) {
-            $session->setSession_user_id($values->session_user_id);
+            $sessionEntity->setSession_user_id($values->session_user_id);
         }
         
         if (isset($values->session_key)) {
-            $session->setSession_key($values->session_key);
+            $sessionEntity->setSession_key($values->session_key);
         }
         
         if (isset($values->session_from)) {
-            $session->setSession_from($values->session_from);
+            $sessionEntity->setSession_from($values->session_from);
         }
         
         if (isset($values->session_last_activity)) {
-            $session->setSession_last_activity($values->session_last_activity);
+            $sessionEntity->setSession_last_activity($values->session_last_activity);
         }
         
-        return $session;
+        return $sessionEntity;
     }
 
     /**
-     * 
+     *
      * @return array
      */
     public function getArray()
@@ -191,7 +191,7 @@ class SessionEntity extends Entity
 
         if (isset($this->session_last_activity)) {
             $res['session_last_activity'] = $this->session_last_activity;
-        }        
+        }
         
         return $res;
     }

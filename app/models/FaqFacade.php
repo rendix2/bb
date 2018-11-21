@@ -36,7 +36,7 @@ class FaqFacade
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

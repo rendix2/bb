@@ -67,7 +67,7 @@ class TopicWatchFacade
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -108,6 +108,8 @@ class TopicWatchFacade
     /**
      *
      * @param TopicEntity $topic
+     *
+     * @return \Dibi\Result|int
      */
     public function deleteByTopic(TopicEntity $topic)
     {
@@ -129,7 +131,7 @@ class TopicWatchFacade
      * @param PostEntity $post
      */
     public function deleteByPost(PostEntity $post)
-    {       
+    {
         $postCount = $this->postsManager->getCountOfUsersByTopicId($post->getPost_topic_id());
 
         foreach ($postCount as $ps) {
@@ -143,6 +145,6 @@ class TopicWatchFacade
                     $this->usersManager->update($post->getPost_user_id(), ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1']));
                 }
             }
-        }        
+        }
     }
 }

@@ -57,7 +57,7 @@ class ReportFacade
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

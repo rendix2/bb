@@ -12,11 +12,11 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  * @package App\Models\Entity
  */
-class PollEntityEntity extends Entity
+class PollEntity extends Entity
 {
     /**
      *
-     * @var int $poll_id 
+     * @var int $poll_id
      */
     private $poll_id;
     
@@ -100,84 +100,86 @@ class PollEntityEntity extends Entity
     }
 
     /**
-     * 
+     *
      * @param Row $values
-     * 
-     * @return PollEntityEntity
+     *
+     * @return PollEntity
      */
     public static function setFromRow(Row $values)
-    { 
-        $poll = new PollEntityEntity();
-        
-       if (isset($values->poll_id)) {
-           $poll->setPoll_id($values->poll_id);
-       }
-       
-       if (isset($values->poll_topic_id)) {
-           $poll->setPoll_topic_id($values->poll_topic_id);
-       }
+    {
+        $poll = new PollEntity();
 
-       if (isset($values->poll_question)) {
-           $poll->setPoll_question($values->poll_question);
-       }
-       
-       if (isset($values->poll_time_to)) {
-           $poll->setPoll_time_to($values->poll_time_to);
-       }       
-        
+        if (isset($values->poll_id)) {
+            $poll->setPoll_id($values->poll_id);
+        }
+
+        if (isset($values->poll_topic_id)) {
+            $poll->setPoll_topic_id($values->poll_topic_id);
+        }
+
+        if (isset($values->poll_question)) {
+            $poll->setPoll_question($values->poll_question);
+        }
+
+        if (isset($values->poll_time_to)) {
+            $poll->setPoll_time_to($values->poll_time_to);
+        }
+
         return $poll;
     }
-    
+
     /**
-     * 
+     *
      * @param Row $values
-     * 
-     * @return PollEntityEntity
+     *
+     * @return PollEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $poll = new PollEntityEntity();
-        
-       if (isset($values->poll_id)) {
-           $poll->setPoll_id($values->poll_id);
-       }
-       
-       if (isset($values->poll_topic_id)) {
-           $poll->setPoll_topic_id($values->poll_topic_id);
-       }
+        $poll = new PollEntity();
 
-       if (isset($values->poll_question)) {
-           $poll->setPoll_question($values->poll_question);
-       }
-       
-       if (isset($values->poll_time_to)) {
-           $poll->setPoll_time_to($values->poll_time_to);
-       }       
-        
+        if (isset($values->poll_id)) {
+            $poll->setPoll_id($values->poll_id);
+        }
+
+        if (isset($values->poll_topic_id)) {
+            $poll->setPoll_topic_id($values->poll_topic_id);
+        }
+
+        if (isset($values->poll_question)) {
+            $poll->setPoll_question($values->poll_question);
+        }
+
+        if (isset($values->poll_time_to)) {
+            $poll->setPoll_time_to($values->poll_time_to);
+        }
+
         return $poll;
     }
-    
-    
+
+    /**
+     * @return array
+     */
     public function getArray()
     {
-       $res = [];
-       
-       if (isset($this->poll_id)) {
-           $res['poll_id'] = $this->poll_id;
-       }
-       
-       if (isset($this->poll_topic_id)) {
-           $res['poll_topic_id'] = $this->poll_topic_id;
-       }
+        $res = [];
 
-       if (isset($this->poll_question)) {
-           $res['poll_question'] = $this->poll_question;
-       }
+        if (isset($this->poll_id)) {
+            $res['poll_id'] = $this->poll_id;
+        }
 
-       if (isset($this->poll_time_to)) {
-           $res['poll_time_to'] = $this->poll_time_to;
-       }
+        if (isset($this->poll_topic_id)) {
+            $res['poll_topic_id'] = $this->poll_topic_id;
+        }
 
-       return $res;
+        if (isset($this->poll_question)) {
+            $res['poll_question'] = $this->poll_question;
+        }
+
+        if (isset($this->poll_time_to)) {
+            $res['poll_time_to'] = $this->poll_time_to;
+        }
+
+        return $res;
     }
 }

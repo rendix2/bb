@@ -4,9 +4,9 @@ namespace App\Models;
 
 use App\Models\Crud\CrudManager;
 use dibi;
+use Dibi\Connection;
 use Dibi\Fluent;
 use Dibi\Row;
-use Dibi\Connection;
 use Nette\Caching\IStorage;
 use Zebra_Mptt;
 
@@ -108,14 +108,14 @@ class ForumsManager extends CrudManager {
     public function getParentForumsByForumId($forum_id)
     {
         return $this->dibi
-                        ->select('f2.*')
-                        ->from($this->getTable())
-                        ->as('f1')
-                        ->innerJoin($this->getTable())
-                        ->as('f2')
-                        ->on('[f1.forum_parent_id] = [f2.forum_id]')
-                        ->where('[f1.forum_id] = %i', $forum_id)
-                        ->fetch();
+            ->select('f2.*')
+            ->from($this->getTable())
+            ->as('f1')
+            ->innerJoin($this->getTable())
+            ->as('f2')
+            ->on('[f1.forum_parent_id] = [f2.forum_id]')
+            ->where('[f1.forum_id] = %i', $forum_id)
+            ->fetch();
     }
 
     /**
@@ -126,16 +126,16 @@ class ForumsManager extends CrudManager {
     public function getAllForumsFirstLevel($category_id)
     {
         return $this->getAllFluent()
-                        ->where('[forum_category_id] = %i', $category_id)
-                        ->where('[forum_active] = %i', 1)
-                        ->where('[forum_parent_id] = %i', 0)
-                        ->orderBy('forum_order', dibi::ASC)
-                        ->fetchAll();
+            ->where('[forum_category_id] = %i', $category_id)
+            ->where('[forum_active] = %i', 1)
+            ->where('[forum_parent_id] = %i', 0)
+            ->orderBy('forum_order', dibi::ASC)
+            ->fetchAll();
     }
 
     /**
      * @param iterable $forums
-     * @param int      $forum_parent_id
+     * @param int $forum_parent_id
      *
      * @return array
      */
@@ -147,7 +147,8 @@ class ForumsManager extends CrudManager {
             if ($forum->forum_parent_id === $forum_parent_id) {
                 $result[$forum->forum_id] = $forum;
                 $result[$forum->forum_id]['childs'] = $this->createForums(
-                        $forums, $forum->forum_id
+                    $forums,
+                    $forum->forum_id
                 );
             }
         }
@@ -192,5 +193,4 @@ class ForumsManager extends CrudManager {
 
         return $bcForum;
     }
-
 }

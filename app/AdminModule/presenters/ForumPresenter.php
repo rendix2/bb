@@ -82,7 +82,7 @@ class ForumPresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -170,14 +170,14 @@ class ForumPresenter extends AdminPresenter
             $this[self::FORM_NAME]->setDefaults([]);
         }
     }
-    
+
     /**
      * @param int $id
      */
     public function actionDelete($id)
     {
-       $forumDibi = $this->getManager()->getById($id);
-       $forum     = ForumEntity::setFromRow($forumDibi);
+        $forumDibi = $this->getManager()->getById($id);
+        $forum     = ForumEntity::setFromRow($forumDibi);
 
         $result = $this->forumFacade->delete($forum);
 
@@ -260,7 +260,7 @@ class ForumPresenter extends AdminPresenter
         }
 
         $this->redirect(':' . $this->getName() . ':default');
-    }    
+    }
     
     /**
      *

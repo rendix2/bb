@@ -88,7 +88,7 @@ class PostsManager extends CrudManager
     public function getLast()
     {
         return $this->getAllFluent()
-            ->innerJoin(self::TOPICS_TABLE)               
+            ->innerJoin(self::TOPICS_TABLE)
             ->on('[post_topic_id] = [topic_id]')
             ->where('[post_id] = ', $this->dibi
                 ->select('MAX(post_id)')
@@ -104,12 +104,12 @@ class PostsManager extends CrudManager
     public function getLastByForum($forum_id)
     {
         return $this->getAllFluent()
-                ->where('[post_id] = ',
-                    $this->dibi
+            ->where('[post_id] = ',
+                $this->dibi
                     ->select('MAX(post_id)')
                     ->from($this->getTable())
                     ->where('[post_forum_id] = %i', $forum_id)
-                )->fetch();
+            )->fetch();
     }
 
     /**
@@ -120,14 +120,14 @@ class PostsManager extends CrudManager
     public function getLastByTopic($topic_id)
     {
         return $this->getAllFluent()
-                ->where('[post_id] = ',
-                    $this->dibi
-                        ->select('MAX(post_id)')
-                        ->from($this->getTable())
-                        ->where('[post_topic_id] = %i', $topic_id)
-                )->fetch();
+            ->where('[post_id] = ',
+                $this->dibi
+                    ->select('MAX(post_id)')
+                    ->from($this->getTable())
+                    ->where('[post_topic_id] = %i', $topic_id)
+            )->fetch();
     }
-    
+
     /**
      * @param int $topic_id
      *
@@ -136,12 +136,12 @@ class PostsManager extends CrudManager
     public function getFirstByTopic($topic_id)
     {
         return $this->getAllFluent()
-                ->where('[post_id] = ',
-                    $this->dibi
-                        ->select('MIN(post_id)')
-                        ->from($this->getTable())
-                        ->where('[post_topic_id] = %i', $topic_id)
-                )->fetch();
+            ->where('[post_id] = ',
+                $this->dibi
+                    ->select('MIN(post_id)')
+                    ->from($this->getTable())
+                    ->where('[post_topic_id] = %i', $topic_id)
+            )->fetch();
     }
 
     /**
@@ -170,21 +170,21 @@ class PostsManager extends CrudManager
 
         return $cached;
     }
-    
+
     /**
      * @return Row|false
      */
     public function getUserWithMostPosts()
     {
         return $this->dibi
-                ->select('COUNT(p.post_id) AS post_count, u.user_id, u.user_name')
-                ->from($this->getTable())
-                ->as('p')
-                ->innerJoin(self::USERS_TABLE)
-                ->as('u')
-                ->on('[p.post_user_id] = [u.user_id]')
-                ->groupBy('post_user_id', dibi::ASC)
-                ->fetch();
+            ->select('COUNT(p.post_id) AS post_count, u.user_id, u.user_name')
+            ->from($this->getTable())
+            ->as('p')
+            ->innerJoin(self::USERS_TABLE)
+            ->as('u')
+            ->on('[p.post_user_id] = [u.user_id]')
+            ->groupBy('post_user_id', dibi::ASC)
+            ->fetch();
     }
 
     /**
@@ -240,7 +240,7 @@ class PostsManager extends CrudManager
             ->where('MATCH([p.post_title],[p.post_text]) AGAINST(%s IN BOOLEAN MODE)', $post_text)
             ->fetchAll();
     }
-    
+
     /**
      *
      * @param int $user_id
@@ -250,12 +250,12 @@ class PostsManager extends CrudManager
     public function getLastByUser($user_id)
     {
         return $this->getAllFluent()
-                ->where('[post_id] = ',
-                    $this->dibi
-                        ->select('MAX(post_id)')
-                        ->from($this->getTable())
-                        ->where('[post_user_id] = %i', $user_id)
-                )->fetch();
+            ->where('[post_id] = ',
+                $this->dibi
+                    ->select('MAX(post_id)')
+                    ->from($this->getTable())
+                    ->where('[post_user_id] = %i', $user_id)
+            )->fetch();
     }
 
     /**
@@ -277,23 +277,23 @@ class PostsManager extends CrudManager
                 
         return $this->add(ArrayHash::from($post->toArray()));
     }
-    
+
     /**
      *
      * @param string $post_text
-     * @param int    $user_id
-     * @param int    $time
+     * @param int $user_id
+     * @param int $time
      *
      * @return int
      */
     public function checkDoublePost($post_text, $user_id, $time)
     {
         return $this->dibi
-                ->select('1')
-                ->from($this->getTable())
-                ->where('[post_text] = %s', $post_text)
-                ->where('[post_user_id] = %i', $user_id)
-                ->where('[post_add_time] >= %i', $time)
-                ->fetchSingle();
+            ->select('1')
+            ->from($this->getTable())
+            ->where('[post_text] = %s', $post_text)
+            ->where('[post_user_id] = %i', $user_id)
+            ->where('[post_add_time] >= %i', $time)
+            ->fetchSingle();
     }
 }

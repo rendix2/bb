@@ -103,7 +103,7 @@ class TranslatorFactory
     public function createAdminTranslatorFactory()
     {
         if (!$this->adminTranslator) {
-            $this->adminTranslator = new Translator($this->appDir, 'Admin', $this->lang);   
+            $this->adminTranslator = new Translator($this->appDir, 'Admin', $this->lang);
         }
         
         return $this->adminTranslator;

@@ -166,7 +166,7 @@ class BBMailer
         ];
         
         $emails      = $this->usersManager->getAllByEmails($this->recipients);
-        $email_id    = $this->manager->add(ArrayHash::from($item_data));        
+        $email_id    = $this->manager->add(ArrayHash::from($item_data));
         $emailsArray = \App\Utils::arrayObjectColumn($emails, 'user_id');
         
         $this->mails2users->addByLeft($email_id, $emailsArray);

@@ -108,7 +108,7 @@ class ReportForm extends Control
             $this->presenter->redirect('Topic:default', $category_id, $forum_id, $topic_id, $page);
         } elseif ($presenter instanceof TopicPresenter) {
             $this->presenter->redirect('Forum:default', $category_id, $forum_id, $page);
-        } elseif ($presenter instanceof PmPresenter){
+        } elseif ($presenter instanceof PmPresenter) {
             $this->presenter->redirect('Pm:default');
         } elseif ($presenter instanceof UserPresenter) {
             $this->presenter->redirect('User:profile', $reported_user_id);

@@ -27,7 +27,7 @@ trait PostTrait
      * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
-     * 
+     *
      * @return PostEntity
      */
     public function checkPostParam($post_id, $category_id, $forum_id, $topic_id)
@@ -46,7 +46,7 @@ trait PostTrait
             $this->error('Post was not found.');
         }
         
-        $post = PostEntity::setFromRow($postDibi);        
+        $post = PostEntity::setFromRow($postDibi);
 
         if ($post->getPost_category_id() !== (int)$category_id) {
             $this->error('Category param does not match.', IResponse::S403_FORBIDDEN);

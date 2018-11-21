@@ -10,7 +10,7 @@ use App\Controls\BreadCrumbControl;
 use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\Entity\FileEntity;
-use App\Models\Entity\PollEntityEntity;
+use App\Models\Entity\PollEntity;
 use App\Models\Entity\PostEntity;
 use App\Models\Manager;
 use App\Models\PollsFacade;
@@ -23,8 +23,6 @@ use App\Models\TopicWatchManager;
 use App\Models\Traits\CategoriesTrait;
 use App\Models\Traits\UsersTrait;
 use App\Settings\PostSetting;
-use Nette\Application\AbortException;
-use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
@@ -108,8 +106,10 @@ class PostPresenter extends BaseForumPresenter
      * @inject
      */
     public $posts2FilesManager;
-    
+
     /**
+     * PostPresenter constructor.
+     *
      * @param PostsManager $manager
      */
     public function __construct(PostsManager $manager)
@@ -118,7 +118,7 @@ class PostPresenter extends BaseForumPresenter
     }
     
     /**
-     * 
+     *´PostPresenter destructor.
      */
     public function __destruct()
     {
@@ -158,7 +158,7 @@ class PostPresenter extends BaseForumPresenter
             $pollTimeStamp = $pollDibi->poll_time_to;
             unset($pollDibi->poll_time_to);
         
-            $pollEntity = PollEntityEntity::setFromRow($pollDibi);
+            $pollEntity = PollEntity::setFromRow($pollDibi);
             $pollEntity->setPoll_time_to(DateTime::from($pollTimeStamp));
         
             $topic->setPoll($pollEntity);
@@ -195,7 +195,7 @@ class PostPresenter extends BaseForumPresenter
         $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
         $forumScope = $this->loadForum($forum);
         
-        if ($post_id === null) {                            
+        if ($post_id === null) {
             $this->requireAccess($forumScope, ForumScope::ACTION_POST_ADD);
         } else {
             $this->requireAccess($forumScope, ForumScope::ACTION_POST_UPDATE);
@@ -352,7 +352,7 @@ class PostPresenter extends BaseForumPresenter
         $post_id     = $this->getParameter('post_id');
         $user_id     = $this->user->id;
         
-        if(count($values->files)) {
+        if (count($values->files)) {
             $postFiles = [];
             $filesDir = $this->postSetting->get()['filesDir'];
             

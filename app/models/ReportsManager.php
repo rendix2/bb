@@ -51,8 +51,8 @@ class ReportsManager extends CrudManager
     public function deleteByPost($post_id)
     {
         return $this->deleteFluent()
-                ->where('[report_post_id] = %i', $post_id)
-                ->execute();
+            ->where('[report_post_id] = %i', $post_id)
+            ->execute();
     }
 
     /**
@@ -64,8 +64,8 @@ class ReportsManager extends CrudManager
     public function deleteByForum($forum_id)
     {
         return $this->deleteFluent()
-                ->where('[report_forum_id] = %i', $forum_id)
-                ->execute();
+            ->where('[report_forum_id] = %i', $forum_id)
+            ->execute();
     }
 
     /**
@@ -77,10 +77,10 @@ class ReportsManager extends CrudManager
     public function deleteByUser($user_id)
     {
         return $this->deleteFluent()
-                ->where('[report_user_id] = %i', $user_id)
-                ->execute();
+            ->where('[report_user_id] = %i', $user_id)
+            ->execute();
     }
-    
+
     /**
      *
      * @param int $topic_id
@@ -90,10 +90,10 @@ class ReportsManager extends CrudManager
     public function deleteByTopic($topic_id)
     {
         return $this->deleteFluent()
-                ->where('[report_topic_id] = %i', $topic_id)
-                ->execute();
+            ->where('[report_topic_id] = %i', $topic_id)
+            ->execute();
     }
-    
+
     /**
      *
      * @param array $post_ids
@@ -103,23 +103,23 @@ class ReportsManager extends CrudManager
     public function deleteByPosts(array $post_ids)
     {
         return $this->deleteFluent()
-                ->where('[report_post_id] IN %in', $post_ids)
-                ->execute();
+            ->where('[report_post_id] IN %in', $post_ids)
+            ->execute();
     }
-    
+
     /**
-     * 
-     * @param int $post_id
+     *
+     * @param int       $post_id
      * @param ArrayHash $item_data
-     * 
-     * @return type
+     *
+     * @return Result|int
      */
     public function updateByPost($post_id, ArrayHash $item_data)
     {
         return $this->updateFluent($item_data)
             ->where('[report_post_id] = %i', $post_id)
             ->execute();
-    }    
+    }
 
     /**
      *
@@ -136,10 +136,10 @@ class ReportsManager extends CrudManager
     }
     
     /**
-     * 
+     *
      * @param int       $forum_id
      * @param ArrayHash $item_data
-     * 
+     *
      * @return bool
      */
     public function updateByForum($forum_id, ArrayHash $item_data)
@@ -147,5 +147,5 @@ class ReportsManager extends CrudManager
         return $this->updateFluent($item_data)
             ->where('[report_forum_id] = %i', $forum_id)
             ->execute();
-    }    
+    }
 }

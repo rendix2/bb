@@ -3,6 +3,7 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
+use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Models\ReportsManager;
@@ -27,21 +28,21 @@ class ReportPresenter extends AdminPresenter
     }
     
     /**
-     * @return BootStrapForm
+     * @return BootstrapForm
      */
     protected function createComponentEditForm()
     {
         $values = [
-                0 => 'Added',
-                1 => 'Fixed'
-            ];
+            0 => 'Added',
+            1 => 'Fixed'
+        ];
         
         $form = $this->getBootstrapForm();
         
         $form->addSelect('report_status', 'Report status:', $values);
 
         return $this->addSubmitB($form);
-    }    
+    }
     
     /**
      *
@@ -68,7 +69,7 @@ class ReportPresenter extends AdminPresenter
                 0 => 'report_added'
             ]
         );
-        $this->gf->addFilter('edit',  null, GridFilter::NOTHING);
+        $this->gf->addFilter('edit', null, GridFilter::NOTHING);
         $this->gf->addFilter('delete', null, GridFilter::NOTHING);
 
         return $this->gf;

@@ -46,7 +46,7 @@ class UserResetPasswordForm extends Control
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

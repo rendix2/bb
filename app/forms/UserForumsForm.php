@@ -46,7 +46,7 @@ class UserForumsForm extends Control
         ForumsManager       $forumsManager,
         Users2ForumsManager $users2ForumsManager,
         ITranslator         $translator
-    ) {   
+    ) {
         parent::__construct();
         
         $this->forumsManager       = $forumsManager;
@@ -55,7 +55,7 @@ class UserForumsForm extends Control
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

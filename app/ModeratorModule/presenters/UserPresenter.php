@@ -39,6 +39,6 @@ class UserPresenter extends ModeratorPresenter
      */
     protected function createComponentGridFilter()
     {
-        return null;
+        return $this->gf;
     }
 }

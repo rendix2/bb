@@ -144,7 +144,7 @@ class UserPresenter extends BaseForumPresenter
     }
 
     /**
-     *
+     * UserPresenter destructor.
      */
     public function __destruct()
     {
@@ -557,10 +557,10 @@ class UserPresenter extends BaseForumPresenter
         return $form;
     }
     
-    /**	
+    /**
      * @param Form      $form
      * @param ArrayHash $values
-     */	
+     */
     public function editUserOnValidate(Form $form, ArrayHash $values)
     {
     }

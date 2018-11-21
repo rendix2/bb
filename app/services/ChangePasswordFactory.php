@@ -57,7 +57,7 @@ class ChangePasswordFactory
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

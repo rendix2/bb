@@ -144,7 +144,7 @@ class CrudNullManager extends CrudManager implements ICrudManager
     }
 
     /**
-     *
+     * @param int|null $item_id
      */
     public function deleteCache($item_id = null)
     {

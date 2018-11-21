@@ -85,7 +85,7 @@ class RecountManager extends Manager
     }
 
     /**
-     * 
+     *
      */
     public function recountUsersTopicCount()
     {
@@ -122,7 +122,7 @@ class RecountManager extends Manager
     }
 
     /**
-     * 
+     *
      */
     public function recountUsersTopicWatchCount()
     {

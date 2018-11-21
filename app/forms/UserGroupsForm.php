@@ -48,7 +48,7 @@ class UserGroupsForm extends Control
         GroupsManager       $groupsManager,
         Users2GroupsManager $users2GroupsManager,
         ITranslator         $translator
-    ){
+    ) {
         parent::__construct();
         
         $this->groupsManager       = $groupsManager;

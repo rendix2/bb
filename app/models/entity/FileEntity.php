@@ -35,7 +35,7 @@ class FileEntity extends Entity
     
     /**
      *
-     * @var string $file_extesions
+     * @var string $file_extension
      */
     private $file_extension;
     
@@ -102,7 +102,7 @@ class FileEntity extends Entity
 
     /**
      * 
-     * @return []
+     * @return array
      */
     public function getArray()
     {
@@ -139,29 +139,29 @@ class FileEntity extends Entity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $file = new FileEntity();
+        $fileEntity = new FileEntity();
         
         if (isset($values->file_id)) {
-            $file->setFile_id($values->file_id);
+            $fileEntity->setFile_id($values->file_id);
         }
         
-        if (isset($this->file_orig_name)) {
-            $this->setFile_orig_name($this->file_orig_name);
+        if (isset($values->file_orig_name)) {
+            $fileEntity->setFile_orig_name($values->file_orig_name);
         }
         
         if (isset($values->file_name)) {
-            $file->setFile_name($values->file_name);
+            $fileEntity->setFile_name($values->file_name);
         }
 
         if (isset($values->file_extension)) {
-            $file->setFile_extension($values->file_extension);
+            $fileEntity->setFile_extension($values->file_extension);
         }
 
         if (isset($values->file_size)) {
-            $file->setFile_size($values->file_size);
+            $fileEntity->setFile_size($values->file_size);
         }      
         
-        return $file;
+        return $fileEntity;
     }
     
     /**
@@ -172,29 +172,28 @@ class FileEntity extends Entity
      */
     public static function setFromRow(Row $values)
     {
-        $file = new FileEntity();
+        $fileEntity = new FileEntity();
         
         if (isset($values->file_id)) {
-            $file->setFile_id($values->file_id);
+            $fileEntity->setFile_id($values->file_id);
         }
         
         if (isset($this->file_orig_name)) {
-            $this->setFile_orig_name($this->file_orig_name);
+            $fileEntity->setFile_orig_name($values->file_orig_name);
         }        
         
         if (isset($values->file_name)) {
-            $file->setFile_name($values->file_name);
+            $fileEntity->setFile_name($values->file_name);
         }
 
         if (isset($values->file_extension)) {
-            $file->setFile_extension($values->file_extension);
+            $fileEntity->setFile_extension($values->file_extension);
         }
 
         if (isset($values->file_size)) {
-            $file->setFile_size($values->file_size);
+            $fileEntity->setFile_size($values->file_size);
         }      
         
-        return $file;
-    }    
-
+        return $fileEntity;
+    }
 }

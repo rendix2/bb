@@ -182,161 +182,161 @@ class ReportEntity extends Entity
     {
         $this->report_status = $report_status;
         return $this;
-    }    
-    
+    }
+
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return ReportEntity
      */
     public static function setFromRow(Row $values)
     {
-        $report = new ReportEntity();
-        
+        $reportEntity = new ReportEntity();
+
         if (isset($values->report_id)) {
-           $report->setReport_id($values->report_id); 
+            $reportEntity->setReport_id($values->report_id);
         }
-        
+
         if (isset($values->report_user_id)) {
-           $report->setReport_user_id($values->report_user_id); 
+            $reportEntity->setReport_user_id($values->report_user_id);
         }
 
         if (isset($values->report_forum_id)) {
-           $report->setReport_forum_id($values->report_forum_id); 
+            $reportEntity->setReport_forum_id($values->report_forum_id);
         }
 
         if (isset($values->report_topic_id)) {
-           $report->setReport_topic_id($values->report_topic_id); 
+            $reportEntity->setReport_topic_id($values->report_topic_id);
         }
 
         if (isset($values->report_post_id)) {
-           $report->setReport_post_id($values->report_post_id); 
+            $reportEntity->setReport_post_id($values->report_post_id);
         }
 
         if (isset($values->report_reported_user_id)) {
-           $report->setReport_reported_user_id($values->report_reported_user_id); 
+            $reportEntity->setReport_reported_user_id($values->report_reported_user_id);
         }
 
         if (isset($values->report_pm_id)) {
-           $report->setReport_pm_id($values->report_pm_id); 
+            $reportEntity->setReport_pm_id($values->report_pm_id);
         }
 
         if (isset($values->report_text)) {
-           $report->setReport_text($values->report_text); 
+            $reportEntity->setReport_text($values->report_text);
         }
 
         if (isset($values->report_time)) {
-           $report->setReport_time($values->report_time); 
+            $reportEntity->setReport_time($values->report_time);
         }
 
         if (isset($values->report_status)) {
-           $report->setReport_status($values->report_status); 
+            $reportEntity->setReport_status($values->report_status);
         }
-        
-       return $report;
-    }     
-    
+
+        return $reportEntity;
+    }
+
     /**
-     * 
+     *
      * @param ArrayHash $values
-     * 
+     *
      * @return ReportEntity
      */
     public function setFromArrayHash(ArrayHash $values)
     {
-        $report = new ReportEntity();
-        
+        $reportEntity = new ReportEntity();
+
         if (isset($values->report_id)) {
-           $report->setReport_id($values->report_id); 
+            $reportEntity->setReport_id($values->report_id);
         }
-        
+
         if (isset($values->report_user_id)) {
-           $report->setReport_user_id($values->report_user_id); 
+            $reportEntity->setReport_user_id($values->report_user_id);
         }
 
         if (isset($values->report_forum_id)) {
-           $report->setReport_forum_id($values->report_forum_id); 
+            $reportEntity->setReport_forum_id($values->report_forum_id);
         }
 
         if (isset($values->report_topic_id)) {
-           $report->setReport_topic_id($values->report_topic_id); 
+            $reportEntity->setReport_topic_id($values->report_topic_id);
         }
 
         if (isset($values->report_post_id)) {
-           $report->setReport_post_id($values->report_post_id); 
+            $reportEntity->setReport_post_id($values->report_post_id);
         }
 
         if (isset($values->report_reported_user_id)) {
-           $report->setReport_reported_user_id($values->report_reported_user_id); 
+            $reportEntity->setReport_reported_user_id($values->report_reported_user_id);
         }
 
         if (isset($values->report_pm_id)) {
-           $report->setReport_pm_id($values->report_pm_id); 
+            $reportEntity->setReport_pm_id($values->report_pm_id);
         }
 
         if (isset($values->report_text)) {
-           $report->setReport_text($values->report_text); 
+            $reportEntity->setReport_text($values->report_text);
         }
 
         if (isset($values->report_time)) {
-           $report->setReport_time($values->report_time); 
+            $reportEntity->setReport_time($values->report_time);
         }
 
         if (isset($values->report_status)) {
-           $report->setReport_status($values->report_status); 
+            $reportEntity->setReport_status($values->report_status);
         }
-        
-       return $report;
+
+        return $reportEntity;
     }
 
     /**
-     * 
+     *
      * @return array
      */
     public function getArray()
     {
         $res = [];
-        
+
         if (isset($this->report_id)) {
-            $res['report_id'] = $this->report_id; 
+            $res['report_id'] = $this->report_id;
         }
 
         if (isset($this->report_user_id)) {
-            $res['report_user_id'] = $this->report_user_id; 
+            $res['report_user_id'] = $this->report_user_id;
         }
 
         if (isset($this->report_forum_id)) {
-            $res['report_forum_id'] = $this->report_forum_id; 
+            $res['report_forum_id'] = $this->report_forum_id;
         }
 
         if (isset($this->report_topic_id)) {
-            $res['report_topic_id'] = $this->report_topic_id; 
+            $res['report_topic_id'] = $this->report_topic_id;
         }
 
         if (isset($this->report_post_id)) {
-            $res['report_post_id'] = $this->report_post_id; 
+            $res['report_post_id'] = $this->report_post_id;
         }
-        
+
         if (isset($this->report_reported_user_id)) {
-            $res['report_reported_user_id'] = $this->report_reported_user_id; 
+            $res['report_reported_user_id'] = $this->report_reported_user_id;
         }
-        
+
         if (isset($this->report_pm_id)) {
-            $res['report_pm_id'] = $this->report_pm_id; 
+            $res['report_pm_id'] = $this->report_pm_id;
         }
 
         if (isset($this->report_text)) {
-            $res['report_text'] = $this->report_text; 
+            $res['report_text'] = $this->report_text;
         }
 
         if (isset($this->report_time)) {
-            $res['report_time'] = $this->report_time; 
+            $res['report_time'] = $this->report_time;
         }
 
         if (isset($this->report_status)) {
-            $res['report_status'] = $this->report_status; 
-        }        
+            $res['report_status'] = $this->report_status;
+        }
 
         return $res;
     }

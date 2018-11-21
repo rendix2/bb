@@ -33,7 +33,7 @@ trait AuthorizationPresenter
     /**
      * @param $id
      *
-     * @return Scopes\Category
+     * @return CategoryScope
      */
     protected function loadCategory($id)
     {
@@ -41,11 +41,11 @@ trait AuthorizationPresenter
     }
 
     /**
-     * @param \App\Models\Entity\Forum $forum
+     * @param ForumEntity $forum
      *
-     * @return Scopes\Forum
+     * @return ForumScope
      */
-    protected function loadForum(\App\Models\Entity\Forum $forum)
+    protected function loadForum(ForumEntity $forum)
     {
         $moderators  = $this->moderators->getAllByRight($forum->getForum_id());
         $moderatorsI = [];
@@ -57,7 +57,7 @@ trait AuthorizationPresenter
             $moderatorsI[] = $moderatorUser;
         }
                 
-        return new ForumScope($forum, $moderatorsI, $this->users2GroupsManager, $this->users2ForumsManager); 
+        return new ForumScope($forum, $moderatorsI, $this->users2GroupsManager, $this->users2ForumsManager);
     }
 
     /**
@@ -69,25 +69,25 @@ trait AuthorizationPresenter
     protected function loadTopic(ForumEntity $forum, TopicEntity $topic)
     {
         
-        $topicIdentity = new Identity($topic->getTopic_first_user_id(), [TopicScope::ROLE_AUTHOR]);        
+        $topicIdentity = new Identity($topic->getTopic_first_user_id(), [TopicScope::ROLE_AUTHOR]);
         $topicAuthor   = new User($topicIdentity);
         
         $thanks = $this->thanksManager->getAllByTopic($topic->getTopic_id());
         
         return new TopicScope($topic, $topicAuthor, $this->loadForum($forum), $thanks);
-    }    
+    }
     
     /**
-     * 
+     *
      * @param ForumEntity $forumEntity
      * @param TopicEntity $topicEntity
      * @param PostEntity  $postEntity
-     * 
+     *
      * @return PostScope
      */
     protected function loadPost(ForumEntity $forumEntity, TopicEntity $topicEntity, PostEntity $postEntity)
     {
-        $postIdentity  = new Identity($postEntity->getPost_user_id(), [PostScope::ROLE_AUTHOR]);        
+        $postIdentity  = new Identity($postEntity->getPost_user_id(), [PostScope::ROLE_AUTHOR]);
         $postAuthor    = new User($postIdentity);
                         
         return new PostScope($postEntity, $this->loadTopic($forumEntity, $topicEntity), $topicEntity);
@@ -96,7 +96,7 @@ trait AuthorizationPresenter
     /**
      * @param IAuthorizationScope $scope
      * @param array               $action
-     * 
+     *
      * @throws \Exception
      */
     protected function requireAccess(IAuthorizationScope $scope, array $action)

@@ -25,7 +25,7 @@ trait TopicsTrait
      * @param int $topic_id
      * @param int $category_id
      * @param int $forum_id
-     * 
+     *
      * @return TopicEntity
      */
     public function checkTopicParam($topic_id, $category_id, $forum_id)

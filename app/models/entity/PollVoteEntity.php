@@ -83,66 +83,66 @@ class PollVoteEntity extends Entity
     }
     
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return PollVoteEntity
      */
     public static function setFromRow(Row $values)
     {
-        $pollVote = new PollVoteEntity();
+        $pollVoteEntity = new PollVoteEntity();
         
         if (isset($values->poll_vote_id)) {
-            $pollVote->setPoll_vote_id($values->poll_vote_id);
+            $pollVoteEntity->setPoll_vote_id($values->poll_vote_id);
         }
         
         if (isset($values->poll_id)) {
-            $pollVote->setPoll_id($values->poll_id);
+            $pollVoteEntity->setPoll_id($values->poll_id);
         }
 
         if (isset($values->poll_answer_id)) {
-            $pollVote->setPoll_answer_id($values->poll_answer_id);
+            $pollVoteEntity->setPoll_answer_id($values->poll_answer_id);
         }
 
         if (isset($values->poll_user_id)) {
-            $pollVote->setPoll_user_id($values->poll_user_id);
-        }        
+            $pollVoteEntity->setPoll_user_id($values->poll_user_id);
+        }
                       
-        return $pollVote;
+        return $pollVoteEntity;
     }
 
 
-        /**
-     * 
-     * @param Row $values
-     * 
+    /**
+     *
+     * @param ArrayHash $values
+     *
      * @return PollVoteEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $pollVote = new PollVoteEntity();
+        $pollVoteEntity = new PollVoteEntity();
         
         if (isset($values->poll_vote_id)) {
-            $pollVote->setPoll_vote_id($values->poll_vote_id);
+            $pollVoteEntity->setPoll_vote_id($values->poll_vote_id);
         }
         
         if (isset($values->poll_id)) {
-            $pollVote->setPoll_id($values->poll_id);
+            $pollVoteEntity->setPoll_id($values->poll_id);
         }
 
         if (isset($values->poll_answer_id)) {
-            $pollVote->setPoll_answer_id($values->poll_answer_id);
+            $pollVoteEntity->setPoll_answer_id($values->poll_answer_id);
         }
 
         if (isset($values->poll_user_id)) {
-            $pollVote->setPoll_user_id($values->poll_user_id);
-        }        
+            $pollVoteEntity->setPoll_user_id($values->poll_user_id);
+        }
                       
-        return $pollVote;
-    }    
+        return $pollVoteEntity;
+    }
 
     /**
-     * 
+     *
      * @return []
      */
     public function getArray()
@@ -163,7 +163,7 @@ class PollVoteEntity extends Entity
         
         if (isset($this->poll_user_id)) {
             $res['poll_user_id'] = $this->poll_user_id;
-        }            
+        }
      
         return $res;
     }

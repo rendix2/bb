@@ -82,6 +82,9 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         $this->bootstrapForm = BootstrapForm::create();
     }
 
+    /**
+     *
+     */
     public function __destruct()
     {
         $this->banManager        = null;
@@ -89,7 +92,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         $this->translatorFactory = null;
     }
 
-        /**
+    /**
      *
      */
     public function startup()

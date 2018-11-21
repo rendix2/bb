@@ -19,11 +19,11 @@ class PostEntity extends Entity
      * @var int $post_id
      */
     private $post_id;
-    
+
     /**
      *
      * @var int $post_user_id
-     */    
+     */
     private $post_user_id;
 
     /**
@@ -31,71 +31,71 @@ class PostEntity extends Entity
      * @var int $post_category_id
      */
     private $post_category_id;
-    
+
     /**
      *
-     * @var int $post_forum_id 
-     */    
+     * @var int $post_forum_id
+     */
     private $post_forum_id;
 
     /**
      *
      * @var int $post_topic_id
-     */    
+     */
     private $post_topic_id;
-   
+
     /**
      *
-     * @var string $post_title 
-     */    
+     * @var string $post_title
+     */
     private $post_title;
-    
+
     /**
      *
      * @var string $post_text
-     */    
+     */
     private $post_text;
-    
+
     /**
      *
      * @var int $post_add_time
-     */    
+     */
     private $post_add_time;
-    
+
     /**
      *
-     * @var string $post_add_user_ip 
-     */    
+     * @var string $post_add_user_ip
+     */
     private $post_add_user_ip;
-    
+
     /**
      *
      * @var string $post_edit_user_ip
-     */    
+     */
     private $post_edit_user_ip;
-    
+
     /**
      *
      * @var int $post_edit_count
      */
     private $post_edit_count;
-    
+
     /**
      *
      * @var int $post_last_edit_time
-     */    
+     */
     private $post_last_edit_time;
-    
+
     /**
      *
      * @var int $post_locked
-     */    
+     */
     private $post_locked;
-    
+
     /**
      *
      * @var int $post_order
-     */    
+     */
     private $post_order;
     
     /**
@@ -267,144 +267,144 @@ class PostEntity extends Entity
     {
         $this->post_files = $files;
         return $this;
-    }    
+    }
 
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return PostEntity
      */
     public static function setFromRow(Row $values)
     {
-        $post = new PostEntity();
+        $postEntity = new PostEntity();
         
         if (isset($values->post_id)) {
-            $post->setPost_id($values->post_id);
+            $postEntity->setPost_id($values->post_id);
         }
         
         if (isset($values->post_user_id)) {
-            $post->setPost_user_id($values->post_user_id);
+            $postEntity->setPost_user_id($values->post_user_id);
         }
 
         if (isset($values->post_category_id)) {
-            $post->setPost_category_id($values->post_category_id);
+            $postEntity->setPost_category_id($values->post_category_id);
         }
 
         if (isset($values->post_forum_id)) {
-            $post->setPost_forum_id($values->post_forum_id);
+            $postEntity->setPost_forum_id($values->post_forum_id);
         }
 
         if (isset($values->post_topic_id)) {
-            $post->setPost_topic_id($values->post_topic_id);
+            $postEntity->setPost_topic_id($values->post_topic_id);
         }
 
         if (isset($values->post_title)) {
-            $post->setPost_title($values->post_title);
+            $postEntity->setPost_title($values->post_title);
         }
         
         if (isset($values->post_text)) {
-            $post->setPost_text($values->post_text);
+            $postEntity->setPost_text($values->post_text);
         }
         
         if (isset($values->post_add_time)) {
-            $post->setPost_add_time($values->post_add_time);
+            $postEntity->setPost_add_time($values->post_add_time);
         }
 
         if (isset($values->post_add_user_ip)) {
-            $post->setPost_add_user_ip($values->post_add_user_ip);
+            $postEntity->setPost_add_user_ip($values->post_add_user_ip);
         }
 
         if (isset($values->post_edit_user_ip)) {
-            $post->setPost_edit_user_ip($values->post_edit_user_ip);
+            $postEntity->setPost_edit_user_ip($values->post_edit_user_ip);
         }
 
         if (isset($values->post_edit_count)) {
-            $post->setPost_edit_count($values->post_edit_count);
+            $postEntity->setPost_edit_count($values->post_edit_count);
         }
         
         if (isset($values->post_last_edit_time)) {
-            $post->setPost_last_edit_time($values->post_last_edit_time);
+            $postEntity->setPost_last_edit_time($values->post_last_edit_time);
         }
 
         if (isset($values->post_locked)) {
-            $post->setPost_locked($values->post_locked);
+            $postEntity->setPost_locked($values->post_locked);
         }
 
         if (isset($values->post_order)) {
-            $post->setPost_order($values->post_order);
+            $postEntity->setPost_order($values->post_order);
         }
       
-        return $post;
+        return $postEntity;
     }
     
     /**
-     * 
+     *
      * @param ArrayHash $values
-     * 
+     *
      * @return PostEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $post = new PostEntity();
+        $postEntity = new PostEntity();
         
         if (isset($values->post_id)) {
-            $post->setPost_id($values->post_id);
+            $postEntity->setPost_id($values->post_id);
         }
         
         if (isset($values->post_user_id)) {
-            $post->setPost_user_id($values->post_user_id);
+            $postEntity->setPost_user_id($values->post_user_id);
         }
 
         if (isset($values->post_category_id)) {
-            $post->setPost_category_id($values->post_category_id);
+            $postEntity->setPost_category_id($values->post_category_id);
         }
 
         if (isset($values->post_forum_id)) {
-            $post->setPost_forum_id($values->post_forum_id);
+            $postEntity->setPost_forum_id($values->post_forum_id);
         }
 
         if (isset($values->post_topic_id)) {
-            $post->setPost_topic_id($values->post_topic_id);
+            $postEntity->setPost_topic_id($values->post_topic_id);
         }
 
         if (isset($values->post_title)) {
-            $post->setPost_title($values->post_title);
+            $postEntity->setPost_title($values->post_title);
         }
         
         if (isset($values->post_text)) {
-            $post->setPost_text($values->post_text);
+            $postEntity->setPost_text($values->post_text);
         }
         
         if (isset($values->post_add_time)) {
-            $post->setPost_add_time($values->post_add_time);
+            $postEntity->setPost_add_time($values->post_add_time);
         }
 
         if (isset($values->post_add_user_ip)) {
-            $post->setPost_add_user_ip($values->post_add_user_ip);
+            $postEntity->setPost_add_user_ip($values->post_add_user_ip);
         }
 
         if (isset($values->post_edit_user_ip)) {
-            $post->setPost_edit_user_ip($values->post_edit_user_ip);
+            $postEntity->setPost_edit_user_ip($values->post_edit_user_ip);
         }
 
         if (isset($values->post_edit_count)) {
-            $post->setPost_edit_count($values->post_edit_count);
+            $postEntity->setPost_edit_count($values->post_edit_count);
         }
         
         if (isset($values->post_last_edit_time)) {
-            $post->setPost_last_edit_time($values->post_last_edit_time);
+            $postEntity->setPost_last_edit_time($values->post_last_edit_time);
         }
 
         if (isset($values->post_locked)) {
-            $post->setPost_locked($values->post_locked);
+            $postEntity->setPost_locked($values->post_locked);
         }
 
         if (isset($values->post_order)) {
-            $post->setPost_order($values->post_order);
+            $postEntity->setPost_order($values->post_order);
         }
       
-        return $post;        
+        return $postEntity;
     }
 
     public function getArray()
@@ -461,7 +461,7 @@ class PostEntity extends Entity
         
         if (isset($this->post_order)) {
             $res['post_order'] = $this->post_order;
-        }        
+        }
                 
         return $res;
     }

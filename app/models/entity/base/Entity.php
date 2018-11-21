@@ -15,9 +15,9 @@ use Nette\Utils\DateTime;
 abstract class Entity
 {
     use SmartObject;
-    
+
     /**
-     *
+     * Entity constructor.
      */
     public function __construct()
     {
@@ -27,7 +27,7 @@ abstract class Entity
     }
 
     /**
-     *
+     * Entity destructor.
      */
     public function __destruct()
     {

@@ -10,8 +10,8 @@ namespace App\Authorization;
  */
 class Identity
 {
-    const ROLE_HOST       = 'host';    
-    const ROLE_REGISTERED = 'registered';    
+    const ROLE_HOST       = 'host';
+    const ROLE_REGISTERED = 'registered';
     const ROLE_ADMIN      = 'admin';
     
     private $id;
@@ -30,7 +30,7 @@ class Identity
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

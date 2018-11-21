@@ -58,7 +58,7 @@ class DeleteAvatarFactory
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

@@ -37,7 +37,7 @@ class BreadCrumbControl extends Control
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

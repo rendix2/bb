@@ -8,13 +8,10 @@ use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Models\CategoriesManager;
 use App\Models\CategoryFacade;
-use App\Models\Entity\CategoryEntity;
 use App\Models\ForumsManager;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
-use Tracy\Debugger;
-use Tracy\ILogger;
 
 /**
  * Description of CategoryPresenter
@@ -122,7 +119,7 @@ class CategoryPresenter extends AdminPresenter
         $form->addCheckbox('category_active', 'Category active:');
 
         return $this->addSubmitB($form);
-    }     
+    }
     
     /**
      *
@@ -197,7 +194,7 @@ class CategoryPresenter extends AdminPresenter
         } catch (DriverException $e) {
             $this->flashMessage('There was some problem during saving into database. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
             
-            \Tracy\Debugger::log($e->getMessage(), \Tracy\ILogger::CRITICAL);
+            Debugger::log($e->getMessage(), ILogger::CRITICAL);
         }
 
         $this->redirect(':' . $this->getName() . ':default');

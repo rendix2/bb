@@ -63,7 +63,7 @@ class AvatarPresenter extends AdminPresenter
     }
     
     /**
-     * 
+     *
      * @param int $page
      */
     public function renderDefault($page = 1)

@@ -43,7 +43,7 @@ class RanksManager extends CrudManager
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {

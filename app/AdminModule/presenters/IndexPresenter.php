@@ -53,7 +53,7 @@ class IndexPresenter extends BasePresenter
 
     /**
      *
-     * @param type $element
+     * @param mxied $element
      */
     public function checkRequirements($element)
     {
@@ -90,11 +90,7 @@ class IndexPresenter extends BasePresenter
     {
         $count = $this->sessionsManager->getCountOfLoggedUsers();
 
-        if ($count <= self::MAX_LOGGED_IN_USERS_TO_SHOW) {
-            $loggedUsers = $this->sessionsManager->getLoggedUsers();
-        } else {
-            $loggedUsers = null;
-        }
+        $loggedUsers = $count <= self::MAX_LOGGED_IN_USERS_TO_SHOW ? $this->sessionsManager->getLoggedUsers() : null;
 
         $this->template->countLogged   = $count;
         $this->template->maxLogged     = self::MAX_LOGGED_IN_USERS_TO_SHOW;

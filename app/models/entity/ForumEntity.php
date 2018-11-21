@@ -23,91 +23,91 @@ class ForumEntity extends Entity
     /**
      *
      * @var int $forum_category_id
-     */    
+     */
     private $forum_category_id;
     
     /**
      *
      * @var string $forum_name
-     */        
+     */
     private $forum_name;
     
     /**
      *
      * @var string $forum_description
-     */        
+     */
     private $forum_description;
     
     /**
      *
      * @var bool $forum_active
-     */    
+     */
     private $forum_active;
     
     /**
      *
      * @var int $forum_parent_id
-     */ 
-    private $forum_parent_id;     
+     */
+    private $forum_parent_id;
     
     /**
      *
      * @var int $forum_order
-     */     
+     */
     private $forum_order;
     
     /**
      *
      * @var bool $forum_thank
-     */     
+     */
     private $forum_thank;
     
     /**
      *
      * @var int $forum_post_count
-     */     
+     */
     private $forum_post_count;
     
     /**
      *
      * @var int $forum_topic_count
-     */     
+     */
     private $forum_topic_count;
 
     /**
      *
      * @var bool $forum_post_add
-     */     
+     */
     private $forum_post_add;
     
     /**
      *
      * @var bool $forum_post_delete
-     */     
+     */
     private $forum_post_delete;
     
     /**
      *
      * @var bool $forum_post_update
-     */     
+     */
     private $forum_post_update;
 
     /**
      *
      * @var bool $forum_topic_add
-     */ 
+     */
     private $forum_topic_add;
        
     /**
      *
      * @var bool $forum_topic_update
-     */     
+     */
     private $forum_topic_update;
     
     /**
      *
      * @var bool $forum_topic_delete
-     */     
+     */
     private $forum_topic_delete;
     
     /**
@@ -119,22 +119,22 @@ class ForumEntity extends Entity
     /**
      *
      * @var string $forum_rules
-     */     
+     */
     private $forum_rules;
 
     /**
      *
      * @var int $forum_left
-     */     
+     */
     private $forum_left;
     
     /**
      *
      * @var int $forum_right
-     */     
+     */
     private $forum_right;
-    
-   public function getForum_id()
+
+    public function getForum_id()
     {
         return $this->forum_id;
     }
@@ -434,114 +434,114 @@ class ForumEntity extends Entity
         
         if (isset($values->forum_rules)) {
             $forum->setForum_rules($values->forum_rules);
-        }      
+        }
 
         if (isset($values->forum_left)) {
             $forum->setForum_left($values->forum_left);
-        }    
+        }
         
         if (isset($values->forum_right)) {
             $forum->setForum_right($values->forum_left);
-        }         
+        }
         
         return $forum;
-    }  
+    }
     
     /**
-     * 
+     *
      * @param ArrayHash $values
-     * 
+     *
      * @return ForumEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
     {
-        $forum = new ForumEntity();
+        $forumEntity = new ForumEntity();
         
         if (isset($values->forum_id)) {
-            $forum->setForum_id($values->forum_id);
-        }        
+            $forumEntity->setForum_id($values->forum_id);
+        }
         
         if (isset($values->forum_category_id)) {
-            $forum->setForum_category_id($values->forum_category_id);
+            $forumEntity->setForum_category_id($values->forum_category_id);
         }
         
         if (isset($values->forum_name)) {
-            $forum->setForum_name($values->forum_name);
+            $forumEntity->setForum_name($values->forum_name);
         }
 
         if (isset($values->forum_description)) {
-            $forum->setForum_description($values->forum_description);
+            $forumEntity->setForum_description($values->forum_description);
         }
 
         if (isset($values->forum_active)) {
-            $forum->setForum_active($values->forum_active);
+            $forumEntity->setForum_active($values->forum_active);
         }
 
         if (isset($values->forum_parent_id)) {
-            $forum->setForum_parent_id($values->forum_parent_id);
+            $forumEntity->setForum_parent_id($values->forum_parent_id);
         }
 
         if (isset($values->forum_order)) {
-            $forum->setForum_order($values->forum_order);
+            $forumEntity->setForum_order($values->forum_order);
         }
 
         if (isset($values->forum_thank)) {
-            $forum->setForum_thank($values->forum_thank);
+            $forumEntity->setForum_thank($values->forum_thank);
         }
 
         if (isset($values->forum_post_count)) {
-            $forum->setForum_post_count($values->forum_post_count);
+            $forumEntity->setForum_post_count($values->forum_post_count);
         }
 
         if (isset($values->forum_topic_count)) {
-            $forum->setForum_topic_count($values->forum_topic_count);
+            $forumEntity->setForum_topic_count($values->forum_topic_count);
         }
 
         if (isset($values->forum_post_add)) {
-            $forum->setForum_post_add($values->forum_post_add);
+            $forumEntity->setForum_post_add($values->forum_post_add);
         }
 
         if (isset($values->forum_post_delete)) {
-            $forum->setForum_post_delete($values->forum_post_delete);
+            $forumEntity->setForum_post_delete($values->forum_post_delete);
         }
 
         if (isset($values->forum_post_update)) {
-            $forum->setForum_post_update($values->forum_post_update);
+            $forumEntity->setForum_post_update($values->forum_post_update);
         }
 
         if (isset($values->forum_topic_add)) {
-            $forum->setForum_topic_add($values->forum_topic_add);
+            $forumEntity->setForum_topic_add($values->forum_topic_add);
         }
 
         if (isset($values->forum_topic_update)) {
-            $forum->setForum_topic_update($values->forum_topic_update);
+            $forumEntity->setForum_topic_update($values->forum_topic_update);
         }
 
         if (isset($values->forum_topic_delete)) {
-            $forum->setForum_topic_delete($values->forum_topic_delete);
-        } 
+            $forumEntity->setForum_topic_delete($values->forum_topic_delete);
+        }
         
         if (isset($values->forum_fast_reply)) {
-            $forum->setForum_fast_reply($values->forum_fast_reply);
-        }        
+            $forumEntity->setForum_fast_reply($values->forum_fast_reply);
+        }
         
         if (isset($values->forum_rules)) {
-            $forum->setForum_rules($values->forum_rules);
-        }      
+            $forumEntity->setForum_rules($values->forum_rules);
+        }
 
         if (isset($values->forum_left)) {
-            $forum->setForum_left($values->forum_left);
-        }    
+            $forumEntity->setForum_left($values->forum_left);
+        }
         
         if (isset($values->forum_right)) {
-            $forum->setForum_right($values->forum_left);
-        }         
+            $forumEntity->setForum_right($values->forum_left);
+        }
         
-        return $forum;
+        return $forumEntity;
     }
 
-        /**
-     * 
+    /**
+     *
      * @return array
      */
     public function getArray()
@@ -558,7 +558,7 @@ class ForumEntity extends Entity
         
         if (isset($this->forum_name)) {
             $res['forum_name'] = $this->forum_name;
-        }   
+        }
         
         if (isset($this->forum_description)) {
             $res['forum_description'] = $this->forum_description;
@@ -614,20 +614,20 @@ class ForumEntity extends Entity
         
         if (isset($this->forum_fast_reply)) {
             $res['setForum_fast_reply'] = $values->forum_fast_reply;
-        }        
+        }
 
         if (isset($this->forum_rules)) {
             $res['forum_rules'] = $this->forum_rules;
-        }        
+        }
         
         if (isset($this->forum_left)) {
             $res['forum_left'] = $this->forum_left;
-        } 
+        }
         
         if (isset($this->forum_right)) {
             $res['forum_right'] = $this->forum_right;
-        }         
+        }
         
         return $res;
-    }    
+    }
 }

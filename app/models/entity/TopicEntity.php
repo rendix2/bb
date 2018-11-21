@@ -3,9 +3,6 @@
 namespace App\Models\Entity;
 
 use App\Models\Entity\Base\Entity;
-use App\Models\Entity\PollEntityEntity;
-use App\Models\Entity\PostEntity;
-use App\Models\Entity\TopicEntity;
 use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
@@ -19,90 +16,90 @@ class TopicEntity extends Entity
 {
     /**
      *
-     * @var int $topic_id 
+     * @var int $topic_id
      */
     private $topic_id;
-    
+
     /**
      *
      * @var int $topic_category_id
      */
     private $topic_category_id;
-    
+
     /**
      *
-     * @var int $topic_forum_id 
+     * @var int $topic_forum_id
      */
     private $topic_forum_id;
-    
+
     /**
      *
-     * @var int $topic_user_id 
+     * @var int $topic_user_id
      */
     private $topic_user_id;
-    
+
     /**
      *
-     * @var string $topic_name 
+     * @var string $topic_name
      */
     private $topic_name;
-    
+
     /**
      *
-     * @var int $topic_post_count 
+     * @var int $topic_post_count
      */
     private $topic_post_count;
-    
+
     /**
      * @var int $topic_add_time
      */
     private $topic_add_time;
-    
+
     /**
      *
-     * @var bool $topic_locked 
+     * @var bool $topic_locked
      */
     private $topic_locked;
-    
+
     /**
      *
-     * @var int $topic_view_count 
+     * @var int $topic_view_count
      */
     private $topic_view_count;
-    
+
     /**
      *
-     * @var int $topic_first_post_id 
+     * @var int $topic_first_post_id
      */
     private $topic_first_post_id;
-    
+
     /**
      *
      * @var int $topic_first_user_id
      */
     private $topic_first_user_id;
-    
+
     /**
      *
-     * @var int $topic_last_post_id 
+     * @var int $topic_last_post_id
      */
     private $topic_last_post_id;
-    
+
     /**
      *
-     * @var int $topic_last_post_id 
+     * @var int $topic_last_post_id
      */
     private $topic_last_user_id;
-    
+
     /**
      *
      * @var int $topic_order
      */
     private $topic_order;
-    
+
     /**
      *
-     * @var int $topic_page_count 
+     * @var int $topic_page_count
      */
     private $topic_page_count;
 
@@ -111,13 +108,13 @@ class TopicEntity extends Entity
      * @var PostEntity $post
      */
     private $post;
-    
+
     /**
      *
-     * @var PollEntityEntity $poll
+     * @var PollEntity $poll
      */
     private $poll;
-    
+
     public function getTopic_id()
     {
         return $this->topic_id;
@@ -299,26 +296,26 @@ class TopicEntity extends Entity
         return $this;
     }
 
-    public function setPoll(PollEntityEntity $poll = null)
+    public function setPoll(PollEntity $poll = null)
     {
         $this->poll = $poll;
         return $this;
     }
-    
+
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return TopicEntity
      */
     public static function setFromRow(Row $values)
     {
         $topic = new TopicEntity();
-        
+
         if (isset($values->topic_id)) {
             $topic->setTopic_id($values->topic_id);
         }
-        
+
         if (isset($values->topic_category_id)) {
             $topic->setTopic_category_id($values->topic_category_id);
         }
@@ -358,11 +355,11 @@ class TopicEntity extends Entity
         if (isset($values->topic_first_user_id)) {
             $topic->setTopic_first_user_id($values->topic_first_user_id);
         }
-        
+
         if (isset($values->topic_last_post_id)) {
             $topic->setTopic_last_post_id($values->topic_last_post_id);
         }
-        
+
         if (isset($values->topic_last_user_id)) {
             $topic->setTopic_last_user_id($values->topic_last_user_id);
         }
@@ -373,19 +370,19 @@ class TopicEntity extends Entity
 
         if (isset($values->topic_page_count)) {
             $topic->setTopic_page_count($values->topic_page_count);
-        }        
-        
+        }
+
         return $topic;
     }
-    
+
     public static function setFromArrayHash(ArrayHash $values)
     {
         $topic = new TopicEntity();
-        
+
         if (isset($values->topic_id)) {
             $topic->setTopic_id($values->topic_id);
         }
-        
+
         if (isset($values->topic_category_id)) {
             $topic->setTopic_category_id($values->topic_category_id);
         }
@@ -425,11 +422,11 @@ class TopicEntity extends Entity
         if (isset($values->topic_first_user_id)) {
             $topic->setTopic_first_user_id($values->topic_first_user_id);
         }
-        
+
         if (isset($values->topic_last_post_id)) {
             $topic->setTopic_last_post_id($values->topic_last_post_id);
         }
-        
+
         if (isset($values->topic_last_user_id)) {
             $topic->setTopic_last_user_id($values->topic_last_user_id);
         }
@@ -440,23 +437,23 @@ class TopicEntity extends Entity
 
         if (isset($values->topic_page_count)) {
             $topic->setTopic_page_count($values->topic_page_count);
-        }        
-        
+        }
+
         return $topic;
     }
 
-        /**
-     * 
+    /**
+     *
      * @return array
      */
     public function getArray()
     {
         $res = [];
-        
+
         if (isset($this->topic_id)) {
             $res['topic_id'] = $this->topic_id;
         }
-        
+
         if (isset($this->topic_category_id)) {
             $res['topic_category_id'] = $this->topic_category_id;
         }
@@ -471,48 +468,48 @@ class TopicEntity extends Entity
 
         if (isset($this->topic_name)) {
             $res['topic_name'] = $this->topic_name;
-        }    
-        
+        }
+
         if (isset($this->topic_post_count)) {
             $res['topic_post_count'] = $this->topic_post_count;
-        } 
+        }
 
         if (isset($this->topic_add_time)) {
             $res['topic_add_time'] = $this->topic_add_time;
-        } 
+        }
 
         if (isset($this->topic_locked)) {
             $res['topic_locked'] = $this->topic_locked;
-        } 
+        }
 
         if (isset($this->topic_view_count)) {
             $res['topic_view_count'] = $this->topic_view_count;
-        }    
-        
+        }
+
         if (isset($this->topic_first_post_id)) {
             $res['topic_first_post_id'] = $this->topic_first_post_id;
-        }  
+        }
 
         if (isset($this->topic_first_user_id)) {
             $res['topic_first_user_id'] = $this->topic_first_user_id;
-        }  
+        }
 
         if (isset($this->topic_last_post_id)) {
             $res['topic_last_post_id'] = $this->topic_last_post_id;
-        }          
-        
+        }
+
         if (isset($this->topic_last_user_id)) {
             $res['topic_last_user_id'] = $this->topic_last_user_id;
-        }    
+        }
 
         if (isset($this->topic_order)) {
             $res['topic_order'] = $this->topic_order;
-        }          
-        
+        }
+
         if (isset($this->topic_page_count)) {
             $res['topic_page_count'] = $this->topic_page_count;
         }
-        
+
         return $res;
     }
 }

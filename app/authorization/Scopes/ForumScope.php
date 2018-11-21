@@ -4,7 +4,6 @@ namespace App\Authorization\Scopes;
 
 use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
-use App\Authorization\Scopes\User;
 use App\Models\Entity\ForumEntity;
 use App\Models\Users2ForumsManager;
 use App\Models\Users2GroupsManager;
@@ -30,10 +29,10 @@ class ForumScope implements IAuthorizationScope
     
     const ROLE_FORUM_TOPIC_ADDER = 'Forum:topicAdder';
     const ROLE_FORUM_TOPIC_UPDATER = 'Forum:topicUpdater';
-    const ROLE_FORUM_TOPIC_DELETER = 'Forum:topicDeleter';    
+    const ROLE_FORUM_TOPIC_DELETER = 'Forum:topicDeleter';
     
-    const ACTION_VIEW       = [self::class, 'forum_view'];        
-    const ACTION_THANK      = [self::class, 'forum_thank'];    
+    const ACTION_VIEW       = [self::class, 'forum_view'];
+    const ACTION_THANK      = [self::class, 'forum_thank'];
     const ACTION_FAST_REPLY = [self::class, 'forum_fast_reply'];
     
     const ACTION_POST_ADD     = [self::class, 'post_add'];
@@ -60,23 +59,23 @@ class ForumScope implements IAuthorizationScope
     
     private $userPermission;
     
-    private $groupPermission;    
+    private $groupPermission;
     
     private $users2ForumsManager;
-    
+
 
     /**
-     * 
+     *
      * @param ForumEntity         $forumEntity
-     * @param type $moderators
+     * @param array               $moderators
      * @param Users2GroupsManager $users2GroupsManager
      * @param Users2ForumsManager $users2ForumsManager
      */
     public function __construct(
-            ForumEntity $forumEntity,
-            $moderators,
-            Users2GroupsManager $users2GroupsManager,
-            Users2ForumsManager $users2ForumsManager
+        ForumEntity $forumEntity,
+        $moderators,
+        Users2GroupsManager $users2GroupsManager,
+        Users2ForumsManager $users2ForumsManager
     ) {
         $this->forumEntity         = $forumEntity;
         $this->moderators          = $moderators;
@@ -85,16 +84,16 @@ class ForumScope implements IAuthorizationScope
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
-        $this->moderators          = null;        
+        $this->moderators          = null;
         $this->forumEntity         = null;
-        $this->users2GroupsManager = null;        
-        $this->groupPermission     = null;        
+        $this->users2GroupsManager = null;
+        $this->groupPermission     = null;
         $this->userPermission      = null;
-        $this->users2ForumsManager = null;        
+        $this->users2ForumsManager = null;
     }
 
     /**
@@ -105,15 +104,15 @@ class ForumScope implements IAuthorizationScope
     public function getIdentityRoles(Identity $identity)
     {
         $roles = [self::ROLE_FORUM_VIEWER];
-                
+
         //user
         if ($this->userPermission) {
             $this->userPermission = $userForum = $this->users2ForumsManager->getAllFull($identity->getId(), $this->forumEntity->getForum_id());
         } else {
             $userForum = $this->userPermission;
         }
-       
-       if ($userForum) {
+
+        if ($userForum) {
             $userForum = $userForum[0];
 
             if ($userForum->post_add) {
@@ -158,80 +157,80 @@ class ForumScope implements IAuthorizationScope
 
         if ($groupForums) {
             foreach ($groupForums as $groupForum) {
-                if ($groupForum->post_add && !in_array(self::ROLE_FORUM_POST_ADDER, $roles)) {
+                if ($groupForum->post_add && !in_array(self::ROLE_FORUM_POST_ADDER, $roles, true)) {
                     $roles[] = self::ROLE_FORUM_POST_ADDER;
                 }
 
-                if ($groupForum->post_update && !in_array(self::ROLE_FORUM_POST_UPDATER, $roles)) {
+                if ($groupForum->post_update && !in_array(self::ROLE_FORUM_POST_UPDATER, $roles, true)) {
                     $roles[] = self::ROLE_FORUM_POST_UPDATER;
                 }
 
-                if ($groupForum->post_delete && !in_array(self::ROLE_FORUM_POST_DELETER, $roles)) {
+                if ($groupForum->post_delete && !in_array(self::ROLE_FORUM_POST_DELETER, $roles, true)) {
                     $roles[] = self::ROLE_FORUM_POST_DELETER;
                 }
 
-                if ($groupForum->topic_add && !in_array(self::ROLE_FORUM_TOPIC_ADDER, $roles)) {
+                if ($groupForum->topic_add && !in_array(self::ROLE_FORUM_TOPIC_ADDER, $roles, true)) {
                     $roles[] = self::ROLE_FORUM_TOPIC_ADDER;
                 }
 
-                if ($groupForum->topic_update && !in_array(self::ROLE_FORUM_TOPIC_UPDATER, $roles)) {
+                if ($groupForum->topic_update && !in_array(self::ROLE_FORUM_TOPIC_UPDATER, $roles, true)) {
                     $roles[] = self::ROLE_FORUM_TOPIC_UPDATER;
                 }
 
-                if ($groupForum->topic_delete && !in_array(self::ROLE_FORUM_TOPIC_DELETER, $roles)) {
+                if ($groupForum->topic_delete && !in_array(self::ROLE_FORUM_TOPIC_DELETER, $roles, true)) {
                     $roles[] = self::ROLE_FORUM_TOPIC_DELETER;
                 }
 
-                if ($groupForum->topic_thank && !in_array(self::ROLE_FORUM_THANKER, $roles)) {
+                if ($groupForum->topic_thank && !in_array(self::ROLE_FORUM_THANKER, $roles, true)) {
                     $roles[] = self::ROLE_FORUM_THANKER;
                 }
 
-                if ($groupForum->topic_fast_reply && !in_array(self::ROLE_FORUM_FAST_REPLIER, $roles)) {
+                if ($groupForum->topic_fast_reply && !in_array(self::ROLE_FORUM_FAST_REPLIER, $roles, true)) {
                     $roles[] = self::ROLE_FORUM_FAST_REPLIER;
                 }
             }
         }
 
-        // forum                
-        if ($this->forumEntity->getForum_post_add() && !in_array(self::ROLE_FORUM_POST_ADDER, $roles)) {
+        // forum
+        if ($this->forumEntity->getForum_post_add() && !in_array(self::ROLE_FORUM_POST_ADDER, $roles, true)) {
             $roles[] = self::ROLE_FORUM_POST_ADDER;
         }
-        
-        if ($this->forumEntity->getForum_post_update() && !in_array(self::ROLE_FORUM_POST_UPDATER, $roles)) {
+
+        if ($this->forumEntity->getForum_post_update() && !in_array(self::ROLE_FORUM_POST_UPDATER, $roles, true)) {
             $roles[] = self::ROLE_FORUM_POST_UPDATER;
         }
-        
-        if ($this->forumEntity->getForum_post_delete() && !in_array(self::ROLE_FORUM_POST_DELETER, $roles)) {
+
+        if ($this->forumEntity->getForum_post_delete() && !in_array(self::ROLE_FORUM_POST_DELETER, $roles, true)) {
             $roles[] = self::ROLE_FORUM_POST_DELETER;
-        }     
-        
-        if ($this->forumEntity->getForum_topic_add() && !in_array(self::ROLE_FORUM_TOPIC_ADDER, $roles)) {
+        }
+
+        if ($this->forumEntity->getForum_topic_add() && !in_array(self::ROLE_FORUM_TOPIC_ADDER, $roles, true)) {
             $roles[] = self::ROLE_FORUM_TOPIC_ADDER;
-        }  
-        
-        if ($this->forumEntity->getForum_topic_update() && !in_array(self::ROLE_FORUM_TOPIC_UPDATER, $roles)) {
+        }
+
+        if ($this->forumEntity->getForum_topic_update() && !in_array(self::ROLE_FORUM_TOPIC_UPDATER, $roles, true)) {
             $roles[] = self::ROLE_FORUM_TOPIC_UPDATER;
         }
 
-        if ($this->forumEntity->getForum_topic_delete() && !in_array(self::ROLE_FORUM_TOPIC_DELETER, $roles)) {
+        if ($this->forumEntity->getForum_topic_delete() && !in_array(self::ROLE_FORUM_TOPIC_DELETER, $roles, true)) {
             $roles[] = self::ROLE_FORUM_TOPIC_DELETER;
-        }  
-        
-        if ($this->forumEntity->getForum_thank() && !in_array(self::ROLE_FORUM_THANKER, $roles)) {
+        }
+
+        if ($this->forumEntity->getForum_thank() && !in_array(self::ROLE_FORUM_THANKER, $roles, true)) {
             $roles[] = self::ROLE_FORUM_THANKER;
-        }  
-        
+        }
+
         if ($this->forumEntity->getForum_fast_reply()) {
             $roles[] = self::ROLE_FORUM_FAST_REPLIER;
         }
-        
+
         foreach ($this->moderators as $moderator) {
             if ($moderator->getIdentity()->getId() === $identity->getId()) {
                 $roles[] = self::ROLE_MODERATOR;
                 break;
             }
         }
-        
+
         return $roles;
     }
 }

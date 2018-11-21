@@ -55,7 +55,7 @@ class PollControl extends Control
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -65,12 +65,12 @@ class PollControl extends Control
     }
 
     /**
-     * 
+     *
      * @param int $poll_id
      * @param int $poll_answer_id
      */
     public function handleVote($poll_id, $poll_answer_id)
-    {        
+    {
         $pollVote = new PollVoteEntity();
         $pollVote->setPoll_id($poll_id)
                  ->setPoll_answer_id($poll_answer_id)

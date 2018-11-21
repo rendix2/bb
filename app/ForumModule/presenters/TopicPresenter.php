@@ -13,7 +13,7 @@ use App\Forms\ReportForm;
 use App\Forms\TopicFastReplyForm;
 use App\Forms\TopicJumpToForumForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Models\Entity\PollEntityEntity;
+use App\Models\Entity\PollEntity;
 use App\Models\Entity\PollAnswerEntity;
 use App\Models\Entity\PostEntity;
 use App\Models\Entity\ThankEntity;
@@ -24,7 +24,6 @@ use App\Models\Posts2FilesManager;
 use App\Models\RanksManager;
 use App\Models\ReportsManager;
 use App\Models\ThanksFacade;
-use App\Models\ThanksManager;
 use App\Models\TopicFacade;
 use App\Models\TopicsManager;
 use App\Models\TopicWatchManager;
@@ -134,6 +133,7 @@ class TopicPresenter extends BaseForumPresenter
     public $posts2FilesManager;
 
     /**
+     * TopicPresenter constructor.
      *
      * @param TopicsManager $manager
      */
@@ -143,7 +143,7 @@ class TopicPresenter extends BaseForumPresenter
     }
 
     /**
-     *
+     * TopicPresenter destructor.
      */
     public function __destruct()
     {
@@ -221,7 +221,7 @@ class TopicPresenter extends BaseForumPresenter
         $category   = $this->checkCategoryParam($category_id);
         $forum      = $this->checkForumParam($forum_id, $category_id);
         $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-        $user_id    = $this->user->id; 
+        $user_id    = $this->user->id;
         
         $forumScope = $this->loadForum($forum);
         
@@ -261,7 +261,7 @@ class TopicPresenter extends BaseForumPresenter
             $pollTimeStamp = $pollDibi->poll_time_to;
             unset($pollDibi->poll_time_to);
         
-            $pollEntity = PollEntityEntity::setFromRow($pollDibi);
+            $pollEntity = PollEntity::setFromRow($pollDibi);
             $pollEntity->setPoll_time_to(DateTime::from($pollTimeStamp));
         
             $topic->setPoll($pollEntity);
@@ -282,7 +282,7 @@ class TopicPresenter extends BaseForumPresenter
     }
 
     /**
-     * 
+     *
      * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
@@ -345,7 +345,7 @@ class TopicPresenter extends BaseForumPresenter
         $this->template->posts = $postsNew;
         $this->template->topic = $topic;
         
-        $this->template->canAddPost    = $this->isAllowed($forumScope, ForumScope::ACTION_POST_ADD);        
+        $this->template->canAddPost    = $this->isAllowed($forumScope, ForumScope::ACTION_POST_ADD);
         $this->template->canDeletePost = $this->isAllowed($forumScope, ForumScope::ACTION_POST_DELETE);
         $this->template->canFastReply  = $this->isAllowed($forumScope, ForumScope::ACTION_FAST_REPLY);
         $this->template->canThankTopic = $this->isAllowed($topicScope, TopicScope::ACTION_THANK);
@@ -467,13 +467,12 @@ class TopicPresenter extends BaseForumPresenter
         
         $this->template->thanks = $thanks;
     }
-    
+
     /**
      *
      * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
-     * @param int $post_id
      */
     public function renderFiles($category_id, $forum_id, $topic_id)
     {
@@ -534,7 +533,7 @@ class TopicPresenter extends BaseForumPresenter
         if ($values->poll_question) {
             $pollAnswers = [];
         
-            foreach ($values->answers as $answer) {   
+            foreach ($values->answers as $answer) {
                 $pollAnswer = PollAnswerEntity::setFromArrayHash($answer);
                 
                 if ($pollAnswer->getPoll_answer()) {
@@ -542,8 +541,8 @@ class TopicPresenter extends BaseForumPresenter
                 }
             }
         
-            $poll = PollEntityEntity::setFromArrayHash($values);
-            $poll->setPollAnswers($pollAnswers);;
+            $poll = PollEntity::setFromArrayHash($values);
+            $poll->setPollAnswers($pollAnswers);
         } else {
             $poll = null;
         }
@@ -578,7 +577,7 @@ class TopicPresenter extends BaseForumPresenter
                   ->setPoll($poll);
             
             $res = $this->topicFacade->update($topic);
-        } else {            
+        } else {
             $post = new PostEntity();
             $post->setPost_user_id($user_id)
                  ->setPost_category_id($category_id)
@@ -740,7 +739,12 @@ class TopicPresenter extends BaseForumPresenter
      */
     protected function createComponentFastReply()
     {
-        return new TopicFastReplyForm($this->translatorFactory, $this->user, $this->postFacade, $this->getHttpRequest());
+        return new TopicFastReplyForm(
+            $this->translatorFactory,
+            $this->user,
+            $this->postFacade,
+            $this->getHttpRequest()
+        );
     }
 
     /**

@@ -20,9 +20,9 @@ trait UsersTrait
     public $usersManager;
         
     /**
-     * 
+     *
      * @param int $user_id
-     * 
+     *
      * @return UserEntity
      */
     public function checkUserParam($user_id)
@@ -42,5 +42,5 @@ trait UsersTrait
         }
         
         return UserEntity::setFromRow($userDibi);
-    }    
+    }
 }

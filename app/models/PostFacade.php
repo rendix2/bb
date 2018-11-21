@@ -231,7 +231,7 @@ class PostFacade
     }
 
     /**
-     * @param Entity\Post $post
+     * @param PostEntity $post
      *
      * @return bool
      */
@@ -256,7 +256,8 @@ class PostFacade
     }
 
     /**
-     * @param int $item_id
+     * @param TopicEntity $topic
+     * @param PostEntity  $post
      *
      * @return Result|int
      */

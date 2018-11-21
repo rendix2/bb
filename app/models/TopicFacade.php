@@ -145,7 +145,7 @@ class TopicFacade
 
     /**
      *
-     * @param Entity\Topic $topic
+     * @param TopicEntity $topic
      *
      * @return Result|int
      */
@@ -261,9 +261,9 @@ class TopicFacade
         if ($source_forum_id === $target_forum_id) {
             return false;
         }
-        
-        $post_ids = \App\Utils::arrayObjectColumn($posts, 'post_id');
+
         $posts    = $this->postsManager->getFluentByTopic($topic_id);
+        $post_ids = \App\Utils::arrayObjectColumn($posts, 'post_id');
 
         $this->forumsManager->update($source_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1', 'forum_post_count%sql' => 'forum_post_count - ' . $topic->topic_post_count]));
         $this->forumsManager->update($target_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1', 'forum_post_count%sql' => 'forum_post_count + ' . $topic->topic_post_count]));
@@ -394,6 +394,8 @@ class TopicFacade
 
         $this->mergeWithPosts($topic_target_id, $post_ids);
         $this->topicsManager->delete($topic_from_id);
+
+        return true;
     }
 
     /**
@@ -420,7 +422,7 @@ class TopicFacade
     /**
      *
      * @param TopicEntity $topic
-     * 
+     *
      * @return bool
      */
     public function update(TopicEntity $topic)

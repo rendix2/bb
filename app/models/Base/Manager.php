@@ -13,7 +13,6 @@ use SplFileInfo;
  */
 abstract class Manager extends Tables
 {
-
     /**
      *
      * @var Connection $dibi dibi

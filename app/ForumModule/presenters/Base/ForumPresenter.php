@@ -35,9 +35,8 @@ use Nette\Localization\ITranslator;
  */
 abstract class ForumPresenter extends AuthenticatedPresenter
 {
-    
     use PostTrait;
-    use TopicsTrait;    
+    use TopicsTrait;
     use ForumsTrait;
 
     /**
@@ -104,7 +103,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     }
     
     /**
-     *
+     * ForumPresenter destructor.
      */
     public function __destruct()
     {
@@ -195,7 +194,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      * @return User
      */
     protected function getLoggedInUser()
-    {        
+    {
         $identity = new Identity($this->user->id, $this->user->roles);
         
         return new User($identity);
@@ -203,8 +202,8 @@ abstract class ForumPresenter extends AuthenticatedPresenter
 
     /**
      * @param $id
-     * 
-     * @return Category
+     *
+     * @return CategoryScope
      */
     protected function loadCategory($id)
     {
@@ -214,7 +213,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
 
     /**
      * @param ForumEntity $forum
-     * 
+     *
      * @return ForumScope
      */
     protected function loadForum(ForumEntity $forum)
@@ -229,31 +228,31 @@ abstract class ForumPresenter extends AuthenticatedPresenter
             $moderatorsI[] = $moderatorUser;
         }
                 
-        return new ForumScope($forum, $moderatorsI, $this->users2GroupsManager, $this->users2ForumsManager); 
-    }    
+        return new ForumScope($forum, $moderatorsI, $this->users2GroupsManager, $this->users2ForumsManager);
+    }
     
     /**
      * @param ForumEntity $forum
      * @param TopicEntity $topic
-     * 
+     *
      * @return TopicScope
      */
     protected function loadTopic(ForumEntity $forum, TopicEntity $topic)
     {
-        $topicIdentity = new Identity($topic->getTopic_first_user_id(), [TopicScope::ROLE_AUTHOR]);        
+        $topicIdentity = new Identity($topic->getTopic_first_user_id(), [TopicScope::ROLE_AUTHOR]);
         $topicAuthor   = new User($topicIdentity);
         
         $thanks = $this->thanksManager->getAllByTopic($topic->getTopic_id());
         
         return new TopicScope($topic, $topicAuthor, $this->loadForum($forum), $thanks);
-    }    
+    }
     
     /**
-     * @param \App\Models\Entity\ForumEntity $forumEntity
-     * @param \App\Models\Entity\TopicEntity $topicEntity
-     * @param \App\Models\Entity\PostEntity $postEntity
-            
-     * @return \App\Authorization\Scopes\Post
+     * @param ForumEntity $forumEntity
+     * @param TopicEntity $topicEntity
+     * @param PostEntity  $postEntity
+     *
+     * @return PostScope
      */
     protected function loadPost(ForumEntity $forumEntity, TopicEntity $topicEntity, PostEntity $postEntity)
     {

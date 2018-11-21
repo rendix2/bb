@@ -5,7 +5,6 @@ namespace App\Forms;
 use App\Controls\BootstrapForm;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
-use App\Models\UsersManager;
 use Nette\Application\UI\Form;
 use Nette\Security\User;
 use \Nette\Application\UI\Control;
@@ -46,7 +45,7 @@ class UserChangeUserNameForm extends Control
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -55,7 +54,7 @@ class UserChangeUserNameForm extends Control
     }
 
     /**
-     * 
+     *
      */
     public function render()
     {

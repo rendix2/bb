@@ -82,7 +82,7 @@ abstract class MNManager extends Manager
             $this->rightKey = $rightKey;
         } else {
             $this->rightKey = $this->right->getPrimaryKey();
-        }        
+        }
     }
     
     public function __destruct()
@@ -126,7 +126,7 @@ abstract class MNManager extends Manager
         return $this->dibi
                 ->select('*')
                 ->from($this->table);
-    }    
+    }
 
     /**
      * returns all table
@@ -137,7 +137,7 @@ abstract class MNManager extends Manager
     {
         return $this->getAllFluent()
             ->fetchAll();
-    }    
+    }
 
     /**
      * get by left
@@ -173,7 +173,7 @@ abstract class MNManager extends Manager
     {
         return $this->getFluentByLeft($left_id)
             ->fetchPairs(null, $this->right->getPrimaryKey());
-    }    
+    }
     
     
     /**
@@ -203,7 +203,7 @@ abstract class MNManager extends Manager
     public function getAllByLeftJoined($left_id)
     {
         return $this->getFluentByLeftJoined($left_id)->fetchAll();
-    }     
+    }
     
     /**
      * get by lefts
@@ -218,7 +218,7 @@ abstract class MNManager extends Manager
     {
         return $this->getAllFluent()
             ->where('%n IN %in', $this->leftKey, $left_id);
-    }     
+    }
     
     /**
      * @param array $left_id
@@ -228,8 +228,8 @@ abstract class MNManager extends Manager
     public function getAllByLefts(array $left_id)
     {
         return $this->getFluentByLefts($left_id)->fetchAll();
-    } 
-    
+    }
+
     /**
      * get by lefts joined
      */
@@ -287,18 +287,18 @@ abstract class MNManager extends Manager
     {
         return $this->getFluentByRight($right_id)
             ->fetchAll();
-    }    
+    }
     
     /**
      * @param int $right_id
      *
-     * @return Row[]
+     * @return Fluent
      */
     public function getPairsByRight($right_id)
     {
         return $this->getAllFluent()
             ->where('%n = %i', $this->rightKey, $right_id);
-    }   
+    }
     
     
     /**
@@ -321,7 +321,7 @@ abstract class MNManager extends Manager
             ->as($aliasL)
             ->on($aliasL . '.' . $this->left->getPrimaryKey() . ' = [relation.' . $this->leftKey . ']')
             ->where('[relation.' . $this->rightKey . '] = %i', $right_id);
-    }    
+    }
     
     /**
      * @param int $right_id
@@ -347,7 +347,7 @@ abstract class MNManager extends Manager
     {
         return $this->getAllFluent()
             ->where('%n IN %in', $this->rightKey, $right_id);
-    }  
+    }
     
     /**
      * @param array $right_id
@@ -411,7 +411,7 @@ abstract class MNManager extends Manager
             ->as('relation')
             ->where('[relation.' . $this->leftKey . '] = %i', $left_id)
             ->where('[relation.' . $this->rightKey . '] = %i', $right_id);
-    }    
+    }
     
     /**
      * @param int $left_id
@@ -422,7 +422,7 @@ abstract class MNManager extends Manager
     public function getFull($left_id, $right_id)
     {
         return $this->getFluentFull($left_id, $right_id)->fetch();
-    }    
+    }
 
     /**
      * @param int $left_id
@@ -475,7 +475,7 @@ abstract class MNManager extends Manager
                 ->where('%n = %i', $this->leftKey, $left_id)
                 ->where('%n = %i', $this->rightKey, $right_id)
                 ->fetchSingle() === 1;
-    }    
+    }
     
     /**
      * get counts
@@ -529,22 +529,22 @@ abstract class MNManager extends Manager
      */
 
     /**
-     * 
+     *
      * @param array $values
-     * 
+     *
      * @return Result|int
      */
     public function addNative(array $values)
-    {        
+    {
          return $this->dibi->query('INSERT INTO %n %m', $this->table, $values);
-    }    
+    }
     
     /**
      * @param array    $values
      * @param int|null $left_id
      * @param int|null $right_id
      *
-     * @return Result|int|void
+     * @return Result|int|bool
      */
     public function add(array $values, $left_id = null, $right_id = null)
     {
@@ -589,7 +589,7 @@ abstract class MNManager extends Manager
         if (count($diff)) {
             $this->add($diff, $left_id, null);
         }
-    }    
+    }
 
     /**
      * @param int   $right_id
@@ -621,10 +621,10 @@ abstract class MNManager extends Manager
     
     /**
      * delete
-     */    
+     */
     
     /**
-     * 
+     *
      * @return Fluent
      */
     public function deleteFluent()
@@ -634,7 +634,7 @@ abstract class MNManager extends Manager
     }
     
     /**
-     * 
+     *
      * @param int $id
      */
     public function deleteById($id)
@@ -659,14 +659,13 @@ abstract class MNManager extends Manager
     /**
      * @param int $left_id
      *
-     * @return Result|int
+     * @return void
      */
     public function deleteFullByLeft($left_id)
     {
-        $this->deleteByLeft($left_id);        
+        $this->deleteByLeft($left_id);
         $this->left->delete($left_id);
-    }    
-    
+    }
         
     /**
      * @param int $right_id
@@ -683,11 +682,11 @@ abstract class MNManager extends Manager
     /**
      * @param int $right_id
      *
-     * @return Result|int
+     * @return void
      */
     public function deleteFullByRight($right_id)
     {
-        $this->deleteByRight($right_id);        
+        $this->deleteByRight($right_id);
         $this->right->delete($right_id);
     }
 
@@ -708,13 +707,13 @@ abstract class MNManager extends Manager
     }
     
     /**
-     * 
+     *
      * @param int $left_id
      * @param int $right_id
      */
     public function fullDelete($left_id, $right_id)
     {
-        $this->delete($left_id, $right_id);        
+        $this->delete($left_id, $right_id);
         $this->left->delete($left_id);
         $this->right->delete($right_id);
     }
