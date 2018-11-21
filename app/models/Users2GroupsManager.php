@@ -56,6 +56,6 @@ class Users2GroupsManager extends MNManager
                 ->on('[ug.group_id] = [fg.group_id]')
                 ->where('[ug.user_id] = %i', $user_id)
                 ->where('[fg.forum_id] = %i', $forum_id)
-                ->fetch();
+                ->fetchAll();
     }
 }

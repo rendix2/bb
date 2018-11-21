@@ -3,7 +3,7 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BreadCrumbControl;
-use App\ForumModule\Presenters\Base\ForumPresenter;
+use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\CategoriesManager;
 use App\Models\Traits\CategoriesTrait;
 use dibi;
@@ -15,7 +15,7 @@ use dibi;
  * @method CategoriesManager getManager()
  * @package App\ForumModule\Presenters
  */
-class CategoryPresenter extends ForumPresenter
+class CategoryPresenter extends BaseForumPresenter
 {
     use CategoriesTrait;
     //use \App\Models\Traits\ForumsTrait;

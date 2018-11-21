@@ -149,7 +149,7 @@ class ForumScope implements IAuthorizationScope
             }
         }
 
-        // group   
+        // group
         if ($this->groupPermission) {
             $this->groupPermission = $groupForums = $this->users2GroupsManager->getForumsPermissionsByUserThroughGroupAndForum($identity->getId(), $this->forumEntity->getForum_id());
         } else {
@@ -157,37 +157,38 @@ class ForumScope implements IAuthorizationScope
         }
 
         if ($groupForums) {
+            foreach ($groupForums as $groupForum) {
+                if ($groupForum->post_add && !in_array(self::ROLE_FORUM_POST_ADDER, $roles)) {
+                    $roles[] = self::ROLE_FORUM_POST_ADDER;
+                }
 
-            if ($groupForums->post_add && !in_array(self::ROLE_FORUM_POST_ADDER, $roles)) {
-                $roles[] = self::ROLE_FORUM_POST_ADDER;
-            }
+                if ($groupForum->post_update && !in_array(self::ROLE_FORUM_POST_UPDATER, $roles)) {
+                    $roles[] = self::ROLE_FORUM_POST_UPDATER;
+                }
 
-            if ($groupForums->post_update && !in_array(self::ROLE_FORUM_POST_UPDATER, $roles)) {
-                $roles[] = self::ROLE_FORUM_POST_UPDATER;
-            }
+                if ($groupForum->post_delete && !in_array(self::ROLE_FORUM_POST_DELETER, $roles)) {
+                    $roles[] = self::ROLE_FORUM_POST_DELETER;
+                }
 
-            if ($groupForums->post_delete && !in_array(self::ROLE_FORUM_POST_DELETER, $roles)) {
-                $roles[] = self::ROLE_FORUM_POST_DELETER;
-            }
+                if ($groupForum->topic_add && !in_array(self::ROLE_FORUM_TOPIC_ADDER, $roles)) {
+                    $roles[] = self::ROLE_FORUM_TOPIC_ADDER;
+                }
 
-            if ($groupForums->topic_add && !in_array(self::ROLE_FORUM_TOPIC_ADDER, $roles)) {
-                $roles[] = self::ROLE_FORUM_TOPIC_ADDER;
-            }
+                if ($groupForum->topic_update && !in_array(self::ROLE_FORUM_TOPIC_UPDATER, $roles)) {
+                    $roles[] = self::ROLE_FORUM_TOPIC_UPDATER;
+                }
 
-            if ($groupForums->topic_update && !in_array(self::ROLE_FORUM_TOPIC_UPDATER, $roles)) {
-                $roles[] = self::ROLE_FORUM_TOPIC_UPDATER;
-            }
+                if ($groupForum->topic_delete && !in_array(self::ROLE_FORUM_TOPIC_DELETER, $roles)) {
+                    $roles[] = self::ROLE_FORUM_TOPIC_DELETER;
+                }
 
-            if ($groupForums->topic_delete && !in_array(self::ROLE_FORUM_TOPIC_DELETER, $roles)) {
-                $roles[] = self::ROLE_FORUM_TOPIC_DELETER;
-            }
+                if ($groupForum->topic_thank && !in_array(self::ROLE_FORUM_THANKER, $roles)) {
+                    $roles[] = self::ROLE_FORUM_THANKER;
+                }
 
-            if ($groupForums->topic_thank && !in_array(self::ROLE_FORUM_THANKER, $roles)) {
-                $roles[] = self::ROLE_FORUM_THANKER;
-            }
-
-            if ($groupForums->topic_fast_reply && !in_array(self::ROLE_FORUM_FAST_REPLIER, $roles)) {
-                $roles[] = self::ROLE_FORUM_FAST_REPLIER;
+                if ($groupForum->topic_fast_reply && !in_array(self::ROLE_FORUM_FAST_REPLIER, $roles)) {
+                    $roles[] = self::ROLE_FORUM_FAST_REPLIER;
+                }
             }
         }
 
