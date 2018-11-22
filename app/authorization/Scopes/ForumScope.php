@@ -107,7 +107,10 @@ class ForumScope implements IAuthorizationScope
 
         //user
         if ($this->userPermission) {
-            $this->userPermission = $userForum = $this->users2ForumsManager->getAllFull($identity->getId(), $this->forumEntity->getForum_id());
+            $this->userPermission = $userForum = $this->users2ForumsManager->getAllFull(
+                $identity->getId(),
+                $this->forumEntity->getForum_id()
+            );
         } else {
             $userForum = $this->userPermission;
         }
@@ -150,7 +153,11 @@ class ForumScope implements IAuthorizationScope
 
         // group
         if ($this->groupPermission) {
-            $this->groupPermission = $groupForums = $this->users2GroupsManager->getForumsPermissionsByUserThroughGroupAndForum($identity->getId(), $this->forumEntity->getForum_id());
+            $this->groupPermission = $groupForums = $this->users2GroupsManager
+                ->getForumsPermissionsByUserThroughGroupAndForum(
+                    $identity->getId(),
+                    $this->forumEntity->getForum_id()
+                );
         } else {
             $groupForums = $this->groupPermission;
         }

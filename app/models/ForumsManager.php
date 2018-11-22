@@ -16,8 +16,8 @@ use Zebra_Mptt;
  * @author rendix2
  * @package App\Models
  */
-class ForumsManager extends CrudManager {
-
+class ForumsManager extends CrudManager
+{
     /**
      * @var Zebra_Mptt $mptt
      */

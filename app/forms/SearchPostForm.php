@@ -18,7 +18,7 @@ class SearchPostForm extends Control
 {
     /**
      *
-     * @var ITranslator $translator 
+     * @var ITranslator $translator
      */
     private $translator;
     

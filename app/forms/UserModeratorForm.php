@@ -76,7 +76,9 @@ class UserModeratorForm extends Control
         $this->template->setTranslator($this->translator);
         
         $this->template->forums       = $this->forumsManager->createForums($this->forumsManager->getAllCached(), 0);
-        $this->template->myModerators = $this->moderatorsManager->getPairsByLeft($this->getPresenter()->getParameter('id'));
+        $this->template->myModerators = $this->moderatorsManager->getPairsByLeft(
+            $this->getPresenter()->getParameter('id')
+        );
         
         $this->template->render();
     }

@@ -201,7 +201,11 @@ class ForumPresenter extends AdminPresenter
         
         $form->addText('forum_name', 'Forum name:')
             ->setRequired(true);
-        $form->addSelect('forum_parent_id', 'Forum parent:', [0 => '-'] + $this->getManager()->getAllPairs('forum_name'))->setTranslator(null);
+        $form->addSelect(
+            'forum_parent_id',
+            'Forum parent:',
+            [0 => '-'] + $this->getManager()->getAllPairs('forum_name')
+        )->setTranslator(null);
         
         $form->addText('forum_description', 'Forum description:')
             ->setRequired(true);

@@ -115,7 +115,11 @@ class CategoryPresenter extends AdminPresenter
         $form = $this->getBootstrapForm();
 
         $form->addText('category_name', 'Category name:')->setRequired(true);
-        $form->addSelect('category_parent_id', 'Category parent:', [0 => '-'] + $this->getManager()->getAllPairsCached('category_name'))->setTranslator(null);
+        $form->addSelect(
+            'category_parent_id',
+            'Category parent:',
+            [0 => '-'] + $this->getManager()->getAllPairsCached('category_name')
+        )->setTranslator(null);
         $form->addCheckbox('category_active', 'Category active:');
 
         return $this->addSubmitB($form);
@@ -192,7 +196,10 @@ class CategoryPresenter extends AdminPresenter
                 $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
             }
         } catch (DriverException $e) {
-            $this->flashMessage('There was some problem during saving into database. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
+            $this->flashMessage(
+                'There was some problem during saving into database. Form was NOT saved.',
+                self::FLASH_MESSAGE_DANGER
+            );
             
             Debugger::log($e->getMessage(), ILogger::CRITICAL);
         }

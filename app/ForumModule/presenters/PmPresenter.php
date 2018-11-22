@@ -129,7 +129,7 @@ class PmPresenter extends CrudPresenter
     }
 
     /**
-     * 
+     *
      * @return ReportForm
      */
     protected function createComponentReportForm()

@@ -57,7 +57,14 @@ class PermissionFactory
         
         $permission->addRole(PostScope::ROLE_HISTORIER);
         
-        $permission->addRole(ForumScope::ROLE_MODERATOR, [PostScope::ROLE_AUTHOR, PostScope::ROLE_DELETER, PostScope::ROLE_EDITOR, TopicScope::ROLE_AUTHOR, TopicScope::ROLE_DELETER, TopicScope::ROLE_EDITOR]);
+        $permission->addRole(ForumScope::ROLE_MODERATOR, [
+            PostScope::ROLE_AUTHOR,
+            PostScope::ROLE_DELETER,
+            PostScope::ROLE_EDITOR,
+            TopicScope::ROLE_AUTHOR,
+            TopicScope::ROLE_DELETER,
+            TopicScope::ROLE_EDITOR
+        ]);
         
         $permission->addRole(Identity::ROLE_ADMIN, [ForumScope::ROLE_MODERATOR]);
         
@@ -70,7 +77,7 @@ class PermissionFactory
         $this->allow($permission, Identity::ROLE_HOST, TopicScope::ACTION_VIEW);
         $this->allow($permission, Identity::ROLE_HOST, ForumScope::ACTION_VIEW);
                
-        $this->allow($permission, ForumScope::ROLE_FORUM_POST_ADDER, ForumScope::ACTION_POST_ADD);  
+        $this->allow($permission, ForumScope::ROLE_FORUM_POST_ADDER, ForumScope::ACTION_POST_ADD);
         $this->allow($permission, ForumScope::ROLE_FORUM_TOPIC_ADDER, ForumScope::ACTION_TOPIC_ADD);
         
         //$this->allow($permission, Scopes\Forum::ROLE_FORUM_POST_UPDATER, Scopes\Forum::ACTION_POST_UPDATE);
@@ -95,9 +102,7 @@ class PermissionFactory
         
         $this->allow($permission, ForumScope::ROLE_MODERATOR, ForumScope::ACTION_POST_UPDATE);
         $this->allow($permission, ForumScope::ROLE_MODERATOR, ForumScope::ACTION_TOPIC_UPDATE);
-        
 
-        
         $permission->allow(Identity::ROLE_ADMIN, Permission::ALL, Permission::ALL);
 
         return $permission;
@@ -125,4 +130,3 @@ class PermissionFactory
         $permission->deny($role, $resource, $privilege);
     }
 }
-

@@ -104,7 +104,12 @@ final class ForumPresenter extends BaseForumPresenter
         $this->gf->applyWhere($topics);
         $this->gf->applyOrderBy($topics);
 
-        $paginator = new PaginatorControl($topics, $forumSettings['pagination']['itemsPerPage'], $forumSettings['pagination']['itemsAroundPagination'], $page);
+        $paginator = new PaginatorControl(
+            $topics,
+            $forumSettings['pagination']['itemsPerPage'],
+            $forumSettings['pagination']['itemsAroundPagination'],
+            $page
+        );
 
         $this->addComponent($paginator, 'paginator');
 

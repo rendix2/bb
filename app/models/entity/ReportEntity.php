@@ -22,56 +22,56 @@ class ReportEntity extends Entity
     
     /**
      *
-     * @var int $report_user_id 
-     */    
+     * @var int $report_user_id
+     */
     private $report_user_id;
     
     /**
      *
-     * @var int $report_forum_id 
-     */    
+     * @var int $report_forum_id
+     */
     private $report_forum_id;
     
     /**
      *
      * @var int $report_topic_id
-     */    
+     */
     private $report_topic_id;
     
     /**
      *
      * @var int $report_post_id
-     */    
+     */
     private $report_post_id;
 
     /**
      *
      * @var int $report_reported_user_id
-     */    
-    private $report_reported_user_id;     
+     */
+    private $report_reported_user_id;
     
     /**
      *
-     * @var int $report_pm_id 
-     */    
+     * @var int $report_pm_id
+     */
     private $report_pm_id;
     
     /**
      *
      * @var string $report_text
-     */    
+     */
     private $report_text;
     
     /**
      *
-     * @var int $report_time 
-     */    
+     * @var int $report_time
+     */
     private $report_time;
     
     /**
      *
      * @var string $report_status
-     */    
+     */
     private $report_status;
     
     public function getReport_id()

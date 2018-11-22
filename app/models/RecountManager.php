@@ -38,7 +38,7 @@ class RecountManager extends Manager
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -48,7 +48,7 @@ class RecountManager extends Manager
     }
 
     /**
-     * 
+     *
      */
     public function recountUsersPostCount()
     {
