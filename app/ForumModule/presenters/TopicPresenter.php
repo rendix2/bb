@@ -512,6 +512,8 @@ class TopicPresenter extends BaseForumPresenter
         $answers->addSubmit('add', 'Add answer')
                 ->setValidationScope(false) # disables validation
                 ->addCreateOnClick(true);
+        
+        $form->getElementPrototype()->onsubmit('tinyMCE.triggerSave()');
 
         $form->onSuccess[] = [$this,'editFormSuccess'];
         

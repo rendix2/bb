@@ -299,6 +299,8 @@ class PostPresenter extends BaseForumPresenter
         $files->addSubmit('add', 'Add file')
                 ->setValidationScope(false) # disables validation
                 ->addCreateOnClick(true);
+        
+        $form->getElementPrototype()->onsubmit('tinyMCE.triggerSave()');
 
         $form->onSuccess[]  = [$this, 'editFormSuccess'];
         $form->onValidate[] = [$this, 'onValidate'];
