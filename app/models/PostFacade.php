@@ -130,7 +130,7 @@ class PostFacade
         PollsFacade         $pollsFacade,
         TopicsSetting       $topicSettings,
         FilesManager        $filesManager,
-        Posts2FilesManager  $posts2FilesManger    
+        Posts2FilesManager  $posts2FilesManger
     ) {
         $this->postsManager        = $postsManager;
         $this->topicsManager       = $topicsManager;
@@ -365,7 +365,7 @@ class PostFacade
                 
         $target_forum_id = $target_topic->topic_forum_id;
        
-        if ($source_topic_id !== $target_topic_id) {            
+        if ($source_topic_id !== $target_topic_id) {
             $this->topicsManager->update($source_topic_id, ArrayHash::from(['topic_post_count%sql' => 'topic_post_count - 1']));
             $this->topicsManager->update($target_topic_id, ArrayHash::from(['topic_post_count%sql' => 'topic_post_count + 1']));
         }

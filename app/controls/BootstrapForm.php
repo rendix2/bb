@@ -167,7 +167,7 @@ class BootstrapForm extends Form
      *
      * @return BootstrapForm
      */
-    public function setAjax($ajax) 
+    public function setAjax($ajax)
     {
         $this->ajax = $ajax;
         

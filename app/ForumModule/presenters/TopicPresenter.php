@@ -305,7 +305,12 @@ class TopicPresenter extends BaseForumPresenter
 
         $topicSettings = $this->topicSetting->get();
         
-        $pagination = new PaginatorControl($data, $topicSettings['pagination']['itemsPerPage'], $topicSettings['pagination']['itemsAroundPagination'], $page);
+        $pagination = new PaginatorControl(
+            $data,
+            $topicSettings['pagination']['itemsPerPage'],
+            $topicSettings['pagination']['itemsAroundPagination'],
+            $page
+        );
         $this->addComponent($pagination, 'paginator');
 
         if (!$pagination->getCount()) {
@@ -403,7 +408,12 @@ class TopicPresenter extends BaseForumPresenter
             $poll = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
                         
             if ($poll) {
-                $this['editForm']->setDefaults(['poll_question' => $poll->poll_question, 'poll_time_to' => date('d.m.Y', $poll->poll_time_to)]);
+                $this['editForm']->setDefaults(
+                    [
+                        'poll_question' => $poll->poll_question,
+                        'poll_time_to' => date('d.m.Y', $poll->poll_time_to)
+                    ]
+                );
                 
                 $pollAnswers = $this->pollsFacade->getPollsAnswersManager()->getAllByPoll($poll->poll_id);
 

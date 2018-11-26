@@ -35,13 +35,13 @@ class UserEntity extends Entity
     
     /**
      *
-     * @var string $user_email 
+     * @var string $user_email
      */
     private $user_email;
     
     /**
      *
-     * @var string $user_signature 
+     * @var string $user_signature
      */
     private $user_signature;
     

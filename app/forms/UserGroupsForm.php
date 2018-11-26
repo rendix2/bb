@@ -77,7 +77,11 @@ class UserGroupsForm extends Control
         $this->template->setTranslator($this->translator);
         
         $this->template->groups   = $this->groupsManager->getAllCached();
-        $this->template->myGroups = array_values($this->users2GroupsManager->getPairsByLeft($this->getPresenter()->getParameter('id')));
+        $this->template->myGroups = array_values(
+            $this->users2GroupsManager->getPairsByLeft(
+                $this->getPresenter()->getParameter('id')
+            )
+        );
         
         $this->template->render();
     }

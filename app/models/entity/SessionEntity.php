@@ -29,19 +29,19 @@ class SessionEntity extends Entity
     /**
      *
      * @var string $session_key
-     */    
+     */
     private $session_key;
    
     /**
      *
      * @var int $session_from
-     */    
+     */
     private $session_from;
     
     /**
      *
      * @var int $session_last_activity
-     */    
+     */
     private $session_last_activity;
     
     public function getSession_id()

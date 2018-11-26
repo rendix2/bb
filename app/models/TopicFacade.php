@@ -211,7 +211,10 @@ class TopicFacade
         foreach ($posts as $post) {
             $users[] = $post->post_user_id;
 
-            $this->usersManager->update($post->post_user_id, ArrayHash::from(['user_post_count%sql' => 'user_post_count - ' . $post->post_count]));
+            $this->usersManager->update(
+                $post->post_user_id,
+                ArrayHash::from(['user_post_count%sql' => 'user_post_count - ' . $post->post_count])
+            );
         }
 
         $this->forumsManager->update(
@@ -265,8 +268,23 @@ class TopicFacade
         $posts    = $this->postsManager->getFluentByTopic($topic_id);
         $post_ids = \App\Utils::arrayObjectColumn($posts, 'post_id');
 
-        $this->forumsManager->update($source_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1', 'forum_post_count%sql' => 'forum_post_count - ' . $topic->topic_post_count]));
-        $this->forumsManager->update($target_forum_id, ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1', 'forum_post_count%sql' => 'forum_post_count + ' . $topic->topic_post_count]));
+        $this->forumsManager->update(
+            $source_forum_id,
+            ArrayHash::from(
+                [
+                    'forum_topic_count%sql' => 'forum_topic_count - 1',
+                    'forum_post_count%sql' => 'forum_post_count - ' . $topic->topic_post_count
+                ]
+            )
+        );
+        $this->forumsManager->update(
+            $target_forum_id,
+            ArrayHash::from(
+                [
+                    'forum_topic_count%sql' => 'forum_topic_count + 1',
+                    'forum_post_count%sql' => 'forum_post_count + ' . $topic->topic_post_count]
+            )
+        );
         
         $this->postsManager->updateMulti($post_ids, ArrayHash::from(['post_forum_id' => $target_forum_id]));
         $this->reportsManager->updateByTopic($topic_id, ArrayHash::from(['report_forum_id' => $target_forum_id]));
@@ -427,9 +445,15 @@ class TopicFacade
      */
     public function update(TopicEntity $topic)
     {
-        $res = $this->topicsManager->update($topic->getTopic_id(), ArrayHash::from(['topic_name' => $topic->getTopic_name()]));
+        $res = $this->topicsManager->update(
+            $topic->getTopic_id(),
+            ArrayHash::from(['topic_name' => $topic->getTopic_name()])
+        );
 
-        $this->postsManager->update($topic->getPost()->getPost_id(), ArrayHash::from(['post_text' => $topic->getPost()->getPost_text()]));
+        $this->postsManager->update(
+            $topic->getPost()->getPost_id(),
+            ArrayHash::from(['post_text' => $topic->getPost()->getPost_text()])
+        );
         
         $pollsManager = $this->pollsFacade->getPollsManager();
         $topicHasPoll = $pollsManager->getByTopic($topic->getTopic_id());

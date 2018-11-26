@@ -12,7 +12,7 @@ use Nette\Http\IResponse;
 
 /**
  * Base presenter for all application presenters.
- * 
+ *
  * @author rendix2
  * @package App\Presenters\Base
  */

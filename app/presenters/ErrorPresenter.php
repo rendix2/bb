@@ -4,10 +4,10 @@ namespace App\Presenters;
 
 use Nette\Application\BadRequestException;
 use Nette\Application\IPresenter;
+use Nette\Application\Request;
 use Nette\Application\Responses\CallbackResponse;
 use Nette\Application\Responses\ForwardResponse;
 use Nette\Http\IResponse;
-use Nette\Application\Request;
 use Nette\SmartObject;
 use Tracy\Helpers;
 use Tracy\ILogger;
@@ -37,7 +37,7 @@ class ErrorPresenter implements IPresenter
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
@@ -68,8 +68,8 @@ class ErrorPresenter implements IPresenter
 
         return new CallbackResponse(
             function () {
-            $sep = DIRECTORY_SEPARATOR;
-            
+                $sep = DIRECTORY_SEPARATOR;
+
                 require __DIR__ . $sep . 'templates' . $sep . 'Error' . $sep . '500.phtml';
             }
         );

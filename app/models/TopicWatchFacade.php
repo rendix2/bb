@@ -142,7 +142,10 @@ class TopicWatchFacade
 
                 if ($check) {
                     $this->topicWatchManager->delete($post->getPost_topic_id(), $ps->post_user_id);
-                    $this->usersManager->update($post->getPost_user_id(), ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1']));
+                    $this->usersManager->update(
+                        $post->getPost_user_id(),
+                        ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1'])
+                    );
                 }
             }
         }

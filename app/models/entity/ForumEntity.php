@@ -334,7 +334,7 @@ class ForumEntity extends Entity
     {
         $this->forum_fast_reply = $forum_fast_reply;
         return $this;
-    }    
+    }
     
     public function setForum_rules($forum_rules)
     {
@@ -352,12 +352,12 @@ class ForumEntity extends Entity
     {
         $this->forum_right = self::makeInt($forum_right);
         return $this;
-    }    
+    }
     
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return ForumEntity
      */
     public static function setFromRow(Row $values)

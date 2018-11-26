@@ -8,7 +8,7 @@ namespace App\Settings;
  * @author rendix2
  * @package App\Settings
  */
-abstract class Setting 
+abstract class Setting
 {
     /**
      *
@@ -26,7 +26,7 @@ abstract class Setting
     }
     
     /**
-     * 
+     *
      */
     public function __destruct()
     {
