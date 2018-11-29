@@ -19,7 +19,7 @@ class ThanksManager extends CrudManager
     /**
      * @param int $forum_id
      *
-     * @return array []
+     * @return Row[]
      */
     public function getAllByForum($forum_id)
     {

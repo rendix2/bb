@@ -34,6 +34,8 @@ class ForumFacade
 
     /**
      *
+     * ForumFacade constructor.
+     *
      * @param ForumsManager $forumsManager
      * @param TopicFacade   $topicFacade
      * @param TopicsManager $topicsManager
@@ -47,7 +49,10 @@ class ForumFacade
         $this->topicFacade   = $topicFacade;
         $this->topicsManager = $topicsManager;
     }
-    
+
+    /**
+     *  ForumFacade destructor.
+     */
     public function __destruct()
     {
         $this->topicFacade   = null;

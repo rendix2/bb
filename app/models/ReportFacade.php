@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Entity\TopicEntity;
+use App\Utils;
 
 /**
  * Description of ReportFacade
@@ -36,8 +37,9 @@ class ReportFacade
      */
     private $forumsManager;
 
-
     /**
+     *
+     * ReportFacade constructor
      *
      * @param ForumsManager $forumsManager
      * @param TopicsManager $topicsManager
@@ -57,7 +59,7 @@ class ReportFacade
     }
     
     /**
-     *
+     * ReportFacade destructor
      */
     public function __destruct()
     {
@@ -67,7 +69,7 @@ class ReportFacade
         $this->reportManager  = null;
     }
 
-        /**
+    /**
      *
      * @param int $category_id
      *
@@ -109,7 +111,7 @@ class ReportFacade
     public function deleteByTopic(TopicEntity $topic)
     {
         $posts     = $this->postsManager->getFluentByTopic($topic->getTopic_id());
-        $posts_ids = \App\Utils::arrayObjectColumn($posts, 'post_id');
+        $posts_ids = Utils::arrayObjectColumn($posts, 'post_id');
         
         $this->reportManager->deleteByPosts($posts_ids);
         return $this->reportManager->deleteByTopic($topic->getTopic_id());

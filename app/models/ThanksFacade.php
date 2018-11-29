@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Entity\PostEntity;
 use App\Models\Entity\ThankEntity;
 use App\Models\Entity\TopicEntity;
+use App\Utils;
 use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
@@ -44,6 +45,8 @@ class ThanksFacade
     private $forumsManager;
 
     /**
+     * ThanksFacade constructor
+     *
      * @param ThanksManager $thanksManager
      * @param UsersManager  $usersManager
      * @param PostsManager  $postsManager
@@ -63,7 +66,10 @@ class ThanksFacade
         $this->topicsManager = $topicsManager;
         $this->forumsManager = $forumsManager;
     }
-    
+
+    /**
+     * ThanksFacade destructor
+     */
     public function __destruct()
     {
         $this->thanksManager = null;
@@ -126,7 +132,7 @@ class ThanksFacade
     public function deleteByTopic(TopicEntity $topic)
     {
         $thanks   = $this->thanksManager->getAllByTopic($topic->getTopic_id());
-        $user_ids = \App\Utils::arrayObjectColumn($thanks, 'thank_user_id');
+        $user_ids = Utils::arrayObjectColumn($thanks, 'thank_user_id');
 
         if (count($user_ids)) {
             $this->usersManager->updateMulti(

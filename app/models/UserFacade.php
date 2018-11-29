@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Entity\PmEntity;
 use App\Models\Entity\UserEntity;
 use App\Services\TranslatorFactory;
 
@@ -97,6 +98,7 @@ class UserFacade
     private $pmFacade;
 
     /**
+     * UserFacade constructor.
      *
      * @param PostsManager        $postsManager
      * @param PostsHistoryManager $postsHistoryManager
@@ -146,7 +148,10 @@ class UserFacade
         $this->translatorFactory    = $translatorFactory;
         $this->pmFacade             = $pmFacade;
     }
-    
+
+    /**
+     * UserFacade destructor.
+     */
     public function __destruct()
     {
         $this->usersManager         = null;
@@ -211,7 +216,7 @@ class UserFacade
         $user_id         = $this->usersManager->add($user->getArrayHash());
         $forumTranslator = $this->translatorFactory->createForumTranslatorFactory();
         
-        $pmEntity = new Entity\PmEntity();
+        $pmEntity = new PmEntity();
         $pmEntity->setPm_user_id_from(1)
                  ->setPm_user_id_to($user_id)
                  ->setPm_subject($forumTranslator->translate('welcome_pm_subject'))

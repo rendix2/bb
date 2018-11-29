@@ -44,7 +44,7 @@ class CategoriesManager extends CrudManager
     }
     
     /**
-     *
+     * CategoriesManager destructor.
      */
     public function __destruct()
     {

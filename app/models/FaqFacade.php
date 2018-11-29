@@ -26,6 +26,8 @@ class FaqFacade
 
     /**
      *
+     * FaqFacade constructor.
+     *
      * @param FaqManager        $faqManager
      * @param FaqAnswersManager $faqAnswersManager
      */
@@ -36,7 +38,7 @@ class FaqFacade
     }
     
     /**
-     *
+     * FaqFacade destructor.
      */
     public function __destruct()
     {

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Crud\CrudManager;
 use Dibi\Result;
+use Dibi\Row;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -16,7 +17,7 @@ class SessionsManager extends CrudManager
 {
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getCountOfLoggedUsers()
     {
@@ -27,7 +28,7 @@ class SessionsManager extends CrudManager
     }
 
     /**
-     * @return array
+     * @return Row[]
      */
     public function getLoggedUsers()
     {

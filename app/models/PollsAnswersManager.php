@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Crud\CrudManager;
+use Dibi\Result;
 use Dibi\Row;
 
 /**
@@ -16,7 +17,7 @@ class PollsAnswersManager extends CrudManager
     /**
      * @param int $poll_id
      *
-     * @return \Dibi\Result|int
+     * @return Result|int
      */
     public function deleteByPoll($poll_id)
     {

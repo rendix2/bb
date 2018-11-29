@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Entity\TopicEntity;
+use App\Utils;
 use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
@@ -86,6 +87,8 @@ class TopicFacade
 
     /**
      *
+     * TopicFacade constructor
+     *
      * @param TopicsManager     $topicsManager
      * @param TopicWatchManager $topicWatchManager
      * @param PostsManager      $postsManager
@@ -126,7 +129,10 @@ class TopicFacade
         $this->reportFacade      = $reportFacade;
         $this->pollsFacade       = $pollsFacade;
     }
-    
+
+    /**
+     * TopicFacade destructor
+     */
     public function __destruct()
     {
         $this->topicsManager     = null;
@@ -254,26 +260,26 @@ class TopicFacade
     public function move($topic_id, $target_forum_id)
     {
         $topic = $this->topicsManager->getById($topic_id);
-        
-        $source_forum_id = $topic->topic_forum_id;
-        
+
         if (!$topic) {
             return false;
         }
         
+        $source_forum_id = $topic->topic_forum_id;
+
         if ($source_forum_id === $target_forum_id) {
             return false;
         }
 
         $posts    = $this->postsManager->getFluentByTopic($topic_id);
-        $post_ids = \App\Utils::arrayObjectColumn($posts, 'post_id');
+        $post_ids = Utils::arrayObjectColumn($posts, 'post_id');
 
         $this->forumsManager->update(
             $source_forum_id,
             ArrayHash::from(
                 [
                     'forum_topic_count%sql' => 'forum_topic_count - 1',
-                    'forum_post_count%sql' => 'forum_post_count - ' . $topic->topic_post_count
+                    'forum_post_count%sql'  => 'forum_post_count - ' . $topic->topic_post_count
                 ]
             )
         );
@@ -282,7 +288,7 @@ class TopicFacade
             ArrayHash::from(
                 [
                     'forum_topic_count%sql' => 'forum_topic_count + 1',
-                    'forum_post_count%sql' => 'forum_post_count + ' . $topic->topic_post_count]
+                    'forum_post_count%sql'  => 'forum_post_count + ' . $topic->topic_post_count]
             )
         );
         
@@ -307,7 +313,7 @@ class TopicFacade
             ->where('[post_id] > %i', $from_post_id)
             ->fetchAll();
         
-        $post_ids = \App\Utils::arrayObjectColumn($posts, 'post_id');
+        $post_ids = Utils::arrayObjectColumn($posts, 'post_id');
 
         return $this->mergeWithPosts($topic_target_id, $post_ids);
     }
@@ -326,7 +332,7 @@ class TopicFacade
             ->where('[post_id] < %i', $to_post_id)
             ->fetchAll();
 
-        $post_ids = \App\Utils::arrayObjectColumn($posts, 'post_id');
+        $post_ids = Utils::arrayObjectColumn($posts, 'post_id');
 
         return $this->mergeWithPosts($topic_target_id, $post_ids);
     }
@@ -361,8 +367,8 @@ class TopicFacade
         $topicWatches = $this->topicWatchManager->getPairsByLeft($topic_from_id);
         $targetThanks = $this->thanksManager->getAllByTopic($topic_target_id);
 
-        $thanksFromUsers   = \App\Utils::arrayObjectColumn($thanks, 'thank_user_id');
-        $thanksTargetUsers = \App\Utils::arrayObjectColumn($targetThanks, 'thank_user_id');
+        $thanksFromUsers   = Utils::arrayObjectColumn($thanks, 'thank_user_id');
+        $thanksTargetUsers = Utils::arrayObjectColumn($targetThanks, 'thank_user_id');
         
         $same_thanks     = array_intersect($thanksTargetUsers, $thanksFromUsers);
         $missing_thanks = array_diff($thanksFromUsers, $thanksTargetUsers);
@@ -379,8 +385,8 @@ class TopicFacade
         $topicsWatchesFrom    = $this->topicWatchManager->getAllByLeft($topic_from_id);
         $topicsWatchesTarget  = $this->topicWatchManager->getAllByLeft($topic_target_id);
 
-        $topic_watch_from_user_ids   = \App\Utils::arrayObjectColumn($topicsWatchesFrom, 'user_id');
-        $topic_watch_target_user_ids = \App\Utils::arrayObjectColumn($topicsWatchesTarget, 'user_id');
+        $topic_watch_from_user_ids   = Utils::arrayObjectColumn($topicsWatchesFrom, 'user_id');
+        $topic_watch_target_user_ids = Utils::arrayObjectColumn($topicsWatchesTarget, 'user_id');
 
         $same_watches    = array_intersect($topic_watch_from_user_ids, $topic_watch_target_user_ids);
         $missing_watches = array_diff($topic_watch_target_user_ids, $topic_watch_from_user_ids);
@@ -408,7 +414,7 @@ class TopicFacade
         $this->topicWatchManager->mergeByLeft($topic_target_id, $topicWatches);
         $this->topicWatchManager->deleteByLeft($topic_from_id);
         
-        $post_ids = \App\Utils::arrayObjectColumn($posts, 'post_id');
+        $post_ids = Utils::arrayObjectColumn($posts, 'post_id');
 
         $this->mergeWithPosts($topic_target_id, $post_ids);
         $this->topicsManager->delete($topic_from_id);

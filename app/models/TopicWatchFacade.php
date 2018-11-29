@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Entity\PostEntity;
 use App\Models\Entity\TopicEntity;
+use App\Utils;
+use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -14,7 +16,6 @@ use Nette\Utils\ArrayHash;
  */
 class TopicWatchFacade
 {
-
     /**
      *
      * @var UsersManager $usersManager
@@ -109,12 +110,12 @@ class TopicWatchFacade
      *
      * @param TopicEntity $topic
      *
-     * @return \Dibi\Result|int
+     * @return Result|int
      */
     public function deleteByTopic(TopicEntity $topic)
     {
         $topicsWatches = $this->topicWatchManager->getAllByLeft($topic->getTopic_id());
-        $user_ids      = \App\Utils::arrayObjectColumn($topicsWatches, 'user_id');
+        $user_ids      = Utils::arrayObjectColumn($topicsWatches, 'user_id');
 
         if (count($user_ids)) {
             $this->usersManager->updateMulti(

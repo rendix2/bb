@@ -31,6 +31,7 @@ class CategoryFacade
     private $forumsManager;
 
     /**
+     * CategoryFacade constructor.
      *
      * @param CategoriesManager $categoriesManager
      * @param ForumFacade       $forumFacade
@@ -47,7 +48,7 @@ class CategoryFacade
     }
     
     /**
-     *
+     * CategoryFacade destructor.
      */
     public function __destruct()
     {
@@ -59,6 +60,7 @@ class CategoryFacade
     /**
      *
      * @param CategoryEntity $category
+     *
      * @return int
      */
     public function add(CategoryEntity $category)

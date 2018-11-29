@@ -49,7 +49,7 @@ class UsersManager extends CrudManager
     }
     
     /**
-     *
+     * UsersManager destructor
      */
     public function __destruct()
     {

@@ -101,6 +101,8 @@ class PostFacade
 
     /**
      *
+     * PostFacade constructor.
+     *
      * @param PostsManager        $postsManager
      * @param TopicsManager       $topicsManager
      * @param TopicWatchManager   $topicWatchManager
@@ -147,7 +149,10 @@ class PostFacade
         $this->filesManager        = $filesManager;
         $this->posts2FilesManger   = $posts2FilesManger;
     }
-    
+
+    /**
+     * PostFacade destructor.
+     */
     public function __destruct()
     {
         $this->postsManager        = null;

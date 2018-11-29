@@ -38,7 +38,7 @@ class RecountManager extends Manager
     }
     
     /**
-     *
+     * RecountManager destructor.
      */
     public function __destruct()
     {

@@ -47,7 +47,7 @@ class ForumsManager extends CrudManager
     }
 
     /**
-     *
+     * ForumsManager destructor
      */
     public function __destruct()
     {
@@ -91,7 +91,7 @@ class ForumsManager extends CrudManager
     /**
      * @param int $forum_id
      *
-     * @return array
+     * @return Row[]
      */
     public function getAllByParent($forum_id)
     {
