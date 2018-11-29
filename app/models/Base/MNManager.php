@@ -401,7 +401,7 @@ abstract class MNManager extends Manager
      * @param int $left_id
      * @param int $right_id
      *
-     * @return Row
+     * @return Fluent
      */
     public function getFluentFull($left_id, $right_id)
     {

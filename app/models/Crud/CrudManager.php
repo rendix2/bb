@@ -156,7 +156,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
         return $this->dibi
             ->select('*')
             ->from($this->table);
-    }    
+    }
 
     /**
      * @return array

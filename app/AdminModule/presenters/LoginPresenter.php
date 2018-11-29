@@ -103,7 +103,6 @@ class LoginPresenter extends BasePresenter
      * @param Form      $form
      * @param ArrayHash $values
      *
-     * @throws AuthenticationException
      */
     public function adminLoginFormSuccess(Form $form, ArrayHash $values)
     {

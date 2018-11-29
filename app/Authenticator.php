@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Authorization\Authorizator;
 use App\Models\LanguagesManager;
 use App\Models\ModeratorsManager;
 use App\Models\UsersManager;
@@ -82,7 +83,10 @@ class Authenticator implements IAuthenticator
         $langData = $this->languagesManager->getById($userData->user_lang_id);
         
         if (!$langData) {
-            throw new AuthenticationException('User account has set unknown language.', IAuthenticator::INVALID_CREDENTIAL);
+            throw new AuthenticationException(
+                'User account has set unknown language.',
+                IAuthenticator::INVALID_CREDENTIAL
+            );
         }
 
         if (!$userData->user_active) {
@@ -106,6 +110,6 @@ class Authenticator implements IAuthenticator
                 'moderator'            => $moderators
             ];
 
-        return new Identity($userData->user_id, Authorization\Authorizator::ROLES[$userData->user_role_id], $data);
+        return new Identity($userData->user_id, Authorizator::ROLES[$userData->user_role_id], $data);
     }
 }

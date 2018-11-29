@@ -61,8 +61,6 @@ class TranslatorFactory
         $this->user            = $user;
         $this->appDir          = $appDir;
         $this->defaultLanguage = $defaultLanguage;
-        $this->forumTranslator = null;
-        $this->adminTranslator = null;
         
         $this->setLang();
     }

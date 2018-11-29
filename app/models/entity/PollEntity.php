@@ -130,7 +130,7 @@ class PollEntity extends Entity
 
     /**
      *
-     * @param Row $values
+     * @param ArrayHash $values
      *
      * @return PollEntity
      */

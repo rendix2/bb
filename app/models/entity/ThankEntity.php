@@ -34,20 +34,20 @@ class ThankEntity extends Entity
     
     /**
      *
-     * @var int $thank_user_id 
-     */    
+     * @var int $thank_user_id
+     */
     private $thank_user_id;
     
     /**
      *
      * @var int $thank_time
-     */    
+     */
     private $thank_time;
     
     /**
      *
-     * @var string $thank_user_ip 
-     */    
+     * @var string $thank_user_ip
+     */
     private $thank_user_ip;
     
     public function getThank_id()
@@ -114,12 +114,12 @@ class ThankEntity extends Entity
     {
         $this->thank_user_ip = $thank_user_ip;
         return $this;
-    }    
+    }
     
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return ThankEntity
      */
     public static function setFromRow(Row $values)

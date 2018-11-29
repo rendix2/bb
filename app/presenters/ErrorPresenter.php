@@ -7,7 +7,6 @@ use Nette\Application\IPresenter;
 use Nette\Application\Request;
 use Nette\Application\Responses\CallbackResponse;
 use Nette\Application\Responses\ForwardResponse;
-use Nette\Http\IResponse;
 use Nette\SmartObject;
 use Tracy\Helpers;
 use Tracy\ILogger;
@@ -47,7 +46,7 @@ class ErrorPresenter implements IPresenter
     /**
      * @param Request $request
      *
-     * @return IResponse
+     * @return CallbackResponse|ForwardResponse
      */
     public function run(Request $request)
     {

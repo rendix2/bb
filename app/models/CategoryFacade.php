@@ -63,7 +63,10 @@ class CategoryFacade
      */
     public function add(CategoryEntity $category)
     {
-        $category_id = $this->categoriesManager->getMptt()->add($category->category_parent_id, $category->category_name);
+        $category_id = $this->categoriesManager->getMptt()->add(
+            $category->category_parent_id,
+            $category->category_name
+        );
         
         $category->setCategory_id($category_id);
         

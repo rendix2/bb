@@ -307,11 +307,17 @@ class PostFacade
                 ]));
             }
         } elseif ($topic->getTopic_last_post_id() === $topic->getTopic_first_post_id() && $topic->getTopic_first_post_id() === (int)$post->getPost_id()) {
-            $this->forumsManager->update($post->getPost_forum_id(), ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1']));
+            $this->forumsManager->update(
+                $post->getPost_forum_id(),
+                ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1'])
+            );
             $this->thanksFacade->deleteByTopic($topic);
             $this->reportsManager->deleteByTopic($topic->getTopic_id());
             $this->topicWatchFacade->deleteByTopic($topic);
-            $this->usersManager->update($topic->getTopic_user_id(), ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
+            $this->usersManager->update(
+                $topic->getTopic_user_id(),
+                ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1'])
+            );
             
             if ($topic->getPoll()) {
                 $this->pollsFacade->delete($topic->getPoll());
@@ -366,13 +372,25 @@ class PostFacade
         $target_forum_id = $target_topic->topic_forum_id;
        
         if ($source_topic_id !== $target_topic_id) {
-            $this->topicsManager->update($source_topic_id, ArrayHash::from(['topic_post_count%sql' => 'topic_post_count - 1']));
-            $this->topicsManager->update($target_topic_id, ArrayHash::from(['topic_post_count%sql' => 'topic_post_count + 1']));
+            $this->topicsManager->update(
+                $source_topic_id,
+                ArrayHash::from(['topic_post_count%sql' => 'topic_post_count - 1'])
+            );
+            $this->topicsManager->update(
+                $target_topic_id,
+                ArrayHash::from(['topic_post_count%sql' => 'topic_post_count + 1'])
+            );
         }
         
         if ($source_forum_id !== $target_forum_id) {
-            $this->forumsManager->update($source_forum_id, ArrayHash::from(['forum_post_count%sql' => 'forum_post_count - 1']));
-            $this->forumsManager->update($target_forum_id, ArrayHash::from(['forum_post_count%sql' => 'forum_post_count + 1']));
+            $this->forumsManager->update(
+                $source_forum_id,
+                ArrayHash::from(['forum_post_count%sql' => 'forum_post_count - 1'])
+            );
+            $this->forumsManager->update(
+                $target_forum_id,
+                ArrayHash::from(['forum_post_count%sql' => 'forum_post_count + 1'])
+            );
         }
         
         $this->reportsManager->updateByPost($post_id, ArrayHash::from(['report_topic_id' => $target_topic_id]));

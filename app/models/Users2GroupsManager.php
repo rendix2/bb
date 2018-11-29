@@ -45,7 +45,7 @@ class Users2GroupsManager extends MNManager
      * @param int $user_id
      * @param int $forum_id
      *
-     * @return Row
+     * @return Row[]
      */
     public function getForumsPermissionsByUserThroughGroupAndForum($user_id, $forum_id)
     {

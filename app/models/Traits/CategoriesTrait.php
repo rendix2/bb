@@ -10,7 +10,8 @@ use App\Models\Entity\CategoryEntity;
  *
  * @author rendix2
  */
-trait CategoriesTrait {
+trait CategoriesTrait
+{
 
     /**
      * @var CategoriesManager $categoriesManager

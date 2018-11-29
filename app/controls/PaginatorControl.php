@@ -134,7 +134,11 @@ class PaginatorControl extends Control
         
         return $form;
     }
-    
+
+    /**
+     * @param Form      $form
+     * @param ArrayHash $values
+     */
     public function paginationSuccess(Form $form, ArrayHash $values)
     {
         $url = new Url($this->presenter->getHttpRequest()->getUrl());

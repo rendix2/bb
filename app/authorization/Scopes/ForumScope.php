@@ -47,7 +47,7 @@ class ForumScope implements IAuthorizationScope
      *
      * @var User[] $moderators
      */
-    private $moderators = [];
+    private $moderators;
     
     private $forumEntity;
     

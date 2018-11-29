@@ -217,7 +217,7 @@ class ForumEntity extends Entity
     public function getForum_fast_reply()
     {
         return $this->forum_fast_reply;
-    }    
+    }
 
     public function getForum_rules()
     {

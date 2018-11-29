@@ -296,7 +296,10 @@ abstract class CrudPresenter extends AuthenticatedPresenter
                 $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
             }
         } catch (DriverException $e) {
-            $this->flashMessage('There was some problem during saving into database. Form was NOT saved.', self::FLASH_MESSAGE_DANGER);
+            $this->flashMessage(
+                'There was some problem during saving into database. Form was NOT saved.',
+                self::FLASH_MESSAGE_DANGER
+            );
             
             Debugger::log($e->getMessage(), ILogger::CRITICAL);
         }
