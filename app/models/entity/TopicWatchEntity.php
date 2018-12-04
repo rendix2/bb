@@ -2,8 +2,8 @@
 
 namespace App\Models\Entity;
 
+use App\Models\Entity\Base\Entity;
 use Dibi\Row;
-use Nette\Neon\Entity;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -32,33 +32,57 @@ class TopicWatchEntity extends Entity
      */
     private $user_id;
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_id()
     {
         return $this->topic_id;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_id()
     {
         return $this->user_id;
     }
 
+    /**
+     * @param $id
+     *
+     * @return TopicWatchEntity
+     */
     public function setId($id)
     {
         $this->id = self::makeInt($id);
         return $this;
     }
 
+    /**
+     * @param $topic_id
+     *
+     * @return TopicWatchEntity
+     */
     public function setTopic_id($topic_id)
     {
         $this->topic_id = self::makeInt($topic_id);
         return $this;
     }
 
+    /**
+     * @param $user_id
+     *
+     * @return TopicWatchEntity
+     */
     public function setUser_id($user_id)
     {
         $this->user_id = self::makeInt($user_id);

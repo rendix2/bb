@@ -272,9 +272,9 @@ class PostPresenter extends BaseForumPresenter
         
         $sep = DIRECTORY_SEPARATOR;
         
-        $fileRespone = new FileResponse($this->postSetting->get()['filesDir'] . $sep . $file->file_name . '.' . $file->file_extension, $file->file_orig_name);
+        $fileResponse = new FileResponse($this->postSetting->get()['filesDir'] . $sep . $file->file_name . '.' . $file->file_extension, $file->file_orig_name);
         
-        $this->sendResponse($fileRespone);
+        $this->sendResponse($fileResponse);
     }
     
     /**

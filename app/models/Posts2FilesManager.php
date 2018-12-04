@@ -12,8 +12,9 @@ use Dibi\Connection;
  */
 class Posts2FilesManager extends MNManager
 {
-    
+
     /**
+     * Posts2FilesManager constructor.
      *
      * @param Connection   $dibi
      * @param PostsManager $left

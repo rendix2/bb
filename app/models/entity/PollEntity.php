@@ -44,55 +44,95 @@ class PollEntity extends Entity
      */
     private $pollAnswers;
 
+    /**
+     * @return int
+     */
     public function getPoll_id()
     {
         return $this->poll_id;
     }
 
+    /**
+     * @return int
+     */
     public function getPoll_topic_id()
     {
         return $this->poll_topic_id;
     }
 
+    /**
+     * @return string
+     */
     public function getPoll_question()
     {
         return $this->poll_question;
     }
 
+    /**
+     * @return int
+     */
     public function getPoll_time_to()
     {
         return $this->poll_time_to;
     }
 
+    /**
+     * @return PollAnswerEntity[]
+     */
     public function getPollAnswers()
     {
         return $this->pollAnswers;
     }
 
+    /**
+     * @param $poll_id
+     *
+     * @return PollEntity
+     */
     public function setPoll_id($poll_id)
     {
         $this->poll_id = self::makeInt($poll_id);
         return $this;
     }
 
+    /**
+     * @param $poll_topic_id
+     *
+     * @return PollEntity
+     */
     public function setPoll_topic_id($poll_topic_id)
     {
         $this->poll_topic_id = self::makeInt($poll_topic_id);
         return $this;
     }
 
+    /**
+     * @param $poll_question
+     *
+     * @return PollEntity
+     */
     public function setPoll_question($poll_question)
     {
         $this->poll_question = $poll_question;
         return $this;
     }
 
+    /**
+     * @param $poll_time_to
+     *
+     * @return PollEntity
+     */
     public function setPoll_time_to($poll_time_to)
     {
         $this->poll_time_to = self::makeTimestamp($poll_time_to);
         return $this;
     }
 
+    /**
+     * @param array $pollAnswers
+     *
+     * @return PollEntity
+     */
     public function setPollAnswers(array $pollAnswers = [])
     {
         $this->pollAnswers = $pollAnswers;

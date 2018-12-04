@@ -116,187 +116,323 @@ class UserEntity extends Entity
      */
     private $user_activation_key;
 
+    /**
+     * @return int
+     */
     public function getUser_id()
     {
         return $this->user_id;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_name()
     {
         return $this->user_name;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_password()
     {
         return $this->user_password;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_email()
     {
         return $this->user_email;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_signature()
     {
         return $this->user_signature;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_active()
     {
         return $this->user_active;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_post_count()
     {
         return $this->user_post_count;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_topic_count()
     {
         return $this->user_topic_count;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_thank_count()
     {
         return $this->user_thank_count;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_watch_count()
     {
         return $this->user_watch_count;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_lang_id()
     {
         return $this->user_lang_id;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_role_id()
     {
         return $this->user_role_id;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_avatar()
     {
         return $this->user_avatar;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_register_time()
     {
         return $this->user_register_time;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_last_login_time()
     {
         return $this->user_last_login_time;
     }
 
+    /**
+     * @return int
+     */
     public function getUser_last_post_time()
     {
         return $this->user_last_post_time;
     }
 
+    /**
+     * @return string
+     */
     public function getUser_activation_key()
     {
         return $this->user_activation_key;
     }
 
+    /**
+     * @param $user_id
+     *
+     * @return UserEntity
+     */
     public function setUser_id($user_id)
     {
         $this->user_id = self::makeInt($user_id);
         return $this;
     }
 
+    /**
+     * @param $user_name
+     *
+     * @return UserEntity
+     */
     public function setUser_name($user_name)
     {
         $this->user_name = $user_name;
         return $this;
     }
 
+    /**
+     * @param $user_password
+     *
+     * @return UserEntity
+     */
     public function setUser_password($user_password)
     {
         $this->user_password = $user_password;
         return $this;
     }
 
+    /**
+     * @param $user_email
+     *
+     * @return UserEntity
+     */
     public function setUser_email($user_email)
     {
         $this->user_email = $user_email;
         return $this;
     }
 
+    /**
+     * @param $user_signature
+     *
+     * @return UserEntity
+     */
     public function setUser_signature($user_signature)
     {
         $this->user_signature = $user_signature;
         return $this;
     }
 
+    /**
+     * @param $user_active
+     *
+     * @return UserEntity
+     */
     public function setUser_active($user_active)
     {
         $this->user_active = self::makeBool($user_active);
         return $this;
     }
 
+    /**
+     * @param $user_post_count
+     *
+     * @return UserEntity
+     */
     public function setUser_post_count($user_post_count)
     {
         $this->user_post_count = self::makeInt($user_post_count);
         return $this;
     }
 
+    /**
+     * @param $user_topic_count
+     *
+     * @return UserEntity
+     */
     public function setUser_topic_count($user_topic_count)
     {
         $this->user_topic_count = self::makeInt($user_topic_count);
         return $this;
     }
 
+    /**
+     * @param $user_thank_count
+     *
+     * @return UserEntity
+     */
     public function setUser_thank_count($user_thank_count)
     {
         $this->user_thank_count = self::makeInt($user_thank_count);
         return $this;
     }
 
+    /**
+     * @param $user_watch_count
+     *
+     * @return UserEntity
+     */
     public function setUser_watch_count($user_watch_count)
     {
         $this->user_watch_count = self::makeInt($user_watch_count);
         return $this;
     }
 
+    /**
+     * @param $user_lang_id
+     *
+     * @return UserEntity
+     */
     public function setUser_lang_id($user_lang_id)
     {
         $this->user_lang_id = self::makeInt($user_lang_id);
         return $this;
     }
 
+    /**
+     * @param $user_role_id
+     *
+     * @return UserEntity
+     */
     public function setUser_role_id($user_role_id)
     {
         $this->user_role_id = self::makeInt($user_role_id);
         return $this;
     }
 
+    /**
+     * @param $user_avatar
+     *
+     * @return UserEntity
+     */
     public function setUser_avatar($user_avatar)
     {
         $this->user_avatar = $user_avatar;
         return $this;
     }
 
+    /**
+     * @param $user_register_time
+     *
+     * @return UserEntity
+     */
     public function setUser_register_time($user_register_time)
     {
         $this->user_register_time = self::makeInt($user_register_time);
         return $this;
     }
 
+    /**
+     * @param $user_last_login_time
+     *
+     * @return UserEntity
+     */
     public function setUser_last_login_time($user_last_login_time)
     {
         $this->user_last_login_time = self::makeInt($user_last_login_time);
         return $this;
     }
 
+    /**
+     * @param $user_last_post_time
+     *
+     * @return UserEntity
+     */
     public function setUser_last_post_time($user_last_post_time)
     {
         $this->user_last_post_time = self::makeInt($user_last_post_time);
         return $this;
     }
 
+    /**
+     * @param $user_activation_key
+     *
+     * @return UserEntity
+     */
     public function setUser_activation_key($user_activation_key)
     {
         $this->user_activation_key = $user_activation_key;
@@ -384,6 +520,11 @@ class UserEntity extends Entity
         return $userEntity;
     }
 
+    /**
+     * @param ArrayHash $values
+     *
+     * @return UserEntity
+     */
     public static function setFromArrayHash(ArrayHash $values)
     {
         $userEntity = new UserEntity();

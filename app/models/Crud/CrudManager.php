@@ -15,7 +15,7 @@ use Nette\Caching\IStorage;
 use Nette\Utils\ArrayHash;
 
 /**
- * Description of CrudManager
+ * CrudManager provides create, read, update and delete operations in database
  *
  * @author rendix2
  * @package App\Models\Crud
@@ -103,7 +103,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     }
     
     /**
-     *
+     * CrudManager destructor.
      */
     public function __destruct()
     {
@@ -159,7 +159,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     }
 
     /**
-     * @return array
+     * @return Row[]
      */
     public function getAll()
     {
@@ -502,7 +502,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
     }
 
     /**
-     * @param int|null $item_id
+     * @param int|array|null $item_id
      */
     protected function deleteCache($item_id = null)
     {

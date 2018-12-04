@@ -2,7 +2,6 @@
 
 namespace App\ForumModule\Presenters;
 
-use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Forms\SearchPostForm;
 use App\Forms\SearchTopicForm;

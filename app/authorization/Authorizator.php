@@ -49,9 +49,9 @@ class Authorizator
      */
     private function getRoles(Identity $identity, IAuthorizationScope $scope)
     {
-        //globální role
+        // global roles
         foreach ($identity->getRoles() as $role) {
-            yield $role; //yield používám, jelikoz když to matchne globální roli, je zbytečné se ptát scope na dynamické role
+            yield $role;
         }
 
         foreach ($scope->getIdentityRoles($identity) as $role) {

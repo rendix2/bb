@@ -115,187 +115,323 @@ class TopicEntity extends Entity
      */
     private $poll;
 
+    /**
+     * @return int
+     */
     public function getTopic_id()
     {
         return $this->topic_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_category_id()
     {
         return $this->topic_category_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_forum_id()
     {
         return $this->topic_forum_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_user_id()
     {
         return $this->topic_user_id;
     }
 
+    /**
+     * @return string
+     */
     public function getTopic_name()
     {
         return $this->topic_name;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_post_count()
     {
         return $this->topic_post_count;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_add_time()
     {
         return $this->topic_add_time;
     }
 
+    /**
+     * @return bool
+     */
     public function getTopic_locked()
     {
         return $this->topic_locked;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_view_count()
     {
         return $this->topic_view_count;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_first_post_id()
     {
         return $this->topic_first_post_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_first_user_id()
     {
         return $this->topic_first_user_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_last_post_id()
     {
         return $this->topic_last_post_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_last_user_id()
     {
         return $this->topic_last_user_id;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_order()
     {
         return $this->topic_order;
     }
 
+    /**
+     * @return int
+     */
     public function getTopic_page_count()
     {
         return $this->topic_page_count;
     }
 
+    /**
+     * @return PostEntity
+     */
     public function getPost()
     {
         return $this->post;
     }
 
+    /**
+     * @return PollEntity
+     */
     public function getPoll()
     {
         return $this->poll;
     }
 
+    /**
+     * @param $topic_id
+     *
+     * @return TopicEntity
+     */
     public function setTopic_id($topic_id)
     {
         $this->topic_id = self::makeInt($topic_id);
         return $this;
     }
 
+    /**
+     * @param $topic_category_id
+     *
+     * @return TopicEntity
+     */
     public function setTopic_category_id($topic_category_id)
     {
         $this->topic_category_id = self::makeInt($topic_category_id);
         return $this;
     }
 
+    /**
+     * @param $topic_forum_id
+     *
+     * @return TopicEntity
+     */
     public function setTopic_forum_id($topic_forum_id)
     {
         $this->topic_forum_id = self::makeInt($topic_forum_id);
         return $this;
     }
 
+    /**
+     * @param $topic_user_id
+     *
+     * @return TopicEntity
+     */
     public function setTopic_user_id($topic_user_id)
     {
         $this->topic_user_id = self::makeInt($topic_user_id);
         return $this;
     }
 
+    /**
+     * @param $topic_name
+     *
+     * @return TopicEntity
+     */
     public function setTopic_name($topic_name)
     {
         $this->topic_name = $topic_name;
         return $this;
     }
 
+    /**
+     * @param $topic_post_count
+     *
+     * @return TopicEntity
+     */
     public function setTopic_post_count($topic_post_count)
     {
         $this->topic_post_count = self::makeInt($topic_post_count);
         return $this;
     }
 
+    /**
+     * @param $topic_add_time
+     *
+     * @return TopicEntity
+     */
     public function setTopic_add_time($topic_add_time)
     {
         $this->topic_add_time = self::makeInt($topic_add_time);
         return $this;
     }
 
+    /**
+     * @param $topic_locked
+     *
+     * @return TopicEntity
+     */
     public function setTopic_locked($topic_locked)
     {
         $this->topic_locked = self::makeBool($topic_locked);
         return $this;
     }
 
+    /**
+     * @param $topic_view_count
+     *
+     * @return TopicEntity
+     */
     public function setTopic_view_count($topic_view_count)
     {
         $this->topic_view_count = self::makeInt($topic_view_count);
         return $this;
     }
 
+    /**
+     * @param $topic_first_post_id
+     *
+     * @return TopicEntity
+     */
     public function setTopic_first_post_id($topic_first_post_id)
     {
         $this->topic_first_post_id = self::makeInt($topic_first_post_id);
         return $this;
     }
 
+    /**
+     * @param $topic_first_user_id
+     *
+     * @return TopicEntity
+     */
     public function setTopic_first_user_id($topic_first_user_id)
     {
         $this->topic_first_user_id = self::makeInt($topic_first_user_id);
         return $this;
     }
 
+    /**
+     * @param $topic_last_post_id
+     *
+     * @return TopicEntity
+     */
     public function setTopic_last_post_id($topic_last_post_id)
     {
         $this->topic_last_post_id = self::makeInt($topic_last_post_id);
         return $this;
     }
 
+    /**
+     * @param $topic_last_user_id
+     *
+     * @return TopicEntity
+     */
     public function setTopic_last_user_id($topic_last_user_id)
     {
         $this->topic_last_user_id = self::makeInt($topic_last_user_id);
         return $this;
     }
 
+    /**
+     * @param $topic_order
+     *
+     * @return TopicEntity
+     */
     public function setTopic_order($topic_order)
     {
         $this->topic_order = self::makeInt($topic_order);
         return $this;
     }
 
+    /**
+     * @param $topic_page_count
+     *
+     * @return TopicEntity
+     */
     public function setTopic_page_count($topic_page_count)
     {
         $this->topic_page_count = self::makeInt($topic_page_count);
         return $this;
     }
 
+    /**
+     * @param PostEntity|null $post
+     *
+     * @return TopicEntity
+     */
     public function setPost(PostEntity $post = null)
     {
         $this->post = $post;
         return $this;
     }
 
+    /**
+     * @param PollEntity|null $poll
+     *
+     * @return TopicEntity
+     */
     public function setPoll(PollEntity $poll = null)
     {
         $this->poll = $poll;
@@ -375,6 +511,11 @@ class TopicEntity extends Entity
         return $topic;
     }
 
+    /**
+     * @param ArrayHash $values
+     *
+     * @return TopicEntity
+     */
     public static function setFromArrayHash(ArrayHash $values)
     {
         $topic = new TopicEntity();

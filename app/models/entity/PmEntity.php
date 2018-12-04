@@ -62,88 +62,152 @@ class PmEntity extends Entity
      */
     private $pm_time_read;
 
+    /**
+     * @return int
+     */
     public function getPm_id()
     {
         return $this->pm_id;
     }
 
+    /**
+     * @return int
+     */
     public function getPm_user_id_from()
     {
         return $this->pm_user_id_from;
     }
 
+    /**
+     * @return int
+     */
     public function getPm_user_id_to()
     {
         return $this->pm_user_id_to;
     }
 
+    /**
+     * @return string
+     */
     public function getPm_subject()
     {
         return $this->pm_subject;
     }
 
+    /**
+     * @return int
+     */
     public function getPm_text()
     {
         return $this->pm_text;
     }
 
+    /**
+     * @return string
+     */
     public function getPm_status()
     {
         return $this->pm_status;
     }
 
+    /**
+     * @return int
+     */
     public function getPm_time_sent()
     {
         return $this->pm_time_sent;
     }
 
+    /**
+     * @return int
+     */
     public function getPm_time_read()
     {
         return $this->pm_time_read;
     }
 
+    /**
+     * @param $pm_id
+     *
+     * @return PmEntity
+     */
     public function setPm_id($pm_id)
     {
         $this->pm_id = $pm_id;
         return $this;
     }
 
+    /**
+     * @param $pm_user_id_from
+     *
+     * @return PmEntity
+     */
     public function setPm_user_id_from($pm_user_id_from)
     {
         $this->pm_user_id_from = self::makeInt($pm_user_id_from);
         return $this;
     }
 
+    /**
+     * @param $pm_user_id_to
+     *
+     * @return PmEntity
+     */
     public function setPm_user_id_to($pm_user_id_to)
     {
         $this->pm_user_id_to = self::makeInt($pm_user_id_to);
         return $this;
     }
 
+    /**
+     * @param $pm_subject
+     *
+     * @return PmEntity
+     */
     public function setPm_subject($pm_subject)
     {
         $this->pm_subject = $pm_subject;
         return $this;
     }
 
+    /**
+     * @param $pm_text
+     *
+     * @return PmEntity
+     */
     public function setPm_text($pm_text)
     {
         $this->pm_text = $pm_text;
         return $this;
     }
 
+    /**
+     * @param $pm_status
+     *
+     * @return PmEntity
+     */
     public function setPm_status($pm_status)
     {
         $this->pm_status = $pm_status;
         return $this;
     }
 
+    /**
+     * @param $pm_time_sent
+     *
+     * @return PmEntity
+     */
     public function setPm_time_sent($pm_time_sent)
     {
         $this->pm_time_sent = self::makeInt($pm_time_sent);
         return $this;
     }
 
+    /**
+     * @param $pm_time_read
+     *
+     * @return PmEntity
+     */
     public function setPm_time_read($pm_time_read)
     {
         $this->pm_time_read = self::makeInt($pm_time_read);
@@ -177,7 +241,7 @@ class PmEntity extends Entity
         }
         
         if (isset($values->pm_tex)) {
-            $pm->setPm_text_from($values->pm_tex);
+            $pm->setPm_text($values->pm_tex);
         }
         
         if (isset($values->pm_status)) {
@@ -222,7 +286,7 @@ class PmEntity extends Entity
         }
 
         if (isset($values->pm_tex)) {
-            $pm->setPm_text_from($values->pm_tex);
+            $pm->setPm_text($values->pm_tex);
         }
 
         if (isset($values->pm_status)) {

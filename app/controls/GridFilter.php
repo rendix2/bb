@@ -228,7 +228,7 @@ class GridFilter extends Control
      * @param string $columnName
      * @param string $text
      * @param string $type
-     * @param array $data
+     * @param array  $data
      *
      * @throws \InvalidArgumentException
      */
@@ -275,7 +275,7 @@ class GridFilter extends Control
                 $this->form->addCheckboxList($columnName, $text, $data);
                 break;
             default:
-                throw new InvalidArgumentException('Unknow filter type.');
+                throw new InvalidArgumentException('Unknown filter type.');
         }
 
         if ($type === self::DATE_TIME || $type === self::FROM_TO_INT) {
@@ -417,10 +417,10 @@ class GridFilter extends Control
     public function success(Form $form, ArrayHash $values)
     {
         $sessionName = self::SESSION_PREFIX . $this->presenter->name. ':' . $this->presenter->action;
+        $section     = $this->session->getSection($sessionName);
 
         foreach ($this->filters as $name => $type) {
             if (isset($values[$name]) && $name !== self::NOTHING) {
-                $section        = $this->session->getSection($sessionName);
                 $section[$name] = $values[$name];
             }
         }

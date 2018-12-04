@@ -6,7 +6,7 @@ use Dibi\Connection;
 use SplFileInfo;
 
 /**
- * Description of Manager
+ * Manager wraps dibi connection to database
  *
  * @author rendix2
  * @package App\Models
@@ -20,6 +20,7 @@ abstract class Manager extends Tables
     protected $dibi;
 
     /**
+     * Manager constructor.
      *
      * @param Connection $dibi
      */
@@ -29,7 +30,7 @@ abstract class Manager extends Tables
     }
     
     /**
-     *
+     * Manager destructor.
      */
     public function __destruct()
     {

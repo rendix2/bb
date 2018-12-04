@@ -9,7 +9,16 @@ use Dibi\Result;
 use Dibi\Row;
 
 /**
- * Description of MNManager
+ * M2N relation manager.
+ *
+ * We can do som basic queries we may need.
+ * We can fetch all rows by left or key.
+ * We may need to join original table or both tables.
+ * We can do some counts.
+ * We can add.
+ * We can merge.
+ * We can delete.
+ *
  *
  * @author rendix2
  * @package App\Models
@@ -84,7 +93,10 @@ abstract class MNManager extends Manager
             $this->rightKey = $this->right->getPrimaryKey();
         }
     }
-    
+
+    /**
+     * MNManager destructor.
+     */
     public function __destruct()
     {
         $this->left     = null;
@@ -124,8 +136,8 @@ abstract class MNManager extends Manager
     public function getAllFluent()
     {
         return $this->dibi
-                ->select('*')
-                ->from($this->table);
+            ->select('*')
+            ->from($this->table);
     }
 
     /**
@@ -174,8 +186,7 @@ abstract class MNManager extends Manager
         return $this->getFluentByLeft($left_id)
             ->fetchPairs(null, $this->right->getPrimaryKey());
     }
-    
-    
+
     /**
      * @param int $left_id
      *

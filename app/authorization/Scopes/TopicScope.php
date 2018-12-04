@@ -28,11 +28,6 @@ class TopicScope implements IAuthorizationScope
     const ACTION_THANK  = [self::class, 'thank'];
     
     /**
-     * @var int $id;
-     */
-    private $id;
-    
-    /**
      * @var ForumScope $forum
      */
     private $forumScope;

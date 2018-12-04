@@ -24,6 +24,7 @@ use Nette\Forms\Controls\TextBase;
  *
  * @author rendix2
  * @method type addReCaptcha($name, $label, $error) Description
+ * @method mixed addTbDatePicker($name, $label)
  * @package App\Controls
  *
  */

@@ -69,10 +69,10 @@ class MpttFactory
             $this->dibi,
             $this->categoriesManager->getTable(),
             $this->categoriesManager->getPrimaryKey(),
-            $this->categoriesManager->getTitle(),
-            $this->categoriesManager->getLeft(),
-            $this->categoriesManager->getRight(),
-            $this->categoriesManager->getParent()
+            'category_name',
+            'category_left',
+            'category_right',
+            'category_parent_id'
         );
     }
     
@@ -86,10 +86,10 @@ class MpttFactory
             $this->dibi,
             $this->forumsManager->getTable(),
             $this->forumsManager->getPrimaryKey(),
-            $this->forumsManager->getTitle(),
-            $this->forumsManager->getLeft(),
-            $this->forumsManager->getRight(),
-            $this->forumsManager->getParent()
+            'forum_name',
+            'forum_left',
+            'forum_right',
+            'forum_parent_id'
         );
     }
 }

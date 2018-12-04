@@ -9,6 +9,8 @@ use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Models\Mails2UsersManager;
 use App\Models\MailsManager;
+use App\Models\UsersManager;
+use App\Utils;
 use Nette\Application\UI\Form;
 use Nette\InvalidArgumentException;
 use Nette\Mail\FallbackMailerException;
@@ -36,6 +38,12 @@ class EmailPresenter extends AdminPresenter
      * @inject
      */
     public $mail2UsersManager;
+
+    /**
+     * @var UsersManager $usersManager
+     * @inject
+     */
+    public $usersManager;
 
     /**
      * EmailPresenter constructor.
@@ -121,7 +129,7 @@ class EmailPresenter extends AdminPresenter
     public function sendFormSuccess(Form $form, ArrayHash $values)
     {
         $users      = $this->usersManager->getAll();
-        $usersMails = \App\Utils::arrayObjectColumn($users, 'user_email');
+        $usersMails = Utils::arrayObjectColumn($users, 'user_email');
 
         $this->bbMailer->addRecipients($usersMails);
         $this->bbMailer->setSubject($values->email_subject);

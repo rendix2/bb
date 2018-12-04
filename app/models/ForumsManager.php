@@ -7,6 +7,7 @@ use dibi;
 use Dibi\Connection;
 use Dibi\Fluent;
 use Dibi\Row;
+use Exception;
 use Nette\Caching\IStorage;
 use Zebra_Mptt;
 
@@ -29,7 +30,7 @@ class ForumsManager extends CrudManager
      * @param Connection $dibi
      * @param IStorage   $storage
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(Connection $dibi, IStorage $storage)
     {

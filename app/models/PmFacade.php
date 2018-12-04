@@ -17,6 +17,7 @@ class PmFacade
     private $pmManager;
 
     /**
+     * PmFacade constructor.
      *
      * @param PmManager $pmManager
      */
@@ -26,7 +27,7 @@ class PmFacade
     }
     
     /**
-     *
+     * PmFacade destructor.
      */
     public function __destruct()
     {

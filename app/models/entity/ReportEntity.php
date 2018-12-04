@@ -73,111 +73,191 @@ class ReportEntity extends Entity
      * @var string $report_status
      */
     private $report_status;
-    
+
+    /**
+     * @return int
+     */
     public function getReport_id()
     {
         return $this->report_id;
     }
 
+    /**
+     * @return int
+     */
     public function getReport_user_id()
     {
         return $this->report_user_id;
     }
 
+    /**
+     * @return int
+     */
     public function getReport_forum_id()
     {
         return $this->report_forum_id;
     }
 
+    /**
+     * @return int
+     */
     public function getReport_topic_id()
     {
         return $this->report_topic_id;
     }
 
+    /**
+     * @return int
+     */
     public function getReport_post_id()
     {
         return $this->report_post_id;
     }
 
+    /**
+     * @return int
+     */
     public function getReport_reported_user_id()
     {
         return $this->report_reported_user_id;
     }
 
+    /**
+     * @return int
+     */
     public function getReport_pm_id()
     {
         return $this->report_pm_id;
     }
 
+    /**
+     * @return string
+     */
     public function getReport_text()
     {
         return $this->report_text;
     }
 
+    /**
+     * @return int
+     */
     public function getReport_time()
     {
         return $this->report_time;
     }
 
+    /**
+     * @return string
+     */
     public function getReport_status()
     {
         return $this->report_status;
     }
 
+    /**
+     * @param $report_id
+     *
+     * @return ReportEntity
+     */
     public function setReport_id($report_id)
     {
         $this->report_id = self::makeInt($report_id);
         return $this;
     }
 
+    /**
+     * @param $report_user_id
+     *
+     * @return ReportEntity
+     */
     public function setReport_user_id($report_user_id)
     {
         $this->report_user_id = self::makeInt($report_user_id);
         return $this;
     }
 
+    /**
+     * @param $report_forum_id
+     *
+     * @return ReportEntity
+     */
     public function setReport_forum_id($report_forum_id)
     {
         $this->report_forum_id = self::makeInt($report_forum_id);
         return $this;
     }
 
+    /**
+     * @param $report_topic_id
+     *
+     * @return ReportEntity
+     */
     public function setReport_topic_id($report_topic_id)
     {
         $this->report_topic_id = self::makeInt($report_topic_id);
         return $this;
     }
 
+    /**
+     * @param $report_post_id
+     *
+     * @return ReportEntity
+     */
     public function setReport_post_id($report_post_id)
     {
         $this->report_post_id = self::makeInt($report_post_id);
         return $this;
     }
 
+    /**
+     * @param $report_reported_user_id
+     *
+     * @return ReportEntity
+     */
     public function setReport_reported_user_id($report_reported_user_id)
     {
         $this->report_reported_user_id = self::makeInt($report_reported_user_id);
         return $this;
     }
 
+    /**
+     * @param $report_pm_id
+     *
+     * @return ReportEntity
+     */
     public function setReport_pm_id($report_pm_id)
     {
         $this->report_pm_id = self::makeInt($report_pm_id);
         return $this;
     }
 
+    /**
+     * @param $report_text
+     *
+     * @return ReportEntity
+     */
     public function setReport_text($report_text)
     {
         $this->report_text = $report_text;
         return $this;
     }
 
+    /**
+     * @param $report_time
+     *
+     * @return ReportEntity
+     */
     public function setReport_time($report_time)
     {
         $this->report_time = self::makeInt($report_time);
         return $this;
     }
 
+    /**
+     * @param $report_status
+     *
+     * @return ReportEntity
+     */
     public function setReport_status($report_status)
     {
         $this->report_status = $report_status;

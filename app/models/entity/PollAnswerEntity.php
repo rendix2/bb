@@ -33,33 +33,57 @@ class PollAnswerEntity extends Entity
      */
     private $poll_answer;
 
+    /**
+     * @return int
+     */
     public function getPoll_answer_id()
     {
         return $this->poll_answer_id;
     }
 
+    /**
+     * @return int
+     */
     public function getPoll_id()
     {
         return $this->poll_id;
     }
 
+    /**
+     * @return string
+     */
     public function getPoll_answer()
     {
         return $this->poll_answer;
     }
 
+    /**
+     * @param $poll_answer_id
+     *
+     * @return PollAnswerEntity
+     */
     public function setPoll_answer_id($poll_answer_id)
     {
         $this->poll_answer_id = self::makeInt($poll_answer_id);
         return $this;
     }
 
+    /**
+     * @param $poll_id
+     *
+     * @return PollAnswerEntity
+     */
     public function setPoll_id($poll_id)
     {
         $this->poll_id = self::makeInt($poll_id);
         return $this;
     }
 
+    /**
+     * @param $poll_answer
+     *
+     * @return PollAnswerEntity
+     */
     public function setPoll_answer($poll_answer)
     {
         $this->poll_answer = $poll_answer;
