@@ -118,7 +118,7 @@ class PostPresenter extends BaseForumPresenter
     }
     
     /**
-     *´PostPresenter destructor.
+     * PostPresenter destructor.
      */
     public function __destruct()
     {

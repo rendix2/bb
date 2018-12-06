@@ -49,7 +49,7 @@ class CategoryPresenter extends AdminPresenter
     }
     
     /**
-     *
+     * CategoryPresenter destructor.
      */
     public function __destruct()
     {
@@ -104,7 +104,10 @@ class CategoryPresenter extends AdminPresenter
             $this[self::FORM_NAME]->setDefaults([]);
         }
     }
-    
+
+    /**
+     * handle reorder
+     */
     public function handleReorder()
     {
         // todo

@@ -34,7 +34,7 @@ class Authorizator
     }
     
     /**
-     *
+     * Authorizator destructor.
      */
     public function __destruct()
     {

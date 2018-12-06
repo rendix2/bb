@@ -42,7 +42,7 @@ class CachePresenter extends AdminPresenter
     }
     
     /**
-     *
+     * CachePresenter destructor.
      */
     public function __destruct()
     {
@@ -52,7 +52,7 @@ class CachePresenter extends AdminPresenter
     }
 
     /**
-     * cache startup
+     * CachePresenter startup.
      */
     public function startup()
     {
@@ -70,7 +70,7 @@ class CachePresenter extends AdminPresenter
     }
 
     /**
-     * cache before render
+     * CachePresenter beforeRender.
      */
     public function beforeRender()
     {

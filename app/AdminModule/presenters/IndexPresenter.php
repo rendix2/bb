@@ -40,7 +40,7 @@ class IndexPresenter extends BasePresenter
     public $cacheDir;
     
     /**
-     *
+     * IndexPresenter destructor.
      */
     public function __destruct()
     {
@@ -73,8 +73,8 @@ class IndexPresenter extends BasePresenter
     }
 
     /**
-     * before render
-     * sets translator
+     * IndexPresenter beforeRender.
+     *
      */
     public function beforeRender()
     {

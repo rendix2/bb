@@ -56,7 +56,7 @@ class EmailPresenter extends AdminPresenter
     }
     
     /**
-     *
+     * EmailPresenter destructor.
      */
     public function __destruct()
     {

@@ -46,6 +46,7 @@ class PostScope implements IAuthorizationScope
     private $topicEntity;
 
     /**
+     * PostScope constructor.
      *
      * @param PostEntity  $post
      * @param TopicScope  $topicScope
@@ -59,7 +60,7 @@ class PostScope implements IAuthorizationScope
     }
     
     /**
-     *
+     * PostScope destructor.
      */
     public function __destruct()
     {

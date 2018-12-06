@@ -20,7 +20,7 @@ abstract class AdminPresenter extends CrudPresenter
     private $adminTranslator;
     
     /**
-     *
+     * AdminPresenter destructor.
      */
     public function __destruct()
     {
@@ -30,7 +30,7 @@ abstract class AdminPresenter extends CrudPresenter
     }
 
     /**
-     * @param $element
+     * @param mixed $element
      */
     public function checkRequirements($element)
     {
@@ -50,7 +50,7 @@ abstract class AdminPresenter extends CrudPresenter
     }
 
     /**
-     *
+     * AdminPresenter startup.
      */
     public function startup()
     {
@@ -60,7 +60,7 @@ abstract class AdminPresenter extends CrudPresenter
     }
 
     /**
-     *
+     * AdminPresenter beforeRender.
      */
     public function beforeRender()
     {

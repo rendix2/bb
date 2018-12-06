@@ -110,7 +110,7 @@ class UserPresenter extends AdminPresenter
     }
     
     /**
-     *
+     * UserPresenter destructor.
      */
     public function __destruct()
     {

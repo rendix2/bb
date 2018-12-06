@@ -59,7 +59,7 @@ class GroupPresenter extends AdminPresenter
     }
     
     /**
-     *
+     * GroupPresenter destructor.
      */
     public function __destruct()
     {

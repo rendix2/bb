@@ -29,8 +29,20 @@ class IndexPresenter extends BasePresenter
     {
         parent::__construct();
     }
-    
+
     /**
+     * IndexPresenter destructor.
+     */
+    public function __destruct()
+    {
+        $this->translator = null;
+
+        parent::__destruct();
+    }
+
+    /**
+     * IndexPresenter checkRequirements
+     *
      * @param $element
      */
     public function checkRequirements($element)
@@ -41,7 +53,7 @@ class IndexPresenter extends BasePresenter
     }
 
     /**
-     *
+     * IndexPresenter startup.
      */
     public function startup()
     {

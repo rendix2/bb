@@ -34,6 +34,7 @@ class MpttFactory
     private $dibi;
 
     /**
+     * MpttFactory constructor.
      *
      * @param Connection        $dibi
      * @param CategoriesManager $categoriesManager
@@ -50,7 +51,7 @@ class MpttFactory
     }
     
     /**
-     *
+     * MpttFactory destructor.
      */
     public function __destruct()
     {

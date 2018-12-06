@@ -39,7 +39,9 @@ abstract class ModeratorPresenter extends CrudPresenter
     }
 
     /**
-     * @param $element
+     * ModeratorPresenter checkRequirements
+     *
+     * @param mixed $element
      */
     public function checkRequirements($element)
     {
@@ -49,7 +51,7 @@ abstract class ModeratorPresenter extends CrudPresenter
     }
 
     /**
-     *
+     * ModeratorPresenter startup.
      */
     public function startup()
     {
@@ -59,7 +61,7 @@ abstract class ModeratorPresenter extends CrudPresenter
     }
 
     /**
-     *
+     * ModeratorPresenter beforeRender.
      */
     public function beforeRender()
     {

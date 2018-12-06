@@ -19,6 +19,7 @@ class User
     private $identity;
     
     /**
+     * User constructor.
      *
      * @param Identity $identity
      */
@@ -28,7 +29,7 @@ class User
     }
     
     /**
-     *
+     * User destructor.
      */
     public function __destruct()
     {

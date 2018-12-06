@@ -39,6 +39,7 @@ class DeleteAvatarFactory
     private $translatorFactory;
     
     /**
+     * DeleteAvatarFactory constructor.
      *
      * @param UsersManager      $usersManager
      * @param Avatars           $avatars
@@ -58,7 +59,7 @@ class DeleteAvatarFactory
     }
     
     /**
-     *
+     * DeleteAvatarFactory destructor.
      */
     public function __destruct()
     {

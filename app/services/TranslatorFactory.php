@@ -66,7 +66,7 @@ class TranslatorFactory
     }
     
     /**
-     *
+     * TranslatorFactory destructor.
      */
     public function __destruct()
     {

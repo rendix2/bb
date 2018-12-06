@@ -65,6 +65,7 @@ class ForumScope implements IAuthorizationScope
 
 
     /**
+     * ForumScope constructor.
      *
      * @param ForumEntity         $forumEntity
      * @param array               $moderators
@@ -84,7 +85,7 @@ class ForumScope implements IAuthorizationScope
     }
     
     /**
-     *
+     * ForumScope destructor.
      */
     public function __destruct()
     {

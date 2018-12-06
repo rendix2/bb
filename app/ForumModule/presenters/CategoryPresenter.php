@@ -19,8 +19,9 @@ class CategoryPresenter extends BaseForumPresenter
 {
     use CategoriesTrait;
     //use \App\Models\Traits\ForumsTrait;
-    
+
     /**
+     * CategoryPresenter constructor.
      *
      * @param CategoriesManager $manager
      */
@@ -30,7 +31,7 @@ class CategoryPresenter extends BaseForumPresenter
     }
     
     /**
-     *
+     * CategoryPresenter destructor.
      */
     public function __destruct()
     {

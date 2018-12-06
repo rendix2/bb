@@ -50,7 +50,7 @@ class LoginPresenter extends BasePresenter
     public $userLoginFormFactory;
 
     /**
-     *
+     * LoginPresenter destructor.
      */
     public function __destruct()
     {
@@ -74,7 +74,7 @@ class LoginPresenter extends BasePresenter
     }
 
     /**
-     * startup method
+     * LoginPresenter startup.
      */
     public function startup()
     {

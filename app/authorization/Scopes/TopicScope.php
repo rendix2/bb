@@ -46,7 +46,7 @@ class TopicScope implements IAuthorizationScope
     private $topicEntity;
 
     /**
-     * Topic constructor.
+     * TopicScope constructor.
      *
      * @param TopicEntity $topicEntity
      * @param User        $author
@@ -66,7 +66,7 @@ class TopicScope implements IAuthorizationScope
     }
     
     /**
-     *
+     * TopicScope destructor.
      */
     public function __destruct()
     {

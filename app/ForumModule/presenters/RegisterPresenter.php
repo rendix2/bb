@@ -72,7 +72,7 @@ class RegisterPresenter extends BasePresenter
     }
     
     /**
-     *
+     * RegisterPresenter destructor.
      */
     public function __destruct()
     {
@@ -87,7 +87,7 @@ class RegisterPresenter extends BasePresenter
     }
 
     /**
-     *
+     * RegisterPresenter startup.
      */
     public function startup()
     {

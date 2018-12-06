@@ -29,7 +29,7 @@ class SearchPresenter extends BaseForumPresenter
     }
     
     /**
-     *
+     * SearchPresenter destructor.
      */
     public function __destruct()
     {
@@ -40,7 +40,7 @@ class SearchPresenter extends BaseForumPresenter
     }
 
     /**
-     *
+     * SearchPresenter startup.
      */
     public function renderDefault()
     {

@@ -54,6 +54,7 @@ final class ForumPresenter extends BaseForumPresenter
     public $gf;
 
     /**
+     * ForumPresenter constructor.
      *
      * @param ForumsManager $manager
      */
@@ -63,7 +64,7 @@ final class ForumPresenter extends BaseForumPresenter
     }
     
     /**
-     *
+     * ForumPresenter destructor.
      */
     public function __destruct()
     {
