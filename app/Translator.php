@@ -45,7 +45,7 @@ class Translator implements ITranslator
     }
 
     /**
-     *
+     * Translator destructor.
      */
     public function __destruct()
     {
@@ -58,7 +58,7 @@ class Translator implements ITranslator
      * @param string $message
      * @param null   $count
      *
-     * @return mixed
+     * @return string
      * @throws InvalidArgumentException
      */
     public function translate($message, $count = null)

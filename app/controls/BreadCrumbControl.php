@@ -24,6 +24,7 @@ class BreadCrumbControl extends Control
     private $translator;
 
     /**
+     * BreadCrumbControl constructor.
      *
      * @param array       $breadCrumb
      * @param ITranslator $translator
@@ -37,7 +38,7 @@ class BreadCrumbControl extends Control
     }
     
     /**
-     *
+     * BreadCrumbControl destructor.
      */
     public function __destruct()
     {
@@ -46,6 +47,8 @@ class BreadCrumbControl extends Control
     }
 
     /**
+     * BreadCrumbControl render.
+     *
      * render breadcrumb
      */
     public function render()

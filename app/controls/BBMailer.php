@@ -6,6 +6,7 @@ use App\Models\Mails2UsersManager;
 use App\Models\MailsManager;
 use App\Models\UsersManager;
 use App\Settings\Email;
+use App\Utils;
 use Exception;
 use Latte\Engine;
 use Nette\Mail\FallbackMailer;
@@ -84,7 +85,7 @@ class BBMailer
     /**
      * @param array $recipients
      *
-     * @return $this
+     * @return BBMailer
      */
     public function addRecipients(array $recipients)
     {
@@ -110,8 +111,8 @@ class BBMailer
     }
 
     /**
-     * @param string $input
-     * @param null|mixed   $variables
+     * @param string     $input
+     * @param mixed|null $variables
      *
      * @return BBMailer
      */
@@ -131,7 +132,7 @@ class BBMailer
     }
 
     /**
-     *
+     * sends mail
      */
     public function send()
     {
@@ -167,7 +168,7 @@ class BBMailer
         
         $emails      = $this->usersManager->getAllByEmails($this->recipients);
         $email_id    = $this->manager->add(ArrayHash::from($item_data));
-        $emailsArray = \App\Utils::arrayObjectColumn($emails, 'user_id');
+        $emailsArray = Utils::arrayObjectColumn($emails, 'user_id');
         
         $this->mails2users->addByLeft($email_id, $emailsArray);
     }

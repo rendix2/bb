@@ -46,7 +46,7 @@ class UserSearchControl extends Control
     }
     
     /**
-     *
+     * UserSearchControl destructor.
      */
     public function __destruct()
     {

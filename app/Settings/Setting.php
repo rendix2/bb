@@ -17,6 +17,7 @@ abstract class Setting
     private $setting;
     
     /**
+     * Setting constructor.
      *
      * @param string|array $setting
      */
@@ -26,7 +27,7 @@ abstract class Setting
     }
     
     /**
-     *
+     * Setting destructor.
      */
     public function __destruct()
     {

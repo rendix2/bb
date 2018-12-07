@@ -45,7 +45,7 @@ class UserChangeUserNameForm extends Control
     }
     
     /**
-     *
+     * UserChangeUserNameForm destructor.
      */
     public function __destruct()
     {
@@ -54,7 +54,7 @@ class UserChangeUserNameForm extends Control
     }
 
     /**
-     *
+     * UserChangeUserNameForm render.
      */
     public function render()
     {

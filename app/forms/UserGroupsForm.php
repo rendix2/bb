@@ -39,6 +39,7 @@ class UserGroupsForm extends Control
     private $translator;
 
     /**
+     * UserGroupsForm constructor.
      *
      * @param GroupsManager       $groupsManager
      * @param Users2GroupsManager $users2GroupsManager
@@ -57,7 +58,7 @@ class UserGroupsForm extends Control
     }
 
     /**
-     *
+     * UserGroupsForm destructor.
      */
     public function __destruct()
     {
@@ -67,7 +68,7 @@ class UserGroupsForm extends Control
     }
 
     /**
-     *
+     * UserGroupsForm render
      */
     public function render()
     {

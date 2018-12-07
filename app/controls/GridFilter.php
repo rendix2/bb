@@ -110,9 +110,9 @@ class GridFilter extends Control
      */
     public function __destruct()
     {
-        $this->form = null;
-        $this->filters = null;
-        $this->session = null;
+        $this->form       = null;
+        $this->filters    = null;
+        $this->session    = null;
         $this->translator = null;
     }
 

@@ -54,7 +54,7 @@ class Authenticator implements IAuthenticator
     }
     
     /**
-     *
+     * Authenticator destructor.
      */
     public function __destruct()
     {

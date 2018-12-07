@@ -23,6 +23,7 @@ class SearchUserForm extends Control
     private $translator;
     
     /**
+     * SearchUserForm constructor.
      *
      * @param ITranslator $translator
      */
@@ -34,7 +35,7 @@ class SearchUserForm extends Control
     }
     
     /**
-     *
+     * SearchUserForm destructor.
      */
     public function __destruct()
     {
@@ -42,7 +43,7 @@ class SearchUserForm extends Control
     }
     
     /**
-     *
+     * SearchUserForm render.
      */
     public function render()
     {

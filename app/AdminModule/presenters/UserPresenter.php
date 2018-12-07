@@ -16,6 +16,7 @@ use App\Models\ForumsManager;
 use App\Models\GroupsManager;
 use App\Models\LanguagesManager;
 use App\Models\ModeratorsManager;
+use App\Models\RanksManager;
 use App\Models\Users2ForumsManager;
 use App\Models\Users2GroupsManager;
 use App\Models\UsersManager;
@@ -33,6 +34,11 @@ use App\Settings\Ranks;
  */
 class UserPresenter extends AdminPresenter
 {
+    /**
+     * @var array $active
+     */
+    private static $active = [0 => 'Not active', 1 => 'Active'];
+
     /**
      *
      * @var ForumsManager $forumsManager
@@ -98,6 +104,12 @@ class UserPresenter extends AdminPresenter
      * @inject
      */
     public $deleteAvatarFactory;
+
+    /**
+     * @var RanksManager $ranksManager
+     * @inject
+     */
+    public $ranksManager;
 
     /**
      * UserPresenter constructor.
@@ -167,6 +179,7 @@ class UserPresenter extends AdminPresenter
         $form->addSelect('user_role_id', 'User role:', Authorizator::ROLES);
         $form->addSelect('user_lang_id', 'User language:', $this->languagesManager->getAllPairsCached('lang_name'));
         $form->addTextArea('user_signature', 'User signature:');
+        $form->addSelect('user_special_rank', 'User special rank:', $this->ranksManager->getAllPairs('rank_name'));
         //$form->addUpload('user_avatar', 'User avatar:');
 
         $form->addCheckbox('user_active', 'User active:');
@@ -189,7 +202,7 @@ class UserPresenter extends AdminPresenter
         $this->gf->addFilter('user_topic_count', 'user_topic_count', GridFilter::FROM_TO_INT);
         $this->gf->addFilter('user_thank_count', 'user_thank_count', GridFilter::FROM_TO_INT);
         $this->gf->addFilter('user_role_id', 'user_role_id', GridFilter::CHECKBOX_LIST, Authorizator::ROLES);
-        $this->gf->addFilter('user_active', 'user_active', GridFilter::CHECKBOX_LIST, [0 => 'Not active', 1 => 'Active']);
+        $this->gf->addFilter('user_active', 'user_active', GridFilter::CHECKBOX_LIST, self::$active);
         $this->gf->addFilter('user_register_time', 'user_register_time', GridFilter::DATE_TIME);
         $this->gf->addFilter('user_last_login_time', 'user_last_login_time', GridFilter::DATE_TIME);
         $this->gf->addFilter('edit', null, GridFilter::NOTHING);
