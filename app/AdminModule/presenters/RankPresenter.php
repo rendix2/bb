@@ -42,7 +42,7 @@ class RankPresenter extends AdminPresenter
     }
     
     /**
-     *
+     * RankPresenter destructor.
      */
     public function __destruct()
     {
@@ -111,10 +111,9 @@ class RankPresenter extends AdminPresenter
      */
     public function editFormSuccess(Form $form, ArrayHash $values)
     {
-        $move = $this->getManager()
-            ->moveRank(
-                $values->rank_file,
-                $this->getParameter('id')
+        $move = $this->getManager()->moveRank(
+            $values->rank_file,
+            $this->getParameter('id')
         );
 
         if ($move !== RanksManager::NOT_UPLOADED) {

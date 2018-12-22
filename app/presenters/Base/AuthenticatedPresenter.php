@@ -24,7 +24,7 @@ abstract class AuthenticatedPresenter extends BasePresenter
     public $sessionsManager;
     
     /**
-     *
+     * AuthenticatedPresenter destructor.
      */
     public function __destruct()
     {
@@ -34,7 +34,7 @@ abstract class AuthenticatedPresenter extends BasePresenter
     }
 
     /**
-     *
+     * AuthenticatedPresenter startup.
      */
     public function startup()
     {

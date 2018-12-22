@@ -288,7 +288,8 @@ class TopicFacade
             ArrayHash::from(
                 [
                     'forum_topic_count%sql' => 'forum_topic_count + 1',
-                    'forum_post_count%sql'  => 'forum_post_count + ' . $topic->topic_post_count]
+                    'forum_post_count%sql'  => 'forum_post_count + ' . $topic->topic_post_count
+                ]
             )
         );
         

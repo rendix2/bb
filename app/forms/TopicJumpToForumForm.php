@@ -31,8 +31,8 @@ class TopicJumpToForumForm extends Control
     /**
      * JumpToForumControl constructor.
      *
-     * @param ForumsManager                   $forumManager
-     * @param \Nette\Localization\ITranslator $translator
+     * @param ForumsManager $forumManager
+     * @param ITranslator   $translator
      */
     public function __construct(
         ForumsManager $forumManager,
@@ -45,7 +45,7 @@ class TopicJumpToForumForm extends Control
     }
 
     /**
-     *
+     * JumpToForumControl destructor.
      */
     public function __destruct()
     {

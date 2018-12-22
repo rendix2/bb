@@ -30,6 +30,7 @@ class ReportForm extends Control
     private $reportsManager;
     
     /**
+     * ReportForm constructor.
      *
      * @param ReportsManager $reportsManager
      */
@@ -41,7 +42,7 @@ class ReportForm extends Control
     }
     
     /**
-     *
+     * ReportForm destructor.
      */
     public function __destruct()
     {
@@ -49,7 +50,7 @@ class ReportForm extends Control
     }
 
     /**
-     *
+     * ReportForm render.
      */
     public function render()
     {

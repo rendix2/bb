@@ -38,6 +38,7 @@ class ChangePasswordFactory
     private $translatorFactory;
     
     /**
+     * ChangePasswordFactory constructor.
      *
      * @param UsersManager      $userManager
      * @param TranslatorFactory $translatorFactory
@@ -57,7 +58,7 @@ class ChangePasswordFactory
     }
     
     /**
-     *
+     * ChangePasswordFactory destructor.
      */
     public function __destruct()
     {

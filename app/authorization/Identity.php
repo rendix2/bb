@@ -19,6 +19,7 @@ class Identity
     private $roles;
 
     /**
+     * Identity constructor.
      *
      * @param int $id
      * @param array $roles
@@ -30,7 +31,7 @@ class Identity
     }
     
     /**
-     *
+     * Identity destructor.
      */
     public function __destruct()
     {

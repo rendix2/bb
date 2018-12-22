@@ -2,7 +2,6 @@
 
 namespace App\ForumModule\Presenters;
 
-use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Forms\SearchPostForm;
 use App\Forms\SearchTopicForm;
@@ -30,7 +29,7 @@ class SearchPresenter extends BaseForumPresenter
     }
     
     /**
-     *
+     * SearchPresenter destructor.
      */
     public function __destruct()
     {
@@ -41,7 +40,7 @@ class SearchPresenter extends BaseForumPresenter
     }
 
     /**
-     *
+     * SearchPresenter startup.
      */
     public function renderDefault()
     {

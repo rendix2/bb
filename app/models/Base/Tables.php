@@ -3,7 +3,7 @@
 namespace App\Models;
 
 /**
- * Description of Tables
+ * List of database tables
  *
  * @author rendix2
  * @packade App\Models

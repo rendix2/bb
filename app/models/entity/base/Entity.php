@@ -49,6 +49,14 @@ abstract class Entity
     {
         return ArrayHash::from($this->getArray());
     }
+
+    /**
+     * @return array
+     */
+    public function getKeys()
+    {
+        return array_keys($this->getArray());
+    }
     
     /**
      *

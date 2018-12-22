@@ -25,7 +25,7 @@ class ForumScope implements IAuthorizationScope
     
     const ROLE_FORUM_POST_ADDER = 'Forum:postAdder';
     const ROLE_FORUM_POST_UPDATER = 'Forum:postUpdater';
-    const ROLE_FORUM_POST_DELETER = 'Forum:postdeleter';
+    const ROLE_FORUM_POST_DELETER = 'Forum:postDeleter';
     
     const ROLE_FORUM_TOPIC_ADDER = 'Forum:topicAdder';
     const ROLE_FORUM_TOPIC_UPDATER = 'Forum:topicUpdater';
@@ -65,6 +65,7 @@ class ForumScope implements IAuthorizationScope
 
 
     /**
+     * ForumScope constructor.
      *
      * @param ForumEntity         $forumEntity
      * @param array               $moderators
@@ -84,7 +85,7 @@ class ForumScope implements IAuthorizationScope
     }
     
     /**
-     *
+     * ForumScope destructor.
      */
     public function __destruct()
     {
@@ -107,7 +108,7 @@ class ForumScope implements IAuthorizationScope
 
         //user
         if ($this->userPermission) {
-            $this->userPermission = $userForum = $this->users2ForumsManager->getAllFull(
+            $this->userPermission = $userForum = $this->users2ForumsManager->getFull(
                 $identity->getId(),
                 $this->forumEntity->getForum_id()
             );

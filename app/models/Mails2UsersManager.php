@@ -13,8 +13,9 @@ use Dibi\Connection;
 class Mails2UsersManager extends MNManager
 {
     /**
+     * Mails2UsersManager constructor.
      *
-     * @param Connection $dibi
+     * @param Connection   $dibi
      * @param MailsManager $left
      * @param UsersManager $right
      */

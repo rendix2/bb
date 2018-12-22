@@ -64,6 +64,14 @@ abstract class ImageDir
     }
 
     /**
+     * ImageDir destructor.
+     */
+    public function __destruct()
+    {
+        $this->dir = null;
+    }
+
+    /**
      * @return array
      */
     public function getDir()

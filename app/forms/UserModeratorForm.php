@@ -38,6 +38,7 @@ class UserModeratorForm extends Control
     private $forumsManager;
 
     /**
+     * UserModeratorForm constructor.
      *
      * @param ForumsManager     $forumsManager
      * @param ModeratorsManager $moderatorsManager
@@ -56,7 +57,7 @@ class UserModeratorForm extends Control
     }
     
     /**
-     *
+     * UserModeratorForm destructor.
      */
     public function __destruct()
     {
@@ -66,7 +67,7 @@ class UserModeratorForm extends Control
     }
 
     /**
-     *
+     * UserModeratorForm render.
      */
     public function render()
     {

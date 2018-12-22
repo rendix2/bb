@@ -128,7 +128,7 @@ class PaginatorControl extends Control
         $form->addInteger('page', '')
                 ->setAttribute('placeholder', 'Page')
                 ->setRequired(false)
-                ->addRule(Form::RANGE, 'Ivalid range', [1, $this->paginator->getPageCount()]);
+                ->addRule(Form::RANGE, 'Invalid range', [1, $this->paginator->getPageCount()]);
         
         $form->onSuccess[] = [$this, 'paginationSuccess'];
         

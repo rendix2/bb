@@ -55,78 +55,134 @@ class CategoryEntity extends Entity
      * @var int $category_order
      */
     private $category_order;
-    
+
+    /**
+     * @return int
+     */
     public function getCategory_id()
     {
         return $this->category_id;
     }
 
+    /**
+     * @return int
+     */
     public function getCategory_parent_id()
     {
         return $this->category_parent_id;
     }
 
+    /**
+     * @return string
+     */
     public function getCategory_name()
     {
         return $this->category_name;
     }
 
+    /**
+     * @return bool
+     */
     public function getCategory_active()
     {
         return $this->category_active;
     }
 
+    /**
+     * @return int
+     */
     public function getCategory_left()
     {
         return $this->category_left;
     }
 
+    /**
+     * @return int
+     */
     public function getCategory_right()
     {
         return $this->category_right;
     }
 
+    /**
+     * @return int
+     */
     public function getCategory_order()
     {
         return $this->category_order;
     }
 
+    /**
+     * @param $category_id
+     *
+     * @return CategoryEntity
+     */
     public function setCategory_id($category_id)
     {
         $this->category_id = self::makeInt($category_id);
         return $this;
     }
 
+    /**
+     * @param $category_parent_id
+     *
+     * @return CategoryEntity
+     */
     public function setCategory_parent_id($category_parent_id)
     {
         $this->category_parent_id = self::makeInt($category_parent_id);
         return $this;
     }
 
+    /**
+     * @param $category_name
+     *
+     * @return CategoryEntity
+     */
     public function setCategory_name($category_name)
     {
         $this->category_name = $category_name;
         return $this;
     }
 
+    /**
+     * @param $category_active
+     *
+     * @return CategoryEntity
+     */
     public function setCategory_active($category_active)
     {
         $this->category_active = self::makeBool($category_active);
         return $this;
     }
 
+    /**
+     * @param $category_left
+     *
+     * @return CategoryEntity
+     */
     public function setCategory_left($category_left)
     {
         $this->category_left = self::makeInt($category_left);
         return $this;
     }
 
+    /**
+     * @param $category_right
+     *
+     * @return CategoryEntity
+     */
     public function setCategory_right($category_right)
     {
         $this->category_right = self::makeInt($category_right);
         return $this;
     }
 
+    /**
+     * @param $category_order
+     *
+     * @return CategoryEntity
+     */
     public function setCategory_order($category_order)
     {
         $this->category_order = self::makeInt($category_order);
@@ -214,7 +270,10 @@ class CategoryEntity extends Entity
 
         return $categoryEntity;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getArray()
     {
         $res = [];

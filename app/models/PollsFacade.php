@@ -29,8 +29,9 @@ class PollsFacade
      * @var PollsVotesManager $pollsVotesManager
      */
     private $pollsVotesManager;
-    
+
     /**
+     * PollsFacade constructor.
      *
      * @param PollsManager        $pollsManager
      * @param PollsAnswersManager $pollsAnswersManager
@@ -45,7 +46,10 @@ class PollsFacade
         $this->pollsAnswersManager = $pollsAnswersManager;
         $this->pollsVotesManager   = $pollsVotesManager;
     }
-    
+
+    /**
+     * PollsFacade destructor.
+     */
     public function __destruct()
     {
         $this->pollsManager        = null;

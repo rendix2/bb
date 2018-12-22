@@ -36,7 +36,7 @@ class ErrorPresenter implements IPresenter
     }
     
     /**
-     *
+     * ErrorPresenter destructor.
      */
     public function __destruct()
     {

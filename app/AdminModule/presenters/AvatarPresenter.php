@@ -35,7 +35,7 @@ class AvatarPresenter extends AdminPresenter
     }
     
     /**
-     *
+     * AvatarPresenter destructor.
      */
     public function __destruct()
     {

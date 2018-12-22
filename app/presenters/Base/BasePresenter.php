@@ -83,7 +83,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     }
 
     /**
-     *
+     * BasePresenter destructor.
      */
     public function __destruct()
     {
@@ -93,7 +93,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     }
 
     /**
-     *
+     * BasePresenter startup.
      */
     public function startup()
     {

@@ -55,7 +55,7 @@ class PollControl extends Control
     }
     
     /**
-     *
+     * PollControl destructor.
      */
     public function __destruct()
     {
@@ -85,6 +85,9 @@ class PollControl extends Control
         }
     }
 
+    /**
+     * PollControl render.
+     */
     public function render()
     {
         $sep = DIRECTORY_SEPARATOR;

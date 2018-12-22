@@ -105,6 +105,18 @@ class CategoriesManager extends CrudManager
     }
 
     /**
+     * @param int $category_id
+     *
+     * @return Row[]
+     */
+    public function getByParent($category_id)
+    {
+        return $this->getAllFluent()
+            ->where('[category_parent_id] = %i', $category_id)
+            ->fetchAll();
+    }
+
+    /**
      * @param int  $category_id
      * @param int  $target_category_id
      * @param bool $position

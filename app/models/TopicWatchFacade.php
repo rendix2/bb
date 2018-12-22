@@ -45,7 +45,9 @@ class TopicWatchFacade
      */
     private $postsManager;
 
+
     /**
+     * TopicWatchFacade constructor.
      *
      * @param UsersManager      $usersManager
      * @param TopicWatchManager $topicWatchManager
@@ -68,7 +70,7 @@ class TopicWatchFacade
     }
     
     /**
-     *
+     * TopicWatchFacade destructor.
      */
     public function __destruct()
     {

@@ -82,7 +82,7 @@ class ForumPresenter extends AdminPresenter
     }
     
     /**
-     *
+     * ForumPresenter destructor.
      */
     public function __destruct()
     {

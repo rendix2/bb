@@ -57,6 +57,7 @@ class UserLoginForm extends Control
     private $session;
 
     /**
+     * UserLoginForm constructor.
      *
      * @param TranslatorFactory $translatorFactory
      * @param User ¨            $user
@@ -81,7 +82,7 @@ class UserLoginForm extends Control
     }
     
     /**
-     *
+     * UserLoginForm destructor.
      */
     public function __destruct()
     {
@@ -93,6 +94,9 @@ class UserLoginForm extends Control
         $this->session           = null;
     }
 
+    /**
+     *  UserLoginForm render.
+     */
     public function render()
     {
         $this['loginForm']->render();

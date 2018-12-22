@@ -68,7 +68,7 @@ class TopicFastReplyForm extends Control
     }
     
     /**
-     *
+     * TopicFastReplyForm destructor.
      */
     public function __destruct()
     {
@@ -79,7 +79,7 @@ class TopicFastReplyForm extends Control
     }
 
     /**
-     *
+     * TopicFastReplyForm render.
      */
     public function render()
     {

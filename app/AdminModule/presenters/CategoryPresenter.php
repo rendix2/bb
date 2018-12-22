@@ -8,6 +8,7 @@ use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Models\CategoriesManager;
 use App\Models\CategoryFacade;
+use App\Models\Entity\CategoryEntity;
 use App\Models\ForumsManager;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
@@ -48,7 +49,7 @@ class CategoryPresenter extends AdminPresenter
     }
     
     /**
-     *
+     * CategoryPresenter destructor.
      */
     public function __destruct()
     {
@@ -103,7 +104,10 @@ class CategoryPresenter extends AdminPresenter
             $this[self::FORM_NAME]->setDefaults([]);
         }
     }
-    
+
+    /**
+     * handle reorder
+     */
     public function handleReorder()
     {
         // todo
@@ -183,7 +187,11 @@ class CategoryPresenter extends AdminPresenter
             if ($id) {
                 $result = $this->categoryFacade->update($id, $values);
             } else {
+<<<<<<< HEAD
                 $category = new \App\Models\Entity\CategoryEntity();
+=======
+                $category = new CategoryEntity();
+>>>>>>> branch 'master' of https://github.com/rendix2/bb
                 $category->setCategory_parent_id($values->category_parent_id)
                          ->setCategory_name($values->category_name)
                          ->setCategory_active($values->category_active)

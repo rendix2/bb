@@ -43,56 +43,96 @@ class SessionEntity extends Entity
      * @var int $session_last_activity
      */
     private $session_last_activity;
-    
+
+    /**
+     * @return int
+     */
     public function getSession_id()
     {
         return $this->session_id;
     }
 
+    /**
+     * @return int
+     */
     public function getSession_user_id()
     {
         return $this->session_user_id;
     }
 
+    /**
+     * @return string
+     */
     public function getSession_key()
     {
         return $this->session_key;
     }
 
+    /**
+     * @return int
+     */
     public function getSession_from()
     {
         return $this->session_from;
     }
 
+    /**
+     * @return int
+     */
     public function getSession_last_activity()
     {
         return $this->session_last_activity;
     }
 
+    /**
+     * @param $session_id
+     *
+     * @return SessionEntity
+     */
     public function setSession_id($session_id)
     {
         $this->session_id = self::makeInt($session_id);
         return $this;
     }
 
+    /**
+     * @param $session_user_id
+     *
+     * @return SessionEntity
+     */
     public function setSession_user_id($session_user_id)
     {
         $this->session_user_id = self::makeInt($session_user_id);
         return $this;
     }
 
+    /**
+     * @param $session_key
+     *
+     * @return SessionEntity
+     */
     public function setSession_key($session_key)
     {
         $this->session_key = $session_key;
         return $this;
     }
 
+    /**
+     * @param $session_from
+     *
+     * @return SessionEntity
+     */
     public function setSession_from($session_from)
     {
         $this->session_from = self::makeInt($session_from);
         return $this;
     }
 
+    /**
+     * @param $session_last_activity
+     *
+     * @return SessionEntity
+     */
     public function setSession_last_activity($session_last_activity)
     {
         $this->session_last_activity = self::makeInt($session_last_activity);

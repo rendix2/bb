@@ -23,7 +23,7 @@ class FileEntity extends Entity
     /**
      *
      * @var string $file_orig_name
-     * 
+     *
      */
     private $file_orig_name;
 
@@ -45,55 +45,95 @@ class FileEntity extends Entity
      */
     private $file_size;
 
+    /**
+     * @return int
+     */
     public function getFile_id()
     {
         return $this->file_id;
     }
 
+    /**
+     * @return string
+     */
     public function getFile_orig_name()
     {
         return $this->file_orig_name;
     }
-        
+
+    /**
+     * @return string
+     */
     public function getFile_name()
     {
         return $this->file_name;
     }
 
+    /**
+     * @return string
+     */
     public function getFile_extension()
     {
         return $this->file_extension;
     }
 
+    /**
+     * @return int
+     */
     public function getFile_size()
     {
         return $this->file_size;
     }
 
+    /**
+     * @param $file_id
+     *
+     * @return FileEntity
+     */
     public function setFile_id($file_id)
     {
         $this->file_id = $file_id;
         return $this;
     }
-    
+
+    /**
+     * @param $file_orig_name
+     *
+     * @return FileEntity
+     */
     public function setFile_orig_name($file_orig_name)
     {
         $this->file_orig_name = $file_orig_name;
         return $this;
     }
 
+    /**
+     * @param $file_name
+     *
+     * @return FileEntity
+     */
     public function setFile_name($file_name)
     {
         $this->file_name = $file_name;
         return $this;
     }
 
+    /**
+     * @param $file_extension
+     *
+     * @return FileEntity
+     */
     public function setFile_extension($file_extension)
     {
         $this->file_extension = $file_extension;
         return $this;
     }
 
+    /**
+     * @param $file_size
+     *
+     * @return FileEntity
+     */
     public function setFile_size($file_size)
     {
         $this->file_size = $file_size;
@@ -101,7 +141,7 @@ class FileEntity extends Entity
     }
 
     /**
-     * 
+     *
      * @return array
      */
     public function getArray()
@@ -114,7 +154,7 @@ class FileEntity extends Entity
         
         if (isset($this->file_orig_name)) {
             $res['file_orig_name'] = $this->file_orig_name;
-        }        
+        }
         
         if (isset($this->file_name)) {
             $res['file_name'] = $this->file_name;
@@ -126,15 +166,15 @@ class FileEntity extends Entity
 
         if (isset($this->file_size)) {
             $res['file_size'] = $this->file_size;
-        }  
+        }
         
         return $res;
     }
     
     /**
-     * 
+     *
      * @param ArrayHash $values
-     * 
+     *
      * @return FileEntity
      */
     public static function setFromArrayHash(ArrayHash $values)
@@ -159,15 +199,15 @@ class FileEntity extends Entity
 
         if (isset($values->file_size)) {
             $fileEntity->setFile_size($values->file_size);
-        }      
+        }
         
         return $fileEntity;
     }
     
     /**
-     * 
+     *
      * @param Row $values
-     * 
+     *
      * @return FileEntity
      */
     public static function setFromRow(Row $values)
@@ -178,9 +218,9 @@ class FileEntity extends Entity
             $fileEntity->setFile_id($values->file_id);
         }
         
-        if (isset($this->file_orig_name)) {
+        if (isset($values->file_orig_name)) {
             $fileEntity->setFile_orig_name($values->file_orig_name);
-        }        
+        }
         
         if (isset($values->file_name)) {
             $fileEntity->setFile_name($values->file_name);
@@ -192,7 +232,7 @@ class FileEntity extends Entity
 
         if (isset($values->file_size)) {
             $fileEntity->setFile_size($values->file_size);
-        }      
+        }
         
         return $fileEntity;
     }

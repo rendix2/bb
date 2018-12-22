@@ -38,6 +38,7 @@ class SendMailToAdminForm extends Control
     private $bbMailer;
 
     /**
+     * SendMailToAdminForm constructor.
      *
      * @param TranslatorFactory $translatorFactory
      * @param UsersManager      $usersManager
@@ -56,7 +57,7 @@ class SendMailToAdminForm extends Control
     }
     
     /**
-     *
+     * SendMailToAdminForm destructor.
      */
     public function __destruct()
     {
@@ -66,7 +67,7 @@ class SendMailToAdminForm extends Control
     }
 
     /**
-     *
+     * SendMailToAdminForm render.
      */
     public function render()
     {

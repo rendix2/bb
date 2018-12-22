@@ -37,6 +37,7 @@ class UserForumsForm extends Control
     private $translator;
 
     /**
+     * UserForumsForm constructor.
      *
      * @param ForumsManager       $forumsManager
      * @param Users2ForumsManager $users2ForumsManager
@@ -55,7 +56,7 @@ class UserForumsForm extends Control
     }
     
     /**
-     *
+     * UserForumsForm destructor.
      */
     public function __destruct()
     {
@@ -64,6 +65,9 @@ class UserForumsForm extends Control
         $this->translator          = null;
     }
 
+    /**
+     * UserForumsForm render
+     */
     public function render()
     {
         $sep = DIRECTORY_SEPARATOR;

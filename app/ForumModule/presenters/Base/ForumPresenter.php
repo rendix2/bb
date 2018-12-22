@@ -2,7 +2,7 @@
 
 namespace App\ForumModule\Presenters\Base;
 
-use App\Authorization\Authorizator as Aauthorizator;
+use App\Authorization\Authorizator;
 use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
 use App\Authorization\Scopes\CategoryScope;
@@ -54,7 +54,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     public $thanksManager;
 
     /**
-     * @var Aauthorizator $authorizator
+     * @var Authorizator $authorizator
      * @inject
      */
     public $authorizator;

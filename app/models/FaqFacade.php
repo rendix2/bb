@@ -54,7 +54,7 @@ class FaqFacade
     }
 
     /**
-     * @param $item_id
+     * @param int $item_id
      */
     public function delete($item_id)
     {

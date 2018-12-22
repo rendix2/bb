@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Crud\CrudManager;
 use Dibi\Connection;
 use Dibi\Fluent;
+use Exception;
 use Nette\Caching\IStorage;
 use Nette\Security\User;
 
@@ -30,7 +31,7 @@ class PmManager extends CrudManager
      * @param IStorage   $storage
      * @param User       $user
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(
         Connection $dibi,
@@ -40,6 +41,16 @@ class PmManager extends CrudManager
         parent::__construct($dibi, $storage);
 
         $this->user = $user;
+    }
+
+    /**
+     * PmManager destructor.
+     */
+    public function __destruct()
+    {
+        $this->user = null;
+
+        parent::__destruct();
     }
 
     /**

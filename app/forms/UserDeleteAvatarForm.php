@@ -64,7 +64,7 @@ class UserDeleteAvatarForm extends Control
     }
     
     /**
-     *
+     * UserDeleteAvatarForm destructor.
      */
     public function __destruct()
     {

@@ -84,7 +84,7 @@ class IndexPresenter extends BaseForumPresenter
     }
 
     /**
-     *
+     * IndexPresenter destructor.
      */
     public function __destruct()
     {

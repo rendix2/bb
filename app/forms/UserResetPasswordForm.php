@@ -31,6 +31,7 @@ class UserResetPasswordForm extends Control
     private $usersManager;
 
     /**
+     * UserResetPasswordForm constructor.
      *
      * @param TranslatorFactory $translatorFactory
      * @param UsersManager      $usersManager
@@ -46,7 +47,7 @@ class UserResetPasswordForm extends Control
     }
     
     /**
-     *
+     * UserResetPasswordForm destructor
      */
     public function __destruct()
     {
@@ -55,6 +56,8 @@ class UserResetPasswordForm extends Control
     }
 
     /**
+     * UserResetPasswordForm render.
+     *
      * renders form
      */
     public function render()

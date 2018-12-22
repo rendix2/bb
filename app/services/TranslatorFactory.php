@@ -66,7 +66,7 @@ class TranslatorFactory
     }
     
     /**
-     *
+     * TranslatorFactory destructor.
      */
     public function __destruct()
     {
@@ -84,7 +84,7 @@ class TranslatorFactory
     private function setLang()
     {
         $identity = $this->user->id;
-        $lang = '';
+        $lang     = '';
         
         if ($identity) {
             $lang = $identity->getData()['lang_file_name'];

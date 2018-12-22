@@ -48,7 +48,7 @@ class MenuControl extends Control
     }
     
     /**
-     *
+     * MenuControl destructor.
      */
     public function __destruct()
     {
@@ -58,7 +58,7 @@ class MenuControl extends Control
     }
 
     /**
-     *
+     * MenuControl render.
      */
     public function render()
     {

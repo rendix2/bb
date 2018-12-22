@@ -52,7 +52,7 @@ class IndexPresenter extends BasePresenter
     }
 
     /**
-     *
+     * IndexPresenter beforeRender.
      */
     public function beforeRender()
     {

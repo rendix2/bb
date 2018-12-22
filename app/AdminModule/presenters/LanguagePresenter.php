@@ -36,7 +36,7 @@ class LanguagePresenter extends AdminPresenter
     }
     
     /**
-     *
+     * LanguagePresenter destructor.
      */
     public function __destruct()
     {
