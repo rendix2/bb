@@ -12,6 +12,8 @@ use App\Models\ForumsManager;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 /**
  * Description of CategoryPresenter
@@ -181,7 +183,7 @@ class CategoryPresenter extends AdminPresenter
             if ($id) {
                 $result = $this->categoryFacade->update($id, $values);
             } else {
-                $category = new \App\Models\Entity\Category();
+                $category = new \App\Models\Entity\CategoryEntity();
                 $category->setCategory_parent_id($values->category_parent_id)
                          ->setCategory_name($values->category_name)
                          ->setCategory_active($values->category_active)

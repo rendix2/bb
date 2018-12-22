@@ -64,7 +64,7 @@ class LoginPresenter extends BasePresenter
 
     /**
      *
-     * @param mxied $element
+     * @param mixed $element
      */
     public function checkRequirements($element)
     {
