@@ -1,5 +1,15 @@
 {define title}{_menu_smilie}{/define}
 
-{block content}
+{define breadCrumb}
+    <div class="col-sm-12">
+        <div class="float-left">
+            {control breadCrumbEdit}
+        </div>
+    </div>
+{/define}
 
+{block content}
+    {include breadCrumb}
+
+    {include breadCrumb}
 {/block}

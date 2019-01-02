@@ -1,12 +1,15 @@
 {define title}{_menu_group}{/define}
 
-{block content}
-
+{define breadCrumb}
     <div class="col-sm-12">
         <div class="float-left">
             {control breadCrumbEdit}
         </div>
     </div>
+{/define}
+
+{block content}
+    {include breadCrumb}
 
     <div class="col-sm-6 main">
         <div class="card h-100">
@@ -30,7 +33,8 @@
         <div class="card h-100">
             <div class="card-header">{_statistic}</div>
             <div class="card-block p-3">
-                <div class="btn btn-primary">{_user_count_lang} <span class="badge badge-light">{$countOfUsers}</span>
+                <div class="btn btn-primary">{_user_count_lang}
+                    <span class="badge badge-light">{$countOfUsers}</span>
                 </div>
             </div>
         </div>
@@ -121,10 +125,5 @@
         </div>
     </div>
 
-    <div class="col-sm-12">
-        <div class="float-left">
-            {control breadCrumbEdit}
-        </div>
-    </div>
-
+    {include breadCrumb}
 {/block}

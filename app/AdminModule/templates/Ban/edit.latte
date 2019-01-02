@@ -1,7 +1,15 @@
-
 {define title}{_menu_bans}{/define}
 
+{define breadCrumb}
+    <div class="col-sm-12">
+        <div class="float-left">
+            {control breadCrumbEdit}
+        </div>
+    </div>
+{/define}
+
 {block content}
+    {include breadCrumb}
 
     <div class="col-sm-12">
         <div class="float-left">
@@ -21,10 +29,5 @@
         </div>
     </div>
 
-    <div class="col-sm-12">
-        <div class="float-left">
-            {control breadCrumbEdit}
-        </div>
-    </div>
-
+    {include breadCrumb}
 {/block}

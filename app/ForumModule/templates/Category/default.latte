@@ -1,12 +1,16 @@
 {define title}{_menu_category}{/define}
 
-{block content}
-
+{define breadCrumb}
     <div class="col-sm-12">
         <div class="float-left">
             {control breadCrumbCategory}
         </div>
     </div>
+{/define}
+
+{block content}
+
+    {include breadCrumb}
 
     <div class="col-sm-6">
         <div class="card">
@@ -42,13 +46,9 @@
             {/block}
             </div>
         </div>
-    </div>        
+    </div>
 
-    <div class="col-sm-12 mt-3">
-        <div class="float-left">
-            {control breadCrumbCategory}
-        </div>
-    </div>    
+    {include breadCrumb}
 
 {/block}
     

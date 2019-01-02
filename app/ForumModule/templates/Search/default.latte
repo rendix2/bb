@@ -1,12 +1,16 @@
 {define title}{_menu_search}{/define}
 
-{block content}
-
+{define breadCrumb}
     <div class="col-sm-12">
         <div class="float-left">
             {control breadCrumbDefault}
         </div>
     </div>
+{/define}
+
+{block content}
+    {include breadCrumb}
+
     <div class="col-sm-12 main">
         <div class="row">
 
@@ -39,10 +43,5 @@
         </div>
     </div>
 
-    <div class="col-sm-12 mt-3">
-        <div class="float-left">
-            {control breadCrumbDefault}
-        </div>
-    </div>
-
+    {include breadCrumb}
 {/block}

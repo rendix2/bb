@@ -1,19 +1,17 @@
 {define title}{_forum_rules}{/define}
 
-{block content}
-    <div class="col-sm-12">
-        <div class="float-left">
-            {control breadCrumbRules}
-        </div>
+{define breadCrumb}
+    <div class="float-left">
+        {control breadCrumbRules}
     </div>
+{/define}
+
+{block content}
+    {include breadCrumb}
 
     <div class="col-sm-12 main">
         {$forum->getForum_rules()}
     </div>
-                
-    <div class="col-sm-12">
-        <div class="float-left">
-            {control breadCrumbRules}
-        </div>
-    </div>        
+
+    {include breadCrumb}
 {/block}

@@ -25,6 +25,7 @@ class StartDay extends Setting
                 
         return $end->diff($start);
     }
+
     /**
      *
      */

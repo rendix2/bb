@@ -1,12 +1,15 @@
 {define title}{_menu_email}{/define}
 
-{block content}
-
+{define breadCrumb}
     <div class="col-sm-12">
         <div class="float-left">
             {control breadCrumbSend}
         </div>
-    </div>  
+    </div>
+{/define}
+
+{block content}
+    {include breadCrumb}
 
     <div class="col-sm-12 main pb-3">
         <div class="card">
@@ -16,10 +19,6 @@
             </div>
         </div>
     </div>
-                
-    <div class="col-sm-12">
-        <div class="float-left">
-            {control breadCrumbSend}
-        </div>
-    </div>               
+
+    {include breadCrumb}
 {/block}

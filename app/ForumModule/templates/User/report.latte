@@ -1,19 +1,19 @@
 {define title}{_user_report}{/define}
 
-{block content}    
-<div class="col-sm-12">
-    <div class="float-left">
-        {control breadCrumbReport}
+{define breadCrumb}
+    <div class="col-sm-12">
+        <div class="float-left">
+            {control breadCrumbReport}
+        </div>
     </div>
-</div>
+{/define}
+
+{block content}    
+    {include breadCrumb}
         
 <div class="col-sm-12 main">
 {control reportUserForm}
 </div>
 
-<div class="col-sm-12">
-    <div class="float-left">
-        {control breadCrumbReport}
-    </div>
-</div>    
+    {include breadCrumb}
 {/block}

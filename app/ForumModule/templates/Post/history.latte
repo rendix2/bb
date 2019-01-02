@@ -1,11 +1,15 @@
 {define title}{_post_history}{/define}
 
-{block content}
+{define breadCrumb}
     <div class="col-sm-12">
         <div class="float-left">
             {control breadCrumbHistory}
         </div>
     </div>
+{/define}
+
+{block content}
+    {include breadCrumb}
 
     {foreach $posts as $post}
     <div class="col-sm-8 mb-3">
@@ -21,10 +25,6 @@
         </div>
     </div>                
     {/foreach}
-    
-    <div class="col-sm-12">
-        <div class="float-left">
-            {control breadCrumbHistory}
-        </div>
-    </div>    
+
+    {include breadCrumb}
 {/block}

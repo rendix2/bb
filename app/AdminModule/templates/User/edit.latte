@@ -1,12 +1,15 @@
 {define title}{_menu_user}{/define}
 
-{block content}
-
+{define breadCrumb}
     <div class="col-sm-12">
         <div class="float-left">
             {control breadCrumbEdit}
         </div>
     </div>
+{/define}
+
+{block content}
+    {include breadCrumb}
 
     {if $id}
         <div class="col-sm-12 my-2">
@@ -98,11 +101,7 @@
         <div class="row">
             {control forumsForm}
         </div>
-    </div>                    
-
-    <div class="col-sm-12">
-        <div class="float-left">
-            {control breadCrumbEdit}
-        </div>
     </div>
+
+    {include breadCrumb}
 {/block}

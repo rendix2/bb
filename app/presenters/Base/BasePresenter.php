@@ -92,6 +92,13 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         $this->translatorFactory = null;
     }
 
+    public function beforeRender()
+    {
+        parent::beforeRender();
+
+        $this->template->dir_separator = DIRECTORY_SEPARATOR;
+    }
+
     /**
      * BasePresenter startup.
      */
