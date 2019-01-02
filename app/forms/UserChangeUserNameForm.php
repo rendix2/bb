@@ -84,7 +84,7 @@ class UserChangeUserNameForm extends Control
      */
     public function changeUserNameOnValidate(Form $form, ArrayHash $values)
     {
-        if (count($this->usersManager->checkUserNameExists($values->user_name))) {
+        if ($this->usersManager->checkUserNameExists($values->user_name)) {
             $form->addError('User already exists.');
         }
     }

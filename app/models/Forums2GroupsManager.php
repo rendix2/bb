@@ -32,6 +32,6 @@ class Forums2GroupsManager extends MNManager
     public function addForums2group($group_id, array $data)
     {
         $this->deleteByRight($group_id);
-        $this->dibi->query('INSERT INTO %n %m', $this->getTable(), $data);
+        $this->addNative($data);
     }
 }
