@@ -6,6 +6,7 @@ use App\Models\Mails2UsersManager;
 use App\Models\MailsManager;
 use App\Models\UsersManager;
 use App\Settings\Email;
+use App\Settings\TempDir;
 use App\Utils;
 use Exception;
 use Latte\Engine;
@@ -58,6 +59,11 @@ class BBMailer
     private $usersManager;
 
     /**
+     * @var TempDir $tempDir
+     */
+    private $tempDir;
+
+    /**
      * BBMailer constructor.
      *
      * @param IMailer            $mailer
@@ -65,13 +71,15 @@ class BBMailer
      * @param Email              $email
      * @param Mails2UsersManager $mails2users
      * @param UsersManager       $usersManager
+     * @param TempDir            $tempDir
      */
     public function __construct(
         IMailer            $mailer,
         MailsManager       $manager,
         Email              $email,
         Mails2UsersManager $mails2users,
-        UsersManager       $usersManager
+        UsersManager       $usersManager,
+        TempDir            $tempDir
     ) {
         $this->mailer  = $mailer;
         $this->message = new Message();
@@ -80,6 +88,7 @@ class BBMailer
         $this->manager      = $manager;
         $this->mails2users  = $mails2users;
         $this->usersManager = $usersManager;
+        $this->tempDir      = $tempDir;
     }
 
     /**
@@ -120,8 +129,9 @@ class BBMailer
     {
         if (file_exists($input)) {
             $latte = new Engine();
+            $sep   = DIRECTORY_SEPARATOR;
 
-            $latte->setTempDirectory(__DIR__.'/..temp/');
+            $latte->setTempDirectory($this->tempDir->get() . $sep . 'mails' . $sep);
             
             $this->message->setHtmlBody($latte->renderToString($input, $variables));
         } else {

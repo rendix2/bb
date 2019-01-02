@@ -92,7 +92,7 @@ class TopicFastReplyForm extends Control
     protected function createComponentFastReply()
     {
         $form = BootstrapForm::create();
-        $form->setTranslator($this->translatorFactory->createForumTranslatorFactory());
+        $form->setTranslator($this->translatorFactory->getForumTranslator());
 
         $form->addGroup('Fast reply');
         $form->addTextArea('post_text');

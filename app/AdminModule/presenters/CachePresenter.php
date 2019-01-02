@@ -76,7 +76,7 @@ class CachePresenter extends AdminPresenter
     {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->translatorFactory->createAdminTranslatorFactory());
+        $this->template->setTranslator($this->translatorFactory->getAdminTranslator());
     }
 
     /**

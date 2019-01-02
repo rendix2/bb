@@ -80,7 +80,7 @@ class SendMailToAdminForm extends Control
     protected function createComponentSendMailToAdmin()
     {
         $form = BootstrapForm::create();
-        $form->setTranslator($this->translatorFactory->createForumTranslatorFactory());
+        $form->setTranslator($this->translatorFactory->getForumTranslator());
         
         $form->addText('mail_subject', 'Mail subject:')
             ->setRequired('Subject is required.');

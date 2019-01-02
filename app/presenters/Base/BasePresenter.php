@@ -229,6 +229,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             1 => ['presenter' => ':Forum:Index:default', 'title' => 'menu_forum'],
         ];
 
-        return new MenuControl($this->translatorFactory->createAdminTranslatorFactory(), $leftMenu, $rightMenu);
+        return new MenuControl($this->translatorFactory->getAdminTranslator(), $leftMenu, $rightMenu);
     }
 }

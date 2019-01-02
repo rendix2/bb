@@ -80,7 +80,7 @@ class LoginPresenter extends BasePresenter
     {
         parent::startup();
         
-        $this->translator = $this->translatorFactory->createAdminTranslatorFactory();
+        $this->translator = $this->translatorFactory->getAdminTranslator();
         $this->template->setTranslator($this->translator);
     }
 

@@ -92,6 +92,7 @@ class RanksManager extends CrudManager
             
             return true;
         } catch (IOException $e) {
+            Debugger::log(sprintf('File %s was not deleted.', $this->ranks->getDir() . DIRECTORY_SEPARATOR . $rank_file));
             return false;
         }
     }

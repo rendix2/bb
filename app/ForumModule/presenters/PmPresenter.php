@@ -86,7 +86,7 @@ class PmPresenter extends CrudPresenter
     {
         parent::startup();
 
-        $this->translator = $this->translatorFactory->createForumTranslatorFactory();
+        $this->translator = $this->translatorFactory->getForumTranslator();
 
         $this->template->setTranslator($this->translator);
 

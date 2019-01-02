@@ -79,7 +79,7 @@ class DeleteAvatarFactory
             $this->userManager,
             $this->avatars,
             $this->user,
-            $this->translatorFactory->createForumTranslatorFactory()
+            $this->translatorFactory->getForumTranslator()
         );
     }
     
@@ -93,7 +93,7 @@ class DeleteAvatarFactory
             $this->userManager,
             $this->avatars,
             $this->user,
-            $this->translatorFactory->createAdminTranslatorFactory()
+            $this->translatorFactory->getAdminTranslator()
         );
     }
 }

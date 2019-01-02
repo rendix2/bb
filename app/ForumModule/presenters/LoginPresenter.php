@@ -6,6 +6,7 @@ use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Forms\UserLoginForm;
 use App\Models\Manager;
+use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
 use App\Translator;
@@ -43,6 +44,11 @@ class LoginPresenter extends BasePresenter
      * @var Translator $translator
      */
     private $translator;
+
+    /**
+     * @var UsersManager $usersManager
+     */
+    public $usersManager;
     
     /**
      * LoginPresenter destructor.
@@ -64,7 +70,7 @@ class LoginPresenter extends BasePresenter
     {
         parent::startup();
 
-        $this->translator = $this->translatorFactory->createForumTranslatorFactory();
+        $this->translator = $this->translatorFactory->getForumTranslator();
     }
 
     /**
@@ -86,7 +92,7 @@ class LoginPresenter extends BasePresenter
     {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->translatorFactory->createForumTranslatorFactory());
+        $this->template->setTranslator($this->translatorFactory->getForumTranslator());
     }
 
     /**
@@ -165,11 +171,9 @@ class LoginPresenter extends BasePresenter
      */
     public function reactivateFormSuccess(Form $form, ArrayHash $values)
     {
-        $user = $this->usersManager->getAllByEmail($values->user_email);
+        $user = $this->usersManager->getByEmail($values->user_email);
 
         if ($user) {
-            $user = $user[0];
-
             if (!$user->user_active) {
                 $key = Manager::getRandomString();
 

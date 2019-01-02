@@ -175,7 +175,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     {
         parent::startup();
 
-        $this->translator = $this->translatorFactory->createForumTranslatorFactory();
+        $this->translator = $this->translatorFactory->getForumTranslator();
         
         $this->template->pm_count = $this->pmManager->getCountSent();
     }
