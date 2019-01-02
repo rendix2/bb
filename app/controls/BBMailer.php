@@ -14,6 +14,7 @@ use Nette\Mail\FallbackMailer;
 use Nette\Mail\IMailer;
 use Nette\Mail\Message;
 use Nette\Utils\ArrayHash;
+use Tracy\Debugger;
 
 /**
  * Description of BBMailer
@@ -160,6 +161,7 @@ class BBMailer
             
             return true;
         } catch (Exception $e) {
+            Debugger::log(sprintf('Mail with subject %s sent to %s was not sent.', $this->message->getSubject(), $this->message->getHeader('To')));
             return false;
         }
     }
