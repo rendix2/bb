@@ -382,7 +382,10 @@ class GridFilter extends Control
         
         $template->render();
     }
-    
+
+    /**
+     * renders reset button
+     */
     public function renderReset()
     {
         $sep = DIRECTORY_SEPARATOR;
