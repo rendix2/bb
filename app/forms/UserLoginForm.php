@@ -108,7 +108,7 @@ class UserLoginForm extends Control
     protected function createComponentLoginForm()
     {
         $form = BootstrapForm::create();
-        $form->setTranslator($this->translatorFactory->createForumTranslatorFactory());
+        $form->setTranslator($this->translatorFactory->getForumTranslator());
 
         $form->addText('user_name', 'Login:');
         $form->addPassword('user_password', 'Password:');

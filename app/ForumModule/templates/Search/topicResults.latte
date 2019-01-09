@@ -1,14 +1,18 @@
 {define title}{_"Search topic"}{/define}
 
-{block content}
-
+{define breadCrumb}
     <div class="col-sm-12">
         <div class="float-left">
             {control breadCrumbTopicResults}
         </div>
     </div>
+{/define}
 
-    <div class="col-sm-12 main">        
+
+{block content}
+    {include breadCrumb}
+
+    <div class="col-sm-12">
         {control searchTopicForm}
     </div>
 
@@ -31,6 +35,7 @@
                             <td>{$topic->topic_name}</td>
                             <td>
                                 <a href="{link User:profile, $topic->user_id}">{$topic->user_name}</a>
+                            </td>
                         </tr>
                     {/foreach}
                 </tbody>
@@ -38,10 +43,5 @@
         </div>
     {/if}
 
-    <div class="col-sm-12">
-        <div class="float-left">
-            {control breadCrumbTopicResults}
-        </div>
-    </div>
-
+    {include breadCrumb}
 {/block}

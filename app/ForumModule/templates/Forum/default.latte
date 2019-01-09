@@ -1,5 +1,11 @@
 {define title}{_menu_forum} {$forum->getForum_name()}{/define}
 
+{define breadCrumb}
+    <div class="float-left">
+        {control breadCrumbAll}
+    </div>
+{/define}
+
 {block content}
 
     <div class="col-sm-12">
@@ -36,9 +42,7 @@
     </div>
 
     <div class="col-sm-12 main">
-        <div class="float-left">
-            {control breadCrumbAll}
-        </div>
+        {include breadCrumb}
         <div class="float-right">
             <a href="{link Forum:rules, $category_id, $forum_id}">{_forum_rules}</a>
 
@@ -96,9 +100,7 @@
     </div>
 
     <div class="col-sm-12">
-        <div class="float-left">
-            {control breadCrumbAll}
-        </div>
+        {include breadCrumb}
         <div class="float-right">
             {control paginator}
         </div>

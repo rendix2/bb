@@ -111,8 +111,8 @@ class IndexPresenter extends BaseForumPresenter
      */
     public function renderDefault()
     {
-        $categories      = $this->getManager()->getActiveCategoriesCached();
-        $result          = [];
+        $categories = $this->getManager()->getActiveCategoriesCached();
+        $result     = [];
 
         if ($this->user->identity) {
             $last_login_time = $this->user->identity->getData()['user_last_login_time'];

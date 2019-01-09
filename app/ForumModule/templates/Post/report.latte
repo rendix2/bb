@@ -1,11 +1,15 @@
 {define title}{_post_report}{/define}
 
-{block content}
+{define breadCrumb}
     <div class="col-sm-12">
         <div class="float-left">
             {control breadCrumbReport}
         </div>
     </div>
+{/define}
+
+{block content}
+    {include breadCrumb}
 
     <div class="col-sm-6 main">
         <div class="card">
@@ -16,9 +20,5 @@
         </div>
     </div>
 
-    <div class="col-sm-12 mt-3">
-        <div class="float-left">
-            {control breadCrumbReport}
-        </div>
-    </div>
+    {include breadCrumb}
 {/block}

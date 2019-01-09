@@ -1,12 +1,15 @@
 {define title}{_topic_wacthers}{/define}
 
-{block content}
-
+{define breadCrumb}
     <div class="col-sm-12">
         <div class="float-left">
             {control breadCrumbWatchers}
         </div>
     </div>
+{/define}
+
+{block content}
+    {include breadCrumb}
 
     <div class="col-sm-12">
         <ul>
@@ -17,10 +20,6 @@
         {/foreach}
         </ul>
     </div>
-        
-    <div class="col-sm-12">
-        <div class="float-left">
-            {control breadCrumbWatchers}
-        </div>
-    </div>        
+
+    {include breadCrumb}
 {/block}

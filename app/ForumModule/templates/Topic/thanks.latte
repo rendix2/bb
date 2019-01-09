@@ -1,12 +1,15 @@
 {define title}{_Thanks}{/define}
 
-{block content}
-
+{define breadCrumb}
     <div class="col-sm-12">
         <div class="float-left">
             {control breadCrumbThanks}
         </div>
     </div>
+{/define}
+
+{block content}
+    {include breadCrumb}
 
     {if $thanks}
         <div class="col-sm-12">
@@ -26,10 +29,6 @@
             </div>
         </div>
     {/if}
-    
-    <div class="col-sm-12">
-        <div class="float-left">
-            {control breadCrumbThanks}
-        </div>
-    </div>
+
+    {include breadCrumb}
 {/block}

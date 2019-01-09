@@ -56,7 +56,7 @@ abstract class AdminPresenter extends CrudPresenter
     {
         parent::startup();
 
-        $this->adminTranslator = $this->translatorFactory->createAdminTranslatorFactory();
+        $this->adminTranslator = $this->translatorFactory->getAdminTranslator();
     }
 
     /**
@@ -84,18 +84,6 @@ abstract class AdminPresenter extends CrudPresenter
     public function getBootstrapForm()
     {
         $bf = parent::getBootstrapForm();
-        $bf->setTranslator($this->getTranslator());
-        
-        return $bf;
-    }
-
-    /**
-     *
-     * @return BootstrapForm
-     */
-    public function createBootstrapForm()
-    {
-        $bf = BootstrapForm::create();
         $bf->setTranslator($this->getTranslator());
         
         return $bf;

@@ -5,6 +5,7 @@ namespace App\Models\Crud;
 use App\Models\Manager;
 use dibi;
 use Dibi\Connection;
+use Dibi\DriverException;
 use Dibi\Fluent;
 use Dibi\Result;
 use Dibi\Row;
@@ -41,6 +42,11 @@ abstract class CrudManager extends Manager //implements ICrudManager
      * @var string
      */
     const CACHE_ONE = 'one';
+
+    /**
+     * @var string
+     */
+    const CACHE_TABLES = 'tables';
 
     /**
      * @var string $table
@@ -85,15 +91,21 @@ abstract class CrudManager extends Manager //implements ICrudManager
         $table = $this->getNameOfTableFromClass();
         
         $databaseCache = new Cache($storage, $this->dibi->getDatabaseInfo()->getName());
-        $cachedTables  = $databaseCache->load('tables');
+        $cachedTables  = $databaseCache->load(self::CACHE_TABLES);
                      
         if ($cachedTables === null) {
             $cachedTables = $this->dibi->getDatabaseInfo()->getTableNames();
-            $databaseCache->save('tables', $cachedTables);
+            $databaseCache->save(self::CACHE_TABLES, $cachedTables);
         }
         
         if (!in_array($table, $cachedTables, true)) {
-            throw new Exception("Table '{$table}' does not exist in database '{$this->dibi->getDatabaseInfo()->getName()}'.");
+            $message = sprintf(
+                "Table '%s' does not exist in database '%s'.",
+                $table,
+                $this->dibi->getDatabaseInfo()->getName()
+            );
+
+            throw new DriverException($message);
         }
                 
         $this->table        = $table;
@@ -131,9 +143,10 @@ abstract class CrudManager extends Manager //implements ICrudManager
         }
         
         $type = $this->getColumnTypeQuery($column);
-        
-        $query = $this->dibi->select('*')
-                ->from($this->table);
+
+        $query = $this->dibi
+            ->select('*')
+            ->from($this->table);
         
         if ($type === 'TEXT' || $type === 'VARCHAR') {
             $query = $query->where('%n = %s', $column, $value);

@@ -77,7 +77,7 @@ class ChangePasswordFactory
     {
         return new UserChangePasswordForm(
             $this->userManager,
-            $this->translatorFactory->createForumTranslatorFactory(),
+            $this->translatorFactory->getForumTranslator(),
             $this->user,
             $this->users
         );
@@ -91,7 +91,7 @@ class ChangePasswordFactory
     {
         return new UserChangePasswordForm(
             $this->userManager,
-            $this->translatorFactory->createAdminTranslatorFactory(),
+            $this->translatorFactory->getAdminTranslator(),
             $this->user,
             $this->users
         );

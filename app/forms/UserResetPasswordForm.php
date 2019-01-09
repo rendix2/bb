@@ -71,7 +71,7 @@ class UserResetPasswordForm extends Control
     protected function createComponentResetPasswordForm()
     {
         $form = BootstrapForm::create();
-        $form->setTranslator($this->translateFactory->createForumTranslatorFactory());
+        $form->setTranslator($this->translateFactory->getForumTranslator());
         $form->addEmail(
             'user_email',
             'User email:'
@@ -94,7 +94,7 @@ class UserResetPasswordForm extends Control
      */
     public function resetPasswordFormSuccess(Form $form, ArrayHash $values)
     {
-        $found_mail = $this->usersManager->getAllByEmail($values->user_email);
+        $found_mail = $this->usersManager->getByEmail($values->user_email);
 
         if ($found_mail) {
             // send mail!

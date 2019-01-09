@@ -1,12 +1,15 @@
 {define title}{_"Search user"}{/define}
 
-{block content}
-
+{define breadCrumb}
     <div class="col-sm-12">
         <div class="float-left">
             {control breadCrumbUserResults}
         </div>
     </div>
+{/define}
+
+{block content}
+    {include breadCrumb}
 
     <div class="col-sm-12 main">
         {control searchUserForm}
@@ -33,10 +36,5 @@
         </div>
     {/if}
 
-    <div class="col-sm-12">
-        <div class="float-left">
-            {control breadCrumbUserResults}
-        </div>
-    </div>
-
+    {include breadCrumb}
 {/block}

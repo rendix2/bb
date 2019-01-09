@@ -1,11 +1,15 @@
 {define title}{_"Search user"}{/define}
 
-{block content}
-<div class="col-sm-12">
-    <div class="float-left">
-        {control breadCrumbUserSearch}
+{define breadCrumb}
+    <div class="col-sm-12">
+        <div class="float-left">
+            {control breadCrumbUserSearch}
+        </div>
     </div>
-</div>
+{/define}
+
+{block content}
+    {include breadCrumb}
         
 <div class="col-sm-12 main">
     {snippet form}
@@ -13,9 +17,5 @@
     {/snippet}
 </div>
 
-<div class="col-sm-12">
-    <div class="float-left">
-        {control breadCrumbUserSearch}
-    </div>
-</div>
+    {include breadCrumb}
 {/block}

@@ -1,5 +1,21 @@
 {define title}{_menu_users}{/define}
 
+{define user_types}
+<div class="col-sm-12">
+    {if $type !== 1}
+    <a href="{link User:List}">{_menu_users}</a>
+    {/if}
+        {if $type !== 3}
+    <a href="{link User:moderatorList}">{_menu_moderators}</a>
+    {/if}
+        {if $type !== 5}
+    <a href="{link User:adminList}">{_menu_admins}</a>
+    {/if}
+
+    <a href="{link User:SendMailToAdmin}">{_user_admin_contact}</a>
+</div>
+{/define}
+
 {block content}
     <div class="col-sm-12">
         <div class="float-left">
@@ -22,19 +38,7 @@
         </div>
     </div>
         
-    <div class="col-sm-12">
-        {if $type !== 1}
-        <a href="{link User:List}">{_menu_users}</a>
-        {/if}
-        {if $type !== 3}
-        <a href="{link User:moderatorList}">{_menu_moderators}</a>
-        {/if}
-        {if $type !== 5}
-        <a href="{link User:adminList}">{_menu_admins}</a>
-        {/if}
-        
-        <a href="{link User:SendMailToAdmin}">{_user_admin_contact}</a>
-    </div>
+    {include user_types}
         
     <div class="col-sm-12 main">
         <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
@@ -58,20 +62,8 @@
             </tbody>
         </table>
     </div>
-            
-    <div class="col-sm-12">
-        {if $type !== 1}
-        <a href="{link User:List}">{_menu_users}</a>
-        {/if}
-        {if $type !== 3}
-        <a href="{link User:moderatorList}">{_menu_moderators}</a>
-        {/if}
-        {if $type !== 5}
-        <a href="{link User:adminList}">{_menu_admins}</a>
-        {/if}
-        
-        <a href="{link User:SendMailToAdmin}">{_user_admin_contact}</a>
-    </div>            
+
+    {include user_types}
             
     <div class="col-sm-12">
         <div class="float-left">

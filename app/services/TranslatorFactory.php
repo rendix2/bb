@@ -99,7 +99,7 @@ class TranslatorFactory
     /**
      * @return Translator
      */
-    public function createAdminTranslatorFactory()
+    public function getAdminTranslator()
     {
         if (!$this->adminTranslator) {
             $this->adminTranslator = new Translator($this->appDir, 'Admin', $this->lang);
@@ -111,7 +111,7 @@ class TranslatorFactory
     /**
      * @return Translator
      */
-    public function createForumTranslatorFactory()
+    public function getForumTranslator()
     {
         if (!$this->forumTranslator) {
             $this->forumTranslator = new Translator($this->appDir, 'Forum', $this->lang);

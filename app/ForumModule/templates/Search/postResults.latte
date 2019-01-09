@@ -1,14 +1,17 @@
 {define title}{_"Search post"}{/define}
 
-{block content}
-
+{define breadCrumb}
     <div class="col-sm-12">
         <div class="float-left">
-            {control breadCrumbPostResults}
+            {control breadCrumbPostsResults}
         </div>
     </div>
+{/define}
 
-    <div class="col-sm-12 main">        
+{block content}
+    {include breadCrumb}
+
+    <div class="col-sm-12">
         {control searchPostForm}
     </div>        
 
@@ -41,9 +44,5 @@
         </div>
     {/if}
 
-    <div class="col-sm-12">
-        <div class="float-left">
-            {control breadCrumbPostResults}
-        </div>
-    </div>
+    {include breadCrumb}
 {/block}

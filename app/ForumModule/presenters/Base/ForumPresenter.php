@@ -107,10 +107,14 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      */
     public function __destruct()
     {
-        $this->translator      = null;
-        $this->authorizator    = null;
-        $this->pmManager       = null;
-        $this->manager         = null;
+        $this->moderators          = null;
+        $this->thanksManager       = null;
+        $this->authorizator        = null;
+        $this->users2GroupsManager = null;
+        $this->users2ForumsManager = null;
+        $this->translator          = null;
+        $this->pmManager           = null;
+        $this->manager             = null;
         
         parent::__destruct();
     }
@@ -130,18 +134,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     public function getTranslator()
     {
         return $this->translator;
-    }
-    
-    /**
-     *
-     * @return BootstrapForm
-     */
-    public function createBootstrapForm()
-    {
-        $bf = BootstrapForm::create();
-        $bf->setTranslator($this->getTranslator());
-        
-        return $bf;
     }
 
     /**
@@ -175,7 +167,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     {
         parent::startup();
 
-        $this->translator = $this->translatorFactory->createForumTranslatorFactory();
+        $this->translator = $this->translatorFactory->getForumTranslator();
         
         $this->template->pm_count = $this->pmManager->getCountSent();
     }
@@ -209,7 +201,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     {
         return new CategoryScope();
     }
-
 
     /**
      * @param ForumEntity $forum

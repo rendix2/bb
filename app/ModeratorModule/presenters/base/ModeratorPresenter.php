@@ -57,7 +57,7 @@ abstract class ModeratorPresenter extends CrudPresenter
     {
         parent::startup();
         
-        $this->translator = $this->translatorFactory->createForumTranslatorFactory();
+        $this->translator = $this->translatorFactory->getForumTranslator();
     }
 
     /**

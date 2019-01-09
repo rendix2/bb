@@ -11,6 +11,7 @@ use Nette\Http\FileUpload;
 use Nette\InvalidArgumentException;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
+use Tracy\Debugger;
 
 /**
  * Description of UserManager
@@ -176,13 +177,13 @@ class UsersManager extends CrudManager
      *
      * @param string $email
      *
-     * @return Row[]
+     * @return Row|false
      */
-    public function getAllByEmail($email)
+    public function getByEmail($email)
     {
         return $this->getAllFluent()
             ->where('[user_email] = %s', $email)
-            ->fetchAll();
+            ->fetch();
     }
 
     /**
@@ -251,6 +252,7 @@ class UsersManager extends CrudManager
             
             return true;
         } catch (IOException $e) {
+            Debugger::log(sprintf('File %s was not deleted.', $this->avatars->getDir() . DIRECTORY_SEPARATOR . $avatar_file));
             return false;
         }
     }

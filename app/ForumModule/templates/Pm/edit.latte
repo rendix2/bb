@@ -1,11 +1,15 @@
 {define title}{_menu_pm}{/define}
 
-{block content}
-<div class="col-sm-12">
-    <div class="float-left">
-        {control breadCrumbEdit}
+{define breadCrumb}
+    <div class="col-sm-12">
+        <div class="float-left">
+            {control breadCrumbEdit}
+        </div>
     </div>
-</div>
+{/define}
+
+{block content}
+    {include breadCrumb}
         
 <div class="col-sm-12 main">
     {if $id}
@@ -34,10 +38,6 @@
     </a>
 </div>
 
-<div class="col-sm-12">
-    <div class="float-left">
-        {control breadCrumbEdit}
-    </div>
-</div>
+    {include breadCrumb}
 
 {/block}

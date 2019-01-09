@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "7b0cdc8a553e57d2375b87c8b4d5c7be",
@@ -374,16 +374,16 @@
         },
         {
             "name": "nette/application",
-            "version": "v2.4.12",
+            "version": "v2.4.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/application.git",
-                "reference": "fe1915f880d8e5d16217bad467950733fd5cbad3"
+                "reference": "023acd964383de11fbc32cae8f4dfd8043643a0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/application/zipball/fe1915f880d8e5d16217bad467950733fd5cbad3",
-                "reference": "fe1915f880d8e5d16217bad467950733fd5cbad3",
+                "url": "https://api.github.com/repos/nette/application/zipball/023acd964383de11fbc32cae8f4dfd8043643a0f",
+                "reference": "023acd964383de11fbc32cae8f4dfd8043643a0f",
                 "shasum": ""
             },
             "require": {
@@ -402,7 +402,7 @@
             "require-dev": {
                 "latte/latte": "^2.4.3",
                 "mockery/mockery": "^0.9.5",
-                "nette/di": "^2.4 || ~3.0.0",
+                "nette/di": "^2.4",
                 "nette/forms": "^2.4",
                 "nette/robot-loader": "^2.4.2 || ^3.0",
                 "nette/security": "^2.4",
@@ -457,7 +457,7 @@
                 "routing",
                 "seo"
             ],
-            "time": "2018-05-16T09:28:51+00:00"
+            "time": "2018-11-23T22:28:11+00:00"
         },
         {
             "name": "nette/bootstrap",
@@ -1259,16 +1259,16 @@
         },
         {
             "name": "nette/security",
-            "version": "v2.4.3",
+            "version": "v2.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/security.git",
-                "reference": "9b60f156626394f859a42a04dfbdcbe59095a37c"
+                "reference": "7b8ac90c9ec405bb3b4dab9214bf122d3620fc65"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/security/zipball/9b60f156626394f859a42a04dfbdcbe59095a37c",
-                "reference": "9b60f156626394f859a42a04dfbdcbe59095a37c",
+                "url": "https://api.github.com/repos/nette/security/zipball/7b8ac90c9ec405bb3b4dab9214bf122d3620fc65",
+                "reference": "7b8ac90c9ec405bb3b4dab9214bf122d3620fc65",
                 "shasum": ""
             },
             "require": {
@@ -1319,7 +1319,7 @@
                 "authorization",
                 "nette"
             ],
-            "time": "2018-04-02T19:47:47+00:00"
+            "time": "2018-10-17T15:50:54+00:00"
         },
         {
             "name": "nette/utils",
@@ -1702,16 +1702,16 @@
         },
         {
             "name": "tracy/tracy",
-            "version": "v2.5.3",
+            "version": "v2.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/tracy.git",
-                "reference": "7f670b08a7f4ed0243373f9d003d139196273861"
+                "reference": "35fa649b483b28e16f61de07110ea0585fc8d6ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/tracy/zipball/7f670b08a7f4ed0243373f9d003d139196273861",
-                "reference": "7f670b08a7f4ed0243373f9d003d139196273861",
+                "url": "https://api.github.com/repos/nette/tracy/zipball/35fa649b483b28e16f61de07110ea0585fc8d6ea",
+                "reference": "35fa649b483b28e16f61de07110ea0585fc8d6ea",
                 "shasum": ""
             },
             "require": {
@@ -1764,7 +1764,7 @@
                 "nette",
                 "profiler"
             ],
-            "time": "2018-09-24T22:35:07+00:00"
+            "time": "2018-11-05T15:10:59+00:00"
         },
         {
             "name": "uestla/recaptcha-control",

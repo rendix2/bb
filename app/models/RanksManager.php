@@ -9,6 +9,7 @@ use Nette\Caching\IStorage;
 use Nette\Http\FileUpload;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
+use Tracy\Debugger;
 
 /**
  * Description of RanksManager
@@ -92,6 +93,7 @@ class RanksManager extends CrudManager
             
             return true;
         } catch (IOException $e) {
+            Debugger::log(sprintf('File %s was not deleted.', $this->ranks->getDir() . DIRECTORY_SEPARATOR . $rank_file));
             return false;
         }
     }

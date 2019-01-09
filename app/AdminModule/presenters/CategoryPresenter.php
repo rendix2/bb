@@ -187,7 +187,7 @@ class CategoryPresenter extends AdminPresenter
             if ($id) {
                 $result = $this->categoryFacade->update($id, $values);
             } else {
-                $category = new \App\Models\Entity\CategoryEntity();
+				$category = new CategoryEntity();
                 $category->setCategory_parent_id($values->category_parent_id)
                          ->setCategory_name($values->category_name)
                          ->setCategory_active($values->category_active)

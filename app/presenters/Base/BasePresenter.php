@@ -94,6 +94,16 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     }
 
     /**
+     * beforeRender function
+     */
+    public function beforeRender()
+    {
+        parent::beforeRender();
+
+        $this->template->dir_separator = DIRECTORY_SEPARATOR;
+    }
+
+    /**
      * BasePresenter startup.
      */
     public function startup()
@@ -109,16 +119,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         $this->template->topic_id    = $this->getParameter('topic_id');
         $this->template->post_id     = $this->getParameter('post_id');
         $this->template->page        = $this->getParameter('page');
-    }
-    
-    /**
-     * create BootstrapForm
-     *
-     * @return BootstrapForm
-     */
-    public function createBootstrapForm()
-    {
-        return new BootstrapForm();
     }
     
     /**
@@ -223,6 +223,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             1 => ['presenter' => ':Forum:Index:default', 'title' => 'menu_forum'],
         ];
 
-        return new MenuControl($this->translatorFactory->createAdminTranslatorFactory(), $leftMenu, $rightMenu);
+        return new MenuControl($this->translatorFactory->getAdminTranslator(), $leftMenu, $rightMenu);
     }
 }

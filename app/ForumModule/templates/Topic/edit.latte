@@ -1,12 +1,15 @@
 {define title}{_topic_edit}{/define}
 
-{block content}
-
+{define breadCrumb}
     <div class="col-sm-12 mt-3">
         <div class="float-left">
             {control breadCrumbEdit}
         </div>
     </div>
+{/define}
+
+{block content}
+    {include breadCrumb}
 
     <div class="col-sm-12 main">
         <div class="card">
@@ -17,9 +20,5 @@
         </div>
     </div>
 
-    <div class="col-sm-12 mt-3">
-        <div class="float-left">
-            {control breadCrumbEdit}
-        </div>
-    </div>
+    {include breadCrumb}
 {/block}

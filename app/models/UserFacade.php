@@ -214,7 +214,7 @@ class UserFacade
     public function add(UserEntity $user)
     {
         $user_id         = $this->usersManager->add($user->getArrayHash());
-        $forumTranslator = $this->translatorFactory->createForumTranslatorFactory();
+        $forumTranslator = $this->translatorFactory->getForumTranslator();
         
         $pmEntity = new PmEntity();
         $pmEntity->setPm_user_id_from(1)

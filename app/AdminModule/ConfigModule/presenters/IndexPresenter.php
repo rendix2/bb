@@ -58,7 +58,7 @@ class IndexPresenter extends BasePresenter
     {
         parent::beforeRender();
         
-        $this->template->setTranslator($this->translatorFactory->createAdminTranslatorFactory());
+        $this->template->setTranslator($this->translatorFactory->getAdminTranslator());
     }
 
     /**
