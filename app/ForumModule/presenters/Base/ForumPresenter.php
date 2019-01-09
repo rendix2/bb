@@ -107,10 +107,14 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      */
     public function __destruct()
     {
-        $this->translator      = null;
-        $this->authorizator    = null;
-        $this->pmManager       = null;
-        $this->manager         = null;
+        $this->moderators          = null;
+        $this->thanksManager       = null;
+        $this->authorizator        = null;
+        $this->users2GroupsManager = null;
+        $this->users2ForumsManager = null;
+        $this->translator          = null;
+        $this->pmManager           = null;
+        $this->manager             = null;
         
         parent::__destruct();
     }
@@ -197,7 +201,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     {
         return new CategoryScope();
     }
-
 
     /**
      * @param ForumEntity $forum

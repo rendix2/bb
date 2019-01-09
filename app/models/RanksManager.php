@@ -9,6 +9,7 @@ use Nette\Caching\IStorage;
 use Nette\Http\FileUpload;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
+use Tracy\Debugger;
 
 /**
  * Description of RanksManager
