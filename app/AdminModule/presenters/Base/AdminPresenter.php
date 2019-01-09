@@ -88,16 +88,4 @@ abstract class AdminPresenter extends CrudPresenter
         
         return $bf;
     }
-
-    /**
-     *
-     * @return BootstrapForm
-     */
-    public function createBootstrapForm()
-    {
-        $bf = BootstrapForm::create();
-        $bf->setTranslator($this->getTranslator());
-        
-        return $bf;
-    }
 }

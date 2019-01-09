@@ -121,16 +121,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     }
     
     /**
-     * create BootstrapForm
-     *
-     * @return BootstrapForm
-     */
-    public function createBootstrapForm()
-    {
-        return new BootstrapForm();
-    }
-    
-    /**
      * @return BootstrapForm
      */
     public function getBootstrapForm()

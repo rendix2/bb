@@ -131,18 +131,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     {
         return $this->translator;
     }
-    
-    /**
-     *
-     * @return BootstrapForm
-     */
-    public function createBootstrapForm()
-    {
-        $bf = BootstrapForm::create();
-        $bf->setTranslator($this->getTranslator());
-        
-        return $bf;
-    }
 
     /**
      *

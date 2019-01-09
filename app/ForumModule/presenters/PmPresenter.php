@@ -225,7 +225,7 @@ class PmPresenter extends CrudPresenter
      */
     protected function createComponentEditForm()
     {
-        $form = $this->createBootstrapForm();
+        $form = BootstrapForm::create();
 
         $form->setTranslator($this->translator);
 
