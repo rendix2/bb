@@ -12,6 +12,7 @@ use Nette\Localization\ITranslator;
  * Description of TranslatorFactory
  *
  * @author rendix2
+ * @package App\Services
  */
 class TranslatorFactory
 {

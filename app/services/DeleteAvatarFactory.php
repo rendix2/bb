@@ -11,6 +11,7 @@ use Nette\Security\User;
  * Description of DeleteAvatarFactory
  *
  * @author rendix2
+ * @package App\Services
  */
 class DeleteAvatarFactory
 {

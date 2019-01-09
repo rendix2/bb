@@ -9,6 +9,7 @@ use App\Models\BansManager;
 use App\Services\TranslatorFactory;
 use Nette;
 use Nette\Http\IResponse;
+use App\BBCode;
 
 /**
  * Base presenter for all application presenters.

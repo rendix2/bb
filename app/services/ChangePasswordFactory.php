@@ -11,6 +11,7 @@ use Nette\Security\User;
  * Description of ChangePasswordFactory
  *
  * @author rendix2
+ * @package App\Services
  */
 class ChangePasswordFactory
 {

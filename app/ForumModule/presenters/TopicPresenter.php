@@ -490,6 +490,18 @@ class TopicPresenter extends BaseForumPresenter
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
     }
+    
+    public static function bbCodeParse($text)    
+    {
+        //$text = 'awdwad [head]awdwad[/head]';
+                
+        $bbCode = new \App\Services\BBCode();
+        $bbCode->addElement('h1', ['open_tag' => '<h1>', 'close_tag' => '</h1>', 'type' => BBCODE_TYPE_NOARG]);
+        $bbCode->addElement('h2', ['open_tag' => '<h2>', 'close_tag' => '</h2>', 'type' => BBCODE_TYPE_NOARG]);
+        $bbCode->addElement('h3', ['open_tag' => '<h3>', 'close_tag' => '</h3>', 'type' => BBCODE_TYPE_NOARG]);
+        $bbCode->addElement('hide', ['open_tag' => '<span style="display:none">', 'close_tag' => '</span>', 'type' => BBCODE_TYPE_NOARG]);
+        bdump($bbCode->parse($text));
+    }
 
     /**
      *
