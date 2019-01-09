@@ -92,6 +92,9 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         $this->translatorFactory = null;
     }
 
+    /**
+     * beforeRender function
+     */
     public function beforeRender()
     {
         parent::beforeRender();
