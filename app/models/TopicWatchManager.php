@@ -9,6 +9,7 @@
 namespace App\Models;
 
 use Dibi\Connection;
+use Nette\Caching\IStorage;
 
 /**
  * Class Topics2Users
@@ -22,16 +23,18 @@ class TopicWatchManager extends MNManager
      * TopicWatchManager constructor.
      *
      * @param Connection    $dibi
+     * @param IStorage      $storage
      * @param TopicsManager $left
      * @param UsersManager  $right
-     * @param string         $tableName
+     * @param string        $tableName
      */
     public function __construct(
         Connection    $dibi,
+        IStorage      $storage,
         TopicsManager $left,
         UsersManager  $right,
         $tableName = self::TOPIC_WATCH_TABLE
     ) {
-        parent::__construct($dibi, $left, $right, $tableName);
+        parent::__construct($dibi, $storage, $left, $right, $tableName);
     }
 }

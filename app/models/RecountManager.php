@@ -9,6 +9,7 @@
 namespace App\Models;
 
 use Dibi\Connection;
+use Nette\Caching\IStorage;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -28,11 +29,12 @@ class RecountManager extends Manager
      * RecountManager constructor.
      *
      * @param Connection   $dibi
+     * @param IStorage     $storage
      * @param UsersManager $usersManager
      */
-    public function __construct(Connection $dibi, UsersManager $usersManager)
+    public function __construct(Connection $dibi, IStorage $storage, UsersManager $usersManager)
     {
-        parent::__construct($dibi);
+        parent::__construct($dibi, $storage);
 
         $this->usersManager = $usersManager;
     }

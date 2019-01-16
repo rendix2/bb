@@ -16,7 +16,7 @@ use Nette\Caching\IStorage;
 use Nette\Utils\ArrayHash;
 
 /**
- * CrudManager provides create, read, update and delete operations in database
+ * CrudManager provides create, read, update and delete operations in database table
  *
  * @author rendix2
  * @package App\Models\Crud
@@ -44,91 +44,6 @@ abstract class CrudManager extends Manager //implements ICrudManager
     const CACHE_ONE = 'one';
 
     /**
-     * @var string
-     */
-    const CACHE_TABLES = 'tables';
-
-    /**
-     * @var string $table
-     */
-    private $table;
-
-    /**
-     * @var string $primaryKey
-     */
-    private $primaryKey;
-    
-    /**
-     * @var Cache $cache
-     */
-    protected $managerCache;
-    
-    /**
-     * @var IStorage $storage
-     */
-    protected $storage;
-    
-    /**
-     *
-     * @var array $columnNames
-     */
-    private $columnNames;
-
-    /**
-     * CrudManager constructor.
-     *
-     * @param Connection $dibi
-     * @param IStorage   $storage
-     *
-     * @throws Exception
-     */
-    public function __construct(Connection $dibi, IStorage $storage)
-    {
-        parent::__construct($dibi);
-        
-        $this->storage = $storage;
-        
-        $table = $this->getNameOfTableFromClass();
-        
-        $databaseCache = new Cache($storage, $this->dibi->getDatabaseInfo()->getName());
-        $cachedTables  = $databaseCache->load(self::CACHE_TABLES);
-                     
-        if ($cachedTables === null) {
-            $cachedTables = $this->dibi->getDatabaseInfo()->getTableNames();
-            $databaseCache->save(self::CACHE_TABLES, $cachedTables);
-        }
-        
-        if (!in_array($table, $cachedTables, true)) {
-            $message = sprintf(
-                "Table '%s' does not exist in database '%s'.",
-                $table,
-                $this->dibi->getDatabaseInfo()->getName()
-            );
-
-            throw new DriverException($message);
-        }
-                
-        $this->table        = $table;
-        $this->managerCache = new Cache($storage, $this->getTable());
-        $this->primaryKey   = $this->getPrimaryKeyQuery();
-        $this->columnNames  = $this->getColumnsQuery();
-    }
-    
-    /**
-     * CrudManager destructor.
-     */
-    public function __destruct()
-    {
-        $this->table        = null;
-        $this->primaryKey   = null;
-        $this->managerCache = null;
-        $this->storage      = null;
-        $this->columnNames  = null;
-       
-        parent::__destruct();
-    }
-
-    /**
      *
      * @param string       $column
      * @param string|array $value
@@ -136,6 +51,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
      * @return Fluent
      * @throws Exception
      */
+    /*
     public function get($column, $value)
     {
         if (!in_array($column, $this->columnNames, true)) {
@@ -160,16 +76,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
 
         return $query;
     }
-    
-    /**
-     * @return Fluent
-     */
-    public function getAllFluent()
-    {
-        return $this->dibi
-            ->select('*')
-            ->from($this->table);
-    }
+    */
 
     /**
      * @return Row[]
@@ -272,7 +179,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
         }
         
         return $this->getAllFluent()
-            ->where('%n = %i', $this->primaryKey, $item_id)
+            ->where('%n = %i', $this->getPrimaryKey(), $item_id)
             ->fetch();
     }
 
@@ -305,28 +212,8 @@ abstract class CrudManager extends Manager //implements ICrudManager
     public function getByIds(array $item_id)
     {
         return $this->getAllFluent()
-            ->where('%n IN %in', $this->primaryKey, $item_id)
+            ->where('%n IN %in', $this->getPrimaryKey(), $item_id)
             ->fetchAll();
-    }
-
-    /**
-     * @return Fluent
-     */
-    public function getCountFluent()
-    {
-        return $this->dibi
-            ->select('COUNT(*)')
-            ->from($this->table);
-    }
-    
-    /**
-     * @return Fluent
-     */
-    public function getCountPrimaryKeyFluent()
-    {
-        return $this->dibi
-            ->select('COUNT('.$this->primaryKey.')')
-            ->from($this->table);
     }
     
     /**
@@ -366,83 +253,11 @@ abstract class CrudManager extends Manager //implements ICrudManager
     }
 
     /**
-     * @return string
-     * @see https://stackoverflow.com/questions/1993721/how-to-convert-camelcase-to-camel-case
-     */
-    private function getNameOfTableFromClass()
-    {
-        $className    = str_replace('Manager', '', get_class($this));
-        $explodedName = explode('\\', $className);
-        $count        = count($explodedName);
-
-        return mb_strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $explodedName[$count - 1]));
-    }
-
-    /**
-     * @return string
-     */
-    public function getPrimaryKey()
-    {
-        return $this->primaryKey;
-    }
-
-    /**
-     * @return string
-     */
-    private function getPrimaryKeyQuery()
-    {
-        $cachedPrimaryKey = $this->managerCache->load('primaryKey_' . $this->table);
-
-        if ($cachedPrimaryKey === null) {
-            $columns = $this->dibi->getDatabaseInfo()->getTable($this->table)->getColumns();
-            
-            foreach ($columns as $column) {
-                if ($column->getVendorInfo('Key') === 'PRI') {
-                    $cachedPrimaryKey = $column->name;
-                    break;
-                }
-            }
-
-            $this->managerCache->save(
-                'primaryKey_' . $this->table,
-                $cachedPrimaryKey,
-                [
-                    Cache::EXPIRE => '168 hours',
-                ]
-            );
-        }
-
-        return $cachedPrimaryKey;
-    }
-    
-    /**
-     * @return string
-     */
-    private function getColumnsQuery()
-    {
-        $cachedColumns = $this->managerCache->load('columns_' . $this->table);
-
-        if ($cachedColumns === null) {
-            // runs query!!!!! we need cache
-            $cachedColumns = $this->dibi->getDatabaseInfo()->getTable($this->table)->columnNames;
-            
-            $this->managerCache->save(
-                'columns_' . $this->table,
-                $cachedColumns,
-                [
-                    Cache::EXPIRE => '168 hours',
-                ]
-            );
-        }
-
-        return $cachedColumns;
-    }
-
-    /**
      * @param string $column
      *
      * @return mixed|string
      */
+    /*
     private function getColumnTypeQuery($column)
     {
         $cachedColumn = $this->managerCache->load('Columns_objects_' . $this->table. '_column_'.$column);
@@ -461,14 +276,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
         
         return $cachedColumn;
     }
-
-    /**
-     * @return string
-     */
-    public function getTable()
-    {
-        return $this->table;
-    }
+    */
 
     /**
      * @param ArrayHash $item_data
@@ -480,19 +288,8 @@ abstract class CrudManager extends Manager //implements ICrudManager
         $this->deleteCache();
 
         return $this->dibi
-            ->insert($this->table, $item_data)
+            ->insert($this->getTable(), $item_data)
             ->execute(dibi::IDENTIFIER);
-    }
-    
-    /**
-     *
-     * @return Fluent
-     */
-    public function deleteFluent()
-    {
-        $this->deleteCache();
-
-        return $this->dibi->delete($this->table);
     }
 
     /**
@@ -507,32 +304,11 @@ abstract class CrudManager extends Manager //implements ICrudManager
             throw new InvalidArgumentException('Not numeric argument');
         }
         
-        $this->deleteCache($item_id);
-        
         return $this->deleteFluent()
-            ->where('%n = %i', $this->primaryKey, $item_id)
+            ->where('%n = %i', $this->getPrimaryKey(), $item_id)
             ->execute();
     }
 
-    /**
-     * @param int|array|null $item_id
-     */
-    protected function deleteCache($item_id = null)
-    {
-        $this->managerCache->remove(self::CACHE_ALL_KEY);
-        $this->managerCache->remove(self::CACHE_PAIRS);
-        $this->managerCache->remove(self::CACHE_COUNT_KEY);
-        
-        if ($item_id) {
-            if (is_array($item_id)) {
-                foreach ($item_id as $item) {
-                    $this->managerCache->remove(self::CACHE_ONE . '_' . $item);
-                }
-            } else {
-                $this->managerCache->remove(self::CACHE_ONE . '_' . $item_id);
-            }
-        }
-    }
 
     /**
      * @param array $item_id
@@ -542,22 +318,8 @@ abstract class CrudManager extends Manager //implements ICrudManager
     public function deleteMulti(array $item_id)
     {
         return $this->deleteFluent()
-            ->where('[%n IN %in', $this->primaryKey, $item_id)
+            ->where('[%n IN %in', $this->getPrimaryKey(), $item_id)
             ->execute(dibi::AFFECTED_ROWS);
-    }
-
-    /**
-     *
-     * @param ArrayHash $item_data
-     *
-     * @return Fluent
-     */
-    public function updateFluent(ArrayHash $item_data)
-    {
-        $this->deleteCache();
-        
-        return $this->dibi
-            ->update($this->table, $item_data);
     }
 
     /**
@@ -576,7 +338,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
         $this->deleteCache($item_id);
         
         return $this->updateFluent($item_data)
-            ->where('%n = %i', $this->primaryKey, $item_id)
+            ->where('%n = %i', $this->getPrimaryKey(), $item_id)
             ->execute(dibi::AFFECTED_ROWS);
     }
 
@@ -591,7 +353,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
         $this->deleteCache($item_id);
         
         return $this->updateFluent($item_data)
-            ->where('%n IN %in', $this->primaryKey, $item_id)
+            ->where('%n IN %in', $this->getPrimaryKey(), $item_id)
             ->execute(dibi::AFFECTED_ROWS);
     }
 }

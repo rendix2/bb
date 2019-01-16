@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Dibi\Connection;
+use Nette\Caching\IStorage;
 
 /**
  * Description of Forums2Groups
@@ -17,12 +18,13 @@ class Forums2GroupsManager extends MNManager
      * Forums2GroupsManager constructor.
      *
      * @param Connection    $dibi
+     * @param IStorage      $storage
      * @param ForumsManager $left
      * @param GroupsManager $right
      */
-    public function __construct(Connection $dibi, ForumsManager $left, GroupsManager $right)
+    public function __construct(Connection $dibi, IStorage $storage, ForumsManager $left, GroupsManager $right)
     {
-        parent::__construct($dibi, $left, $right);
+        parent::__construct($dibi, $storage, $left, $right);
     }
 
     /**

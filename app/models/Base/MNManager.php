@@ -7,6 +7,7 @@ use Dibi\Connection;
 use Dibi\Fluent;
 use Dibi\Result;
 use Dibi\Row;
+use Nette\Caching\IStorage;
 
 /**
  * M2N relation manager.
@@ -36,11 +37,6 @@ abstract class MNManager extends Manager
     private $right;
     
     /**
-     * @var string $table
-     */
-    private $table;
-    
-    /**
      *
      * @var string $leftKey
      */
@@ -56,6 +52,7 @@ abstract class MNManager extends Manager
      * MNManager constructor.
      *
      * @param Connection  $dibi
+     * @param IStorage    $storage
      * @param CrudManager $left
      * @param CrudManager $right
      * @param string|null $tableName
@@ -63,14 +60,15 @@ abstract class MNManager extends Manager
      * @param null        $rightKey
      */
     public function __construct(
-        Connection $dibi,
+        Connection  $dibi,
+        IStorage    $storage,
         CrudManager $left,
         CrudManager $right,
         $tableName = null,
         $leftKey = null,
         $rightKey = null
     ) {
-        parent::__construct($dibi);
+        parent::__construct($dibi, $storage);
 
         $this->left  = $left;
         $this->right = $right;
@@ -117,28 +115,10 @@ abstract class MNManager extends Manager
     {
         return mb_substr($tableName, 0, 1);
     }
-
-    /**
-     * @return string
-     */
-    public function getTable()
-    {
-        return $this->table;
-    }
     
     /**
      * get all
      */
-    
-    /**
-     * @return Fluent
-     */
-    public function getAllFluent()
-    {
-        return $this->dibi
-            ->select('*')
-            ->from($this->table);
-    }
 
     /**
      * returns all table
@@ -493,16 +473,6 @@ abstract class MNManager extends Manager
      */
 
     /**
-     * @return Fluent
-     */
-    private function getCountFluent()
-    {
-        return $this->dibi
-            ->select('COUNT(*)')
-            ->from($this->table);
-    }
-
-    /**
      * @return int
      */
     public function getCount()
@@ -633,16 +603,6 @@ abstract class MNManager extends Manager
     /**
      * delete
      */
-    
-    /**
-     *
-     * @return Fluent
-     */
-    public function deleteFluent()
-    {
-        return $this->dibi
-            ->delete($this->table);
-    }
     
     /**
      *

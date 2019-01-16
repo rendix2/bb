@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Dibi\Connection;
 use Dibi\Row;
+use Nette\Caching\IStorage;
 
 /**
  * Description of Group2User
@@ -17,12 +18,13 @@ class Users2GroupsManager extends MNManager
      * Users2GroupsManager constructor.
      *
      * @param Connection    $dibi
+     * @param IStorage      $storage
      * @param UsersManager  $left
      * @param GroupsManager $right
      */
-    public function __construct(Connection $dibi, UsersManager $left, GroupsManager $right)
+    public function __construct(Connection $dibi, IStorage $storage, UsersManager $left, GroupsManager $right)
     {
-        parent::__construct($dibi, $left, $right);
+        parent::__construct($dibi, $storage, $left, $right);
     }
 
     /**
