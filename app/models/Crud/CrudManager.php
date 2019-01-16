@@ -24,26 +24,6 @@ use Nette\Utils\ArrayHash;
 abstract class CrudManager extends Manager //implements ICrudManager
 {
     /**
-     * @var string
-     */
-    const CACHE_ALL_KEY = 'data';
-
-    /**
-     * @var string
-     */
-    const CACHE_COUNT_KEY = 'count';
-
-    /**
-     * @var string
-     */
-    const CACHE_PAIRS = 'pairs';
-    
-    /**
-     * @var string
-     */
-    const CACHE_ONE = 'one';
-
-    /**
      *
      * @param string       $column
      * @param string|array $value
@@ -77,7 +57,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
         return $query;
     }
     */
-
+    
     /**
      * @return Row[]
      */
@@ -157,9 +137,7 @@ abstract class CrudManager extends Manager //implements ICrudManager
             $this->managerCache->save(
                 self::CACHE_PAIRS,
                 $cached = $this->getAllPairs($second),
-                [
-                    Cache::EXPIRE => '24 hours',
-                ]
+                [Cache::EXPIRE => '24 hours',]
             );
         }
 

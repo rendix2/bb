@@ -9,6 +9,9 @@ use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Utils\ArrayHash;
 use SplFileInfo;
+use Nette\PhpGenerator\Factory;
+use Tracy;
+use Tracy\Debugger;
 
 /**
  * Manager wraps dibi connection to database
@@ -22,6 +25,26 @@ abstract class Manager extends Tables
      * @var string
      */
     const CACHE_TABLES = 'tables';
+    
+    /**
+     * @var string
+     */
+    const CACHE_ALL_KEY = 'data';
+    
+    /**
+     * @var string
+     */
+    const CACHE_COUNT_KEY = 'count';
+    
+    /**
+     * @var string
+     */
+    const CACHE_PAIRS = 'pairs';
+    
+    /**
+     * @var string
+     */
+    const CACHE_ONE = 'one';
 
     /**
      *
@@ -63,33 +86,54 @@ abstract class Manager extends Tables
      *
      * @throws DriverException
      */
-    public function __construct(Connection $dibi, IStorage $storage)
-    {
-        $table = $this->getNameOfTableFromClass();
-
-        $databaseCache = new Cache($storage, $this->dibi->getDatabaseInfo()->getName());
+    public function __construct(Connection $dibi, IStorage $storage, $tableName = '')
+    {      
+        $databaseCache = new Cache($storage, $dibi->getDatabaseInfo()->getName());
         $cachedTables  = $databaseCache->load(self::CACHE_TABLES);
 
         if ($cachedTables === null) {
-            $cachedTables = $this->dibi->getDatabaseInfo()->getTableNames();
+            $cachedTables = $dibi->getDatabaseInfo()->getTableNames();
             $databaseCache->save(self::CACHE_TABLES, $cachedTables);
         }
-
-        if (!in_array($table, $cachedTables, true)) {
-            $message = sprintf(
-                "Table '%s' does not exist in database '%s'.",
-                $table,
-                $this->dibi->getDatabaseInfo()->getName()
-            );
-
-            throw new DriverException($message);
+        
+        if ($tableName) {
+            $this->table = $tableName;
+        } else {
+            $tablePascal = $this->getNameOfTableFromClass(true);
+            $tableCamel  = $this->getNameOfTableFromClass(false); 
+            
+            if ($tablePascal === $tableCamel) {
+                $this->table = $tablePascal;
+            } else {
+                $found = in_array($tableCamel, $cachedTables, true);
+                
+                if ($found) {
+                    $foundTable = $tableCamel;
+                } else {
+                    $found = in_array($tablePascal, $cachedTables, true);                    
+                    
+                    if ($found) {
+                        $foundTable = $tablePascal;                        
+                    } else {
+                        $message = sprintf(
+                            "Table '%s' or '%s' does not exist in database '%s'.",
+                            $tableCamel,
+                            $tablePascal,
+                            $dibi->getDatabaseInfo()->getName()
+                        );
+                        
+                        throw new DriverException($message);
+                    }
+                }
+                
+                $this->table = $foundTable;
+            }            
         }
 
         $this->dibi         = $dibi;
         $this->storage      = $storage;
-        $this->table        = $table;
         $this->managerCache = new Cache($storage, $this->getTable());
-        $this->primaryKey   = $this->getPrimaryKeyQuery();
+        $this->primaryKey   = $this->findPrimaryKey();
         $this->columnNames  = $this->getColumnsQuery();
     }
     
@@ -109,24 +153,63 @@ abstract class Manager extends Tables
         $this->storage      = null;
         $this->columnNames  = null;
     }
+    
+    /**
+     * @return string
+     */
+    public function getTableAlias()
+    {
+        return mb_substr($this->table, 0, 1);
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getAliasedTableName()
+    {
+        return sprintf('%s.%s', $this->getTableAlias(), $this->table);
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getAliasedPrimaryKey()
+    {
+        return sprintf('%s.%s', $this->getTableAlias(), $this->getPrimaryKey());
+    }
 
     /**
+     * @param bool $pascal
+     * 
      * @return string
      * @see https://stackoverflow.com/questions/1993721/how-to-convert-camelcase-to-camel-case
      */
-    private function getNameOfTableFromClass()
+    private function getNameOfTableFromClass($pascal)
     {
-        $className    = str_replace('Manager', '', get_class($this));
-        $explodedName = explode('\\', $className);
-        $count        = count($explodedName);
-
-        return mb_strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $explodedName[$count - 1]));
+        $origClassName = str_replace('Manager', '', get_class($this));
+        $explodedName  = explode('\\', $origClassName);
+        $count         = count($explodedName);
+        $className     = $explodedName[$count - 1];
+        
+        if ($pascal) {
+           $explodedClassName = explode('2', $className);
+           
+           if (count($explodedClassName) === 2) {
+               return mb_strtolower($className);
+           } else {            
+                return mb_strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $className));
+           }
+        } else {
+            return mb_strtolower($className);
+        }
     }
 
     /**
      * @return string
      */
-    private function getPrimaryKeyQuery()
+    private function findPrimaryKey()
     {
         $cachedPrimaryKey = $this->managerCache->load('primaryKey_' . $this->table);
 
@@ -143,9 +226,7 @@ abstract class Manager extends Tables
             $this->managerCache->save(
                 'primaryKey_' . $this->table,
                 $cachedPrimaryKey,
-                [
-                    Cache::EXPIRE => '168 hours',
-                ]
+                [Cache::EXPIRE => '168 hours',]
             );
         }
 

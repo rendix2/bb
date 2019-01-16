@@ -26,6 +26,8 @@ use Nette\Caching\IStorage;
  */
 abstract class MNManager extends Manager
 {
+    const ALIAS = 'relation';
+    
     /**
      * @var CrudManager $left
      */
@@ -47,6 +49,18 @@ abstract class MNManager extends Manager
      * @var string $rightKey
      */
     private $rightKey;
+    
+    /**
+     * 
+     * @var string $leftAliasedKey
+     */
+    private $leftAliasedKey;
+
+    /**
+     * 
+     * @var string $rightAliasedKey
+     */
+    private $rightAliasedKey;
 
     /**
      * MNManager constructor.
@@ -68,7 +82,7 @@ abstract class MNManager extends Manager
         $leftKey = null,
         $rightKey = null
     ) {
-        parent::__construct($dibi, $storage);
+        parent::__construct($dibi, $storage, $tableName);
 
         $this->left  = $left;
         $this->right = $right;
@@ -90,6 +104,9 @@ abstract class MNManager extends Manager
         } else {
             $this->rightKey = $this->right->getPrimaryKey();
         }
+        
+        $this->leftAliasedKey  = self::ALIAS . '.' . $this->leftKey;
+        $this->rightAliasedKey = self::ALIAS . '.' . $this->rightKey;
     }
 
     /**
@@ -97,23 +114,15 @@ abstract class MNManager extends Manager
      */
     public function __destruct()
     {
-        $this->left     = null;
-        $this->right    = null;
-        $this->table    = null;
-        $this->leftKey  = null;
-        $this->rightKey = null;
+        $this->left            = null;
+        $this->right           = null;
+        $this->table           = null;
+        $this->leftKey         = null;
+        $this->rightKey        = null;
+        $this->leftAliasedKey  = null;
+        $this->rightAliasedKey = null;
                 
         parent::__destruct();
-    }
-
-    /**
-     * @param string $tableName
-     *
-     * @return bool|string
-     */
-    private static function createAlias($tableName)
-    {
-        return mb_substr($tableName, 0, 1);
     }
     
     /**
@@ -174,16 +183,16 @@ abstract class MNManager extends Manager
      */
     public function getFluentByLeftJoined($left_id)
     {
-        $aliasR = self::createAlias($this->right->getTable());
+        $aliasR = $this->right->getTableAlias();
 
         return $this->dibi
             ->select($aliasR . '.*')
             ->from($this->table)
-            ->as('relation')
+            ->as(self::ALIAS)
             ->innerJoin($this->right->getTable())
             ->as($aliasR)
-            ->on($aliasR . '.' . $this->right->getPrimaryKey() . ' = [relation.' . $this->rightKey . ']')
-            ->where('[relation.' . $this->leftKey . '] = %i', $left_id);
+            ->on('%n = %n', $this->right->getAliasedPrimaryKey(), $this->rightAliasedKey)
+            ->where('%n = %i', self::ALIAS . '.' . $this->leftKey, $left_id);
     }
     
     /**
@@ -232,16 +241,14 @@ abstract class MNManager extends Manager
      */
     public function getFluentByLeftsJoined(array $left_id)
     {
-        $aliasR = self::createAlias($this->right->getTable());
-
         return $this->dibi
             ->select('*')
             ->from($this->table)
-            ->as('relation')
+            ->as(self::ALIAS)
             ->innerJoin($this->right->getTable())
-            ->as($aliasR)
-            ->on($aliasR . '.' . $this->right->getPrimaryKey() . ' = [relation.' . $this->rightKey . ']')
-            ->where('[relation.' . $this->leftKey . '] IN %in', $left_id);
+            ->as($this->right->getTableAlias())
+            ->on('%n = %n', $this->right->getAliasedPrimaryKey(), $this->rightAliasedKey)
+            ->where('%n IN %in', $this->leftAliasedKey, $left_id);
     }
 
     /**
@@ -303,15 +310,15 @@ abstract class MNManager extends Manager
      */
     public function getFluentByRightJoined($right_id)
     {
-        $aliasL = self::createAlias($this->left->getTable());
+        $aliasL = $this->left->getTableAlias();
 
         return $this->dibi->select($aliasL . '.*')
             ->from($this->table)
-            ->as('relation')
+            ->as(self::ALIAS)
             ->innerJoin($this->left->getTable())
             ->as($aliasL)
-            ->on($aliasL . '.' . $this->left->getPrimaryKey() . ' = [relation.' . $this->leftKey . ']')
-            ->where('[relation.' . $this->rightKey . '] = %i', $right_id);
+            ->on('%n = %n', $this->left->getAliasedPrimaryKey(), $this->leftAliasedKey)
+            ->where('%n = %i', $this->rightAliasedKey, $right_id);
     }
     
     /**
@@ -362,15 +369,13 @@ abstract class MNManager extends Manager
      */
     public function getFluentByRightsJoined(array $right_id)
     {
-        $aliasL = self::createAlias($this->left->getTable());
-
         return $this->dibi->select('*')
             ->from($this->table)
-            ->as('relation')
+            ->as(self::ALIAS)
             ->innerJoin($this->left->getTable())
-            ->as($aliasL)
-            ->on($aliasL . '.' . $this->left->getPrimaryKey() . ' = [relation.' . $this->leftKey . ']')
-            ->where('[relation.' . $this->rightKey . '] IN %in', $right_id);
+            ->as($this->left->getTableAlias())
+            ->on('%n = %n', $this->left->getAliasedPrimaryKey(), $this->leftAliasedKey)
+            ->where('%n IN %in', $this->rightAliasedKey, $right_id);
     }
     
     /**
@@ -399,9 +404,9 @@ abstract class MNManager extends Manager
         return $this->dibi
             ->select('*')
             ->from($this->table)
-            ->as('relation')
-            ->where('[relation.' . $this->leftKey . '] = %i', $left_id)
-            ->where('[relation.' . $this->rightKey . '] = %i', $right_id);
+            ->as(self::ALIAS)
+            ->where('%n = %i', $this->leftAliasedKey, $left_id)
+            ->where('%n = %i', $this->rightAliasedKey, $right_id);
     }
     
     /**
@@ -423,8 +428,8 @@ abstract class MNManager extends Manager
      */
     public function getFullJoined($left_id, $right_id)
     {
-        $aliasL = self::createAlias($this->left->getTable());
-        $aliasR = self::createAlias($this->right->getTable());
+        $aliasL = $this->left->getTableAlias();
+        $aliasR = $this->right->getTableAlias();
 
         if ($aliasL === $aliasR) {
             $aliasL = $this->left->getTable();
@@ -434,15 +439,15 @@ abstract class MNManager extends Manager
         return $this->dibi
             ->select('*')
             ->from($this->table)
-            ->as('relation')
+            ->as(self::ALIAS)
             ->innerJoin($this->left->getTable())
             ->as($aliasL)
-            ->on($aliasL . '.' . $this->left->getPrimaryKey() . ' = [relation.' . $this->leftKey . ']')
+            ->on('%n = %n', $this->left->getAliasedPrimaryKey(), $this->leftAliasedKey)
             ->innerJoin($this->right->getTable())
             ->as($aliasR)
-            ->on($aliasR . '.' . $this->right->getPrimaryKey() . ' = [relation.' . $this->rightKey . ']')
-            ->where('[relation.' . $this->leftKey . '] = %i', $left_id)
-            ->where('[relation.' . $this->rightKey . '] = %i', $right_id)
+            ->on('%n = %n', $this->right->getAliasedPrimaryKey(), $this->rightAliasedKey)
+            ->where('%n = %i', $this->leftAliasedKey, $left_id)
+            ->where('%n = %i', $this->rightAliasedKey, $right_id)
             ->fetch();
     }
     
