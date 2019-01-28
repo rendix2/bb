@@ -77,7 +77,7 @@ class Authenticator implements IAuthenticator
         $userData = $this->usersManager->getByName($userName);
 
         if (!$userData) {
-            throw new AuthenticationException('User name not found.', IAuthenticator::IDENTITY_NOT_FOUND);
+            throw new AuthenticationException('Incorrect credentials.', IAuthenticator::IDENTITY_NOT_FOUND);
         }
         
         $langData = $this->languagesManager->getById($userData->user_lang_id);
@@ -94,7 +94,7 @@ class Authenticator implements IAuthenticator
         }
 
         if (!Passwords::verify($userPassword, $userData->user_password)) {
-            throw new AuthenticationException('Password is incorrect.', IAuthenticator::INVALID_CREDENTIAL);
+            throw new AuthenticationException('Incorrect credentials.', IAuthenticator::INVALID_CREDENTIAL);
         }
                
         $this->usersManager->update($userData->user_id, ArrayHash::from(['user_last_login_time' => time()]));
