@@ -211,7 +211,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             9 =>  ['presenter' => ':Admin:Rank:',     'title' => 'menu_ranks'],
             10 => ['presenter' => ':Admin:Report:',   'title' => 'menu_reports'],
             11 => ['presenter' => ':Admin:Ban:',      'title' => 'menu_bans'],
-            12 => ['presenter' => ':Admin:Smilies:',  'title' => 'menu_smilies'],
+            12 => ['presenter' => ':Admin:Smileys:',  'title' => 'menu_smileys'],
             13 => ['presenter' => ':Admin:File:',     'title' => 'menu_files'],
             /*12 => ['presenter' => ':Admin:Config:Index:default', 'title' => 'menu_config',
                 'submenu' => [0 => ['presenter' => ':Admin:Config:Database:dumps', 'title' => 'menu_database']]

@@ -46,8 +46,8 @@ services:
         class: App\Models\FilesManager
     BanManager:
         class: App\Models\BansManager
-    SmilesManager:
-        class: App\Models\SmilesManager
+    SmileysManager:
+        class: App\Models\SmileysManager
     CacheManager:
         class: App\Models\CacheManager
     PollsManager:

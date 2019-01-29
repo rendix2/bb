@@ -56,7 +56,7 @@ class Tables
     
     const SESSIONS_TABLE = self::PREFIX . 'sessions';
     
-    const SMILES_TABLE = self::PREFIX . 'smiles';
+    const SMILEYS_TABLE = self::PREFIX . 'smileys';
     
     const THANKS_TABLE = self::PREFIX . 'thanks';
     
