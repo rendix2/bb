@@ -121,23 +121,22 @@
         },
         {
             "name": "ifsnop/mysqldump-php",
-            "version": "v2.5",
+            "version": "v2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ifsnop/mysqldump-php.git",
-                "reference": "8d063449981e3f7bd28a3a083842e21a24d1f4af"
+                "reference": "d830857e93c3f309fd63768c0fe6d13d9240fc70"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ifsnop/mysqldump-php/zipball/8d063449981e3f7bd28a3a083842e21a24d1f4af",
-                "reference": "8d063449981e3f7bd28a3a083842e21a24d1f4af",
+                "url": "https://api.github.com/repos/ifsnop/mysqldump-php/zipball/d830857e93c3f309fd63768c0fe6d13d9240fc70",
+                "reference": "d830857e93c3f309fd63768c0fe6d13d9240fc70",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "3.7.*",
                 "squizlabs/php_codesniffer": "1.*"
             },
             "type": "library",
@@ -148,7 +147,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT"
+                "GPL-3.0-or-later"
             ],
             "authors": [
                 {
@@ -157,19 +156,22 @@
                     "role": "Developer"
                 }
             ],
-            "description": "This is a php version of linux's mysqldump in terminal \"$ mysqldump -u username -p...\"",
+            "description": "PHP version of mysqldump cli that comes with MySQL",
             "homepage": "https://github.com/ifsnop/mysqldump-php",
             "keywords": [
-                "backup",
+                "PHP7",
                 "database",
-                "dump",
-                "export",
+                "hhvm",
+                "mariadb",
                 "mysql",
+                "mysql-backup",
                 "mysqldump",
                 "pdo",
-                "sqlite"
+                "php",
+                "php5",
+                "sql"
             ],
-            "time": "2018-06-30T19:40:05+00:00"
+            "time": "2018-12-27T00:33:19+00:00"
         },
         {
             "name": "kdyby/forms-replicator",
@@ -1610,16 +1612,16 @@
         },
         {
             "name": "radekdostal/nette-datetimepicker",
-            "version": "2.6.0",
+            "version": "2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/radekdostal/Nette-DateTimePicker.git",
-                "reference": "fb0d3db57daa9cac78c6d1def883d72baf6a8887"
+                "reference": "7ed93f5cea420b98ddd3b907e31d79d7dd9b7225"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/radekdostal/Nette-DateTimePicker/zipball/fb0d3db57daa9cac78c6d1def883d72baf6a8887",
-                "reference": "fb0d3db57daa9cac78c6d1def883d72baf6a8887",
+                "url": "https://api.github.com/repos/radekdostal/Nette-DateTimePicker/zipball/7ed93f5cea420b98ddd3b907e31d79d7dd9b7225",
+                "reference": "7ed93f5cea420b98ddd3b907e31d79d7dd9b7225",
                 "shasum": ""
             },
             "require": {
@@ -1649,7 +1651,7 @@
                 }
             ],
             "description": "DatePicker and DateTimePicker input controls for Nette Framework",
-            "time": "2018-05-23T13:38:42+00:00"
+            "time": "2018-12-12T09:19:15+00:00"
         },
         {
             "name": "rendix2/zebra_mptt",
