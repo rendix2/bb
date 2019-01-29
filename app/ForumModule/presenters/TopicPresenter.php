@@ -73,10 +73,10 @@ class TopicPresenter extends BaseForumPresenter
     public $topicWatchManager;
 
     /**
-     * @var RanksManager $rankManager
+     * @var RanksManager $ranksManager
      * @inject
      */
-    public $rankManager;
+    public $ranksManager;
     
     /**
      * @var TopicFacade $topicFacade
@@ -100,10 +100,10 @@ class TopicPresenter extends BaseForumPresenter
     
     /**
      *
-     * @var ReportsManager $reportManager
+     * @var ReportsManager $reportsManager
      * @inject
      */
-    public $reportManager;
+    public $reportsManager;
     
     /**
      *
@@ -155,11 +155,11 @@ class TopicPresenter extends BaseForumPresenter
         $this->avatars           = null;
         $this->topicWatchManager = null;
         $this->thanksManager     = null;
-        $this->rankManager       = null;
+        $this->ranksManager      = null;
         $this->topicFacade       = null;
         $this->thanksFacade      = null;
         $this->postFacade        = null;
-        $this->reportManager     = null;
+        $this->reportsManager     = null;
         $this->postSettings      = null;
         $this->storage           = null;
         $this->pollsFacade       = null;
@@ -370,7 +370,7 @@ class TopicPresenter extends BaseForumPresenter
         
         $this->template->avatarsDir = $this->avatars->getTemplateDir();
         $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $user_id);
-        $this->template->ranks      = $this->rankManager->getAllCached();
+        $this->template->ranks      = $this->ranksManager->getAllCached();
         
         //$this->template->thanks     = $this->thanksManager->getAllJoinedUserByTopic($topic_id);
         $this->template->signatureDelimiter = $this->postSettings->get()['signatureDelimiter'];
@@ -776,6 +776,6 @@ class TopicPresenter extends BaseForumPresenter
      */
     protected function createComponentReportForm()
     {
-        return new ReportForm($this->reportManager);
+        return new ReportForm($this->reportsManager);
     }
 }

@@ -49,16 +49,16 @@ class UserPresenter extends BaseForumPresenter
     //use \App\Models\Traits\PostTrait;
     
     /**
-     * @var LanguagesManager $languageManager
+     * @var LanguagesManager $languagesManager
      * @inject
      */
-    public $languageManager;
+    public $languagesManager;
 
     /**
-     * @var RanksManager $rankManager
+     * @var RanksManager $ranksManager
      * @inject
      */
-    public $rankManager;
+    public $ranksManager;
 
     /**
      * @var TopicWatchManager $topicWatchManager
@@ -73,10 +73,10 @@ class UserPresenter extends BaseForumPresenter
     public $avatar;
     
     /**
-     * @var Ranks $rank
+     * @var Ranks $ranks
      * @inject
      */
-    public $rank;
+    public $ranks;
     
     /**
      * @var ModeratorsManager $moderatorsManager
@@ -151,12 +151,12 @@ class UserPresenter extends BaseForumPresenter
         $this->usersManager          = null;
         $this->topicsManager         = null;
         $this->postsManager          = null;
-        $this->languageManager       = null;
-        $this->rankManager           = null;
+        $this->languagesManager      = null;
+        $this->ranksManager          = null;
         $this->topicWatchManager     = null;
         $this->thanksManager         = null;
         $this->avatar                = null;
-        $this->rank                  = null;
+        $this->ranks                 = null;
         $this->moderatorsManager     = null;
         $this->bbMailer              = null;
         $this->changePasswordFactory = null;
@@ -209,8 +209,7 @@ class UserPresenter extends BaseForumPresenter
         if ($res) {
             $this->flashMessage('User was added to favourites.', self::FLASH_MESSAGE_SUCCESS);
         }
-        
-        //$this->redrawControl('favourite');
+
         $this->redirect('this');
     }
 
@@ -226,8 +225,7 @@ class UserPresenter extends BaseForumPresenter
         if ($res) {
             $this->flashMessage('User was deleted from favourites.', self::FLASH_MESSAGE_SUCCESS);
         }
-        
-        //$this->redrawControl('favourite');
+
         $this->redirect('this');
     }
 
@@ -284,7 +282,7 @@ class UserPresenter extends BaseForumPresenter
     {
         $user = $this->checkUserParam($user_id);
 
-        $ranks    = $this->rankManager->getAllCached();
+        $ranks    = $this->ranksManager->getAllCached();
         $rankUser = null;
 
         foreach ($ranks as $rank) {
@@ -298,8 +296,10 @@ class UserPresenter extends BaseForumPresenter
         
         $reg = DateTime::from($user->getUser_register_time());
         $now = new DateTime();
-        
-        $this->template->ranksDir        = $this->rank->getTemplateDir();
+
+        $this->template->specialRank     = $this->ranksManager->getById($user->user_special_rank);
+        $this->template->ranksDir        = $this->ranks->getTemplateDir();
+        $this->template->rank            = $rankUser;
         $this->template->avatarsDir      = $this->avatar->getTemplateDir();
         $this->template->moderatorForums = $this->moderatorsManager->getAllByLeftJoined($user_id);
         $this->template->thankCount      = $this->thanksManager->getCountCached();
@@ -307,7 +307,6 @@ class UserPresenter extends BaseForumPresenter
         $this->template->postCount       = $this->postsManager->getCountCached();
         $this->template->watchTotalCount = $this->topicWatchManager->getCount();
         $this->template->userData        = $user;
-        $this->template->rank            = $rankUser;
         $this->template->roles           = Authorizator::ROLES;
         $this->template->isFavourite     = $this->favouriteUsersManager->fullCheck($this->user->id, $user_id);
         $this->template->user_id         = $user_id;
@@ -531,7 +530,7 @@ class UserPresenter extends BaseForumPresenter
         $form->addSelect(
             'user_lang_id',
             'User language:',
-            $this->languageManager->getAllPairsCached('lang_name')
+            $this->languagesManager->getAllPairsCached('lang_name')
         );
         $form->addUpload(
             'user_avatar',

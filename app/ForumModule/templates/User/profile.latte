@@ -69,6 +69,20 @@
         </div>
     {/if}
 
+    {if $userData->user_special_rank}
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">{_user_special_rank}</div>
+                <div class="card-block">
+                    {if $specialRank->rank_file}
+                        <img src="{$basePath}{$ranksDir}/{$specialRank->rank_file}" class="img-fluid" alt="{$specialRank->rank_name}"
+                             title="{$specialRank->rank_name}">
+                    {/if}
+                </div>
+            </div>
+        </div>
+    {/if}
+
     {if $rank}
         <div class="col-sm-6">
             <div class="card">

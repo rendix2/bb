@@ -51,9 +51,14 @@
         <div class="col-sm-12 pb-3">
             <div class="row">
                 {var $rankUser}
+                {var $specialRank}
                 {foreach $ranks as $rank}
                     {if $post->user_post_count >= $rank->rank_from && $post->user_post_count <= $rank->rank_to}
                         {var $rankUser = $rank}
+                    {/if}
+
+                    {if $post->user_special_rank === $rank->rank_id}
+                        {var $specialRank = $rank}
                     {/if}
                 {/foreach}
 
@@ -94,6 +99,10 @@
                                     <div class="card mr-1">
                                         <div class="card-header">{_Rank}</div>
                                         <div class="card-block p-1">
+                                            {if $specialRank}
+                                                {$specialRank->rank_name}
+                                            {/if}
+
                                             {if $rankUser}
                                                 {$rankUser->rank_name}
                                             {/if}
