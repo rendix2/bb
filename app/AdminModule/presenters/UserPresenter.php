@@ -179,7 +179,7 @@ class UserPresenter extends AdminPresenter
         $form->addSelect('user_role_id', 'User role:', Authorizator::ROLES);
         $form->addSelect('user_lang_id', 'User language:', $this->languagesManager->getAllPairsCached('lang_name'));
         $form->addTextArea('user_signature', 'User signature:');
-        $form->addSelect('user_special_rank', 'User special rank:', $this->ranksManager->getAllPairs('rank_name'));
+        $form->addSelect('user_special_rank', 'User special rank:', $this->ranksManager->getAllFluent()->where('%n = %i', 'rank_special', 1)->getAllPairs('rank_name'));
         //$form->addUpload('user_avatar', 'User avatar:');
 
         $form->addCheckbox('user_active', 'User active:');
