@@ -1,0 +1,84 @@
+<?php declare(strict_types=1);
+
+namespace App\Database\Migrations;
+
+use Doctrine\DBAL\Schema\Name\Identifier;
+use Doctrine\DBAL\Schema\Name\UnqualifiedName;
+use Doctrine\DBAL\Schema\PrimaryKeyConstraintEditor;
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\Migrations\AbstractMigration;
+use Ramsey\Uuid\Doctrine\UuidType;
+
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+final class Version20230621145918 extends AbstractMigration
+{
+
+    public function getDescription() : string
+    {
+        return 'create user table';
+    }
+
+    public function up(Schema $schema) : void
+    {
+        $table = $schema->createTable('public.users');
+
+        $table->addColumn('id', Types::BIGINT)
+            ->setAutoincrement(true)
+            ->setComment('ID');
+
+        $table->addColumn('uuid', UuidType::NAME)
+            ->setComment('UUID');
+
+        $table->addColumn('name', Types::STRING)
+            ->setComment('Name')
+            ->setLength(512);
+
+        $table->addColumn('surname', Types::STRING)
+            ->setComment('Surname')
+            ->setLength(512);
+
+        $table->addColumn('username', Types::STRING)
+            ->setComment('Username')
+            ->setLength(512);
+
+        $table->addColumn('email', Types::STRING)
+            ->setComment('Email')
+            ->setLength(512);
+
+        $table->addColumn('password', Types::STRING)
+            ->setComment('Password')
+            ->setLength(1024);
+
+        $table->addColumn('is_active', Types::BOOLEAN)
+            ->setComment('Is active?');
+
+        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+            ->setComment('Created at');
+
+        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+            ->setNotnull(false)
+            ->setComment('Updated at');
+
+
+        $primaryKey = new PrimaryKeyConstraintEditor();
+        $primaryKey->setIsClustered(false);
+        $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
+
+        $table->addPrimaryKeyConstraint($primaryKey->create());
+
+        $table
+            ->setComment('Users')
+            ->addUniqueIndex(['email'], 'UK_User_Email')
+            ->addUniqueIndex(['uuid'], 'UK_User_UUID')
+            ->addUniqueIndex(['username'], 'UK_User_Username');
+    }
+
+    public function down(Schema $schema) : void
+    {
+        $schema->dropTable('public.users');
+    }
+
+}

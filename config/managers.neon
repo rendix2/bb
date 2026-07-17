@@ -1,0 +1,89 @@
+services:
+    GroupsManager:
+        class: App\Models\GroupsManager
+    ForumsManager:
+        class: App\Models\ForumsManager
+    PostsManager:
+        class: App\Models\PostsManager
+    UsersManager:
+        class: App\Models\UsersManager
+    ThanksManager:
+        class: App\Models\ThanksManager
+    TopicsManager:
+        class: App\Models\TopicsManager
+    CategoriesManager:
+        class: App\Models\CategoriesManager
+    RanksManager:
+        class: App\Models\RanksManager
+    LanaguagesManager:
+        class: App\Models\LanguagesManager
+    Forums2GroupsManager:
+        class: App\Models\Forums2GroupsManager
+    Users2GroupManager:
+        class: App\Models\Users2GroupsManager
+    Users2ForumsManager:
+        class: App\Models\Users2ForumsManager
+    Mails2UsersManager:
+        class: App\Models\Mails2UsersManager
+    TopicWatchManager:
+        class: App\Models\TopicWatchManager
+    ReportManager:
+        class: App\Models\ReportsManager
+    SessionsManager:
+        class: App\Models\SessionsManager
+    EmailManager:
+        class: App\Models\MailsManager
+    ModeratorsManager:
+        class: App\Models\ModeratorsManager
+    FaqManager:
+        class: App\Models\FaqManager
+    FaqAnswersManager:
+        class: App\Models\FaqAnswersManager
+    FaqFacade:
+        class: App\Models\FaqFacade
+    FilesManager:
+        class: App\Models\FilesManager
+    BanManager:
+        class: App\Models\BansManager
+    SmileysManager:
+        class: App\Models\SmileysManager
+    CacheManager:
+        class: App\Models\CacheManager
+    PollsManager:
+        class: App\Models\PollsManager
+    PollsAnswersManager:
+        class: App\Models\PollsAnswersManager
+    PollsVotesManager:
+        class: App\Models\PollsVotesManager
+    PmManager:
+        class: App\Models\PmManager
+    PmFacade:
+        class: App\Models\PmFacade
+    RecountManager:
+        class: App\Models\RecountManager
+    Posts2FilesManager:
+        class: App\Models\Posts2FilesManager
+    PostsHistoryManager:
+        class: App\Models\PostsHistoryManager
+    LogsManager:
+        class: App\Models\LogsManager
+    UserFavouriteUsersManager:
+        class: App\Models\FavouriteUsersManager
+    PostFacade:
+        class: App\Models\PostFacade
+    TopicFacade:
+        class: App\Models\TopicFacade
+    ForumFacade:
+        class: App\Models\ForumFacade
+    CategoryFacade:
+        class: App\Models\CategoryFacade
+    UserFacade:
+        class: App\Models\UserFacade
+    ThanksFacade:
+        class: App\Models\ThanksFacade
+    TopicWatchFacade:
+        class: App\Models\TopicWatchFacade
+    ReportFacade:
+        class: App\Models\ReportFacade
+    PollsFacade:
+        class: App\Models\PollsFacade
