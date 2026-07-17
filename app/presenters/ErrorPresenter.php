@@ -5,6 +5,7 @@ namespace App\Presenters;
 use Nette\Application\BadRequestException;
 use Nette\Application\IPresenter;
 use Nette\Application\Request;
+use Nette\Application\Response;
 use Nette\Application\Responses\CallbackResponse;
 use Nette\Application\Responses\ForwardResponse;
 use Nette\SmartObject;
@@ -46,9 +47,9 @@ class ErrorPresenter implements IPresenter
     /**
      * @param Request $request
      *
-     * @return CallbackResponse|ForwardResponse
+     * @return Response
      */
-    public function run(Request $request)
+    public function run(Request $request): \Nette\Application\Response
     {
         $e = $request->getParameter('exception');
 

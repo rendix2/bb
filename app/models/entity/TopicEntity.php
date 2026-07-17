@@ -421,7 +421,7 @@ class TopicEntity extends Entity
      *
      * @return TopicEntity
      */
-    public function setPost(PostEntity $post = null)
+    public function setPost(?PostEntity $post = null)
     {
         $this->post = $post;
         return $this;
@@ -432,7 +432,7 @@ class TopicEntity extends Entity
      *
      * @return TopicEntity
      */
-    public function setPoll(PollEntity $poll = null)
+    public function setPoll(?PollEntity $poll = null)
     {
         $this->poll = $poll;
         return $this;

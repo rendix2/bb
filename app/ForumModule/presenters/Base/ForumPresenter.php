@@ -151,7 +151,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     /**
      * @param $element
      */
-    public function checkRequirements($element)
+    public function checkRequirements($element): void
     {
         $user = $this->user;
         
@@ -175,7 +175,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     /**
      *
      */
-    public function beforeRender()
+    public function beforeRender(): void
     {
         parent::beforeRender();
 

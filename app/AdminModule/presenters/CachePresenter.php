@@ -72,7 +72,7 @@ class CachePresenter extends AdminPresenter
     /**
      * CachePresenter beforeRender.
      */
-    public function beforeRender()
+    public function beforeRender(): void
     {
         parent::beforeRender();
 

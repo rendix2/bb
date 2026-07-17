@@ -96,7 +96,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     /**
      * beforeRender function
      */
-    public function beforeRender()
+    public function beforeRender(): void
     {
         parent::beforeRender();
 

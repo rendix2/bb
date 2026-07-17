@@ -15,44 +15,49 @@
         }
     ],
     "require": {
-        "php": ">= 5.6",
-        "nette/application": "^2.4.9",
-        "nette/bootstrap": "^2.4.5",
-        "nette/caching": "^2.5.6",
-        "nette/di": "^2.4.10",
-        "nette/finder": "^2.4.1",
-        "nette/forms": "^2.4.6",
-        "nette/http": "^2.4.10",
-        "nette/mail": "2.4.5",
-        "nette/robot-loader": "^2.4.3",
-        "nette/security": "^2.4.3",
-        "nette/utils": "^2.4.8",
-        "latte/latte": "^2.4.8",
+        "php": ">= 8.1",
+        "nette/application": "^3.3",
+        "nette/bootstrap": "^3.3",
+        "nette/caching": "^3.4",
+        "nette/di": "^3.2",
+        "nette/finder": "^3.0",
+        "nette/forms": "^3.3",
+        "nette/http": "^3.4",
+        "nette/mail": "^4.1",
+        "nette/robot-loader": "^4.1",
+        "nette/security": "^3.2",
+        "nette/utils": "^4.1",
+        "latte/latte": "^3.1",
         "tracy/tracy": "^2.5.3",
-        "dibi/dibi": "^3.2",
+        "dibi/dibi": "^5.1",
         "ifsnop/mysqldump-php": "2.*",
-        "nextras/mail-panel": "^2.3",
-        "netpromotion/profiler": "^1.3",
-        "rendix2/Zebra_Mptt": "dev-master",
-        "dg/composer-cleaner": "^2.0",
-        "nextras/secured-links": "^1.4",
-        "uestla/recaptcha-control": "^7.0",
-        "radekdostal/nette-datetimepicker": "^2.6",
-        "kdyby/forms-replicator": "@dev"
-    },    
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/rendix2/Zebra_Mptt"
-        }
-    ],
+        "kdyby/forms-replicator": "@dev",
+        "contributte/redis": "^0.6.0",
+        "nettrine/dbal": "^0.10.3",
+        "nettrine/fixtures": "^0.9.0",
+        "nettrine/migrations": "^0.10.1",
+        "nettrine/extensions-beberlei": "^0.3.0",
+        "nettrine/orm": "^0.10.1",
+        "uestla/recaptcha-control": "^9.0",
+        "nextras/secured-links": "^1.10",
+        "radekdostal/nette-datetimepicker": "^3.2",
+        "contributte/mail": "^0.9.0",
+        "contributte/mailing": "^0.7.1",
+        "contributte/console": "^0.11.0",
+        "contributte/console-extra": "^0.8.0",
+        "nette/assets": "^1.0",
+        "ublaboo/datagrid": "^7.2",
+        "symfony/cache": "^8.1",
+        "contributte/guzzlette": "^3.4"
+    },
     "require-dev": {
-        "nette/tester": "^2.0"
+        "nette/tester": "^v2.3.5",
+        "dg/composer-frontline": "v0.2"
     },
     "minimum-stability": "stable",
     "config": {
-        "platform": {
-            "php": "5.6"
+        "allow-plugins": {
+            "dg/composer-frontline": true
         }
     }
 }

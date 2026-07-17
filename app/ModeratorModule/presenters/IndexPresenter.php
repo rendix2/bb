@@ -45,7 +45,7 @@ class IndexPresenter extends BasePresenter
      *
      * @param $element
      */
-    public function checkRequirements($element)
+    public function checkRequirements($element): void
     {
         $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         

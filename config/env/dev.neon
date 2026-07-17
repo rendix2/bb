@@ -1,0 +1,19 @@
+parameters:
+    env:
+        url: localhost
+
+    database:
+        default:
+            host: "bb-postgres"
+            port: 5432
+            driver: pdo_pgsql
+            username: "bb"
+            password: "password"
+            database: "bb"
+            dsn: "pgsql:host=bb-postgres;dbname=bb"
+            charset: utf8
+            server: 17
+
+services:
+	# Dump mails in folder
+	mail.mailer: Contributte\Mail\Mailer\FileMailer(%tempDir%/mails)

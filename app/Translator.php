@@ -5,6 +5,7 @@ namespace App;
 use App\Settings\AppDir;
 use Nette\InvalidArgumentException;
 use Nette\Localization\ITranslator;
+use Stringable;
 
 /**
  * Description of Translator
@@ -56,14 +57,14 @@ class Translator implements ITranslator
 
     /**
      * @param string $message
-     * @param null   $count
+     * @param null   $parameters
      *
      * @return string
      * @throws InvalidArgumentException
      */
-    public function translate($message, $count = null)
+    public function translate(string|\Stringable $message, mixed ...$parameters): \Stringable|string
     {
-        if ($message === null) {
+        if ($parameters === null) {
             return '';
         }
               

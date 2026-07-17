@@ -18,6 +18,7 @@ use Nette\Forms\Controls\RadioList;
 use Nette\Forms\Controls\SelectBox;
 use Nette\Forms\Controls\TextArea;
 use Nette\Forms\Controls\TextBase;
+use Stringable;
 
 /**
  * Class BootstrapForm
@@ -78,8 +79,8 @@ class BootstrapForm extends Form
         $columnType        = 'sm',
         $labelColumnCount  = 6,
         $ajax              = false,
-        IContainer $parent = null,
-        $name              = null
+        ?IContainer $parent = null,
+        ?string $name = null
     ) {
         parent::__construct(
             $parent,
@@ -181,7 +182,7 @@ class BootstrapForm extends Form
      *
      * @return MyCheckBox
      */
-    public function addCheckbox($name, $caption = null)
+    public function addCheckbox(string $name, $caption = null): \Nette\Forms\Controls\Checkbox
     {
         return $this[$name] = new MyCheckBox(
             $name,
@@ -198,7 +199,7 @@ class BootstrapForm extends Form
      * @return TextBase
      * @api
      */
-    public function addEmail($name, $label = null)
+    public function addEmail(string $name, Stringable|string|null $label = null, int $maxLength = 255): \Nette\Forms\Controls\TextInput
     {
         return parent::addEmail($name, $label)->setType(Form::EMAIL)->addRule(Form::EMAIL, 'Not a valid email');
     }
@@ -212,7 +213,7 @@ class BootstrapForm extends Form
      * @return TextBase
      * @api
      */
-    public function addFloat($name, $label = null)
+    public function addFloat(string $name, $label = null): \Nette\Forms\Controls\TextInput
     {
         return $this->addText($name, $label)->setRequired(false)->addRule(Form::FLOAT);
     }
@@ -229,7 +230,7 @@ class BootstrapForm extends Form
      * @return TextArea
      * @api
      */
-    public function addTextAreaHtml($name, $label = null, $cols = null, $rows = null)
+    public function addTextAreaHtml(string $name, $label = null, $cols = null, $rows = null): TextArea
     {
         return $this->addTextArea($name, $label, $cols, $rows)->setAttribute('class', 'mceEditor');
     }
@@ -282,7 +283,7 @@ class BootstrapForm extends Form
      *
      * @api
      */
-    public function beforeRender()
+    public function beforeRender(): void
     {
         parent::beforeRender();
         $this->useBootStrap();

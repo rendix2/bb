@@ -79,14 +79,14 @@ abstract class Entity
     {
         return $var === null ? null : (int) $var;
     }
-   
+
     /**
      *
-     * @param DateTime $var
+     * @param ?DateTime $var
      *
      * @return int|null
      */
-    public static function makeTimestamp(DateTime $var = null)
+    public static function makeTimestamp(?DateTime $var)
     {
         return $var === null ? null : $var->getTimestamp();
     }

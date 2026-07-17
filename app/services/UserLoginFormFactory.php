@@ -12,8 +12,5 @@ use App\Forms\UserLoginForm;
  */
 interface UserLoginFormFactory
 {
-    /**
-     * @return UserLoginForm
-     */
-    public function create();
+    public function create(): UserLoginForm;
 }

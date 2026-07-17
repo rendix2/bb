@@ -77,7 +77,7 @@ class LoginPresenter extends BasePresenter
      *
      * @param mixed $element
      */
-    public function checkRequirements($element)
+    public function checkRequirements($element): void
     {
         $this->user->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         
@@ -88,7 +88,7 @@ class LoginPresenter extends BasePresenter
      * before render method
      * sets translator
      */
-    public function beforeRender()
+    public function beforeRender(): void
     {
         parent::beforeRender();
 

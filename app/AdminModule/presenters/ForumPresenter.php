@@ -259,7 +259,7 @@ class ForumPresenter extends AdminPresenter
             }
         } catch (DriverException $e) {
             $this->flashMessage(
-                'There was some problem during saving into databse. Form was NOT saved.',
+                'There was some problem during saving into database. Form was NOT saved.',
                 self::FLASH_MESSAGE_DANGER
             );
             

@@ -32,7 +32,7 @@ abstract class AdminPresenter extends CrudPresenter
     /**
      * @param mixed $element
      */
-    public function checkRequirements($element)
+    public function checkRequirements($element): void
     {
         $user = $this->user;
         
@@ -62,7 +62,7 @@ abstract class AdminPresenter extends CrudPresenter
     /**
      * AdminPresenter beforeRender.
      */
-    public function beforeRender()
+    public function beforeRender(): void
     {
         parent::beforeRender();
 

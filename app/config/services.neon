@@ -1,3 +1,0 @@
-services:
-    Authenticator:
-        class: App\Authenticator

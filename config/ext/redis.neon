@@ -1,0 +1,17 @@
+extensions:
+    redis: Contributte\Redis\DI\RedisExtension
+
+redis:
+    debug: %debugMode%
+    clientFactory: Predis\Client
+    connection:
+        default:
+            uri: tcp://bb-redis
+            sessions: false
+            storage: true
+            options: ['parameters': ['database': 0]]
+        session:
+            uri: tcp://bb-redis
+            sessions: true
+            storage: false
+            options: ['parameters': ['database': 1]]

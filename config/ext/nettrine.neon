@@ -1,0 +1,65 @@
+extensions:
+
+    nettrine.migrations: Nettrine\Migrations\DI\MigrationsExtension
+    nettrine.fixtures: Nettrine\Fixtures\DI\FixturesExtension
+    nettrine.extensions.beberlei: Nettrine\Extensions\Beberlei\DI\BeberleiBehaviorExtension
+
+    #nettrine.cache: Nettrine\Cache\DI\CacheExtension(%debugMode%)
+
+    # Dbal
+    nettrine.dbal: Nettrine\DBAL\DI\DbalExtension
+
+    #Orm
+    nettrine.orm: Nettrine\ORM\DI\OrmExtension
+
+services:
+    - Doctrine\ORM\Configuration
+
+nettrine.dbal:
+    debug:
+        panel: %debugMode%
+        sourcePaths: [%appDir%]
+    types:
+        uuid: Ramsey\Uuid\Doctrine\UuidType
+        ip_address: App\Database\Types\IpAddressType
+    connections:
+        default:
+            driver: %database.default.driver%
+            host: %database.default.host%
+            port: %database.default.port%
+            user: %database.default.username%
+            password: %database.default.password%
+            dbname: %database.default.database%
+            charset: %database.default.charset%
+            defaultTableOptions:
+                charset: %database.default.charset%
+
+nettrine.orm:
+    managers:
+        default:
+            connection: default
+            entityManagerDecoratorClass: App\Database\EntityManagerDecorator
+            autoGenerateProxyClasses: %debugMode%
+            proxyDir: %proxiesDir%
+            defaultCache: Symfony\Component\Cache\Adapter\FilesystemAdapter('default', 3600, %nettrineCacheDir%)
+            mapping:
+                App:
+                    type: attributes
+                    directories: [%entityDir%]
+                    namespace: App\Model\Entity
+
+nettrine.extensions.beberlei:
+    connections:
+        default:
+            driver: %database.default.driver%
+
+nettrine.migrations:
+    table: migrations
+    column: version
+    directories:
+        App\Database\Migrations: %migrationsDir%
+    manager: default
+
+nettrine.fixtures:
+    paths:
+        - %fixturesDir%

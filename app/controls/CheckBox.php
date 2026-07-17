@@ -38,7 +38,7 @@ class CheckBox extends NetteCheckbox
      * Generates control's HTML element.
      * @return Html
      */
-    public function getControl()
+    public function getControl(): Html
     {
         $this->setOption('rendered', true);
         $el = clone $this->control;
@@ -61,7 +61,7 @@ class CheckBox extends NetteCheckbox
      *
      * @return string
      */
-    public function getLabel($caption = null)
+    public function getLabel($caption = null): Html|string|null
     {
         $label      = clone $this->label;
         $label->for = $this->getHtmlId();

@@ -70,7 +70,7 @@ class PmPresenter extends CrudPresenter
      *
      * @param mixed $element
      */
-    public function checkRequirements($element)
+    public function checkRequirements($element): void
     {
         $this->user->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         

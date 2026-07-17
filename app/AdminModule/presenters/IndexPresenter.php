@@ -55,7 +55,7 @@ class IndexPresenter extends BasePresenter
      *
      * @param mixed $element
      */
-    public function checkRequirements($element)
+    public function checkRequirements($element): void
     {
         $user = $this->user;
         
@@ -76,7 +76,7 @@ class IndexPresenter extends BasePresenter
      * IndexPresenter beforeRender.
      *
      */
-    public function beforeRender()
+    public function beforeRender(): void
     {
         parent::beforeRender();
         

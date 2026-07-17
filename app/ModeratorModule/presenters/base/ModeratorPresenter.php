@@ -43,7 +43,7 @@ abstract class ModeratorPresenter extends CrudPresenter
      *
      * @param mixed $element
      */
-    public function checkRequirements($element)
+    public function checkRequirements($element): void
     {
         $this->user->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         
@@ -63,7 +63,7 @@ abstract class ModeratorPresenter extends CrudPresenter
     /**
      * ModeratorPresenter beforeRender.
      */
-    public function beforeRender()
+    public function beforeRender(): void
     {
         parent::beforeRender();
 

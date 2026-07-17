@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ForumModule\Presenters;
+namespace App\UI\Forum\Index;
 
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\CategoriesManager;
@@ -10,7 +10,7 @@ use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 
 /**
- * Description of IndexPresenter¨
+ * Description of IndexPresenter
  *
  * @author rendix2
  * @method CategoriesManager getManager()

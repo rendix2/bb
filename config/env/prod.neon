@@ -1,0 +1,22 @@
+parameters:
+    env:
+        url:
+
+    database:
+        default:
+            host: "bb-postgres"
+            port: 5432
+            driver: pdo_pgsql
+            type: mysql
+            username: "bb"
+            password: "password"
+            database: "bb"
+            dsn: "pgsql:host=bb-postgres;dbname=bb"
+            charset: utf8
+
+    mail:
+        smtp: false
+        host: ""
+        port: 465
+        username: ""
+        password: ""

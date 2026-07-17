@@ -1,0 +1,158 @@
+parameters:
+    defaultLanguage: "czech"
+    avatars:
+        relativeDir: /avatars
+        dir: %wwwDir%%avatars.relativeDir%
+        maxWidth: 2000
+        maxHeight: 2000
+        maxFileSize: 5242880 # 5 mb
+        enabledExtension:
+            - jpg
+            - jpeg
+            - png
+            - gif
+    ranks:
+        relativeDir: /ranks
+        dir: %wwwDir%%ranks.relativeDir%
+        maxHeight: 200
+        maxWidth: 50
+        maxFileSize: 5120
+        enabledExtension:
+            - jpg
+            - jpeg
+            - png
+            - gif
+    crud:
+        cache:
+            primaryKey: 10 days
+    categories:
+    forums:
+        pagination:
+            itemsPerPage: 25
+            itemsAroundPagination: 5
+    topics:
+        pagination:
+            itemsPerPage: 4
+            itemsAroundPagination: 5
+        cache:
+            lastTopic: 1 hour
+            totalTopics: 1 hour
+            primaryKey: 10 day
+        logViews: true
+    posts:
+        cache:
+            totalPosts: 1 hour
+            primaryKey: 10 day
+        filesDir: %wwwDir%/postFiles
+        minLength: 5 # int or null
+        maxLength: 100000 # int or null
+        minUserTimeInterval: 20
+        minDoublePostTimeInterval: 300 # this value must be bigger than minUserTimeInterval
+        signatureDelimiter: "<hr>"
+    users:
+        cache:
+            lastUser: 1 hour
+            totalUser: 1 hour
+            primaryKey: 10 day
+        canChangeUserName: false
+        canDelete: false
+        canDeletePostCount: false
+        neededLogin: true
+        neededActivate: true
+        minUserNameLength: 3
+        minUserPasswordLength: 8
+    search:
+        minLength: 3
+    mail:
+        from: rendix2@gmail.com
+        templateDir: %wwwDir%/controls/templates/emails
+    databaseBackupDir: %tempDir%/dumps
+    startDay: 1.3.2018 00:00
+
+
+application:
+    debugger: true
+    errorPresenter:
+        4xx: Error:Error4xx
+        5xx: Error:Error5xx
+    mapping:
+        *: App\UI\*\**Presenter
+
+
+session:
+    debugger: true
+    expiration: 14 days
+    autoStart: smart
+
+latte:
+    debugger: true
+    strictParsing: yes
+    strictTypes: true
+    locale: cs_CZ
+
+di:
+    debugger: true
+    export:
+        parameters: true
+        tags: true
+
+http:
+    cookieSecure: auto
+
+security:
+    debugger: true
+
+routing:
+    debugger: true
+    cache: true
+
+tracy:
+    maxLength: 500
+    maxDepth: 10
+    showLocation: true
+    strictMode: true
+    showBar: true
+
+assets:
+    basePath: /var/www/html/www
+    mapping:
+        default:
+            type: vite
+            path: assets
+        styles:
+            path: css
+
+
+#mail:
+    #smtp: %mail.smtp%
+
+    #host: %mail.host%
+    #port: %mail.port%
+    #username: %mail.username%
+    #password: %mail.password%
+    #timeout: ...     # (int)
+    #encryption: ...  # (ssl|tls|null) výchozí je null (má alias 'secure')
+    #clientHost: ...  # (string) výchozí je $_SERVER['HTTP_HOST']
+    #persistent: ...  # (bool) výchozí je false
+
+services:
+    -
+        create: App\Core\UsernameAndPasswordAuthenticator
+        autowired: self
+
+    -
+        create: App\Core\AutoLoginAuthenticator
+        autowired: self
+
+extensions:
+    chatbot: App\DI\ServicesExtension
+    dibi: Dibi\Bridges\Nette\DibiExtension3
+
+dibi:
+    driver: PDO
+    port: 3306
+    database: %database.default.database%
+    username: %database.default.username%
+    password: %database.default.password%
+    lazy: TRUE
+    dsn: %database.default.dsn%

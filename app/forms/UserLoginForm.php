@@ -60,7 +60,7 @@ class UserLoginForm extends Control
      * UserLoginForm constructor.
      *
      * @param TranslatorFactory $translatorFactory
-     * @param User ¨            $user
+     * @param User              $user
      * @param SessionsManager   $sessionsManager
      * @param Authenticator     $authenticator
      * @param Session           $session
@@ -105,7 +105,7 @@ class UserLoginForm extends Control
     /**
      * @return BootstrapForm
      */
-    protected function createComponentLoginForm()
+    protected function createComponentLoginForm(): BootstrapForm
     {
         $form = BootstrapForm::create();
         $form->setTranslator($this->translatorFactory->getForumTranslator());

@@ -1,0 +1,56 @@
+services:
+  bb-web:
+    build:
+      context: ./
+      dockerfile: ./.docker/web/Dockerfile
+    ports:
+      - "9080:80"
+    volumes:
+      - ./:/var/www/html/
+    depends_on:
+      - bb-mysql
+      - bb-postgres
+      - bb-redis
+    tty: true
+
+  bb-mysql:
+    image: mysql:8.0.40
+    ports:
+      - "4306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=bb
+      - MYSQL_USER=bb
+      - MYSQL_PASSWORD=password
+    volumes:
+      - ./.docker/mysql/data:/var/lib/mysql
+
+  bb-postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: bb
+      POSTGRES_USER: bb
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.docker/postgres/data:/var/lib/postgresql/data
+
+  bb-adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "9082:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: bb-postgres
+    depends_on:
+      - bb-mysql
+      - bb-postgres
+
+  bb-redis:
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./.docker/redis/data:/data

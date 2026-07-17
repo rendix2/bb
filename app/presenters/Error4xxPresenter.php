@@ -27,7 +27,7 @@ class Error4xxPresenter extends BasePresenter
     /**
      * @param BadRequestException $exception
      */
-    public function renderDefault(BadRequestException $exception)
+    public function renderDefault(BadRequestException $exception): void
     {
         $sep = DIRECTORY_SEPARATOR;
         
