@@ -6,7 +6,7 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
-use App\Models\RanksManager;
+use App\Models\RankManager;
 use App\Settings\Ranks;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -15,7 +15,7 @@ use Nette\Utils\ArrayHash;
  * Description of RankPresenter
  *
  * @author rendix2
- * @method RanksManager getManager()
+ * @method RankManager getManager()
  * @package App\AdminModule\Presenters
  */
 class RankPresenter extends AdminPresenter
@@ -34,9 +34,9 @@ class RankPresenter extends AdminPresenter
     /**
      * RankPresenter constructor.
      *
-     * @param RanksManager $manager
+     * @param RankManager $manager
      */
-    public function __construct(RanksManager $manager)
+    public function __construct(RankManager $manager)
     {
         parent::__construct($manager);
     }
@@ -116,7 +116,7 @@ class RankPresenter extends AdminPresenter
             $this->getParameter('id')
         );
 
-        if ($move !== RanksManager::NOT_UPLOADED) {
+        if ($move !== RankManager::NOT_UPLOADED) {
             $values->rank_file = $move;
         } else {
             unset($values->rank_file);

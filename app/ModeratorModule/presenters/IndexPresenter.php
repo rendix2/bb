@@ -2,7 +2,7 @@
 
 namespace App\ModeratorModule\Presenters;
 
-use App\Models\PostsManager;
+use App\Models\PostManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Localization\ITranslator;
 
@@ -23,9 +23,9 @@ class IndexPresenter extends BasePresenter
     /**
      * IndexPresenter constructor.
      *
-     * @param PostsManager $manager
+     * @param PostManager $manager
      */
-    public function __construct(PostsManager $manager)
+    public function __construct(PostManager $manager)
     {
         parent::__construct();
     }

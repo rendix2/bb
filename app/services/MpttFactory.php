@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\CategoriesManager;
-use App\Models\ForumsManager;
+use App\Models\CategoryManager;
+use App\Models\ForumManager;
 use Dibi\Connection;
 use Zebra_Mptt;
 
@@ -18,13 +18,13 @@ class MpttFactory
     
     /**
      *
-     * @var CategoriesManager $categoriesManager
+     * @var CategoryManager $categoriesManager
      */
     private $categoriesManager;
 
     /**
      *
-     * @var ForumsManager $forumsManager
+     * @var ForumManager $forumsManager
      */
     private $forumsManager;
     
@@ -38,13 +38,13 @@ class MpttFactory
      * MpttFactory constructor.
      *
      * @param Connection        $dibi
-     * @param CategoriesManager $categoriesManager
-     * @param ForumsManager     $forumsManager
+     * @param CategoryManager $categoriesManager
+     * @param ForumManager     $forumsManager
      */
     public function __construct(
         Connection        $dibi,
-        CategoriesManager $categoriesManager,
-        ForumsManager     $forumsManager
+        CategoryManager $categoriesManager,
+        ForumManager     $forumsManager
     ) {
         $this->categoriesManager = $categoriesManager;
         $this->forumsManager     = $forumsManager;

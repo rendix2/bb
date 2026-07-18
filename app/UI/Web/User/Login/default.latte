@@ -1,0 +1,32 @@
+{block content}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-lg border-0 rounded-4" style="max-width: 400px; width: 100%;">
+        <div class="card-body p-4 p-md-5">
+            <!-- Nadpis místo headeru vypadá moderněji -->
+            <h2 class="text-center fw-bold mb-4">{_web-user-login.login}</h2>
+
+            <!-- Samotný formulář -->
+            <div class="login-form-container">
+                {control loginForm}
+            </div>
+
+            <hr class="my-4 opacity-10">
+
+            <!-- Odkazy pod formulářem -->
+            <div class="row g-2">
+                <div class="col-12 text-center">
+                    <a href="{link :Web:User:ForgetPassword:Request:default}" class="text-decoration-none small text-muted">
+                        {_web-user-forgetPassword-request.form.submit.label}?
+                    </a>
+                </div>
+                <div class="col-12 text-center mt-2">
+                    <span class="small text-muted">{_web-user-login.no_account_yet}</span>
+                    <a href="{link :Web:User:Registration:default}" class="fw-bold text-decoration-none">
+                        {_web-user-login.registration}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

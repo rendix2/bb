@@ -6,14 +6,14 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
-use App\Models\LanguagesManager;
+use App\Models\LanguageManager;
 use App\Models\UsersManager;
 
 /**
  * Description of LanguagePresenter
  *
  * @author rendix2
- * @method LanguagesManager getManager()
+ * @method LanguageManager getManager()
  * @package App\AdminModule\Presenters
  */
 class LanguagePresenter extends AdminPresenter
@@ -28,9 +28,9 @@ class LanguagePresenter extends AdminPresenter
     /**
      * LanguagePresenter constructor.
      *
-     * @param LanguagesManager $manager
+     * @param LanguageManager $manager
      */
-    public function __construct(LanguagesManager $manager)
+    public function __construct(LanguageManager $manager)
     {
         parent::__construct($manager);
     }

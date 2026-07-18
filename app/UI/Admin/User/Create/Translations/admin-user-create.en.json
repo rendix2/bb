@@ -1,0 +1,7 @@
+{
+  "header": "User creation",
+  "title": "User creation",
+
+  "form.submit.label": "Create User",
+  "form.submit.success": "User %username% successfully created"
+}

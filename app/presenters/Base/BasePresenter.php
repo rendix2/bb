@@ -5,7 +5,7 @@ namespace App\Presenters\Base;
 use App\Authorization\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Controls\MenuControl;
-use App\Models\BansManager;
+use App\Models\BanManager;
 use App\Services\TranslatorFactory;
 use Nette;
 use Nette\Http\IResponse;
@@ -57,7 +57,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     const MODERATOR_END_SPACE = 'moderator';
     
     /**
-     * @var BansManager $banManager
+     * @var BanManager $banManager
      * @inject
      */
     public $banManager;

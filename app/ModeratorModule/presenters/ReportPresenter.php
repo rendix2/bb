@@ -4,14 +4,14 @@ namespace App\ModeratorModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
-use App\Models\ReportsManager;
+use App\Models\ReportManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 
 /**
  * Description of ReportPresenter
  *
  * @author rendix2
- * @method ReportsManager getManager()
+ * @method ReportManager getManager()
  * @package App\ModeratorModule\Presenters
  */
 class ReportPresenter extends ModeratorPresenter
@@ -19,9 +19,9 @@ class ReportPresenter extends ModeratorPresenter
     /**
      * ReportPresenter constructor.
      *
-     * @param ReportsManager $manager
+     * @param ReportManager $manager
      */
-    public function __construct(ReportsManager $manager)
+    public function __construct(ReportManager $manager)
     {
         parent::__construct($manager);
     }

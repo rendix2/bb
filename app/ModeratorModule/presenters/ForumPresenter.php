@@ -4,14 +4,14 @@ namespace App\ModeratorModule\Presenters;
 
 use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
-use App\Models\ForumsManager;
+use App\Models\ForumManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 
 /**
  * Description of ForumPresenter
  *
  * @author rendix2
- * @method ForumsManager getManager()
+ * @method ForumManager getManager()
  * @package App\ModeratorModule\Presenters
  */
 class ForumPresenter extends ModeratorPresenter
@@ -19,9 +19,9 @@ class ForumPresenter extends ModeratorPresenter
     /**
      * ForumPresenter constructor.
      *
-     * @param ForumsManager $manager
+     * @param ForumManager $manager
      */
-    public function __construct(ForumsManager $manager)
+    public function __construct(ForumManager $manager)
     {
         parent::__construct($manager);
     }

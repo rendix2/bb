@@ -20,7 +20,7 @@ class UserFacade
     private $pmManager;
     
     /**
-     * @var Users2GroupsManager $users2GroupsManager
+     * @var User2GroupManager $users2GroupsManager
      */
     private $users2GroupsManager;
 
@@ -30,22 +30,22 @@ class UserFacade
     private $users2ForumsManager;
 
     /**
-     * @var ThanksManager $thanksManager
+     * @var ThankManager $thanksManager
      */
     private $thanksManager;
 
     /**
-     * @var SessionsManager $sessionsManager
+     * @var SessionManager $sessionsManager
      */
     private $sessionsManager;
 
     /**
-     * @var ReportsManager $reportsManager
+     * @var ReportManager $reportsManager
      */
     private $reportsManager;
 
     /**
-     * @var ModeratorsManager $moderatorsManager
+     * @var ModeratorManager $moderatorsManager
      */
     private $moderatorsManager;
 
@@ -55,7 +55,7 @@ class UserFacade
     private $mails2UsersManager;
 
     /**
-     * @var PostsManager $postsManager $postsManager
+     * @var PostManager $postsManager $postsManager
      */
     private $postsManager;
     
@@ -100,33 +100,33 @@ class UserFacade
     /**
      * UserFacade constructor.
      *
-     * @param PostsManager        $postsManager
+     * @param PostManager        $postsManager
      * @param PostsHistoryManager $postsHistoryManager
      * @param PostFacade          $postFacade
      * @param Mails2UsersManager  $mails2UsersManager
-     * @param ModeratorsManager   $moderatorsManager
-     * @param ReportsManager      $reportsManager
-     * @param SessionsManager     $sessionsManager
-     * @param ThanksManager       $thanksManager
+     * @param ModeratorManager   $moderatorsManager
+     * @param ReportManager      $reportsManager
+     * @param SessionManager     $sessionsManager
+     * @param ThankManager       $thanksManager
      * @param TopicWatchManager   $topicWatchManager
      * @param Users2ForumsManager $users2ForumsManager
-     * @param Users2GroupsManager $users2GroupsManager
+     * @param User2GroupManager $users2GroupsManager
      * @param UsersManager        $usersManager
      * @param TranslatorFactory   $translatorFactory
      * @param PmFacade            $pmFacade
      */
     public function __construct(
-        PostsManager        $postsManager,
+        PostManager        $postsManager,
         PostsHistoryManager $postsHistoryManager,
         PostFacade          $postFacade,
         Mails2UsersManager  $mails2UsersManager,
-        ModeratorsManager   $moderatorsManager,
-        ReportsManager      $reportsManager,
-        SessionsManager     $sessionsManager,
-        ThanksManager       $thanksManager,
+        ModeratorManager   $moderatorsManager,
+        ReportManager      $reportsManager,
+        SessionManager     $sessionsManager,
+        ThankManager       $thanksManager,
         TopicWatchManager   $topicWatchManager,
         Users2ForumsManager $users2ForumsManager,
-        Users2GroupsManager $users2GroupsManager,
+        User2GroupManager $users2GroupsManager,
         //Users2SessionsManager $users2SessionManager,
         UsersManager        $usersManager,
         TranslatorFactory   $translatorFactory,

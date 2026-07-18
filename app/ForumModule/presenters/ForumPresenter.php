@@ -7,8 +7,8 @@ use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Models\ForumsManager;
-use App\Models\ModeratorsManager;
+use App\Models\ForumManager;
+use App\Models\ModeratorManager;
 use App\Models\Traits\CategoriesTrait;
 use App\Settings\ForumSettings;
 use App\Settings\TopicsSetting;
@@ -17,7 +17,7 @@ use App\Settings\TopicsSetting;
  * Description of ForumPresenter
  *
  * @author rendix2
- * @method ForumsManager getManager()
+ * @method ForumManager getManager()
  * @package App\ForumModule\Presenters
  */
 final class ForumPresenter extends BaseForumPresenter
@@ -41,7 +41,7 @@ final class ForumPresenter extends BaseForumPresenter
 
     /**
      *
-     * @var ModeratorsManager $moderators
+     * @var ModeratorManager $moderators
      * @inject
      */
     public $moderatorsManager;
@@ -56,9 +56,9 @@ final class ForumPresenter extends BaseForumPresenter
     /**
      * ForumPresenter constructor.
      *
-     * @param ForumsManager $manager
+     * @param ForumManager $manager
      */
-    public function __construct(ForumsManager $manager)
+    public function __construct(ForumManager $manager)
     {
         parent::__construct($manager);
     }
@@ -68,7 +68,7 @@ final class ForumPresenter extends BaseForumPresenter
      */
     public function __destruct()
     {
-        $this->categoriesManager = null;
+        $this->categoryManager = null;
         $this->forumsManager     = null;
         $this->topicsManager     = null;
         $this->forumSettings     = null;
@@ -189,7 +189,7 @@ final class ForumPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
             $this->getManager()->getBreadCrumb($this->getParameter('forum_id'))
         );
 
@@ -203,7 +203,7 @@ final class ForumPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
             $this->getManager()->getBreadCrumb($this->getParameter('forum_id')),
             [['link' => 'Forum:rules', 'text' => 'forum_rules', 'params' => [$this->getParameter('category_id'), $this->getParameter('forum_id')]]]
         );

@@ -5,7 +5,7 @@ namespace App\ForumModule\Presenters;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Models\Entity\UserEntity;
-use App\Models\LanguagesManager;
+use App\Models\LanguageManager;
 use App\Models\Manager;
 use App\Models\PmManager;
 use App\Models\UserFacade;
@@ -30,7 +30,7 @@ class RegisterPresenter extends BasePresenter
     private $translator;
     
     /**
-     * @var LanguagesManager $languageManager
+     * @var LanguageManager $languageManager
      */
     private $languageManager;
 
@@ -60,10 +60,10 @@ class RegisterPresenter extends BasePresenter
     /**
      * RegisterPresenter constructor.
      *
-     * @param LanguagesManager $languageManger
+     * @param LanguageManager $languageManger
      * @param UserFacade       $userFacade
      */
-    public function __construct(LanguagesManager $languageManger, UserFacade $userFacade)
+    public function __construct(LanguageManager $languageManger, UserFacade $userFacade)
     {
         parent::__construct();
         

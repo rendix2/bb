@@ -3,8 +3,8 @@
 namespace App\Forms;
 
 use App\Controls\BootstrapForm;
-use App\Models\GroupsManager;
-use App\Models\Users2GroupsManager;
+use App\Models\GroupManager;
+use App\Models\User2GroupManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
@@ -22,13 +22,13 @@ class UserGroupsForm extends Control
 
     /**
      *
-     * @var GroupsManager $groupsManager
+     * @var GroupManager $groupsManager
      */
     private $groupsManager;
 
     /**
      *
-     * @var Users2GroupsManager
+     * @var User2GroupManager
      */
     private $users2GroupsManager;
     
@@ -41,13 +41,13 @@ class UserGroupsForm extends Control
     /**
      * UserGroupsForm constructor.
      *
-     * @param GroupsManager       $groupsManager
-     * @param Users2GroupsManager $users2GroupsManager
+     * @param GroupManager       $groupsManager
+     * @param User2GroupManager $users2GroupsManager
      * @param ITranslator         $translator
      */
     public function __construct(
-        GroupsManager       $groupsManager,
-        Users2GroupsManager $users2GroupsManager,
+        GroupManager       $groupsManager,
+        User2GroupManager $users2GroupsManager,
         ITranslator         $translator
     ) {
         parent::__construct();

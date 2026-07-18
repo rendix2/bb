@@ -242,7 +242,7 @@ abstract class Manager extends Tables
 
         if ($cachedColumns === null) {
             // runs query!!!!! we need cache
-            $cachedColumns = $this->dibi->getDatabaseInfo()->getTable($this->table)->columnNames;
+            $cachedColumns = $this->dibi->getDatabaseInfo()->getTable($this->table)->getColumnNames();
 
             $this->managerCache->save(
                 'columns_' . $this->table,

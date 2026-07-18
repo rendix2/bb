@@ -15,25 +15,25 @@ class ReportFacade
 {
 
     /**
-     * @var PostsManager $postsManager
+     * @var PostManager $postsManager
      */
     private $postsManager;
     
     /**
      *
-     * @var ReportsManager $reportsManager
+     * @var ReportManager $reportsManager
      */
     private $reportManager;
     
     /**
      *
-     * @var TopicsManager $topicsManager
+     * @var TopicManager $topicsManager
      */
     private $topicsManager;
     
     /**
      *
-     * @var ForumsManager $forumsManager
+     * @var ForumManager $forumsManager
      */
     private $forumsManager;
 
@@ -41,16 +41,16 @@ class ReportFacade
      *
      * ReportFacade constructor
      *
-     * @param ForumsManager $forumsManager
-     * @param TopicsManager $topicsManager
-     * @param PostsManager $postsManager
-     * @param ReportsManager $reportsManager
+     * @param ForumManager $forumsManager
+     * @param TopicManager $topicsManager
+     * @param PostManager $postsManager
+     * @param ReportManager $reportsManager
      */
     public function __construct(
-        ForumsManager  $forumsManager,
-        TopicsManager  $topicsManager,
-        PostsManager   $postsManager,
-        ReportsManager $reportsManager
+        ForumManager  $forumsManager,
+        TopicManager  $topicsManager,
+        PostManager   $postsManager,
+        ReportManager $reportsManager
     ) {
         $this->forumsManager  = $forumsManager;
         $this->topicsManager  = $topicsManager;

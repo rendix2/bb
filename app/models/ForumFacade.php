@@ -16,7 +16,7 @@ class ForumFacade
 {
     /**
      *
-     * @var ForumsManager $forumsManager
+     * @var ForumManager $forumsManager
      */
     private $forumsManager;
     
@@ -28,7 +28,7 @@ class ForumFacade
     
     /**
      *
-     * @var TopicsManager $topicsManager
+     * @var TopicManager $topicsManager
      */
     private $topicsManager;
 
@@ -36,14 +36,14 @@ class ForumFacade
      *
      * ForumFacade constructor.
      *
-     * @param ForumsManager $forumsManager
+     * @param ForumManager $forumsManager
      * @param TopicFacade   $topicFacade
-     * @param TopicsManager $topicsManager
+     * @param TopicManager $topicsManager
      */
     public function __construct(
-        ForumsManager $forumsManager,
+        ForumManager $forumsManager,
         TopicFacade   $topicFacade,
-        TopicsManager $topicsManager
+        TopicManager $topicsManager
     ) {
         $this->forumsManager = $forumsManager;
         $this->topicFacade   = $topicFacade;

@@ -2,9 +2,16 @@
 
 namespace App\UI\Forum\Index;
 
+use App\Database\EntityManagerDecorator;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Models\CategoriesManager;
-use App\Models\ModeratorsManager;
+use App\Model\Entity\PostEntity;
+use App\Model\Entity\TopicEntity;
+use App\Model\Entity\UserEntity;
+use App\Models\CategoryManager;
+use App\Models\Crud\CrudNullManager;
+use App\Model\Entity\CategoryEntity;
+use App\Model\Entity\ForumEntity;
+use App\Models\ModeratorManager;
 use App\Models\Traits\UsersTrait;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
@@ -13,35 +20,17 @@ use Nette\Caching\IStorage;
  * Description of IndexPresenter
  *
  * @author rendix2
- * @method CategoriesManager getManager()
+ * @method CategoryManager getManager()
  * @package App\ForumModule\Presenters
  */
 class IndexPresenter extends BaseForumPresenter
 {
-    //use \App\Models\Traits\ForumsTrait;
-    //use \App\Models\Traits\TopicsTrait;
-    //use \App\Models\Traits\PostTrait;
     use UsersTrait;
     
     /**
      * @var string
      */
     const CACHE_KEY_LAST_USER = 'lastUser';
-
-    /**
-     * @var string
-     */
-    const CACHE_KEY_TOTAL_USERS = 'totalUsers';
-
-    /**
-     * @var string
-     */
-    const CACHE_KEY_TOTAL_TOPICS = 'totalTopics';
-
-    /**
-     * @var string
-     */
-    const CACHE_KEY_TOTAL_POSTS = 'totalPosts';
 
     /**
      * @var string
@@ -65,7 +54,7 @@ class IndexPresenter extends BaseForumPresenter
 
     /**
      *
-     * @var ModeratorsManager $moderatorManager
+     * @var ModeratorManager $moderatorManager
      * @inject
      */
     public $moderatorsManager;
@@ -73,12 +62,19 @@ class IndexPresenter extends BaseForumPresenter
     /**
      * IndexPresenter constructor.
      *
-     * @param CategoriesManager $categoriesManager
-     * @param IStorage          $storage
+     * @param CrudNullManager $crudNullManager
+     * @param EntityManagerDecorator $em
+     * @param IStorage $storage
      */
-    public function __construct(CategoriesManager $categoriesManager, IStorage $storage)
+    public function __construct(
+        CrudNullManager $crudNullManager,
+        private readonly EntityManagerDecorator $em,
+
+        //CategoriesManager $categoriesManager,
+        IStorage          $storage,
+    )
     {
-        parent::__construct($categoriesManager);
+        parent::__construct($crudNullManager);
         
         $this->cache = new Cache($storage, self::CACHE_NAMESPACE);
     }
@@ -109,9 +105,21 @@ class IndexPresenter extends BaseForumPresenter
     /**
      * renders index page
      */
-    public function renderDefault()
+    public function renderDefault(): void
     {
-        $categories = $this->getManager()->getActiveCategoriesCached();
+        $categories = $this
+            ->em
+            ->getRepository(CategoryEntity::class)
+            ->findBy(
+                [
+                    'active' => true,
+                ],
+                [
+                    'order' => 'ASC'
+                ]
+            );
+
+        //$categories = $this->getManager()->getActiveCategoriesCached();
         $result     = [];
 
         if ($this->user->identity) {
@@ -123,7 +131,20 @@ class IndexPresenter extends BaseForumPresenter
 
         foreach ($categories as $category) {
             $category->forums = [];
-            $forums           = $this->forumsManager->getAllForumsFirstLevel($category->category_id);
+            //$forums           = $this->forumsManager->getAllForumsFirstLevel($category->category_id);
+
+            $forums = $this->em
+                ->getRepository(ForumEntity::class)
+                ->findBy(
+                    [
+                        'category' => $category,
+                        'active' => true,
+                        'parent_id' => null,
+                    ],
+                    [
+                        'order' => 'ASC'
+                    ]
+                );
 
             $result['cats'][$category->category_id] = $category;
 
@@ -157,7 +178,7 @@ class IndexPresenter extends BaseForumPresenter
             $this->getCache()
                 ->save(
                     self::CACHE_KEY_LAST_USER,
-                    $cachedLastUser = $this->usersManager->getLast(),
+                    //$cachedLastUser = $this->usersManager->getLast(),
                     [
                         Cache::EXPIRE => '1 hour',
                     ]
@@ -192,14 +213,26 @@ class IndexPresenter extends BaseForumPresenter
                 );
         }
 
+        $totalUserCount = $this->em
+            ->getRepository(UserEntity::class)
+            ->count();
+
+        $totalTopicCount = $this->em
+            ->getRepository(TopicEntity::class)
+            ->count();
+
+        $totalPostCount = $this->em
+            ->getRepository(PostEntity::class)
+            ->count();
+
         $this->template->mostPostsUser  = $this->postsManager->getUserWithMostPosts();
         $this->template->mostTopicsUser = $this->topicsManager->getUserWithMostTopic();
         $this->template->lastTopic      = $cachedLastTopic;
         $this->template->lastUser       = $cachedLastUser;
         $this->template->lastPost       = $cachedLastPost;
-        $this->template->totalUsers     = $this->usersManager->getCountCached();
-        $this->template->totalPosts     = $this->postsManager->getCountCached();
-        $this->template->totalTopics    = $this->topicsManager->getCountCached();
+        $this->template->totalUsers     = $totalUserCount;
+        $this->template->totalPosts     = $totalPostCount;
+        $this->template->totalTopics    = $totalTopicCount;
         $this->template->data           = $result;
     }
 }

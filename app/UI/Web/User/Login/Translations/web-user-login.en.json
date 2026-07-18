@@ -1,0 +1,16 @@
+{
+  "form.username.label": "Username",
+  "form.username.required": "Username is required",
+
+  "form.password.label": "Password",
+  "form.password.required": "Password is required",
+
+  "form.stayLoggedIn": "Stay logged in",
+
+  "form.submit.name": "Login",
+  "form.submit.success": "Successfully logged in",
+
+  "no_account_yet": "No account yet?",
+  "registration": "Registration",
+  "login": "Login"
+}

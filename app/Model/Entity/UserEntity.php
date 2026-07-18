@@ -1,0 +1,173 @@
+<?php declare(strict_types=1);
+
+namespace App\Model\Entity;
+
+use App\Model\Repository\UserRepository;
+use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\Table;
+use Ramsey\Uuid\Doctrine\UuidType;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
+
+/**
+ * class UserEntity
+ *
+ * @package App\Model\Entity
+ */
+#[Entity(repositoryClass: UserRepository::class)]
+#[Table(name: 'users')]
+class UserEntity
+{
+    #[Id()]
+    #[GeneratedValue()]
+    #[Column(type: Types::BIGINT, unique: true)]
+    public string $id;
+
+    #[Column(type: UuidType::NAME, unique: true)]
+    public UuidInterface $uuid;
+
+    #[Column(type: Types::STRING, length: 512)]
+    public string $name;
+
+    #[Column(type: Types::STRING, length: 512)]
+    public string $surname;
+
+    #[Column(type: Types::STRING, length: 512, unique: true)]
+    public string $username;
+
+    #[Column(type: Types::STRING, length: 512, unique: true)]
+    public string $email;
+
+    #[Column(type: Types::STRING, length: 1024)]
+    public string $password;
+
+    #[Column(type: Types::BOOLEAN)]
+    public bool $isActive;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    public DateTimeImmutable $createdAt;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?DateTimeImmutable $updatedAt;
+
+    /**
+     * @var Collection<int, UserPasswordEntity> $passwords
+     */
+    #[OneToMany(targetEntity: UserPasswordEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $passwords;
+
+    /**
+     * @var Collection<int, UserPasswordRequestEntity> $passwordRequests
+     */
+    #[OneToMany(targetEntity: UserPasswordRequestEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $passwordRequests;
+
+    /**
+     * @var Collection<int, UserActivationEntity> $activationKeys
+     */
+    #[OneToMany(targetEntity: UserActivationEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $activationKeys;
+
+    /**
+     * @var Collection<int, UserAutoLoginEntity> $autoLogins
+     */
+    #[OneToMany(targetEntity: UserAutoLoginEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    public Collection $autoLogins;
+
+    /**
+     * @var Collection<int, UserEmailEntity> $emails
+     */
+    #[OneToMany(targetEntity: UserEmailEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $emails;
+
+    /**
+     * @var Collection<int, RoleEntity> $roles
+     */
+    #[ManyToMany(targetEntity: RoleEntity::class, mappedBy: 'users', cascade: ['persist', 'remove'])]
+    public Collection $roles;
+
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid4();
+
+        $this->passwords = new ArrayCollection();
+        $this->roles = new ArrayCollection();
+        $this->activationKeys = new ArrayCollection();
+        $this->autoLogins = new ArrayCollection();
+        $this->emails = new ArrayCollection();
+        $this->passwordRequests = new ArrayCollection();
+
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = null;
+    }
+
+    public function addRoleEntity(RoleEntity $roleEntity) : void
+    {
+        $this->roles->add($roleEntity);
+        $roleEntity->users->add($this);
+    }
+
+    public function removeRoleEntity(RoleEntity $roleEntity) : void
+    {
+        $this->roles->removeElement($roleEntity);
+        $roleEntity->users->removeElement($this);
+    }
+
+    public function addUserPasswordEntity(UserPasswordEntity $userPasswordEntity) : void
+    {
+        $this->passwords->add($userPasswordEntity);
+    }
+
+    public function addUserPasswordRequestEntity(UserPasswordRequestEntity $userPasswordRequestEntity) : void
+    {
+        $this->passwordRequests->add($userPasswordRequestEntity);
+    }
+
+    public function addUserActivationEntity(UserActivationEntity $userActivationEntity) : void
+    {
+        $this->activationKeys->add($userActivationEntity);
+    }
+
+    public function addAutoLoginEntity(UserAutoLoginEntity $autoLoginEntity) : void
+    {
+        $this->autoLogins->add($autoLoginEntity);
+    }
+
+    public function addUserEmailEntity(UserEmailEntity $userEmailEntity) : void
+    {
+        $this->emails->add($userEmailEntity);
+    }
+
+    public function changePassword(string $password) : void
+    {
+        $this->password = $password;
+
+        $userPassword = new UserPasswordEntity();
+        $userPassword->user = $this;
+        $userPassword->password = $password;
+
+        $this->addUserPasswordEntity($userPassword);
+    }
+
+    public function changeEmail(string $email) : void
+    {
+        $this->email = $email;
+
+        $userEmail = new UserEmailEntity();
+        $userEmail->user = $this;
+        $userEmail->email = $email;
+
+        $this->addUserEmailEntity($userEmail);
+    }
+
+
+}

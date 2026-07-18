@@ -1,0 +1,33 @@
+{
+  "header": "Uživatelé",
+  "title": "Uživatelé",
+
+  "id.name": "ID",
+  "id.search": "Hledat podle ID",
+
+  "fullName.name" : "Celé jméno",
+  "fullName.search": "Hledat podle Celého jména",
+  "form.fullName.noSpace": "V celém jméně musí být mezera",
+
+  "userName.name" : "Uživatelské jméno",
+  "userName.search": "Hledat podle Uživatelského jména",
+
+  "email.name" : "Email",
+  "email.search": "Hledat podle Emailu",
+
+  "isActive.name" : "Aktivní",
+
+  "edit.name": "Detail",
+  "edit.title": "Detail Uživatele",
+  "edit.success": "Uživatel %username% byl editován",
+
+  "edit.inline.name": "Inline editovat",
+  "edit.inline.title": "Inline editovat Uživatele",
+
+  "delete.name": "Smazat",
+  "delete.title": "Smazat Uživatele",
+  "delete.success": "Uživatel %username% byl smazán",
+
+  "add-user": "Přidat Uživatele"
+
+}

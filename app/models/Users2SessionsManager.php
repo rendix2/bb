@@ -19,9 +19,9 @@ class Users2SessionsManager extends MNManager
      * @param Connection      $dibi
      * @param IStorage        $storage
      * @param UsersManager    $left
-     * @param SessionsManager $right
+     * @param SessionManager $right
      */
-    public function __construct(Connection $dibi, IStorage $storage, UsersManager $left, SessionsManager $right)
+    public function __construct(Connection $dibi, IStorage $storage, UsersManager $left, SessionManager $right)
     {
         parent::__construct($dibi, $storage, $left, $right);
     }

@@ -1,0 +1,33 @@
+{
+  "header": "Users",
+  "title": "Users",
+
+  "id.name": "ID",
+  "id.search": "Search by ID",
+
+  "fullName.name" : "Full name",
+  "fullName.search": "Search by full name",
+
+  "userName.name" : "User name",
+  "userName.search": "Search by user name",
+  "form.fullName.noSpace": "FullName must contain a space",
+
+  "email.name" : "Email",
+  "email.search": "Search by Email",
+
+  "isActive.name" : "Active",
+
+  "edit.name": "Detail",
+  "edit.title": "Detail User",
+  "edit.success": "User %username% was edited",
+
+  "edit.inline.name": "Inline edit",
+  "edit.inline.title": "Inline edit User",
+
+  "delete.name": "Delete",
+  "delete.title": "Delete User",
+  "delete.success": "User %username% was deleted",
+
+  "add-user": "Add User"
+
+}

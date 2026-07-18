@@ -6,10 +6,10 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
-use App\Models\CategoriesManager;
+use App\Models\CategoryManager;
 use App\Models\CategoryFacade;
 use App\Models\Entity\CategoryEntity;
-use App\Models\ForumsManager;
+use App\Models\ForumManager;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -20,7 +20,7 @@ use Tracy\ILogger;
  * Description of CategoryPresenter
  *
  * @author rendix2
- * @method CategoriesManager getManager()
+ * @method CategoryManager getManager()
  * @package App\AdminModule\Presenters
  */
 class CategoryPresenter extends AdminPresenter
@@ -33,7 +33,7 @@ class CategoryPresenter extends AdminPresenter
     public $categoryFacade;
     
     /**
-     * @var ForumsManager $forumsManager
+     * @var ForumManager $forumsManager
      * @inject
      */
     public $forumsManager;
@@ -41,9 +41,9 @@ class CategoryPresenter extends AdminPresenter
     /**
      * CategoryPresenter constructor.
      *
-     * @param CategoriesManager $manager
+     * @param CategoryManager $manager
      */
-    public function __construct(CategoriesManager $manager)
+    public function __construct(CategoryManager $manager)
     {
         parent::__construct($manager);
     }

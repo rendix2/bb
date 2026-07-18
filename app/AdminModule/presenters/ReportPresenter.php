@@ -6,13 +6,13 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
-use App\Models\ReportsManager;
+use App\Models\ReportManager;
 
 /**
  * Description of ReportPresenter
  *
  * @author rendix2
- * @method ReportsManager getManager()
+ * @method ReportManager getManager()
  * @package App\AdminModule\Presenters
  */
 class ReportPresenter extends AdminPresenter
@@ -20,9 +20,9 @@ class ReportPresenter extends AdminPresenter
     /**
      * ReportPresenter constructor.
      *
-     * @param ReportsManager $manager
+     * @param ReportManager $manager
      */
-    public function __construct(ReportsManager $manager)
+    public function __construct(ReportManager $manager)
     {
         parent::__construct($manager);
     }

@@ -6,7 +6,7 @@ use App\Authorization\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Forms\UserLoginForm;
 use App\Models\Entity\SessionEntity;
-use App\Models\SessionsManager;
+use App\Models\SessionManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
 use App\Translator;
@@ -37,7 +37,7 @@ class LoginPresenter extends BasePresenter
     /**
      * session manager
      *
-     * @var SessionsManager $sessionManager
+     * @var SessionManager $sessionManager
      * @inject
      */
     public $sessionManager;

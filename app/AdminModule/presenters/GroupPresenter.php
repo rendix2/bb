@@ -8,9 +8,9 @@ use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\UserSearchControl;
 use App\Models\Forums2GroupsManager;
-use App\Models\ForumsManager;
-use App\Models\GroupsManager;
-use App\Models\Users2GroupsManager;
+use App\Models\ForumManager;
+use App\Models\GroupManager;
+use App\Models\User2GroupManager;
 use App\Models\UsersManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -19,13 +19,13 @@ use Nette\Utils\ArrayHash;
  * Description of GroupPresenter
  *
  * @author rendix2
- * @method GroupsManager getManager()
+ * @method GroupManager getManager()
  * @package App\AdminModule\Presenters
  */
 class GroupPresenter extends AdminPresenter
 {
     /**
-     * @var Users2GroupsManager $users2Groups
+     * @var User2GroupManager $users2Groups
      * @inject
      */
     public $users2GroupsManager;
@@ -37,7 +37,7 @@ class GroupPresenter extends AdminPresenter
     public $forums2groupsManager;
     
     /**
-     * @var ForumsManager $forumsManager
+     * @var ForumManager $forumsManager
      * @inject
      */
     public $forumsManager;
@@ -51,9 +51,9 @@ class GroupPresenter extends AdminPresenter
     /**
      * GroupPresenter constructor.
      *
-     * @param GroupsManager $manager
+     * @param GroupManager $manager
      */
-    public function __construct(GroupsManager $manager)
+    public function __construct(GroupManager $manager)
     {
         parent::__construct($manager);
     }

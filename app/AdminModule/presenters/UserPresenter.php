@@ -12,13 +12,13 @@ use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserForumsForm;
 use App\Forms\UserGroupsForm;
 use App\Forms\UserModeratorForm;
-use App\Models\ForumsManager;
-use App\Models\GroupsManager;
-use App\Models\LanguagesManager;
-use App\Models\ModeratorsManager;
-use App\Models\RanksManager;
+use App\Models\ForumManager;
+use App\Models\GroupManager;
+use App\Models\LanguageManager;
+use App\Models\ModeratorManager;
+use App\Models\RankManager;
 use App\Models\Users2ForumsManager;
-use App\Models\Users2GroupsManager;
+use App\Models\User2GroupManager;
 use App\Models\UsersManager;
 use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
@@ -41,25 +41,25 @@ class UserPresenter extends AdminPresenter
 
     /**
      *
-     * @var ForumsManager $forumsManager
+     * @var ForumManager $forumsManager
      * @inject
      */
     public $forumsManager;
 
     /**
-     * @var LanguagesManager $languagesManager
+     * @var LanguageManager $languagesManager
      * @inject
      */
     public $languagesManager;
     
     /**
-     * @var Users2GroupsManager $group2User
+     * @var User2GroupManager $group2User
      * @inject
      */
     public $group2UserManager;
     
     /**
-     * @var GroupsManager $groupManager
+     * @var GroupManager $groupManager
      * @inject
      */
     public $groupsManager;
@@ -86,7 +86,7 @@ class UserPresenter extends AdminPresenter
     /**
      * moderators manager
      *
-     * @var ModeratorsManager $moderatorsManager
+     * @var ModeratorManager $moderatorsManager
      * @inject
      */
     public $moderatorsManager;
@@ -106,7 +106,7 @@ class UserPresenter extends AdminPresenter
     public $deleteAvatarFactory;
 
     /**
-     * @var RanksManager $ranksManager
+     * @var RankManager $ranksManager
      * @inject
      */
     public $ranksManager;

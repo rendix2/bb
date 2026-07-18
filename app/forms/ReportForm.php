@@ -8,7 +8,7 @@ use App\ForumModule\Presenters\PostPresenter;
 use App\ForumModule\Presenters\TopicPresenter;
 use App\ForumModule\Presenters\UserPresenter;
 use App\Models\Entity\ReportEntity;
-use App\Models\ReportsManager;
+use App\Models\ReportManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
@@ -25,16 +25,16 @@ class ReportForm extends Control
     
     /**
      *
-     * @var ReportsManager $reportsManager
+     * @var ReportManager $reportsManager
      */
     private $reportsManager;
     
     /**
      * ReportForm constructor.
      *
-     * @param ReportsManager $reportsManager
+     * @param ReportManager $reportsManager
      */
-    public function __construct(ReportsManager $reportsManager)
+    public function __construct(ReportManager $reportsManager)
     {
         parent::__construct();
         

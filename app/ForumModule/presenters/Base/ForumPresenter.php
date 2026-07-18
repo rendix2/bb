@@ -11,20 +11,22 @@ use App\Authorization\Scopes\PostScope;
 use App\Authorization\Scopes\TopicScope;
 use App\Authorization\Scopes\User;
 use App\Controls\BootstrapForm;
+use App\Database\EntityManagerDecorator;
 use App\Models\Entity\ForumEntity;
 use App\Models\Entity\PostEntity;
 use App\Models\Entity\TopicEntity;
 use App\Models\Manager;
-use App\Models\ModeratorsManager;
+use App\Models\ModeratorManager;
 use App\Models\PmManager;
-use App\Models\ThanksManager;
+use App\Models\ThankManager;
 use App\Models\Traits\ForumsTrait;
 use App\Models\Traits\PostTrait;
 use App\Models\Traits\TopicsTrait;
 use App\Models\Users2ForumsManager;
-use App\Models\Users2GroupsManager;
+use App\Models\User2GroupManager;
 use App\Presenters\Base\AuthenticatedPresenter;
 use Exception;
+use Nette\DI\Attributes\Inject;
 use Nette\Localization\ITranslator;
 
 /**
@@ -41,14 +43,14 @@ abstract class ForumPresenter extends AuthenticatedPresenter
 
     /**
      *
-     * @var ModeratorsManager $moderators
+     * @var ModeratorManager $moderators
      * @inject
      */
     public $moderators;
     
     /**
      *
-     * @var ThanksManager $thanksManager
+     * @var ThankManager $thanksManager
      * @inject
      */
     public $thanksManager;
@@ -60,7 +62,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     public $authorizator;
     
     /**
-     * @var Users2GroupsManager $users2GroupsManager
+     * @var User2GroupManager $users2GroupsManager
      * @inject
      */
     public $users2GroupsManager;
@@ -89,6 +91,9 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      * @var Manager $manager
      */
     private $manager;
+
+    #[Inject]
+    private EntityManagerDecorator $em;
 
     /**
      * ForumPresenter constructor.
@@ -168,8 +173,10 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         parent::startup();
 
         $this->translator = $this->translatorFactory->getForumTranslator();
-        
-        $this->template->pm_count = $this->pmManager->getCountSent();
+
+        //$this->em->getRepository()
+
+        //$this->template->pm_count = $this->pmManager->getCountSent();
     }
 
     /**

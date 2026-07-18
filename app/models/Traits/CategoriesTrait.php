@@ -2,8 +2,9 @@
 
 namespace App\Models\Traits;
 
-use App\Models\CategoriesManager;
+use App\Models\CategoryManager;
 use App\Models\Entity\CategoryEntity;
+use Nette\DI\Attributes\Inject;
 
 /**
  * Description of CategoriesTrait
@@ -14,10 +15,11 @@ trait CategoriesTrait
 {
 
     /**
-     * @var CategoriesManager $categoriesManager
+     * @var CategoryManager $categoryManager
      * @inject
      */
-    public $categoriesManager;
+    #[Inject]
+    public CategoryManager $categoryManager;
     
     /**
      *
@@ -25,7 +27,7 @@ trait CategoriesTrait
      *
      * @return CategoryEntity
      */
-    public function checkCategoryParam($category_id)
+    public function checkCategoryParam(int $category_id)
     {
         // category check
         if (!isset($category_id)) {
@@ -36,7 +38,7 @@ trait CategoriesTrait
             $this->error('Category param is not numeric.');
         }
 
-        $categoryDibi = $this->categoriesManager->getById($category_id);
+        $categoryDibi = $this->categoryManager->getById($category_id);
 
         if (!$categoryDibi) {
             $this->error('Category was not found.');

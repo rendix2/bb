@@ -3,7 +3,7 @@
 namespace App\Models\Traits;
 
 use App\Models\Entity\ForumEntity;
-use App\Models\ForumsManager;
+use App\Models\ForumManager;
 
 /**
  * Description of ForumsTrait
@@ -13,7 +13,7 @@ use App\Models\ForumsManager;
 trait ForumsTrait
 {
     /**
-     * @var ForumsManager $forumsManager
+     * @var ForumManager $forumsManager
      * @inject
      */
     public $forumsManager;

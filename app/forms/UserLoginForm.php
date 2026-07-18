@@ -4,7 +4,7 @@ namespace App\Forms;
 
 use App\Authenticator;
 use App\Controls\BootstrapForm;
-use App\Models\SessionsManager;
+use App\Models\SessionManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\TranslatorFactory;
 use Nette\Application\UI\Control;
@@ -42,7 +42,7 @@ class UserLoginForm extends Control
     
     /**
      *
-     * @var SessionsManager $sessionsManager
+     * @var SessionManager $sessionsManager
      */
     private $sessionsManager;
     
@@ -61,14 +61,14 @@ class UserLoginForm extends Control
      *
      * @param TranslatorFactory $translatorFactory
      * @param User              $user
-     * @param SessionsManager   $sessionsManager
+     * @param SessionManager   $sessionsManager
      * @param Authenticator     $authenticator
      * @param Session           $session
      */
     public function __construct(
         TranslatorFactory $translatorFactory,
         User              $user,
-        SessionsManager   $sessionsManager,
+        SessionManager   $sessionsManager,
         Authenticator     $authenticator,
         Session           $session
     ) {

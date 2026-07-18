@@ -2,8 +2,8 @@
 
 namespace App\Presenters\Base;
 
-use App\Models\SessionsManager;
-use Nette\Security\IUserStorage;
+use App\Models\SessionManager;
+use Nette\Security\User;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -18,7 +18,7 @@ abstract class AuthenticatedPresenter extends BasePresenter
     /**
      * sessions manager
      *
-     * @var SessionsManager $sessionsManager
+     * @var SessionManager $sessionsManager
      * @inject
      */
     public $sessionsManager;
@@ -45,13 +45,13 @@ abstract class AuthenticatedPresenter extends BasePresenter
         if ($user->loggedIn) {
             $this->sessionsManager->updateByUser($user->id, ArrayHash::from(['session_last_activity' => time()]));
         } else {
-            if ($user->logoutReason === IUserStorage::INACTIVITY) {
+            if ($user->logoutReason === User::LogoutInactivity) {
                 $this->sessionsManager->deleteBySession($this->getSession()->getId());
                 $this->sessionsManager->deleteByUser($user->id);
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
             }
 
-            if ($this->presenter->getName() !== 'Forum:Index') {
+            if ($this->getName() !== 'Forum:Index') {
                 $this->sessionsManager->deleteBySession($this->getSession()->getId());
                 $this->redirect(':Forum:Login:default', ['loginForm-backlink' => $this->storeRequest()]);
             }

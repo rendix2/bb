@@ -3,8 +3,8 @@
 namespace App;
 
 use App\Authorization\Authorizator;
-use App\Models\LanguagesManager;
-use App\Models\ModeratorsManager;
+use App\Models\LanguageManager;
+use App\Models\ModeratorManager;
 use App\Models\UsersManager;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
@@ -26,13 +26,13 @@ class Authenticator implements IAuthenticator
     private $usersManager;
 
     /**
-     * @var LanguagesManager $languagesManager
+     * @var LanguageManager $languagesManager
      */
     private $languagesManager;
     
     /**
      *
-     * @var ModeratorsManager $moderatorsManager
+     * @var ModeratorManager $moderatorsManager
      */
     private $moderatorsManager;
 
@@ -40,13 +40,13 @@ class Authenticator implements IAuthenticator
      * Authenticator constructor.
      *
      * @param UsersManager      $usersManger
-     * @param LanguagesManager  $languageManager
-     * @param ModeratorsManager $moderatorsManager
+     * @param LanguageManager  $languageManager
+     * @param ModeratorManager $moderatorsManager
      */
     public function __construct(
         UsersManager      $usersManger,
-        LanguagesManager  $languageManager,
-        ModeratorsManager $moderatorsManager
+        LanguageManager  $languageManager,
+        ModeratorManager $moderatorsManager
     ) {
         $this->usersManager      = $usersManger;
         $this->languagesManager  = $languageManager;
@@ -72,7 +72,7 @@ class Authenticator implements IAuthenticator
      */
     public function authenticate(array $credentials)
     {
-        list($userName, $userPassword) = $credentials;
+        [$userName, $userPassword] = $credentials;
 
         $userData = $this->usersManager->getByName($userName);
 

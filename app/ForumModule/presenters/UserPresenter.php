@@ -17,10 +17,10 @@ use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserResetPasswordForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Models\FavouriteUsersManager;
-use App\Models\LanguagesManager;
-use App\Models\ModeratorsManager;
-use App\Models\RanksManager;
-use App\Models\ReportsManager;
+use App\Models\LanguageManager;
+use App\Models\ModeratorManager;
+use App\Models\RankManager;
+use App\Models\ReportManager;
 use App\Models\TopicWatchManager;
 use App\Models\Traits\UsersTrait;
 use App\Models\UsersManager;
@@ -49,13 +49,13 @@ class UserPresenter extends BaseForumPresenter
     //use \App\Models\Traits\PostTrait;
     
     /**
-     * @var LanguagesManager $languagesManager
+     * @var LanguageManager $languagesManager
      * @inject
      */
     public $languagesManager;
 
     /**
-     * @var RanksManager $ranksManager
+     * @var RankManager $ranksManager
      * @inject
      */
     public $ranksManager;
@@ -79,7 +79,7 @@ class UserPresenter extends BaseForumPresenter
     public $ranks;
     
     /**
-     * @var ModeratorsManager $moderatorsManager
+     * @var ModeratorManager $moderatorsManager
      * @inject
      */
     public $moderatorsManager;
@@ -128,7 +128,7 @@ class UserPresenter extends BaseForumPresenter
     
     /**
      *
-     * @var ReportsManager $reportsManager
+     * @var ReportManager $reportsManager
      * @inject
      */
     public $reportsManager;

@@ -6,8 +6,8 @@ use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\PostFacade;
 use App\Models\PostsHistoryManager;
-use App\Models\PostsManager;
-use App\Models\TopicsManager;
+use App\Models\PostManager;
+use App\Models\TopicManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -16,7 +16,7 @@ use Nette\Utils\ArrayHash;
  * Description of PostPresenter
  *
  * @author rendix2
- * @method PostsManager getManager()
+ * @method PostManager getManager()
  * @package App\ModeratorModule\Presenters
  */
 class PostPresenter extends ModeratorPresenter
@@ -37,7 +37,7 @@ class PostPresenter extends ModeratorPresenter
     
     /**
      *
-     * @var TopicsManager $topicsManager
+     * @var TopicManager $topicsManager
      * @inject
      */
     public $topicsManager;
@@ -45,9 +45,9 @@ class PostPresenter extends ModeratorPresenter
     /**
      * PostPresenter constructor.
      *
-     * @param PostsManager $manager
+     * @param PostManager $manager
      */
-    public function __construct(PostsManager $manager)
+    public function __construct(PostManager $manager)
     {
         parent::__construct($manager);
     }

@@ -6,13 +6,13 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
-use App\Models\CategoriesManager;
+use App\Models\CategoryManager;
 use App\Models\Entity\ForumEntity;
 use App\Models\ForumFacade;
-use App\Models\ForumsManager;
-use App\Models\ModeratorsManager;
-use App\Models\PostsManager;
-use App\Models\TopicsManager;
+use App\Models\ForumManager;
+use App\Models\ModeratorManager;
+use App\Models\PostManager;
+use App\Models\TopicManager;
 use App\Models\UsersManager;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
@@ -24,7 +24,7 @@ use Tracy\ILogger;
  * Description of ForumPresenter
  *
  * @author rendix2
- * @method ForumsManager getManager()
+ * @method ForumManager getManager()
  * @package App\AdminModule\Presenters
  */
 class ForumPresenter extends AdminPresenter
@@ -32,27 +32,27 @@ class ForumPresenter extends AdminPresenter
     
     /**
      *
-     * @var CategoriesManager $categoriesManager
+     * @var CategoryManager $categoriesManager
      * @inject
      */
     public $categoriesManager;
 
     /**
      *
-     * @var TopicsManager $topicsManager
+     * @var TopicManager $topicsManager
      * @inject
      */
     public $topicsManager;
     
     /**
      *
-     * @var PostsManager $postsManager
+     * @var PostManager $postsManager
      * @inject
      */
     public $postsManager;
 
     /**
-     * @var ModeratorsManager $moderatorsManager
+     * @var ModeratorManager $moderatorsManager
      * @inject
      */
     public $moderatorsManager;
@@ -74,9 +74,9 @@ class ForumPresenter extends AdminPresenter
     /**
      * ForumPresenter constructor.
      *
-     * @param ForumsManager $manager
+     * @param ForumManager $manager
      */
-    public function __construct(ForumsManager $manager)
+    public function __construct(ForumManager $manager)
     {
         parent::__construct($manager);
     }

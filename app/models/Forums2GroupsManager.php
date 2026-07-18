@@ -19,10 +19,10 @@ class Forums2GroupsManager extends MNManager
      *
      * @param Connection    $dibi
      * @param IStorage      $storage
-     * @param ForumsManager $left
-     * @param GroupsManager $right
+     * @param ForumManager $left
+     * @param GroupManager $right
      */
-    public function __construct(Connection $dibi, IStorage $storage, ForumsManager $left, GroupsManager $right)
+    public function __construct(Connection $dibi, IStorage $storage, ForumManager $left, GroupManager $right)
     {
         parent::__construct($dibi, $storage, $left, $right);
     }

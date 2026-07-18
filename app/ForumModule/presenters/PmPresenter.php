@@ -8,7 +8,7 @@ use App\Controls\GridFilter;
 use App\Controls\UserSearchControl;
 use App\Forms\ReportForm;
 use App\Models\PmManager;
-use App\Models\ReportsManager;
+use App\Models\ReportManager;
 use App\Models\UsersManager;
 use App\Presenters\crud\CrudPresenter;
 use Nette\Application\UI\Form;
@@ -26,7 +26,7 @@ class PmPresenter extends CrudPresenter
 {
     
     /**
-     * @var ReportsManager $reportsManager
+     * @var ReportManager $reportsManager
      * @inject
      */
     public $reportsManager;

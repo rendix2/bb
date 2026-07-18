@@ -12,6 +12,10 @@ RUN docker-php-ext-install -j "$(nproc)" pdo
 RUN docker-php-ext-install -j "$(nproc)" pdo_mysql
 RUN docker-php-ext-install -j "$(nproc)" pdo_pgsql
 
+# intl
+RUN apt-get install libicu-dev -y --fix-missing
+RUN docker-php-ext-install -j "$(nproc)" intl
+
 # Opcache
 RUN docker-php-ext-configure opcache --enable-opcache
 RUN docker-php-ext-install -j "$(nproc)" opcache

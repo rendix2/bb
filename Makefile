@@ -38,6 +38,8 @@ create-dirs:
 	mkdir -p log/web
 	mkdir -p log/console
 
+	mkdir -p www/avatars
+
 chmod-dirs:
 	chmod 777 temp -R
 

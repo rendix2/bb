@@ -29,19 +29,19 @@ class TopicWatchFacade
     
     /**
      *
-     * @var TopicsManager $topicsManager
+     * @var TopicManager $topicsManager
      */
     private $topicsManager;
 
     /**
      *
-     * @var ForumsManager $forumsManager
+     * @var ForumManager $forumsManager
      */
     private $forumsManager;
     
     /**
      *
-     * @var PostsManager $postsManager
+     * @var PostManager $postsManager
      */
     private $postsManager;
 
@@ -51,16 +51,16 @@ class TopicWatchFacade
      *
      * @param UsersManager      $usersManager
      * @param TopicWatchManager $topicWatchManager
-     * @param TopicsManager     $topicsManager
-     * @param ForumsManager     $forumsManager
-     * @param PostsManager      $postsManager
+     * @param TopicManager     $topicsManager
+     * @param ForumManager     $forumsManager
+     * @param PostManager      $postsManager
      */
     public function __construct(
         UsersManager      $usersManager,
         TopicWatchManager $topicWatchManager,
-        TopicsManager     $topicsManager,
-        ForumsManager     $forumsManager,
-        PostsManager      $postsManager
+        TopicManager     $topicsManager,
+        ForumManager     $forumsManager,
+        PostManager      $postsManager
     ) {
         $this->usersManager      = $usersManager;
         $this->topicWatchManager = $topicWatchManager;

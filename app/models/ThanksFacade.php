@@ -18,7 +18,7 @@ use Nette\Utils\ArrayHash;
 class ThanksFacade
 {
     /**
-     * @var ThanksManager $thanksManager
+     * @var ThankManager $thanksManager
      */
     private $thanksManager;
     
@@ -28,37 +28,37 @@ class ThanksFacade
     private $usersManager;
 
     /**
-     * @var PostsManager $postsManager
+     * @var PostManager $postsManager
      */
     private $postsManager;
     
     /**
      *
-     * @var TopicsManager $topicsManager
+     * @var TopicManager $topicsManager
      */
     private $topicsManager;
 
     /**
      *
-     * @var ForumsManager $forumsManager
+     * @var ForumManager $forumsManager
      */
     private $forumsManager;
 
     /**
      * ThanksFacade constructor
      *
-     * @param ThanksManager $thanksManager
+     * @param ThankManager $thanksManager
      * @param UsersManager  $usersManager
-     * @param PostsManager  $postsManager
-     * @param TopicsManager $topicsManager
-     * @param ForumsManager $forumsManager
+     * @param PostManager  $postsManager
+     * @param TopicManager $topicsManager
+     * @param ForumManager $forumsManager
      */
     public function __construct(
-        ThanksManager $thanksManager,
+        ThankManager $thanksManager,
         UsersManager  $usersManager,
-        PostsManager  $postsManager,
-        TopicsManager $topicsManager,
-        ForumsManager $forumsManager
+        PostManager  $postsManager,
+        TopicManager $topicsManager,
+        ForumManager $forumsManager
     ) {
         $this->thanksManager = $thanksManager;
         $this->usersManager  = $usersManager;

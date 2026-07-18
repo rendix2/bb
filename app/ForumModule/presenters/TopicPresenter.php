@@ -21,11 +21,11 @@ use App\Models\Entity\TopicEntity;
 use App\Models\PollsFacade;
 use App\Models\PostFacade;
 use App\Models\Posts2FilesManager;
-use App\Models\RanksManager;
-use App\Models\ReportsManager;
+use App\Models\RankManager;
+use App\Models\ReportManager;
 use App\Models\ThanksFacade;
 use App\Models\TopicFacade;
-use App\Models\TopicsManager;
+use App\Models\TopicManager;
 use App\Models\TopicWatchManager;
 use App\Models\Traits\CategoriesTrait;
 use App\Settings\Avatars;
@@ -43,7 +43,7 @@ use Nette\Utils\DateTime;
  * Description of TopicPresenter
  *
  * @author rendix2
- * @method TopicsManager getManager()
+ * @method TopicManager getManager()
  * @package App\ForumModule\Presenters
  */
 class TopicPresenter extends BaseForumPresenter
@@ -73,7 +73,7 @@ class TopicPresenter extends BaseForumPresenter
     public $topicWatchManager;
 
     /**
-     * @var RanksManager $ranksManager
+     * @var RankManager $ranksManager
      * @inject
      */
     public $ranksManager;
@@ -100,7 +100,7 @@ class TopicPresenter extends BaseForumPresenter
     
     /**
      *
-     * @var ReportsManager $reportsManager
+     * @var ReportManager $reportsManager
      * @inject
      */
     public $reportsManager;
@@ -135,9 +135,9 @@ class TopicPresenter extends BaseForumPresenter
     /**
      * TopicPresenter constructor.
      *
-     * @param TopicsManager $manager
+     * @param TopicManager $manager
      */
-    public function __construct(TopicsManager $manager)
+    public function __construct(TopicManager $manager)
     {
         parent::__construct($manager);
     }
@@ -147,7 +147,7 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function __destruct()
     {
-        $this->categoriesManager = null;
+        $this->categoryManager = null;
         $this->forumsManager     = null;
         $this->topicsManager     = null;
         $this->postsManager      = null;
@@ -661,7 +661,7 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
             $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
             [['text' => 'menu_topic']]
         );
@@ -676,7 +676,7 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
             $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
             [['text' => 'menu_topic']]
         );
@@ -691,7 +691,7 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
             $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
             [['link' => 'Topic:default',
                 'params' => [
@@ -713,7 +713,7 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
             $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
             [['link' => 'Topic:default',
                 'params' => [
@@ -735,7 +735,7 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
             $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
             [['link' => 'Topic:default',
                 'params' => [

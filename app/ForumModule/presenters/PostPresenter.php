@@ -17,8 +17,8 @@ use App\Models\PollsFacade;
 use App\Models\PostFacade;
 use App\Models\Posts2FilesManager;
 use App\Models\PostsHistoryManager;
-use App\Models\PostsManager;
-use App\Models\ReportsManager;
+use App\Models\PostManager;
+use App\Models\ReportManager;
 use App\Models\TopicWatchManager;
 use App\Models\Traits\CategoriesTrait;
 use App\Models\Traits\UsersTrait;
@@ -37,7 +37,7 @@ use Nette\Utils\DateTime;
  * Description of PostPresenter
  *
  * @author rendix2
- * @method PostsManager getManager()
+ * @method PostManager getManager()
  * @package App\ForumModule\Presenters
  */
 class PostPresenter extends BaseForumPresenter
@@ -55,7 +55,7 @@ class PostPresenter extends BaseForumPresenter
     public $topicWatchManager;
 
     /**
-     * @var ReportsManager $reportManager
+     * @var ReportManager $reportManager
      * @inject
      */
     public $reportManager;
@@ -110,9 +110,9 @@ class PostPresenter extends BaseForumPresenter
     /**
      * PostPresenter constructor.
      *
-     * @param PostsManager $manager
+     * @param PostManager $manager
      */
-    public function __construct(PostsManager $manager)
+    public function __construct(PostManager $manager)
     {
         parent::__construct($manager);
     }
@@ -122,7 +122,7 @@ class PostPresenter extends BaseForumPresenter
      */
     public function __destruct()
     {
-        $this->categoriesManager   = null;
+        $this->categoryManager   = null;
         $this->forumsManager       = null;
         $this->topicsManager       = null;
         $this->postsManager        = null;
@@ -469,7 +469,7 @@ class PostPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
             $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
             [['link' => 'Topic:default',
                 'text' => 'menu_topic',
@@ -514,7 +514,7 @@ class PostPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoriesManager->getBreadCrumb($this->getParameter('category_id')),
+            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
             $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
             [['link' => 'Topic:default',
                 'text' => 'menu_topic',

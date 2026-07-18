@@ -14,7 +14,7 @@ use Nette\Utils\ArrayHash;
 class CategoryFacade
 {
     /**
-     * @var CategoriesManager $categoriesManager
+     * @var CategoryManager $categoriesManager
      */
     private $categoriesManager;
     
@@ -26,21 +26,21 @@ class CategoryFacade
     
     /**
      *
-     * @var ForumsManager $forumsManager
+     * @var ForumManager $forumsManager
      */
     private $forumsManager;
 
     /**
      * CategoryFacade constructor.
      *
-     * @param CategoriesManager $categoriesManager
+     * @param CategoryManager $categoriesManager
      * @param ForumFacade       $forumFacade
-     * @param ForumsManager     $forumsManager
+     * @param ForumManager     $forumsManager
      */
     public function __construct(
-        CategoriesManager $categoriesManager,
+        CategoryManager $categoriesManager,
         ForumFacade       $forumFacade,
-        ForumsManager     $forumsManager
+        ForumManager     $forumsManager
     ) {
         $this->categoriesManager = $categoriesManager;
         $this->forumFacade       = $forumFacade;

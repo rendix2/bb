@@ -6,7 +6,7 @@ use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
 use App\Models\Entity\ForumEntity;
 use App\Models\Users2ForumsManager;
-use App\Models\Users2GroupsManager;
+use App\Models\User2GroupManager;
 
 /**
  * Description of Forum
@@ -53,7 +53,7 @@ class ForumScope implements IAuthorizationScope
     
     /**
      *
-     * @var Users2GroupsManager $users2GroupsManager
+     * @var User2GroupManager $users2GroupsManager
      */
     private $users2GroupsManager;
     
@@ -69,13 +69,13 @@ class ForumScope implements IAuthorizationScope
      *
      * @param ForumEntity         $forumEntity
      * @param array               $moderators
-     * @param Users2GroupsManager $users2GroupsManager
+     * @param User2GroupManager $users2GroupsManager
      * @param Users2ForumsManager $users2ForumsManager
      */
     public function __construct(
         ForumEntity $forumEntity,
         $moderators,
-        Users2GroupsManager $users2GroupsManager,
+        User2GroupManager $users2GroupsManager,
         Users2ForumsManager $users2ForumsManager
     ) {
         $this->forumEntity         = $forumEntity;

@@ -18,13 +18,13 @@ class PostFacade
 {
     /**
      *
-     * @var PostsManager $postsManager
+     * @var PostManager $postsManager
      */
     private $postsManager;
     
     /**
      *
-     * @var TopicsManager $topicsManager
+     * @var TopicManager $topicsManager
      */
     private $topicsManager;
     
@@ -42,13 +42,13 @@ class PostFacade
     
     /**
      *
-     * @var ReportsManager $reportsManager
+     * @var ReportManager $reportsManager
      */
     private $reportsManager;
     
     /**
      *
-     * @var ForumsManager $forumsManager
+     * @var ForumManager $forumsManager
      */
     private $forumsManager;
     
@@ -60,7 +60,7 @@ class PostFacade
     
     /**
      *
-     * @var ThanksManager $thanksManager
+     * @var ThankManager $thanksManager
      */
     private $thanksManager;
     
@@ -103,14 +103,14 @@ class PostFacade
      *
      * PostFacade constructor.
      *
-     * @param PostsManager        $postsManager
-     * @param TopicsManager       $topicsManager
+     * @param PostManager        $postsManager
+     * @param TopicManager       $topicsManager
      * @param TopicWatchManager   $topicWatchManager
      * @param UsersManager        $usersManager
-     * @param ReportsManager      $reportsManager
-     * @param ForumsManager       $forumsManager
+     * @param ReportManager      $reportsManager
+     * @param ForumManager       $forumsManager
      * @param PostsHistoryManager $postsHistoryManager
-     * @param ThanksManager       $thanksManager
+     * @param ThankManager       $thanksManager
      * @param ThanksFacade        $thanksFacade
      * @param TopicWatchFacade    $topicWatchFacade
      * @param PollsFacade         $pollsFacade
@@ -119,14 +119,14 @@ class PostFacade
      * @param Posts2FilesManager  $posts2FilesManger
      */
     public function __construct(
-        PostsManager        $postsManager,
-        TopicsManager       $topicsManager,
+        PostManager        $postsManager,
+        TopicManager       $topicsManager,
         TopicWatchManager   $topicWatchManager,
         UsersManager        $usersManager,
-        ReportsManager      $reportsManager,
-        ForumsManager       $forumsManager,
+        ReportManager      $reportsManager,
+        ForumManager       $forumsManager,
         PostsHistoryManager $postsHistoryManager,
-        ThanksManager       $thanksManager,
+        ThankManager       $thanksManager,
         ThanksFacade        $thanksFacade,
         TopicWatchFacade    $topicWatchFacade,
         PollsFacade         $pollsFacade,

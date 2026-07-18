@@ -19,10 +19,10 @@ class Posts2FilesManager extends MNManager
      *
      * @param Connection   $dibi
      * @param IStorage     $storage
-     * @param PostsManager $left
+     * @param PostManager $left
      * @param FilesManager $right
      */
-    public function __construct(Connection $dibi, IStorage $storage, PostsManager $left, FilesManager $right)
+    public function __construct(Connection $dibi, IStorage $storage, PostManager $left, FilesManager $right)
     {
         parent::__construct($dibi, $storage, $left, $right);
     }

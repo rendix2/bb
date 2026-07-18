@@ -3,8 +3,8 @@
 namespace App\Forms;
 
 use App\Controls\BootstrapForm;
-use App\Models\ForumsManager;
-use App\Models\ModeratorsManager;
+use App\Models\ForumManager;
+use App\Models\ModeratorManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
@@ -27,26 +27,26 @@ class UserModeratorForm extends Control
     
     /**
      *
-     * @var ModeratorsManager $moderatorsManager,
+     * @var ModeratorManager $moderatorsManager,
      */
     private $moderatorsManager;
     
     /**
      *
-     * @var ForumsManager $forumsManager
+     * @var ForumManager $forumsManager
      */
     private $forumsManager;
 
     /**
      * UserModeratorForm constructor.
      *
-     * @param ForumsManager     $forumsManager
-     * @param ModeratorsManager $moderatorsManager
+     * @param ForumManager     $forumsManager
+     * @param ModeratorManager $moderatorsManager
      * @param ITranslator       $translator
      */
     public function __construct(
-        ForumsManager     $forumsManager,
-        ModeratorsManager $moderatorsManager,
+        ForumManager     $forumsManager,
+        ModeratorManager $moderatorsManager,
         ITranslator       $translator
     ) {
         parent::__construct();

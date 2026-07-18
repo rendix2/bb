@@ -6,13 +6,13 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
-use App\Models\BansManager;
+use App\Models\BanManager;
 
 /**
  * Description of BanPresenter
  *
  * @author rendix2
- * @method BansManager getManager()
+ * @method BanManager getManager()
  * @package App\AdminModule\Presenters
  */
 class BanPresenter extends AdminPresenter
@@ -20,9 +20,9 @@ class BanPresenter extends AdminPresenter
     /**
      * BanPresenter constructor.
      *
-     * @param BansManager $manager
+     * @param BanManager $manager
      */
-    public function __construct(BansManager $manager)
+    public function __construct(BanManager $manager)
     {
         parent::__construct($manager);
     }

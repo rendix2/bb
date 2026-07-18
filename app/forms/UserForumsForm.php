@@ -3,7 +3,7 @@
 namespace App\Forms;
 
 use App\Controls\BootstrapForm;
-use App\Models\ForumsManager;
+use App\Models\ForumManager;
 use App\Models\Users2ForumsManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
@@ -20,7 +20,7 @@ use Nette\Utils\ArrayHash;
 class UserForumsForm extends Control
 {
     /**
-     * @var ForumsManager $forumsManager
+     * @var ForumManager $forumsManager
      */
     private $forumsManager;
 
@@ -39,12 +39,12 @@ class UserForumsForm extends Control
     /**
      * UserForumsForm constructor.
      *
-     * @param ForumsManager       $forumsManager
+     * @param ForumManager       $forumsManager
      * @param Users2ForumsManager $users2ForumsManager
      * @param ITranslator         $translator
      */
     public function __construct(
-        ForumsManager       $forumsManager,
+        ForumManager       $forumsManager,
         Users2ForumsManager $users2ForumsManager,
         ITranslator         $translator
     ) {

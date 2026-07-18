@@ -1,10 +1,10 @@
 <?php
 
-namespace App\ForumModule\Presenters;
+namespace App\UI\Forum\Category;
 
 use App\Controls\BreadCrumbControl;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Models\CategoriesManager;
+use App\Models\CategoryManager;
 use App\Models\Traits\CategoriesTrait;
 use dibi;
 
@@ -12,7 +12,7 @@ use dibi;
  * Description of CategoryPresenter
  *
  * @author rendix2
- * @method CategoriesManager getManager()
+ * @method CategoryManager getManager()
  * @package App\ForumModule\Presenters
  */
 class CategoryPresenter extends BaseForumPresenter
@@ -23,9 +23,9 @@ class CategoryPresenter extends BaseForumPresenter
     /**
      * CategoryPresenter constructor.
      *
-     * @param CategoriesManager $manager
+     * @param CategoryManager $manager
      */
-    public function __construct(CategoriesManager $manager)
+    public function __construct(CategoryManager $manager)
     {
         parent::__construct($manager);
     }
@@ -35,7 +35,7 @@ class CategoryPresenter extends BaseForumPresenter
      */
     public function __destruct()
     {
-        $this->categoriesManager = null;
+        $this->categoryManager = null;
         
         parent::__destruct();
     }

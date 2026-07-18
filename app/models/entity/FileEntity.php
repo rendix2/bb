@@ -4,6 +4,7 @@ namespace App\Models\Entity;
 
 use App\Models\Entity\Base\Entity;
 use Dibi\Row;
+use Nette\Application\Attributes\Deprecated;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -12,6 +13,7 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  * @package App\Models\Entity
  */
+#[Deprecated]
 class FileEntity extends Entity
 {
     /**

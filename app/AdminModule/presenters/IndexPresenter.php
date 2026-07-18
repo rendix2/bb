@@ -2,7 +2,7 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\Models\SessionsManager;
+use App\Models\SessionManager;
 use App\Presenters\Base\BasePresenter;
 use App\Settings\Avatars;
 use App\Settings\CacheDir;
@@ -21,7 +21,7 @@ class IndexPresenter extends BasePresenter
     const MAX_LOGGED_IN_USERS_TO_SHOW = 200;
     
     /**
-     * @var SessionsManager $sessionsManager
+     * @var SessionManager $sessionsManager
      * @inject
      */
     public $sessionsManager;

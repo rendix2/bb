@@ -5,7 +5,7 @@ namespace App\ModeratorModule\Presenters;
 use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\TopicFacade;
-use App\Models\TopicsManager;
+use App\Models\TopicManager;
 use App\Models\Traits\ForumsTrait;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 use Nette\Application\UI\Form;
@@ -15,7 +15,7 @@ use Nette\Utils\ArrayHash;
  * Description of TopicPresenter
  *
  * @author rendix2
- * @method TopicsManager getManager()
+ * @method TopicManager getManager()
  * @package App\ModeratorModule\Presenters
  */
 class TopicPresenter extends ModeratorPresenter
@@ -33,9 +33,9 @@ class TopicPresenter extends ModeratorPresenter
     /**
      * TopicPresenter constructor.
      *
-     * @param TopicsManager $manager
+     * @param TopicManager $manager
      */
-    public function __construct(TopicsManager $manager)
+    public function __construct(TopicManager $manager)
     {
         parent::__construct($manager);
     }

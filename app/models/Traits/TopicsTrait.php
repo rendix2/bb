@@ -3,7 +3,7 @@
 namespace App\Models\Traits;
 
 use App\Models\Entity\TopicEntity;
-use App\Models\TopicsManager;
+use App\Models\TopicManager;
 use Nette\Http\IResponse;
 
 /**
@@ -15,7 +15,7 @@ trait TopicsTrait
 {
     
     /**
-     * @var TopicsManager $topicsManager
+     * @var TopicManager $topicsManager
      * @inject
      */
     public $topicsManager;

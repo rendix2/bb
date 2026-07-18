@@ -3,7 +3,7 @@
 namespace App\Models\Traits;
 
 use App\Models\Entity\PostEntity;
-use App\Models\PostsManager;
+use App\Models\PostManager;
 use Nette\Http\IResponse;
 
 /**
@@ -16,7 +16,7 @@ trait PostTrait
 
     /**
      *
-     * @var PostsManager $manager
+     * @var PostManager $manager
      * @inject
      */
     public $postsManager;
