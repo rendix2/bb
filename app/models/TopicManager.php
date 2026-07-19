@@ -71,22 +71,6 @@ class TopicManager extends CrudManager
     }
 
     /**
-     * @return Row|false
-     */
-    public function getUserWithMostTopic()
-    {
-        return $this->dibi
-            ->select('COUNT(t.topic_id) AS topic_count, u.user_id, u.user_name')
-            ->from($this->getTable())
-            ->as('t')
-            ->innerJoin(self::USERS_TABLE)
-            ->as('u')
-            ->on('[t.topic_user_id] = [u.user_id]')
-            ->groupBy('topic_user_id', dibi::ASC)
-            ->fetch();
-    }
-
-    /**
      * @param string $topic_name
      *
      * @return array

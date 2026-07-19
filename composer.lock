@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3442c366d08eeb4d45b31f9417b78797",
+    "content-hash": "d7a8bc1c35dd348d3d8d1c09200e8e9d",
     "packages": [
         {
             "name": "beberlei/doctrineextensions",
@@ -281,35 +281,36 @@
         },
         {
             "name": "contributte/forms-bootstrap",
-            "version": "v0.3.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/contributte/forms-bootstrap.git",
-                "reference": "439d33aade5720b70f271646bed535baaea93907"
+                "reference": "ad15397fd1fdada95fe66b56179673df368244ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contributte/forms-bootstrap/zipball/439d33aade5720b70f271646bed535baaea93907",
-                "reference": "439d33aade5720b70f271646bed535baaea93907",
+                "url": "https://api.github.com/repos/contributte/forms-bootstrap/zipball/ad15397fd1fdada95fe66b56179673df368244ab",
+                "reference": "ad15397fd1fdada95fe66b56179673df368244ab",
                 "shasum": ""
             },
             "require": {
                 "nette/application": "^3.0",
-                "nette/forms": "^3.0.4",
-                "php": ">=7.2"
+                "nette/forms": "3.2.9",
+                "php": ">=8.1"
             },
             "require-dev": {
-                "ninjify/qa": "^v0.10",
-                "phpstan/phpstan": "^0.12.6",
-                "phpstan/phpstan-deprecation-rules": "^0.12",
-                "phpstan/phpstan-nette": "^0.12",
-                "phpstan/phpstan-strict-rules": "^0.12",
-                "phpunit/phpunit": "^8.5"
+                "contributte/qa": "^v0.3",
+                "phpstan/phpstan": "^1.10",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-nette": "^1.0",
+                "phpstan/phpstan-strict-rules": "^1.0",
+                "phpunit/phpunit": "^9.5"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.9.x-dev"
                 }
             },
             "autoload": {
@@ -337,9 +338,19 @@
             ],
             "support": {
                 "issues": "https://github.com/contributte/forms-bootstrap/issues",
-                "source": "https://github.com/contributte/forms-bootstrap/tree/v0.3.1"
+                "source": "https://github.com/contributte/forms-bootstrap/tree/master"
             },
-            "time": "2020-10-30T11:38:27+00:00"
+            "funding": [
+                {
+                    "url": "https://contributte.org/partners.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/f3l1x",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-07-14T13:43:57+00:00"
         },
         {
             "name": "contributte/guzzlette",
@@ -1828,6 +1839,80 @@
             "time": "2026-04-26T12:12:52+00:00"
         },
         {
+            "name": "donatj/phpuseragentparser",
+            "version": "v1.12.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/donatj/PhpUserAgent.git",
+                "reference": "f76fed972ce4a3d7d58fe99a8627132606b58046"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/donatj/PhpUserAgent/zipball/f76fed972ce4a3d7d58fe99a8627132606b58046",
+                "reference": "f76fed972ce4a3d7d58fe99a8627132606b58046",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "camspiers/json-pretty": "~1.0",
+                "donatj/drop": "*",
+                "ext-json": "*",
+                "phpunit/phpunit": "~4.8|~8|~9"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/UserAgentParser.php"
+                ],
+                "psr-4": {
+                    "donatj\\UserAgent\\": "src/UserAgent"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jesse G. Donat",
+                    "email": "donatj@gmail.com",
+                    "homepage": "https://donatstudios.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Lightning fast, minimalist PHP UserAgent string parser.",
+            "homepage": "https://donatstudios.com/PHP-Parser-HTTP_USER_AGENT",
+            "keywords": [
+                "browser",
+                "browser detection",
+                "parser",
+                "user agent",
+                "useragent"
+            ],
+            "support": {
+                "issues": "https://github.com/donatj/PhpUserAgent/issues",
+                "source": "https://github.com/donatj/PhpUserAgent/tree/v1.12.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/donatj/15",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/donatj",
+                    "type": "github"
+                },
+                {
+                    "url": "https://ko-fi.com/donatj",
+                    "type": "ko_fi"
+                }
+            ],
+            "time": "2026-06-16T21:13:33+00:00"
+        },
+        {
             "name": "guzzlehttp/guzzle",
             "version": "7.15.0",
             "source": {
@@ -2800,33 +2885,33 @@
         },
         {
             "name": "nette/component-model",
-            "version": "v4.0.1",
+            "version": "v3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/component-model.git",
-                "reference": "b4e82e1a3a7ca6f66ce766704aa2e148de277276"
+                "reference": "23ad9cf94f004348e1bd02af3ecffa8d9cd2bf84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/component-model/zipball/b4e82e1a3a7ca6f66ce766704aa2e148de277276",
-                "reference": "b4e82e1a3a7ca6f66ce766704aa2e148de277276",
+                "url": "https://api.github.com/repos/nette/component-model/zipball/23ad9cf94f004348e1bd02af3ecffa8d9cd2bf84",
+                "reference": "23ad9cf94f004348e1bd02af3ecffa8d9cd2bf84",
                 "shasum": ""
             },
             "require": {
-                "nette/utils": "^4.1",
-                "php": "8.3 - 8.5"
+                "nette/utils": "^4.0",
+                "php": "8.1 - 8.5"
             },
             "require-dev": {
                 "nette/phpstan-rules": "^1.0",
                 "nette/tester": "^2.6",
                 "phpstan/extension-installer": "^1.4@stable",
                 "phpstan/phpstan": "^2.1@stable",
-                "tracy/tracy": "^2.12"
+                "tracy/tracy": "^2.9"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                    "dev-master": "3.2-dev"
                 }
             },
             "autoload": {
@@ -2861,9 +2946,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/component-model/issues",
-                "source": "https://github.com/nette/component-model/tree/v4.0.1"
+                "source": "https://github.com/nette/component-model/tree/v3.2.0"
             },
-            "time": "2026-06-21T23:31:36+00:00"
+            "time": "2026-05-26T10:35:41+00:00"
         },
         {
             "name": "nette/di",
@@ -2999,36 +3084,36 @@
         },
         {
             "name": "nette/forms",
-            "version": "v3.3.0",
+            "version": "v3.2.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/forms.git",
-                "reference": "90aac9e6a55a71a76aaead65bca1129acb41ec84"
+                "reference": "b749e9c2cd259a8ac75d444137f1caf94ec644ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/forms/zipball/90aac9e6a55a71a76aaead65bca1129acb41ec84",
-                "reference": "90aac9e6a55a71a76aaead65bca1129acb41ec84",
+                "url": "https://api.github.com/repos/nette/forms/zipball/b749e9c2cd259a8ac75d444137f1caf94ec644ef",
+                "reference": "b749e9c2cd259a8ac75d444137f1caf94ec644ef",
                 "shasum": ""
             },
             "require": {
-                "nette/component-model": "^3.2 || ^4.0",
-                "nette/http": "^3.4",
-                "nette/utils": "^4.1",
-                "php": "8.3 - 8.5"
+                "nette/component-model": "^3.1",
+                "nette/http": "^3.3",
+                "nette/utils": "^4.0.4",
+                "php": "8.1 - 8.5"
             },
             "conflict": {
-                "latte/latte": "<3.1.4 || >=3.2"
+                "latte/latte": ">=3.0.0 <3.0.12 || >=3.2"
             },
             "require-dev": {
-                "latte/latte": "^3.1.4",
-                "nette/application": "^3.2",
-                "nette/di": "^3.2",
+                "latte/latte": "^2.10.2 || ^3.0.12",
+                "nette/application": "^3.0",
+                "nette/di": "^3.0",
                 "nette/phpstan-rules": "^1.0",
                 "nette/tester": "^2.6",
                 "phpstan/extension-installer": "^1.4@stable",
                 "phpstan/phpstan": "^2.1@stable",
-                "tracy/tracy": "^2.12"
+                "tracy/tracy": "^2.9"
             },
             "suggest": {
                 "ext-intl": "to use date/time controls"
@@ -3036,7 +3121,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.3-dev"
+                    "dev-master": "3.2-dev"
                 }
             },
             "autoload": {
@@ -3075,9 +3160,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/forms/issues",
-                "source": "https://github.com/nette/forms/tree/v3.3.0"
+                "source": "https://github.com/nette/forms/tree/v3.2.9"
             },
-            "time": "2026-06-28T12:32:44+00:00"
+            "time": "2026-05-26T15:09:08+00:00"
         },
         {
             "name": "nette/http",
@@ -7071,6 +7156,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "contributte/forms-bootstrap": 20,
         "kdyby/forms-replicator": 20
     },
     "prefer-stable": false,

@@ -98,7 +98,6 @@ class GridFilter extends Control
      */
     public function __construct(Session $session)
     {
-        parent::__construct();
 
         $this->form    = BootstrapForm::create();
         $this->filters = [];

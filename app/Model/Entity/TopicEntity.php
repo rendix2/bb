@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
 #[Entity()]
@@ -18,5 +20,10 @@ class TopicEntity
     #[GeneratedValue()]
     #[Column(type: Types::BIGINT)]
     public string $id;
+
+
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'topics')]
+    #[JoinColumn(nullable: false)]
+    public UserEntity $user;
 
 }

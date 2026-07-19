@@ -104,11 +104,11 @@ class LoginPresenter extends BasePresenter
      * @param ArrayHash $values
      *
      */
-    public function adminLoginFormSuccess(Form $form, ArrayHash $values)
+    public function adminLoginFormSuccess(Form $form, ArrayHash $values): void
     {
         // check if user is admin
         try {
-            $user = $this->user;
+            $user = $this->getUser();
             
             $user->login(
                 $values->user_name,
@@ -120,7 +120,7 @@ class LoginPresenter extends BasePresenter
             }
             
             $sessionEntity = new SessionEntity();
-            $sessionEntity->setSession_key($this->session->getId())
+            $sessionEntity->setSession_key($this->getSession()->getId())
                           ->setSession_user_id($user->id)
                           ->setSession_from(time());
             
@@ -144,7 +144,7 @@ class LoginPresenter extends BasePresenter
     /**
      * @return UserLoginForm
      */
-    protected function createComponentLoginForm()
+    protected function createComponentLoginForm(): UserLoginForm
     {
         return $this->userLoginFormFactory->create();
     }

@@ -2,7 +2,11 @@
 
 namespace App\Presenters\Base;
 
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\SessionEntity;
 use App\Models\SessionManager;
+use DateTimeImmutable;
+use Nette\DI\Attributes\Inject;
 use Nette\Security\User;
 use Nette\Utils\ArrayHash;
 
@@ -14,46 +18,71 @@ use Nette\Utils\ArrayHash;
  */
 abstract class AuthenticatedPresenter extends BasePresenter
 {
-    
-    /**
-     * sessions manager
-     *
-     * @var SessionManager $sessionsManager
-     * @inject
-     */
-    public $sessionsManager;
-    
-    /**
-     * AuthenticatedPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->sessionsManager = null;
-        
-        parent::__destruct();
-    }
+    #[Inject]
+    public EntityManagerDecorator $aem;
 
-    /**
-     * AuthenticatedPresenter startup.
-     */
     public function startup()
     {
         parent::startup();
 
-        $user = $this->user;
+        $user = $this->getUser();
 
         if ($user->loggedIn) {
-            $this->sessionsManager->updateByUser($user->id, ArrayHash::from(['session_last_activity' => time()]));
+            $sessions = $this->aem
+                ->getRepository(SessionEntity::class)
+                ->findBy(
+                    [
+                        'user' => $user->id,
+                        'key' => $this->getSession()->getId(),
+                    ]
+                );
+
+            foreach ($sessions as $session) {
+                $now = new DateTimeImmutable();
+                $threshold = $now->modify('-1 minute');
+
+                if ($session->lastActivity < $threshold) {
+                    $session->lastActivity = $now;
+                }
+            }
+
+            $this->aem->flush();
         } else {
             if ($user->logoutReason === User::LogoutInactivity) {
-                $this->sessionsManager->deleteBySession($this->getSession()->getId());
-                $this->sessionsManager->deleteByUser($user->id);
+                $sessions = $this->aem
+                    ->getRepository(SessionEntity::class)
+                    ->createQueryBuilder('_s')
+
+                    ->where('_s.user = :user OR _s.key = :key')
+                    ->setParameter('user', $user->id)
+                    ->setParameter('key', $this->getSession()->getId())
+
+                    ->getQuery()
+                    ->getResult();
+
+                foreach ($sessions as $session) {
+                    $this->aem->remove($session);
+                }
+
+                $this->aem->flush();
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
             }
 
             if ($this->getName() !== 'Forum:Index') {
-                $this->sessionsManager->deleteBySession($this->getSession()->getId());
-                $this->redirect(':Forum:Login:default', ['loginForm-backlink' => $this->storeRequest()]);
+                $sessions = $this->aem
+                    ->getRepository(SessionEntity::class)
+                    ->findBy(
+                        [
+                            'key' => $this->getSession()->getId()
+                        ]
+                    );
+
+                foreach ($sessions as $session) {
+                    $this->aem->remove($session);
+                }
+
+                $this->aem->flush();
+                $this->redirect(':Web:User:Login:default', ['loginForm-backlink' => $this->storeRequest()]);
             }
         }
     }
