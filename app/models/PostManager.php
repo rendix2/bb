@@ -88,11 +88,15 @@ class PostManager extends CrudManager
     public function getLast()
     {
         return $this->getAllFluent()
+            ->as('p')
             ->innerJoin(self::TOPICS_TABLE)
-            ->on('[post_topic_id] = [topic_id]')
-            ->where('[post_id] = ', $this->dibi
-                ->select('MAX(post_id)')
-                ->from($this->getTable()))
+            ->as('t')
+            ->on('[p.topic_id] = [t.id]')
+            ->where('[p.id] = ', $this->dibi
+                ->select('MAX(p1.id)')
+                ->from($this->getTable())
+                ->as('p1')
+            )
             ->fetch();
     }
 
@@ -169,22 +173,6 @@ class PostManager extends CrudManager
         }
 
         return $cached;
-    }
-
-    /**
-     * @return Row|false
-     */
-    public function getUserWithMostPosts()
-    {
-        return $this->dibi
-            ->select('COUNT(p.post_id) AS post_count, u.user_id, u.user_name')
-            ->from($this->getTable())
-            ->as('p')
-            ->innerJoin(self::USERS_TABLE)
-            ->as('u')
-            ->on('[p.post_user_id] = [u.user_id]')
-            ->groupBy('post_user_id', dibi::ASC)
-            ->fetch();
     }
 
     /**

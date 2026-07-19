@@ -27,7 +27,7 @@ class Tables
     
 
     
-    const TOPICS_TABLE = self::PREFIX . 'topics';
+    const TOPICS_TABLE = self::PREFIX . 'topic';
     
     const TOPIC_WATCH_TABLE = self::PREFIX . 'topics_watch';
 

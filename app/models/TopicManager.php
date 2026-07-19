@@ -24,8 +24,8 @@ class TopicManager extends CrudManager
     public function getLast()
     {
         return $this->getAllFluent()
-            ->where('[topic_id] = ', $this->dibi
-                ->select('MAX(topic_id)')
+            ->where('[id] = ', $this->dibi
+                ->select('MAX(id)')
                 ->from($this->getTable()))
             ->fetch();
     }
@@ -68,22 +68,6 @@ class TopicManager extends CrudManager
         }
 
         return $cached;
-    }
-
-    /**
-     * @return Row|false
-     */
-    public function getUserWithMostTopic()
-    {
-        return $this->dibi
-            ->select('COUNT(t.topic_id) AS topic_count, u.user_id, u.user_name')
-            ->from($this->getTable())
-            ->as('t')
-            ->innerJoin(self::USERS_TABLE)
-            ->as('u')
-            ->on('[t.topic_user_id] = [u.user_id]')
-            ->groupBy('topic_user_id', dibi::ASC)
-            ->fetch();
     }
 
     /**

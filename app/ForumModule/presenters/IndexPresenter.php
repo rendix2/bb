@@ -225,8 +225,47 @@ class IndexPresenter extends BaseForumPresenter
             ->getRepository(PostEntity::class)
             ->count();
 
-        $this->template->mostPostsUser  = $this->postsManager->getUserWithMostPosts();
-        $this->template->mostTopicsUser = $this->topicsManager->getUserWithMostTopic();
+        $userWithMostPosts = $this->em
+            ->getRepository(PostEntity::class)
+            ->createQueryBuilder('_p')
+
+            ->select('COUNT(_p.id) AS post_count')
+            ->addSelect( '_u.id')
+            ->addSelect('_u.username')
+
+            ->innerJoin('_p.user', '_u')
+
+            ->groupBy('_u.id')
+            ->addGroupBy('_u.username')
+
+            ->orderBy('COUNT(_p.id)', 'DESC')
+            ->setMaxResults(1)
+
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        $userWithMostTopics = $this->em
+            ->getRepository(TopicEntity::class)
+            ->createQueryBuilder('_t')
+
+            ->select('COUNT(_t.id) AS topic_count')
+            ->addSelect('_u.id')
+            ->addSelect('_u.username')
+
+            ->innerJoin('_t.user', '_u')
+
+            ->groupBy('_u.id')
+            ->addGroupBy('_u.username')
+
+            ->orderBy('topic_count', 'DESC')
+
+            ->setMaxResults(1)
+
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        $this->template->mostPostsUser  = $userWithMostPosts;
+        $this->template->mostTopicsUser = $userWithMostTopics;
         $this->template->lastTopic      = $cachedLastTopic;
         $this->template->lastUser       = $cachedLastUser;
         $this->template->lastPost       = $cachedLastPost;
