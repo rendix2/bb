@@ -74,7 +74,7 @@ class UserGroupsForm extends Control
     {
         $sep = DIRECTORY_SEPARATOR;
         
-        $this->template->setFile(__DIR__ . $sep. 'templates' . $sep . 'userGroupsForm.latte');
+        $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'userGroupsForm.latte');
         $this->template->setTranslator($this->translator);
         
         $this->template->groups   = $this->groupsManager->getAllCached();

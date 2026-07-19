@@ -125,7 +125,7 @@ class UserLoginForm extends Control
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function loginForumSuccess(Form $form, ArrayHash $values)
+    public function loginForumSuccess(Form $form, ArrayHash $values): void
     {
         try {
             $user = $this->user;
