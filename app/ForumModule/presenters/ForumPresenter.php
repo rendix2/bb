@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ForumModule\Presenters;
+namespace App\UI\Forum\Forum;
 
 use App\Authorization\Scopes\ForumScope;
 use App\Controls\BreadCrumbControl;
@@ -68,7 +68,6 @@ final class ForumPresenter extends BaseForumPresenter
      */
     public function __destruct()
     {
-        $this->categoryManager = null;
         $this->forumsManager     = null;
         $this->topicsManager     = null;
         $this->forumSettings     = null;
@@ -86,7 +85,7 @@ final class ForumPresenter extends BaseForumPresenter
      * @param int $forum_id
      * @param int $page
      */
-    public function actionDefault($category_id, $forum_id, $page = 1)
+    public function actionDefault(int $category_id, int $forum_id, int $page = 1): void
     {
         $category   = $this->checkCategoryParam($category_id);
         $forum      = $this->checkForumParam($forum_id, $category_id);

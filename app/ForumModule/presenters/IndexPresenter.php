@@ -6,6 +6,7 @@ use App\Database\EntityManagerDecorator;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\TopicEntity;
+use App\Model\Entity\UserEmailEntity;
 use App\Model\Entity\UserEntity;
 use App\Models\CategoryManager;
 use App\Models\Crud\CrudNullManager;
@@ -69,8 +70,6 @@ class IndexPresenter extends BaseForumPresenter
     public function __construct(
         CrudNullManager $crudNullManager,
         private readonly EntityManagerDecorator $em,
-
-        //CategoriesManager $categoriesManager,
         IStorage          $storage,
     )
     {
@@ -95,14 +94,6 @@ class IndexPresenter extends BaseForumPresenter
     }
 
     /**
-     * @return Cache
-     */
-    public function getCache()
-    {
-        return $this->cache;
-    }
-
-    /**
      * renders index page
      */
     public function renderDefault(): void
@@ -119,11 +110,11 @@ class IndexPresenter extends BaseForumPresenter
                 ]
             );
 
-        //$categories = $this->getManager()->getActiveCategoriesCached();
         $result     = [];
+        $result['cats'] = [];
 
-        if ($this->user->identity) {
-            $last_login_time = $this->user->identity->getData()['user_last_login_time'];
+        if ($this->getUser()->getIdentity()) {
+            $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
         } else {
             // we do not show any new posts
             $last_login_time = time() + 1;
@@ -131,7 +122,6 @@ class IndexPresenter extends BaseForumPresenter
 
         foreach ($categories as $category) {
             $category->forums = [];
-            //$forums           = $this->forumsManager->getAllForumsFirstLevel($category->category_id);
 
             $forums = $this->em
                 ->getRepository(ForumEntity::class)
@@ -170,6 +160,8 @@ class IndexPresenter extends BaseForumPresenter
                 }
             }
         }
+
+        /*
 
         $cachedLastUser = $this->getCache()
             ->load(self::CACHE_KEY_LAST_USER);
@@ -212,6 +204,19 @@ class IndexPresenter extends BaseForumPresenter
                     ]
                 );
         }
+        */
+
+        $lastTopic = $this->em
+            ->getRepository(TopicEntity::class)
+            ->findOneBy([], ['id' => 'DESC']);
+
+        $lastPost = $this->em
+            ->getRepository(PostEntity::class)
+            ->findOneBy([], ['id' => 'DESC']);
+
+        $lastUser = $this->em
+            ->getRepository(UserEmailEntity::class)
+            ->findOneBy([], ['id' => 'DESC']);
 
         $totalUserCount = $this->em
             ->getRepository(UserEntity::class)
@@ -225,26 +230,25 @@ class IndexPresenter extends BaseForumPresenter
             ->getRepository(PostEntity::class)
             ->count();
 
-        $userWithMostPosts = $this->em
+        $mostPostUser = $this->em
             ->getRepository(PostEntity::class)
             ->createQueryBuilder('_p')
 
             ->select('COUNT(_p.id) AS post_count')
-            ->addSelect( '_u.id')
+            ->addSelect('_u.id')
             ->addSelect('_u.username')
 
             ->innerJoin('_p.user', '_u')
 
             ->groupBy('_u.id')
-            ->addGroupBy('_u.username')
-
             ->orderBy('COUNT(_p.id)', 'DESC')
+
             ->setMaxResults(1)
 
             ->getQuery()
             ->getOneOrNullResult();
 
-        $userWithMostTopics = $this->em
+        $mostTopicUser = $this->em
             ->getRepository(TopicEntity::class)
             ->createQueryBuilder('_t')
 
@@ -255,20 +259,20 @@ class IndexPresenter extends BaseForumPresenter
             ->innerJoin('_t.user', '_u')
 
             ->groupBy('_u.id')
-            ->addGroupBy('_u.username')
-
-            ->orderBy('topic_count', 'DESC')
+            ->orderBy('COUNT(_t.id)', 'DESC')
 
             ->setMaxResults(1)
 
             ->getQuery()
             ->getOneOrNullResult();
 
-        $this->template->mostPostsUser  = $userWithMostPosts;
-        $this->template->mostTopicsUser = $userWithMostTopics;
-        $this->template->lastTopic      = $cachedLastTopic;
-        $this->template->lastUser       = $cachedLastUser;
-        $this->template->lastPost       = $cachedLastPost;
+        bdump($result);
+
+        $this->template->mostPostsUser  = $mostPostUser;
+        $this->template->mostTopicsUser = $mostTopicUser;
+        $this->template->lastTopic      = $lastTopic;
+        $this->template->lastUser       = $lastUser;
+        $this->template->lastPost       = $lastPost;
         $this->template->totalUsers     = $totalUserCount;
         $this->template->totalPosts     = $totalPostCount;
         $this->template->totalTopics    = $totalTopicCount;

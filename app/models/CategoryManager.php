@@ -34,6 +34,7 @@ class CategoryManager extends CrudManager
     {
         parent::__construct($dibi, $storage);
 
+        /*
         $this->mptt = new Zebra_Mptt(
             $dibi,
             $this->getTable(),
@@ -43,6 +44,7 @@ class CategoryManager extends CrudManager
             'category_right',
             'category_parent_id'
         );
+        */
     }
     
     /**

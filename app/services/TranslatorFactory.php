@@ -87,8 +87,8 @@ class TranslatorFactory
         $identity = $this->user->id;
         $lang     = '';
         
-        if ($identity) {
-            $lang = $identity->getData()['lang_file_name'];
+        if ($this->user->loggedIn) {
+            $lang = $this->user->getIdentity()->getData()['lang_file_name'];
         } else {
             $lang = $this->defaultLanguage->get();
         }
