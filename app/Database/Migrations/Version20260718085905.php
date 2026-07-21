@@ -34,13 +34,13 @@ final class Version20260718085905 extends AbstractMigration
         $table->addColumn('uuid', UuidType::NAME)
             ->setComment('UUID');
 
-        $table->addColumn('category_id', Types::INTEGER)
+        $table->addColumn('category_id', Types::BIGINT)
             ->setComment('Category ID');
 
-        $table->addColumn('forum_id', Types::INTEGER)
+        $table->addColumn('forum_id', Types::BIGINT)
             ->setComment('Forum ID');
 
-        $table->addColumn('user_id', Types::INTEGER)
+        $table->addColumn('user_id', Types::BIGINT)
             ->setComment('User ID');
 
         $table->addColumn('name', Types::STRING)

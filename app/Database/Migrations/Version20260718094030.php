@@ -57,8 +57,8 @@ final class Version20260718094030 extends AbstractMigration
             ->addIndex(['user_id'], 'K__Topic_watch__User_id')
             ->addIndex(['topic_id'], 'K__Topic_watch__Topic_id')
 
-            ->addForeignKeyConstraint('users', ['user_id'], ['id'], name: 'FK__Topic_watch__User_id')
-            ->addForeignKeyConstraint('topic', ['topic_id'], ['id'], name: 'FK__Topic_watch__Topic_id');
+            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Topic_watch__User_id')
+            ->addForeignKeyConstraint('topic', ['topic_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Topic_watch__Topic_id');
     }
 
     public function down(Schema $schema): void

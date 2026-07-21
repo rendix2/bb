@@ -4,6 +4,7 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
+use App\Database\EntityManagerDecorator;
 use App\Models\Entity\UserEntity;
 use App\Models\LanguageManager;
 use App\Models\Manager;
@@ -14,6 +15,7 @@ use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Localization\ITranslator;
+use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -63,7 +65,12 @@ class RegisterPresenter extends BasePresenter
      * @param LanguageManager $languageManger
      * @param UserFacade       $userFacade
      */
-    public function __construct(LanguageManager $languageManger, UserFacade $userFacade)
+    public function __construct(
+        LanguageManager $languageManger,
+        UserFacade $userFacade,
+        private readonly EntityManagerDecorator $em,
+        private readonly Passwords              $passwords
+    )
     {
         parent::__construct();
         
@@ -131,15 +138,27 @@ class RegisterPresenter extends BasePresenter
      */
     public function registerOnValidate(Form $form, ArrayHash $values)
     {
-        $user_name = $this->usersManager->getByName($values->user_name);
+        $foundUsersByUsernames = $this->em
+            ->getRepository(\App\Model\Entity\UserEntity::class)
+            ->findBy(
+                [
+                    'username' => $values->user_name,
+                ]
+            );
         
-        if ($user_name) {
+        if (count($foundUsersByUsernames)) {
             $form->addError('User name is already taken.');
         }
+
+        $foundUsersByEmails = $this->em
+            ->getRepository(\App\Model\Entity\UserEntity::class)
+            ->findBy(
+                [
+                    'email' => $values->user_email,
+                ]
+            );
         
-        $user_email = $this->usersManager->getAllByEmail($values->user_email);
-        
-        if ($user_email) {
+        if ($foundUsersByEmails) {
             $form->addError('User email is already taken.');
         }
     }
@@ -152,6 +171,12 @@ class RegisterPresenter extends BasePresenter
     public function registerUserSuccess(Form $form, ArrayHash $values)
     {
         $user = new UserEntity();
+
+        $useEntity = new \App\Model\Entity\UserEntity();
+        $useEntity->username = $values->user_name;
+        $useEntity->password = $this->passwords->hash($values->user_password);
+        $useEntity->email = $values->user_email;
+
         $user->setUser_name($values->user_name)
              ->setUser_password($values->user_password)
              ->setUser_email($values->user_email)

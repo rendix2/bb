@@ -13,7 +13,7 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  * @package App\Models\Entity
  */
-#[Deprecated]
+#[\JetBrains\PhpStorm\Deprecated]
 class CategoryEntity extends Entity
 {
     /**

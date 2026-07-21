@@ -8,6 +8,8 @@ namespace App\Models;
  * @author rendix2
  * @packade App\Models
  */
+#[\JetBrains\PhpStorm\Deprecated]
+
 class Tables
 {
 

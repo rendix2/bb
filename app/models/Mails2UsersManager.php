@@ -11,6 +11,8 @@ use Nette\Caching\IStorage;
  * @author rendix2
  * @package App\Models
  */
+#[\JetBrains\PhpStorm\Deprecated]
+
 class Mails2UsersManager extends MNManager
 {
     /**

@@ -11,3 +11,4 @@ www/postFiles/*
 .idea
 .docker/mysql/data
 .docker/postgres/data
+.docker/redis/data

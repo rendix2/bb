@@ -12,6 +12,7 @@ use Nette\Utils\DateTime;
  * @author rendix2
  * @package App\Models\Entity\Base
  */
+#[\JetBrains\PhpStorm\Deprecated]
 abstract class Entity
 {
     use SmartObject;

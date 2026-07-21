@@ -33,10 +33,10 @@ final class Version20260718085213 extends AbstractMigration
         $table->addColumn('uuid', UuidType::NAME)
             ->setComment('UUID');
 
-        $table->addColumn('user_id', Types::INTEGER)
+        $table->addColumn('user_id', Types::BIGINT)
             ->setComment('User ID');
 
-        $table->addColumn('group_id', Types::INTEGER)
+        $table->addColumn('group_id', Types::BIGINT)
             ->setComment('Group ID');
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
@@ -57,8 +57,8 @@ final class Version20260718085213 extends AbstractMigration
             ->addIndex(['user_id'], 'K__User_group__User_id')
             ->addIndex(['group_id'], 'K__User_group__Group_id')
 
-            ->addForeignKeyConstraint('users', ['user_id'], ['id'], name: 'FK__User_group__User_id')
-            ->addForeignKeyConstraint('group', ['group_id'], ['id'], name: 'FK__User_group__Group_id');
+            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__User_group__User_id')
+            ->addForeignKeyConstraint('group', ['group_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__User_group__Group_id');
     }
 
     public function down(Schema $schema): void

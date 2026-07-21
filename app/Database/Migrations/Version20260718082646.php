@@ -33,12 +33,11 @@ final class Version20260718082646 extends AbstractMigration
         $table->addColumn('uuid', UuidType::NAME)
             ->setComment('UUID');
 
-        $table->addColumn('user_id', Types::INTEGER)
+        $table->addColumn('user_id', Types::BIGINT)
             ->setComment('User ID');
 
-        $table->addColumn('forum_id', Types::INTEGER)
+        $table->addColumn('forum_id', Types::BIGINT)
             ->setComment('Forum ID');
-
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
@@ -58,8 +57,8 @@ final class Version20260718082646 extends AbstractMigration
             ->addIndex(['user_id'], 'K__Moderator__User_id')
             ->addIndex(['forum_id'], 'K__Moderator__Forum_id')
 
-            ->addForeignKeyConstraint('users', ['user_id'], ['id'], name: 'FK__Moderator__User_id')
-            ->addForeignKeyConstraint('forum', ['forum_id'], ['id'], name: 'FK__Moderator__Forum_id');
+            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Moderator__User_id')
+            ->addForeignKeyConstraint('forum', ['forum_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Moderator__Forum_id');
     }
 
     public function down(Schema $schema): void

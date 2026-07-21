@@ -56,22 +56,18 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
      */
     const MODERATOR_END_SPACE = 'moderator';
     
-    /**
-     * @var BanManager $banManager
-     * @inject
-     */
-    public $banManager;
+
+
+    #[Nette\DI\Attributes\Inject]
+    public BanManager $banManager;
       
     /**
      * @var BootstrapForm $bootStrapForm
      */
-    private $bootstrapForm;
+    private BootstrapForm $bootstrapForm;
 
-    /**
-     * @var TranslatorFactory $translatorFactory
-     * @inject
-     */
-    public $translatorFactory;
+    #[Nette\DI\Attributes\Inject]
+    public TranslatorFactory $translatorFactory;
 
     /**
      * BasePresenter constructor.
@@ -81,16 +77,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         parent::__construct();
         
         $this->bootstrapForm = BootstrapForm::create();
-    }
-
-    /**
-     * BasePresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->banManager        = null;
-        $this->bootstrapForm     = null;
-        $this->translatorFactory = null;
     }
 
     /**
@@ -121,21 +107,15 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         $this->template->page        = $this->getParameter('page');
     }
     
-    /**
-     * @return BootstrapForm
-     */
-    public function getBootstrapForm()
+    public function getBootstrapForm(): BootstrapForm
     {
         return $this->bootstrapForm;
     }
-    
-    /**
-     * ban user
-     */
-    private function banUser()
+
+    private function banUser(): void
     {
         $bans     = $this->banManager->getAllCached();
-        $user     = $this->user;
+        $user     = $this->getUser();
         $identity = $user->getIdentity();
         
         
@@ -144,59 +124,44 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             foreach ($bans as $ban) {
                 if ($identity && $user->loggedIn) {
                     if ($ban->ban_email === $identity->getData()['user_email'] || $ban->ban_user_name === $identity->getData()['user_name']) {
-                        $this->error('Banned', IResponse::S403_FORBIDDEN);
+                        $this->error('Banned', IResponse::S403_Forbidden);
                     }
                 }
 
                 if ($ban->ban_ip === $this->getHttpRequest()->getRemoteAddress()) {
-                    $this->error('Banned', IResponse::S403_FORBIDDEN);
+                    $this->error('Banned', IResponse::S403_Forbidden);
                 }
             }
         }
     }
 
-    /**
-     * @return bool
-     */
-    protected function checkLoggedIn()
+    protected function checkLoggedIn(): bool
     {
-        $identity = $this->user->identity;
+        $identity = $this->getUser()->identity;
         
         if (!$identity) {
             return false;
         }
         
-        return $this->user->loggedIn;
+        return $this->getUser()->loggedIn;
     }
 
-    /**
-     * @return bool
-     */
-    protected function checkUserLoggedIn()
+    protected function checkUserLoggedIn(): bool
     {
         return $this->checkAdminLoggedIn() && !in_array('guest', $this->user->roles, true);
     }
 
-    /**
-     * @return bool
-     */
-    protected function checkJuniorAdminLoggedIn()
+    protected function checkJuniorAdminLoggedIn(): bool
     {
-        return $this->checkLoggedIn() && $this->user->isInRole('juniorAdmin');
+        return $this->checkLoggedIn() && $this->getUser()->isInRole('juniorAdmin');
     }
 
-    /**
-     * @return bool
-     */
-    protected function checkAdminLoggedIn()
+    protected function checkAdminLoggedIn(): bool
     {
-        return $this->checkLoggedIn() && $this->user->isInRole('admin');
+        return $this->checkLoggedIn() && $this->getUser()->isInRole('admin');
     }
 
-    /**
-     * @return MenuControl
-     */
-    protected function createComponentMenuAdmin()
+    protected function createComponentMenuAdmin(): MenuControl
     {
         $leftMenu = [
             0 =>  ['presenter' => ':Admin:Index:',    'title' => 'menu_index'],

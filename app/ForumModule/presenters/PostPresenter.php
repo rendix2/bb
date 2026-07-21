@@ -7,8 +7,10 @@ use App\Authorization\Scopes\PostScope;
 use App\Controls\BBMailer;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
+use App\Database\EntityManagerDecorator;
 use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
+use App\Model\Entity\UserEntity;
 use App\Models\Entity\FileEntity;
 use App\Models\Entity\PollEntity;
 use App\Models\Entity\PostEntity;
@@ -21,7 +23,6 @@ use App\Models\PostManager;
 use App\Models\ReportManager;
 use App\Models\TopicWatchManager;
 use App\Models\Traits\CategoriesTrait;
-use App\Models\Traits\UsersTrait;
 use App\Settings\PostSetting;
 use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Form;
@@ -43,10 +44,6 @@ use Nette\Utils\DateTime;
 class PostPresenter extends BaseForumPresenter
 {
     use CategoriesTrait;
-    //use \App\Models\Traits\ForumsTrait;
-    //use \App\Models\Traits\TopicsTrait;
-    //use \App\Models\Traits\PostTrait;
-    use UsersTrait;
 
     /**
      * @var TopicWatchManager $topicWatchManager
@@ -112,30 +109,13 @@ class PostPresenter extends BaseForumPresenter
      *
      * @param PostManager $manager
      */
-    public function __construct(PostManager $manager)
+    public function __construct(
+
+        PostManager $manager,
+        private readonly EntityManagerDecorator $em,
+    )
     {
         parent::__construct($manager);
-    }
-    
-    /**
-     * PostPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->categoryManager   = null;
-        $this->forumsManager       = null;
-        $this->topicsManager       = null;
-        $this->postsManager        = null;
-        $this->usersManager        = null;
-        $this->topicWatchManager   = null;
-        $this->reportManager       = null;
-        $this->bbMailer            = null;
-        $this->postFacade          = null;
-        $this->postsHistoryManager = null;
-        $this->postSetting         = null;
-        $this->storage             = null;
-        
-        parent::__destruct();
     }
 
     /**
@@ -331,12 +311,20 @@ class PostPresenter extends BaseForumPresenter
      */
     public function onValidate(Form $form, ArrayHash $values)
     {
-        $user_id            = $this->user->id;
-        $user               = $this->usersManager->getById($user_id);
+        $user_id = $this->getUser()->getId();
+
+        $userEntity = $this->em
+            ->getRepository(UserEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $user_id,
+                ]
+            );
+
         $minTimeInterval    = $this->postSetting->get()['minUserTimeInterval'];
         $doublePostInterval = $this->postSetting->get()['minDoublePostTimeInterval'];
 
-        if (time() - $user->user_last_post_time <= $minTimeInterval) {
+        if (time() - $userEntity->user_last_post_time <= $minTimeInterval) {
             $form->addError('You cannot send new post so soon.', false);
         }
 

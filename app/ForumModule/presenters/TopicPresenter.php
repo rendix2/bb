@@ -48,11 +48,6 @@ use Nette\Utils\DateTime;
  */
 class TopicPresenter extends BaseForumPresenter
 {
-    use CategoriesTrait;
-    //use \App\Models\Traits\ForumsTrait;
-    //use \App\Models\Traits\TopicsTrait;
-    //use \App\Models\Traits\PostTrait;
-
     /**
      * @var TopicsSetting $topicSetting
      * @inject

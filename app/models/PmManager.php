@@ -15,6 +15,8 @@ use Nette\Security\User;
  * @author rendix2
  * @package App\Models
  */
+#[\JetBrains\PhpStorm\Deprecated]
+
 class PmManager extends CrudManager
 {
    

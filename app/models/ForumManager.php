@@ -17,6 +17,8 @@ use Zebra_Mptt;
  * @author rendix2
  * @package App\Models
  */
+#[\JetBrains\PhpStorm\Deprecated]
+
 class ForumManager extends CrudManager
 {
     /**

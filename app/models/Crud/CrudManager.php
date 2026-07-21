@@ -21,6 +21,7 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  * @package App\Models\Crud
  */
+#[\JetBrains\PhpStorm\Deprecated]
 abstract class CrudManager extends Manager //implements ICrudManager
 {
     /**

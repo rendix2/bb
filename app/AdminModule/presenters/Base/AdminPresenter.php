@@ -17,24 +17,15 @@ abstract class AdminPresenter extends CrudPresenter
     /**
      * @var ITranslator $adminTranslator
      */
-    private $adminTranslator;
-    
-    /**
-     * AdminPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->adminTranslator = null;
-        
-        parent::__destruct();
-    }
+    private ITranslator $adminTranslator;
+
 
     /**
      * @param mixed $element
      */
     public function checkRequirements($element): void
     {
-        $user = $this->user;
+        $user = $this->getUser();
         
         $user->getStorage()->setNamespace(self::BECK_END_NAMESPACE);
         
@@ -69,19 +60,12 @@ abstract class AdminPresenter extends CrudPresenter
         $this->template->setTranslator($this->adminTranslator);
     }
     
-    /**
-     * @return ITranslator
-     */
-    public function getTranslator()
+    public function getTranslator(): ITranslator
     {
         return $this->adminTranslator;
     }
     
-    /**
-     *
-     * @return BootstrapForm
-     */
-    public function getBootstrapForm()
+    public function getBootstrapForm(): BootstrapForm
     {
         $bf = parent::getBootstrapForm();
         $bf->setTranslator($this->getTranslator());

@@ -20,29 +20,29 @@ class ThanksFacade
     /**
      * @var ThankManager $thanksManager
      */
-    private $thanksManager;
+    private ThankManager $thanksManager;
     
     /**
      * @var UsersManager $usersManager
      */
-    private $usersManager;
+    private UsersManager $usersManager;
 
     /**
      * @var PostManager $postsManager
      */
-    private $postsManager;
+    private PostManager $postsManager;
     
     /**
      *
      * @var TopicManager $topicsManager
      */
-    private $topicsManager;
+    private TopicManager $topicsManager;
 
     /**
      *
      * @var ForumManager $forumsManager
      */
-    private $forumsManager;
+    private ForumManager $forumsManager;
 
     /**
      * ThanksFacade constructor
@@ -65,18 +65,6 @@ class ThanksFacade
         $this->postsManager  = $postsManager;
         $this->topicsManager = $topicsManager;
         $this->forumsManager = $forumsManager;
-    }
-
-    /**
-     * ThanksFacade destructor
-     */
-    public function __destruct()
-    {
-        $this->thanksManager = null;
-        $this->usersManager  = null;
-        $this->postsManager  = null;
-        $this->topicsManager = null;
-        $this->forumsManager = null;
     }
 
     /**

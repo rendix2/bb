@@ -25,10 +25,7 @@ class FaqPresenter extends CrudPresenter
         parent::__construct($manager);
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): BootstrapForm
     {
         $form = $this->getBootstrapForm();
 

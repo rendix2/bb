@@ -11,6 +11,8 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  * @package App\Models
  */
+#[\JetBrains\PhpStorm\Deprecated]
+
 class CategoryFacade
 {
     /**

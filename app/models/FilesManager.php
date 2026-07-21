@@ -8,6 +8,8 @@ namespace App\Models;
  * @author rendix2
  * @package App\Models
  */
+#[\JetBrains\PhpStorm\Deprecated]
+
 class FilesManager extends Crud\CrudManager
 {
 }

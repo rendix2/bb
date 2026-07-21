@@ -23,8 +23,6 @@ use App\Settings\TopicsSetting;
 final class ForumPresenter extends BaseForumPresenter
 {
     use CategoriesTrait;
-    //use \App\Models\Traits\ForumsTrait;
-    //use \App\Models\Traits\TopicsTrait;
     
     /**
      *

@@ -24,6 +24,8 @@ use Nette\Caching\IStorage;
  * @author rendix2
  * @package App\Models
  */
+#[\JetBrains\PhpStorm\Deprecated]
+
 abstract class MNManager extends Manager
 {
     const ALIAS = 'relation';

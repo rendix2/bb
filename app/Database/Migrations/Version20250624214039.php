@@ -24,7 +24,7 @@ final class Version20250624214039 extends AbstractMigration
     {
         $table = $schema->createTable('public.user_login_attempt');
 
-        $table->addColumn('id', Types::INTEGER)
+        $table->addColumn('id', Types::BIGINT)
             ->setAutoincrement(true)
             ->setComment('ID');
 

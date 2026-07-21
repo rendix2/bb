@@ -10,6 +10,7 @@ use App\Models\Crud\CrudNullManager;
  * @author rendix2
  * @package App\Models
  */
+#[\JetBrains\PhpStorm\Deprecated]
 class CacheManager extends CrudNullManager
 {
 }

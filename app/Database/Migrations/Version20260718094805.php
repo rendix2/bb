@@ -67,17 +67,18 @@ final class Version20260718094805 extends AbstractMigration
 
         $table
             ->setComment('Post Reports')
+
             ->addIndex(['user_id'], 'K__Report__User_id')
             ->addIndex(['category_id'], 'K__Report__Category_id')
             ->addIndex(['forum_id'], 'K__Report__Forum_id')
             ->addIndex(['topic_id'], 'K__Report__Topic_id')
             ->addIndex(['post_id'], 'K__Report__Post_id')
 
-            ->addForeignKeyConstraint('users', ['user_id'], ['id'], name: 'FK__Report__User_id')
-            ->addForeignKeyConstraint('category', ['category_id'], ['id'], name: 'FK__Report__Category_id')
-            ->addForeignKeyConstraint('forum', ['forum_id'], ['id'], name: 'FK__Report__Forum_id')
-            ->addForeignKeyConstraint('topic', ['topic_id'], ['id'], name: 'FK__Report__Topic_id')
-            ->addForeignKeyConstraint('post', ['post_id'], ['id'], name: 'FK__Report__Post_id');
+            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__User_id')
+            ->addForeignKeyConstraint('category', ['category_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Category_id')
+            ->addForeignKeyConstraint('forum', ['forum_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Forum_id')
+            ->addForeignKeyConstraint('topic', ['topic_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Topic_id')
+            ->addForeignKeyConstraint('post', ['post_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Post_id');
 
     }
 

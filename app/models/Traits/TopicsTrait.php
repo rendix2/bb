@@ -18,7 +18,7 @@ trait TopicsTrait
      * @var TopicManager $topicsManager
      * @inject
      */
-    public $topicsManager;
+    public TopicManager $topicsManager;
     
     /**
      *
@@ -28,7 +28,7 @@ trait TopicsTrait
      *
      * @return TopicEntity
      */
-    public function checkTopicParam($topic_id, $category_id, $forum_id)
+    public function checkTopicParam(int $topic_id, int $category_id, int $forum_id)
     {
         // topic check
         if (!isset($topic_id)) {
@@ -56,7 +56,7 @@ trait TopicsTrait
         }
 
         if ($topic->getTopic_locked()) {
-            $this->error('Topic is locked.', IResponse::S403_FORBIDDEN);
+            $this->error('Topic is locked.', IResponse::S403_Forbidden);
         }
         
         return $topic;

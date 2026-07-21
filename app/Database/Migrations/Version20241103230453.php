@@ -24,7 +24,7 @@ final class Version20241103230453 extends AbstractMigration
     {
         $table = $schema->createTable('public.user_auto_login');
 
-        $table->addColumn('id', Types::INTEGER)
+        $table->addColumn('id', Types::BIGINT)
             ->setAutoincrement(true)
             ->setComment('ID');
 
@@ -57,8 +57,10 @@ final class Version20241103230453 extends AbstractMigration
 
         $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('User auto logins')
+
             ->addIndex(['user_id'], 'K__User_auto_login__User_id')
-            ->addForeignKeyConstraint('users', ['user_id'], ['id'], name: 'FK__User_auto_login__User_id');
+
+            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__User_auto_login__User_id');
     }
 
     public function down(Schema $schema) : void

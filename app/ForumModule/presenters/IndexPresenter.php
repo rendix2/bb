@@ -6,16 +6,12 @@ use App\Database\EntityManagerDecorator;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\TopicEntity;
-use App\Model\Entity\UserEmailEntity;
 use App\Model\Entity\UserEntity;
 use App\Models\CategoryManager;
 use App\Models\Crud\CrudNullManager;
 use App\Model\Entity\CategoryEntity;
 use App\Model\Entity\ForumEntity;
 use App\Models\ModeratorManager;
-use App\Models\Traits\UsersTrait;
-use Nette\Caching\Cache;
-use Nette\Caching\IStorage;
 
 /**
  * Description of IndexPresenter
@@ -26,33 +22,6 @@ use Nette\Caching\IStorage;
  */
 class IndexPresenter extends BaseForumPresenter
 {
-    use UsersTrait;
-    
-    /**
-     * @var string
-     */
-    const CACHE_KEY_LAST_USER = 'lastUser';
-
-    /**
-     * @var string
-     */
-    const CACHE_KEY_LAST_TOPIC = 'lastTopic';
-
-    /**
-     * @var string
-     */
-    const CACHE_KEY_LAST_POST = 'lastPost';
-
-    /**
-     * @var string
-     */
-    const CACHE_NAMESPACE = 'BBIndex';
-
-    /**
-     * @var Cache $cache
-     */
-    private $cache;
-
     /**
      *
      * @var ModeratorManager $moderatorManager
@@ -65,17 +34,13 @@ class IndexPresenter extends BaseForumPresenter
      *
      * @param CrudNullManager $crudNullManager
      * @param EntityManagerDecorator $em
-     * @param IStorage $storage
      */
     public function __construct(
         CrudNullManager $crudNullManager,
         private readonly EntityManagerDecorator $em,
-        IStorage          $storage,
     )
     {
         parent::__construct($crudNullManager);
-        
-        $this->cache = new Cache($storage, self::CACHE_NAMESPACE);
     }
 
     /**
@@ -86,8 +51,6 @@ class IndexPresenter extends BaseForumPresenter
         $this->forumsManager     = null;
         $this->topicsManager     = null;
         $this->postsManager      = null;
-        $this->usersManager      = null;
-        $this->cache             = null;
         $this->moderatorsManager = null;
 
         parent::__destruct();
@@ -215,7 +178,7 @@ class IndexPresenter extends BaseForumPresenter
             ->findOneBy([], ['id' => 'DESC']);
 
         $lastUser = $this->em
-            ->getRepository(UserEmailEntity::class)
+            ->getRepository(UserEntity::class)
             ->findOneBy([], ['id' => 'DESC']);
 
         $totalUserCount = $this->em

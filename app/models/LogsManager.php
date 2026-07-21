@@ -10,6 +10,8 @@ use App\Models\Crud\CrudManager;
  * @author rendix2
  * @package App\Models
  */
+#[\JetBrains\PhpStorm\Deprecated]
+
 class LogsManager extends CrudManager
 {
 }

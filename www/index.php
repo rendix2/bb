@@ -2,7 +2,6 @@
 
 use App\Bootstrap;
 
-require __DIR__ . '/../app/Bootstrap.php';
 require __DIR__ . '/../vendor/autoload.php';
 
 Bootstrap::runWebApplication();

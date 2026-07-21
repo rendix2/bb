@@ -33,10 +33,10 @@ final class Version20260717221524 extends AbstractMigration
         $table->addColumn('uuid', UuidType::NAME)
             ->setComment('UUID');
 
-        $table->addColumn('parent_id', Types::INTEGER)
+        $table->addColumn('parent_id', Types::BIGINT)
             ->setComment('Parent ID');
 
-        $table->addColumn('category_id', Types::INTEGER)
+        $table->addColumn('category_id', Types::BIGINT)
             ->setComment('Category ID');
 
         $table->addColumn('name', Types::STRING)

@@ -92,7 +92,7 @@ class LoginPresenter extends BasePresenter
     {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->translatorFactory->getForumTranslator());
+        $this->temgeplate->setTranslator($this->translatorFactory->getForumTranslator());
     }
 
     /**

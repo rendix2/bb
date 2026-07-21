@@ -124,28 +124,17 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         parent::__destruct();
     }
 
-    /**
-     *
-     * @return Manager
-     */
-    public function getManager()
+    public function getManager(): Manager
     {
         return $this->manager;
     }
 
-    /**
-     * @return ITranslator
-     */
-    public function getTranslator()
+    public function getTranslator(): ITranslator
     {
         return $this->translator;
     }
 
-    /**
-     *
-     * @return BootstrapForm
-     */
-    public function getBootstrapForm()
+    public function getBootstrapForm(): BootstrapForm
     {
         $bf = parent::getBootstrapForm();
         $bf->setTranslator($this->getTranslator());
@@ -158,7 +147,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      */
     public function checkRequirements($element): void
     {
-        $user = $this->user;
+        $user = $this->getUser();
         
         $user->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
              
@@ -192,29 +181,14 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     /**
      * @return User
      */
-    protected function getLoggedInUser()
+    protected function getLoggedInUser(): User
     {
-        $identity = new Identity($this->user->id, $this->user->roles);
+        $identity = new Identity($this->getUser()->id, $this->getUser()->roles);
         
         return new User($identity);
     }
 
-    /**
-     * @param $id
-     *
-     * @return CategoryScope
-     */
-    protected function loadCategory($id)
-    {
-        return new CategoryScope();
-    }
-
-    /**
-     * @param ForumEntity $forum
-     *
-     * @return ForumScope
-     */
-    protected function loadForum(ForumEntity $forum)
+    protected function loadForum(ForumEntity $forum): ForumScope
     {
         $moderators = $this->moderators->getAllByRight($forum->getForum_id());
         $moderatorsI = [];
@@ -235,7 +209,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      *
      * @return TopicScope
      */
-    protected function loadTopic(ForumEntity $forum, TopicEntity $topic)
+    protected function loadTopic(ForumEntity $forum, TopicEntity $topic): TopicScope
     {
         $topicIdentity = new Identity($topic->getTopic_first_user_id(), [TopicScope::ROLE_AUTHOR]);
         $topicAuthor   = new User($topicIdentity);
@@ -252,7 +226,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      *
      * @return PostScope
      */
-    protected function loadPost(ForumEntity $forumEntity, TopicEntity $topicEntity, PostEntity $postEntity)
+    protected function loadPost(ForumEntity $forumEntity, TopicEntity $topicEntity, PostEntity $postEntity): PostScope
     {
         $postIdentity  = new Identity($postEntity->getPost_user_id(), [PostScope::ROLE_AUTHOR]);
                         
@@ -271,12 +245,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         }
     }
 
-    /**
-     * @param IAuthorizationScope $scope
-     * @param array               $action
-     * @return bool
-     */
-    protected function isAllowed(IAuthorizationScope $scope, array $action)
+    protected function isAllowed(IAuthorizationScope $scope, array $action): bool
     {
         return $this->authorizator->isAllowed($this->getLoggedInUser()->getIdentity(), $scope, $action);
     }

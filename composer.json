@@ -63,12 +63,29 @@
     },
     "require-dev": {
         "nette/tester": "^v2.3.5",
-        "dg/composer-frontline": "v0.2"
+        "dg/composer-frontline": "v0.2",
+        "ninjify/coding-standard": "^0.12.1",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-nette": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "roave/security-advisories": "dev-latest",
+        "symfony/thanks": "^1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app"
+        }
     },
     "minimum-stability": "stable",
     "config": {
         "allow-plugins": {
-            "dg/composer-frontline": true
+            "dg/composer-frontline": true,
+            "symfony/thanks": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "phpstan/extension-installer": true
         }
     }
 }

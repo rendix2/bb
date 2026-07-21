@@ -64,7 +64,7 @@ final class Version20260718095044 extends AbstractMigration
             ->setComment('Sessions')
             ->addIndex(['user_id'], 'K__Session__User_id')
 
-            ->addForeignKeyConstraint('users', ['user_id'], ['id'], name: 'FK__Session__User_id');
+            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Session__User_id');
     }
 
     public function down(Schema $schema): void

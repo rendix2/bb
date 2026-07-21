@@ -22,7 +22,6 @@ use App\Models\ModeratorManager;
 use App\Models\RankManager;
 use App\Models\ReportManager;
 use App\Models\TopicWatchManager;
-use App\Models\Traits\UsersTrait;
 use App\Models\UsersManager;
 use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
@@ -44,10 +43,6 @@ use Nette\Utils\DateTime;
  */
 class UserPresenter extends BaseForumPresenter
 {
-    use UsersTrait;
-    //use \App\Models\Traits\TopicsTrait;
-    //use \App\Models\Traits\PostTrait;
-    
     /**
      * @var LanguageManager $languagesManager
      * @inject
@@ -148,7 +143,6 @@ class UserPresenter extends BaseForumPresenter
      */
     public function __destruct()
     {
-        $this->usersManager          = null;
         $this->topicsManager         = null;
         $this->postsManager          = null;
         $this->languagesManager      = null;
@@ -183,7 +177,7 @@ class UserPresenter extends BaseForumPresenter
     public function actionLogout()
     {
         $this->sessionsManager->deleteBySession($this->session->getId());
-        $this->user->logout(true);
+        $this->getUser()->logout(true);
 
         $this->flashMessage('Successfully logged out.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('Index:default');

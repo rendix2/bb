@@ -19,6 +19,8 @@ use Tracy\Debugger;
  * @author rendix2
  * @package App\Models
  */
+#[\JetBrains\PhpStorm\Deprecated]
+
 abstract class Manager extends Tables
 {
     /**

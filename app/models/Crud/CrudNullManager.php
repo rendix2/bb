@@ -14,6 +14,8 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  * @package App\Models\Crud
  */
+#[\JetBrains\PhpStorm\Deprecated]
+
 class CrudNullManager extends CrudManager implements ICrudManager
 {
     /**

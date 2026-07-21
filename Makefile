@@ -67,4 +67,4 @@ update:
 	npm run build
 
 phpstan: dirs-build git php
-	php vendor/bin/phpstan analyse -vvv
+	php vendor/bin/phpstan analyse -vvv --memory-limit 2048M
