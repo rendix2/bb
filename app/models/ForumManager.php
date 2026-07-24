@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\ForumEntity;
 use App\Models\Crud\CrudManager;
 use dibi;
 use Dibi\Connection;
@@ -22,11 +24,6 @@ use Zebra_Mptt;
 class ForumManager extends CrudManager
 {
     /**
-     * @var Zebra_Mptt $mptt
-     */
-    private $mptt;
-
-    /**
      * ForumsManager constructor.
      *
      * @param Connection $dibi
@@ -34,40 +31,13 @@ class ForumManager extends CrudManager
      *
      * @throws Exception
      */
-    public function __construct(Connection $dibi, IStorage $storage)
+    public function __construct(
+        private readonly EntityManagerDecorator $em,
+        Connection $dibi,
+        IStorage $storage
+    )
     {
         parent::__construct($dibi, $storage);
-
-        /*
-        $this->mptt = new Zebra_Mptt(
-            $dibi,
-            $this->getTable(),
-            $this->getPrimaryKey(),
-            'forum_name',
-            'forum_left',
-            'forum_right',
-            'forum_parent_id'
-        );
-        */
-    }
-
-    /**
-     * ForumsManager destructor
-     */
-    public function __destruct()
-    {
-        $this->mptt = null;
-
-        parent::__destruct();
-    }
-    
-    /**
-     *
-     * @return Zebra_Mptt
-     */
-    public function getMptt()
-    {
-        return $this->mptt;
     }
 
     /**
@@ -75,7 +45,7 @@ class ForumManager extends CrudManager
      *
      * @return Fluent
      */
-    public function getFluentByCategory($category_id)
+    public function getFluentByCategory(int $category_id)
     {
         return $this->getAllFluent()
             ->where('[forum_category_id] = %i', $category_id);
@@ -87,7 +57,7 @@ class ForumManager extends CrudManager
      *
      * @return Row[]
      */
-    public function getAllByCategory($category_id)
+    public function getAllByCategory(int $category_id)
     {
         return $this->getFluentByCategory($category_id)
             ->fetchAll();
@@ -98,43 +68,10 @@ class ForumManager extends CrudManager
      *
      * @return Row[]
      */
-    public function getAllByParent($forum_id)
+    public function getAllByParent(int $forum_id): array
     {
         return $this->getAllFluent()
             ->where('[forum_parent_id] = %i', $forum_id)
-            ->fetchAll();
-    }
-
-    /**
-     * @param int $forum_id
-     *
-     * @return Row|false
-     */
-    public function getParentForumsByForumId($forum_id)
-    {
-        return $this->dibi
-            ->select('f2.*')
-            ->from($this->getTable())
-            ->as('f1')
-            ->innerJoin($this->getTable())
-            ->as('f2')
-            ->on('[f1.forum_parent_id] = [f2.forum_id]')
-            ->where('[f1.forum_id] = %i', $forum_id)
-            ->fetch();
-    }
-
-    /**
-     * @param int $category_id
-     *
-     * @return Row[]
-     */
-    public function getAllForumsFirstLevel($category_id)
-    {
-        return $this->getAllFluent()
-            ->where('[forum_category_id] = %i', $category_id)
-            ->where('[forum_active] = %i', 1)
-            ->where('[forum_parent_id] = %i', 0)
-            ->orderBy('forum_order', dibi::ASC)
             ->fetchAll();
     }
 
@@ -144,7 +81,7 @@ class ForumManager extends CrudManager
      *
      * @return array
      */
-    public function createForums($forums, $forum_parent_id)
+    public function createForums($forums, $forum_parent_id): array
     {
         $result = [];
 
@@ -162,40 +99,32 @@ class ForumManager extends CrudManager
     }
 
     /**
-     * @param int  $forum_id
-     * @param int  $target_forum_id
-     * @param bool $position
-     *
-     * @return bool
+     * @param int $forumId
+     * @return ForumEntity[]
      */
-    public function move($forum_id, $target_forum_id, $position = false)
+    public function getBreadCrumb(int $forumId): array
     {
-        $this->deleteCache();
+        $forum = $this->em
+            ->getRepository(ForumEntity::class)
+            ->find($forumId);
 
-        return $this->mptt->move($forum_id, $target_forum_id, $position);
-    }
+        $crumbs = [];
 
-    /**
-     * @param $forum_id
-     *
-     * @return array
-     */
-    public function getBreadCrumb($forum_id)
-    {
-        $forums = $this->mptt->getBreadCrumb($forum_id);
+        $current = $forum;
+        while ($current !== null) {
+            array_unshift($crumbs, [
+                'link'   => 'Forum:default',
+                'params' => [
+                    'category_id' => $current->getCategory()->getId(),
+                    'forum_id'    => $current->getId()
+                ],
+                'text'   => $current->getName(),
+                't'      => 0
+            ]);
 
-        $bcForum = [];
-
-        foreach ($forums as $forum) {
-            $tmp = [];
-            $tmp['link'] = 'Forum:default';
-            $tmp['params'] = ['category_id' => $forum->forum_category_id, 'forum_id' => $forum->forum_id,];
-            $tmp['text'] = $forum->forum_name;
-            $tmp['t'] = 0;
-
-            $bcForum[] = $tmp;
+            $current = $current->getParent();
         }
 
-        return $bcForum;
+        return $crumbs;
     }
 }

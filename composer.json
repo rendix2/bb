@@ -72,7 +72,8 @@
         "phpstan/phpstan-nette": "^2.0",
         "phpstan/phpstan-strict-rules": "^2.0",
         "roave/security-advisories": "dev-latest",
-        "symfony/thanks": "^1"
+        "symfony/thanks": "^1",
+        "rector/rector": "^2.5"
     },
     "autoload": {
         "psr-4": {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Database\EntityManagerDecorator;
 use App\Models\Entity\ForumEntity;
 use App\Models\Entity\TopicEntity;
 use Nette\Utils\ArrayHash;
@@ -41,6 +42,7 @@ class ForumFacade
      * @param TopicManager $topicsManager
      */
     public function __construct(
+        private readonly EntityManagerDecorator $em,
         ForumManager $forumsManager,
         TopicFacade   $topicFacade,
         TopicManager $topicsManager
@@ -60,40 +62,39 @@ class ForumFacade
         $this->forumsManager = null;
     }
 
+
     /**
-     * @param ForumEntity $forum
-     *
-     * @return int
-     */
-    public function add(ForumEntity $forum)
-    {
-        $forum_id = $this->forumsManager->getMptt()->add($forum->getForum_parent_id(), $forum->getForum_name());
-        
-        $forum->setForum_id($forum_id);
-        
-        $this->forumsManager->update($forum->getForum_id(), $forum->getArrayHash());
-        
-        return $forum->getForum_id();
-    }
-    
-    /**
-     *
-     * @param int $item_id
-     * @param ArrayHash $item_data
-     *
+     * @param int       $itemId
+     * @param ArrayHash $itemData
      * @return bool
      */
-    public function update($item_id, ArrayHash $item_data)
+    public function update(int $itemId, ArrayHash $itemData): bool
     {
-        $forum = $this->forumsManager->getById($item_id);
-        
-        if ($forum->forum_parent_id !== $item_data->forum_parent_id) {
-            $this->forumsManager->getMptt()->move($item_id, $item_data->forum_parent_id);
-            
-            unset($item_data->forum_parent_id);
+        $forum = $this->em
+            ->getRepository(\App\Model\Entity\ForumEntity::class)
+            ->find($itemId);
+
+        if ($forum === null) {
+            return false;
         }
-        
-        return $this->forumsManager->update($item_id, $item_data);
+
+        if (isset($itemData->forum_parent_id)) {
+            $parent = $itemData->forum_parent_id
+                ? $this->em->getRepository(\App\Model\Entity\ForumEntity::class)->find($itemData->forum_parent_id)
+                : null;
+
+            $forum->parent($parent);
+
+            unset($itemData->forum_parent_id);
+        }
+
+        if (isset($itemData->forum_name)) {
+            $forum->setName($itemData->forum_name);
+        }
+
+        $this->em->flush();
+
+        return true;
     }
 
     /**

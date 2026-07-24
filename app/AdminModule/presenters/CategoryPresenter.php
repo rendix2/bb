@@ -6,6 +6,7 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
+use App\Database\EntityManagerDecorator;
 use App\Models\CategoryManager;
 use App\Models\CategoryFacade;
 use App\Models\Entity\CategoryEntity;
@@ -43,7 +44,10 @@ class CategoryPresenter extends AdminPresenter
      *
      * @param CategoryManager $manager
      */
-    public function __construct(CategoryManager $manager)
+    public function __construct(
+        private readonly EntityManagerDecorator $em,
+        CategoryManager $manager
+    )
     {
         parent::__construct($manager);
     }
@@ -66,8 +70,14 @@ class CategoryPresenter extends AdminPresenter
     public function renderDefault($page = 1)
     {
         parent::renderDefault($page);
+
+        $allCategories = $this->em
+            ->getRepository(\App\Model\Entity\CategoryEntity::class)
+            ->findAll();
+
+        $rootCategories = array_filter($allCategories, fn($f) => $f->getParent() === null);
         
-        $this->template->tree = $this->getManager()->getMptt()->get_tree(0);
+        $this->template->tree = $rootCategories;
     }
 
     /**

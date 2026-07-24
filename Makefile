@@ -66,5 +66,8 @@ update:
 	npm update
 	npm run build
 
-phpstan: dirs-build git php
+phpstan:
 	php vendor/bin/phpstan analyse -vvv --memory-limit 2048M
+
+rector:
+	vendor/bin/rector
