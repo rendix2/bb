@@ -12,6 +12,7 @@ use App\Models\Crud\CrudNullManager;
 use App\Model\Entity\CategoryEntity;
 use App\Model\Entity\ForumEntity;
 use App\Models\ModeratorManager;
+use Nette\DI\Attributes\Inject;
 
 /**
  * Description of IndexPresenter
@@ -22,12 +23,8 @@ use App\Models\ModeratorManager;
  */
 class IndexPresenter extends BaseForumPresenter
 {
-    /**
-     *
-     * @var ModeratorManager $moderatorManager
-     * @inject
-     */
-    public $moderatorsManager;
+    #[Inject]
+    public ModeratorManager $moderatorsManager;
 
     /**
      * IndexPresenter constructor.
@@ -41,19 +38,6 @@ class IndexPresenter extends BaseForumPresenter
     )
     {
         parent::__construct($crudNullManager);
-    }
-
-    /**
-     * IndexPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->forumsManager     = null;
-        $this->topicsManager     = null;
-        $this->postsManager      = null;
-        $this->moderatorsManager = null;
-
-        parent::__destruct();
     }
 
     /**

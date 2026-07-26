@@ -2,7 +2,6 @@
 
 namespace App\ModeratorModule\Presenters;
 
-use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\ReportManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
@@ -29,19 +28,21 @@ class ReportPresenter extends ModeratorPresenter
     /**
      *
      */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         
-        $form->addTextArea('report_text', 'Report text:');
+        $form->addTextArea('text', 'Report text:');
+
+        $form->addSubmit('send', 'Send');
+
+        $form->onSuccess[]  = [$this, 'editFormValidate'];
+        $form->onValidate[] = [$this, 'editFormSuccess'];
         
-        return $this->addSubmitB($form);
+        return $form;
     }
 
-    /**
-     * @return GridFilter
-     */
-    protected function createComponentGridFilter()
+    protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->getTranslator());
         

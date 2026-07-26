@@ -2,13 +2,16 @@
 
 namespace App\ModeratorModule\Presenters;
 
-use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\PostEntity;
+use App\Model\Entity\UserEntity;
 use App\Models\PostFacade;
 use App\Models\PostsHistoryManager;
 use App\Models\PostManager;
 use App\Models\TopicManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
+use Contributte\FormsBootstrap\BootstrapForm;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -26,28 +29,26 @@ class PostPresenter extends ModeratorPresenter
      * @var PostsHistoryManager $postsHistoryManager
      * @inject
      */
-    public $postsHistoryManager;
+    public PostsHistoryManager $postsHistoryManager;
             
     /**
      *
      * @var PostFacade $postFacade
      * @inject
      */
-    public $postFacade;
+    public PostFacade $postFacade;
     
     /**
      *
      * @var TopicManager $topicsManager
      * @inject
      */
-    public $topicsManager;
+    public TopicManager $topicsManager;
 
-    /**
-     * PostPresenter constructor.
-     *
-     * @param PostManager $manager
-     */
-    public function __construct(PostManager $manager)
+    public function __construct(
+        PostManager $manager,
+        private readonly EntityManagerDecorator $em,
+    )
     {
         parent::__construct($manager);
     }
@@ -56,59 +57,56 @@ class PostPresenter extends ModeratorPresenter
      *
      * @param int $post_id
      */
-    public function renderHistory($post_id)
+    public function renderHistory($post_id): void
     {
-        $this->template->posts = $this->postsHistoryManager->getByPost($post_id);
+        $this->getTemplate()->posts = $this->postsHistoryManager->getByPost($post_id);
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentEditForm()
+    public function renderPosts(int $topic_id) : void
     {
-        $form = BootstrapForm::create();
-        
-        $form->addText('post_title', 'Post title:');
-        $form->addTextArea('post_text', 'Post:');
-        $form->addCheckbox('post_locked', 'Post locked:');
-        
-        return $this->addSubmitB($form);
+        $posts = $this->em
+            ->getRepository(PostEntity::class)
+            ->findBy(
+                [
+                    'topic' => $topic_id,
+                ]
+            );
+
+        $this->getTemplate()->posts = $posts;
+    }
+
+    protected function createComponentEditForm(): BootstrapForm
+    {
+        $form = new BootstrapForm();
+
+        $form->addText('title', 'Post title');
+        $form->addTextArea('text', 'Post');
+
+        $form->addCheckbox('locked', 'Locked');
+
+        $form->addSubmit('send', 'Send');
+
+        $form->onValidate[] = [$this, 'editFormValidate'];
+        $form->onSuccess[]  = [$this, 'editFormSuccess'];
+
+        return $form;
     }
     
-    /**
-     *
-     * @return GridFilter
-     */
-    protected function createComponentGridFilter()
+    protected function createComponentGridFilter(): GridFilter
     {
         return $this->gf;
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentChangePostAuthor()
+    protected function createComponentChangePostAuthor(): BootstrapForm
     {
-        $form = BootstrapForm::create();
-        
-        $form->addText('user_name', 'User name:');
-        $form->addSubmit('send', 'Search and set');
-        $form->onSuccess[] = [$this, 'changePostAuthorSuccess'];
-        
-        return $form;
-    }
+        $form = new BootstrapForm();
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentChangeTopic()
-    {
-        $form = BootstrapForm::create();
-                
-        $form->addSelect('post_topic_id', 'Topic name:', $this->topicsManager->getAllPairs('topic_name'));
-        $form->addSubmit('send', 'Change');
-        $form->onSuccess[] = [$this, 'changeTopicSuccess'];
-        
+        $form->addText('username', 'Username');
+        $form->addSubmit('send', 'Search and set');
+
+        $form->onSuccess[] = [$this, 'changePostAuthorValidate'];
+        $form->onSuccess[] = [$this, 'changePostAuthorSuccess'];
+
         return $form;
     }
 
@@ -116,35 +114,55 @@ class PostPresenter extends ModeratorPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function changePostAuthorSuccess(Form $form, ArrayHash $values)
+    public function changePostAuthorSuccess(Form $form, ArrayHash $values): void
     {
-        $user = $this->usersManager->getByName($values->user_name);
+        $userEntity = $this->em
+            ->getRepository(UserEntity::class)
+            ->findOneBy(
+                [
+                    'username' => $values->username
+                ]
+            );
 
-        if ($user) {
+        if ($userEntity === null)
+        {
+            $this->flashMessage('User was not found', self::FLASH_MESSAGE_DANGER);
+        } else {
             $res = $this->getManager()->update(
                 $this->getParameter('id'),
-                ArrayHash::from(['post_user_id' => $user->user_id])
+                ArrayHash::from(['post_user_id' => $userEntity->user_id])
             );
-            
+
             if ($res) {
                 $this->flashMessage('Post author was updated', self::FLASH_MESSAGE_SUCCESS);
             } else {
                 $this->flashMessage('Post author was NOT updated', self::FLASH_MESSAGE_DANGER);
             }
-        } else {
-            $this->flashMessage('User was not found', self::FLASH_MESSAGE_DANGER);
         }
-        
+
         $this->redirect('this');
+    }
+
+    protected function createComponentChangeTopic(): BootstrapForm
+    {
+        $form = new BootstrapForm();
+                
+        $form->addSelect('topic_id', 'Topic name:', $this->topicsManager->getAllPairs('topic_name'));
+        $form->addSubmit('send', 'Change');
+
+        $form->onSuccess[] = [$this, 'changeTopicValidate'];
+        $form->onSuccess[] = [$this, 'changeTopicSuccess'];
+
+        return $form;
     }
 
     /**
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function changeTopicSuccess(Form $form, ArrayHash $values)
+    public function changeTopicSuccess(Form $form, ArrayHash $values): void
     {
-        $res = $this->postFacade->move($this->getParameter('id'), $values->post_topic_id);
+        $res = $this->postFacade->move($this->getParameter('id'), $values->topic_id);
         
         if ($res) {
             $this->flashMessage('Topic was changed', self::FLASH_MESSAGE_SUCCESS);
@@ -153,13 +171,5 @@ class PostPresenter extends ModeratorPresenter
         }
         
         $this->redirect('this');
-    }
-
-    /**
-     * @param int $topic_id
-     */
-    public function renderPosts($topic_id)
-    {
-        $this->template->posts = $this->getManager()->getFluentByTopic($topic_id)->fetchAll();
     }
 }

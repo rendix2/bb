@@ -134,18 +134,4 @@ class ReportManager extends CrudManager
             ->where('[report_topic_id] = %i', $topic_id)
             ->execute();
     }
-    
-    /**
-     *
-     * @param int       $forum_id
-     * @param ArrayHash $item_data
-     *
-     * @return bool
-     */
-    public function updateByForum($forum_id, ArrayHash $item_data)
-    {
-        return $this->updateFluent($item_data)
-            ->where('[report_forum_id] = %i', $forum_id)
-            ->execute();
-    }
 }

@@ -153,7 +153,7 @@ class UserPresenter extends AdminPresenter
     /**
      * @param int|null $id
      */
-    public function renderEdit($id = null)
+    public function renderEdit($id = null): void
     {
         parent::renderEdit($id);
         
@@ -214,7 +214,7 @@ class UserPresenter extends AdminPresenter
     /**
      * @return UserChangePasswordForm
      */
-    protected function createComponentChangePasswordControl()
+    protected function createComponentChangePasswordControl(): UserChangePasswordForm
     {
         return $this->changePasswordFactory->getAdmin();
     }
@@ -223,7 +223,7 @@ class UserPresenter extends AdminPresenter
      *
      * @return UserGroupsForm
      */
-    protected function createComponentGroupForm()
+    protected function createComponentGroupForm(): UserGroupsForm
     {
         return new UserGroupsForm(
             $this->groupsManager,
@@ -236,7 +236,7 @@ class UserPresenter extends AdminPresenter
      *
      * @return UserForumsForm
      */
-    protected function createComponentForumsForm()
+    protected function createComponentForumsForm(): UserForumsForm
     {
         return new UserForumsForm(
             $this->forumsManager,
@@ -248,7 +248,7 @@ class UserPresenter extends AdminPresenter
     /**
      * @return UserDeleteAvatarForm
      */
-    protected function createComponentDeleteAvatar()
+    protected function createComponentDeleteAvatar(): UserDeleteAvatarForm
     {
         return $this->deleteAvatarFactory->getAdmin();
     }
@@ -256,7 +256,7 @@ class UserPresenter extends AdminPresenter
     /**
      * @return UserModeratorForm
      */
-    protected function createComponentModeratorsForm()
+    protected function createComponentModeratorsForm(): UserModeratorForm
     {
         return new UserModeratorForm(
             $this->forumsManager,
@@ -268,7 +268,7 @@ class UserPresenter extends AdminPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbAll()
+    protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
@@ -281,7 +281,7 @@ class UserPresenter extends AdminPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbEdit()
+    protected function createComponentBreadCrumbEdit(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],

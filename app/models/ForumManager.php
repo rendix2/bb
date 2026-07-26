@@ -5,13 +5,11 @@ namespace App\Models;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
 use App\Models\Crud\CrudManager;
-use dibi;
 use Dibi\Connection;
+use Dibi\DriverException;
 use Dibi\Fluent;
 use Dibi\Row;
-use Exception;
 use Nette\Caching\IStorage;
-use Zebra_Mptt;
 
 /**
  * Description of ForumManager
@@ -26,10 +24,11 @@ class ForumManager extends CrudManager
     /**
      * ForumsManager constructor.
      *
+     * @param EntityManagerDecorator $em
      * @param Connection $dibi
-     * @param IStorage   $storage
+     * @param IStorage $storage
      *
-     * @throws Exception
+     * @throws DriverException
      */
     public function __construct(
         private readonly EntityManagerDecorator $em,

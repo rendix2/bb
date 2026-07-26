@@ -27,12 +27,12 @@ abstract class AuthenticatedPresenter extends BasePresenter
 
         $user = $this->getUser();
 
-        if ($user->loggedIn) {
+        if ($user->isLoggedIn()) {
             $sessions = $this->aem
                 ->getRepository(SessionEntity::class)
                 ->findBy(
                     [
-                        'user' => $user->id,
+                        'user' => $user->getId(),
                         'key' => $this->getSession()->getId(),
                     ]
                 );
@@ -48,13 +48,13 @@ abstract class AuthenticatedPresenter extends BasePresenter
 
             $this->aem->flush();
         } else {
-            if ($user->logoutReason === User::LogoutInactivity) {
+            if ($user->getLogoutReason() === User::LogoutInactivity) {
                 $sessions = $this->aem
                     ->getRepository(SessionEntity::class)
                     ->createQueryBuilder('_s')
 
                     ->where('_s.user = :user OR _s.key = :key')
-                    ->setParameter('user', $user->id)
+                    ->setParameter('user', $user->getId())
                     ->setParameter('key', $this->getSession()->getId())
 
                     ->getQuery()

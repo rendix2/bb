@@ -31,7 +31,7 @@ abstract class AdminPresenter extends CrudPresenter
         
         parent::checkRequirements($element);
 
-        if ($this->name !== 'Login' && !$user->loggedIn) {
+        if ($this->getName() !== 'Login' && !$user->isLoggedIn()) {
             $this->redirect(':Admin:Login:default');
         }
 

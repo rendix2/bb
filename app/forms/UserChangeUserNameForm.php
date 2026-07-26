@@ -96,7 +96,7 @@ class UserChangeUserNameForm extends Control
      */
     public function changeUserNameSuccess(Form $form, ArrayHash $values)
     {
-        $result = $this->usersManager->update($this->user->id, $values);
+        $result = $this->usersManager->update($this->user->getId(), $values);
         
         if ($result) {
             $this->presenter->flashMessage('User name was changed.', BasePresenter::FLASH_MESSAGE_SUCCESS);

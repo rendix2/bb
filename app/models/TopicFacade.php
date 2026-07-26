@@ -19,71 +19,71 @@ class TopicFacade
      *
      * @var TopicManager $topicsManager
      */
-    private $topicsManager;
+    private TopicManager $topicsManager;
 
     /**
      *
      * @var TopicWatchManager $topicWatchManager
      */
-    private $topicWatchManager;
+    private TopicWatchManager $topicWatchManager;
 
     /**
      *
      * @var PostManager $postsManager
      */
-    private $postsManager;
+    private PostManager $postsManager;
 
     /**
      *
      * @var UsersManager $usersManager
      */
-    private $usersManager;
+    private UsersManager $usersManager;
 
     /**
      *
      * @var ThankManager $thanksManager
      */
-    private $thanksManager;
+    private ThankManager $thanksManager;
 
     /**
      *
      * @var ForumManager $forumsManager
      */
-    private $forumsManager;
+    private ForumManager $forumsManager;
 
     /**
      *
      * @var PostFacade $postFacade
      */
-    private $postFacade;
+    private PostFacade $postFacade;
 
     /**
      * @var ReportManager $reportsManager
      */
-    private $reportsManager;
+    private ReportManager $reportsManager;
     
     /**
      *
      * @var TopicWatchFacade $topicWatchFacade
      */
-    private $topicWatchFacade;
+    private TopicWatchFacade $topicWatchFacade;
     
     /**
      *
      * @var ThanksFacade $thanksFacade
      */
-    private $thanksFacade;
+    private ThanksFacade $thanksFacade;
 
     /**
      * @var ReportFacade $reportFacade
      */
-    private $reportFacade;
+    private ReportFacade $reportFacade;
     
     /**
      *
      * @var PollsFacade $pollsFacade
      */
-    private $pollsFacade;
+    private PollsFacade $pollsFacade;
 
     /**
      *
@@ -128,25 +128,6 @@ class TopicFacade
         $this->thanksFacade      = $thanksFacade;
         $this->reportFacade      = $reportFacade;
         $this->pollsFacade       = $pollsFacade;
-    }
-
-    /**
-     * TopicFacade destructor
-     */
-    public function __destruct()
-    {
-        $this->topicsManager     = null;
-        $this->topicWatchManager = null;
-        $this->postsManager      = null;
-        $this->usersManager      = null;
-        $this->thanksManager     = null;
-        $this->postFacade        = null;
-        $this->forumsManager     = null;
-        $this->reportsManager    = null;
-        $this->topicWatchFacade  = null;
-        $this->thanksFacade      = null;
-        $this->reportFacade      = null;
-        $this->pollsFacade       = null;
     }
 
     /**
@@ -198,20 +179,20 @@ class TopicFacade
      *
      * @return Result|int
      */
-    public function delete(TopicEntity $topic)
+    public function delete(\App\Model\Entity\TopicEntity $topicEntity)
     {
-        $this->thanksFacade->deleteByTopic($topic);
-        $this->topicWatchFacade->deleteByTopic($topic);
-        $this->reportFacade->deleteByTopic($topic);
+        $this->thanksFacade->deleteByTopic($topicEntity);
+        $this->topicWatchFacade->deleteByTopic($topicEntity);
+        $this->reportFacade->deleteByTopic($topicEntity);
         
-        if ($topic->getPoll()) {
-            $this->pollsFacade->delete($topic->getPoll());
+        if ($topicEntity->getPoll()) {
+            $this->pollsFacade->delete($topicEntity->getPoll());
         }
         
         $this->usersManager
-            ->update($topic->getTopic_user_id(), ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
+            ->update($topicEntity->user->id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
         
-        $posts = $this->postsManager->getCountOfUsersByTopicId($topic->getTopic_id());
+        $posts = $this->postsManager->getCountOfUsersByTopicId($topicEntity->id);
         $users = [];
         
         foreach ($posts as $post) {
@@ -224,11 +205,11 @@ class TopicFacade
         }
 
         $this->forumsManager->update(
-            $topic->getTopic_forum_id(),
+            $topicEntity->forum->id,
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1'])
         );
 
-        return $this->topicsManager->delete($topic->getTopic_id());
+        return $this->topicsManager->delete($topicEntity->id);
     }
 
     /**

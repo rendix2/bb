@@ -12,26 +12,28 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
 #[Entity()]
-#[Table(name: 'topic')]
-class TopicEntity
+#[Table(name: 'thank')]
+class ThankEntity
 {
-
     #[Id()]
     #[GeneratedValue()]
     #[Column(type: Types::BIGINT)]
     public string $id;
 
-    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'forums')]
+    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'XXX')]
     #[JoinColumn(nullable: false)]
     public CategoryEntity $category;
 
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'forums')]
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'XXX')]
     #[JoinColumn(nullable: false)]
     public ForumEntity $forum;
 
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'topics')]
+    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'XXX')]
     #[JoinColumn(nullable: false)]
-    public UserEntity $user;
+    public TopicEntity $topic;
 
+    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'XXXX')]
+    #[JoinColumn(nullable: false)]
+    public PostEntity $post;
 
 }

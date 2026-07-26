@@ -66,32 +66,6 @@ class SessionManager extends CrudManager
             ->where('[session_user_id] = %i', $user_id)
             ->execute();
     }
-
-    /**
-     * @param           $session_key
-     * @param ArrayHash $session_data
-     *
-     * @return Result|int
-     */
-    public function updateBySessionsKey($session_key, ArrayHash $session_data)
-    {
-        return $this->updateFluent($session_data)
-            ->where('[session_key] = %s', $session_key)
-            ->execute();
-    }
-
-    /**
-     * @param           $user_id
-     * @param ArrayHash $session_data
-     *
-     * @return bool
-     */
-    public function updateByUser($user_id, ArrayHash $session_data)
-    {
-        return $this->updateFluent($session_data)
-            ->where('[session_user_id] = %i', $user_id)
-            ->execute();
-    }
     
     /**
      *

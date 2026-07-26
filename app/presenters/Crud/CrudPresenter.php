@@ -248,7 +248,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     /**
      * @param int|null $id
      */
-    public function renderEdit($id = null)
+    public function renderEdit($id = null): void
     {
         if ($id) {
             if (!is_numeric($id)) {
@@ -279,7 +279,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
      * @param Form      $form   form
      * @param ArrayHash $values values
      */
-    public function editFormSuccess(Form $form, ArrayHash $values)
+    public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         $id = $this->getParameter('id');
 

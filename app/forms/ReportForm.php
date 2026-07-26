@@ -84,7 +84,7 @@ class ReportForm extends Control
         $reported_user_id = $this->presenter->getParameter('user_id');
         $page             = $this->presenter->getParameter('page');
         $pm_id            = $this->presenter->getParameter('pm_iid');
-        $user_id          = $this->presenter->user->id;
+        $user_id          = $this->presenter->getUser()->getId();
 
         $report = new ReportEntity();
         $report->setReport_forum_id($forum_id)

@@ -6,7 +6,10 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\BanEntity;
 use App\Models\BanManager;
+use Contributte\Datagrid\Datagrid;
 
 /**
  * Description of BanPresenter
@@ -22,9 +25,16 @@ class BanPresenter extends AdminPresenter
      *
      * @param BanManager $manager
      */
-    public function __construct(BanManager $manager)
+    public function __construct(
+        private readonly EntityManagerDecorator $em,
+        BanManager $manager
+    )
     {
         parent::__construct($manager);
+    }
+
+    public function actionEdit(int $id): void
+    {
     }
 
     /**
@@ -39,6 +49,28 @@ class BanPresenter extends AdminPresenter
         $form->addText('ban_ip', 'User IP:');
         
         return $this->addSubmitB($form);
+    }
+
+    protected function createComponentBanDataGrid(): Datagrid
+    {
+        $bans = $this->em
+            ->getRepository(BanEntity::class);
+
+        $grid = new Datagrid();
+        $grid->setDataSource($bans);
+
+        $grid->addColumnText('username', 'Username');
+
+        $grid->addColumnText('email', 'Email');
+
+        $grid->addColumnText('ip', 'IP');
+
+        $grid->addAction('edit', 'Edit', 'Ban:Edit');
+
+
+
+
+        return $grid;
     }
     
     /**

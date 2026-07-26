@@ -27,21 +27,6 @@ class User2GroupManager extends MNManager
         parent::__construct($dibi, $storage,$left, $right, 'user_group');
     }
 
-    /**
-     * @param int $user_id
-     *
-     * @return Row[]
-     */
-    public function getForumsPermissionsByUserThroughGroup($user_id)
-    {
-        return $this->getAllFluent()
-            ->as('ug')
-            ->innerJoin(self::FORUMS2GROUPS_TABLE)
-            ->as('fg')
-            ->on('[ug.group_id] = [fg.group_id]')
-            ->where('[ug.user_id] = %i', $user_id)
-            ->fetchAll();
-    }
 
     /**
      * @param int $user_id

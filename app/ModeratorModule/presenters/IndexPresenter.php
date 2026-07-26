@@ -60,6 +60,6 @@ class IndexPresenter extends BasePresenter
         parent::startup();
         
         $this->translator = $this->translatorFactory->getForumTranslator();
-        $this->template->setTranslator($this->translator);
+        $this->getTemplate()->setTranslator($this->translator);
     }
 }

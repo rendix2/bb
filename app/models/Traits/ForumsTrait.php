@@ -16,17 +16,17 @@ trait ForumsTrait
      * @var ForumManager $forumsManager
      * @inject
      */
-    public $forumsManager;
+    public ForumManager $forumsManager;
     
     /**
      *
      * @param int $forum_id
-     * @param int $category_id
+     * @param ?int $category_id
      *
      * @return ForumEntity
      *
      */
-    public function checkForumParam($forum_id, $category_id = null)
+    public function checkForumParam(int $forum_id, ?int $category_id = null): ForumEntity
     {
         // forum check
         if (!isset($forum_id)) {

@@ -117,9 +117,9 @@ class ThanksFacade
      *
      * @return int
      */
-    public function deleteByTopic(TopicEntity $topic)
+    public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity)
     {
-        $thanks   = $this->thanksManager->getAllByTopic($topic->getTopic_id());
+        $thanks   = $this->thanksManager->getAllByTopic($topicEntity->id);
         $user_ids = Utils::arrayObjectColumn($thanks, 'thank_user_id');
 
         if (count($user_ids)) {

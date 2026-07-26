@@ -138,11 +138,11 @@ class UserLoginForm extends Control
             $addArray =
                 [
                     'session_key'     => $this->session->getId(),
-                    'session_user_id' => $this->user->id,
+                    'session_user_id' => $this->user->getId(),
                     'session_from'    => time()
                 ];
             
-            $this->sessionsManager->delete($user->id);
+            $this->sessionsManager->delete($user->getId());
             $this->sessionsManager->add(ArrayHash::from($addArray));
             $user->setExpiration('1 hour');
             $this->flashMessage(

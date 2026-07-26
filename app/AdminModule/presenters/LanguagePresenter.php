@@ -6,6 +6,9 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\LanguageEntity;
+use App\Model\Entity\UserEntity;
 use App\Models\LanguageManager;
 use App\Models\UsersManager;
 
@@ -19,47 +22,49 @@ use App\Models\UsersManager;
 class LanguagePresenter extends AdminPresenter
 {
     /**
-     *
-     * @var UsersManager $usersManager
-     * @inject
-     */
-    public $usersManager;
-
-    /**
      * LanguagePresenter constructor.
      *
      * @param LanguageManager $manager
      */
-    public function __construct(LanguageManager $manager)
+    public function __construct(
+        LanguageManager $manager,
+        private readonly EntityManagerDecorator $em,
+    )
     {
         parent::__construct($manager);
     }
-    
-    /**
-     * LanguagePresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->usersManager = null;
-        
-        parent::__destruct();
-    }
 
     /**
-     * @param int|null $id
+     * @param ?int $id
      */
-    public function renderEdit($id = null)
+    public function renderEdit($id = null): void
     {
         parent::renderEdit($id);
 
-        $this->template->countOfUsers = $this->usersManager->getCountByLang($id);
+        $languageEntity = $this->em
+            ->getRepository(LanguageEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $id,
+                ]
+            );
+
+        $countOfUsers = $this->em
+            ->getRepository(UserEntity::class)
+            ->count(
+                [
+                    'language' => $languageEntity,
+                ]
+            );
+
+        $this->getTemplate()->countOfUsers = $countOfUsers;
     }
 
     /**
      *
      * @return GridFilter
      */
-    protected function createComponentGridFilter()
+    protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->getTranslator());
 
@@ -72,22 +77,25 @@ class LanguagePresenter extends AdminPresenter
         return $this->gf;
     }
 
-    /**
-     * @return BootStrapForm
-     */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
-        $form->addText('lang_name', 'Language name:')->setRequired();
+        $form->addText('lang_name', 'Language name:')
+            ->setRequired();
 
-        return $this->addSubmitB($form);
+        $form->addSubmit('Send', 'Send');
+
+        $form->onValidate[] = [$this, 'editFormOnValidate'];
+        $form->onSuccess[]  = [$this, 'editFormOnSuccess'];
+
+        return $form;
     }
 
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbAll()
+    protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],

@@ -5,7 +5,6 @@ namespace App\ForumModule\Presenters\Base;
 use App\Authorization\Authorizator;
 use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
-use App\Authorization\Scopes\CategoryScope;
 use App\Authorization\Scopes\ForumScope;
 use App\Authorization\Scopes\PostScope;
 use App\Authorization\Scopes\TopicScope;
@@ -46,51 +45,51 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      * @var ModeratorManager $moderators
      * @inject
      */
-    public $moderators;
+    public ModeratorManager $moderators;
     
     /**
      *
      * @var ThankManager $thanksManager
      * @inject
      */
-    public $thanksManager;
+    public ThankManager $thanksManager;
 
     /**
      * @var Authorizator $authorizator
      * @inject
      */
-    public $authorizator;
+    public Authorizator $authorizator;
     
     /**
      * @var User2GroupManager $users2GroupsManager
      * @inject
      */
-    public $users2GroupsManager;
+    public User2GroupManager $users2GroupsManager;
     
     /**
      *
      * @var Users2ForumsManager $users2ForumsManager
      * @inject
      */
-    public $users2ForumsManager;
+    public Users2ForumsManager $users2ForumsManager;
 
     /**
      * Translator
      *
      * @var ITranslator $forumTranslator
      */
-    private $translator;
+    private ITranslator $translator;
     
     /**
      * @var PmManager $pmManager
      * @inject
      */
-    public $pmManager;
+    public PmManager $pmManager;
 
     /**
      * @var Manager $manager
      */
-    private $manager;
+    private Manager $manager;
 
     #[Inject]
     private EntityManagerDecorator $em;
@@ -105,23 +104,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         parent::__construct();
         
         $this->manager = $manager;
-    }
-    
-    /**
-     * ForumPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->moderators          = null;
-        $this->thanksManager       = null;
-        $this->authorizator        = null;
-        $this->users2GroupsManager = null;
-        $this->users2ForumsManager = null;
-        $this->translator          = null;
-        $this->pmManager           = null;
-        $this->manager             = null;
-        
-        parent::__destruct();
     }
 
     public function getManager(): Manager

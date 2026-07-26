@@ -9,10 +9,16 @@ use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\PaginatorControl;
 use App\Controls\PollControl;
+use App\Database\EntityManagerDecorator;
 use App\Forms\ReportForm;
 use App\Forms\TopicFastReplyForm;
 use App\Forms\TopicJumpToForumForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
+use App\Model\Entity\CategoryEntity;
+use App\Model\Entity\RankEntity;
+use App\Model\Entity\TopicWatchEntity;
+use App\Model\Entity\UserEntity;
+use App\Models\CategoryManager;
 use App\Models\Entity\PollEntity;
 use App\Models\Entity\PollAnswerEntity;
 use App\Models\Entity\PostEntity;
@@ -21,20 +27,19 @@ use App\Models\Entity\TopicEntity;
 use App\Models\PollsFacade;
 use App\Models\PostFacade;
 use App\Models\Posts2FilesManager;
-use App\Models\RankManager;
 use App\Models\ReportManager;
 use App\Models\ThanksFacade;
 use App\Models\TopicFacade;
 use App\Models\TopicManager;
-use App\Models\TopicWatchManager;
-use App\Models\Traits\CategoriesTrait;
 use App\Settings\Avatars;
 use App\Settings\PostSetting;
 use App\Settings\TopicsSetting;
 use dibi;
+use Doctrine\DBAL\Exception;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
+use Nette\DI\Attributes\Inject;
 use Nette\Forms\Container;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
@@ -52,133 +57,142 @@ class TopicPresenter extends BaseForumPresenter
      * @var TopicsSetting $topicSetting
      * @inject
      */
-    public $topicSetting;
+    public TopicsSetting $topicSetting;
     
     /**
      *
      * @var Avatars $avatar
      * @inject
      */
-    public $avatars;
-    
-    /**
-     * @var TopicWatchManager $topicWatchManager
-     * @inject
-     */
-    public $topicWatchManager;
+    public Avatars $avatars;
 
-    /**
-     * @var RankManager $ranksManager
-     * @inject
-     */
-    public $ranksManager;
     
     /**
      * @var TopicFacade $topicFacade
      * @inject
      */
-    public $topicFacade;
+    public TopicFacade $topicFacade;
     
     /**
      *
      * @var ThanksFacade $thanksFacade
      * @inject
      */
-    public $thanksFacade;
+    public ThanksFacade $thanksFacade;
 
     /**
      *
      * @var PostFacade $postFacade
      * @inject
      */
-    public $postFacade;
+    public PostFacade $postFacade;
     
     /**
      *
      * @var ReportManager $reportsManager
      * @inject
      */
-    public $reportsManager;
+    public ReportManager $reportsManager;
     
     /**
      *
      * @var PostSetting $postSettings
      * @inject
      */
-    public $postSettings;
+    public PostSetting $postSettings;
 
     /**
      * @var IStorage $storage
      * @inject
      */
-    public $storage;
+    public IStorage $storage;
     
     /**
      *
      * @var PollsFacade $pollsFacade
      * @inject
      */
-    public $pollsFacade;
+    public PollsFacade $pollsFacade;
     
     /**
      *
      * @var Posts2FilesManager $posts2FilesManager
      * @inject
      */
-    public $posts2FilesManager;
+    public Posts2FilesManager $posts2FilesManager;
+
+    #[Inject]
+    public CategoryManager $categoryManager;
 
     /**
      * TopicPresenter constructor.
      *
      * @param TopicManager $manager
      */
-    public function __construct(TopicManager $manager)
+    public function __construct(
+        TopicManager $manager,
+        private readonly EntityManagerDecorator $em,
+    )
     {
         parent::__construct($manager);
     }
 
     /**
-     * TopicPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->categoryManager = null;
-        $this->forumsManager     = null;
-        $this->topicsManager     = null;
-        $this->postsManager      = null;
-        $this->topicSetting      = null;
-        $this->avatars           = null;
-        $this->topicWatchManager = null;
-        $this->thanksManager     = null;
-        $this->ranksManager      = null;
-        $this->topicFacade       = null;
-        $this->thanksFacade      = null;
-        $this->postFacade        = null;
-        $this->reportsManager     = null;
-        $this->postSettings      = null;
-        $this->storage           = null;
-        $this->pollsFacade       = null;
-        
-        parent::__destruct();
-    }
-
-    /**
      * @param int $category_id
      * @param int $forum_id
      * @param int $topic_id
      * @param int $page
      */
-    public function actionStartWatch($category_id, $forum_id, $topic_id, $page)
+    public function actionStartWatch($category_id, $forum_id, $topic_id, $page): void
     {
-        $category = $this->checkCategoryParam($category_id);
+        $categoryEntity = $this->em
+            ->getRepository(CategoryEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $category_id
+                ]
+            );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
 
-        $user_id = $this->user->id;
-        $res     = $this->topicWatchManager->addByLeft($topic_id, [$user_id]);
+        $user_id = $this->getUser()->getId();
 
-        if ($res) {
+        $topicEntity = $this->em
+            ->getRepository(TopicEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $topic_id,
+                ]
+            );
+
+        $userEntity = $this->em
+            ->getRepository(UserEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $user_id,
+                ]
+            );
+
+        $topicWatchEntity = new TopicWatchEntity();
+        $topicWatchEntity->topic = $topicEntity;
+        $topicWatchEntity->user= $userEntity;
+
+        try {
+            $this->em->persist($topicWatchEntity);
+            $this->em->flush();
+
             $this->flashMessage('You have start watching topic.', self::FLASH_MESSAGE_SUCCESS);
+        } catch (Exception $exception) {
+            $this->flashMessage('Error during adding to watched topics', self::FLASH_MESSAGE_DANGER);
         }
 
         $this->redirect('Topic:default', $category_id, $forum_id, $topic_id, $page);
@@ -190,17 +204,60 @@ class TopicPresenter extends BaseForumPresenter
      * @param int $topic_id
      * @param int $page
      */
-    public function actionStopWatch($category_id, $forum_id, $topic_id, $page)
+    public function actionStopWatch($category_id, $forum_id, $topic_id, $page): void
     {
-        $category = $this->checkCategoryParam($category_id);
+        $categoryEntity = $this->em
+            ->getRepository(CategoryEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $category_id
+                ]
+            );
+
+        $topicEntity = $this->em
+            ->getRepository(\App\Model\Entity\TopicEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $topic_id,
+                ]
+            );
+
+        $userEntity = $this->em
+            ->getRepository(UserEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $user_id,
+                ]
+            );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-        $user_id  = $this->user->id;
-        
-        $res = $this->topicWatchManager->delete($topic_id, $user_id);
+        $user_id  = $this->getUser()->getId();
 
-        if ($res) {
-            $this->flashMessage('You have stop watching topic.', self::FLASH_MESSAGE_SUCCESS);
+        $topicWatchEntity = $this->em
+            ->getRepository(TopicWatchEntity::class)
+            ->findOneBy(
+                [
+                    'topic' => $topicEntity,
+                    'user' => $userEntity,
+                ]
+            );
+
+        try {
+            $this->em->remove($topicWatchEntity);
+            $this->em->flush();
+
+            $this->flashMessage('You have stop watching topic.', 'success');
+        } catch (Exception $exception) {
+            $this->flashMessage('Error during stopping watching topic', 'danger');
         }
 
         $this->redirect('Topic:default', $category_id, $forum_id, $topic_id, $page);
@@ -211,12 +268,27 @@ class TopicPresenter extends BaseForumPresenter
      * @param int $forum_id
      * @param int $topic_id
      */
-    public function actionThank($category_id, $forum_id, $topic_id)
+    public function actionThank($category_id, $forum_id, $topic_id): void
     {
-        $category   = $this->checkCategoryParam($category_id);
+        $categoryEntity = $this->em
+            ->getRepository(CategoryEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $category_id
+                ]
+            );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
         $forum      = $this->checkForumParam($forum_id, $category_id);
         $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-        $user_id    = $this->user->id;
+        $user_id  = $this->getUser()->getId();
         
         $forumScope = $this->loadForum($forum);
         
@@ -244,9 +316,24 @@ class TopicPresenter extends BaseForumPresenter
      * @param int $topic_id
      * @param int $page
      */
-    public function actionDelete($category_id, $forum_id, $topic_id, $page)
+    public function actionDelete($category_id, $forum_id, $topic_id, $page): void
     {
-        $category   = $this->checkCategoryParam($category_id);
+        $categoryEntity = $this->em
+            ->getRepository(CategoryEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $category_id
+                ]
+            );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
         $forum      = $this->checkForumParam($forum_id, $category_id);
         $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
         
@@ -283,9 +370,24 @@ class TopicPresenter extends BaseForumPresenter
      * @param int $topic_id
      * @param int $page
      */
-    public function actionDefault($category_id, $forum_id, $topic_id, $page = 1)
+    public function actionDefault($category_id, $forum_id, $topic_id, $page = 1): void
     {
-        $category = $this->checkCategoryParam($category_id);
+        $categoryEntity = $this->em
+            ->getRepository(CategoryEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $category_id
+                ]
+            );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
         
@@ -359,16 +461,45 @@ class TopicPresenter extends BaseForumPresenter
      * @param int $topic_id
      * @param int $page
      */
-    public function renderDefault($category_id, $forum_id, $topic_id, $page = 1)
+    public function renderDefault($category_id, $forum_id, $topic_id, $page = 1): void
     {
-        $user_id = $this->user->id;
-        
-        $this->template->avatarsDir = $this->avatars->getTemplateDir();
-        $this->template->topicWatch = $this->topicWatchManager->fullCheck($topic_id, $user_id);
-        $this->template->ranks      = $this->ranksManager->getAllCached();
+        $user_id = $this->getUser()->getId();
+
+        $ranks = $this->em
+            ->getRepository(RankEntity::class)
+            ->findAll();
+
+        $topicEntity = $this->em
+            ->getRepository(\App\Model\Entity\TopicEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $topic_id,
+                ]
+            );
+
+        $userEntity = $this->em
+            ->getRepository(UserEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $user_id,
+                ]
+            );
+
+        $topicWatchEntity = $this->em
+            ->getRepository(TopicWatchEntity::class)
+            ->findOneBy(
+                [
+                    'topic' => $topicEntity,
+                    'user' => $userEntity,
+                ]
+            );
+
+        $this->getTemplate()->avatarsDir = $this->avatars->getTemplateDir();
+        $this->getTemplate()->topicWatch = $topicWatchEntity;
+        $this->getTemplate()->ranks      = $ranks;
         
         //$this->template->thanks     = $this->thanksManager->getAllJoinedUserByTopic($topic_id);
-        $this->template->signatureDelimiter = $this->postSettings->get()['signatureDelimiter'];
+        $this->getTemplate()->signatureDelimiter = $this->postSettings->get()['signatureDelimiter'];
     }
 
     /**
@@ -376,9 +507,24 @@ class TopicPresenter extends BaseForumPresenter
      * @param int      $forum_id
      * @param int|null $topic_id
      */
-    public function renderEdit($category_id, $forum_id, $topic_id = null)
+    public function renderEdit($category_id, $forum_id, $topic_id = null): void
     {
-        $category   = $this->checkCategoryParam($category_id);
+        $categoryEntity = $this->em
+            ->getRepository(CategoryEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $category_id
+                ]
+            );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
         $forum      = $this->checkForumParam($forum_id, $category_id);
         $forumScope = $this->loadForum($forum);
 
@@ -425,9 +571,24 @@ class TopicPresenter extends BaseForumPresenter
      * @param int $topic_id
      * @param int $page
      */
-    public function renderReport($category_id, $forum_id, $topic_id, $page)
+    public function renderReport($category_id, $forum_id, $topic_id, $page): void
     {
-        $category = $this->checkCategoryParam($category_id);
+        $categoryEntity = $this->em
+            ->getRepository(CategoryEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $category_id
+                ]
+            );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
     }
@@ -437,19 +598,63 @@ class TopicPresenter extends BaseForumPresenter
      * @param int $forum_id
      * @param int $topic_id
      */
-    public function renderWatchers($category_id, $forum_id, $topic_id)
+    public function renderWatchers($category_id, $forum_id, $topic_id): void
     {
-        $category = $this->checkCategoryParam($category_id);
+        $userId = $this->getUser()->getId();
+
+        $categoryEntity = $this->em
+            ->getRepository(CategoryEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $category_id
+                ]
+            );
+
+        $topicEntity = $this->em
+            ->getRepository(\App\Model\Entity\TopicEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $topic_id,
+                ]
+            );
+
+        $userEntity = $this->em
+            ->getRepository(UserEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $userId,
+                ]
+            );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
 
-        $watchers = $this->topicWatchManager->getAllByLeftJoined($topic_id);
+        $watchers = $this->em
+            ->getRepository(TopicWatchEntity::class)
+            ->createQueryBuilder('_tw')
+
+            ->addSelect('_user')
+            ->leftJoin('_tw.user', '_user')
+
+            ->where('_tw.topic = :topic')
+            ->setParameter('topic', $topicEntity)
+
+            ->getQuery()
+            ->getResult();
         
-        if (!$watchers) {
+        if ($watchers === []) {
             $this->flashMessage('No watchers.', self::FLASH_MESSAGE_WARNING);
         }
         
-        $this->template->watchers = $watchers;
+        $this->getTemplate()->watchers = $watchers;
     }
 
     /**
@@ -458,9 +663,24 @@ class TopicPresenter extends BaseForumPresenter
      * @param int $forum_id
      * @param int $topic_id
      */
-    public function renderThanks($category_id, $forum_id, $topic_id)
+    public function renderThanks($category_id, $forum_id, $topic_id): void
     {
-        $category = $this->checkCategoryParam($category_id);
+        $categoryEntity = $this->em
+            ->getRepository(CategoryEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $category_id
+                ]
+            );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
 
@@ -479,14 +699,29 @@ class TopicPresenter extends BaseForumPresenter
      * @param int $forum_id
      * @param int $topic_id
      */
-    public function renderFiles($category_id, $forum_id, $topic_id)
+    public function renderFiles($category_id, $forum_id, $topic_id): void
     {
-        $category = $this->checkCategoryParam($category_id);
+        $categoryEntity = $this->em
+            ->getRepository(CategoryEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $category_id
+                ]
+            );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
     }
     
-    public static function bbCodeParse($text)    
+    public static function bbCodeParse($text)
     {
         //$text = 'awdwad [head]awdwad[/head]';
                 
@@ -502,7 +737,7 @@ class TopicPresenter extends BaseForumPresenter
      *
      * @return BootstrapForm
      */
-    public function createComponentEditForm()
+    public function createComponentEditForm(): BootstrapForm
     {
         $form = $this->getBootstrapForm();
 
@@ -541,12 +776,12 @@ class TopicPresenter extends BaseForumPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function editFormSuccess(Form $form, ArrayHash $values)
+    public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         $category_id = $this->getParameter('category_id');
         $forum_id    = $this->getParameter('forum_id');
         $topic_id    = $this->getParameter('topic_id');
-        $user_id     = $this->user->id;
+        $user_id     = $this->getUser()->getId();
         $page        = $this->getParameter('page');
         
         if ($values->poll_question) {
@@ -640,7 +875,7 @@ class TopicPresenter extends BaseForumPresenter
      *
      * @return PollControl
      */
-    protected function createComponentPoll()
+    protected function createComponentPoll(): PollControl
     {
         return new PollControl($this->pollsFacade, $this->user, $this->getTranslator());
     }
@@ -652,7 +887,7 @@ class TopicPresenter extends BaseForumPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbAll()
+    protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
@@ -667,7 +902,7 @@ class TopicPresenter extends BaseForumPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbEdit()
+    protected function createComponentBreadCrumbEdit(): BreadCrumbControl
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
@@ -682,7 +917,7 @@ class TopicPresenter extends BaseForumPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbReport()
+    protected function createComponentBreadCrumbReport(): BreadCrumbControl
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
@@ -704,7 +939,7 @@ class TopicPresenter extends BaseForumPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbThanks()
+    protected function createComponentBreadCrumbThanks(): BreadCrumbControl
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
@@ -726,7 +961,7 @@ class TopicPresenter extends BaseForumPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbWatchers()
+    protected function createComponentBreadCrumbWatchers(): BreadCrumbControl
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
@@ -748,7 +983,7 @@ class TopicPresenter extends BaseForumPresenter
     /**
      * @return TopicJumpToForumForm
      */
-    protected function createComponentJumpToForum()
+    protected function createComponentJumpToForum(): TopicJumpToForumForm
     {
         return new TopicJumpToForumForm($this->forumsManager, $this->getTranslator());
     }
@@ -756,11 +991,11 @@ class TopicPresenter extends BaseForumPresenter
     /**
      * @return TopicFastReplyForm
      */
-    protected function createComponentFastReply()
+    protected function createComponentFastReply(): TopicFastReplyForm
     {
         return new TopicFastReplyForm(
             $this->translatorFactory,
-            $this->user,
+            $this->getUser(),
             $this->postFacade,
             $this->getHttpRequest()
         );
@@ -769,7 +1004,7 @@ class TopicPresenter extends BaseForumPresenter
     /**
      * @return ReportForm
      */
-    protected function createComponentReportForm()
+    protected function createComponentReportForm(): ReportForm
     {
         return new ReportForm($this->reportsManager);
     }

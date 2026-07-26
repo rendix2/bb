@@ -5,6 +5,8 @@ namespace App\Presenters\Base;
 use App\Authorization\Authorizator;
 use App\Controls\BootstrapForm;
 use App\Controls\MenuControl;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\BanEntity;
 use App\Models\BanManager;
 use App\Services\TranslatorFactory;
 use Nette;
@@ -24,42 +26,37 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     /**
      * @var string
      */
-    const FLASH_MESSAGE_SUCCESS = 'success';
+    const string FLASH_MESSAGE_SUCCESS = 'success';
     
     /**
      * @var string
      */
-    const FLASH_MESSAGE_DANGER = 'danger';
+    const string FLASH_MESSAGE_DANGER = 'danger';
     
     /**
      * @var string
      */
-    const FLASH_MESSAGE_WARNING = 'warning';
+    const string FLASH_MESSAGE_WARNING = 'warning';
     
     /**
      * @var string
      */
-    const FLASH_MESSAGE_INFO = 'info';
+    const string FLASH_MESSAGE_INFO = 'info';
     
     /**
      * @var string
      */
-    const BECK_END_NAMESPACE = 'backend';
+    const string BECK_END_NAMESPACE = 'backend';
     
     /**
      * @var string
      */
-    const FRONT_END_NAMESPACE = 'frontend';
+    const string FRONT_END_NAMESPACE = 'frontend';
     
     /**
      * @var string
      */
-    const MODERATOR_END_SPACE = 'moderator';
-    
-
-
-    #[Nette\DI\Attributes\Inject]
-    public BanManager $banManager;
+    const string MODERATOR_END_SPACE = 'moderator';
       
     /**
      * @var BootstrapForm $bootStrapForm
@@ -68,6 +65,9 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 
     #[Nette\DI\Attributes\Inject]
     public TranslatorFactory $translatorFactory;
+
+    #[Nette\DI\Attributes\Inject]
+    public EntityManagerDecorator $aem;
 
     /**
      * BasePresenter constructor.
@@ -114,15 +114,17 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
 
     private function banUser(): void
     {
-        $bans     = $this->banManager->getAllCached();
+        $bans = $this->aem
+            ->getRepository(BanEntity::class)
+            ->findAll();
+
         $user     = $this->getUser();
         $identity = $user->getIdentity();
         
-        
         // if not main admin or role is not admin, so you can not ban admin, if some problem....
-        if ($user->id !== 1 || !in_array(Authorizator::ROLES[5], $user->roles, true)) {
+        if ($user->getId() !== 1 || !in_array(Authorizator::ROLES[5], $user->getRoles(), true)) {
             foreach ($bans as $ban) {
-                if ($identity && $user->loggedIn) {
+                if ($identity && $user->isLoggedIn()) {
                     if ($ban->ban_email === $identity->getData()['user_email'] || $ban->ban_user_name === $identity->getData()['user_name']) {
                         $this->error('Banned', IResponse::S403_Forbidden);
                     }
@@ -143,12 +145,12 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             return false;
         }
         
-        return $this->getUser()->loggedIn;
+        return $this->getUser()->isLoggedIn();
     }
 
     protected function checkUserLoggedIn(): bool
     {
-        return $this->checkAdminLoggedIn() && !in_array('guest', $this->user->roles, true);
+        return $this->checkAdminLoggedIn() && !in_array('guest', $this->getUser()->roles, true);
     }
 
     protected function checkJuniorAdminLoggedIn(): bool

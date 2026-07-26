@@ -8,8 +8,6 @@ use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Entity\CategoryEntity;
 use App\Model\Entity\ForumEntity;
 use App\Models\CategoryManager;
-use App\Models\Traits\CategoriesTrait;
-use dibi;
 
 /**
  * Description of CategoryPresenter
@@ -20,13 +18,11 @@ use dibi;
  */
 class CategoryPresenter extends BaseForumPresenter
 {
-    use CategoriesTrait;
-    //use \App\Models\Traits\ForumsTrait;
-
     /**
      * CategoryPresenter constructor.
      *
      * @param CategoryManager $manager
+     * @param EntityManagerDecorator $em
      */
     public function __construct(
         CategoryManager $manager,
@@ -42,15 +38,21 @@ class CategoryPresenter extends BaseForumPresenter
      */
     public function renderDefault(int $category_id = 0): void
     {
-        $category = $this
-            ->em
+        $categoryEntity = $this->em
             ->getRepository(CategoryEntity::class)
             ->findOneBy(
                 [
-                    'id' => $category_id,
-                    'active' => true,
+                    'id' => $category_id
                 ]
             );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
 
         //$categories = $this->getManager()->getMptt()->get_tree($category_id);
 
@@ -66,7 +68,7 @@ class CategoryPresenter extends BaseForumPresenter
             ->getRepository(ForumEntity::class)
             ->findBy(
                 [
-                    'category' => $category,
+                    'category' => $categoryEntity,
                 ]
             );
 

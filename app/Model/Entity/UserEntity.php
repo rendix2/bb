@@ -53,6 +53,9 @@ class UserEntity
     #[Column(type: Types::BOOLEAN)]
     public bool $isActive;
 
+    #[Column(type: Types::STRING)]
+    public string $language;
+
     #[Column(type: Types::DATETIME_IMMUTABLE)]
     public DateTimeImmutable $createdAt;
 

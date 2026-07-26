@@ -25,5 +25,9 @@ class PostEntity
     #[JoinColumn(nullable: false)]
     public UserEntity $user;
 
+    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'posts')]
+    #[JoinColumn(nullable: false)]
+    public CategoryEntity $category;
+
 
 }

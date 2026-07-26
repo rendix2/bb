@@ -107,7 +107,7 @@ class GroupPresenter extends AdminPresenter
     /**
      * @param int|null $id
      */
-    public function renderEdit($id = null)
+    public function renderEdit($id = null): void
     {
         parent::renderEdit($id);
 
@@ -180,7 +180,7 @@ class GroupPresenter extends AdminPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function editFormSuccess(Form $form, ArrayHash $values)
+    public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         unset($values->group_moderator);
 

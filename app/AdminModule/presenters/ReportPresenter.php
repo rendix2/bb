@@ -30,7 +30,7 @@ class ReportPresenter extends AdminPresenter
     /**
      * @return BootstrapForm
      */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): BootstrapForm
     {
         $values = [
             0 => 'Added',
@@ -48,7 +48,7 @@ class ReportPresenter extends AdminPresenter
      *
      * @return GridFilter
      */
-    protected function createComponentGridFilter()
+    protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->getTranslator());
 
@@ -78,7 +78,7 @@ class ReportPresenter extends AdminPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbAll()
+    protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
@@ -91,7 +91,7 @@ class ReportPresenter extends AdminPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbEdit()
+    protected function createComponentBreadCrumbEdit(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default',  'text' => 'menu_index'],

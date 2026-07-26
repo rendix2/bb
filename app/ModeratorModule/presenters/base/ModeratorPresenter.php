@@ -21,19 +21,19 @@ abstract class ModeratorPresenter extends CrudPresenter
      *
      * @var ITranslator $adminTranslator
      */
-    private $translator;
+    private ITranslator $translator;
     
     /**
      *
      * @var ModeratorManager $moderatorsManager
      * @inject
      */
-    public $moderatorsManager;
+    public ModeratorManager $moderatorsManager;
 
     /**
      * @return ITranslator
      */
-    public function getTranslator()
+    public function getTranslator(): ITranslator
     {
         return $this->translator;
     }
@@ -45,7 +45,7 @@ abstract class ModeratorPresenter extends CrudPresenter
      */
     public function checkRequirements($element): void
     {
-        $this->user->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
+        $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         
         parent::checkRequirements($element);
     }

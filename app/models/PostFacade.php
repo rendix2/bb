@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\TopicWatchEntity;
+use App\Model\Entity\UserEntity;
 use App\Models\Entity\PostEntity;
 use App\Models\Entity\TopicEntity;
 use App\Settings\TopicsSetting;
@@ -26,148 +29,113 @@ class PostFacade
      *
      * @var TopicManager $topicsManager
      */
-    private $topicsManager;
-    
-    /**
-     *
-     * @var TopicWatchManager $topicWatchManager
-     */
-    private $topicWatchManager;
+    private TopicManager $topicsManager;
+
     
     /**
      *
      * @var UsersManager $usersManager
      */
-    private $usersManager;
+    private UsersManager $usersManager;
     
     /**
      *
      * @var ReportManager $reportsManager
      */
-    private $reportsManager;
+    private ReportManager $reportsManager;
     
     /**
      *
      * @var ForumManager $forumsManager
      */
-    private $forumsManager;
+    private ForumManager $forumsManager;
     
     /**
      *
      * @var PostsHistoryManager $postsHistoryManager
      */
-    private $postsHistoryManager;
-    
-    /**
-     *
-     * @var ThankManager $thanksManager
-     */
-    private $thanksManager;
+    private PostsHistoryManager $postsHistoryManager;
     
     /**
      *
      * @var ThanksFacade $thanksFacade
      */
-    private $thanksFacade;
+    private ThanksFacade $thanksFacade;
     
     /**
      *
      * @var TopicWatchFacade $topicWatchFacade
      */
-    private $topicWatchFacade;
+    private TopicWatchFacade $topicWatchFacade;
     
     /**
      *
      * @var PollsFacade $pollsFacade
      */
-    private $pollsFacade;
+    private PollsFacade $pollsFacade;
     
     /**
      *
      * @var TopicsSetting $topicSettings
      */
-    private $topicSettings;
+    private TopicsSetting $topicSettings;
     
     /**
      *
      * @var FilesManager $filesManager
      */
-    private $filesManager;
+    private FilesManager $filesManager;
     
     /**
      * @var Posts2FilesManager $posts2FilesManger
      */
-    private $posts2FilesManger;
+    private Posts2FilesManager $posts2FilesManger;
 
     /**
      *
      * PostFacade constructor.
      *
-     * @param PostManager        $postsManager
-     * @param TopicManager       $topicsManager
-     * @param TopicWatchManager   $topicWatchManager
-     * @param UsersManager        $usersManager
-     * @param ReportManager      $reportsManager
-     * @param ForumManager       $forumsManager
+     * @param PostManager $postsManager
+     * @param TopicManager $topicsManager
+     * @param UsersManager $usersManager
+     * @param ReportManager $reportsManager
+     * @param ForumManager $forumsManager
      * @param PostsHistoryManager $postsHistoryManager
-     * @param ThankManager       $thanksManager
-     * @param ThanksFacade        $thanksFacade
-     * @param TopicWatchFacade    $topicWatchFacade
-     * @param PollsFacade         $pollsFacade
-     * @param TopicsSetting       $topicSettings
-     * @param FilesManager        $filesManager
-     * @param Posts2FilesManager  $posts2FilesManger
+     * @param ThanksFacade $thanksFacade
+     * @param TopicWatchFacade $topicWatchFacade
+     * @param PollsFacade $pollsFacade
+     * @param TopicsSetting $topicSettings
+     * @param FilesManager $filesManager
+     * @param Posts2FilesManager $posts2FilesManger
+     * @param EntityManagerDecorator $em
      */
     public function __construct(
         PostManager        $postsManager,
         TopicManager       $topicsManager,
-        TopicWatchManager   $topicWatchManager,
         UsersManager        $usersManager,
         ReportManager      $reportsManager,
         ForumManager       $forumsManager,
         PostsHistoryManager $postsHistoryManager,
-        ThankManager       $thanksManager,
         ThanksFacade        $thanksFacade,
         TopicWatchFacade    $topicWatchFacade,
         PollsFacade         $pollsFacade,
         TopicsSetting       $topicSettings,
         FilesManager        $filesManager,
-        Posts2FilesManager  $posts2FilesManger
+        Posts2FilesManager  $posts2FilesManger,
+        private readonly EntityManagerDecorator $em
     ) {
         $this->postsManager        = $postsManager;
         $this->topicsManager       = $topicsManager;
-        $this->topicWatchManager   = $topicWatchManager;
         $this->usersManager        = $usersManager;
         $this->reportsManager      = $reportsManager;
         $this->forumsManager       = $forumsManager;
         $this->postsHistoryManager = $postsHistoryManager;
-        $this->thanksManager       = $thanksManager;
         $this->thanksFacade        = $thanksFacade;
         $this->topicWatchFacade    = $topicWatchFacade;
         $this->pollsFacade         = $pollsFacade;
         $this->topicSettings       = $topicSettings;
         $this->filesManager        = $filesManager;
         $this->posts2FilesManger   = $posts2FilesManger;
-    }
-
-    /**
-     * PostFacade destructor.
-     */
-    public function __destruct()
-    {
-        $this->postsManager        = null;
-        $this->topicsManager       = null;
-        $this->topicWatchManager   = null;
-        $this->usersManager        = null;
-        $this->reportsManager      = null;
-        $this->forumsManager       = null;
-        $this->postsHistoryManager = null;
-        $this->thanksManager       = null;
-        $this->thanksFacade        = null;
-        $this->topicWatchFacade    = null;
-        $this->topicSettings       = null;
-        $this->filesManager        = null;
-        $this->posts2FilesManger   = null;
     }
 
     /**
@@ -209,12 +177,41 @@ class PostFacade
                 ])
         );
 
-        $topicWatching = $this->topicWatchManager->fullCheck($topic_id, $user_id);
+        $topicEntity = $this->em
+            ->getRepository(TopicEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $topic_id,
+                ]
+            );
+
+        $userEntity = $this->em
+            ->getRepository(UserEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $user_id,
+                ]
+            );
+
+        $topicWatchEntity = $this->em
+            ->getRepository(TopicWatchEntity::class)
+            ->findOneBy(
+                [
+                    'topic' => $topicEntity,
+                    'user' => $userEntity,
+                ]
+            );
 
         $watch = [];
 
-        if (!$topicWatching) {
-            $this->topicWatchManager->add([$user_id], $topic_id);
+        if ($topicWatchEntity === null) {
+            $topicWatchEntity = new TopicWatchEntity();
+            $topicWatchEntity->topic = $topicEntity;
+            $topicWatchEntity->user = $userEntity;
+
+            $this->em->persist($topicWatchEntity);
+            $this->em->flush();
+
             $watch = ['user_watch_count%sql' => 'user_watch_count + 1'];
         }
 
@@ -225,6 +222,7 @@ class PostFacade
                 'post_text'         => $post->getPost_text(),
                 'post_history_time' => time()
             ]));
+
         $this->usersManager->update($user_id, ArrayHash::from([
                 'user_post_count%sql' => 'user_post_count + 1',
                 'user_last_post_time' => time()

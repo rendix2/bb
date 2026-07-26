@@ -17,41 +17,7 @@ use Nette\Utils\ArrayHash;
  */
 class PostManager extends CrudManager
 {
-    /**
-     * @param int $category_id
-     *
-     * @return mixed
-     */
-    public function getCountByCategory($category_id)
-    {
-        return $this->getCountPrimaryKeyFluent()
-            ->where('[post_category_id] = %i', $category_id)
-            ->fetchSingle();
-    }
 
-    /**
-     * @param int $forum_id
-     *
-     * @return mixed
-     */
-    public function getCountByForum($forum_id)
-    {
-        return $this->getCountPrimaryKeyFluent()
-                ->where('[post_forum_id] = %i', $forum_id)
-                ->fetchSingle();
-    }
-
-    /**
-     * @param int $topic_id
-     *
-     * @return mixed
-     */
-    public function getCountByTopic($topic_id)
-    {
-        return $this->getCountPrimaryKeyFluent()
-                ->where('[post_topic_id] = %i', $topic_id)
-                ->fetchSingle();
-    }
 
     /**
      * @param int $topic_id

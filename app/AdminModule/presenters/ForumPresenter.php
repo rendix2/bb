@@ -127,7 +127,7 @@ class ForumPresenter extends AdminPresenter
     /**
      * @param int|null $id
      */
-    public function renderEdit($id = null)
+    public function renderEdit($id = null): void
     {
         if ($id) {
             if (!is_numeric($id)) {

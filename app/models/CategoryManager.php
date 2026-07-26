@@ -5,26 +5,12 @@ namespace App\Models;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\CategoryEntity;
 use App\Models\Crud\CrudManager;
-use dibi;
 use Dibi\Connection;
-use Dibi\Row;
 use Nette\Caching\IStorage;
-use Zebra_Mptt;
 
-/**
- * Class CategoryManager
- *
- * @author rendix2
- * @package App\Models
- */
 #[\Nette\Application\Attributes\Deprecated]
 class CategoryManager extends CrudManager
 {
-    /**
-     * @var Zebra_Mptt $mptt
-     */
-    private $mptt;
-
     /**
      * CategoriesManager constructor.
      *
@@ -39,38 +25,6 @@ class CategoryManager extends CrudManager
     {
         parent::__construct($dibi, $storage);
     }
-    
-    /**
-     * CategoriesManager destructor.
-     */
-    public function __destruct()
-    {
-        $this->mptt = null;
-        
-        parent::__destruct();
-    }
-
-    /**
-     *
-     * @return Zebra_Mptt
-     */
-    public function getMptt()
-    {
-        return $this->mptt;
-    }
-
-    /**
-     * @param int $category_id
-     *
-     * @return Row[]
-     */
-    public function getByParent($category_id)
-    {
-        return $this->getAllFluent()
-            ->where('[category_parent_id] = %i', $category_id)
-            ->fetchAll();
-    }
-
 
     /**
      * @param int $categoryId

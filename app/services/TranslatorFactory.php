@@ -19,33 +19,22 @@ class TranslatorFactory
     /**
      * @var User $user
      */
-    private $user;
+    private User $user;
 
     /**
      * @var string$lang
      */
-    private $lang;
+    private string $lang;
 
     /**
      * @var AppDir $appDir
      */
-    private $appDir;
+    private AppDir $appDir;
     
     /**
      * @var DefaultLanguage $defaultLanguage
      */
-    private $defaultLanguage;
-    
-    /**
-     *
-     * @var ITranslator $forumTranslator
-     */
-    private $forumTranslator;
-    
-    /**
-     * @var ITranslator $adminTranslator
-     */
-    private $adminTranslator;
+    private DefaultLanguage $defaultLanguage;
 
     /**
      * TranslatorFactory constructor.
@@ -65,30 +54,18 @@ class TranslatorFactory
         
         $this->setLang();
     }
-    
-    /**
-     * TranslatorFactory destructor.
-     */
-    public function __destruct()
-    {
-        $this->user            = null;
-        $this->lang            = null;
-        $this->appDir          = null;
-        $this->defaultLanguage = null;
-        $this->forumTranslator = null;
-        $this->adminTranslator = null;
-    }
 
     /**
      * sets default lang
      */
-    private function setLang()
+    private function setLang(): void
     {
-        $identity = $this->user->id;
-        $lang     = '';
-        
-        if ($this->user->loggedIn) {
-            $lang = $this->user->getIdentity()->getData()['lang_file_name'];
+        if ($this->user->isLoggedIn()) {
+            if (isset($this->user->getIdentity()?->getData()['lang_file_name'])) {
+                $lang = $this->user->getIdentity()?->getData()['lang_file_name'];
+            } else {
+                $lang = $this->defaultLanguage->get();
+            }
         } else {
             $lang = $this->defaultLanguage->get();
         }
@@ -99,24 +76,16 @@ class TranslatorFactory
     /**
      * @return Translator
      */
-    public function getAdminTranslator()
+    public function getAdminTranslator(): Translator
     {
-        if (!$this->adminTranslator) {
-            $this->adminTranslator = new Translator($this->appDir, 'Admin', $this->lang);
-        }
-        
-        return $this->adminTranslator;
+        return new Translator($this->appDir, 'Admin', $this->lang);
     }
 
     /**
      * @return Translator
      */
-    public function getForumTranslator()
+    public function getForumTranslator(): Translator
     {
-        if (!$this->forumTranslator) {
-            $this->forumTranslator = new Translator($this->appDir, 'Forum', $this->lang);
-        }
-        
-        return $this->forumTranslator;
+        return new Translator($this->appDir, 'Forum', $this->lang);
     }
 }

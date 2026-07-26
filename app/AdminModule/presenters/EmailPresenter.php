@@ -30,20 +30,20 @@ class EmailPresenter extends AdminPresenter
      * @var BBMailer $bbMailer
      * @inject
      */
-    public $bbMailer;
+    public BBMailer $bbMailer;
     
     /**
      *
      * @var Mails2UsersManager $mail2UsersManager
      * @inject
      */
-    public $mail2UsersManager;
+    public Mails2UsersManager $mail2UsersManager;
 
     /**
      * @var UsersManager $usersManager
      * @inject
      */
-    public $usersManager;
+    public UsersManager $usersManager;
 
     /**
      * EmailPresenter constructor.
@@ -54,34 +54,22 @@ class EmailPresenter extends AdminPresenter
     {
         parent::__construct($manager);
     }
-    
-    /**
-     * EmailPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->bbMailer          = null;
-        $this->mail2UsersManager = null;
-        $this->usersManager      = null;
-        
-        parent::__destruct();
-    }
 
     /**
      * @param int|null $id
      */
-    public function renderEdit($id = null)
+    public function renderEdit($id = null): void
     {
         parent::renderEdit($id);
 
-        $this->template->emails = $this->mail2UsersManager->getAllByLeftJoined($id);
+        $this->getTemplate()->emails = $this->mail2UsersManager->getAllByLeftJoined($id);
     }
     
     /**
      *
      * @return GridFilter
      */
-    protected function createComponentGridFilter()
+    protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->getTranslator());
 
@@ -93,29 +81,30 @@ class EmailPresenter extends AdminPresenter
         return $this->gf;
     }
 
-    /**
-     * @return BootstrapForm|mixed
-     */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         $form->setTranslator($this->getTranslator());
 
-        $form->addText('mail_subject', 'mail_subject:')->setDisabled();
-        $form->addTextArea('mail_text', 'mail_text:')->setDisabled();
+        $form->addText('mail_subject', 'mail_subject:')
+            ->setDisabled();
+
+        $form->addTextArea('mail_text', 'mail_text:')
+            ->setDisabled();
 
         return $form;
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentSendForm()
+    protected function createComponentSendForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
-        $form->addText('mail_subject', 'mail_subject:')->setRequired(true);
-        $form->addTextArea('mail_text', 'mail_text:')->setRequired(true);
+        $form->addText('mail_subject', 'mail_subject:')
+            ->setRequired(true);
+
+        $form->addTextArea('mail_text', 'mail_text:')
+            ->setRequired(true);
+
         $form->addSubmit('send', 'mail_send');
 
         $form->onSuccess[] = [$this, 'sendFormSuccess'];
@@ -127,7 +116,7 @@ class EmailPresenter extends AdminPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function sendFormSuccess(Form $form, ArrayHash $values)
+    public function sendFormSuccess(Form $form, ArrayHash $values): void
     {
         $users      = $this->usersManager->getAll();
         $usersMails = Utils::arrayObjectColumn($users, 'user_email');

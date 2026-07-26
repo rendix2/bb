@@ -27,22 +27,11 @@ class SearchPresenter extends BaseForumPresenter
     {
         parent::__construct($userManager);
     }
-    
-    /**
-     * SearchPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->topicsManager = null;
-        $this->postsManager  = null;
-        
-        parent::__destruct();
-    }
 
     /**
      * SearchPresenter startup.
      */
-    public function renderDefault()
+    public function renderDefault(): void
     {
     }
 

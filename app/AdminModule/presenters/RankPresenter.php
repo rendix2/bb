@@ -29,7 +29,7 @@ class RankPresenter extends AdminPresenter
      * @var Ranks $ranks
      * @inject
      */
-    public $ranks;
+    public Ranks $ranks;
 
     /**
      * RankPresenter constructor.
@@ -40,22 +40,12 @@ class RankPresenter extends AdminPresenter
     {
         parent::__construct($manager);
     }
-    
-    /**
-     * RankPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->ranks = null;
-        
-        parent::__destruct();
-    }
 
     /**
      *
      * @param int|null $id
      */
-    public function renderEdit($id = null)
+    public function renderEdit($id = null): void
     {
         parent::renderEdit($id);
         
@@ -65,7 +55,7 @@ class RankPresenter extends AdminPresenter
     /**
      * @return BootstrapForm
      */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): BootstrapForm
     {
         $form = $this->getBootstrapForm();
         
@@ -109,7 +99,7 @@ class RankPresenter extends AdminPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function editFormSuccess(Form $form, ArrayHash $values)
+    public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         $move = $this->getManager()->moveRank(
             $values->rank_file,

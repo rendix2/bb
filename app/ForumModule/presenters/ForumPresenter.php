@@ -6,12 +6,15 @@ use App\Authorization\Scopes\ForumScope;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
+use App\Database\EntityManagerDecorator;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
+use App\Model\Entity\CategoryEntity;
+use App\Models\CategoryManager;
 use App\Models\ForumManager;
 use App\Models\ModeratorManager;
-use App\Models\Traits\CategoriesTrait;
 use App\Settings\ForumSettings;
 use App\Settings\TopicsSetting;
+use Nette\DI\Attributes\Inject;
 
 /**
  * Description of ForumPresenter
@@ -22,58 +25,33 @@ use App\Settings\TopicsSetting;
  */
 final class ForumPresenter extends BaseForumPresenter
 {
-    use CategoriesTrait;
-    
-    /**
-     *
-     * @var ForumSettings $forumsSettings
-     * @inject
-     */
-    public $forumSettings;
-    
-    /**
-     * @var TopicsSetting $topicSetting
-     * @inject
-     */
-    public $topicSetting;
+    #[Inject]
+    public ForumSettings $forumSettings;
 
-    /**
-     *
-     * @var ModeratorManager $moderators
-     * @inject
-     */
-    public $moderatorsManager;
+    #[Inject]
+    public TopicsSetting $topicSetting;
+
+    #[Inject]
+    public ModeratorManager $moderatorsManager;
+
+    #[Inject]
+    public CategoryManager $categoryManager;
     
-    /**
-     *
-     * @var GridFilter $gf
-     * @inject
-     */
-    public $gf;
+    #[Inject]
+    public GridFilter $gf;
 
     /**
      * ForumPresenter constructor.
      *
+     * @param EntityManagerDecorator $em
      * @param ForumManager $manager
      */
-    public function __construct(ForumManager $manager)
+    public function __construct(
+        private readonly EntityManagerDecorator $em,
+        ForumManager $manager
+    )
     {
         parent::__construct($manager);
-    }
-    
-    /**
-     * ForumPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->forumsManager     = null;
-        $this->topicsManager     = null;
-        $this->forumSettings     = null;
-        $this->topicSetting      = null;
-        $this->moderatorsManager = null;
-        $this->gf                = null;
-        
-        parent::__destruct();
     }
 
     /**
@@ -85,7 +63,22 @@ final class ForumPresenter extends BaseForumPresenter
      */
     public function actionDefault(int $category_id, int $forum_id, int $page = 1): void
     {
-        $category   = $this->checkCategoryParam($category_id);
+        $categoryEntity = $this->em
+            ->getRepository(CategoryEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $category_id
+                ]
+            );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
         $forum      = $this->checkForumParam($forum_id, $category_id);
         
         $forumScope = $this->loadForum($forum);
@@ -129,7 +122,7 @@ final class ForumPresenter extends BaseForumPresenter
      * @param int $forum_id
      * @param int $page
      */
-    public function renderDefault($category_id, $forum_id, $page = 1)
+    public function renderDefault(int $category_id, int $forum_id, int $page = 1): void
     {
         $moderators = $this->moderatorsManager->getAllByRightJoined($forum_id);
         
@@ -148,9 +141,24 @@ final class ForumPresenter extends BaseForumPresenter
      * @param int $category_id
      * @param int $forum_id
      */
-    public function renderRules($category_id, $forum_id)
+    public function renderRules(int $category_id, int $forum_id): void
     {
-        $category = $this->checkCategoryParam($category_id);
+        $categoryEntity = $this->em
+            ->getRepository(CategoryEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $category_id
+                ]
+            );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
         $forum    = $this->checkForumParam($forum_id, $category_id);
 
         if (!$forum->getForum_rules()) {
@@ -164,7 +172,7 @@ final class ForumPresenter extends BaseForumPresenter
      *
      * @return GridFilter
      */
-    protected function createComponentGridFilter()
+    protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->getTranslator());
         
@@ -182,7 +190,7 @@ final class ForumPresenter extends BaseForumPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbAll()
+    protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
@@ -196,7 +204,7 @@ final class ForumPresenter extends BaseForumPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbRules()
+    protected function createComponentBreadCrumbRules(): BreadCrumbControl
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],

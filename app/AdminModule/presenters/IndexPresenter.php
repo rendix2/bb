@@ -2,10 +2,12 @@
 
 namespace App\AdminModule\Presenters;
 
+use App\Database\EntityManagerDecorator;
 use App\Models\SessionManager;
 use App\Presenters\Base\BasePresenter;
 use App\Settings\Avatars;
 use App\Settings\CacheDir;
+use Nette\DI\Attributes\Inject;
 
 /**
  * Description of IndexPresenter
@@ -15,40 +17,21 @@ use App\Settings\CacheDir;
  */
 class IndexPresenter extends BasePresenter
 {
-    /**
-     * @var int
-     */
-    const MAX_LOGGED_IN_USERS_TO_SHOW = 200;
+    const int MAX_LOGGED_IN_USERS_TO_SHOW = 200;
     
-    /**
-     * @var SessionManager $sessionsManager
-     * @inject
-     */
-    public $sessionsManager;
-    
-    /**
-     *
-     * @var Avatars $avatar
-     * @inject
-     */
-    public $avatar;
-    
-    /**
-     * @var CacheDir $cacheDir
-     * @inject
-     */
-    public $cacheDir;
-    
-    /**
-     * IndexPresenter destructor.
-     */
-    public function __destruct()
+    #[Inject]
+    public SessionManager $sessionsManager;
+
+    #[Inject]
+    public Avatars $avatar;
+
+    #[Inject]
+    public CacheDir $cacheDir;
+
+    public function __construct(
+        private readonly EntityManagerDecorator $em,
+    )
     {
-        $this->sessionsManager = null;
-        $this->avatar          = null;
-        $this->cacheDir        = null;
-        
-        parent::__destruct();
     }
 
     /**
@@ -57,13 +40,13 @@ class IndexPresenter extends BasePresenter
      */
     public function checkRequirements($element): void
     {
-        $user = $this->user;
+        $user = $this->getUser();
         
         $user->getStorage()->setNamespace(self::BECK_END_NAMESPACE);
         
         parent::checkRequirements($element);
 
-        if (!$user->loggedIn) {
+        if (!$user->isLoggedIn()) {
             $this->redirect(':Admin:Login:default');
         }
 
@@ -80,13 +63,13 @@ class IndexPresenter extends BasePresenter
     {
         parent::beforeRender();
         
-        $this->template->setTranslator($this->translatorFactory->getAdminTranslator());
+        $this->getTemplate()->setTranslator($this->translatorFactory->getAdminTranslator());
     }
 
     /**
      *
      */
-    public function renderDefault()
+    public function renderDefault(): void
     {
         $count = $this->sessionsManager->getCountOfLoggedUsers();
 
@@ -103,7 +86,7 @@ class IndexPresenter extends BasePresenter
     /**
      * truncate sessions
      */
-    public function actionDeleteSessions()
+    public function actionDeleteSessions(): void
     {
         $res = $this->sessionsManager->truncateSessions();
         
@@ -117,9 +100,9 @@ class IndexPresenter extends BasePresenter
     /**
      * logout user
      */
-    public function actionLogout()
+    public function actionLogout(): void
     {
-        $this->user->logout(true);
+        $this->getUser()->logout(true);
         $this->flashMessage('User was logged out.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect(':Forum:Index:default');
     }

@@ -42,16 +42,6 @@ class RankManager extends CrudManager
 
         $this->ranks = $ranks;
     }
-    
-    /**
-     * RanksManager destructor.
-     */
-    public function __destruct()
-    {
-        $this->ranks = null;
-        
-        parent::__destruct();
-    }
 
     /**
      * @param FileUpload $file
@@ -59,7 +49,7 @@ class RankManager extends CrudManager
      *
      * @return string
      */
-    public function moveRank(FileUpload $file, $id)
+    public function moveRank(FileUpload $file, $id): string
     {
         if ($file->ok) {
             $rank = $this->getById($id);

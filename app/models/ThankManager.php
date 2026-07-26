@@ -16,17 +16,7 @@ use Nette\Utils\ArrayHash;
  */
 class ThankManager extends CrudManager
 {
-    /**
-     * @param int $forum_id
-     *
-     * @return Row[]
-     */
-    public function getAllByForum($forum_id)
-    {
-        return $this->getAllFluent()
-            ->where('[thank_forum_id] = %i', $forum_id)
-            ->fetchAll();
-    }
+
 
     /**
      * @param int $topic_id
@@ -37,18 +27,6 @@ class ThankManager extends CrudManager
     {
         return $this->getAllFluent()
             ->where('[thank_topic_id] = %i', $topic_id)
-            ->fetchAll();
-    }
-
-    /**
-     * @param int $user_id
-     *
-     * @return Row[]
-     */
-    public function getAllByUser($user_id)
-    {
-        return $this->getAllFluent()
-            ->where('[thank_user_id] = %i', $user_id)
             ->fetchAll();
     }
 
@@ -84,24 +62,6 @@ class ThankManager extends CrudManager
     }
 
     /**
-     * @param int $forum_id
-     * @param int $topic_id
-     * @param int $user_id
-     *
-     * @return bool
-     */
-    public function canUserThank($forum_id, $topic_id, $user_id)
-    {
-        return !$this->dibi
-            ->select('1')
-            ->from($this->getTable())
-            ->where('[thank_forum_id] = %i', $forum_id)
-            ->where('[thank_topic_id] = %i', $topic_id)
-            ->where('[thank_user_id] = %i', $user_id)
-            ->fetch();
-    }
-
-    /**
      * @param int $topic_id
      *
      * @return Result|int
@@ -110,18 +70,6 @@ class ThankManager extends CrudManager
     {
         return $this->deleteFluent()
             ->where('[thank_topic_id] = %i', $topic_id)
-            ->execute();
-    }
-    
-    /**
-     * @param int $user_id
-     *
-     * @return Result|int
-     */
-    public function deleteByUser($user_id)
-    {
-        return $this->deleteFluent()
-            ->where('[thank_user_id] = %i', $user_id)
             ->execute();
     }
     
@@ -136,20 +84,6 @@ class ThankManager extends CrudManager
     {
         return $this->updateFluent($item_data)
             ->where('[thank_topic_id] = %i', $topic_id)
-            ->execute();
-    }
-    
-    /**
-     *
-     * @param int       $user_id
-     * @param ArrayHash $item_data
-     *
-     * @return bool
-     */
-    public function updateByUser($user_id, ArrayHash $item_data)
-    {
-        return $this->updateFluent($item_data)
-            ->where('[thank_user_id] = %i', $user_id)
             ->execute();
     }
     
@@ -174,7 +108,7 @@ class ThankManager extends CrudManager
      *
      * @return bool
      */
-    public function deleteByUsersAndTopic(array $user_ids, $topic_id)
+    public function deleteByUsersAndTopic(array $user_ids, int $topic_id)
     {
         return $this->deleteFluent()
                 ->where('[thank_user_id] IN %in', $user_ids)
@@ -182,17 +116,4 @@ class ThankManager extends CrudManager
                 ->execute();
     }
 
-    /**
-     * @param int $user_id
-     * @param int $topic_id
-     *
-     * @return Row|false
-     */
-    public function getByUserAndTopic($user_id, $topic_id)
-    {
-        return $this->getAllFluent()
-                ->where('[thank_user_id] = %i', $user_id)
-                ->where('[thank_topic_id] = %i', $topic_id)
-                ->fetch();
-    }
 }

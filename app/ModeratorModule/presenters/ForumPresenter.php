@@ -2,7 +2,6 @@
 
 namespace App\ModeratorModule\Presenters;
 
-use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\ForumManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
@@ -30,34 +29,36 @@ class ForumPresenter extends ModeratorPresenter
      *
      * @param int $page
      */
-    public function actionDefault($page = 1)
+    public function actionDefault($page = 1): void
     {
     }
 
     /**
      * @param int $page
      */
-    public function renderDefault($page = 1)
+    public function renderDefault($page = 1): void
     {
-        $this->template->forums = $this->moderatorsManager->getAllByLeftJoined($this->user->id);
+        $this->template->forums = $this->moderatorsManager->getAllByLeftJoined($this->getUser()->getId());
     }
 
-    /**
-     * @return BootstrapForm|mixed
-     */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
-        $form->addTextArea('forum_rules', 'Forum rules:');
-        
-        return $this->addSubmitB($form);
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
+        $form->addTextArea('rules', 'Forum rules');
+
+        $form->addSubmit('send', 'Save');
+
+        $form->onSuccess[]  = [$this, 'editFormSuccess'];
+        $form->onValidate[] = [$this, 'editFormValidate'];
+
+        return $form;
     }
     
     /**
      *
      * @return GridFilter
      */
-    protected function createComponentGridFilter()
+    protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->getTranslator());
 

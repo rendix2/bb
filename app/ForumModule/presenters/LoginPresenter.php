@@ -10,6 +10,7 @@ use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
 use App\Translator;
+use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -25,43 +26,31 @@ class LoginPresenter extends BasePresenter
      * @var string $backlink
      * @persistent
      */
-    public $backlink = '';
+    #[Persistent]
+    public string $backlink = '';
     
     /**
      *
      * @var UserLoginFormFactory $userLoginForm
      * @inject
      */
-    public $userLoginForm;
+    public UserLoginFormFactory $userLoginForm;
 
     /**
      * @var BBMailer $bbMailer
      * @inject
      */
-    public $bbMailer;
+    public BBMailer $bbMailer;
 
     /**
      * @var Translator $translator
      */
-    private $translator;
+    private Translator $translator;
 
     /**
      * @var UsersManager $usersManager
      */
-    public $usersManager;
-    
-    /**
-     * LoginPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->backlink      = null;
-        $this->userLoginForm = null;
-        $this->bbMailer      = null;
-        $this->translator    = null;
-        
-        parent::__destruct();
-    }
+    public UsersManager $usersManager;
 
     /**
      * LoginPresenter startup.
@@ -79,7 +68,7 @@ class LoginPresenter extends BasePresenter
      */
     public function checkRequirements($element): void
     {
-        $this->user->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
+        $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         
         parent::checkRequirements($element);
     }
@@ -99,7 +88,7 @@ class LoginPresenter extends BasePresenter
      * @param int    $user_id
      * @param string $key
      */
-    public function actionActivate($user_id, $key)
+    public function actionActivate($user_id, $key): void
     {
         $ok = true;
 
@@ -108,7 +97,7 @@ class LoginPresenter extends BasePresenter
             $ok = false;
         }
 
-        if ($this->user->loggedIn) {
+        if ($this->getUser()->isLoggedIn()) {
             $this->flashMessage('You are logged in!', self::FLASH_MESSAGE_DANGER);
             $ok = false;
         }

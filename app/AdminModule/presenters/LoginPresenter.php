@@ -121,10 +121,10 @@ class LoginPresenter extends BasePresenter
             
             $sessionEntity = new SessionEntity();
             $sessionEntity->setSession_key($this->getSession()->getId())
-                          ->setSession_user_id($user->id)
+                          ->setSession_user_id($user->getId())
                           ->setSession_from(time());
             
-            $this->sessionManager->deleteByUser($user->id);
+            $this->sessionManager->deleteByUser($user->getId());
             $this->sessionManager->add($sessionEntity->getArrayHash());
             $user->setExpiration('1 hour');
             $this->flashMessage(

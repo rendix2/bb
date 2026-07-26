@@ -48,28 +48,6 @@ class UsersManager extends CrudManager
 
         $this->avatars = $avatars;
     }
-    
-    /**
-     * UsersManager destructor
-     */
-    public function __destruct()
-    {
-        $this->avatars = null;
-        
-        parent::__destruct();
-    }
-
-    /**
-     * @param int $lang_id
-     *
-     * @return Row[]
-     */
-    public function getAllByLang($lang_id)
-    {
-        return $this->getAllFluent()
-            ->where('[user_lang_id] = %i', $lang_id)
-            ->fetchAll();
-    }
 
     /**
      * @param string $user_name
@@ -84,18 +62,6 @@ class UsersManager extends CrudManager
     }
 
     /**
-     * @param int $role_id
-     *
-     * @return Row[]
-     */
-    public function getAllByRole($role_id)
-    {
-        return $this->getAllFluent()
-            ->where('[user_role_id] = %i', $role_id)
-            ->fetchAll();
-    }
-
-    /**
      * @param int $lang_id
      *
      * @return int
@@ -104,18 +70,6 @@ class UsersManager extends CrudManager
     {
         return $this->getCountFluent()
             ->where('[user_lang_id] = %i', $lang_id)
-            ->fetchSingle();
-    }
-
-    /**
-     * @param int $role_id
-     *
-     * @return int
-     */
-    public function getCountByRole($role_id)
-    {
-        return $this->getCountFluent()
-            ->where('[user_role_id] = %i', $role_id)
             ->fetchSingle();
     }
 

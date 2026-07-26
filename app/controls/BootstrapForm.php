@@ -9,6 +9,7 @@
 namespace App\Controls;
 
 use App\Controls\CheckBox as MyCheckBox;
+use Nette\Application\Attributes\Deprecated;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IContainer;
 use Nette\Forms\Controls\Button;
@@ -29,6 +30,7 @@ use Stringable;
  * @package App\Controls
  *
  */
+#[Deprecated]
 class BootstrapForm extends Form
 {
     /**
@@ -37,7 +39,7 @@ class BootstrapForm extends Form
      * @var int $columnCount count of columns
      * @api
      */
-    private $columnCount;
+    private int $columnCount;
     
     /**
      * type of column
@@ -45,7 +47,7 @@ class BootstrapForm extends Form
      * @var string $columnType column type like sm/lg/xs....
      * @api
      */
-    private $columnType;
+    private string $columnType;
     
     /**
      * columns in row
@@ -54,13 +56,13 @@ class BootstrapForm extends Form
      * @var int $labelColumnCount
      * @api
      */
-    private $labelColumnCount;
+    private int $labelColumnCount;
     
     /**
      *
      * @var bool $ajax
      */
-    private $ajax;
+    private bool $ajax;
 
     /**
      * BootstrapForm constructor.
@@ -92,19 +94,6 @@ class BootstrapForm extends Form
         $this->columnType       = $columnType;
         $this->labelColumnCount = $labelColumnCount;
         $this->ajax             = $ajax;
-    }
-    
-    /**
-     * BootstrapForm destruct.
-     *
-     * @api
-     */
-    public function __destruct()
-    {
-        $this->columnCount      = null;
-        $this->columnType       = null;
-        $this->labelColumnCount = null;
-        $this->ajax             = null;
     }
 
     /**

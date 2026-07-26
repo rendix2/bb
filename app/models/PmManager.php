@@ -24,7 +24,7 @@ class PmManager extends CrudManager
      *
      * @var User $user
      */
-    private $user;
+    private User $user;
 
     /**
      * PmManager constructor.
@@ -46,16 +46,6 @@ class PmManager extends CrudManager
     }
 
     /**
-     * PmManager destructor.
-     */
-    public function __destruct()
-    {
-        $this->user = null;
-
-        parent::__destruct();
-    }
-
-    /**
      * @return Fluent
      */
     public function getAllFluent()
@@ -65,7 +55,7 @@ class PmManager extends CrudManager
             ->innerJoin(self::USERS_TABLE)
             ->as('u')
             ->on('pm.pm_user_id_from = u.user_id')
-            ->where('pm.pm_user_id_to = %i', $this->user->id);
+            ->where('pm.pm_user_id_to = %i', $this->user->getId());
     }
     
     /**
@@ -75,7 +65,7 @@ class PmManager extends CrudManager
     public function getCountSent()
     {
         return parent::getCountFluent()
-            ->where('pm_user_id_to = %i', $this->user->id)
+            ->where('pm_user_id_to = %i', $this->user->getId())
             ->where('pm_status = %s', 'sent')
             ->fetchSingle();
     }

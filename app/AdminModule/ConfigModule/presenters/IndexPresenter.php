@@ -42,7 +42,7 @@ class IndexPresenter extends BasePresenter
         
         parent::checkRequirements($element);
 
-        if (!$user->loggedIn) {
+        if (!$user->isLoggedIn()) {
             $this->error('You are not logged in.');
         }
 

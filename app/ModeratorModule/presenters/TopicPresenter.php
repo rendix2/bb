@@ -2,12 +2,15 @@
 
 namespace App\ModeratorModule\Presenters;
 
-use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\ForumEntity;
+use App\Model\Entity\TopicEntity;
 use App\Models\TopicFacade;
 use App\Models\TopicManager;
 use App\Models\Traits\ForumsTrait;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
+use Contributte\FormsBootstrap\BootstrapForm;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
@@ -28,51 +31,68 @@ class TopicPresenter extends ModeratorPresenter
      * @var TopicFacade $topicFacade
      * @inject
      */
-    public $topicFacade;
+    public TopicFacade $topicFacade;
 
-    /**
-     * TopicPresenter constructor.
-     *
-     * @param TopicManager $manager
-     */
-    public function __construct(TopicManager $manager)
+    public function __construct(
+        TopicManager $manager,
+        private readonly EntityManagerDecorator $em,
+    )
     {
         parent::__construct($manager);
     }
-    
-    /**
-     *
-     * @return BootstrapForm
-     */
-    protected function createComponentEditForm()
+
+    public function renderTopics(int $forum_id): void
     {
-        $form = BootstrapForm::create();
+        //$forum = $this->checkForumParam($forum_id);
+        //$forumScope = $this->loadForum($forum);
+
+        //$this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_UPDATE);
+
+        $topics = $this->em
+            ->getRepository(TopicEntity::class)
+            ->findBy(
+                [
+                    'forum' => $forum_id,
+                ]
+            );
+
+        $this->getTemplate()->topics = $topics;
+    }
+    
+    protected function createComponentEditForm(): BootstrapForm
+    {
+        $form = new BootstrapForm();
         
-        $form->addText('topic_user_id', 'Topic user:');
-        $form->addText('topic_forum_id', 'Topic forum');
-        $form->addText('topic_name', 'Topic name:');
+        $form->addText('user_id', 'User');
+        $form->addText('forum_id', 'Forum');
+        $form->addText('name', 'Name');
         $form->addCheckbox('topic_locked', 'Topic locked:');
 
-        return $this->addSubmitB($form);
+        $form->addSubmit('send', 'Send');
+
+        $form->onValidate[] = [$this, 'editFormValidate'];
+        $form->onSuccess[]  = [$this, 'editFormSuccess'];
+
+        return $form;
     }
     
     /**
      *
      * @return GridFilter
      */
-    protected function createComponentGridFilter()
+    protected function createComponentGridFilter(): GridFilter
     {
         return $this->gf;
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentMoveTopic()
+    protected function createComponentMoveTopic(): BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new BootstrapForm();
         
-        $form->addSelect('topic_forum_id', 'Forum name:', $this->forumsManager->getAllPairsCached('forum_name'));
+        $form->addSelect('forum_id', 'Forum name:', $this->forumsManager->getAllPairsCached('forum_name'));
+
+        $form->addSubmit('send', 'Save');
+
         $form->onSuccess[] = [$this, 'moveTopicSuccess'];
         
         return $form;
@@ -82,23 +102,40 @@ class TopicPresenter extends ModeratorPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function moveTopicSuccess(Form $form, ArrayHash $values)
+    public function moveTopicSuccess(Form $form, ArrayHash $values): void
     {
-        $this->getManager()->update($this->getParameter('id'), $values);
+        $topicEntity = $this->em
+            ->getRepository(TopicEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $this->getParameter('id'),
+                ]
+            );
+
+        $forumEntity = $this->em
+            ->getRepository(ForumEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $values->forum_id,
+                ]
+            );
+
+        $topicEntity->forum = $forumEntity;
+
+        $this->em->persist($topicEntity);
+        $this->em->flush();
+
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentChangeTopicAuthor()
+    protected function createComponentChangeTopicAuthor(): BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new BootstrapForm();
         
         $form->addText('user_name', 'User name:');
         $form->addSubmit('send', 'Search');
         
         $form->onSuccess[] = [$this, 'changeTopicAuthorSuccess'];
-        
+
         return $form;
     }
 
@@ -106,21 +143,19 @@ class TopicPresenter extends ModeratorPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function changeTopicAuthorSuccess(Form $form, ArrayHash $values)
+    public function changeTopicAuthorSuccess(Form $form, ArrayHash $values): void
     {
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentMergeTopics()
+    protected function createComponentMergeTopics(): BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new BootstrapForm();
         
-        $form->addSelect('topic_from_id', 'Topic from', $items);
-        $form->addSelect('topic_target_id', 'Topic target', $items);
+        $form->addSelect('from_id', 'Topic from', $items);
+        $form->addSelect('target_id', 'Topic target', $items);
         
         $form->addSubmit('send', 'Merge topic');
+
         $form->onSuccess[] = [$this, 'mergeTopicSuccess'];
         
         return $form;
@@ -130,24 +165,10 @@ class TopicPresenter extends ModeratorPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function mergeTopicSuccess(Form $form, ArrayHash $values)
+    public function mergeTopicSuccess(Form $form, ArrayHash $values): void
     {
-        $this->topicFacade->mergeTwoTopics($values->topic_from_id, $values->topic_target_id);
+        $this->topicFacade->mergeTwoTopics($values->from_id, $values->target_id);
         
         $this->flashMessage('Topics was merged.', self::FLASH_MESSAGE_SUCCESS);
-    }
-
-    /**
-     * @param int $forum_id
-     */
-    public function renderTopics($forum_id)
-    {
-        //$forum = $this->checkForumParam($forum_id);
-        //$forumScope = $this->loadForum($forum);
-        
-        //$this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_UPDATE);
-        
-        
-        $this->template->topics = $this->getManager()->getAllByForum($forum_id);
     }
 }

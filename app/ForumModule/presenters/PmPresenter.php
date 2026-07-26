@@ -24,26 +24,24 @@ use Nette\Utils\ArrayHash;
  */
 class PmPresenter extends CrudPresenter
 {
-    
     /**
      * @var ReportManager $reportsManager
      * @inject
      */
-    public $reportsManager;
+    public ReportManager $reportsManager;
     
     /**
      *
      * @var UsersManager $usersManager
      * @inject
      */
-    public $usersManager;
-
+    public UsersManager $usersManager;
 
     /**
      *
      * @var ITranslator $translator
      */
-    private $translator;
+    private ITranslator $translator;
 
     /**
      * PmPresenter constructor.
@@ -54,17 +52,6 @@ class PmPresenter extends CrudPresenter
     {
         parent::__construct($manager);
     }
-    
-    /**
-     * PmPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->reportsManager = null;
-        $this->translator     = null;
-        
-        parent::__destruct();
-    }
 
     /**
      *
@@ -72,7 +59,7 @@ class PmPresenter extends CrudPresenter
      */
     public function checkRequirements($element): void
     {
-        $this->user->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
+        $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         
         parent::checkRequirements($element);
     }
@@ -98,7 +85,7 @@ class PmPresenter extends CrudPresenter
      * @param int    $user_id
      * @param string $user_name
      */
-    public function handleSetUserId($user_id, $user_name)
+    public function handleSetUserId($user_id, $user_name): void
     {
         $this->redirect('Pm:edit', ['user_id' => $user_id, 'user_name' => $user_name]);
     }
@@ -107,7 +94,7 @@ class PmPresenter extends CrudPresenter
      *
      * @param int|null $id
      */
-    public function renderEdit($id = null)
+    public function renderEdit($id = null): void
     {
         if (!$id) {
             $this[self::FORM_NAME]->setDefaults([
@@ -126,7 +113,7 @@ class PmPresenter extends CrudPresenter
     /**
      * @param int $pm_id
      */
-    public function renderReport($pm_id)
+    public function renderReport($pm_id): void
     {
     }
 
@@ -134,7 +121,7 @@ class PmPresenter extends CrudPresenter
      *
      * @return ReportForm
      */
-    protected function createComponentReportForm()
+    protected function createComponentReportForm(): ReportForm
     {
         return new ReportForm($this->reportsManager);
     }
@@ -143,7 +130,7 @@ class PmPresenter extends CrudPresenter
      *
      * @return GridFilter
      */
-    protected function createComponentGridFilter()
+    protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->translator);
             
@@ -160,7 +147,7 @@ class PmPresenter extends CrudPresenter
      *
      * @return UserSearchControl
      */
-    protected function createComponentUserSearch()
+    protected function createComponentUserSearch(): UserSearchControl
     {
         return new UserSearchControl($this->usersManager, $this->translator);
     }
@@ -168,7 +155,7 @@ class PmPresenter extends CrudPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbAll()
+    protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
@@ -181,7 +168,7 @@ class PmPresenter extends CrudPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbEdit()
+    protected function createComponentBreadCrumbEdit(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
@@ -195,7 +182,7 @@ class PmPresenter extends CrudPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbUserSearch()
+    protected function createComponentBreadCrumbUserSearch(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
@@ -209,7 +196,7 @@ class PmPresenter extends CrudPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbReport()
+    protected function createComponentBreadCrumbReport(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
@@ -223,7 +210,7 @@ class PmPresenter extends CrudPresenter
     /**
      * @return BootstrapForm
      */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): BootstrapForm
     {
         $form = BootstrapForm::create();
 
@@ -248,13 +235,13 @@ class PmPresenter extends CrudPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function onValidate(Form $form, ArrayHash $values)
+    public function onValidate(Form $form, ArrayHash $values): void
     {
         if (!$values->pm_user_id_to) {
             $form->addError('We are missing recipients user ID', true);
         }
         
-        if ((int)$values->pm_user_id_to === $this->user->id) {
+        if ((int)$values->pm_user_id_to === $this->getUser()->getId()) {
             $form->addError('You cannot send PM to yourself.', true);
         }
     }
@@ -264,9 +251,9 @@ class PmPresenter extends CrudPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function editFormSuccess(Form $form, ArrayHash $values)
+    public function editFormSuccess(Form $form, ArrayHash $values): void
     {
-        $values->pm_user_id_from = $this->user->id;
+        $values->pm_user_id_from = $this->getUser()->getId();
         $values->pm_time_sent    = time();
         unset($values->user_name);
         

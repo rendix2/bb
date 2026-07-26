@@ -25,7 +25,7 @@ trait AuthorizationPresenter
      */
     protected function getLoggedInUser()
     {
-        $identity = new Identity($this->user->id, $this->user->roles);
+        $identity = new Identity($this->getUser()->getId(), $this->getUser()->getRoles());
 
         return new User($identity);
     }

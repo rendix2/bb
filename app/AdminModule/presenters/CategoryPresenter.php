@@ -7,12 +7,13 @@ use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
+use App\Model\Entity\ForumEntity;
 use App\Models\CategoryManager;
 use App\Models\CategoryFacade;
-use App\Models\Entity\CategoryEntity;
 use App\Models\ForumManager;
-use Dibi\DriverException;
+use Doctrine\DBAL\Exception as DbalException;
 use Nette\Application\UI\Form;
+use Nette\DI\Attributes\Inject;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -26,18 +27,11 @@ use Tracy\ILogger;
  */
 class CategoryPresenter extends AdminPresenter
 {
-    /**
-     *
-     * @var CategoryFacade $categoryFacade
-     * @inject
-     */
-    public $categoryFacade;
+    #[Inject]
+    public CategoryFacade $categoryFacade;
     
-    /**
-     * @var ForumManager $forumsManager
-     * @inject
-     */
-    public $forumsManager;
+    #[Inject]
+    public ForumManager $forumsManager;
 
     /**
      * CategoryPresenter constructor.
@@ -51,23 +45,12 @@ class CategoryPresenter extends AdminPresenter
     {
         parent::__construct($manager);
     }
-    
-    /**
-     * CategoryPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->categoryFacade = null;
-        $this->forumsManager  = null;
-        
-        parent::__destruct();
-    }
 
     /**
      *
      * @param int $page
      */
-    public function renderDefault($page = 1)
+    public function renderDefault($page = 1): void
     {
         parent::renderDefault($page);
 
@@ -83,28 +66,40 @@ class CategoryPresenter extends AdminPresenter
     /**
      * @param int|null $id
      */
-    public function renderEdit($id = null)
+    public function renderEdit($id = null): void
     {
         if ($id) {
             if (!is_numeric($id)) {
                 $this->error('Param id is not numeric.');
             }
 
-            $item = $this->getManager()->getById($id);
+            $categoryEntity = $this->em
+                ->getRepository(\App\Model\Entity\CategoryEntity::class)
+                ->findOneBy(
+                    [
+                        'id' => $id,
+                    ]
+                );
 
-            if (!$item) {
+            if ($categoryEntity === null) {
                 $this->error('Item #' . $id . ' not found.');
             }
 
-            $this[self::FORM_NAME]->setDefaults($item);
+            $this[self::FORM_NAME]->setDefaults($categoryEntity);
 
-            $forums = $this->forumsManager->getAllByCategory($id);
+            $forums = $this->em
+                ->getRepository(ForumEntity::class)
+                ->findBy(
+                    [
+                        'category' => $id,
+                    ]
+                );
 
             if (!$forums) {
                 $this->flashMessage('No forums in this category.', self::FLASH_MESSAGE_WARNING);
             }
 
-            $this->template->item   = $item;
+            $this->template->item   = $categoryEntity;
             $this->template->title  = $this->getTitleOnEdit();
             $this->template->forums = $forums;
         } else {
@@ -126,16 +121,21 @@ class CategoryPresenter extends AdminPresenter
     /**
      * @return BootstrapForm
      */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): BootstrapForm
     {
         $form = $this->getBootstrapForm();
 
-        $form->addText('category_name', 'Category name:')->setRequired(true);
+        $form->addText('category_name', 'Category name:')
+            ->setRequired(true);
+
         $form->addSelect(
             'category_parent_id',
             'Category parent:',
-            [0 => '-'] + $this->getManager()->getAllPairsCached('category_name')
-        )->setTranslator(null);
+            $this->getManager()->getAllPairsCached('category_name')
+        )
+            ->setPrompt('-')
+            ->setTranslator(null);
+
         $form->addCheckbox('category_active', 'Category active:');
 
         return $this->addSubmitB($form);
@@ -145,7 +145,7 @@ class CategoryPresenter extends AdminPresenter
      *
      * @return GridFilter
      */
-    protected function createComponentGridFilter()
+    protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->getTranslator());
 
@@ -161,7 +161,7 @@ class CategoryPresenter extends AdminPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbAll()
+    protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
@@ -174,7 +174,7 @@ class CategoryPresenter extends AdminPresenter
     /**
      * @return BreadCrumbControl
      */
-    protected function createComponentBreadCrumbEdit()
+    protected function createComponentBreadCrumbEdit(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default',    'text' => 'menu_index'],
@@ -189,29 +189,49 @@ class CategoryPresenter extends AdminPresenter
      * @param Form      $form   form
      * @param ArrayHash $values values
      */
-    public function editFormSuccess(Form $form, ArrayHash $values)
+    public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         $id = $this->getParameter('id');
 
         try {
             if ($id) {
-                $result = $this->categoryFacade->update($id, $values);
-            } else {
-				$category = new CategoryEntity();
-                $category->setCategory_parent_id($values->category_parent_id)
-                         ->setCategory_name($values->category_name)
-                         ->setCategory_active($values->category_active)
-                         ->setCategory_order(0);
-                
-                $result = $id = $this->categoryFacade->add($category);
-            }
+                $categoryParentEntity = $this->em
+                    ->getRepository(\App\Model\Entity\CategoryEntity::class)
+                    ->find($values->parent);
 
-            if ($result) {
-                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+                $categoryEntity = $this->em
+                    ->getRepository(\App\Model\Entity\CategoryEntity::class)
+                    ->find($id);
+
+                if ($categoryEntity === null) {
+                    $this->flashMessage('Category not found', self::FLASH_MESSAGE_DANGER);
+                    return;
+                }
+
+                $categoryEntity->name = $values->name;
+                $categoryEntity->parent = $categoryParentEntity;
+                $categoryEntity->active = (bool) $values->active;
+                $this->em->persist($categoryEntity);
+                $this->em->flush();
+
             } else {
-                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
+                $categoryParentEntity = $this->em
+                    ->getRepository(\App\Model\Entity\CategoryEntity::class)
+                    ->find($values->parent);
+
+                $categoryEntity = new \App\Model\Entity\CategoryEntity();
+                $categoryEntity->name = $values->name;
+                $categoryEntity->parent = $categoryParentEntity;
+                $categoryEntity->active = (bool) $values->active;
+                $categoryEntity->order = 0;
+                
+                $this->em->persist($categoryEntity);
+                $this->em->flush();
+
+                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+                $this->redrawControl('flashes');
             }
-        } catch (DriverException $e) {
+        } catch (DbalException $e) {
             $this->flashMessage(
                 'There was some problem during saving into database. Form was NOT saved.',
                 self::FLASH_MESSAGE_DANGER

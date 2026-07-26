@@ -20,30 +20,30 @@ class TopicWatchFacade
      *
      * @var UsersManager $usersManager
      */
-    private $usersManager;
+    private UsersManager $usersManager;
     
     /**
      * @var TopicWatchManager $topicWatchManager
      */
-    private $topicWatchManager;
+    private TopicWatchManager $topicWatchManager;
     
     /**
      *
      * @var TopicManager $topicsManager
      */
-    private $topicsManager;
+    private TopicManager $topicsManager;
 
     /**
      *
      * @var ForumManager $forumsManager
      */
-    private $forumsManager;
+    private ForumManager $forumsManager;
     
     /**
      *
      * @var PostManager $postsManager
      */
-    private $postsManager;
+    private PostManager $postsManager;
 
 
     /**
@@ -68,24 +68,12 @@ class TopicWatchFacade
         $this->forumsManager     = $forumsManager;
         $this->postsManager      = $postsManager;
     }
-    
-    /**
-     * TopicWatchFacade destructor.
-     */
-    public function __destruct()
-    {
-        $this->usersManager      = null;
-        $this->topicWatchManager = null;
-        $this->topicsManager     = null;
-        $this->forumsManager     = null;
-        $this->postsManager      = null;
-    }
 
     /**
      *
      * @param int $category_id
      */
-    public function deleteByCategory($category_id)
+    public function deleteByCategory($category_id): void
     {
         $forums = $this->forumsManager->getAllByCategory($category_id);
         
@@ -98,7 +86,7 @@ class TopicWatchFacade
      *
      * @param int $forum_id
      */
-    public function deleteByForum($forum_id)
+    public function deleteByForum($forum_id): void
     {
         $topics = $this->topicsManager->getAllByForum($forum_id);
         
@@ -114,9 +102,9 @@ class TopicWatchFacade
      *
      * @return Result|int
      */
-    public function deleteByTopic(TopicEntity $topic)
+    public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity): int
     {
-        $topicsWatches = $this->topicWatchManager->getAllByLeft($topic->getTopic_id());
+        $topicsWatches = $this->topicWatchManager->getAllByLeft($topicEntity->id);
         $user_ids      = Utils::arrayObjectColumn($topicsWatches, 'user_id');
 
         if (count($user_ids)) {
@@ -126,14 +114,14 @@ class TopicWatchFacade
             );
         }
         
-        return $this->topicWatchManager->deleteByLeft($topic->getTopic_id());
+        return $this->topicWatchManager->deleteByLeft($topicEntity->id);
     }
 
     /**
      *
      * @param PostEntity $post
      */
-    public function deleteByPost(PostEntity $post)
+    public function deleteByPost(PostEntity $post): void
     {
         $postCount = $this->postsManager->getCountOfUsersByTopicId($post->getPost_topic_id());
 

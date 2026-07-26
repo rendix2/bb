@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\ThankEntity;
+use App\Model\Entity\TopicWatchEntity;
 use App\Models\Entity\PmEntity;
 use App\Models\Entity\UserEntity;
 use App\Services\TranslatorFactory;
@@ -17,85 +20,70 @@ class UserFacade
     /**
      * @var PmManager $pmManager
      */
-    private $pmManager;
+    private PmManager $pmManager;
     
     /**
      * @var User2GroupManager $users2GroupsManager
      */
-    private $users2GroupsManager;
+    private User2GroupManager $users2GroupsManager;
 
     /**
      * @var Users2ForumsManager $users2ForumsManager
      */
-    private $users2ForumsManager;
-
-    /**
-     * @var ThankManager $thanksManager
-     */
-    private $thanksManager;
+    private Users2ForumsManager $users2ForumsManager;
 
     /**
      * @var SessionManager $sessionsManager
      */
-    private $sessionsManager;
+    private SessionManager $sessionsManager;
 
     /**
      * @var ReportManager $reportsManager
      */
-    private $reportsManager;
+    private ReportManager $reportsManager;
 
     /**
      * @var ModeratorManager $moderatorsManager
      */
-    private $moderatorsManager;
+    private ModeratorManager $moderatorsManager;
 
     /**
      * @var Mails2UsersManager $mails2UsersManager
      */
-    private $mails2UsersManager;
+    private Mails2UsersManager $mails2UsersManager;
 
     /**
      * @var PostManager $postsManager $postsManager
      */
-    private $postsManager;
+    private PostManager $postsManager;
     
     /**
      * @var PostFacade $postFacade
      */
-    private $postFacade;
-    
-    /**
-     * @var TopicWatchManager $topicWatchManager
-     */
-    private $topicWatchManager;
-    
-    /**
-     * @var Users2SessionsManager $users2SessionManager
-     */
-    private $users2SessionManager;
+    private PostFacade $postFacade;
     
     /**
      * @var UsersManager $usersManager
      */
-    private $usersManager;
+    private UsersManager $usersManager;
     
     /**
      *
      * @var PostsHistoryManager $postsHistoryManager
      *
      */
-    private $postsHistoryManager;
+    private PostsHistoryManager $postsHistoryManager;
 
     /**
      * @var TranslatorFactory $translatorFactory
      */
-    private $translatorFactory;
+    private TranslatorFactory $translatorFactory;
     
     /**
      *
      * @var PmFacade $pmFacade
      */
-    private $pmFacade;
+    private PmFacade $pmFacade;
 
     /**
      * UserFacade constructor.
@@ -107,8 +95,6 @@ class UserFacade
      * @param ModeratorManager   $moderatorsManager
      * @param ReportManager      $reportsManager
      * @param SessionManager     $sessionsManager
-     * @param ThankManager       $thanksManager
-     * @param TopicWatchManager   $topicWatchManager
      * @param Users2ForumsManager $users2ForumsManager
      * @param User2GroupManager $users2GroupsManager
      * @param UsersManager        $usersManager
@@ -123,26 +109,23 @@ class UserFacade
         ModeratorManager   $moderatorsManager,
         ReportManager      $reportsManager,
         SessionManager     $sessionsManager,
-        ThankManager       $thanksManager,
-        TopicWatchManager   $topicWatchManager,
         Users2ForumsManager $users2ForumsManager,
         User2GroupManager $users2GroupsManager,
         //Users2SessionsManager $users2SessionManager,
         UsersManager        $usersManager,
         TranslatorFactory   $translatorFactory,
-        PmFacade            $pmFacade
+        PmFacade            $pmFacade,
+        private readonly EntityManagerDecorator $em
     ) {
         $this->usersManager         = $usersManager;
         $this->postsManager         = $postsManager;
         $this->postsHistoryManager  = $postsHistoryManager;
         $this->postFacade           = $postFacade;
-        $this->topicWatchManager    = $topicWatchManager;
         //$this->users2SessionManager = $users2SessionManager;
         $this->mails2UsersManager   = $mails2UsersManager;
         $this->moderatorsManager    = $moderatorsManager;
         $this->reportsManager       = $reportsManager;
         $this->sessionsManager      = $sessionsManager;
-        $this->thanksManager        = $thanksManager;
         $this->users2ForumsManager  = $users2ForumsManager;
         $this->users2GroupsManager  = $users2GroupsManager;
         $this->translatorFactory    = $translatorFactory;
@@ -150,60 +133,69 @@ class UserFacade
     }
 
     /**
-     * UserFacade destructor.
-     */
-    public function __destruct()
-    {
-        $this->usersManager         = null;
-        $this->postsManager         = null;
-        $this->postsHistoryManager  = null;
-        $this->postFacade           = null;
-        $this->topicWatchManager    = null;
-        //$this->users2SessionManager = $users2SessionManager;
-        $this->mails2UsersManager   = null;
-        $this->moderatorsManager    = null;
-        $this->reportsManager       = null;
-        $this->sessionsManager      = null;
-        $this->thanksManager        = null;
-        $this->users2ForumsManager  = null;
-        $this->users2GroupsManager  = null;
-        $this->translatorFactory    = null;
-        $this->pmFacade             = null;
-    }
-
-    /**
      *
-     * @param int $item_id user_id
+     * @param int $userId user_id
      *
      * @return bool
      */
-    public function delete($item_id)
+    public function delete($userId)
     {
-        $user = $this->usersManager->getById($item_id);
+        $userEntity = $this->em
+            ->getRepository(\App\Model\Entity\UserEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $userId,
+                ]
+            );
         
-        if ($user && $user->user_avatar) {
-            $this->usersManager->removeAvatarFile($user->user_avatar);
+        if ($userEntity && $userEntity->user_avatar) {
+            $this->usersManager->removeAvatarFile($userEntity->user_avatar);
         }
 
-        $posts = $this->postsManager->getFluentByUser($item_id)->fetchAll();
+        $posts = $this->postsManager->getFluentByUser($userId)->fetchAll();
                 
         foreach ($posts as $post) {
             $this->postFacade->delete($post->post_id);
         }
-        
-        $this->topicWatchManager->deleteByRight($item_id);
+
+        $topicsWatches = $this->em
+            ->getRepository(TopicWatchEntity::class)
+            ->findBy(
+                [
+                    'user' => $userEntity,
+                ]
+            );
+
+        foreach ($topicsWatches as $topicsWatch) {
+            $this->em->remove($topicsWatch);
+            $this->em->flush();
+        }
+
         //$this->users2SessionManager->deleteByLeft($item_id);
-        $this->mails2UsersManager->deleteByRight($item_id);
-        $this->moderatorsManager->deleteByLeft($item_id);
-        $this->pmFacade->delete($item_id);
-        $this->reportsManager->deleteByUser($item_id);
-        $this->sessionsManager->deleteByUser($item_id);
-        $this->thanksManager->deleteByUser($item_id);
-        $this->users2ForumsManager->deleteByLeft($item_id);
-        $this->users2GroupsManager->deleteByLeft($item_id);
-        $this->postsHistoryManager->deleteByUser($item_id);
+        $this->mails2UsersManager->deleteByRight($userId);
+        $this->moderatorsManager->deleteByLeft($userId);
+        $this->pmFacade->delete($userId);
+        $this->reportsManager->deleteByUser($userId);
+        $this->sessionsManager->deleteByUser($userId);
+
+        $thanks = $this->em
+            ->getRepository(ThankEntity::class)
+            ->findBy(
+                [
+                    'user' => $userEntity,
+                ]
+            );
+
+        foreach ($thanks as $thank) {
+            $this->em->remove($thank);
+            $this->em->flush();
+        }
+
+        $this->users2ForumsManager->deleteByLeft($userId);
+        $this->users2GroupsManager->deleteByLeft($userId);
+        $this->postsHistoryManager->deleteByUser($userId);
     
-        return $this->usersManager->delete($item_id);
+        return $this->usersManager->delete($userId);
     }
 
     /**
