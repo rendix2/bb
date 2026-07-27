@@ -105,17 +105,6 @@ class TopicManager extends CrudManager
     }
 
     /**
-     * @param int $user_id
-     *
-     * @return Fluent
-     */
-    public function getFluentByUser($user_id)
-    {
-        return $this->getAllFluent()
-                ->where('[topic_user_id] = %i', $user_id);
-    }
-    
-    /**
      *
      * @param int $topic_id
      * @param int|null $target_forum_id

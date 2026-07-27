@@ -57,12 +57,7 @@ class UserPresenter extends BaseForumPresenter
      */
     public LanguageManager $languagesManager;
 
-    /**
-     * @var TopicWatchManager $topicWatchManager
-     * @inject
-     */
-    public TopicWatchManager $topicWatchManager;
-    
+
     /**
      * @var Avatars $avatar
      * @inject
@@ -375,11 +370,27 @@ class UserPresenter extends BaseForumPresenter
      * @param int $user_id
      * @param int $page
      */
-    public function actionWatches($user_id, $page = 1)
+    public function actionWatches($user_id, $page = 1): void
     {
-        $user = $this->checkUserParam($user_id);
-        
-        $watches = $this->topicWatchManager->getFluentByRightJoined($user_id);
+        $userEntity = $this->em
+            ->getRepository(UserEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $user_id,
+                ]
+            );
+
+        if ($userEntity === null) {
+            $this->error('User not found');
+        }
+
+        $watches = $this->em
+            ->getRepository(TopicWatchEntity::class)
+            ->findOneBy(
+                [
+                    'user' => $userEntity,
+                ]
+            );
         
         $pag    = new PaginatorControl($watches, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
@@ -388,7 +399,7 @@ class UserPresenter extends BaseForumPresenter
             $this->flashMessage('User have no watches.', self::FLASH_MESSAGE_WARNING);
         }
            
-        $this->getTemplate()->watches = $watches->fetchAll();
+        $this->getTemplate()->watches = $watches;
     }
 
     /**
@@ -550,7 +561,7 @@ class UserPresenter extends BaseForumPresenter
         $form->addUpload('user_avatar',  'User avatar:')
             ->setHtmlAttribute('title', 'Max width: '.$this->avatar->getMaxWidth().'px, max height: '.$this->avatar->getMaxHeight().'px')
             ->setRequired(false)
-            ->addRule(Form::IMAGE, 'user_avatar_file_rule');
+            ->addRule(Form::Image, 'user_avatar_file_rule');
 
         $form->addTextArea('user_signature', 'User signature:');
 

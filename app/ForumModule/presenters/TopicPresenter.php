@@ -130,8 +130,11 @@ class TopicPresenter extends BaseForumPresenter
      * @param TopicManager $manager
      */
     public function __construct(
-        TopicManager $manager,
+        TopicManager                            $manager,
         private readonly EntityManagerDecorator $em,
+        private readonly TopicFastReplyForm     $topicFastReplyForm,
+        private readonly ReportForm             $reportForm,
+        private readonly TopicJumpToForumForm   $topicJumpToForumForm,
     )
     {
         parent::__construct($manager);
@@ -690,7 +693,7 @@ class TopicPresenter extends BaseForumPresenter
             $this->flashMessage('Topic has not any thanks.', self::FLASH_MESSAGE_INFO);
         }
         
-        $this->template->thanks = $thanks;
+        $this->getTemplate()->thanks = $thanks;
     }
 
     /**
@@ -985,7 +988,7 @@ class TopicPresenter extends BaseForumPresenter
      */
     protected function createComponentJumpToForum(): TopicJumpToForumForm
     {
-        return new TopicJumpToForumForm($this->forumsManager, $this->getTranslator());
+        return $this->topicJumpToForumForm;
     }
 
     /**
@@ -993,12 +996,7 @@ class TopicPresenter extends BaseForumPresenter
      */
     protected function createComponentFastReply(): TopicFastReplyForm
     {
-        return new TopicFastReplyForm(
-            $this->translatorFactory,
-            $this->getUser(),
-            $this->postFacade,
-            $this->getHttpRequest()
-        );
+        return $this->topicFastReplyForm;
     }
 
     /**
@@ -1006,6 +1004,6 @@ class TopicPresenter extends BaseForumPresenter
      */
     protected function createComponentReportForm(): ReportForm
     {
-        return new ReportForm($this->reportsManager);
+        return $this->reportForm;
     }
 }

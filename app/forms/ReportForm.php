@@ -2,12 +2,16 @@
 
 namespace App\Forms;
 
-use App\Controls\BootstrapForm;
+use App\Database\EntityManagerDecorator;
 use App\ForumModule\Presenters\PmPresenter;
 use App\ForumModule\Presenters\PostPresenter;
 use App\ForumModule\Presenters\TopicPresenter;
 use App\ForumModule\Presenters\UserPresenter;
-use App\Models\Entity\ReportEntity;
+use App\Model\Entity\CategoryEntity;
+use App\Model\Entity\ForumEntity;
+use App\Model\Entity\PostEntity;
+use App\Model\Entity\TopicEntity;
+use App\Model\Entity\UserEntity;
 use App\Models\ReportManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
@@ -24,45 +28,29 @@ class ReportForm extends Control
 {
     
     /**
-     *
-     * @var ReportManager $reportsManager
-     */
-    private $reportsManager;
-    
-    /**
      * ReportForm constructor.
      *
      * @param ReportManager $reportsManager
      */
-    public function __construct(ReportManager $reportsManager)
+    public function __construct(
+        ReportManager $reportsManager,
+        private readonly EntityManagerDecorator $em,
+    )
     {
         parent::__construct();
-        
-        $this->reportsManager = $reportsManager;
-    }
-    
-    /**
-     * ReportForm destructor.
-     */
-    public function __destruct()
-    {
-        $this->reportsManager = null;
     }
 
     /**
      * ReportForm render.
      */
-    public function render()
+    public function render(): void
     {
         $this['reportForm']->render();
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentReportForm()
+    protected function createComponentReportForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
         $form->addTextArea('report_text', 'Report text:');
         $form->addSubmit('send', 'Send');
@@ -75,29 +63,72 @@ class ReportForm extends Control
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function reportFormSuccess(Form $form, ArrayHash $values)
+    public function reportFormSuccess(Form $form, ArrayHash $values): void
     {
         $category_id      = $this->presenter->getParameter('category_id');
         $forum_id         = $this->presenter->getParameter('forum_id');
         $topic_id         = $this->presenter->getParameter('topic_id');
         $post_id          = $this->presenter->getParameter('post_id');
         $reported_user_id = $this->presenter->getParameter('user_id');
+        $pm_id            = $this->presenter->getParameter('pm_id');
+
         $page             = $this->presenter->getParameter('page');
-        $pm_id            = $this->presenter->getParameter('pm_iid');
+
         $user_id          = $this->presenter->getUser()->getId();
 
-        $report = new ReportEntity();
-        $report->setReport_forum_id($forum_id)
-               ->setReport_topic_id($topic_id)
-               ->setReport_post_id($post_id)
-               ->setReport_reported_user_id($reported_user_id)
-               ->setReport_user_id($user_id)
-               ->setReport_pm_id($pm_id)
-               ->setReport_text($values->report_text)
-               ->setReport_time(time())
-               ->setReport_status(0);
+        $categoryEntity = $this->em
+            ->getRepository(CategoryEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $category_id,
+                ]
+            );
 
-        $res = $this->reportsManager->add($report->getArrayHash());
+        $forumEntity = $this->em
+            ->getRepository(ForumEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $forum_id,
+                ]
+            );
+
+        $topicEntity = $this->em
+            ->getRepository(TopicEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $topic_id,
+                ]
+            );
+
+        $postEntity = $this->em
+            ->getRepository(PostEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $post_id,
+                ]
+            );
+
+        $userEntity = $this->em
+            ->getRepository(UserEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $user_id,
+                ]
+            );
+
+        $reportEntity = new \App\Model\Entity\ReportEntity();
+        $reportEntity->category = $categoryEntity;
+        $reportEntity->forum = $forumEntity;
+        $reportEntity->topic = $topicEntity;
+        $reportEntity->post = $postEntity;
+        $reportEntity->user = $userEntity;
+        $reportEntity->reportText = $values->report_text;
+        $reportEntity->status = 0;
+
+        $this->em->persist($reportEntity);
+        $this->em->flush($reportEntity);
+
+        //$res = $this->reportsManager->add($report->getArrayHash());
 
         if ($res) {
             $this->presenter->flashMessage('Report was saved.', BasePresenter::FLASH_MESSAGE_SUCCESS);
