@@ -3,13 +3,12 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\CacheManager;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
-use Nette\Security\IUserStorage;
+use Nette\Security\User;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -26,7 +25,7 @@ class CachePresenter extends AdminPresenter
      *
      * @var Cache $cache
      */
-    private $cache;
+    private Cache $cache;
 
     /**
      * CachePresenter constructor.
@@ -61,7 +60,7 @@ class CachePresenter extends AdminPresenter
         $user = $this->getUser();
 
         if (!$user->isLoggedIn()) {
-            if ($user->getLogoutReason() === IUserStorage::INACTIVITY) {
+            if ($user->getLogoutReason() ===  User::LogoutInactivity) {
                 $this->flashMessage('You have been signed out due to inactivity. Please sign in again.');
             }
 
@@ -76,20 +75,15 @@ class CachePresenter extends AdminPresenter
     {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->translatorFactory->getAdminTranslator());
+        $this->getTemplate()->setTranslator($this->translatorFactory->getAdminTranslator());
     }
 
-    /**
-     * creates form to delete all cache
-     *
-     * @return BootstrapForm
-     */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
-        $form->addSubmit('Delete_all', 'Delete all cache');
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
+        $form->addSubmit('delete_all', 'Delete all cache');
 
-        $form->onSuccess[] = [$this, 'success'];
+        $form->onSuccess[] = [$this, 'editFormSuccess'];
 
         return $form;
     }
@@ -100,9 +94,9 @@ class CachePresenter extends AdminPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function success(Form $form, ArrayHash $values)
+    public function editFormSuccess(Form $form, ArrayHash $values): void
     {
-        $this->cache->clean([Cache::ALL => Cache::ALL]);
+        $this->cache->clean([Cache::All => Cache::All]);
         $this->flashMessage('Cache was deleted.', self::FLASH_MESSAGE_SUCCESS);
         $this->redirect('this');
     }
@@ -111,7 +105,7 @@ class CachePresenter extends AdminPresenter
      *
      * @return GridFilter
      */
-    protected function createComponentGridFilter()
+    protected function createComponentGridFilter(): GridFilter
     {
         return $this->gf;
     }

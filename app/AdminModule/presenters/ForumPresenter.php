@@ -35,41 +35,41 @@ class ForumPresenter extends AdminPresenter
      * @var CategoryManager $categoriesManager
      * @inject
      */
-    public $categoriesManager;
+    public CategoryManager $categoriesManager;
 
     /**
      *
      * @var TopicManager $topicsManager
      * @inject
      */
-    public $topicsManager;
+    public TopicManager $topicsManager;
 
     /**
      *
      * @var PostManager $postsManager
      * @inject
      */
-    public $postsManager;
+    public PostManager $postsManager;
 
     /**
      * @var ModeratorManager $moderatorsManager
      * @inject
      */
-    public $moderatorsManager;
+    public ModeratorManager $moderatorsManager;
 
     /**
      *
      * @var UsersManager $usersManager
      * @inject
      */
-    public $usersManager;
+    public UsersManager $usersManager;
 
     /**
      *
      * @var ForumFacade $forumFacade
      * @inject
      */
-    public $forumFacade;
+    public ForumFacade $forumFacade;
 
     /**
      * ForumPresenter constructor.
@@ -82,21 +82,6 @@ class ForumPresenter extends AdminPresenter
     )
     {
         parent::__construct($manager);
-    }
-
-    /**
-     * ForumPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->categoriesManager = null;
-        $this->topicsManager = null;
-        $this->postsManager = null;
-        $this->moderatorsManager = null;
-        $this->usersManager = null;
-        $this->forumFacade = null;
-
-        parent::__destruct();
     }
 
     /**

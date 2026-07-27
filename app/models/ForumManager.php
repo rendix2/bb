@@ -18,7 +18,6 @@ use Nette\Caching\IStorage;
  * @package App\Models
  */
 #[\JetBrains\PhpStorm\Deprecated]
-
 class ForumManager extends CrudManager
 {
     /**

@@ -3,8 +3,7 @@
 namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
-use App\Models\Entity\CategoryEntity;
-use Nette\Utils\ArrayHash;
+use App\Model\Entity\ForumEntity;
 
 /**
  * Description of CategoryFacade
@@ -13,31 +12,21 @@ use Nette\Utils\ArrayHash;
  * @package App\Models
  */
 #[\JetBrains\PhpStorm\Deprecated]
-
 class CategoryFacade
 {
     /**
      * CategoryFacade constructor.
      *
-     * @param CategoryManager $categoriesManager
-     * @param ForumFacade       $forumFacade
-     * @param ForumManager     $forumsManager
+     * @param EntityManagerDecorator $em
+     * @param ForumFacade $forumFacade
      */
     public function __construct(
         private readonly EntityManagerDecorator $em,
-        private readonly CategoryManager        $categoriesManager,
         private readonly ForumFacade            $forumFacade,
-        private readonly ForumManager           $forumsManager
     ) {
     }
 
-    /**
-     *
-     * @param int $item_id
-     *
-     * @return bool
-     */
-    public function delete($item_id)
+    public function delete(int $item_id): void
     {
         $subCategories = $this->em
             ->getRepository(\App\Model\Entity\CategoryEntity::class)
@@ -50,12 +39,6 @@ class CategoryFacade
         foreach ($subCategories as $subCategory) {
             $this->delete($subCategory->category_id);
         }
-                
-        $forums = $this->forumsManager->getFluentByCategory($item_id)->fetchAll();
-        
-        foreach ($forums as $forum) {
-            $this->forumFacade->delete($forum->forum_id);
-        }
 
         $categoryEntity = $this->em
             ->getRepository(\App\Model\Entity\CategoryEntity::class)
@@ -64,6 +47,21 @@ class CategoryFacade
                     'id' => $item_id,
                 ]
             );
+
+        /**
+         * @var ForumEntity[] $forums
+         */
+        $forums = $this->em
+            ->getRepository(ForumEntity::class)
+            ->findBy(
+                [
+                    'category' => $categoryEntity,
+                ]
+            );
+        
+        foreach ($forums as $forum) {
+            $this->forumFacade->delete($forum);
+        }
 
         $this->em->remove($categoryEntity);
         $this->em->flush();

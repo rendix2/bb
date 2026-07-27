@@ -73,7 +73,7 @@ class ChangePasswordFactory
      *
      * @return UserChangePasswordForm
      */
-    public function getForum()
+    public function getForum(): UserChangePasswordForm
     {
         return new UserChangePasswordForm(
             $this->userManager,
@@ -87,7 +87,7 @@ class ChangePasswordFactory
      *
      * @return UserChangePasswordForm
      */
-    public function getAdmin()
+    public function getAdmin(): UserChangePasswordForm
     {
         return new UserChangePasswordForm(
             $this->userManager,

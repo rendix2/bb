@@ -37,107 +37,61 @@ class UserPresenter extends AdminPresenter
     /**
      * @var array $active
      */
-    private static $active = [0 => 'Not active', 1 => 'Active'];
+    private static array $active = [0 => 'Not active', 1 => 'Active'];
 
-    /**
-     *
-     * @var ForumManager $forumsManager
-     * @inject
-     */
-    public $forumsManager;
 
     /**
      * @var LanguageManager $languagesManager
      * @inject
      */
-    public $languagesManager;
-    
-    /**
-     * @var User2GroupManager $group2User
-     * @inject
-     */
-    public $group2UserManager;
-    
-    /**
-     * @var GroupManager $groupManager
-     * @inject
-     */
-    public $groupsManager;
-    
-    /**
-     * @var Users2ForumsManager $users2Forums
-     * @inject
-     */
-    public $users2ForumsManager;
+    public LanguageManager $languagesManager;
     
     /**
      * @var Avatars $avatar
      * @inject
      */
-    public $avatars;
+    public Avatars $avatars;
     
     /**
      *
      * @var Ranks $rank
      * @inject
      */
-    public $ranks;
-
-    /**
-     * moderators manager
-     *
-     * @var ModeratorManager $moderatorsManager
-     * @inject
-     */
-    public $moderatorsManager;
+    public Ranks $ranks;
 
     /**
      *
      * @var ChangePasswordFactory $changePasswordFactory
      * @inject
      */
-    public $changePasswordFactory;
+    public ChangePasswordFactory $changePasswordFactory;
     
     /**
      *
      * @var DeleteAvatarFactory $deleteAvatarFactory
      * @inject
      */
-    public $deleteAvatarFactory;
+    public DeleteAvatarFactory $deleteAvatarFactory;
 
     /**
      * @var RankManager $ranksManager
      * @inject
      */
-    public $ranksManager;
+    public RankManager $ranksManager;
 
     /**
      * UserPresenter constructor.
      *
      * @param UsersManager $manager
      */
-    public function __construct(UsersManager $manager)
+    public function __construct(
+        private readonly UserGroupsForm    $userGroupsForm,
+        private readonly UserForumsForm    $userForumsForm,
+        private readonly UserModeratorForm $userModeratorForm,
+        UsersManager $manager
+    )
     {
         parent::__construct($manager);
-    }
-    
-    /**
-     * UserPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->forumsManager         = null;
-        $this->languagesManager      = null;
-        $this->group2UserManager     = null;
-        $this->groupsManager         = null;
-        $this->users2ForumsManager   = null;
-        $this->avatars               = null;
-        $this->ranks                 = null;
-        $this->moderatorsManager     = null;
-        $this->changePasswordFactory = null;
-        $this->deleteAvatarFactory   = null;
-        
-        parent::__destruct();
     }
 
     /**
@@ -147,7 +101,7 @@ class UserPresenter extends AdminPresenter
     {
         parent::renderDefault($page);
         
-        $this->template->roles = Authorizator::ROLES;
+        $this->getTemplate()->roles = Authorizator::ROLES;
     }
 
     /**
@@ -161,14 +115,14 @@ class UserPresenter extends AdminPresenter
             $this[self::FORM_NAME]->setDefaults(['user_role_id' => 2]);
         }
         
-        $this->template->avatarsDir = $this->avatars->getTemplateDir();
-        $this->template->ranksDir   = $this->ranks->getTemplateDir();
+        $this->getTemplate()->avatarsDir = $this->avatars->getTemplateDir();
+        $this->getTemplate()->ranksDir   = $this->ranks->getTemplateDir();
     }
     
     /**
      * @return BootStrapForm
      */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): BootStrapForm
     {
         $form = $this->getBootstrapForm();
 
@@ -191,7 +145,7 @@ class UserPresenter extends AdminPresenter
      *
      * @return GridFilter
      */
-    protected function createComponentGridFilter()
+    protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->getTranslator());
 
@@ -225,11 +179,7 @@ class UserPresenter extends AdminPresenter
      */
     protected function createComponentGroupForm(): UserGroupsForm
     {
-        return new UserGroupsForm(
-            $this->groupsManager,
-            $this->group2UserManager,
-            $this->getTranslator()
-        );
+        return $this->userGroupsForm;
     }
     
     /**
@@ -238,11 +188,7 @@ class UserPresenter extends AdminPresenter
      */
     protected function createComponentForumsForm(): UserForumsForm
     {
-        return new UserForumsForm(
-            $this->forumsManager,
-            $this->users2ForumsManager,
-            $this->getTranslator()
-        );
+        return $this->userForumsForm;
     }
 
     /**
@@ -258,11 +204,7 @@ class UserPresenter extends AdminPresenter
      */
     protected function createComponentModeratorsForm(): UserModeratorForm
     {
-        return new UserModeratorForm(
-            $this->forumsManager,
-            $this->moderatorsManager,
-            $this->getTranslator()
-        );
+        return $this->userModeratorForm;
     }
 
     /**

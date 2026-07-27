@@ -7,6 +7,8 @@ use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\UserSearchControl;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\ForumEntity;
 use App\Models\Forums2GroupsManager;
 use App\Models\ForumManager;
 use App\Models\GroupManager;
@@ -28,47 +30,37 @@ class GroupPresenter extends AdminPresenter
      * @var User2GroupManager $users2Groups
      * @inject
      */
-    public $users2GroupsManager;
+    public User2GroupManager $users2GroupsManager;
     
     /**
      * @var Forums2GroupsManager $forums2groups
      * @inject
      */
-    public $forums2groupsManager;
+    public Forums2GroupsManager $forums2groupsManager;
     
     /**
      * @var ForumManager $forumsManager
      * @inject
      */
-    public $forumsManager;
+    public ForumManager $forumsManager;
 
     /**
      * @var UsersManager $usersManager
      * @inject
      */
-    public $usersManager;
+    public UsersManager $usersManager;
     
     /**
      * GroupPresenter constructor.
      *
      * @param GroupManager $manager
      */
-    public function __construct(GroupManager $manager)
+    public function __construct(
+        GroupManager $manager,
+        private readonly EntityManagerDecorator $em,
+    )
     {
         parent::__construct($manager);
-    }
-    
-    /**
-     * GroupPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->users2GroupsManager  = null;
-        $this->forums2groupsManager = null;
-        $this->forumsManager        = null;
-        $this->usersManager         = null;
-        
-        parent::__destruct();
     }
 
     /**
@@ -76,11 +68,15 @@ class GroupPresenter extends AdminPresenter
      *
      * @return array
      */
-    private function map(array $added_forum_row)
+    private function map(array $added_forum_row): array
     {
         $result = [];
 
-        foreach ($this->forumsManager->getAllCached() as $forum) {
+        $forums = $this->em
+            ->getRepository(ForumEntity::class)
+            ->findAll();
+
+        foreach ($forums as $forum) {
             $result[$forum->forum_id] = false;
             
             foreach ($added_forum_row as $forum_row) {
@@ -154,6 +150,7 @@ class GroupPresenter extends AdminPresenter
         $form->addHidden('group_moderator_id');
         $form->addText('group_name', 'Group name:')
             ->setRequired(true);
+
         $form->addText('group_moderator', 'Group moderator:')->setDisabled();
 
         return $this->addSubmitB($form);
@@ -191,7 +188,7 @@ class GroupPresenter extends AdminPresenter
      *
      * @return UserSearchControl
      */
-    protected function createComponentUserSearch()
+    protected function createComponentUserSearch(): UserSearchControl
     {
         return new UserSearchControl($this->usersManager, $this->getTranslator());
     }
@@ -199,7 +196,7 @@ class GroupPresenter extends AdminPresenter
     /**
      * @return BootstrapForm
      */
-    protected function createComponentForumsForm()
+    protected function createComponentForumsForm(): BootstrapForm
     {
         $form = BootstrapForm::create();
         $form->setTranslator($this->getTranslator());

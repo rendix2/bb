@@ -23,19 +23,19 @@ class UserModeratorForm extends Control
      *
      * @var ITranslator $translator
      */
-    private $translator;
+    private ITranslator $translator;
     
     /**
      *
      * @var ModeratorManager $moderatorsManager,
      */
-    private $moderatorsManager;
+    private ModeratorManager $moderatorsManager;
     
     /**
      *
      * @var ForumManager $forumsManager
      */
-    private $forumsManager;
+    private ForumManager $forumsManager;
 
     /**
      * UserModeratorForm constructor.
@@ -54,16 +54,6 @@ class UserModeratorForm extends Control
         $this->forumsManager     = $forumsManager;
         $this->moderatorsManager = $moderatorsManager;
         $this->translator        = $translator;
-    }
-    
-    /**
-     * UserModeratorForm destructor.
-     */
-    public function __destruct()
-    {
-        $this->translator        = null;
-        $this->moderatorsManager = null;
-        $this->forumsManager     = null;
     }
 
     /**
@@ -87,7 +77,7 @@ class UserModeratorForm extends Control
     /**
      * @return BootstrapForm
      */
-    public function createComponentModeratorsForm()
+    public function createComponentModeratorsForm(): BootstrapForm
     {
         $form = BootstrapForm::create();
         
@@ -101,13 +91,13 @@ class UserModeratorForm extends Control
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function moderatorsSuccess(Form $form, ArrayHash $values)
+    public function moderatorsSuccess(Form $form, ArrayHash $values): void
     {
-        $moderators  = $form->getHttpData($form::DATA_TEXT, 'moderators[]');
-        $user_id = $this->presenter->getParameter('id');
+        $moderators  = $form->getHttpData(Form::DataText, 'moderators[]');
+        $user_id = $this->getPresenter()->getParameter('id');
 
         $this->moderatorsManager->addByLeft((int) $user_id, array_values($moderators));
-        $this->presenter->flashMessage('Forum was saved.', BasePresenter::FLASH_MESSAGE_SUCCESS);
-        $this->presenter->redirect('User:edit', $user_id);
+        $this->getPresenter()->flashMessage('Forum was saved.', BasePresenter::FLASH_MESSAGE_SUCCESS);
+        $this->getPresenter()->redirect('User:edit', $user_id);
     }
 }

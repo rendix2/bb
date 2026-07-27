@@ -3,7 +3,8 @@
 namespace App\Forms;
 
 use App\Controls\BootstrapForm;
-use App\Models\GroupManager;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\GroupEntity;
 use App\Models\User2GroupManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
@@ -19,78 +20,63 @@ use Nette\Utils\ArrayHash;
  */
 class UserGroupsForm extends Control
 {
-
-    /**
-     *
-     * @var GroupManager $groupsManager
-     */
-    private $groupsManager;
-
     /**
      *
      * @var User2GroupManager
      */
-    private $users2GroupsManager;
+    private User2GroupManager $users2GroupsManager;
     
     /**
      *
      * @var ITranslator $translator
      */
-    private $translator;
+    private ITranslator $translator;
 
     /**
      * UserGroupsForm constructor.
      *
-     * @param GroupManager       $groupsManager
      * @param User2GroupManager $users2GroupsManager
      * @param ITranslator         $translator
      */
     public function __construct(
-        GroupManager       $groupsManager,
         User2GroupManager $users2GroupsManager,
-        ITranslator         $translator
+        ITranslator         $translator,
+        private readonly EntityManagerDecorator $em
     ) {
         parent::__construct();
         
-        $this->groupsManager       = $groupsManager;
         $this->users2GroupsManager = $users2GroupsManager;
         $this->translator          = $translator;
     }
 
     /**
-     * UserGroupsForm destructor.
-     */
-    public function __destruct()
-    {
-        $this->groupsManager       = null;
-        $this->users2GroupsManager = null;
-        $this->translator          = null;
-    }
-
-    /**
      * UserGroupsForm render
      */
-    public function render()
+    public function render(): void
     {
         $sep = DIRECTORY_SEPARATOR;
         
         $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'userGroupsForm.latte');
         $this->template->setTranslator($this->translator);
+
+        $groups = $this->em
+            ->getRepository(GroupEntity::class)
+            ->findAll();
         
-        $this->template->groups   = $this->groupsManager->getAllCached();
+        $this->getTemplate()->groups   = $groups;
         $this->template->myGroups = array_values(
             $this->users2GroupsManager->getPairsByLeft(
                 $this->getPresenter()->getParameter('id')
             )
         );
         
-        $this->template->render();
+        $this->getTemplate()->render();
     }
 
     /**
      * @return BootstrapForm
      */
-    protected function createComponentGroupFrom()
+    protected function createComponentGroupFrom(): BootstrapForm
     {
         $form = BootstrapForm::create();
 
@@ -104,13 +90,13 @@ class UserGroupsForm extends Control
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function groupSuccess(Form $form, ArrayHash $values)
+    public function groupSuccess(Form $form, ArrayHash $values): void
     {
         $groups  = $form->getHttpData($form::DATA_TEXT, 'group[]');
-        $user_id = $this->presenter->getParameter('id');
+        $user_id = $this->getPresenter()->getParameter('id');
         
         $this->users2GroupsManager->addByLeft((int) $user_id, array_values($groups));
-        $this->presenter->flashMessage('Group was saved.', BasePresenter::FLASH_MESSAGE_SUCCESS);
-        $this->presenter->redirect('User:edit', $user_id);
+        $this->getPresenter()->flashMessage('Group was saved.', BasePresenter::FLASH_MESSAGE_SUCCESS);
+        $this->getPresenter()->redirect('User:edit', $user_id);
     }
 }

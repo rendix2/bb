@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
-use App\Models\Entity\ForumEntity;
-use App\Models\Entity\TopicEntity;
+use App\Model\Entity\ForumEntity;
+use App\Model\Entity\TopicEntity;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -17,51 +17,16 @@ class ForumFacade
 {
     /**
      *
-     * @var ForumManager $forumsManager
-     */
-    private $forumsManager;
-    
-    /**
-     *
      * @var TopicFacade $topicFacade
      */
-    private $topicFacade;
-    
-    /**
-     *
-     * @var TopicManager $topicsManager
-     */
-    private $topicsManager;
+    private TopicFacade $topicFacade;
 
-    /**
-     *
-     * ForumFacade constructor.
-     *
-     * @param ForumManager $forumsManager
-     * @param TopicFacade   $topicFacade
-     * @param TopicManager $topicsManager
-     */
     public function __construct(
         private readonly EntityManagerDecorator $em,
-        ForumManager $forumsManager,
         TopicFacade   $topicFacade,
-        TopicManager $topicsManager
     ) {
-        $this->forumsManager = $forumsManager;
         $this->topicFacade   = $topicFacade;
-        $this->topicsManager = $topicsManager;
     }
-
-    /**
-     *  ForumFacade destructor.
-     */
-    public function __destruct()
-    {
-        $this->topicFacade   = null;
-        $this->topicsManager = null;
-        $this->forumsManager = null;
-    }
-
 
     /**
      * @param int       $itemId
@@ -71,7 +36,7 @@ class ForumFacade
     public function update(int $itemId, ArrayHash $itemData): bool
     {
         $forum = $this->em
-            ->getRepository(\App\Model\Entity\ForumEntity::class)
+            ->getRepository(ForumEntity::class)
             ->find($itemId);
 
         if ($forum === null) {
@@ -80,7 +45,7 @@ class ForumFacade
 
         if (isset($itemData->forum_parent_id)) {
             $parent = $itemData->forum_parent_id
-                ? $this->em->getRepository(\App\Model\Entity\ForumEntity::class)->find($itemData->forum_parent_id)
+                ? $this->em->getRepository(ForumEntity::class)->find($itemData->forum_parent_id)
                 : null;
 
             $forum->parent($parent);
@@ -97,28 +62,33 @@ class ForumFacade
         return true;
     }
 
-    /**
-     * @param ForumEntity $forum
-     *
-     * @return bool
-     */
-    public function delete(ForumEntity $forum)
+    public function delete(ForumEntity $forumEntity): void
     {
-        $forums = $this->forumsManager->getAllByParent($forum->getForum_id());
+        $forums = $this->em
+            ->getRepository(ForumEntity::class)
+            ->findBy(
+                [
+                    'parent' => $forumEntity,
+                ]
+            );
 
-        foreach ($forums as $forumDibi) {
-            $forum = ForumEntity::setFromRow($forumDibi);
+        foreach ($forums as $forum) {
             $this->delete($forum);
         }
 
-        $topics = $this->topicsManager->getAllByForum($forum->getForum_id());
+        $topics = $this->em
+            ->getRepository(TopicEntity::class)
+            ->findBy(
+                [
+                    'id' => $forumEntity->id,
+                ]
+            );
         
-        foreach ($topics as $topicDibi) {
-            $topic = TopicEntity::setFromRow($topicDibi);
-            
+        foreach ($topics as $topic) {
             $this->topicFacade->delete($topic);
         }
- 
-        return $this->forumsManager->delete($forum->getForum_id());
+
+        $this->em->remove($forumEntity);
+        $this->em->flush();
     }
 }
