@@ -23,6 +23,7 @@ use App\Model\Entity\ThankEntity;
 use App\Model\Entity\TopicEntity;
 use App\Model\Entity\TopicWatchEntity;
 use App\Model\Entity\UserEntity;
+use App\Model\Repository\LanguageRepository;
 use App\Models\FavouriteUsersManager;
 use App\Models\LanguageManager;
 use App\Models\ModeratorManager;
@@ -134,6 +135,7 @@ class UserPresenter extends BaseForumPresenter
         private readonly ReportForm             $reportForm,
         private readonly UserResetPasswordForm  $userResetPasswordForm,
         private readonly UserChangeUserNameForm $userChangeUserNameForm,
+        private readonly LanguageRepository     $languageRepository,
     )
     {
         parent::__construct($manager);
@@ -552,7 +554,7 @@ class UserPresenter extends BaseForumPresenter
         $form->addText('user_name', 'User name:')
             ->setDisabled(!$userSettings['canChangeUserName']);
 
-        $form->addSelect('user_lang_id', 'User language:', $this->languagesManager->getAllPairsCached('lang_name'));
+        $form->addSelect('user_lang_id', 'User language:', $this->languageRepository->findPairs());
 
         $form->addUpload('user_avatar',  'User avatar:')
             ->setHtmlAttribute('title', 'Max width: '.$this->avatar->getMaxWidth().'px, max height: '.$this->avatar->getMaxHeight().'px')
@@ -563,7 +565,7 @@ class UserPresenter extends BaseForumPresenter
 
         $form->addSubmit('send', 'Send');
 
-        $form->onValidate[] = [$this, 'editUserOnValidate'];
+        $form->onValidate[] = [$this, 'editUserValidate'];
         $form->onSuccess[]  = [$this, 'editUserFormSuccess'];
 
         return $form;
@@ -573,7 +575,7 @@ class UserPresenter extends BaseForumPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function editUserOnValidate(Form $form, ArrayHash $values): void
+    public function editUserValidate(Form $form, ArrayHash $values): void
     {
     }
     

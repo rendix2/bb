@@ -7,6 +7,7 @@ use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
+use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Models\CategoryManager;
 use App\Models\ForumFacade;
@@ -79,7 +80,9 @@ class ForumPresenter extends AdminPresenter
      */
     public function __construct(
         private readonly EntityManagerDecorator $em,
-        ForumManager                            $manager
+        private readonly CategoryRepository     $categoryRepository,
+        private readonly ForumRepository        $forumRepository,
+        ForumManager                            $manager,
     )
     {
         parent::__construct($manager);
@@ -132,7 +135,7 @@ class ForumPresenter extends AdminPresenter
                 $this->error('Item #' . $id . ' not found.');
             }
 
-            $this[self::FORM_NAME]->setDefaults($forumEntity);
+            $this['editForm']->setDefaults($forumEntity);
 
             /**
              * @var ForumRepository $forumRepository
@@ -176,7 +179,7 @@ class ForumPresenter extends AdminPresenter
             $this->template->title = $this->getTitleOnAdd();
             $this->template->forums = [];
             $this->template->moderators = [];
-            $this[self::FORM_NAME]->setDefaults([]);
+            $this['editForm']->setDefaults([]);
         }
     }
 
@@ -206,24 +209,22 @@ class ForumPresenter extends AdminPresenter
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
+        $this->forumRepository->findPairs();
+
         $form->addGroup('forum');
 
         $form->addText('forum_name', 'Forum name:')
             ->setRequired(true);
-        $form->addSelect(
-            'forum_parent_id',
-            'Forum parent:',
-            [0 => '-'] + $this->getManager()->getAllPairs('forum_name')
-        )->setTranslator(null);
+
+        $form->addSelect('forum_parent_id', 'Parent', $this->forumRepository->findPairs())
+            ->setPrompt('-')
+            ->setTranslator(null);
 
         $form->addText('forum_description', 'Forum description:')
             ->setRequired(true);
 
-        $form->addSelect(
-            'forum_category_id',
-            'Forum category:',
-            $this->categoriesManager->getAllPairsCached('category_name')
-        )
+        $form->addSelect('forum_category_id', 'Category', $this->categoryRepository->findPairs())
+            ->setPrompt('-')
             ->setRequired(true)
             ->setTranslator(null);
 
@@ -242,8 +243,8 @@ class ForumPresenter extends AdminPresenter
         $form->addCheckbox('forum_topic_delete', 'Forum delete topic:');
 
         $form->addSubmit('Send', 'Send');
-        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
-        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
+        $form->onValidate[] = [$this, 'editFormValidate'];
+        $form->onSuccess[]  = [$this, 'editFormSuccess'];
 
         return $form;
     }
@@ -265,7 +266,8 @@ class ForumPresenter extends AdminPresenter
 
                 $this->em->persist($forumEntity);
                 $this->em->flush();
-                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+
+                $this->flashMessage($forumEntity->name . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
                 $this->redrawControl('flashes');
             }
         } catch (DbalException $exception) {

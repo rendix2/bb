@@ -9,6 +9,7 @@ use Nette\Caching\IStorage;
 use Nette\Http\FileUpload;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Random;
 use Tracy\Debugger;
 
 /**
@@ -59,7 +60,7 @@ class RankManager extends CrudManager
             }
 
             $extension = self::getFileExtension($file->name);
-            $hash      = self::getRandomString();
+            $hash      = Random::generate(32);
             $name      = $hash . '.' . $extension;
 
             $file->move($this->ranks->getDir() . DIRECTORY_SEPARATOR . $name);

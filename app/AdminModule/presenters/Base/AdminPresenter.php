@@ -56,7 +56,7 @@ abstract class AdminPresenter extends CrudPresenter
     {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->adminTranslator);
+        $this->getTemplate()->setTranslator($this->adminTranslator);
     }
     
     public function getTranslator(): ITranslator

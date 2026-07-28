@@ -21,13 +21,13 @@ class UserSearchControl extends Control
      *
      * @var UsersManager $usersManager
      */
-    private $usersManager;
+    private UsersManager $usersManager;
     
     /**
      *
      * @var ITranslator $translator
      */
-    private $translator;
+    private ITranslator $translator;
     
     /**
      *
@@ -44,24 +44,15 @@ class UserSearchControl extends Control
         $this->usersManager = $usersManager;
         $this->translator   = $translator;
     }
-    
-    /**
-     * UserSearchControl destructor.
-     */
-    public function __destruct()
-    {
-        $this->usersManager = null;
-        $this->translator   = null;
-    }
 
     /**
      * renders controls
      */
-    public function render()
+    public function render(): void
     {
         $sep = DIRECTORY_SEPARATOR;
         
-        $template = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'userSearch' . $sep . 'userSearch.latte');
+        $template = $this->getTemplate()->setFile(__DIR__ . $sep . 'templates' . $sep . 'userSearch' . $sep . 'userSearch.latte');
 
         if (!isset($template->users)) {
             $template->users = [];
@@ -76,8 +67,8 @@ class UserSearchControl extends Control
         $form->setAjax(true);
         $form->setTranslator($this->translator);
         
-        $form->addHidden('user_id');
-        $form->addText('user_name', 'User name:')
+        $form->addHidden('id');
+        $form->addText('username', 'User name:')
             ->setRequired(true);
 
         $form->addSubmit('send');
@@ -91,15 +82,15 @@ class UserSearchControl extends Control
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function success(Form $form, ArrayHash $values)
+    public function success(Form $form, ArrayHash $values): void
     {
-        $users = $this->usersManager->findLikeByUserName($values->user_name);
+        $users = $this->usersManager->findLikeByUserName($values->username);
         
         if (!count($users)) {
-            $this->presenter->flashMessage('User was not found.', BasePresenter::FLASH_MESSAGE_DANGER);
+            $this->getPresenter()->flashMessage('User was not found.', BasePresenter::FLASH_MESSAGE_DANGER);
         }
         
-        $this->template->users = $users;
+        $this->getTemplate()->users = $users;
 
         $this->redrawControl('users');
     }

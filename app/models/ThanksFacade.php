@@ -148,7 +148,7 @@ class ThanksFacade
      *
      * @return bool
      */
-    public function deleteByPost(PostEntity $post)
+    public function deleteByPost(\App\Model\Entity\PostEntity $post)
     {
         $count = $this->postsManager->getCountByUser($post->getPost_topic_id(), $post->getPost_user_id());
 

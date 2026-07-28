@@ -90,19 +90,6 @@ class TopicManager extends CrudManager
             ->on('[p.post_id] = [t.topic_last_post_id]')
             ->where('[t.topic_forum_id] = %i', $forum_id);
     }
-    
-    /**
-     *
-     * @param int $forum_id forum_id
-     *
-     * @return Row[]
-     */
-    public function getAllByForum($forum_id)
-    {
-        return $this->getAllFluent()
-                ->where('[topic_forum_id] = %i', $forum_id)
-                ->fetchAll();
-    }
 
     /**
      *

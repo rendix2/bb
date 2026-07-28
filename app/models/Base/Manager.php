@@ -293,16 +293,6 @@ abstract class Manager extends Tables
     }
 
     /**
-     * @return Fluent
-     */
-    public function getCountPrimaryKeyFluent()
-    {
-        return $this->dibi
-            ->select('COUNT('.$this->primaryKey.')')
-            ->from($this->table);
-    }
-
-    /**
      * @param ArrayHash $item_data
      *
      * @return Fluent
@@ -358,16 +348,5 @@ abstract class Manager extends Tables
         $file = new SplFileInfo($fileName);
 
         return $file->getExtension();
-    }
-
-    /**
-     * this method returns random string
-     *
-     * @return string
-     * @see    https://php.vrana.cz/trvale-prihlaseni.php php vrana
-     */
-    public static function getRandomString()
-    {
-        return mb_substr(md5(uniqid(mt_rand(), true)), 0, 15); // php.vrana.cz
     }
 }

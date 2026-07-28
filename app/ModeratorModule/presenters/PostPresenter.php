@@ -6,6 +6,7 @@ use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\UserEntity;
+use App\Model\Repository\TopicRepository;
 use App\Models\PostFacade;
 use App\Models\PostsHistoryManager;
 use App\Models\PostManager;
@@ -48,6 +49,7 @@ class PostPresenter extends ModeratorPresenter
     public function __construct(
         PostManager $manager,
         private readonly EntityManagerDecorator $em,
+        private readonly TopicRepository        $topicRepository,
     )
     {
         parent::__construct($manager);
@@ -147,7 +149,7 @@ class PostPresenter extends ModeratorPresenter
     {
         $form = new BootstrapForm();
                 
-        $form->addSelect('topic_id', 'Topic name:', $this->topicsManager->getAllPairs('topic_name'));
+        $form->addSelect('topic_id', 'Topic name:', $this->topicRepository->findPairs());
         $form->addSubmit('send', 'Change');
 
         $form->onSuccess[] = [$this, 'changeTopicValidate'];

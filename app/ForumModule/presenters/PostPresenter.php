@@ -33,6 +33,7 @@ use Nette\Forms\Controls\SubmitButton;
 use Nette\Http\FileUpload;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
+use Nette\Utils\Random;
 
 /**
  * Description of PostPresenter
@@ -422,7 +423,7 @@ class PostPresenter extends BaseForumPresenter
                 $postFileArrayHash = $file->post_file;
                 
                 $extension = Manager::getFileExtension($postFileArrayHash->getName());
-                $hash      = Manager::getRandomString();
+                $hash      = Random::generate(32);
                 $sep       = DIRECTORY_SEPARATOR;
                 
                 if ($postFileArrayHash->isOk()) {

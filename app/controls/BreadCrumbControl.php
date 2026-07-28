@@ -16,12 +16,12 @@ class BreadCrumbControl extends Control
     /**
      * @var array $breadCrumb
      */
-    private $breadCrumb;
+    private array $breadCrumb;
     
     /**
      * @var ITranslator $translator
      */
-    private $translator;
+    private ITranslator $translator;
 
     /**
      * BreadCrumbControl constructor.
@@ -36,26 +36,17 @@ class BreadCrumbControl extends Control
         $this->breadCrumb = $breadCrumb;
         $this->translator = $translator;
     }
-    
-    /**
-     * BreadCrumbControl destructor.
-     */
-    public function __destruct()
-    {
-        $this->breadCrumb = null;
-        $this->translator = null;
-    }
 
     /**
      * BreadCrumbControl render.
      *
      * render breadcrumb
      */
-    public function render()
+    public function render(): void
     {
         $sep = DIRECTORY_SEPARATOR;
         
-        $template = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'breadCrumb' . $sep . 'breadCrumb.latte');
+        $template = $this->getTemplate()->setFile(__DIR__ . $sep . 'templates' . $sep . 'breadCrumb' . $sep . 'breadCrumb.latte');
         $template->setTranslator($this->translator);
         
         $template->breadCrumb = $this->breadCrumb;

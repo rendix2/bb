@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Database\EntityManagerDecorator;
 use App\Models\Entity\PollEntity;
 
 /**
@@ -40,21 +41,12 @@ class PollsFacade
     public function __construct(
         PollsManager        $pollsManager,
         PollsAnswersManager $pollsAnswersManager,
-        PollsVotesManager   $pollsVotesManager
+        PollsVotesManager   $pollsVotesManager,
+        private readonly EntityManagerDecorator $em,
     ) {
         $this->pollsManager        = $pollsManager;
         $this->pollsAnswersManager = $pollsAnswersManager;
         $this->pollsVotesManager   = $pollsVotesManager;
-    }
-
-    /**
-     * PollsFacade destructor.
-     */
-    public function __destruct()
-    {
-        $this->pollsManager        = null;
-        $this->pollsAnswersManager = null;
-        $this->pollsVotesManager   = null;
     }
     
     /**

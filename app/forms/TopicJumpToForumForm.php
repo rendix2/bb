@@ -4,6 +4,7 @@ namespace App\Forms;
 
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
+use App\Model\Repository\ForumRepository;
 use App\Models\ForumManager;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
@@ -39,6 +40,7 @@ class TopicJumpToForumForm extends Control
         ForumManager $forumManager,
         ITranslator   $translator,
         private readonly EntityManagerDecorator $em,
+        private readonly ForumRepository        $forumRepository,
     ) {
         parent::__construct();
 
@@ -63,7 +65,9 @@ class TopicJumpToForumForm extends Control
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
         $form->setTranslator($this->translator);
 
-        $form->addSelect('forum_id', null, $this->forumManager->getAllPairsCached('forum_name'))->setTranslator();
+        $form->addSelect('forum_id', null, $this->forumRepository->findPairs())
+            ->setTranslator(null);
+
         $form->addSubmit('send', 'Redirect');
 
         $form->onSuccess[] = [$this, 'jumpToForumSuccess'];

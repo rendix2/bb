@@ -3,7 +3,9 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BBMailer;
+use App\Database\EntityManagerDecorator;
 use App\Forms\UserLoginForm;
+use App\Model\Repository\UserRepository;
 use App\Models\Manager;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
@@ -12,6 +14,8 @@ use App\Translator;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Random;
+use Nette\Utils\Strings;
 
 /**
  * Description of LoginPresenter
@@ -50,6 +54,13 @@ class LoginPresenter extends BasePresenter
      * @var UsersManager $usersManager
      */
     public UsersManager $usersManager;
+
+    public function __construct(
+        private readonly UserRepository $userRepository,
+    )
+    {
+        parent::__construct();
+    }
 
     /**
      * LoginPresenter startup.
@@ -130,11 +141,7 @@ class LoginPresenter extends BasePresenter
         // :)
     }
     
-    /**
-     *
-     * @return UserLoginForm
-     */
-    public function createComponentLoginForm()
+    public function createComponentLoginForm(): UserLoginForm
     {
         return $this->userLoginForm->create();
     }
@@ -154,15 +161,15 @@ class LoginPresenter extends BasePresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function reactivateFormSuccess(Form $form, ArrayHash $values)
+    public function reactivateFormSuccess(Form $form, ArrayHash $values): void
     {
-        $user = $this->usersManager->getByEmail($values->user_email);
+        $userEntity = $this->userRepository->findOneByEmail($values->user_email);
 
-        if ($user) {
-            if (!$user->user_active) {
-                $key = Manager::getRandomString();
+        if ($userEntity) {
+            if (!$userEntity->isActive) {
+                $key = Random::generate(32);
 
-                $this->usersManager->update($user->user_id, ArrayHash::from(['user_activation_key' => $key]));
+                $this->usersManager->update($userEntity->id, ArrayHash::from(['user_activation_key' => $key]));
 
                 $this->bbMailer->addRecipients([$values->user_email]);
                 $this->bbMailer->setSubject($this->translator->translate('welcome_mail_subject'));
@@ -170,10 +177,10 @@ class LoginPresenter extends BasePresenter
                 $this->bbMailer->setText(
                     sprintf(
                         $this->translator->translate('welcome_mail_text'),
-                        $user->user_name,
+                        $userEntity->username,
                         $this->link(
                             '//Login:activate',
-                            $user->user_id,
+                            $userEntity->id,
                             $key
                         )
                     )

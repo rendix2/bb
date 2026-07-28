@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
+use App\Model\Entity\PostEntity;
 use App\Model\Entity\ThankEntity;
 use App\Model\Entity\TopicWatchEntity;
+use App\Model\Repository\PostRepository;
 use App\Models\Entity\PmEntity;
 use App\Models\Entity\UserEntity;
 use App\Services\TranslatorFactory;
@@ -115,10 +117,10 @@ class UserFacade
         UsersManager        $usersManager,
         TranslatorFactory   $translatorFactory,
         PmFacade            $pmFacade,
+        private readonly PostRepository $postRepository,
         private readonly EntityManagerDecorator $em
     ) {
         $this->usersManager         = $usersManager;
-        $this->postsManager         = $postsManager;
         $this->postsHistoryManager  = $postsHistoryManager;
         $this->postFacade           = $postFacade;
         //$this->users2SessionManager = $users2SessionManager;
@@ -132,13 +134,7 @@ class UserFacade
         $this->pmFacade             = $pmFacade;
     }
 
-    /**
-     *
-     * @param int $userId user_id
-     *
-     * @return bool
-     */
-    public function delete($userId)
+    public function delete(int $userId): void
     {
         $userEntity = $this->em
             ->getRepository(\App\Model\Entity\UserEntity::class)
@@ -152,10 +148,10 @@ class UserFacade
             $this->usersManager->removeAvatarFile($userEntity->user_avatar);
         }
 
-        $posts = $this->postsManager->getFluentByUser($userId)->fetchAll();
+        $posts = $this->postRepository->findByUser($userId);
                 
         foreach ($posts as $post) {
-            $this->postFacade->delete($post->post_id);
+            $this->postFacade->delete($post->topic, $post);
         }
 
         $topicsWatches = $this->em
@@ -195,24 +191,25 @@ class UserFacade
         $this->users2GroupsManager->deleteByLeft($userId);
         $this->postsHistoryManager->deleteByUser($userId);
     
-        return $this->usersManager->delete($userId);
+        $this->em->remove($userEntity);
+        $this->em->flush();
     }
 
     /**
-     * @param UserEntity $user
+     * @param \App\Model\Entity\UserEntity $user
      *
      * @return int
      */
-    public function add(UserEntity $user)
+    public function add(\App\Model\Entity\UserEntity $userEntity)
     {
-        $user_id         = $this->usersManager->add($user->getArrayHash());
+        $user_id         = $this->usersManager->add($userEntity->getArrayHash());
         $forumTranslator = $this->translatorFactory->getForumTranslator();
         
         $pmEntity = new PmEntity();
         $pmEntity->setPm_user_id_from(1)
                  ->setPm_user_id_to($user_id)
                  ->setPm_subject($forumTranslator->translate('welcome_pm_subject'))
-                 ->setPm_text(sprintf($forumTranslator->translate('welcome_pm_text'), $user->user_name))
+                 ->setPm_text(sprintf($forumTranslator->translate('welcome_pm_text'), $userEntity->username))
                  ->setPm_status('sent')
                  ->setPm_time_sent(time());
 

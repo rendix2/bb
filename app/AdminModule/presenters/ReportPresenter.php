@@ -38,8 +38,9 @@ class ReportPresenter extends AdminPresenter
         $form->addSelect('report_status', 'Report status:', $values);
 
         $form->addSubmit('Send', 'Send');
-        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
-        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
+
+        $form->onValidate[] = [$this, 'editFormValidate'];
+        $form->onSuccess[]  = [$this, 'editFormSuccess'];
 
         return $form;
     }

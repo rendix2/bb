@@ -4,8 +4,11 @@ namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\PaginatorControl;
+use App\Model\Repository\UserRepository;
 use App\Models\UsersManager;
 use App\Settings\Avatars;
+use Contributte\Datagrid\Datagrid;
+use Contributte\FormsBootstrap\BootstrapForm;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -22,34 +25,28 @@ class AvatarPresenter extends AdminPresenter
      * @var Avatars $avatars
      * @inject
      */
-    public $avatars;
+    public Avatars $avatars;
 
     /**
      * AvatarPresenter constructor.
      *
      * @param UsersManager $manager
      */
-    public function __construct(UsersManager $manager)
+    public function __construct(
+        UsersManager $manager,
+        private readonly UserRepository $userRepository,
+    )
     {
         parent::__construct($manager);
     }
-    
-    /**
-     * AvatarPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->avatars = null;
-        
-        parent::__destruct();
-    }
+
 
     /**
      * @param int $page
      */
-    public function actionDefault($page = 1)
+    public function actionDefault($page = 1): void
     {
-        $avatars   = $this->getManager()->getAllFluent()->where('[user_avatar] IS NOT NULL');
+        $avatars = $this->userRepository->findWithAvatar();
         $paginator = new PaginatorControl($avatars, 2, 5, $page);
 
         $this->addComponent($paginator, 'paginator');
@@ -58,7 +55,7 @@ class AvatarPresenter extends AdminPresenter
             $this->flashMessage('No avatars.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $this->template->avatars     = $avatars->fetchAll();
+        $this->template->avatars     = $avatars;
         $this->template->countItems  = $paginator->getCount();
     }
     
@@ -66,7 +63,7 @@ class AvatarPresenter extends AdminPresenter
      *
      * @param int $page
      */
-    public function renderDefault($page = 1)
+    public function renderDefault($page = 1): void
     {
         $this->template->avatarsSize = $this->avatars->getDirSize();
         $this->template->avatarsDir  = $this->avatars->getSPLDir()->getBasename();
@@ -76,7 +73,7 @@ class AvatarPresenter extends AdminPresenter
      * @param int    $user_id
      * @param string $avatar_name
      */
-    public function handleDeleteAvatar($user_id, $avatar_name)
+    public function handleDeleteAvatar(int $user_id, string $avatar_name): void
     {
         $this->getManager()->removeAvatarFile($avatar_name);
         
@@ -87,20 +84,20 @@ class AvatarPresenter extends AdminPresenter
         $this->redirect('this');
     }
 
-    /**
-     * @return null
-     */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): BootstrapForm
     {
-        return null;
+        $form = new BootstrapForm();
+
+        $form->onValidate[] = [$this, 'editFormValidate'];
+        $form->onSuccess[] = [$this, 'editFormSuccess'];
+
+        return $form;
     }
     
-    /**
-     *
-     * @return null
-     */
-    protected function createComponentGridFilter()
+    protected function createComponentDataGrid(): Datagrid
     {
-        return null;
+        $datagrid = new Datagrid();
+
+        return $datagrid;
     }
 }

@@ -11,6 +11,7 @@ use Nette\Http\FileUpload;
 use Nette\InvalidArgumentException;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Random;
 use Tracy\Debugger;
 
 /**
@@ -30,7 +31,7 @@ class UsersManager extends CrudManager
     /**
      * @var Avatars $avatars
      */
-    private $avatars;
+    private Avatars $avatars;
 
     /**
      * UsersManager constructor.
@@ -47,30 +48,6 @@ class UsersManager extends CrudManager
         parent::__construct($dibi, $storage);
 
         $this->avatars = $avatars;
-    }
-
-    /**
-     * @param string $user_name
-     *
-     * @return Row|false
-     */
-    public function getByName($user_name)
-    {
-        return $this->getAllFluent()
-            ->where('[user_name] = %s', $user_name)
-            ->fetch();
-    }
-
-    /**
-     * @param int $lang_id
-     *
-     * @return int
-     */
-    public function getCountByLang($lang_id)
-    {
-        return $this->getCountFluent()
-            ->where('[user_lang_id] = %i', $lang_id)
-            ->fetchSingle();
     }
 
     /**
@@ -115,45 +92,6 @@ class UsersManager extends CrudManager
     }
 
     /**
-     *
-     * @param string $user_name
-     *
-     * @return bool
-     */
-    public function checkUserNameExists($user_name)
-    {
-        return $this->getAllFluent()
-                ->where('[user_name] = %s', $user_name)
-                ->fetchSingle() === 1;
-    }
-
-    /**
-     *
-     * @param string $email
-     *
-     * @return Row|false
-     */
-    public function getByEmail($email)
-    {
-        return $this->getAllFluent()
-            ->where('[user_email] = %s', $email)
-            ->fetch();
-    }
-
-    /**
-     *
-     * @param array $emails
-     *
-     * @return Row[]
-     */
-    public function getAllByEmails(array $emails)
-    {
-        return $this->getAllFluent()
-            ->where('[user_email] IN %in', $emails)
-            ->fetchAll();
-    }
-
-    /**
      * @param FileUpload $file
      * @param int        $user_id
      *
@@ -182,7 +120,7 @@ class UsersManager extends CrudManager
             }
 
             $extension = self::getFileExtension($file->name);
-            $hash      = self::getRandomString();
+            $hash      = Random::generate(32);
             $name      = $hash . '.' . $extension;
 
             $file->move($this->avatars->getDir() . DIRECTORY_SEPARATOR . $name);

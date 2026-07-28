@@ -6,6 +6,8 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BBMailer;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\UserEntity;
 use App\Models\Mails2UsersManager;
 use App\Models\MailsManager;
 use App\Models\UsersManager;
@@ -39,17 +41,14 @@ class EmailPresenter extends AdminPresenter
     public Mails2UsersManager $mail2UsersManager;
 
     /**
-     * @var UsersManager $usersManager
-     * @inject
-     */
-    public UsersManager $usersManager;
-
-    /**
      * EmailPresenter constructor.
      *
      * @param MailsManager $manager
      */
-    public function __construct(MailsManager $manager)
+    public function __construct(
+        MailsManager $manager,
+        private readonly EntityManagerDecorator $em,
+    )
     {
         parent::__construct($manager);
     }
@@ -117,8 +116,14 @@ class EmailPresenter extends AdminPresenter
      */
     public function sendFormSuccess(Form $form, ArrayHash $values): void
     {
-        $users      = $this->usersManager->getAll();
-        $usersMails = Utils::arrayObjectColumn($users, 'user_email');
+        $usersMails = $this->em
+            ->getRepository(UserEntity::class)
+            ->createQueryBuilder('_u')
+
+            ->select('_u.mail')
+
+            ->getQuery()
+            ->getResult();
 
         $this->bbMailer->addRecipients($usersMails);
         $this->bbMailer->setSubject($values->email_subject);
@@ -137,10 +142,7 @@ class EmailPresenter extends AdminPresenter
         }
     }
     
-    /**
-     * @return BreadCrumbControl
-     */
-    protected function createComponentBreadCrumbAll()
+    protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
@@ -150,10 +152,7 @@ class EmailPresenter extends AdminPresenter
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
     
-    /**
-     * @return BreadCrumbControl
-     */
-    protected function createComponentBreadCrumbEdit()
+    protected function createComponentBreadCrumbEdit(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
@@ -164,10 +163,7 @@ class EmailPresenter extends AdminPresenter
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
     
-    /**
-     * @return BreadCrumbControl
-     */
-    protected function createComponentBreadCrumbSend()
+    protected function createComponentBreadCrumbSend(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],

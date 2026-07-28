@@ -120,7 +120,7 @@ class TopicWatchFacade
      *
      * @param PostEntity $post
      */
-    public function deleteByPost(PostEntity $post): void
+    public function deleteByPost(\App\Model\Entity\PostEntity $post): void
     {
         $postCount = $this->postsManager->getCountOfUsersByTopicId($post->getPost_topic_id());
 

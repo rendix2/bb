@@ -6,7 +6,7 @@ use App\Model\Entity\SessionEntity;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * class UserRepository
+ * class SessionRepository
  *
  * @package App\Model\Repository
  * @extends EntityRepository<SessionEntity>

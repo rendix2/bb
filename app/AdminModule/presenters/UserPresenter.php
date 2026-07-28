@@ -11,6 +11,7 @@ use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserForumsForm;
 use App\Forms\UserGroupsForm;
 use App\Forms\UserModeratorForm;
+use App\Model\Repository\LanguageRepository;
 use App\Models\LanguageManager;
 use App\Models\RankManager;
 use App\Models\UsersManager;
@@ -79,9 +80,10 @@ class UserPresenter extends AdminPresenter
      * @param UsersManager $manager
      */
     public function __construct(
-        private readonly UserGroupsForm    $userGroupsForm,
-        private readonly UserForumsForm    $userForumsForm,
-        private readonly UserModeratorForm $userModeratorForm,
+        private readonly UserGroupsForm     $userGroupsForm,
+        private readonly UserForumsForm     $userForumsForm,
+        private readonly UserModeratorForm  $userModeratorForm,
+        private readonly LanguageRepository $languageRepository,
         UsersManager $manager
     )
     {
@@ -106,7 +108,7 @@ class UserPresenter extends AdminPresenter
         parent::renderEdit($id);
         
         if (!$id) {
-            $this[self::FORM_NAME]->setDefaults(['user_role_id' => 2]);
+            $this['editForm']->setDefaults(['user_role_id' => 2]);
         }
         
         $this->getTemplate()->avatarsDir = $this->avatars->getTemplateDir();
@@ -122,7 +124,7 @@ class UserPresenter extends AdminPresenter
         $form->addEmail('user_email', 'User mail:')->setRequired(true);
         $form->addGroup('user_settings');
         $form->addSelect('user_role_id', 'User role:', Authorizator::ROLES);
-        $form->addSelect('user_lang_id', 'User language:', $this->languagesManager->getAllPairsCached('lang_name'));
+        $form->addSelect('user_lang_id', 'User language:', $this->languageRepository->findPairs());
         $form->addTextArea('user_signature', 'User signature:');
         $form->addSelect('user_special_rank', 'User special rank:', $this->ranksManager->getAllFluent()->where('%n = %i', 'rank_special', 1)->getAllPairs('rank_name'));
         //$form->addUpload('user_avatar', 'User avatar:');
@@ -130,8 +132,9 @@ class UserPresenter extends AdminPresenter
         $form->addCheckbox('user_active', 'User active:');
 
         $form->addSubmit('Send', 'Send');
-        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
-        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
+
+        $form->onValidate[] = [$this, 'editFormValidate'];
+        $form->onSuccess[]  = [$this, 'editFormSuccess'];
 
         return $form;
     }

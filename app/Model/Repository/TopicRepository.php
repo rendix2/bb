@@ -7,7 +7,7 @@ use App\Model\Entity\TopicEntity;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * class UserRepository
+ * class TopicRepository
  *
  * @package App\Model\Repository
  * @extends EntityRepository<TopicEntity>
@@ -31,6 +31,16 @@ class TopicRepository extends EntityRepository
                 'forum' => $forumEntity,
             ]
         );
+    }
+
+    public function findPairs(): array
+    {
+        return $this->createQueryBuilder('_t')
+            ->select('_t.id')
+            ->addSelect('_t.name')
+
+            ->getQuery()
+            ->getArrayResult();
     }
 
 }

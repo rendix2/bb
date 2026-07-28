@@ -38,11 +38,6 @@ abstract class Entity
     }
 
     /**
-     * @return array
-     */
-    abstract public function getArray();
-
-    /**
      *
      * @return ArrayHash
      */

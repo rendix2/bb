@@ -2,6 +2,7 @@
 
 namespace App\Forms;
 
+use App\Model\Repository\UserRepository;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\TranslatorFactory;
@@ -21,37 +22,16 @@ class UserResetPasswordForm extends Control
      *
      * @var TranslatorFactory $translatorFactory
      */
-    private $translateFactory;
-    
-    /**
-     *
-     * @var UsersManager $usersManager
-     */
-    private $usersManager;
+    private TranslatorFactory $translateFactory;
 
-    /**
-     * UserResetPasswordForm constructor.
-     *
-     * @param TranslatorFactory $translatorFactory
-     * @param UsersManager      $usersManager
-     */
+
     public function __construct(
         TranslatorFactory $translatorFactory,
-        UsersManager      $usersManager
+        private readonly UserRepository $userRepository,
     ) {
         parent::__construct();
         
         $this->translateFactory = $translatorFactory;
-        $this->usersManager     = $usersManager;
-    }
-    
-    /**
-     * UserResetPasswordForm destructor
-     */
-    public function __destruct()
-    {
-        $this->translateFactory = null;
-        $this->usersManager     = null;
     }
 
     /**
@@ -59,7 +39,7 @@ class UserResetPasswordForm extends Control
      *
      * renders form
      */
-    public function render()
+    public function render(): void
     {
         $this['resetPasswordForm']->render();
     }
@@ -68,18 +48,10 @@ class UserResetPasswordForm extends Control
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
         $form->setTranslator($this->translateFactory->getForumTranslator());
-        $form->addEmail(
-            'user_email',
-            'User email:'
-        );
-        $form->addSubmit(
-            'send',
-            'Reset'
-        );
-        $form->onSuccess[] = [
-            $this,
-            'resetPasswordFormSuccess'
-        ];
+        $form->addEmail('user_email', 'User email:');
+        $form->addSubmit('send', 'Reset');
+
+        $form->onSuccess[] = [$this, 'resetPasswordFormSuccess'];
 
         return $form;
     }
@@ -88,9 +60,9 @@ class UserResetPasswordForm extends Control
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function resetPasswordFormSuccess(Form $form, ArrayHash $values)
+    public function resetPasswordFormSuccess(Form $form, ArrayHash $values): void
     {
-        $found_mail = $this->usersManager->getByEmail($values->user_email);
+        $found_mail = $this->userRepository->findOneByEmail($values->user_email);
 
         if ($found_mail) {
             // send mail!

@@ -4,6 +4,7 @@ namespace App\Forms;
 
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
+use App\Model\Repository\ForumRepository;
 use App\Models\ForumManager;
 use App\Models\Users2ForumsManager;
 use App\Presenters\Base\BasePresenter;
@@ -49,6 +50,7 @@ class UserForumsForm extends Control
         Users2ForumsManager $users2ForumsManager,
         ITranslator         $translator,
         private readonly EntityManagerDecorator $em,
+        private readonly ForumRepository $forumRepository,
     ) {
         parent::__construct();
         
@@ -143,7 +145,7 @@ class UserForumsForm extends Control
         $topic_thank      = $form->getHttpData($form::DATA_TEXT, 'topic_thank[]');
         $topic_fast_reply = $form->getHttpData($form::DATA_TEXT, 'topic_fast_reply[]');
 
-        $count  = $this->forumsManager->getCount();
+        $count  = $this->forumRepository->count();
         $users  = [];
         $forums = [];
 

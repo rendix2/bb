@@ -5,6 +5,8 @@ namespace App\AdminModule\Presenters;
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\GridFilter;
 use App\Models\FilesManager;
+use Contributte\Datagrid\Datagrid;
+use Contributte\FormsBootstrap\BootstrapForm;
 use Nette\Application\UI\Form;
 
 /**
@@ -26,23 +28,18 @@ class FilePresenter extends AdminPresenter
         parent::__construct($manager);
     }
 
-    /**
-     * @return Form
-     */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): BootstrapForm
     {
-        return null;
+        $form = new BootstrapForm();
+
+        return $form;
     }
 
-    /**
-     * @return GridFilter
-     */
-    protected function createComponentGridFilter()
+
+    protected function createComponentDataGrid(): Datagrid
     {
-        $this->gf->setTranslator($this->getTranslator());
+        $dataGrid = new Datagrid();
 
-        $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
-
-        return $this->gf;
+        return $dataGrid;
     }
 }

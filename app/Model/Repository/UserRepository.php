@@ -44,4 +44,39 @@ class UserRepository extends EntityRepository
             );
     }
 
+    public function findByEmails(array $emails): array
+    {
+        return $this
+            ->findBy(
+                [
+                    'email' => $emails,
+                ]
+            );
+    }
+
+    public function findOneByUsername(string $username): ?UserEntity
+    {
+        return $this
+            ->findOneBy(
+                [
+                    'username' => $username,
+                ]
+            );
+    }
+
+    /**
+     * @return UserEntity[]
+     */
+    public function findWithAvatar() : array
+    {
+        return $this
+            ->createQueryBuilder('_u')
+            ->where('_u.avatar IS NOT NULL')
+
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
 }

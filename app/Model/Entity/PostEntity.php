@@ -29,5 +29,13 @@ class PostEntity
     #[JoinColumn(nullable: false)]
     public CategoryEntity $category;
 
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'x')]
+    #[JoinColumn(nullable: false)]
+    public ForumEntity $forum;
+
+    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'x')]
+    #[JoinColumn(nullable: false)]
+    public TopicEntity $topic;
+
 
 }

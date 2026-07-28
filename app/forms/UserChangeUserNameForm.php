@@ -2,6 +2,7 @@
 
 namespace App\Forms;
 
+use App\Model\Repository\UserRepository;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Form;
@@ -23,7 +24,11 @@ class UserChangeUserNameForm extends Control
      * @param UsersManager $usersManager
      * @param User         $user
      */
-    public function __construct(private readonly UsersManager $usersManager, private readonly User $user)
+    public function __construct(
+        private readonly UsersManager $usersManager,
+        private readonly User $user,
+        private readonly UserRepository $userRepository,
+    )
     {
         parent::__construct();
 
@@ -41,7 +46,7 @@ class UserChangeUserNameForm extends Control
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
         
-        $form->addText('user_name', 'User name:');
+        $form->addText('username', 'User name:');
         $form->addSubmit('send', 'Change user name');
         $form->onValidate[] = [$this, 'changeUserNameOnValidate'];
         $form->onSuccess[]  = [$this, 'changeUserNameSuccess'];
@@ -56,7 +61,9 @@ class UserChangeUserNameForm extends Control
      */
     public function changeUserNameOnValidate(Form $form, ArrayHash $values): void
     {
-        if ($this->usersManager->checkUserNameExists($values->user_name)) {
+        $userEntity = $this->userRepository->findOneByUsername($values->username);
+
+        if ($userEntity) {
             $form->addError('User already exists.');
         }
     }

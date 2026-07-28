@@ -47,7 +47,11 @@ class PmPresenter extends CrudPresenter
      *
      * @param PmManager $manager
      */
-    public function __construct(PmManager $manager)
+    public function __construct(
+        PmManager $manager,
+        private readonly UserSearchControl $userSearchControl,
+        private readonly ReportForm        $reportForm,
+    )
     {
         parent::__construct($manager);
     }
@@ -74,9 +78,9 @@ class PmPresenter extends CrudPresenter
 
         $this->translator = $this->translatorFactory->getForumTranslator();
 
-        $this->template->setTranslator($this->translator);
+        $this->getTemplate()->setTranslator($this->translator);
 
-        $this->template->pm_count = $this->getManager()->getCountSent();
+        $this->getTemplate()->pm_count = $this->getManager()->getCountSent();
     }
 
     /**
@@ -96,7 +100,7 @@ class PmPresenter extends CrudPresenter
     public function renderEdit($id = null): void
     {
         if (!$id) {
-            $this[self::FORM_NAME]->setDefaults([
+            $this['editForm']->setDefaults([
                 'pm_user_id_to' => $this->getParameter('user_id'),
                 'user_name'     => $this->getParameter('user_name')
             ]);
@@ -104,7 +108,7 @@ class PmPresenter extends CrudPresenter
         
         parent::renderEdit($id);
 
-        if ($id && $this->template->item->pm_status === 'sent') {
+        if ($id && $this->getTemplate()->item->pm_status === 'sent') {
             $this->getManager()->update($id, ArrayHash::from(['pm_status' => 'read', 'pm_time_read' => time()]));
         }
     }
@@ -122,7 +126,7 @@ class PmPresenter extends CrudPresenter
      */
     protected function createComponentReportForm(): ReportForm
     {
-        return new ReportForm($this->reportsManager);
+        return $this->reportForm;
     }
     
     /**
@@ -148,7 +152,7 @@ class PmPresenter extends CrudPresenter
      */
     protected function createComponentUserSearch(): UserSearchControl
     {
-        return new UserSearchControl($this->usersManager, $this->translator);
+        return $this->userSearchControl;
     }
     
     /**
@@ -224,8 +228,9 @@ class PmPresenter extends CrudPresenter
         }
 
         $form->addSubmit('Send', 'Send');
-        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
-        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
+
+        $form->onValidate[] = [$this, 'editFormValidate'];
+        $form->onSuccess[]  = [$this, 'editFormSuccess'];
 
         return $form;
     }
@@ -235,7 +240,7 @@ class PmPresenter extends CrudPresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function onValidate(Form $form, ArrayHash $values): void
+    public function editFormValidate(Form $form, ArrayHash $values): void
     {
         if (!$values->pm_user_id_to) {
             $form->addError('We are missing recipients user ID', true);

@@ -2,6 +2,7 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Repository\LanguageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 
-#[Entity()]
+#[Entity(repositoryClass: LanguageRepository::class)]
 #[Table(name: 'language')]
 class LanguageEntity
 {

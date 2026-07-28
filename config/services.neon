@@ -8,8 +8,33 @@ services:
         class: App\Controls\BBMailer
     GridFilter:
         factory: App\Controls\GridFilter
-#    DibiConnection:
-#        class: Dibi\Connection
+    UserSearchControl:
+        factory:  App\Controls\UserSearchControl
+
+    -
+        type: App\Model\Repository\UserRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\UserEntity)
+
+
+    -
+        type: App\Model\Repository\LanguageRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\LanguageEntity)
+
+    -
+        type: App\Model\Repository\CategoryRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\CateoryEntity)
+
+    -
+        type: App\Model\Repository\ForumRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\ForumEntity)
+
+    -
+        type: App\Model\Repository\TopicRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\TopicEntity)
+
+    -
+        type: App\Model\Repository\PostRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\PostEntity)
 
 
 

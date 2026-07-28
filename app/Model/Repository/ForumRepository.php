@@ -3,14 +3,13 @@
 namespace App\Model\Repository;
 
 use App\Model\Entity\ForumEntity;
-use App\Model\Entity\UserEntity;
 use Doctrine\ORM\EntityRepository;
 
 /**
  * class ForumRepository
  *
  * @package App\Model\Repository
- * @extends EntityRepository<UserEntity>
+ * @extends EntityRepository<ForumEntity>
  */
 class ForumRepository extends EntityRepository
 {
@@ -42,6 +41,16 @@ class ForumRepository extends EntityRepository
                 'parent' => $id,
             ]
         );
+    }
+
+    public function findPairs(): array
+    {
+        return $this->createQueryBuilder('_f')
+            ->select('_f.id')
+            ->addSelect('_f.name')
+
+            ->getQuery()
+            ->getArrayResult();
     }
 
 }

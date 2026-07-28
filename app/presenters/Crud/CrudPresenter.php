@@ -21,21 +21,6 @@ use Tracy\ILogger;
 abstract class CrudPresenter extends AuthenticatedPresenter
 {
     /**
-     * @var string
-     */
-    const FORM_NAME = 'editForm';
-
-    /**
-     * @var string
-     */
-    const FORM_ON_SUCCESS = 'editFormSuccess';
-
-    /**
-     * @var string
-     */
-    const FORM_ON_VALIDATE = 'onValidate';
-    
-    /**
      * @var int
      */
     const ITEMS_PER_PAGE = 20;
@@ -57,16 +42,6 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     private $manager;
 
     /**
-     * @return Form
-     */
-    abstract protected function createComponentEditForm();
-    
-    /**
-     * @return GridFilter
-     */
-    abstract protected function createComponentGridFilter();
-
-    /**
      * CrudPresenter constructor.
      *
      * @param CrudManager $manager
@@ -76,18 +51,6 @@ abstract class CrudPresenter extends AuthenticatedPresenter
         parent::__construct();
         
         $this->manager = $manager;
-    }
-    
-    /**
-     * CrudPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->gf      = null;
-        $this->title   = null;
-        $this->manager = null;
-        
-        parent::__destruct();
     }
 
     /**
@@ -110,19 +73,6 @@ abstract class CrudPresenter extends AuthenticatedPresenter
 
         return $this->title ?: $name;
     }
-
-    /**
-     * @param string $title
-     *
-     * @return $this
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
     /**
      * @return string string
      */
@@ -155,13 +105,6 @@ abstract class CrudPresenter extends AuthenticatedPresenter
         $this->gf = $gridFilter;
     }
 
-    /**
-     * @param Form      $form   form
-     * @param ArrayHash $values values
-     */
-    public function onValidate(Form $form, ArrayHash $values)
-    {
-    }
 
     /**
      * @param int $id
@@ -232,7 +175,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
                 $this->error('Item $' . $this->getTitle() . '[' . $id . '] was not found.');
             }
 
-            $this[self::FORM_NAME]->setDefaults($item);
+            $this['editForm']->setDefaults($item);
 
             $this->template->item_id = $id;
             $this->template->item    = $item;
@@ -242,7 +185,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
             $this->template->title   = $this->getTitleOnAdd();
             $this->template->item    = [];
 
-            $this[self::FORM_NAME]->setDefaults([]);
+            $this['editForm']->setDefaults([]);
         }
     }
     

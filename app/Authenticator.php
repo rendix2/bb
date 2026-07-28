@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Authorization\Authorizator;
+use App\Model\Repository\UserRepository;
 use App\Models\LanguageManager;
 use App\Models\ModeratorManager;
 use App\Models\UsersManager;
@@ -23,18 +24,18 @@ class Authenticator implements IAuthenticator
     /**
      * @var UsersManager $usersManager
      */
-    private $usersManager;
+    private UsersManager $usersManager;
 
     /**
      * @var LanguageManager $languagesManager
      */
-    private $languagesManager;
+    private LanguageManager $languagesManager;
     
     /**
      *
      * @var ModeratorManager $moderatorsManager
      */
-    private $moderatorsManager;
+    private ModeratorManager $moderatorsManager;
 
     /**
      * Authenticator constructor.
@@ -46,21 +47,13 @@ class Authenticator implements IAuthenticator
     public function __construct(
         UsersManager      $usersManger,
         LanguageManager  $languageManager,
-        ModeratorManager $moderatorsManager
+        ModeratorManager $moderatorsManager,
+        private readonly UserRepository $userRepository,
+        private readonly Passwords      $passwords,
     ) {
         $this->usersManager      = $usersManger;
         $this->languagesManager  = $languageManager;
         $this->moderatorsManager = $moderatorsManager;
-    }
-    
-    /**
-     * Authenticator destructor.
-     */
-    public function __destruct()
-    {
-        $this->usersManager      = null;
-        $this->languagesManager  = null;
-        $this->moderatorsManager = null;
     }
 
     /**
@@ -74,13 +67,13 @@ class Authenticator implements IAuthenticator
     {
         [$userName, $userPassword] = $credentials;
 
-        $userData = $this->usersManager->getByName($userName);
+        $userEntity = $this->userRepository->findOneByUsername($userName);
 
-        if (!$userData) {
+        if (!$userEntity) {
             throw new AuthenticationException('Incorrect credentials.', IAuthenticator::IDENTITY_NOT_FOUND);
         }
         
-        $langData = $this->languagesManager->getById($userData->user_lang_id);
+        $langData = $this->languagesManager->getById($userEntity->user_lang_id);
         
         if (!$langData) {
             throw new AuthenticationException(
@@ -89,27 +82,27 @@ class Authenticator implements IAuthenticator
             );
         }
 
-        if (!$userData->user_active) {
+        if (!$userEntity->isActive) {
             throw new AuthenticationException('User account is not active.', IAuthenticator::INVALID_CREDENTIAL);
         }
 
-        if (!Passwords::verify($userPassword, $userData->user_password)) {
+        if (!$this->passwords->verify($userPassword, $userEntity->password)) {
             throw new AuthenticationException('Incorrect credentials.', IAuthenticator::INVALID_CREDENTIAL);
         }
                
-        $this->usersManager->update($userData->user_id, ArrayHash::from(['user_last_login_time' => time()]));
+        $this->usersManager->update($userEntity->id, ArrayHash::from(['user_last_login_time' => time()]));
         
-        $moderators = $this->moderatorsManager->getPairsByLeft($userData->user_id);
+        $moderators = $this->moderatorsManager->getPairsByLeft($userEntity->id);
         
         $data =
             [
-                'user_name'            => $userData->user_name,
+                'user_name'            => $userEntity->username,
                 'lang_file_name'       => $langData->lang_file_name,
-                'user_last_login_time' => $userData->user_last_login_time,
-                'user_email'           => $userData->user_email,
+                'user_last_login_time' => $userEntity->user_last_login_time,
+                'user_email'           => $userEntity->email,
                 'moderator'            => $moderators
             ];
 
-        return new Identity($userData->user_id, Authorizator::ROLES[$userData->user_role_id], $data);
+        return new Identity($userEntity->id, Authorizator::ROLES[$userEntity->user_role_id], $data);
     }
 }

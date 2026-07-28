@@ -5,6 +5,8 @@ namespace App\AdminModule\Presenters;
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\GridFilter;
 use App\Models\FaqManager;
+use Contributte\Datagrid\Datagrid;
+use Contributte\FormsBootstrap\BootstrapForm;
 
 /**
  * Description of FaqPresenter
@@ -25,19 +27,19 @@ class FaqPresenter extends AdminPresenter
         parent::__construct($manager);
     }
 
-    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
+    protected function createComponentEditForm(): BootstrapForm
     {
-        $form = new \Contributte\FormsBootstrap\BootstrapForm();
+        $form = new BootstrapForm();
 
         return $form;
     }
-    
-    /**
-     *
-     * @return GridFilter
-     */
-    protected function createComponentGridFilter()
+
+
+    protected function createComponentDataGrid(): Datagrid
     {
-        return $this->gf;
+        $dataGrid = new Datagrid();
+
+        return $dataGrid;
     }
+
 }

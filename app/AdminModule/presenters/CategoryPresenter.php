@@ -7,12 +7,10 @@ use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
+use App\Model\Repository\CategoryRepository;
 use App\Models\CategoryManager;
-use App\Models\CategoryFacade;
-use App\Models\ForumManager;
 use Doctrine\DBAL\Exception as DbalException;
 use Nette\Application\UI\Form;
-use Nette\DI\Attributes\Inject;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -26,12 +24,6 @@ use Tracy\ILogger;
  */
 class CategoryPresenter extends AdminPresenter
 {
-    #[Inject]
-    public CategoryFacade $categoryFacade;
-    
-    #[Inject]
-    public ForumManager $forumsManager;
-
     /**
      * CategoryPresenter constructor.
      *
@@ -39,6 +31,7 @@ class CategoryPresenter extends AdminPresenter
      */
     public function __construct(
         private readonly EntityManagerDecorator $em,
+        private readonly CategoryRepository     $categoryRepository,
         CategoryManager $manager
     )
     {
@@ -84,7 +77,7 @@ class CategoryPresenter extends AdminPresenter
                 $this->error('Item #' . $id . ' not found.');
             }
 
-            $this[self::FORM_NAME]->setDefaults($categoryEntity);
+            $this['editForm']->setDefaults($categoryEntity);
 
             $forums = $this->em
                 ->getRepository(ForumEntity::class)
@@ -94,7 +87,7 @@ class CategoryPresenter extends AdminPresenter
                     ]
                 );
 
-            if (!$forums) {
+            if ($forums === []) {
                 $this->flashMessage('No forums in this category.', self::FLASH_MESSAGE_WARNING);
             }
 
@@ -105,7 +98,7 @@ class CategoryPresenter extends AdminPresenter
             $this->template->title  = $this->getTitleOnAdd();
             $this->template->forums = [];
 
-            $this[self::FORM_NAME]->setDefaults([]);
+            $this['editForm']->setDefaults([]);
         }
     }
 
@@ -124,19 +117,16 @@ class CategoryPresenter extends AdminPresenter
         $form->addText('category_name', 'Category name:')
             ->setRequired(true);
 
-        $form->addSelect(
-            'category_parent_id',
-            'Category parent:',
-            $this->getManager()->getAllPairsCached('category_name')
-        )
+        $form->addSelect('category_parent_id', 'Category parent:', $this->categoryRepository->findPairs())
             ->setPrompt('-')
             ->setTranslator(null);
 
         $form->addCheckbox('category_active', 'Category active:');
 
         $form->addSubmit('Send', 'Send');
-        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
-        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
+
+        $form->onValidate[] = [$this, 'editFormValidate'];
+        $form->onSuccess[]  = [$this, 'editFormSuccess'];
 
         return $form;
     }
@@ -228,7 +218,7 @@ class CategoryPresenter extends AdminPresenter
                 $this->em->persist($categoryEntity);
                 $this->em->flush();
 
-                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+                $this->flashMessage($categoryEntity->name . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
                 $this->redrawControl('flashes');
             }
         } catch (DbalException $e) {

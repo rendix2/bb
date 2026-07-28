@@ -6,6 +6,7 @@ use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
 use App\Model\Entity\TopicEntity;
+use App\Model\Repository\ForumRepository;
 use App\Models\TopicFacade;
 use App\Models\TopicManager;
 use App\Models\Traits\ForumsTrait;
@@ -36,6 +37,7 @@ class TopicPresenter extends ModeratorPresenter
     public function __construct(
         TopicManager $manager,
         private readonly EntityManagerDecorator $em,
+        private readonly ForumRepository        $forumRepository,
     )
     {
         parent::__construct($manager);
@@ -89,7 +91,7 @@ class TopicPresenter extends ModeratorPresenter
     {
         $form = new BootstrapForm();
         
-        $form->addSelect('forum_id', 'Forum name:', $this->forumsManager->getAllPairsCached('forum_name'));
+        $form->addSelect('forum_id', 'Forum name:', $this->forumRepository->findPairs());
 
         $form->addSubmit('send', 'Save');
 

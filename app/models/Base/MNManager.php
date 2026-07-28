@@ -289,17 +289,6 @@ abstract class MNManager extends Manager
             ->fetchAll();
     }
     
-    /**
-     * @param int $right_id
-     *
-     * @return Fluent
-     */
-    public function getPairsByRight($right_id)
-    {
-        return $this->getAllFluent()
-            ->where('%n = %i', $this->rightKey, $right_id);
-    }
-    
     
     /**
      * get by right joined
@@ -488,17 +477,6 @@ abstract class MNManager extends Manager
                 ->fetchSingle();
     }
 
-    /**
-     * @param int $left_id
-     *
-     * @return int
-     */
-    public function getCountByLeft($left_id)
-    {
-        return $this->getCountFluent()
-            ->where('%n = %i', $this->leftKey, $left_id)
-            ->fetchSingle();
-    }
 
     /**
      * @param int $right_id
@@ -579,48 +557,6 @@ abstract class MNManager extends Manager
         }
     }
 
-    /**
-     * @param int   $right_id
-     * @param array $values
-     *
-     * @return Result|int
-     */
-    public function addByRight($right_id, array $values)
-    {
-        $this->deleteByRight($right_id);
-
-        return $this->add($values, null, $right_id);
-    }
-    
-    /**
-     *
-     * @param int   $right_id
-     * @param array $values
-     */
-    public function mergeByRight($right_id, array $values)
-    {
-        $right_values = $this->getPairsByRight($right_id);
-        $diff         = array_diff($values, $right_values);
-        
-        if (count($diff)) {
-            $this->add($diff, null, $right_id);
-        }
-    }
-    
-    /**
-     * delete
-     */
-    
-    /**
-     *
-     * @param int $id
-     */
-    public function deleteById($id)
-    {
-        $this->deleteFluent()
-             ->where('[id] = %i', $id)
-             ->execute();
-    }
 
     /**
      * @param int $left_id
@@ -633,17 +569,7 @@ abstract class MNManager extends Manager
             ->where('%n = %i', $this->leftKey, $left_id)
             ->execute();
     }
-    
-    /**
-     * @param int $left_id
-     *
-     * @return void
-     */
-    public function deleteFullByLeft($left_id)
-    {
-        $this->deleteByLeft($left_id);
-        $this->left->delete($left_id);
-    }
+
         
     /**
      * @param int $right_id
@@ -656,17 +582,7 @@ abstract class MNManager extends Manager
             ->where('%n = %i', $this->rightKey, $right_id)
             ->execute();
     }
-    
-    /**
-     * @param int $right_id
-     *
-     * @return void
-     */
-    public function deleteFullByRight($right_id)
-    {
-        $this->deleteByRight($right_id);
-        $this->right->delete($right_id);
-    }
+
 
     /**
      * deletes relation
@@ -683,16 +599,5 @@ abstract class MNManager extends Manager
             ->where('%n = %i', $this->rightKey, $right_id)
             ->execute();
     }
-    
-    /**
-     *
-     * @param int $left_id
-     * @param int $right_id
-     */
-    public function fullDelete($left_id, $right_id)
-    {
-        $this->delete($left_id, $right_id);
-        $this->left->delete($left_id);
-        $this->right->delete($right_id);
-    }
+
 }

@@ -3,15 +3,20 @@
 namespace App\Forms;
 
 use App\Authenticator;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\SessionEntity;
+use App\Model\Entity\UserEntity;
 use App\Models\SessionManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\TranslatorFactory;
+use DateTimeImmutable;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Http\Session;
 use Nette\Security\AuthenticationException;
 use Nette\Security\User;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Random;
 
 /**
  * Description of UserLoginForm
@@ -40,17 +45,6 @@ class UserLoginForm extends Control
     private User $user;
     
     /**
-     *
-     * @var SessionManager $sessionsManager
-     */
-    private SessionManager $sessionsManager;
-    
-    /**
-     * @var Authenticator $authenticator
-     */
-    private Authenticator $authenticator;
-    
-    /**
      * @var Session $session
      */
     private Session $session;
@@ -58,25 +52,17 @@ class UserLoginForm extends Control
     /**
      * UserLoginForm constructor.
      *
-     * @param TranslatorFactory $translatorFactory
-     * @param User              $user
-     * @param SessionManager   $sessionsManager
-     * @param Authenticator     $authenticator
-     * @param Session           $session
      */
     public function __construct(
         TranslatorFactory $translatorFactory,
         User              $user,
-        SessionManager   $sessionsManager,
-        Authenticator     $authenticator,
-        Session           $session
+        Session           $session,
+        private readonly EntityManagerDecorator $em,
     ) {
         parent::__construct();
         
         $this->translatorFactory = $translatorFactory;
         $this->user              = $user;
-        $this->sessionsManager   = $sessionsManager;
-        $this->authenticator     = $authenticator;
         $this->session           = $session;
     }
 
@@ -118,21 +104,40 @@ class UserLoginForm extends Control
                 $values->user_name,
                 $values->user_password
             );
-            
-            $addArray =
-                [
-                    'session_key'     => $this->session->getId(),
-                    'session_user_id' => $user->getId(),
-                    'session_from'    => time()
-                ];
-            
-            $this->sessionsManager->delete($user->getId());
-            $this->sessionsManager->add(ArrayHash::from($addArray));
+
+            $userEntity = $this->em
+                ->getRepository(UserEntity::class)
+                ->findOneBy(
+                    [
+                        'id' => $user->getId(),
+                    ]
+                );
+
+            $sessionEntity = new SessionEntity();
+            $sessionEntity->user = $userEntity;
+            $sessionEntity->key = $this->session->getId();
+            $sessionEntity->lastActivity = new DateTimeImmutable();
+
+            $sessions = $this->em
+                ->getRepository(SessionEntity::class)
+                ->findOneBy(
+                    [
+                        'key' => $this->session->getId(),
+                    ]
+                );
+
+            foreach ($sessions as $session) {
+                $this->em->remove($session);
+            }
+
+            $this->em->persist($sessionEntity);
+            $this->em->flush();
+
             $user->setExpiration('1 hour');
-            $this->flashMessage(
-                'Successfully logged in.',
-                BasePresenter::FLASH_MESSAGE_SUCCESS
-            );
+
+            $this->flashMessage('Successfully logged in.', BasePresenter::FLASH_MESSAGE_SUCCESS);
+            $this->redrawControl('flashes');
+
             $this->getPresenter()->restoreRequest($this->backlink);
             $this->getPresenter()->redirect('Index:default');
         } catch (AuthenticationException $e) {

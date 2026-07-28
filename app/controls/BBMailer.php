@@ -2,6 +2,7 @@
 
 namespace App\Controls;
 
+use App\Model\Repository\UserRepository;
 use App\Models\Mails2UsersManager;
 use App\Models\MailsManager;
 use App\Models\UsersManager;
@@ -51,13 +52,13 @@ class BBMailer
     /**
      * @var Mails2UsersManager $mails2users;
      */
-    private $mails2users;
+    private Mails2UsersManager $mails2users;
     
     /**
      *
      * @var UsersManager $usersManager
      */
-    private $usersManager;
+    private UsersManager $usersManager;
 
     /**
      * @var TempDir $tempDir
@@ -80,7 +81,8 @@ class BBMailer
         Email              $email,
         Mails2UsersManager $mails2users,
         UsersManager       $usersManager,
-        TempDir            $tempDir
+        TempDir            $tempDir,
+        private readonly UserRepository $userRepository,
     ) {
         $this->mailer  = $mailer;
         $this->message = new Message();
@@ -178,7 +180,7 @@ class BBMailer
             'mail_time'    => time()
         ];
         
-        $emails      = $this->usersManager->getAllByEmails($this->recipients);
+        $emails      = $this->userRepository->findByEmails($this->recipients);
         $email_id    = $this->manager->add(ArrayHash::from($item_data));
         $emailsArray = Utils::arrayObjectColumn($emails, 'user_id');
         

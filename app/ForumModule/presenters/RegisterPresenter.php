@@ -4,6 +4,7 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BBMailer;
 use App\Database\EntityManagerDecorator;
+use App\Model\Repository\LanguageRepository;
 use App\Models\Entity\UserEntity;
 use App\Models\LanguageManager;
 use App\Models\Manager;
@@ -16,6 +17,7 @@ use Nette\Caching\IStorage;
 use Nette\Localization\ITranslator;
 use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Random;
 
 /**
  * Description of RegisterPresenter
@@ -68,7 +70,8 @@ class RegisterPresenter extends BasePresenter
         LanguageManager $languageManger,
         UserFacade $userFacade,
         private readonly EntityManagerDecorator $em,
-        private readonly Passwords              $passwords
+        private readonly Passwords              $passwords,
+        private readonly LanguageRepository     $languageRepository,
     )
     {
         parent::__construct();
@@ -117,7 +120,7 @@ class RegisterPresenter extends BasePresenter
             ->setRequired(true);
         $form->addEmail('user_email', 'User email:')
             ->setRequired(true);
-        $form->addSelect('user_lang_id', 'User lang:', $this->languageManager->getAllPairsCached('lang_name'));
+        $form->addSelect('user_lang_id', 'User lang:', $this->languageRepository->findPairs());
         $form->addReCaptcha('user_captcha', 'User captcha:', 'Please prove you are not robot.');
         $form->addSubmit('send', 'User register');
         
@@ -132,7 +135,7 @@ class RegisterPresenter extends BasePresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function registerOnValidate(Form $form, ArrayHash $values)
+    public function registerOnValidate(Form $form, ArrayHash $values): void
     {
         $foundUsersByUsernames = $this->em
             ->getRepository(\App\Model\Entity\UserEntity::class)
@@ -164,7 +167,7 @@ class RegisterPresenter extends BasePresenter
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function registerUserSuccess(Form $form, ArrayHash $values)
+    public function registerUserSuccess(Form $form, ArrayHash $values): void
     {
         $user = new UserEntity();
 
@@ -179,12 +182,12 @@ class RegisterPresenter extends BasePresenter
              ->setUser_lang_id($values->user_lang_id)
              ->setUser_register_time(time())
              ->setUser_role_id(2)
-             ->setUser_activation_key(Manager::getRandomString());
+             ->setUser_activation_key(Random::generate(32));
 
-        $res = $this->userFacade->add($user);
+        $res = $this->userFacade->add($useEntity);
 
         $this->bbMailer->setSubject($this->translator->translate('welcome_mail_subject'));
-        $this->bbMailer->addRecipients([$user->user_email]);
+        $this->bbMailer->addRecipients([$useEntity->email]);
         $this->bbMailer->setText(
             sprintf(
                 $this->translator->translate('welcome_mail_text'),

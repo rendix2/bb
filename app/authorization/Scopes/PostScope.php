@@ -52,21 +52,11 @@ class PostScope implements IAuthorizationScope
      * @param TopicScope $topicScope
      * @param TopicEntity $topicEntity
      */
-    public function __construct(\App\Model\Entity\PostEntity $post, TopicScope $topicScope, TopicEntity $topicEntity)
+    public function __construct(\App\Model\Entity\PostEntity $post, TopicScope $topicScope, \App\Model\Entity\TopicEntity $topicEntity)
     {
         $this->post        = $post;
         $this->topicScope  = $topicScope;
         $this->topicEntity = $topicEntity;
-    }
-    
-    /**
-     * PostScope destructor.
-     */
-    public function __destruct()
-    {
-        $this->post        = null;
-        $this->topicScope  = null;
-        $this->topicEntity = null;
     }
 
     /**
@@ -74,7 +64,7 @@ class PostScope implements IAuthorizationScope
      *
      * @return array
      */
-    public function getIdentityRoles(Identity $identity)
+    public function getIdentityRoles(Identity $identity): array
     {
         if ($this->topicEntity->getTopic_locked()) {
             return $this->topicScope->getIdentityRoles($identity);
