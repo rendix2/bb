@@ -2,6 +2,8 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Repository\SessionRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -11,7 +13,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
-#[Entity()]
+#[Entity(repositoryClass: SessionRepository::class)]
 #[Table(name: 'session')]
 class SessionEntity
 {
@@ -27,5 +29,8 @@ class SessionEntity
     #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'sessions')]
     #[JoinColumn(nullable: false)]
     public UserEntity $user;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    public DateTimeImmutable $lastActivity;
 
 }

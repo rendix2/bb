@@ -3,7 +3,6 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Models\RankManager;
@@ -52,12 +51,9 @@ class RankPresenter extends AdminPresenter
         $this->template->ranksDir = $this->ranks->getTemplateDir();
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentEditForm(): BootstrapForm
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         
         $form->addText('rank_name', 'Rank name:')->setRequired(true);
         $form->addInteger('rank_from', 'Rank from:');
@@ -65,16 +61,19 @@ class RankPresenter extends AdminPresenter
         $form->addUpload('rank_file', 'Rank file:');
         $form->addCheckbox('rank_special', 'Rank special:');
 
-        $form->onValidate[] = [$this, 'onValidate'];
+        $form->addSubmit('Send', 'Send');
 
-        return $this->addSubmitB($form);
+        $form->onValidate[] = [$this, 'editFormValidate'];
+        $form->onValidate[] = [$this, 'editFormSuccess'];
+
+        return $form;
     }
 
     /**
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function onValidate(Form $form, ArrayHash $values)
+    public function editFormValidate(Form $form, ArrayHash $values): void
     {
         if ($values->rank_special) {
             if ($values->rank_to || $values->rank_from) {
@@ -119,7 +118,7 @@ class RankPresenter extends AdminPresenter
      *
      * @return GridFilter
      */
-    protected function createComponentGridFilter()
+    protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->getTranslator());
 

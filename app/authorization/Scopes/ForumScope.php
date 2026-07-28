@@ -67,13 +67,13 @@ class ForumScope implements IAuthorizationScope
     /**
      * ForumScope constructor.
      *
-     * @param ForumEntity         $forumEntity
-     * @param array               $moderators
+     * @param \App\Model\Entity\ForumEntity $forumEntity
+     * @param array $moderators
      * @param User2GroupManager $users2GroupsManager
      * @param Users2ForumsManager $users2ForumsManager
      */
     public function __construct(
-        ForumEntity $forumEntity,
+        \App\Model\Entity\ForumEntity $forumEntity,
         $moderators,
         User2GroupManager $users2GroupsManager,
         Users2ForumsManager $users2ForumsManager

@@ -3,7 +3,6 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Models\ReportManager;
@@ -27,21 +26,22 @@ class ReportPresenter extends AdminPresenter
         parent::__construct($manager);
     }
     
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentEditForm(): BootstrapForm
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
         $values = [
             0 => 'Added',
             1 => 'Fixed'
         ];
         
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         
         $form->addSelect('report_status', 'Report status:', $values);
 
-        return $this->addSubmitB($form);
+        $form->addSubmit('Send', 'Send');
+        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
+        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
+
+        return $form;
     }
     
     /**

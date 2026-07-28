@@ -2,7 +2,8 @@
 
 namespace App\Forms;
 
-use App\Controls\BootstrapForm;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\ForumEntity;
 use App\Models\ForumManager;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
@@ -20,13 +21,13 @@ class TopicJumpToForumForm extends Control
     /**
      * @var ForumManager $forumManager
      */
-    private $forumManager;
+    private ForumManager $forumManager;
     
     /**
      *
      * @var ITranslator $translator
      */
-    private $translator;
+    private ITranslator $translator;
 
     /**
      * JumpToForumControl constructor.
@@ -36,7 +37,8 @@ class TopicJumpToForumForm extends Control
      */
     public function __construct(
         ForumManager $forumManager,
-        ITranslator   $translator
+        ITranslator   $translator,
+        private readonly EntityManagerDecorator $em,
     ) {
         parent::__construct();
 
@@ -45,32 +47,20 @@ class TopicJumpToForumForm extends Control
     }
 
     /**
-     * JumpToForumControl destructor.
-     */
-    public function __destruct()
-    {
-        $this->forumManager = null;
-        $this->translator   = null;
-    }
-
-    /**
      * render jump to forum
      */
-    public function render()
+    public function render(): void
     {
         $sep = DIRECTORY_SEPARATOR;
         
-        $template = $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'topicJumpToForum.latte');
+        $template = $this->getTemplate()->setFile(__DIR__ . $sep . 'templates' . $sep . 'topicJumpToForum.latte');
         
         $template->render();
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentJumpToForum()
+    protected function createComponentJumpToForum(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         $form->setTranslator($this->translator);
 
         $form->addSelect('forum_id', null, $this->forumManager->getAllPairsCached('forum_name'))->setTranslator();
@@ -85,14 +75,20 @@ class TopicJumpToForumForm extends Control
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function jumpToForumSuccess(Form $form, ArrayHash $values)
+    public function jumpToForumSuccess(Form $form, ArrayHash $values): void
     {
-        $forum = $this->forumManager->getById($values->forum_id);
+        $forumEntity = $this->em
+            ->getRepository(ForumEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $values->forum_id,
+                ]
+            );
 
-        $this->presenter
+        $this->getPresenter()
             ->redirect(
                 ':Forum:Forum:default',
-                $forum->forum_category_id,
+                $forumEntity->forum_category_id,
                 $values->forum_id
             );
     }

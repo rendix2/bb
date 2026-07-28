@@ -2,7 +2,6 @@
 
 namespace App\Forms;
 
-use App\Controls\BootstrapForm;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\GroupEntity;
 use App\Models\User2GroupManager;
@@ -73,12 +72,9 @@ class UserGroupsForm extends Control
         $this->getTemplate()->render();
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentGroupFrom(): BootstrapForm
+    protected function createComponentGroupFrom(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
         $form->addSubmit('send_group', 'Send');
         $form->onSuccess[] = [$this, 'groupSuccess'];

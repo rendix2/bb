@@ -2,7 +2,6 @@
 
 namespace App\Forms;
 
-use App\Controls\BootstrapForm;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Form;
@@ -18,56 +17,29 @@ use Nette\Utils\ArrayHash;
  */
 class UserChangeUserNameForm extends Control
 {
-    
-    /**
-     *
-     * @var UsersManager $usersManager
-     */
-    private $usersManager;
-
-    /**
-     *
-     * @var User $user
-     */
-    private $user;
 
     /**
      *
      * @param UsersManager $usersManager
      * @param User         $user
      */
-    public function __construct(UsersManager $usersManager, User $user)
+    public function __construct(private readonly UsersManager $usersManager, private readonly User $user)
     {
         parent::__construct();
-        
-        $this->usersManager = $usersManager;
-        $this->user         = $user;
-    }
-    
-    /**
-     * UserChangeUserNameForm destructor.
-     */
-    public function __destruct()
-    {
-        $this->usersManager = null;
-        $this->user         = null;
+
     }
 
     /**
      * UserChangeUserNameForm render.
      */
-    public function render()
+    public function render(): void
     {
         $this['changeUserNameForm']->render();
     }
 
-    /**
-     *
-     * @return BootstrapForm
-     */
-    protected function createComponentChangeUserNameForm()
+    protected function createComponentChangeUserNameForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         
         $form->addText('user_name', 'User name:');
         $form->addSubmit('send', 'Change user name');
@@ -82,7 +54,7 @@ class UserChangeUserNameForm extends Control
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function changeUserNameOnValidate(Form $form, ArrayHash $values)
+    public function changeUserNameOnValidate(Form $form, ArrayHash $values): void
     {
         if ($this->usersManager->checkUserNameExists($values->user_name)) {
             $form->addError('User already exists.');
@@ -94,7 +66,7 @@ class UserChangeUserNameForm extends Control
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function changeUserNameSuccess(Form $form, ArrayHash $values)
+    public function changeUserNameSuccess(Form $form, ArrayHash $values): void
     {
         $result = $this->usersManager->update($this->user->getId(), $values);
         

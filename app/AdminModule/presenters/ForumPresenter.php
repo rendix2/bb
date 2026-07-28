@@ -3,10 +3,11 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
+use App\Model\Entity\ForumEntity;
+use App\Model\Repository\ForumRepository;
 use App\Models\CategoryManager;
 use App\Models\ForumFacade;
 use App\Models\ForumManager;
@@ -119,16 +120,30 @@ class ForumPresenter extends AdminPresenter
                 $this->error('Param id is not numeric.');
             }
 
-            $item = $this->getManager()->getById($id);
+            $forumEntity = $this->em
+                ->getRepository(ForumEntity::class)
+                ->findOneBy(
+                    [
+                        'id' => $id,
+                    ]
+                );
 
-            if (!$item) {
+            if ($forumEntity === null) {
                 $this->error('Item #' . $id . ' not found.');
             }
 
-            $this[self::FORM_NAME]->setDefaults($item);
+            $this[self::FORM_NAME]->setDefaults($forumEntity);
+
+            /**
+             * @var ForumRepository $forumRepository
+             */
+            $forumRepository = $this->em
+                ->getRepository(ForumEntity::class);
+
+            $forumsByParent = $forumRepository->findByParentId($id);
 
             $subForums = $this->getManager()
-                ->createForums($this->getManager()->getAllByParent($id), (int)$id);
+                ->createForums($forumsByParent, (int)$id);
 
             if (!$subForums) {
                 $this->flashMessage('No sub forums.', self::FLASH_MESSAGE_WARNING);
@@ -187,12 +202,9 @@ class ForumPresenter extends AdminPresenter
         $this->redirect(':' . $this->getName() . ':default');
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
         $form->addGroup('forum');
 
@@ -229,7 +241,11 @@ class ForumPresenter extends AdminPresenter
         $form->addCheckbox('forum_topic_update', 'Forum topic update:');
         $form->addCheckbox('forum_topic_delete', 'Forum delete topic:');
 
-        return $this->addSubmitB($form);
+        $form->addSubmit('Send', 'Send');
+        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
+        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
+
+        return $form;
     }
 
     /**

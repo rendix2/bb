@@ -3,7 +3,6 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BBMailer;
-use App\Controls\BootstrapForm;
 use App\Database\EntityManagerDecorator;
 use App\Models\Entity\UserEntity;
 use App\Models\LanguageManager;
@@ -105,12 +104,9 @@ class RegisterPresenter extends BasePresenter
         $this->template->setTranslator($this->translator);
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentRegisterUser()
+    protected function createComponentRegisterUser(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         $form->setTranslator($this->translator);
 
         $form->addText('user_name', 'User name:')

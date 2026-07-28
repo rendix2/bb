@@ -4,7 +4,6 @@ namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Authorization\Authorizator;
-use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Forms\UserChangePasswordForm;
@@ -12,13 +11,8 @@ use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserForumsForm;
 use App\Forms\UserGroupsForm;
 use App\Forms\UserModeratorForm;
-use App\Models\ForumManager;
-use App\Models\GroupManager;
 use App\Models\LanguageManager;
-use App\Models\ModeratorManager;
 use App\Models\RankManager;
-use App\Models\Users2ForumsManager;
-use App\Models\User2GroupManager;
 use App\Models\UsersManager;
 use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
@@ -119,12 +113,9 @@ class UserPresenter extends AdminPresenter
         $this->getTemplate()->ranksDir   = $this->ranks->getTemplateDir();
     }
     
-    /**
-     * @return BootStrapForm
-     */
-    protected function createComponentEditForm(): BootStrapForm
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
         $form->addGroup('user_data');
         $form->addText('user_name', 'User name:')->setRequired(true);
@@ -138,7 +129,11 @@ class UserPresenter extends AdminPresenter
 
         $form->addCheckbox('user_active', 'User active:');
 
-        return $this->addSubmitB($form);
+        $form->addSubmit('Send', 'Send');
+        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
+        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
+
+        return $form;
     }
 
     /**

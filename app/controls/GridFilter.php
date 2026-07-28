@@ -71,7 +71,7 @@ class GridFilter extends Control
     const SESSION_PREFIX = 'grid_filter_';
 
     /**
-     * @var BootstrapForm $form
+     * @var \Contributte\FormsBootstrap\BootstrapForm $form
      */
     private $form;
 
@@ -99,7 +99,7 @@ class GridFilter extends Control
     public function __construct(Session $session)
     {
 
-        $this->form    = BootstrapForm::create();
+        $this->form    = new \Contributte\FormsBootstrap\BootstrapForm();
         $this->filters = [];
         $this->session = $session;
     }
@@ -397,9 +397,6 @@ class GridFilter extends Control
         $this->template->render();
     }
 
-    /**
-     * @return BootstrapForm
-     */
     protected function createComponentGridFilter()
     {
         $this->form->setAction(

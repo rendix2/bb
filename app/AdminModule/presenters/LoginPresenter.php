@@ -3,7 +3,6 @@
 namespace App\AdminModule\Presenters;
 
 use App\Authorization\Authorizator;
-use App\Controls\BootstrapForm;
 use App\Forms\UserLoginForm;
 use App\Models\Entity\SessionEntity;
 use App\Models\SessionManager;
@@ -26,13 +25,13 @@ class LoginPresenter extends BasePresenter
      * @persistent
      * @var string $backlink
      */
-    public $backlink = '';
+    public string $backlink = '';
     
     /**
      *
      * @var Translator $translator
      */
-    private $translator;
+    private Translator $translator;
     
     /**
      * session manager
@@ -40,27 +39,14 @@ class LoginPresenter extends BasePresenter
      * @var SessionManager $sessionManager
      * @inject
      */
-    public $sessionManager;
+    public SessionManager $sessionManager;
     
     /**
      *
      * @var UserLoginFormFactory $userLoginFormFactory
      * @inject
      */
-    public $userLoginFormFactory;
-
-    /**
-     * LoginPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->backlink             = null;
-        $this->translator           = null;
-        $this->sessionManager       = null;
-        $this->userLoginFormFactory = null;
-        
-        parent::__destruct();
-    }
+    public UserLoginFormFactory $userLoginFormFactory;
 
     /**
      *
@@ -68,7 +54,7 @@ class LoginPresenter extends BasePresenter
      */
     public function checkRequirements($element): void
     {
-        $this->user->getStorage()->setNamespace(self::BECK_END_NAMESPACE);
+        $this->getUser()->getStorage()->setNamespace(self::BACK_END_NAMESPACE);
         
         parent::checkRequirements($element);
     }
@@ -84,16 +70,14 @@ class LoginPresenter extends BasePresenter
         $this->template->setTranslator($this->translator);
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentAdminLoginForm()
+    protected function createComponentAdminLoginForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         
         $form->addText('user_name', 'Login:');
         $form->addPassword('user_password', 'Password:');
         $form->addSubmit('send', 'Login');
+
         $form->onSuccess[] = [$this, 'adminLoginFormSuccess'];
         
         return $form;

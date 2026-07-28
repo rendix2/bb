@@ -9,6 +9,8 @@ use App\Controls\PaginatorControl;
 use App\Database\EntityManagerDecorator;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Entity\CategoryEntity;
+use App\Model\Entity\ForumEntity;
+use App\Model\Repository\ForumRepository;
 use App\Models\CategoryManager;
 use App\Models\ForumManager;
 use App\Models\ModeratorManager;
@@ -126,13 +128,19 @@ final class ForumPresenter extends BaseForumPresenter
     {
         $moderators = $this->moderatorsManager->getAllByRightJoined($forum_id);
         
-        if (!$moderators) {
+        if ($moderators === []) {
             $this->flashMessage('No moderators in forum.', self::FLASH_MESSAGE_INFO);
         }
 
-        $this->template->moderators  = $moderators;
-        $this->template->subForums   = $this->getManager()->getAllByParent($forum_id);
-        $this->template->logViews    = $this->topicSetting->get()['logViews'];
+        /**
+         * @var ForumRepository $forumRepository
+         */
+        $forumRepository = $this->em
+            ->getRepository(ForumEntity::class);
+
+        $this->getTemplate()->moderators  = $moderators;
+        $this->getTemplate()->subForums   = $forumRepository->findByParentId($forum_id);
+        $this->getTemplate()->logViews    = $this->topicSetting->get()['logViews'];
     }
 
     /**

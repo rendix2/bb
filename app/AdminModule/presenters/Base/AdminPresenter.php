@@ -2,7 +2,6 @@
 
 namespace App\AdminModule\Presenters\Base;
 
-use App\Controls\BootstrapForm;
 use App\Presenters\crud\CrudPresenter;
 use Nette\Localization\ITranslator;
 
@@ -27,7 +26,7 @@ abstract class AdminPresenter extends CrudPresenter
     {
         $user = $this->getUser();
         
-        $user->getStorage()->setNamespace(self::BECK_END_NAMESPACE);
+        $user->getStorage()->setNamespace(self::BACK_END_NAMESPACE);
         
         parent::checkRequirements($element);
 
@@ -63,13 +62,5 @@ abstract class AdminPresenter extends CrudPresenter
     public function getTranslator(): ITranslator
     {
         return $this->adminTranslator;
-    }
-    
-    public function getBootstrapForm(): BootstrapForm
-    {
-        $bf = parent::getBootstrapForm();
-        $bf->setTranslator($this->getTranslator());
-        
-        return $bf;
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\AdminModule\ConfigModule\Presenters;
 
-use App\Models\SessionManager;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\SessionEntity;
+use App\Model\Repository\SessionRepository;
 use App\Presenters\Base\BasePresenter;
 use App\Settings\Avatars;
 
@@ -16,29 +18,29 @@ class IndexPresenter extends BasePresenter
     /**
      * @var int
      */
-    const MAX_LOGGED_IN_USERS_TO_SHOW = 200;
-    
-    /**
-     * @var SessionManager $sessionsManager
-     * @inject
-     */
-    public $sessionsManager;
+    const int MAX_LOGGED_IN_USERS_TO_SHOW = 200;
 
     /**
      * @var Avatars $avatar
      * @inject
      */
-    public $avatar;
-   
+    public Avatars $avatar;
+
+    public function __construct(
+        private readonly EntityManagerDecorator $em,
+    )
+    {
+    }
+
     /**
      *
      * @param mixed $element
      */
     public function checkRequirements($element): void
     {
-        $user = $this->user;
+        $user = $this->getUser();
         
-        $user->getStorage()->setNamespace(self::BECK_END_NAMESPACE);
+        $user->getStorage()->setNamespace(self::BACK_END_NAMESPACE);
         
         parent::checkRequirements($element);
 
@@ -58,26 +60,29 @@ class IndexPresenter extends BasePresenter
     {
         parent::beforeRender();
         
-        $this->template->setTranslator($this->translatorFactory->getAdminTranslator());
+        $this->getTemplate()->setTranslator($this->translatorFactory->getAdminTranslator());
     }
 
-    /**
-     *
-     */
-    public function renderDefault()
+    public function renderDefault(): void
     {
-        $count = $this->sessionsManager->getCountOfLoggedUsers();
+        /**
+         * @var SessionRepository $sessionRepository
+         */
+        $sessionRepository = $this->em
+            ->getRepository(SessionEntity::class);
+
+        $count = $sessionRepository->getCountOfLoggedUsers();
+
+        $loggedUsers = [];
 
         if ($count <= self::MAX_LOGGED_IN_USERS_TO_SHOW) {
-            $loggedUsers = $this->sessionsManager->getLoggedUsers();
-        } else {
-            $loggedUsers = null;
+            $loggedUsers = $sessionRepository->getLoggedInUsers();
         }
 
-        $this->template->countLogged = $count;
-        $this->template->maxLogged   = self::MAX_LOGGED_IN_USERS_TO_SHOW;
-        $this->template->loggedUsers = $loggedUsers;
-        $this->template->dirSize     = $this->avatar->getDirSize();
-        $this->template->avatarCount = $this->avatar->getImageCount();
+        $this->getTemplate()->countLogged = $count;
+        $this->getTemplate()->maxLogged   = self::MAX_LOGGED_IN_USERS_TO_SHOW;
+        $this->getTemplate()->loggedUsers = $loggedUsers;
+        $this->getTemplate()->dirSize     = $this->avatar->getDirSize();
+        $this->getTemplate()->avatarCount = $this->avatar->getImageCount();
     }
 }

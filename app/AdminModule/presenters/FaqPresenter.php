@@ -3,7 +3,6 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Models\FaqManager;
 
@@ -26,12 +25,11 @@ class FaqPresenter extends AdminPresenter
         parent::__construct($manager);
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        return $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
+
+        return $form;
     }
     
     /**

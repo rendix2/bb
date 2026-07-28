@@ -5,7 +5,6 @@ namespace App\ForumModule\Presenters;
 use App\Authorization\Scopes\ForumScope;
 use App\Authorization\Scopes\PostScope;
 use App\Authorization\Scopes\TopicScope;
-use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\PaginatorControl;
 use App\Controls\PollControl;
@@ -209,6 +208,8 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function actionStopWatch($category_id, $forum_id, $topic_id, $page): void
     {
+        $user_id = $this->getUser()->getId();
+
         $categoryEntity = $this->em
             ->getRepository(CategoryEntity::class)
             ->findOneBy(
@@ -297,14 +298,23 @@ class TopicPresenter extends BaseForumPresenter
         
         $this->requireAccess($forumScope, ForumScope::ACTION_THANK);
 
-        $thank = new ThankEntity();
-        $thank->setThank_forum_id($forum_id)
-              ->setThank_topic_id($topic_id)
-              ->setThank_user_id($user_id)
-              ->setThank_time(time())
-              ->setThank_user_ip($this->getHttpRequest()->getRemoteAddress());
+        $userEntity = $this->em
+            ->getRepository(UserEntity::class)
+            ->findOneBy(
+                [
+                    'id' => $user_id,
+                ]
+            );
 
-        $res = $this->thanksFacade->add($thank);
+        $thankEntity = new \App\Model\Entity\ThankEntity();
+        $thankEntity->category = $categoryEntity;
+        $thankEntity->forum = $forum;
+        $thankEntity->topic = $topic;
+        $thankEntity->post = null;
+        $thankEntity->user = $userEntity;
+        $thankEntity->ipAddress = $this->getHttpRequest()->getRemoteAddress();
+
+        $res = $this->thanksFacade->add($thankEntity);
         
         if ($res) {
             $this->flashMessage('Your thank to this topic.', self::FLASH_MESSAGE_SUCCESS);
@@ -736,13 +746,10 @@ class TopicPresenter extends BaseForumPresenter
         bdump($bbCode->parse($text));
     }
 
-    /**
-     *
-     * @return BootstrapForm
-     */
-    public function createComponentEditForm(): BootstrapForm
+
+    public function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
         // form
         $form->addGroup('Topic');

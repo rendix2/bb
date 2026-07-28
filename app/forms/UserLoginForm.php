@@ -3,7 +3,6 @@
 namespace App\Forms;
 
 use App\Authenticator;
-use App\Controls\BootstrapForm;
 use App\Models\SessionManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\TranslatorFactory;
@@ -26,35 +25,35 @@ class UserLoginForm extends Control
      * @var string $backlink
      * @persistent
      */
-    public $backlink = '';
+    public string $backlink = '';
     
     /**
      *
      * @var TranslatorFactory $translatorFactory
      */
-    private $translatorFactory;
+    private TranslatorFactory $translatorFactory;
     
     /**
      *
      * @var User $user
      */
-    private $user;
+    private User $user;
     
     /**
      *
      * @var SessionManager $sessionsManager
      */
-    private $sessionsManager;
+    private SessionManager $sessionsManager;
     
     /**
      * @var Authenticator $authenticator
      */
-    private $authenticator;
+    private Authenticator $authenticator;
     
     /**
      * @var Session $session
      */
-    private $session;
+    private Session $session;
 
     /**
      * UserLoginForm constructor.
@@ -80,34 +79,19 @@ class UserLoginForm extends Control
         $this->authenticator     = $authenticator;
         $this->session           = $session;
     }
-    
-    /**
-     * UserLoginForm destructor.
-     */
-    public function __destruct()
-    {
-        $this->backlink          = null;
-        $this->translatorFactory = null;
-        $this->user              = null;
-        $this->sessionsManager   = null;
-        $this->authenticator     = null;
-        $this->session           = null;
-    }
 
     /**
      *  UserLoginForm render.
      */
-    public function render()
+    public function render(): void
     {
         $this['loginForm']->render();
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentLoginForm(): BootstrapForm
+
+    protected function createComponentLoginForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         $form->setTranslator($this->translatorFactory->getForumTranslator());
 
         $form->addText('user_name', 'Login:');
@@ -138,7 +122,7 @@ class UserLoginForm extends Control
             $addArray =
                 [
                     'session_key'     => $this->session->getId(),
-                    'session_user_id' => $this->user->getId(),
+                    'session_user_id' => $user->getId(),
                     'session_from'    => time()
                 ];
             
@@ -149,10 +133,10 @@ class UserLoginForm extends Control
                 'Successfully logged in.',
                 BasePresenter::FLASH_MESSAGE_SUCCESS
             );
-            $this->presenter->restoreRequest($this->backlink);
-            $this->presenter->redirect('Index:default');
+            $this->getPresenter()->restoreRequest($this->backlink);
+            $this->getPresenter()->redirect('Index:default');
         } catch (AuthenticationException $e) {
-            $this->presenter->flashMessage(
+            $this->getPresenter()->flashMessage(
                 $e->getMessage(),
                 BasePresenter::FLASH_MESSAGE_DANGER
             );

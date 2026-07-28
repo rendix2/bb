@@ -2,7 +2,6 @@
 
 namespace App\ForumModule\Presenters;
 
-use App\Controls\BootstrapForm;
 use App\Models\FaqManager;
 use App\Presenters\crud\CrudPresenter;
 
@@ -25,9 +24,9 @@ class FaqPresenter extends CrudPresenter
         parent::__construct($manager);
     }
 
-    protected function createComponentEditForm(): BootstrapForm
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
         return $form;
     }

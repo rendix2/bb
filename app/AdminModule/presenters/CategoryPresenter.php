@@ -3,7 +3,6 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
@@ -118,12 +117,9 @@ class CategoryPresenter extends AdminPresenter
         // todo
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentEditForm(): BootstrapForm
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
         $form->addText('category_name', 'Category name:')
             ->setRequired(true);
@@ -138,7 +134,11 @@ class CategoryPresenter extends AdminPresenter
 
         $form->addCheckbox('category_active', 'Category active:');
 
-        return $this->addSubmitB($form);
+        $form->addSubmit('Send', 'Send');
+        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
+        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
+
+        return $form;
     }
     
     /**

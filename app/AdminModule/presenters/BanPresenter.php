@@ -3,7 +3,6 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
@@ -37,18 +36,19 @@ class BanPresenter extends AdminPresenter
     {
     }
 
-    /**
-     * @return BootstrapForm|mixed
-     */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         
         $form->addText('ban_user_name', 'User name:');
         $form->addText('ban_email', 'User mail:');
         $form->addText('ban_ip', 'User IP:');
-        
-        return $this->addSubmitB($form);
+
+        $form->addSubmit('Send', 'Send');
+        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
+        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
+
+        return $form;
     }
 
     protected function createComponentBanDataGrid(): Datagrid

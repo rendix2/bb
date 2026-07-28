@@ -2,7 +2,6 @@
 
 namespace App\Presenters\crud;
 
-use App\Controls\BootstrapForm;
 use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
 use App\Models\Crud\CrudManager;
@@ -95,7 +94,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
      *
      * @return CrudManager
      */
-    public function getManager()
+    public function getManager(): CrudManager
     {
         return $this->manager;
     }
@@ -146,34 +145,6 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     public function getTitleOnEdit()
     {
         return $this->title . ' edit';
-    }
-
-    /**
-     * @param Form $form
-     *
-     * @return Form
-     */
-    protected function addSubmit(Form $form)
-    {
-        $form->addSubmit('Send', 'Send');
-        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
-        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
-
-        return $form;
-    }
-
-    /**
-     * @param BootstrapForm $form
-     *
-     * @return BootstrapForm
-     */
-    protected function addSubmitB(BootstrapForm $form)
-    {
-        $form->addSubmit('Send', 'Send');
-        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
-        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
-
-        return $form;
     }
 
     /**

@@ -6,7 +6,6 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Models\SmileysManager;
-use App\Controls\BootstrapForm;
 
 /**
  * Description of SmileysPresenter
@@ -27,12 +26,9 @@ class SmileysPresenter extends AdminPresenter
         parent::__construct($manager);
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         
         return $form;
     }

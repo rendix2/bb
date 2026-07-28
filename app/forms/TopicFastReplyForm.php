@@ -2,7 +2,6 @@
 
 namespace App\Forms;
 
-use App\Controls\BootstrapForm;
 use App\Models\Entity\PostEntity;
 use App\Models\PostFacade;
 use App\Presenters\Base\BasePresenter;
@@ -81,17 +80,14 @@ class TopicFastReplyForm extends Control
     /**
      * TopicFastReplyForm render.
      */
-    public function render()
+    public function render(): void
     {
         $this['fastReply']->render();
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentFastReply()
+    protected function createComponentFastReply(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         $form->setTranslator($this->translatorFactory->getForumTranslator());
 
         $form->addGroup('Fast reply');

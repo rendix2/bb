@@ -28,7 +28,7 @@ trait TopicsTrait
      *
      * @return TopicEntity
      */
-    public function checkTopicParam(int $topic_id, int $category_id, int $forum_id)
+    public function checkTopicParam(int $topic_id, int $category_id, int $forum_id): \App\Model\Entity\TopicEntity
     {
         // topic check
         if (!isset($topic_id)) {

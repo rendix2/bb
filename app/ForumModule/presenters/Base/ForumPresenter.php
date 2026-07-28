@@ -9,10 +9,8 @@ use App\Authorization\Scopes\ForumScope;
 use App\Authorization\Scopes\PostScope;
 use App\Authorization\Scopes\TopicScope;
 use App\Authorization\Scopes\User;
-use App\Controls\BootstrapForm;
 use App\Database\EntityManagerDecorator;
-use App\Models\Entity\ForumEntity;
-use App\Models\Entity\PostEntity;
+use App\Model\Entity\ForumEntity;
 use App\Models\Entity\TopicEntity;
 use App\Models\Manager;
 use App\Models\ModeratorManager;
@@ -116,14 +114,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         return $this->translator;
     }
 
-    public function getBootstrapForm(): BootstrapForm
-    {
-        $bf = parent::getBootstrapForm();
-        $bf->setTranslator($this->getTranslator());
-        
-        return $bf;
-    }
-
     /**
      * @param $element
      */
@@ -157,7 +147,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->translator);
+        $this->getTemplate()->setTranslator($this->translator);
     }
 
     /**
@@ -170,9 +160,9 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         return new User($identity);
     }
 
-    protected function loadForum(ForumEntity $forum): ForumScope
+    protected function loadForum(\App\Model\Entity\ForumEntity $forum): ForumScope
     {
-        $moderators = $this->moderators->getAllByRight($forum->getForum_id());
+        $moderators = $this->moderators->getAllByRight($forum->id);
         $moderatorsI = [];
         
         foreach ($moderators as $moderator) {
@@ -184,14 +174,14 @@ abstract class ForumPresenter extends AuthenticatedPresenter
                 
         return new ForumScope($forum, $moderatorsI, $this->users2GroupsManager, $this->users2ForumsManager);
     }
-    
+
     /**
-     * @param ForumEntity $forum
+     * @param \App\Model\Entity\ForumEntity $forum
      * @param TopicEntity $topic
      *
      * @return TopicScope
      */
-    protected function loadTopic(ForumEntity $forum, TopicEntity $topic): TopicScope
+    protected function loadTopic(\App\Model\Entity\ForumEntity $forum, \App\Model\Entity\TopicEntity $topic): TopicScope
     {
         $topicIdentity = new Identity($topic->getTopic_first_user_id(), [TopicScope::ROLE_AUTHOR]);
         $topicAuthor   = new User($topicIdentity);
@@ -200,17 +190,17 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         
         return new TopicScope($topic, $topicAuthor, $this->loadForum($forum), $thanks);
     }
-    
+
     /**
      * @param ForumEntity $forumEntity
-     * @param TopicEntity $topicEntity
-     * @param PostEntity  $postEntity
+     * @param \App\Model\Entity\TopicEntity $topicEntity
+     * @param \App\Model\Entity\PostEntity $postEntity
      *
      * @return PostScope
      */
-    protected function loadPost(ForumEntity $forumEntity, TopicEntity $topicEntity, PostEntity $postEntity): PostScope
+    protected function loadPost(\App\Model\Entity\ForumEntity $forumEntity, \App\Model\Entity\TopicEntity $topicEntity, \App\Model\Entity\PostEntity $postEntity): PostScope
     {
-        $postIdentity  = new Identity($postEntity->getPost_user_id(), [PostScope::ROLE_AUTHOR]);
+        $postIdentity  = new Identity($postEntity->user->id, [PostScope::ROLE_AUTHOR]);
                         
         return new PostScope($postEntity, $this->loadTopic($forumEntity, $topicEntity), $topicEntity);
     }
@@ -220,7 +210,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      * @param array               $action
      * @throws Exception
      */
-    protected function requireAccess(IAuthorizationScope $scope, array $action)
+    protected function requireAccess(IAuthorizationScope $scope, array $action): void
     {
         if (!$this->isAllowed($scope, $action)) {
             throw new Exception();

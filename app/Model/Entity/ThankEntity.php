@@ -2,6 +2,7 @@
 
 namespace App\Model\Entity;
 
+use App\Database\Types\IpAddressType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -35,5 +36,12 @@ class ThankEntity
     #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'XXXX')]
     #[JoinColumn(nullable: false)]
     public PostEntity $post;
+
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'XXXX')]
+    #[JoinColumn(nullable: false)]
+    public UserEntity $user;
+
+    #[Column(type: IpAddressType::NAME, nullable: false)]
+    public string $ipAddress;
 
 }

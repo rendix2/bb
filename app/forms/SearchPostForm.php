@@ -2,7 +2,6 @@
 
 namespace App\Forms;
 
-use App\Controls\BootstrapForm;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
@@ -50,12 +49,9 @@ class SearchPostForm extends Control
         $this['searchPostForm']->render();
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    public function createComponentSearchPostForm()
+    public function createComponentSearchPostForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
         $form->setTranslator($this->translator);
         $form->addText('search_post', 'Post')->setRequired('Please enter some in post');

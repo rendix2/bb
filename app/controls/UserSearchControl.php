@@ -70,17 +70,16 @@ class UserSearchControl extends Control
         $template->render();
     }
 
-    /**
-     *
-     * @return BootstrapForm
-     */
-    protected function createComponentUserSearch()
+    protected function createComponentUserSearch(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::createAjax();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
+        $form->setAjax(true);
         $form->setTranslator($this->translator);
         
         $form->addHidden('user_id');
-        $form->addText('user_name', 'User name:')->setRequired(true);
+        $form->addText('user_name', 'User name:')
+            ->setRequired(true);
+
         $form->addSubmit('send');
         $form->onSuccess[] = [$this, 'success'];
        

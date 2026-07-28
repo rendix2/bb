@@ -2,7 +2,8 @@
 
 namespace App\Forms;
 
-use App\Controls\BootstrapForm;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\ForumEntity;
 use App\Models\ForumManager;
 use App\Models\Users2ForumsManager;
 use App\Presenters\Base\BasePresenter;
@@ -22,19 +23,19 @@ class UserForumsForm extends Control
     /**
      * @var ForumManager $forumsManager
      */
-    private $forumsManager;
+    private ForumManager $forumsManager;
 
     /**
      *
      * @var Users2ForumsManager $users2ForumsManager
      */
-    private $users2ForumsManager;
+    private Users2ForumsManager $users2ForumsManager;
 
     /**
      *
      * @var ITranslator $translator
      */
-    private $translator;
+    private ITranslator $translator;
 
     /**
      * UserForumsForm constructor.
@@ -46,23 +47,14 @@ class UserForumsForm extends Control
     public function __construct(
         ForumManager       $forumsManager,
         Users2ForumsManager $users2ForumsManager,
-        ITranslator         $translator
+        ITranslator         $translator,
+        private readonly EntityManagerDecorator $em,
     ) {
         parent::__construct();
         
         $this->forumsManager       = $forumsManager;
         $this->users2ForumsManager = $users2ForumsManager;
         $this->translator          = $translator;
-    }
-    
-    /**
-     * UserForumsForm destructor.
-     */
-    public function __destruct()
-    {
-        $this->forumsManager       = null;
-        $this->users2ForumsManager = null;
-        $this->translator          = null;
     }
 
     /**
@@ -102,16 +94,20 @@ class UserForumsForm extends Control
      *
      * @return array
      */
-    private function map(array $added_forum_row)
+    private function map(array $added_forum_row): array
     {
         $result = [];
-        
-        foreach ($this->forumsManager->getAllCached() as $forum) {
+
+         $forums = $this->em
+            ->getRepository(ForumEntity::class)
+            ->findAll();
+
+        foreach ($forums as $forum) {
             $result[$forum->forum_id] = false;
             
             foreach ($added_forum_row as $forum_row) {
-                if ($forum->forum_id === (int)$forum_row) {
-                    $result[$forum->forum_id] = true;
+                if ($forum->id === (int)$forum_row) {
+                    $result[$forum->id] = true;
                 }
             }
         }
@@ -119,12 +115,9 @@ class UserForumsForm extends Control
         return $result;
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    public function createComponentForumsForm()
+    public function createComponentForumsForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
         $form->addSubmit('send_forum', 'Send');
         $form->onSuccess[] = [$this, 'forumsSuccess'];

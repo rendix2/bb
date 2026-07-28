@@ -3,6 +3,7 @@
 namespace App\Controls;
 
 use Dibi\Fluent;
+use JetBrains\PhpStorm\Deprecated;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Http\Url;
@@ -15,6 +16,7 @@ use Nette\Utils\Paginator;
  * @author rendix2
  * @package App\Controls
  */
+#[Deprecated]
 class PaginatorControl extends Control
 {
     /**
@@ -117,13 +119,9 @@ class PaginatorControl extends Control
         return $this->paginator;
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentPagination()
+    protected function createComponentPagination(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = new BootstrapForm(9, 'sm', 2);
-        //$form->setTranslator($this->translator);
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
         $form->addInteger('page', '')
                 ->setAttribute('placeholder', 'Page')

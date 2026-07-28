@@ -38,7 +38,7 @@ class ForumPresenter extends ModeratorPresenter
      */
     public function renderDefault($page = 1): void
     {
-        $this->template->forums = $this->moderatorsManager->getAllByLeftJoined($this->getUser()->getId());
+        $this->getTemplate()->forums = $this->moderatorsManager->getAllByLeftJoined($this->getUser()->getId());
     }
 
     protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm

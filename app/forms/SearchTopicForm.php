@@ -2,7 +2,6 @@
 
 namespace App\Forms;
 
-use App\Controls\BootstrapForm;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
@@ -16,46 +15,29 @@ use Nette\Utils\ArrayHash;
  */
 class SearchTopicForm extends Control
 {
-    /**
-     *
-     * @var ITranslator $translator
-     */
-    private $translator;
-    
+
     /**
      * SearchPostForm constructor.
      *
      * @param ITranslator $translator
      */
-    public function __construct(ITranslator $translator)
+    public function __construct(private ITranslator $translator)
     {
         parent::__construct();
-        
-        $this->translator = $translator;
-    }
-    
-    /**
-     * SearchPostForm destructor.
-     */
-    public function __destruct()
-    {
-        $this->translator = null;
+
     }
 
     /**
      * SearchPostForm render
      */
-    public function render()
+    public function render(): void
     {
         $this['searchTopicForm']->render();
     }
     
-    /**
-     * @return BootstrapForm
-     */
-    public function createComponentSearchTopicForm()
+    public function createComponentSearchTopicForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         $form->setTranslator($this->translator);
 
         $form->addText('search_topic', 'Topic')->setRequired('Please enter some in topic');

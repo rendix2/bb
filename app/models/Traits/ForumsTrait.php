@@ -26,7 +26,7 @@ trait ForumsTrait
      * @return ForumEntity
      *
      */
-    public function checkForumParam(int $forum_id, ?int $category_id = null): ForumEntity
+    public function checkForumParam(int $forum_id, ?int $category_id = null): \App\Model\Entity\ForumEntity
     {
         // forum check
         if (!isset($forum_id)) {

@@ -2,7 +2,6 @@
 
 namespace App\Forms;
 
-use App\Controls\BootstrapForm;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use App\Settings\Avatars;
@@ -82,12 +81,9 @@ class UserDeleteAvatarForm extends Control
         $this['deleteAvatar']->render();
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentDeleteAvatar()
+    protected function createComponentDeleteAvatar(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         $form->setTranslator($this->translator);
 
         $form->addCheckbox('delete_avatar', 'Delete avatar');

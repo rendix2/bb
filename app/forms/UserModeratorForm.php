@@ -2,7 +2,8 @@
 
 namespace App\Forms;
 
-use App\Controls\BootstrapForm;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\ForumEntity;
 use App\Models\ForumManager;
 use App\Models\ModeratorManager;
 use App\Presenters\Base\BasePresenter;
@@ -47,7 +48,8 @@ class UserModeratorForm extends Control
     public function __construct(
         ForumManager     $forumsManager,
         ModeratorManager $moderatorsManager,
-        ITranslator       $translator
+        ITranslator       $translator,
+        private readonly EntityManagerDecorator $em
     ) {
         parent::__construct();
 
@@ -62,24 +64,25 @@ class UserModeratorForm extends Control
     public function render()
     {
         $sep = DIRECTORY_SEPARATOR;
+
+        $this->getTemplate()->setFile(__DIR__ . $sep . 'templates' . $sep . 'userModeratorForm.latte');
+        $this->getTemplate()->setTranslator($this->translator);
+
+        $forums = $this->em
+            ->getRepository(ForumEntity::class)
+            ->findAll();
         
-        $this->template->setFile(__DIR__ . $sep . 'templates' . $sep . 'userModeratorForm.latte');
-        $this->template->setTranslator($this->translator);
-        
-        $this->template->forums       = $this->forumsManager->createForums($this->forumsManager->getAllCached(), 0);
-        $this->template->myModerators = $this->moderatorsManager->getPairsByLeft(
+        $this->getTemplate()->forums       = $this->forumsManager->createForums($forums, 0);
+        $this->getTemplate()->myModerators = $this->moderatorsManager->getPairsByLeft(
             $this->getPresenter()->getParameter('id')
         );
-        
-        $this->template->render();
+
+        $this->getTemplate()->render();
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    public function createComponentModeratorsForm(): BootstrapForm
+    public function createComponentModeratorsForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         
         $form->addSubmit('send_moderator', 'Send');
         $form->onSuccess[] = [$this, 'moderatorsSuccess'];

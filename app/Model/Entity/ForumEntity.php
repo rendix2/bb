@@ -2,6 +2,7 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Repository\ForumRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
-#[Entity()]
+#[Entity(repositoryClass: ForumRepository::class)]
 #[Table(name: 'forum')]
 class ForumEntity
 {
@@ -27,5 +28,9 @@ class ForumEntity
     #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'forums')]
     #[JoinColumn(nullable: false)]
     public CategoryEntity $category;
+
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'forums')]
+    #[JoinColumn(nullable: false)]
+    public ForumEntity $parent;
 
 }

@@ -5,7 +5,6 @@ namespace App\ForumModule\Presenters;
 use App\Authorization\Scopes\ForumScope;
 use App\Authorization\Scopes\PostScope;
 use App\Controls\BBMailer;
-use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Database\EntityManagerDecorator;
 use App\Forms\ReportForm;
@@ -330,13 +329,9 @@ class PostPresenter extends BaseForumPresenter
         
         $this->sendResponse($fileResponse);
     }
-    
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentEditForm()
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = $this->getBootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
         $form->addText('post_title', 'Title')->setRequired(true);
         $form->addTextAreaHtml('post_text', 'Text', 0, 15)->setRequired(true);

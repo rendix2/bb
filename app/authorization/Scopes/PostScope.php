@@ -31,28 +31,28 @@ class PostScope implements IAuthorizationScope
      *
      * @var TopicEntity $topic
      */
-    private $topicScope;
+    private TopicEntity|TopicScope $topicScope;
     
     /**
      *
      * @var PostEntity $post
      */
-    private $post;
+    private \App\Model\Entity\PostEntity|PostEntity $post;
     
     /**
      *
      * @var TopicEntity $topicEntity
      */
-    private $topicEntity;
+    private TopicEntity $topicEntity;
 
     /**
      * PostScope constructor.
      *
-     * @param PostEntity  $post
-     * @param TopicScope  $topicScope
+     * @param \App\Model\Entity\PostEntity $post
+     * @param TopicScope $topicScope
      * @param TopicEntity $topicEntity
      */
-    public function __construct(PostEntity $post, TopicScope $topicScope, TopicEntity $topicEntity)
+    public function __construct(\App\Model\Entity\PostEntity $post, TopicScope $topicScope, TopicEntity $topicEntity)
     {
         $this->post        = $post;
         $this->topicScope  = $topicScope;

@@ -3,7 +3,6 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BBMailer;
-use App\Controls\BootstrapForm;
 use App\Forms\UserLoginForm;
 use App\Models\Manager;
 use App\Models\UsersManager;
@@ -140,12 +139,9 @@ class LoginPresenter extends BasePresenter
         return $this->userLoginForm->create();
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentReactivateForm()
+    protected function createComponentReactivateForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
         $form->addEmail('user_email', 'User email:');
         $form->addSubmit('submit', 'Send');

@@ -4,7 +4,6 @@ namespace App\ForumModule\Presenters;
 
 use App\Authorization\Authorizator;
 use App\Controls\BBMailer;
-use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\ChangePasswordControl;
 use App\Controls\DeleteAvatarControl;
@@ -19,6 +18,7 @@ use App\Forms\UserResetPasswordForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\RankEntity;
+use App\Model\Entity\SessionEntity;
 use App\Model\Entity\ThankEntity;
 use App\Model\Entity\TopicEntity;
 use App\Model\Entity\TopicWatchEntity;
@@ -27,8 +27,6 @@ use App\Models\FavouriteUsersManager;
 use App\Models\LanguageManager;
 use App\Models\ModeratorManager;
 use App\Models\ReportManager;
-use App\Models\SessionManager;
-use App\Models\TopicWatchManager;
 use App\Models\UsersManager;
 use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
@@ -37,7 +35,6 @@ use App\Settings\Ranks;
 use App\Settings\StartDay;
 use App\Settings\Users;
 use Nette\Application\UI\Form;
-use Nette\DI\Attributes\Inject;
 use Nette\InvalidArgumentException;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
@@ -125,8 +122,6 @@ class UserPresenter extends BaseForumPresenter
      */
     public ReportManager $reportsManager;
 
-    #[Inject]
-    public SessionManager $sessionsManager;
 
     /**
      * UserPresenter constructor.
@@ -135,7 +130,10 @@ class UserPresenter extends BaseForumPresenter
      */
     public function __construct(
         UsersManager $manager,
-        private readonly EntityManagerDecorator $em
+        private readonly EntityManagerDecorator $em,
+        private readonly ReportForm             $reportForm,
+        private readonly UserResetPasswordForm  $userResetPasswordForm,
+        private readonly UserChangeUserNameForm $userChangeUserNameForm,
     )
     {
         parent::__construct($manager);
@@ -154,7 +152,20 @@ class UserPresenter extends BaseForumPresenter
      */
     public function actionLogout()
     {
-        $this->sessionsManager->deleteBySession($this->session->getId());
+        $sessions = $this->em
+            ->getRepository(SessionEntity::class)
+            ->findBy(
+                [
+                    'key' => $this->getSession()->getId(),
+                ]
+            );
+
+        foreach ($sessions as $session) {
+            $this->em->remove($session);
+        }
+
+        $this->em->flush();
+
         $this->getUser()->logout(true);
 
         $this->flashMessage('Successfully logged out.', self::FLASH_MESSAGE_SUCCESS);
@@ -468,7 +479,7 @@ class UserPresenter extends BaseForumPresenter
      * @param int $user_id
      * @param int $page
      */
-    public function actionFiles($user_id, $page = 1)
+    public function actionFiles(int $user_id, int$page = 1)
     {
     }
 
@@ -491,31 +502,22 @@ class UserPresenter extends BaseForumPresenter
     /**
      * @param int $user_id
      */
-    public function actionReport($user_id)
+    public function actionReport($user_id): void
     {
         $user = $this->checkUserParam($user_id);
     }
 
-    /**
-     * @return ReportForm
-     */
-    protected function createComponentReportUserForm()
+    protected function createComponentReportUserForm(): ReportForm
     {
-        return new ReportForm($this->reportsManager);
+        return new $this->reportForm;
     }
 
-    /**
-     * @return SendMailToAdminForm
-     */
-    protected function createComponentSendMailToAdmin()
+    protected function createComponentSendMailToAdmin(): SendMailToAdminForm
     {
         return new SendMailToAdminForm($this->translatorFactory, $this->getManager(), $this->bbMailer);
     }
 
-    /**
-     * @return UserChangePasswordForm
-     */
-    protected function createComponentChangePasswordControl()
+    protected function createComponentChangePasswordControl(): UserChangePasswordForm
     {
         return $this->changePasswordFactory->getForum();
     }
@@ -523,7 +525,7 @@ class UserPresenter extends BaseForumPresenter
     /**
      * @return UserDeleteAvatarForm
      */
-    protected function createComponentDeleteAvatar()
+    protected function createComponentDeleteAvatar(): UserDeleteAvatarForm
     {
         return $this->deleteAvatarFactory->getForum();
     }
@@ -531,26 +533,20 @@ class UserPresenter extends BaseForumPresenter
     /**
      * @return UserResetPasswordForm
      */
-    protected function createComponentResetPasswordForm()
+    protected function createComponentResetPasswordForm(): UserResetPasswordForm
     {
-        return new UserResetPasswordForm($this->translatorFactory, $this->getManager());
+        return $this->userResetPasswordForm;
     }
 
-    /**
-     *
-     * @return UserChangeUserNameForm
-     */
-    protected function createComponentChangeUserNameForm()
+    protected function createComponentChangeUserNameForm(): UserChangeUserNameForm
     {
-        return new UserChangeUserNameForm($this->getManager(), $this->user);
+        return $this->userChangeUserNameForm;
     }
        
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentEditUserForm()
+
+    protected function createComponentEditUserForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form         = $this->getBootstrapForm();
+        $form         = new \Contributte\FormsBootstrap\BootstrapForm();
         $userSettings = $this->users->get();
 
         $form->addText('user_name', 'User name:')

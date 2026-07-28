@@ -3,10 +3,12 @@
 namespace App\AdminModule\Presenters;
 
 use App\Database\EntityManagerDecorator;
-use App\Models\SessionManager;
+use App\Model\Entity\SessionEntity;
+use App\Model\Repository\SessionRepository;
 use App\Presenters\Base\BasePresenter;
 use App\Settings\Avatars;
 use App\Settings\CacheDir;
+use Doctrine\DBAL\Exception as DbalException;
 use Nette\DI\Attributes\Inject;
 
 /**
@@ -18,9 +20,6 @@ use Nette\DI\Attributes\Inject;
 class IndexPresenter extends BasePresenter
 {
     const int MAX_LOGGED_IN_USERS_TO_SHOW = 200;
-    
-    #[Inject]
-    public SessionManager $sessionsManager;
 
     #[Inject]
     public Avatars $avatar;
@@ -42,7 +41,7 @@ class IndexPresenter extends BasePresenter
     {
         $user = $this->getUser();
         
-        $user->getStorage()->setNamespace(self::BECK_END_NAMESPACE);
+        $user->getStorage()->setNamespace(self::BACK_END_NAMESPACE);
         
         parent::checkRequirements($element);
 
@@ -71,16 +70,26 @@ class IndexPresenter extends BasePresenter
      */
     public function renderDefault(): void
     {
-        $count = $this->sessionsManager->getCountOfLoggedUsers();
+        /**
+         * @var SessionRepository $sessionRepository
+         */
+        $sessionRepository = $this->em
+            ->getRepository(SessionEntity::class);
 
-        $loggedUsers = $count <= self::MAX_LOGGED_IN_USERS_TO_SHOW ? $this->sessionsManager->getLoggedUsers() : null;
+        $count = $sessionRepository->getCountOfLoggedUsers();
 
-        $this->template->countLogged   = $count;
-        $this->template->maxLogged     = self::MAX_LOGGED_IN_USERS_TO_SHOW;
-        $this->template->loggedUsers   = $loggedUsers;
-        $this->template->avatarDirSize = $this->avatar->getDirSize();
-        $this->template->avatarCount   = $this->avatar->getImageCount();
-        $this->template->cacheDirSize  = $this->cacheDir->getDirSize();
+        $loggedUsers = [];
+
+        if ($count <= self::MAX_LOGGED_IN_USERS_TO_SHOW) {
+            $loggedUsers = $sessionRepository->getLoggedInUsers();
+        }
+
+        $this->getTemplate()->countLogged   = $count;
+        $this->getTemplate()->maxLogged     = self::MAX_LOGGED_IN_USERS_TO_SHOW;
+        $this->getTemplate()->loggedUsers   = $loggedUsers;
+        $this->getTemplate()->avatarDirSize = $this->avatar->getDirSize();
+        $this->getTemplate()->avatarCount   = $this->avatar->getImageCount();
+        $this->getTemplate()->cacheDirSize  = $this->cacheDir->getDirSize();
     }
     
     /**
@@ -88,10 +97,12 @@ class IndexPresenter extends BasePresenter
      */
     public function actionDeleteSessions(): void
     {
-        $res = $this->sessionsManager->truncateSessions();
-        
-        if ($res) {
-            $this->flashMessage('Sessions were deleted.', self::FLASH_MESSAGE_SUCCESS);
+        try {
+            $this->em->getConnection()->executeStatement('TRUNCATE TABLE session');
+
+            $this->flashMessage('Sessions were deleted.', 'success');
+        } catch (DbalException $exception) {
+
         }
         
         $this->redirect('Index:default');

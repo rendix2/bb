@@ -3,11 +3,9 @@
 namespace App\Presenters\Base;
 
 use App\Authorization\Authorizator;
-use App\Controls\BootstrapForm;
 use App\Controls\MenuControl;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\BanEntity;
-use App\Models\BanManager;
 use App\Services\TranslatorFactory;
 use Nette;
 use Nette\Http\IResponse;
@@ -21,47 +19,22 @@ use App\BBCode;
  */
 abstract class BasePresenter extends Nette\Application\UI\Presenter
 {
-    //use SecuredLinksPresenterTrait;
-    
-    /**
-     * @var string
-     */
     const string FLASH_MESSAGE_SUCCESS = 'success';
     
-    /**
-     * @var string
-     */
     const string FLASH_MESSAGE_DANGER = 'danger';
     
-    /**
-     * @var string
-     */
     const string FLASH_MESSAGE_WARNING = 'warning';
     
-    /**
-     * @var string
-     */
     const string FLASH_MESSAGE_INFO = 'info';
     
-    /**
-     * @var string
-     */
-    const string BECK_END_NAMESPACE = 'backend';
+    const string BACK_END_NAMESPACE = 'backend';
     
-    /**
-     * @var string
-     */
     const string FRONT_END_NAMESPACE = 'frontend';
     
     /**
      * @var string
      */
     const string MODERATOR_END_SPACE = 'moderator';
-      
-    /**
-     * @var BootstrapForm $bootStrapForm
-     */
-    private BootstrapForm $bootstrapForm;
 
     #[Nette\DI\Attributes\Inject]
     public TranslatorFactory $translatorFactory;
@@ -69,15 +42,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     #[Nette\DI\Attributes\Inject]
     public EntityManagerDecorator $aem;
 
-    /**
-     * BasePresenter constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        
-        $this->bootstrapForm = BootstrapForm::create();
-    }
 
     /**
      * beforeRender function
@@ -105,11 +69,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         $this->template->topic_id    = $this->getParameter('topic_id');
         $this->template->post_id     = $this->getParameter('post_id');
         $this->template->page        = $this->getParameter('page');
-    }
-    
-    public function getBootstrapForm(): BootstrapForm
-    {
-        return $this->bootstrapForm;
     }
 
     private function banUser(): void

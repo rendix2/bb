@@ -2,7 +2,6 @@
 
 namespace App\Forms;
 
-use App\Controls\BootstrapForm;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use App\Settings\Users;
@@ -87,12 +86,10 @@ class UserChangePasswordForm extends Control
         $this['changePasswordForm']->render();
     }
     
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentChangePasswordForm()
+
+    protected function createComponentChangePasswordForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         $form->setTranslator($this->translator);
         $form->addGroup('Password');
 

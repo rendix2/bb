@@ -3,7 +3,6 @@
 namespace App\Forms;
 
 use App\Controls\BBMailer;
-use App\Controls\BootstrapForm;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\TranslatorFactory;
@@ -23,19 +22,19 @@ class SendMailToAdminForm extends Control
      *
      * @var TranslatorFactory $translatorFactory
      */
-    private $translatorFactory;
+    private TranslatorFactory $translatorFactory;
 
     /**
      *
      * @var UsersManager $usersManager
      */
-    private $usersManager;
+    private UsersManager $usersManager;
     
     /**
      *
      * @var BBMailer $bbMailer
      */
-    private $bbMailer;
+    private BBMailer $bbMailer;
 
     /**
      * SendMailToAdminForm constructor.
@@ -55,31 +54,18 @@ class SendMailToAdminForm extends Control
         $this->usersManager      = $usersManager;
         $this->bbMailer          = $bbMailer;
     }
-    
-    /**
-     * SendMailToAdminForm destructor.
-     */
-    public function __destruct()
-    {
-        $this->translatorFactory = null;
-        $this->usersManager      = null;
-        $this->bbMailer          = null;
-    }
 
     /**
      * SendMailToAdminForm render.
      */
-    public function render()
+    public function render(): void
     {
         $this['sendMailToAdmin']->render();
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentSendMailToAdmin()
+    protected function createComponentSendMailToAdmin(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         $form->setTranslator($this->translatorFactory->getForumTranslator());
         
         $form->addText('mail_subject', 'Mail subject:')

@@ -2,7 +2,6 @@
 
 namespace App\Forms;
 
-use App\Controls\BootstrapForm;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\TranslatorFactory;
@@ -65,12 +64,9 @@ class UserResetPasswordForm extends Control
         $this['resetPasswordForm']->render();
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentResetPasswordForm()
+    protected function createComponentResetPasswordForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         $form->setTranslator($this->translateFactory->getForumTranslator());
         $form->addEmail(
             'user_email',

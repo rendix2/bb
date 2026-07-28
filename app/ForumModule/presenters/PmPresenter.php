@@ -2,7 +2,6 @@
 
 namespace App\ForumModule\Presenters;
 
-use App\Controls\BootstrapForm;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\UserSearchControl;
@@ -207,12 +206,9 @@ class PmPresenter extends CrudPresenter
         return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
-    /**
-     * @return BootstrapForm
-     */
-    protected function createComponentEditForm(): BootstrapForm
+    protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form = BootstrapForm::create();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
         $form->setTranslator($this->translator);
 
@@ -227,7 +223,11 @@ class PmPresenter extends CrudPresenter
                 ->setRequired(true);
         }
 
-        return $this->addSubmitB($form);
+        $form->addSubmit('Send', 'Send');
+        $form->onSuccess[]  = [$this, self::FORM_ON_SUCCESS];
+        $form->onValidate[] = [$this, self::FORM_ON_VALIDATE];
+
+        return $form;
     }
     
     /**

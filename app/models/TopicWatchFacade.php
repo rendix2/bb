@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\ForumEntity;
+use App\Model\Repository\ForumRepository;
+use App\Model\Repository\TopicRepository;
 use App\Models\Entity\PostEntity;
 use App\Models\Entity\TopicEntity;
 use App\Utils;
@@ -29,18 +33,6 @@ class TopicWatchFacade
     
     /**
      *
-     * @var TopicManager $topicsManager
-     */
-    private TopicManager $topicsManager;
-
-    /**
-     *
-     * @var ForumManager $forumsManager
-     */
-    private ForumManager $forumsManager;
-    
-    /**
-     *
      * @var PostManager $postsManager
      */
     private PostManager $postsManager;
@@ -49,23 +41,19 @@ class TopicWatchFacade
     /**
      * TopicWatchFacade constructor.
      *
-     * @param UsersManager      $usersManager
+     * @param UsersManager $usersManager
      * @param TopicWatchManager $topicWatchManager
-     * @param TopicManager     $topicsManager
-     * @param ForumManager     $forumsManager
-     * @param PostManager      $postsManager
+     * @param PostManager $postsManager
+     * @param EntityManagerDecorator $em
      */
     public function __construct(
         UsersManager      $usersManager,
         TopicWatchManager $topicWatchManager,
-        TopicManager     $topicsManager,
-        ForumManager     $forumsManager,
-        PostManager      $postsManager
+        PostManager      $postsManager,
+        private readonly EntityManagerDecorator $em,
     ) {
         $this->usersManager      = $usersManager;
         $this->topicWatchManager = $topicWatchManager;
-        $this->topicsManager     = $topicsManager;
-        $this->forumsManager     = $forumsManager;
         $this->postsManager      = $postsManager;
     }
 
@@ -73,12 +61,18 @@ class TopicWatchFacade
      *
      * @param int $category_id
      */
-    public function deleteByCategory($category_id): void
+    public function deleteByCategory(int $category_id): void
     {
-        $forums = $this->forumsManager->getAllByCategory($category_id);
+        /**
+         * @var ForumRepository $forumRepository
+         */
+        $forumRepository = $this->em
+            ->getRepository(ForumEntity::class);
+
+        $forums = $forumRepository->findByCategoryId($category_id);
         
         foreach ($forums as $forum) {
-            $this->deleteByForum($forum->forum_id);
+            $this->deleteByForum($forum->id);
         }
     }
 
@@ -86,19 +80,24 @@ class TopicWatchFacade
      *
      * @param int $forum_id
      */
-    public function deleteByForum($forum_id): void
+    public function deleteByForum(int $forum_id): void
     {
-        $topics = $this->topicsManager->getAllByForum($forum_id);
+        /**
+         * @var TopicRepository $topicRepository
+         */
+        $topicRepository = $this->em
+            ->getRepository(\App\Model\Entity\TopicEntity::class);
+
+        $topics = $topicRepository->findByForumId($forum_id);
         
-        foreach ($topics as $topicDibi) {
-            $topic = TopicEntity::setFromRow($topicDibi);
+        foreach ($topics as $topic) {
             $this->deleteByTopic($topic);
         }
     }
 
     /**
      *
-     * @param TopicEntity $topic
+     * @param \App\Model\Entity\TopicEntity $topicEntity
      *
      * @return Result|int
      */

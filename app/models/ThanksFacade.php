@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\ForumEntity;
+use App\Model\Repository\ForumRepository;
+use App\Model\Repository\TopicRepository;
 use App\Models\Entity\PostEntity;
 use App\Models\Entity\ThankEntity;
 use App\Models\Entity\TopicEntity;
@@ -58,7 +62,8 @@ class ThanksFacade
         UsersManager  $usersManager,
         PostManager  $postsManager,
         TopicManager $topicsManager,
-        ForumManager $forumsManager
+        ForumManager $forumsManager,
+        private readonly EntityManagerDecorator $em,
     ) {
         $this->thanksManager = $thanksManager;
         $this->usersManager  = $usersManager;
@@ -67,29 +72,30 @@ class ThanksFacade
         $this->forumsManager = $forumsManager;
     }
 
-    /**
-     *
-     * @param ThankEntity $thank
-     *
-     * @return Result|int
-     */
-    public function add(ThankEntity $thank)
+    public function add(\App\Model\Entity\ThankEntity $thank)
     {
         $this->usersManager->update(
-            $thank->getThank_user_id(),
+            $thank->user->id,
             ArrayHash::from(['user_thank_count%sql' => 'user_thank_count + 1'])
         );
 
-        return $this->thanksManager->add($thank->getArrayHash());
+        $this->em->persist($thank);
+        $this->em->flush();
     }
     
     /**
      *
      * @param int $category_id
      */
-    public function deleteByCategory($category_id)
+    public function deleteByCategory(int $category_id): void
     {
-        $forums = $this->forumsManager->getAllByCategory($category_id);
+        /**
+         * @var ForumRepository $forumRepository
+         */
+        $forumRepository = $this->em
+            ->getRepository(ForumEntity::class);
+
+        $forums = $forumRepository->findByCategoryId($category_id);
         
         foreach ($forums as $forum) {
             $this->deleteByForum($forum->forum_id);
@@ -100,13 +106,17 @@ class ThanksFacade
      *
      * @param int $forum_id
      */
-    public function deleteByForum($forum_id)
+    public function deleteByForum(int $forum_id): void
     {
-        $topics = $this->topicsManager->getAllByForum($forum_id);
+        /**
+         * @var TopicRepository $topicRepository
+         */
+        $topicRepository = $this->em
+            ->getRepository(\App\Model\Entity\TopicEntity::class);
+
+       $topics = $topicRepository->findByForumId($forum_id);
         
-        foreach ($topics as $topicDibi) {
-            $topic = TopicEntity::setFromRow($topicDibi);
-            
+        foreach ($topics as $topic) {
             $this->deleteByTopic($topic);
         }
     }
@@ -129,7 +139,7 @@ class ThanksFacade
             );
         }
 
-        return $this->thanksManager->deleteByTopic($topic->getTopic_id());
+        return $this->thanksManager->deleteByTopic($topicEntity->id);
     }
 
     /**

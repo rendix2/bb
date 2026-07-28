@@ -7,8 +7,6 @@ use App\Model\Entity\ForumEntity;
 use App\Models\Crud\CrudManager;
 use Dibi\Connection;
 use Dibi\DriverException;
-use Dibi\Fluent;
-use Dibi\Row;
 use Nette\Caching\IStorage;
 
 /**
@@ -39,56 +37,21 @@ class ForumManager extends CrudManager
     }
 
     /**
-     * @param int $category_id
-     *
-     * @return Fluent
-     */
-    public function getFluentByCategory(int $category_id)
-    {
-        return $this->getAllFluent()
-            ->where('[forum_category_id] = %i', $category_id);
-    }
-
-    /**
-     *
-     * @param int $category_id
-     *
-     * @return Row[]
-     */
-    public function getAllByCategory(int $category_id)
-    {
-        return $this->getFluentByCategory($category_id)
-            ->fetchAll();
-    }
-
-    /**
-     * @param int $forum_id
-     *
-     * @return Row[]
-     */
-    public function getAllByParent(int $forum_id): array
-    {
-        return $this->getAllFluent()
-            ->where('[forum_parent_id] = %i', $forum_id)
-            ->fetchAll();
-    }
-
-    /**
-     * @param iterable $forums
+     * @param ForumEntity[] $forums
      * @param int $forum_parent_id
      *
      * @return array
      */
-    public function createForums($forums, $forum_parent_id): array
+    public function createForums(array $forums, int $forum_parent_id): array
     {
         $result = [];
 
         foreach ($forums as $forum) {
-            if ($forum->forum_parent_id === $forum_parent_id) {
-                $result[$forum->forum_id] = $forum;
-                $result[$forum->forum_id]['childs'] = $this->createForums(
+            if ($forum->parent->id === $forum_parent_id) {
+                $result[$forum->id] = $forum;
+                $result[$forum->id]['childs'] = $this->createForums(
                     $forums,
-                    $forum->forum_id
+                    $forum->id
                 );
             }
         }
@@ -104,11 +67,15 @@ class ForumManager extends CrudManager
     {
         $forum = $this->em
             ->getRepository(ForumEntity::class)
-            ->find($forumId);
+            ->findOneBy(
+                [
+                    'id' => $forumId,
+                ]
+            );
 
         $crumbs = [];
-
         $current = $forum;
+
         while ($current !== null) {
             array_unshift($crumbs, [
                 'link'   => 'Forum:default',
