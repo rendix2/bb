@@ -39,16 +39,6 @@ class CachePresenter extends AdminPresenter
         
         $this->cache = new Cache($storage);
     }
-    
-    /**
-     * CachePresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->cache = null;
-        
-        parent::__destruct();
-    }
 
     /**
      * CachePresenter startup.

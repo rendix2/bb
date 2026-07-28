@@ -15,14 +15,13 @@ services:
         type: App\Model\Repository\UserRepository
         factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\UserEntity)
 
-
     -
         type: App\Model\Repository\LanguageRepository
         factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\LanguageEntity)
 
     -
         type: App\Model\Repository\CategoryRepository
-        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\CateoryEntity)
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\CategoryEntity)
 
     -
         type: App\Model\Repository\ForumRepository
@@ -35,6 +34,14 @@ services:
     -
         type: App\Model\Repository\PostRepository
         factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\PostEntity)
+
+    -
+        type: App\Model\Repository\ThankRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\ThankEntity)
+
+    -
+        type: App\Model\Repository\TopicWatchRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\TopicWatchEntity)
 
 
 

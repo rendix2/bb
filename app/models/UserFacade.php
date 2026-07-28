@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
-use App\Model\Entity\PostEntity;
-use App\Model\Entity\ThankEntity;
-use App\Model\Entity\TopicWatchEntity;
 use App\Model\Repository\PostRepository;
+use App\Model\Repository\ThankRepository;
+use App\Model\Repository\TopicWatchRepository;
+use App\Model\Repository\UserRepository;
 use App\Models\Entity\PmEntity;
-use App\Models\Entity\UserEntity;
+use App\services\AvatarService;
 use App\Services\TranslatorFactory;
 
 /**
@@ -53,11 +53,6 @@ class UserFacade
      * @var Mails2UsersManager $mails2UsersManager
      */
     private Mails2UsersManager $mails2UsersManager;
-
-    /**
-     * @var PostManager $postsManager $postsManager
-     */
-    private PostManager $postsManager;
     
     /**
      * @var PostFacade $postFacade
@@ -117,8 +112,14 @@ class UserFacade
         UsersManager        $usersManager,
         TranslatorFactory   $translatorFactory,
         PmFacade            $pmFacade,
-        private readonly PostRepository $postRepository,
-        private readonly EntityManagerDecorator $em
+        private readonly PostRepository       $postRepository,
+        private readonly UserRepository       $userRepository,
+        private readonly ThankRepository      $thankRepository,
+        private readonly TopicWatchRepository $topicWatchRepository,
+
+        private readonly EntityManagerDecorator $em,
+
+        private readonly AvatarService $avatarService,
     ) {
         $this->usersManager         = $usersManager;
         $this->postsHistoryManager  = $postsHistoryManager;
@@ -136,8 +137,7 @@ class UserFacade
 
     public function delete(int $userId): void
     {
-        $userEntity = $this->em
-            ->getRepository(\App\Model\Entity\UserEntity::class)
+        $userEntity = $this->userRepository
             ->findOneBy(
                 [
                     'id' => $userId,
@@ -145,7 +145,7 @@ class UserFacade
             );
         
         if ($userEntity && $userEntity->user_avatar) {
-            $this->usersManager->removeAvatarFile($userEntity->user_avatar);
+            $this->avatarService->removeAvatarFile($userEntity->user_avatar);
         }
 
         $posts = $this->postRepository->findByUser($userId);
@@ -154,8 +154,7 @@ class UserFacade
             $this->postFacade->delete($post->topic, $post);
         }
 
-        $topicsWatches = $this->em
-            ->getRepository(TopicWatchEntity::class)
+        $topicsWatches = $this->topicWatchRepository
             ->findBy(
                 [
                     'user' => $userEntity,
@@ -174,8 +173,7 @@ class UserFacade
         $this->reportsManager->deleteByUser($userId);
         $this->sessionsManager->deleteByUser($userId);
 
-        $thanks = $this->em
-            ->getRepository(ThankEntity::class)
+        $thanks = $this->thankRepository
             ->findBy(
                 [
                     'user' => $userEntity,

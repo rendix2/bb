@@ -71,7 +71,9 @@ class UserForumsForm extends Control
 
         $id     = $this->presenter->getParameter('id');
         $data   = [];
+
         $forums = $this->users2ForumsManager->getAllByLeft($id);
+        $databaseForums = $this->forumRepository->findAll();
 
         foreach ($forums as $permission) {
             $data[$permission->forum_id]['post_add']         = $permission->post_add;
@@ -86,7 +88,7 @@ class UserForumsForm extends Control
 
         $this->template->countOfUsers = $this->users2ForumsManager->getCountByRight($id);
         $this->template->permissions  = $data;
-        $this->template->forums       = $this->forumsManager->createForums($this->forumsManager->getAllCached(), 0);
+        $this->template->forums       = $this->forumsManager->createForums($databaseForums, 0);
 
         $this->template->render();
     }
@@ -145,11 +147,13 @@ class UserForumsForm extends Control
         $topic_thank      = $form->getHttpData($form::DATA_TEXT, 'topic_thank[]');
         $topic_fast_reply = $form->getHttpData($form::DATA_TEXT, 'topic_fast_reply[]');
 
+        $databaseForums = $this->forumRepository->findAll();
         $count  = $this->forumRepository->count();
+
         $users  = [];
         $forums = [];
 
-        foreach ($this->forumsManager->getAllCached() as $forum) {
+        foreach ($databaseForums as $forum) {
             $forums[$forum->forum_id] = $forum->forum_id;
             $users[$forum->forum_id]  = (int)$user_id;
         }

@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Model\Repository\PostRepository;
+use App\Model\Repository\ThankRepository;
+use App\Model\Repository\TopicRepository;
 use App\Models\Entity\TopicEntity;
 use App\Utils;
 use Dibi\Result;
@@ -114,7 +117,10 @@ class TopicFacade
         TopicWatchFacade  $topicWatchFacade,
         ThanksFacade      $thanksFacade,
         ReportFacade      $reportFacade,
-        PollsFacade       $pollsFacade
+        PollsFacade       $pollsFacade,
+        private readonly PostRepository  $postRepository,
+        private readonly ThankRepository $thankRepository,
+        private readonly TopicRepository $topicRepository,
     ) {
         $this->topicsManager     = $topicsManager;
         $this->topicWatchManager = $topicWatchManager;
@@ -240,9 +246,13 @@ class TopicFacade
      */
     public function move($topic_id, $target_forum_id)
     {
-        $topic = $this->topicsManager->getById($topic_id);
+        $topic = $this->topicRepository->findOneBy(
+            [
+                'id' => $topic_id,
+            ]
+        );
 
-        if (!$topic) {
+        if ($topic === null) {
             return false;
         }
         
@@ -325,14 +335,25 @@ class TopicFacade
      *
      * @return bool
      */
-    public function mergeTwoTopics($topic_from_id, $topic_target_id)
+    public function mergeTwoTopics(int $topic_from_id, int $topic_target_id): bool
     {
         if ($topic_from_id === $topic_target_id) {
             return false;
         }
 
-        $topicFrom   = $this->topicsManager->getById($topic_from_id);
-        $topicTarget = $this->topicsManager->getById($topic_target_id);
+        $topicFrom = $this->topicRepository
+            ->findOneBy(
+                [
+                    'id' => $topic_from_id,
+                ],
+            );
+
+        $topicTarget = $this->topicRepository
+            ->findOneBy(
+                [
+                    'id' => $topic_target_id,
+                ],
+            );
 
         if (!$topicFrom) {
             return false;
@@ -342,12 +363,14 @@ class TopicFacade
             return false;
         }
 
-        $posts  = $this->postsManager->getFluentByTopic($topic_from_id);
-        $thanks = $this->thanksManager->getAllByTopic($topic_from_id);
+        $posts = $this->postRepository->findByTopic($topic_from_id);
+
+        $thanks = $this->thankRepository->findByTopicId($topic_from_id);
+
 
         // thanks begin
         $topicWatches = $this->topicWatchManager->getPairsByLeft($topic_from_id);
-        $targetThanks = $this->thanksManager->getAllByTopic($topic_target_id);
+        $targetThanks = $this->thankRepository->findByTopicId($topic_target_id);
 
         $thanksFromUsers   = Utils::arrayObjectColumn($thanks, 'thank_user_id');
         $thanksTargetUsers = Utils::arrayObjectColumn($targetThanks, 'thank_user_id');

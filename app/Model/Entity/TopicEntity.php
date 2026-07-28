@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use Ramsey\Uuid\Doctrine\UuidType;
+use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: TopicRepository::class)]
 #[Table(name: 'topic')]
@@ -21,6 +23,9 @@ class TopicEntity
     #[GeneratedValue()]
     #[Column(type: Types::BIGINT)]
     public string $id;
+
+    #[Column(type: UuidType::NAME, unique: true)]
+    public UuidInterface $uuid;
 
     #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'forums')]
     #[JoinColumn(nullable: false)]

@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use Ramsey\Uuid\Doctrine\UuidType;
+use Ramsey\Uuid\UuidInterface;
 
 #[Entity()]
 #[Table(name: 'post')]
@@ -20,6 +22,9 @@ class ReportEntity
     #[GeneratedValue()]
     #[Column(type: Types::INTEGER)]
     public int $id;
+
+    #[Column(type: UuidType::NAME, unique: true)]
+    public UuidInterface $uuid;
 
     #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'XXXX')]
     #[JoinColumn(nullable: false)]

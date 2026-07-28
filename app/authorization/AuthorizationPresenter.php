@@ -41,59 +41,6 @@ trait AuthorizationPresenter
     }
 
     /**
-     * @param ForumEntity $forum
-     *
-     * @return ForumScope
-     */
-    protected function loadForum(ForumEntity $forum)
-    {
-        $moderators  = $this->moderators->getAllByRight($forum->getForum_id());
-        $moderatorsI = [];
-        
-        foreach ($moderators as $moderator) {
-            $moderatorIdentity = new Identity($moderator->user_id, ForumScope::ROLE_MODERATOR);
-            $moderatorUser     = new User($moderatorIdentity);
-            
-            $moderatorsI[] = $moderatorUser;
-        }
-                
-        return new ForumScope($forum, $moderatorsI, $this->users2GroupsManager, $this->users2ForumsManager);
-    }
-
-    /**
-     * @param ForumEntity $forum
-     * @param TopicEntity $topic
-     *
-     * @return TopicScope
-     */
-    protected function loadTopic(ForumEntity $forum, TopicEntity $topic)
-    {
-        
-        $topicIdentity = new Identity($topic->getTopic_first_user_id(), [TopicScope::ROLE_AUTHOR]);
-        $topicAuthor   = new User($topicIdentity);
-        
-        $thanks = $this->thanksManager->getAllByTopic($topic->getTopic_id());
-        
-        return new TopicScope($topic, $topicAuthor, $this->loadForum($forum), $thanks);
-    }
-    
-    /**
-     *
-     * @param ForumEntity $forumEntity
-     * @param TopicEntity $topicEntity
-     * @param PostEntity  $postEntity
-     *
-     * @return PostScope
-     */
-    protected function loadPost(ForumEntity $forumEntity, TopicEntity $topicEntity, PostEntity $postEntity)
-    {
-        $postIdentity  = new Identity($postEntity->getPost_user_id(), [PostScope::ROLE_AUTHOR]);
-        $postAuthor    = new User($postIdentity);
-                        
-        return new PostScope($postEntity, $this->loadTopic($forumEntity, $topicEntity), $topicEntity);
-    }
-
-    /**
      * @param IAuthorizationScope $scope
      * @param array               $action
      *

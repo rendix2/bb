@@ -14,6 +14,7 @@ use App\Model\Repository\ForumRepository;
 use App\Models\CategoryManager;
 use App\Models\ForumManager;
 use App\Models\ModeratorManager;
+use App\services\ScopeService;
 use App\Settings\ForumSettings;
 use App\Settings\TopicsSetting;
 use Nette\DI\Attributes\Inject;
@@ -50,6 +51,11 @@ final class ForumPresenter extends BaseForumPresenter
      */
     public function __construct(
         private readonly EntityManagerDecorator $em,
+
+        private readonly ScopeService $scopeService,
+
+        private readonly ForumRepository $forumRepository,
+
         ForumManager $manager
     )
     {
@@ -83,7 +89,7 @@ final class ForumPresenter extends BaseForumPresenter
 
         $forum      = $this->checkForumParam($forum_id, $category_id);
         
-        $forumScope = $this->loadForum($forum);
+        $forumScope = $this->scopeService->loadForum($forum);
         
         $this->requireAccess($forumScope, ForumScope::ACTION_VIEW);
 
@@ -132,14 +138,8 @@ final class ForumPresenter extends BaseForumPresenter
             $this->flashMessage('No moderators in forum.', self::FLASH_MESSAGE_INFO);
         }
 
-        /**
-         * @var ForumRepository $forumRepository
-         */
-        $forumRepository = $this->em
-            ->getRepository(ForumEntity::class);
-
         $this->getTemplate()->moderators  = $moderators;
-        $this->getTemplate()->subForums   = $forumRepository->findByParentId($forum_id);
+        $this->getTemplate()->subForums   = $this->forumRepository->findByParentId($forum_id);
         $this->getTemplate()->logViews    = $this->topicSetting->get()['logViews'];
     }
 

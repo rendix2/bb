@@ -2,8 +2,10 @@
 
 namespace App\Forms;
 
+use App\Model\Repository\UserRepository;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
+use App\services\AvatarService;
 use App\Settings\Avatars;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
@@ -23,22 +25,17 @@ class UserDeleteAvatarForm extends Control
     /**
      * @var UsersManager $userManager
      */
-    private $userManager;
+    private UsersManager $userManager;
     
     /**
      * @var User $user
      */
-    private $user;
+    private User $user;
     
     /**
      * @var ITranslator $translator
      */
-    private $translator;
-    
-    /**
-     * @var Avatars $avatars
-     */
-    public $avatars;
+    private ITranslator $translator;
 
     /**
      * DeleteAvatarControl constructor.
@@ -52,31 +49,23 @@ class UserDeleteAvatarForm extends Control
         UsersManager $userManager,
         Avatars      $avatars,
         User         $user,
-        ITranslator  $translator
+        ITranslator  $translator,
+
+        private readonly UserRepository $userRepository,
+
+        private readonly AvatarService $avatarService,
     ) {
         parent::__construct();
 
         $this->userManager = $userManager;
-        $this->avatars     = $avatars;
         $this->user        = $user;
         $this->translator  = $translator;
-    }
-    
-    /**
-     * UserDeleteAvatarForm destructor.
-     */
-    public function __destruct()
-    {
-        $this->userManager = null;
-        $this->avatars     = null;
-        $this->user        = null;
-        $this->translator  = null;
     }
 
     /**
      * renders avatars delete control
      */
-    public function render()
+    public function render(): void
     {
         $this['deleteAvatar']->render();
     }
@@ -97,14 +86,18 @@ class UserDeleteAvatarForm extends Control
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function deleteAvatarSuccess(Form $form, ArrayHash $values)
+    public function deleteAvatarSuccess(Form $form, ArrayHash $values): void
     {
         if (isset($values->delete_avatar) && $values->delete_avatar === true) {
-            $user = $this->userManager->getById($this->user->id);
+            $userEntity = $this->userRepository->findOneBy(
+                [
+                    'id' => $this->user->getId(),
+                ]
+            );
 
-            if ($user->user_avatar) {
-                $this->userManager->removeAvatarFile($user->user_avatar);
-                $this->userManager->update($user->user_id, ArrayHash::from(['user_avatar' => null]));
+            if ($userEntity->user_avatar) {
+                $this->avatarService->removeAvatarFile($userEntity->user_avatar);
+                $this->userManager->update($userEntity->id, ArrayHash::from(['user_avatar' => null]));
                 $this->flashMessage('Avatar was deleted.', BasePresenter::FLASH_MESSAGE_SUCCESS);
                 $this->redirect('this');
             }

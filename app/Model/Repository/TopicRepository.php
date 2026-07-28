@@ -4,6 +4,7 @@ namespace App\Model\Repository;
 
 use App\Model\Entity\ForumEntity;
 use App\Model\Entity\TopicEntity;
+use App\Model\Entity\UserEntity;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -29,6 +30,15 @@ class TopicRepository extends EntityRepository
         return $this->findBy(
             [
                 'forum' => $forumEntity,
+            ]
+        );
+    }
+
+    public function findByUser(UserEntity $userEntity): array
+    {
+        return $this->findBy(
+            [
+                'forum' => $userEntity,
             ]
         );
     }

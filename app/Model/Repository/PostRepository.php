@@ -25,4 +25,16 @@ class PostRepository extends EntityRepository
         );
     }
 
+    public function findByTopic(int $topicId): array
+    {
+        /**
+         * @var PostEntity[]
+         */
+        return $this->findBy(
+            [
+                'topic' => $topicId,
+            ]
+        );
+    }
+
 }

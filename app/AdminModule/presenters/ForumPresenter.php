@@ -9,6 +9,7 @@ use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
+use App\Model\Repository\UserRepository;
 use App\Models\CategoryManager;
 use App\Models\ForumFacade;
 use App\Models\ForumManager;
@@ -82,6 +83,8 @@ class ForumPresenter extends AdminPresenter
         private readonly EntityManagerDecorator $em,
         private readonly CategoryRepository     $categoryRepository,
         private readonly ForumRepository        $forumRepository,
+        private readonly UserRepository         $userRepository,
+
         ForumManager                            $manager,
     )
     {
@@ -104,13 +107,11 @@ class ForumPresenter extends AdminPresenter
     {
         parent::renderDefault($page);
 
-        $allForums = $this->em
-            ->getRepository(\App\Model\Entity\ForumEntity::class)
-            ->findAll();
+        $allForums = $this->forumRepository->findAll();
 
         $rootForums = array_filter($allForums, fn($f) => $f->getParent() === null);
 
-        $this->template->tree = $rootForums;
+        $this->getTemplate()->tree = $rootForums;
     }
 
     /**
@@ -123,8 +124,7 @@ class ForumPresenter extends AdminPresenter
                 $this->error('Param id is not numeric.');
             }
 
-            $forumEntity = $this->em
-                ->getRepository(ForumEntity::class)
+            $forumEntity = $this->forumRepository
                 ->findOneBy(
                     [
                         'id' => $id,
@@ -137,13 +137,7 @@ class ForumPresenter extends AdminPresenter
 
             $this['editForm']->setDefaults($forumEntity);
 
-            /**
-             * @var ForumRepository $forumRepository
-             */
-            $forumRepository = $this->em
-                ->getRepository(ForumEntity::class);
-
-            $forumsByParent = $forumRepository->findByParentId($id);
+            $forumsByParent = $this->forumRepository->findByParentId($id);
 
             $subForums = $this->getManager()
                 ->createForums($forumsByParent, (int)$id);
@@ -161,7 +155,11 @@ class ForumPresenter extends AdminPresenter
             $lastPost = $this->postsManager->getLastByForum($id);
 
             if ($lastPost) {
-                $userData = $this->usersManager->getById($lastPost->post_user_id);
+                $userData = $this->userRepository->findOneBy(
+                    [
+                        'id' => $lastPost->post_user_id
+                    ]
+                );
             } else {
                 $userData = false;
             }
@@ -189,9 +187,16 @@ class ForumPresenter extends AdminPresenter
     public function actionDelete($id): void
     {
         try {
-            $forumEntity = $this->em
-                ->getRepository(\App\Model\Entity\ForumEntity::class)
-                ->find($id);
+            $forumEntity = $this->forumRepository
+                ->findOneBy(
+                    [
+                        'id' => $id,
+                    ]
+                );
+
+            if ($forumEntity === null) {
+                $this->error('Forum was not found');
+            }
 
             $this->em->remove($forumEntity);
             $this->em->flush();

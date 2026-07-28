@@ -24,41 +24,7 @@ use Nette\Utils\ArrayHash;
 #[\JetBrains\PhpStorm\Deprecated]
 abstract class CrudManager extends Manager //implements ICrudManager
 {
-    /**
-     *
-     * @param string       $column
-     * @param string|array $value
-     *
-     * @return Fluent
-     * @throws Exception
-     */
-    /*
-    public function get($column, $value)
-    {
-        if (!in_array($column, $this->columnNames, true)) {
-            throw new Exception("Non existing {$column} column in table {$this->table}");
-        }
-        
-        $type = $this->getColumnTypeQuery($column);
 
-        $query = $this->dibi
-            ->select('*')
-            ->from($this->table);
-        
-        if ($type === 'TEXT' || $type === 'VARCHAR') {
-            $query = $query->where('%n = %s', $column, $value);
-        } elseif ($type === 'INT') {
-            $query = $query->where('%n = %i', $column, $value);
-        } elseif (is_array($value)) {
-            $query = $query->where('%n IN %in', $column, $value);
-        } elseif ($type === 'ENUM') {
-            $query = $query->where('%n = %s', $column, $value);
-        }
-
-        return $query;
-    }
-    */
-    
     /**
      * @return Row[]
      */
@@ -67,25 +33,6 @@ abstract class CrudManager extends Manager //implements ICrudManager
         return $this->getAllFluent()
             ->fetchAll();
     }
-
-    /**
-     * @return array|mixed
-     */
-    public function getAllCached()
-    {
-        $cached = $this->managerCache->load(self::CACHE_ALL_KEY);
-
-        if ($cached === null) {
-            $this->managerCache->save(
-                self::CACHE_ALL_KEY,
-                $cached = $this->getAll(),
-                [Cache::EXPIRE => '24 hours']
-            );
-        }
-
-        return $cached;
-    }
-
 
     /**
      * @param int $item_id

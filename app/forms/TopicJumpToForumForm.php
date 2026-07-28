@@ -5,7 +5,6 @@ namespace App\Forms;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
 use App\Model\Repository\ForumRepository;
-use App\Models\ForumManager;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
@@ -19,32 +18,20 @@ use Nette\Utils\ArrayHash;
  */
 class TopicJumpToForumForm extends Control
 {
-    /**
-     * @var ForumManager $forumManager
-     */
-    private ForumManager $forumManager;
-    
+
     /**
      *
      * @var ITranslator $translator
      */
     private ITranslator $translator;
 
-    /**
-     * JumpToForumControl constructor.
-     *
-     * @param ForumManager $forumManager
-     * @param ITranslator   $translator
-     */
     public function __construct(
-        ForumManager $forumManager,
         ITranslator   $translator,
         private readonly EntityManagerDecorator $em,
         private readonly ForumRepository        $forumRepository,
     ) {
         parent::__construct();
 
-        $this->forumManager = $forumManager;
         $this->translator   = $translator;
     }
 

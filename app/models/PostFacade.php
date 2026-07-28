@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\TopicWatchEntity;
 use App\Model\Entity\UserEntity;
+use App\Model\Repository\PostRepository;
+use App\Model\Repository\TopicRepository;
 use App\Models\Entity\PostEntity;
 use App\Models\Entity\TopicEntity;
 use App\Settings\TopicsSetting;
@@ -122,7 +124,10 @@ class PostFacade
         TopicsSetting       $topicSettings,
         FilesManager        $filesManager,
         Posts2FilesManager  $posts2FilesManger,
-        private readonly EntityManagerDecorator $em
+        private readonly EntityManagerDecorator $em,
+
+        private readonly PostRepository  $postRepository,
+        private readonly TopicRepository $topicRepository,
     ) {
         $this->postsManager        = $postsManager;
         $this->topicsManager       = $topicsManager;
@@ -150,8 +155,11 @@ class PostFacade
         $forum_id = $post->getPost_forum_id();
         $topic_id = $post->getPost_topic_id();
         
-        $topicDibi = $this->topicsManager->getById($topic_id);
-        $topic     = TopicEntity::setFromRow($topicDibi);
+        $topicEntity = $this->topicRepository->findOneBy(
+            [
+                'id' => $topic_id,
+            ]
+        );
         
         $files     = $post->getPost_files();
         $files_ids = [];
@@ -173,12 +181,12 @@ class PostFacade
                 'topic_post_count%sql' => 'topic_post_count + 1',
                 'topic_last_user_id'   => $user_id,
                 'topic_last_post_id'   => $post_id,
-                'topic_page_count'     => ceil(($topic->getTopic_post_count() + 1) / $this->topicSettings->get()['pagination']['itemsPerPage'])
+                'topic_page_count'     => ceil(($topicEntity->getTopic_post_count() + 1) / $this->topicSettings->get()['pagination']['itemsPerPage'])
                 ])
         );
 
         $topicEntity = $this->em
-            ->getRepository(TopicEntity::class)
+            ->getRepository(\App\Model\Entity\TopicEntity::class)
             ->findOneBy(
                 [
                     'id' => $topic_id,
@@ -234,26 +242,26 @@ class PostFacade
     }
 
     /**
-     * @param PostEntity $post
+     * @param PostEntity $postEntity
      *
      * @return bool
      */
-    public function update(PostEntity $post)
+    public function update(\App\Model\Entity\PostEntity $postEntity)
     {
         //$myPost = clone $post;
         //unset($myPost->post_id);
 
         $add = $this->postsHistoryManager->add(ArrayHash::from([
-            'post_id' => $post->getPost_id(),
-            'post_user_id' => $post->getPost_user_id(),
-            'post_title' => $post->getPost_title(),
-            'post_text' => $post->getPost_text(),
+            'post_id' => $postEntity->getPost_id(),
+            'post_user_id' => $postEntity->getPost_user_id(),
+            'post_title' => $postEntity->getPost_title(),
+            'post_text' => $postEntity->getPost_text(),
             'post_history_time' => time()
         ]));
 
-        $post->setPost_user_id(null);
+        $postEntity->setPost_user_id(null);
         
-        $update = $this->postsManager->update($post->getPost_id(), $post->getArrayHash());
+        $update = $this->postsManager->update($postEntity->getPost_id(), $postEntity->getArrayHash());
 
         return $update && $add;
     }
@@ -354,24 +362,32 @@ class PostFacade
      *
      * @return boolean
      */
-    public function move($post_id, $target_topic_id)
+    public function move(int $post_id, int $target_topic_id): bool
     {
-        $post = $this->postsManager->getById($post_id);
-       
-        if (!$post) {
+        $postEntity = $this->postRepository->findOneBy(
+            [
+                'id' => $post_id,
+            ]
+        );
+
+        if ($postEntity === null) {
             return false;
         }
         
-        $target_topic = $this->topicsManager->getById($target_topic_id);
+        $targetTopicEntity = $this->topicRepository->findOneBy(
+            [
+                'id' => $target_topic_id,
+            ]
+        );
         
-        if (!$target_topic) {
+        if (!$targetTopicEntity) {
             return false;
         }
         
-        $source_topic_id = $post->post_topic_id;
-        $source_forum_id = $post->post_forum_id;
+        $source_topic_id = $postEntity->topic->id;
+        $source_forum_id = $postEntity->forum->id;
                 
-        $target_forum_id = $target_topic->topic_forum_id;
+        $target_forum_id = $targetTopicEntity->topic_forum_id;
        
         if ($source_topic_id !== $target_topic_id) {
             $this->topicsManager->update(

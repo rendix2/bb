@@ -9,13 +9,14 @@ use App\Controls\BreadCrumbControl;
 use App\Database\EntityManagerDecorator;
 use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Model\Entity\CategoryEntity;
 use App\Model\Entity\TopicWatchEntity;
 use App\Model\Entity\UserEntity;
+use App\Model\Repository\CategoryRepository;
+use App\Model\Repository\ForumRepository;
+use App\Model\Repository\PostRepository;
+use App\Model\Repository\TopicRepository;
 use App\Models\CategoryManager;
-use App\Models\Entity\FileEntity;
 use App\Models\Entity\PollEntity;
-use App\Models\Entity\PostEntity;
 use App\Models\Manager;
 use App\Models\PollsFacade;
 use App\Models\PostFacade;
@@ -23,6 +24,7 @@ use App\Models\Posts2FilesManager;
 use App\Models\PostsHistoryManager;
 use App\Models\PostManager;
 use App\Models\ReportManager;
+use App\services\ScopeService;
 use App\Settings\PostSetting;
 use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Form;
@@ -108,6 +110,13 @@ class PostPresenter extends BaseForumPresenter
         PostManager $manager,
         private readonly CategoryManager $categoryManager,
         private readonly EntityManagerDecorator $em,
+
+        private readonly CategoryRepository $categoryRepository,
+        private readonly ForumRepository    $forumRepository,
+        private readonly TopicRepository    $topicRepository,
+        private readonly PostRepository     $postRepository,
+
+        private readonly ScopeService $scopeService,
     )
     {
         parent::__construct($manager);
@@ -123,8 +132,7 @@ class PostPresenter extends BaseForumPresenter
      */
     public function actionDelete($category_id, $forum_id, $topic_id, $post_id, $page): void
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -139,11 +147,40 @@ class PostPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-        $post     = $this->checkPostParam($post_id, $category_id, $forum_id, $topic_id);
+        $forumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $forum_id
+                ]
+            );
+
+        if ($forumEntity === null) {
+            $this->error('Forum was not found.');
+        }
+
+        $topicEntity = $this->topicRepository
+            ->findOneBy(
+                [
+                    'id' => $topic_id
+                ]
+            );
+
+        if ($topicEntity === null) {
+            $this->error('Topic was not found.');
+        }
+
+        $postEntity = $this->postRepository
+            ->findOneBy(
+                [
+                    'id' => $post_id
+                ]
+            );
+
+        if ($postEntity === null) {
+            $this->error('Post was not found.');
+        }
         
-        $pollDibi   = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
+        $pollDibi = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
         
         if ($pollDibi) {
             $pollTimeStamp = $pollDibi->poll_time_to;
@@ -151,17 +188,15 @@ class PostPresenter extends BaseForumPresenter
         
             $pollEntity = PollEntity::setFromRow($pollDibi);
             $pollEntity->setPoll_time_to(DateTime::from($pollTimeStamp));
-        
-            $topic->setPoll($pollEntity);
+
+            $topicEntity->setPoll($pollEntity);
         }
-        
-        $forumScope = $this->loadForum($forum);
-        $topicScope = $this->loadTopic($forum, $topic);
-        $postScope  = $this->loadPost($forum, $topic, $post);
+
+        $postScope = $this->scopeService->loadPost($forumEntity, $topicEntity, $postEntity);
         
         $this->requireAccess($postScope, PostScope::ACTION_DELETE);
 
-        $res = $this->postFacade->delete($topic, $post);
+        $res = $this->postFacade->delete($topicEntity, $postEntity);
 
         if ($res === 1) {
             $this->flashMessage('Post was deleted.', self::FLASH_MESSAGE_SUCCESS);
@@ -181,8 +216,7 @@ class PostPresenter extends BaseForumPresenter
      */
     public function renderEdit($category_id, $forum_id, $topic_id, $post_id = null)
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -198,8 +232,7 @@ class PostPresenter extends BaseForumPresenter
         }
 
         $forum      = $this->checkForumParam($forum_id, $category_id);
-        $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-        $forumScope = $this->loadForum($forum);
+        $forumScope = $this->scopeService->loadForum($forum);
         
         if ($post_id === null) {
             $this->requireAccess($forumScope, ForumScope::ACTION_POST_ADD);
@@ -207,14 +240,16 @@ class PostPresenter extends BaseForumPresenter
             $this->requireAccess($forumScope, ForumScope::ACTION_POST_UPDATE);
         }
 
-        // post check
-        $post = [];
-
         if ($post_id) {
-            $post = $this->checkPostParam($post_id, $category_id, $forum_id, $topic_id)->getArray();
-        }
+            $postEntity = $this->postRepository
+                ->findOneBy(
+                    [
+                        'id' => $post_id,
+                    ]
+                );
 
-        $this['editForm']->setDefaults($post);
+            $this['editForm']->setDefaults($postEntity);
+        }
     }
 
     /**
@@ -226,8 +261,7 @@ class PostPresenter extends BaseForumPresenter
      */
     public function renderReport($category_id, $forum_id, $topic_id, $post_id, $page)
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -241,10 +275,6 @@ class PostPresenter extends BaseForumPresenter
         if ($categoryEntity->active === false) {
             $this->error('Category is not active.');
         }
-
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-        $post     = $this->checkPostParam($post_id, $category_id, $forum_id, $topic_id);
     }
 
     /**
@@ -256,8 +286,7 @@ class PostPresenter extends BaseForumPresenter
      */
     public function renderHistory($category_id, $forum_id, $topic_id, $post_id)
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -271,10 +300,6 @@ class PostPresenter extends BaseForumPresenter
         if ($categoryEntity->active === false) {
             $this->error('Category is not active.');
         }
-
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-        $post     = $this->checkPostParam($post_id, $category_id, $forum_id, $topic_id);
 
         $postHistory = $this->postsHistoryManager->getByPost($post_id);
 
@@ -295,8 +320,7 @@ class PostPresenter extends BaseForumPresenter
      */
     public function actionDownloadFile($category_id, $forum_id, $topic_id, $post_id, $file_id)
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -310,10 +334,6 @@ class PostPresenter extends BaseForumPresenter
         if ($categoryEntity->active === false) {
             $this->error('Category is not active.');
         }
-
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-        $post     = $this->checkPostParam($post_id, $category_id, $forum_id, $topic_id);
         
         $file = $this->posts2FilesManager->getFullJoined($post_id, $file_id);
         
@@ -430,7 +450,7 @@ class PostPresenter extends BaseForumPresenter
                     $postFileArrayHash->move($filesDir . $sep .$hash . '.'. $extension);
                 }
                 
-                $postFile = new FileEntity();
+                $postFile = new \App\Model\Entity\FileEntity();
                 $postFile->setFile_id($file->post_file_id);
                 $postFile->setFile_orig_name($postFileArrayHash->getName());
                 $postFile->setFile_name($hash);
@@ -442,31 +462,36 @@ class PostPresenter extends BaseForumPresenter
         } else {
             $postFiles = [];
         }
-        
+
         if ($post_id) {
-            $postOldDibi = $this->getManager()->getById($post_id);
-            $postOld     = PostEntity::setFromRow($postOldDibi);
+            $postOldEntity = $this->em
+                ->getRepository(\App\Model\Entity\PostEntity::class)
+                ->findOneBy(
+                    [
+                        'id' => $post_id,
+                    ]
+                );
             
-            $postNew = new PostEntity();
+            $postNew = new \App\Model\Entity\PostEntity();
             $postNew->setPost_id($post_id)
-                    ->setPost_user_id($postOld->getPost_user_id())
+                    ->setPost_user_id($postOldEntity->user->id)
                     ->setPost_category_id($category_id)
                     ->setPost_forum_id($forum_id)
                     ->setPost_topic_id($topic_id)
                     ->setPost_title($values->post_title)
                     ->setPost_text($values->post_text)
-                    ->setPost_add_time($postOld->getPost_add_time())
-                    ->setPost_add_user_ip($postOld->getPost_add_user_ip())
+                    ->setPost_add_time($postOldEntity->getPost_add_time())
+                    ->setPost_add_user_ip($postOldEntity->getPost_add_user_ip())
                     ->setPost_edit_user_ip($this->getHttpRequest()->getRemoteAddress())
-                    ->setPost_edit_count($postOld->getPost_edit_count() + 1)
+                    ->setPost_edit_count($postOldEntity->getPost_edit_count() + 1)
                     ->setPost_last_edit_time(time())
                     ->setPost_locked($postNew->getPost_locked())
-                    ->setPost_order($postOld->getPost_order())
+                    ->setPost_order($postOldEntity->getPost_order())
                     ->setPost_files($postFiles);
                                           
             $result = $this->postFacade->update($postNew);
         } else {
-            $post = new PostEntity();
+            $post = new \App\Model\Entity\PostEntity();
             $post->setPost_user_id($user_id)
                  ->setPost_category_id($category_id)
                  ->setPost_forum_id($forum_id)

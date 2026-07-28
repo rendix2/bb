@@ -28,7 +28,7 @@ class PmPresenter extends CrudPresenter
      * @inject
      */
     public ReportManager $reportsManager;
-    
+
     /**
      *
      * @var UsersManager $usersManager
@@ -42,36 +42,21 @@ class PmPresenter extends CrudPresenter
      */
     private ITranslator $translator;
 
-    /**
-     * PmPresenter constructor.
-     *
-     * @param PmManager $manager
-     */
     public function __construct(
         PmManager $manager,
         private readonly UserSearchControl $userSearchControl,
-        private readonly ReportForm        $reportForm,
-    )
-    {
+        private readonly ReportForm $reportForm,
+    ) {
         parent::__construct($manager);
     }
 
-    /**
-     *
-     * @param mixed $element
-     */
     public function checkRequirements($element): void
     {
         $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
-        
+
         parent::checkRequirements($element);
     }
-    
-    /**
-     * PmPresenter startup.
-     *
-     * @return void
-     */
+
     public function startup()
     {
         parent::startup();
@@ -83,16 +68,11 @@ class PmPresenter extends CrudPresenter
         $this->getTemplate()->pm_count = $this->getManager()->getCountSent();
     }
 
-    /**
-     *
-     * @param int    $user_id
-     * @param string $user_name
-     */
     public function handleSetUserId($user_id, $user_name): void
     {
         $this->redirect('Pm:edit', ['user_id' => $user_id, 'user_name' => $user_name]);
     }
-    
+
     /**
      *
      * @param int|null $id
@@ -100,12 +80,14 @@ class PmPresenter extends CrudPresenter
     public function renderEdit($id = null): void
     {
         if (!$id) {
-            $this['editForm']->setDefaults([
-                'pm_user_id_to' => $this->getParameter('user_id'),
-                'user_name'     => $this->getParameter('user_name')
-            ]);
+            $this['editForm']->setDefaults(
+                [
+                    'pm_user_id_to' => $this->getParameter('user_id'),
+                    'user_name' => $this->getParameter('user_name'),
+                ],
+            );
         }
-        
+
         parent::renderEdit($id);
 
         if ($id && $this->getTemplate()->item->pm_status === 'sent') {
@@ -128,7 +110,7 @@ class PmPresenter extends CrudPresenter
     {
         return $this->reportForm;
     }
-    
+
     /**
      *
      * @return GridFilter
@@ -136,13 +118,13 @@ class PmPresenter extends CrudPresenter
     protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->translator);
-            
+
         $this->gf->addFilter('pm_id', 'pm_id', GridFilter::INT_EQUAL);
         $this->gf->addFilter('user_name', 'user_name', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('pm_subject', 'pm_subject', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('pm_status', 'pm_status', GridFilter::CHECKBOX_LIST, ['sent' => 'Sent', 'read' => 'Read']);
         $this->gf->addFilter(null, null, GridFilter::NOTHING);
-            
+
         return $this->gf;
     }
 
@@ -154,7 +136,7 @@ class PmPresenter extends CrudPresenter
     {
         return $this->userSearchControl;
     }
-    
+
     /**
      * @return BreadCrumbControl
      */
@@ -162,12 +144,12 @@ class PmPresenter extends CrudPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['text' => 'menu_pms']
+            1 => ['text' => 'menu_pms'],
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->translator);
     }
-    
+
     /**
      * @return BreadCrumbControl
      */
@@ -175,10 +157,10 @@ class PmPresenter extends CrudPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Pm:default',    'text' => 'menu_pms'],
-            2 => ['text' => 'menu_pm']
+            1 => ['link' => 'Pm:default', 'text' => 'menu_pms'],
+            2 => ['text' => 'menu_pm'],
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
@@ -189,10 +171,10 @@ class PmPresenter extends CrudPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Pm:default',    'text' => 'menu_pms'],
-            2 => ['text' => 'pm_add_new']
+            1 => ['link' => 'Pm:default', 'text' => 'menu_pms'],
+            2 => ['text' => 'pm_add_new'],
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
@@ -203,10 +185,10 @@ class PmPresenter extends CrudPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Pm:default',    'text' => 'menu_pms'],
-            2 => ['text' => 'pm_report']
+            1 => ['link' => 'Pm:default', 'text' => 'menu_pms'],
+            2 => ['text' => 'pm_report'],
         ];
-        
+
         return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
@@ -230,14 +212,14 @@ class PmPresenter extends CrudPresenter
         $form->addSubmit('Send', 'Send');
 
         $form->onValidate[] = [$this, 'editFormValidate'];
-        $form->onSuccess[]  = [$this, 'editFormSuccess'];
+        $form->onSuccess[] = [$this, 'editFormSuccess'];
 
         return $form;
     }
-    
+
     /**
      *
-     * @param Form      $form
+     * @param Form $form
      * @param ArrayHash $values
      */
     public function editFormValidate(Form $form, ArrayHash $values): void
@@ -245,23 +227,23 @@ class PmPresenter extends CrudPresenter
         if (!$values->pm_user_id_to) {
             $form->addError('We are missing recipients user ID', true);
         }
-        
-        if ((int)$values->pm_user_id_to === $this->getUser()->getId()) {
+
+        if ((int) $values->pm_user_id_to === $this->getUser()->getId()) {
             $form->addError('You cannot send PM to yourself.', true);
         }
     }
 
     /**
      *
-     * @param Form      $form
+     * @param Form $form
      * @param ArrayHash $values
      */
     public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         $values->pm_user_id_from = $this->getUser()->getId();
-        $values->pm_time_sent    = time();
+        $values->pm_time_sent = time();
         unset($values->user_name);
-        
+
         parent::editFormSuccess($form, $values);
     }
 }

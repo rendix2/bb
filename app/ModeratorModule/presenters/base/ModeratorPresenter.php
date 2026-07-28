@@ -15,7 +15,7 @@ use Nette\Localization\ITranslator;
  */
 abstract class ModeratorPresenter extends CrudPresenter
 {
-    use AuthorizationPresenter;
+    //use AuthorizationPresenter;
     
     /**
      *
@@ -67,6 +67,6 @@ abstract class ModeratorPresenter extends CrudPresenter
     {
         parent::beforeRender();
 
-        $this->template->setTranslator($this->translator);
+        $this->getTemplate()->setTranslator($this->translator);
     }
 }

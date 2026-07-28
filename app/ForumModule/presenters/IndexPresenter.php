@@ -7,6 +7,8 @@ use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\TopicEntity;
 use App\Model\Entity\UserEntity;
+use App\Model\Repository\CategoryRepository;
+use App\Model\Repository\ForumRepository;
 use App\Models\CategoryManager;
 use App\Models\Crud\CrudNullManager;
 use App\Model\Entity\CategoryEntity;
@@ -35,6 +37,9 @@ class IndexPresenter extends BaseForumPresenter
     public function __construct(
         CrudNullManager $crudNullManager,
         private readonly EntityManagerDecorator $em,
+
+        private readonly CategoryRepository $categoryRepository,
+        private readonly ForumRepository    $forumRepository,
     )
     {
         parent::__construct($crudNullManager);
@@ -45,9 +50,7 @@ class IndexPresenter extends BaseForumPresenter
      */
     public function renderDefault(): void
     {
-        $categories = $this
-            ->em
-            ->getRepository(CategoryEntity::class)
+        $categories = $this->categoryRepository
             ->findBy(
                 [
                     'active' => true,
@@ -70,8 +73,7 @@ class IndexPresenter extends BaseForumPresenter
         foreach ($categories as $category) {
             $category->forums = [];
 
-            $forums = $this->em
-                ->getRepository(ForumEntity::class)
+            $forums = $this->forumRepository
                 ->findBy(
                     [
                         'category' => $category,

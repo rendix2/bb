@@ -70,7 +70,7 @@ class SearchPresenter extends BaseForumPresenter
     /**
      * @param string $q
      */
-    public function renderUserResults($q)
+    public function renderUserResults($q): void
     {
         $users = $this->getManager()->findLikeByUserName($q);
 
@@ -80,7 +80,7 @@ class SearchPresenter extends BaseForumPresenter
 
         $this['searchUserForm-searchUserForm']->setDefaults(['search_user' => $q]);
 
-        $this->template->users = $users;
+        $this->getTemplate()->users = $users;
     }
     
     /**

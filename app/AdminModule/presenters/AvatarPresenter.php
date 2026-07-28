@@ -6,6 +6,7 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\PaginatorControl;
 use App\Model\Repository\UserRepository;
 use App\Models\UsersManager;
+use App\services\AvatarService;
 use App\Settings\Avatars;
 use Contributte\Datagrid\Datagrid;
 use Contributte\FormsBootstrap\BootstrapForm;
@@ -35,6 +36,8 @@ class AvatarPresenter extends AdminPresenter
     public function __construct(
         UsersManager $manager,
         private readonly UserRepository $userRepository,
+
+        private readonly AvatarService $avatarService,
     )
     {
         parent::__construct($manager);
@@ -75,7 +78,7 @@ class AvatarPresenter extends AdminPresenter
      */
     public function handleDeleteAvatar(int $user_id, string $avatar_name): void
     {
-        $this->getManager()->removeAvatarFile($avatar_name);
+        $this->avatarService->removeAvatarFile($avatar_name);
         
         $this->getManager()->update($user_id, ArrayHash::from(['user_avatar' => null]));
         

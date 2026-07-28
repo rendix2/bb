@@ -38,42 +38,16 @@ class TopicScope implements IAuthorizationScope
     private $author;
     
     private $thanks;
-    
-    /**
-     *
-     * @var TopicEntity $topic
-     */
-    private $topicEntity;
 
-    /**
-     * TopicScope constructor.
-     *
-     * @param TopicEntity $topicEntity
-     * @param User        $author
-     * @param ForumScope $forumScope
-     * @param $thanks
-     */
     public function __construct(
-        TopicEntity $topicEntity,
+        private \App\Model\Entity\TopicEntity $topicEntity,
         User        $author,
         ForumScope  $forumScope,
         $thanks
     ) {
-        $this->topicEntity  = $topicEntity;
         $this->author       = $author;
         $this->forumScope   = $forumScope;
         $this->thanks       = $thanks;
-    }
-    
-    /**
-     * TopicScope destructor.
-     */
-    public function __destruct()
-    {
-        $this->forumScope  = null;
-        $this->topicEntity = null;
-        $this->author      = null;
-        $this->thanks      = null;
     }
 
     /**

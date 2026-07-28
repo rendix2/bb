@@ -460,74 +460,7 @@ class PostEntity extends Entity
         return $postEntity;
     }
     
-    /**
-     *
-     * @param ArrayHash $values
-     *
-     * @return PostEntity
-     */
-    public static function setFromArrayHash(ArrayHash $values)
-    {
-        $postEntity = new PostEntity();
-        
-        if (isset($values->post_id)) {
-            $postEntity->setPost_id($values->post_id);
-        }
-        
-        if (isset($values->post_user_id)) {
-            $postEntity->setPost_user_id($values->post_user_id);
-        }
 
-        if (isset($values->post_category_id)) {
-            $postEntity->setPost_category_id($values->post_category_id);
-        }
-
-        if (isset($values->post_forum_id)) {
-            $postEntity->setPost_forum_id($values->post_forum_id);
-        }
-
-        if (isset($values->post_topic_id)) {
-            $postEntity->setPost_topic_id($values->post_topic_id);
-        }
-
-        if (isset($values->post_title)) {
-            $postEntity->setPost_title($values->post_title);
-        }
-        
-        if (isset($values->post_text)) {
-            $postEntity->setPost_text($values->post_text);
-        }
-        
-        if (isset($values->post_add_time)) {
-            $postEntity->setPost_add_time($values->post_add_time);
-        }
-
-        if (isset($values->post_add_user_ip)) {
-            $postEntity->setPost_add_user_ip($values->post_add_user_ip);
-        }
-
-        if (isset($values->post_edit_user_ip)) {
-            $postEntity->setPost_edit_user_ip($values->post_edit_user_ip);
-        }
-
-        if (isset($values->post_edit_count)) {
-            $postEntity->setPost_edit_count($values->post_edit_count);
-        }
-        
-        if (isset($values->post_last_edit_time)) {
-            $postEntity->setPost_last_edit_time($values->post_last_edit_time);
-        }
-
-        if (isset($values->post_locked)) {
-            $postEntity->setPost_locked($values->post_locked);
-        }
-
-        if (isset($values->post_order)) {
-            $postEntity->setPost_order($values->post_order);
-        }
-      
-        return $postEntity;
-    }
 
     /**
      * @return array

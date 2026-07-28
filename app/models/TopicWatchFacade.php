@@ -51,6 +51,9 @@ class TopicWatchFacade
         TopicWatchManager $topicWatchManager,
         PostManager      $postsManager,
         private readonly EntityManagerDecorator $em,
+
+        private readonly ForumRepository $forumRepository,
+        private readonly TopicRepository $topicRepository,
     ) {
         $this->usersManager      = $usersManager;
         $this->topicWatchManager = $topicWatchManager;
@@ -63,13 +66,7 @@ class TopicWatchFacade
      */
     public function deleteByCategory(int $category_id): void
     {
-        /**
-         * @var ForumRepository $forumRepository
-         */
-        $forumRepository = $this->em
-            ->getRepository(ForumEntity::class);
-
-        $forums = $forumRepository->findByCategoryId($category_id);
+        $forums = $this->forumRepository->findByCategoryId($category_id);
         
         foreach ($forums as $forum) {
             $this->deleteByForum($forum->id);
@@ -82,13 +79,7 @@ class TopicWatchFacade
      */
     public function deleteByForum(int $forum_id): void
     {
-        /**
-         * @var TopicRepository $topicRepository
-         */
-        $topicRepository = $this->em
-            ->getRepository(\App\Model\Entity\TopicEntity::class);
-
-        $topics = $topicRepository->findByForumId($forum_id);
+        $topics = $this->topicRepository->findByForumId($forum_id);
         
         foreach ($topics as $topic) {
             $this->deleteByTopic($topic);

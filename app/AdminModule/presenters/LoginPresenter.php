@@ -4,7 +4,6 @@ namespace App\AdminModule\Presenters;
 
 use App\Authorization\Authorizator;
 use App\Forms\UserLoginForm;
-use App\Models\Entity\SessionEntity;
 use App\Models\SessionManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
@@ -67,15 +66,15 @@ class LoginPresenter extends BasePresenter
         parent::startup();
         
         $this->translator = $this->translatorFactory->getAdminTranslator();
-        $this->template->setTranslator($this->translator);
+        $this->getTemplate()->setTranslator($this->translator);
     }
 
     protected function createComponentAdminLoginForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
         
-        $form->addText('user_name', 'Login:');
-        $form->addPassword('user_password', 'Password:');
+        $form->addText('username', 'Login:');
+        $form->addPassword('password', 'Password:');
         $form->addSubmit('send', 'Login');
 
         $form->onSuccess[] = [$this, 'adminLoginFormSuccess'];
@@ -103,7 +102,7 @@ class LoginPresenter extends BasePresenter
                 throw new AuthenticationException('You are not admin.');
             }
             
-            $sessionEntity = new SessionEntity();
+            $sessionEntity = new \App\Model\Entity\SessionEntity();
             $sessionEntity->setSession_key($this->getSession()->getId())
                           ->setSession_user_id($user->getId())
                           ->setSession_from(time());

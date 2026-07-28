@@ -2,6 +2,7 @@
 
 namespace App\Database\Fixtures;
 
+use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\RoleEntity;
 use App\Model\Entity\UserEmailEntity;
 use App\Model\Entity\UserEntity;
@@ -21,6 +22,17 @@ class UserFixture implements FixtureInterface, OrderedFixtureInterface, Containe
 
     public function load(ObjectManager $manager) : void
     {
+        $czechLanguageEntity = new LanguageEntity();
+        $czechLanguageEntity->name = 'Czech';
+        $czechLanguageEntity->fileName = 'czech';
+
+        $englishLanguageEntity = new LanguageEntity();
+        $englishLanguageEntity->name = 'English';
+        $englishLanguageEntity->fileName = 'english';
+
+        $manager->persist($czechLanguageEntity);
+        $manager->persist($englishLanguageEntity);
+
         $password = $this->passwords->hash('secret');
 
         $userEntity = new UserEntity();
@@ -30,6 +42,7 @@ class UserFixture implements FixtureInterface, OrderedFixtureInterface, Containe
         $userEntity->username = 'TestUsername';
         $userEntity->email = 'test@test.test';
         $userEntity->password = $password;
+        $userEntity->language = $czechLanguageEntity;
 
         $userPasswordEntity = new UserPasswordEntity();
         $userPasswordEntity->password = $password;

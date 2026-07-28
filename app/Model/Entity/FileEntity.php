@@ -12,13 +12,14 @@ use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity()]
-#[Table(name: 'role')]
-class RankEntity
+#[Table(name: 'file')]
+class FileEntity
 {
+
     #[Id()]
     #[GeneratedValue()]
-    #[Column(type: Types::INTEGER)]
-    public int $id;
+    #[Column(type: Types::BIGINT)]
+    public string $id;
 
     #[Column(type: UuidType::NAME, unique: true)]
     public UuidInterface $uuid;

@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
+use Ramsey\Uuid\Doctrine\UuidType;
+use Ramsey\Uuid\UuidInterface;
 
 #[Entity()]
 #[Table(name: 'ban')]
@@ -21,6 +23,8 @@ class BanEntity
     #[Column(type: Types::BIGINT)]
     public string $id;
 
+    #[Column(type: UuidType::NAME, unique: true)]
+    public UuidInterface $uuid;
 
     #[Column(type: Types::STRING, length: 512)]
     public string $email;

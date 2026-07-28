@@ -2,9 +2,12 @@
 
 namespace App\Forms;
 
+use App\Database\EntityManagerDecorator;
+use App\Model\Repository\UserRepository;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use App\Settings\Users;
+use Doctrine\DBAL\Exception;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
@@ -12,80 +15,26 @@ use Nette\Security\Passwords;
 use Nette\Security\User;
 use Nette\Utils\ArrayHash;
 
-/**
- * Description of ChangePasswordControl
- *
- * @author rendix2
- * @package App\Forms
- */
 class UserChangePasswordForm extends Control
 {
-
-    /**
-     * @var UsersManager $userManager
-     */
-    private $userManager;
-
-    /**
-     * @var ITranslator $translator
-     */
-    private $translator;
-
-    /**
-     * nette user
-     *
-     * @var User $user
-     */
-    private $user;
-    
-    /**
-     * user config from neon
-     *
-     * @var Users $users
-     */
-    private $users;
-
-    /**
-     * ChangePasswordControl constructor.
-     *
-     * @param UsersManager $userManager
-     * @param ITranslator  $translator
-     * @param User         $user
-     * @param Users        $users
-     */
     public function __construct(
-        UsersManager $userManager,
-        ITranslator  $translator,
-        User         $user,
-        Users        $users
+        private readonly ITranslator  $translator,
+        private readonly User         $user,
+        private readonly Users        $users,
+
+        private readonly EntityManagerDecorator $em,
+
+        private readonly UserRepository $userRepository,
+
+        private readonly Passwords $passwords,
     ) {
         parent::__construct();
-
-        $this->userManager = $userManager;
-        $this->translator  = $translator;
-        $this->user        = $user;
-        $this->users       = $users;
     }
 
-    /**
-     * ChangePasswordControl destructor.
-     */
-    public function __destruct()
-    {
-        $this->userManager = null;
-        $this->translator  = null;
-        $this->user        = null;
-        $this->users       = null;
-    }
-
-    /**
-     * renders control
-     */
-    public function render()
+    public function render(): void
     {
         $this['changePasswordForm']->render();
     }
-    
 
     protected function createComponentChangePasswordForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
@@ -106,11 +55,7 @@ class UserChangePasswordForm extends Control
         return $form;
     }
 
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
-    public function changePasswordOnValidate(Form $form, ArrayHash $values)
+    public function changePasswordOnValidate(Form $form, ArrayHash $values): void
     {
         if (!$values->user_password) {
             $form->addError('Empty password.');
@@ -120,7 +65,11 @@ class UserChangePasswordForm extends Control
             $form->addError('Empty last password.');
         }
 
-        $user = $this->userManager->getById($this->user->id);
+        $user = $this->userRepository->findOneBy(
+            [
+                'id' => $this->user->getId(),
+            ]
+        );
 
         if (!$user) {
             $form->addError('User not exists!');
@@ -143,17 +92,24 @@ class UserChangePasswordForm extends Control
      * @param Form      $form
      * @param ArrayHash $values
      */
-    public function changePasswordSuccess(Form $form, ArrayHash $values)
+    public function changePasswordSuccess(Form $form, ArrayHash $values): void
     {
-        $result = $this->userManager->update(
-            $this->user->id,
-            ArrayHash::from(
-                ['user_password' => Passwords::hash($values->user_password)]
-            )
+        $userEntity = $this->userRepository->findOneBy(
+            [
+                'id' => $this->user->getId(),
+            ]
         );
 
-        if ($result) {
+        $userEntity->password = $this->passwords->hash($values->passwod);
+
+        try {
+            $this->em->persist($userEntity);
+            $this->em->flush();
+
             $this->presenter->flashMessage('Password changed.', BasePresenter::FLASH_MESSAGE_SUCCESS);
+            $this->presenter->redirect('this');
+        } catch (Exception $exception) {
+            $this->presenter->flashMessage('Password was not changed.', BasePresenter::FLASH_MESSAGE_SUCCESS);
             $this->presenter->redirect('this');
         }
     }

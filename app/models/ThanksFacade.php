@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
 use App\Model\Repository\ForumRepository;
+use App\Model\Repository\ThankRepository;
 use App\Model\Repository\TopicRepository;
 use App\Models\Entity\PostEntity;
 use App\Models\Entity\ThankEntity;
@@ -35,41 +36,20 @@ class ThanksFacade
      * @var PostManager $postsManager
      */
     private PostManager $postsManager;
-    
-    /**
-     *
-     * @var TopicManager $topicsManager
-     */
-    private TopicManager $topicsManager;
 
-    /**
-     *
-     * @var ForumManager $forumsManager
-     */
-    private ForumManager $forumsManager;
-
-    /**
-     * ThanksFacade constructor
-     *
-     * @param ThankManager $thanksManager
-     * @param UsersManager  $usersManager
-     * @param PostManager  $postsManager
-     * @param TopicManager $topicsManager
-     * @param ForumManager $forumsManager
-     */
     public function __construct(
         ThankManager $thanksManager,
         UsersManager  $usersManager,
         PostManager  $postsManager,
-        TopicManager $topicsManager,
-        ForumManager $forumsManager,
         private readonly EntityManagerDecorator $em,
+
+        private readonly ThankRepository $thankRepository,
+        private readonly TopicRepository $topicRepository,
+        private readonly ForumRepository $forumRepository,
     ) {
         $this->thanksManager = $thanksManager;
         $this->usersManager  = $usersManager;
         $this->postsManager  = $postsManager;
-        $this->topicsManager = $topicsManager;
-        $this->forumsManager = $forumsManager;
     }
 
     public function add(\App\Model\Entity\ThankEntity $thank)
@@ -89,16 +69,10 @@ class ThanksFacade
      */
     public function deleteByCategory(int $category_id): void
     {
-        /**
-         * @var ForumRepository $forumRepository
-         */
-        $forumRepository = $this->em
-            ->getRepository(ForumEntity::class);
-
-        $forums = $forumRepository->findByCategoryId($category_id);
+        $forums = $this->forumRepository->findByCategoryId($category_id);
         
         foreach ($forums as $forum) {
-            $this->deleteByForum($forum->forum_id);
+            $this->deleteByForum($forum->id);
         }
     }
 
@@ -108,13 +82,7 @@ class ThanksFacade
      */
     public function deleteByForum(int $forum_id): void
     {
-        /**
-         * @var TopicRepository $topicRepository
-         */
-        $topicRepository = $this->em
-            ->getRepository(\App\Model\Entity\TopicEntity::class);
-
-       $topics = $topicRepository->findByForumId($forum_id);
+       $topics = $this->topicRepository->findByForumId($forum_id);
         
         foreach ($topics as $topic) {
             $this->deleteByTopic($topic);
@@ -129,7 +97,8 @@ class ThanksFacade
      */
     public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity)
     {
-        $thanks   = $this->thanksManager->getAllByTopic($topicEntity->id);
+        $thanks = $this->thankRepository->findByTopicId($topicEntity->id);
+
         $user_ids = Utils::arrayObjectColumn($thanks, 'thank_user_id');
 
         if (count($user_ids)) {

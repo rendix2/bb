@@ -11,7 +11,9 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Ramsey\Uuid\Doctrine\UuidType;
@@ -53,8 +55,9 @@ class UserEntity
     #[Column(type: Types::BOOLEAN)]
     public bool $isActive;
 
-    #[Column(type: Types::STRING)]
-    public string $language;
+    #[ManyToOne(targetEntity: LanguageEntity::class, inversedBy: 'users')]
+    #[JoinColumn(nullable: false)]
+    public LanguageEntity $language;
 
     #[Column(type: Types::DATETIME_IMMUTABLE)]
     public DateTimeImmutable $createdAt;

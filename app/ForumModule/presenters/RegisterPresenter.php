@@ -5,9 +5,7 @@ namespace App\ForumModule\Presenters;
 use App\Controls\BBMailer;
 use App\Database\EntityManagerDecorator;
 use App\Model\Repository\LanguageRepository;
-use App\Models\Entity\UserEntity;
 use App\Models\LanguageManager;
-use App\Models\Manager;
 use App\Models\PmManager;
 use App\Models\UserFacade;
 use App\Presenters\Base\BasePresenter;
@@ -30,69 +28,42 @@ class RegisterPresenter extends BasePresenter
     /**
      * @var ITranslator $translator
      */
-    private $translator;
-    
-    /**
-     * @var LanguageManager $languageManager
-     */
-    private $languageManager;
+    private ITranslator $translator;
 
     /**
      * @var PmManager $pmManager
      * @inject
      */
-    public $pmManager;
+    public PmManager $pmManager;
 
     /**
      * @var BBMailer $bbMailer
      * @inject
      */
-    public $bbMailer;
+    public BBMailer $bbMailer;
 
     /**
      * @var IStorage $storage
      * @inject
      */
-    public $storage;
+    public IStorage $storage;
 
     /**
      * @var UserFacade $userFacade
      */
-    private $userFacade;
+    private UserFacade $userFacade;
 
-    /**
-     * RegisterPresenter constructor.
-     *
-     * @param LanguageManager $languageManger
-     * @param UserFacade       $userFacade
-     */
     public function __construct(
-        LanguageManager $languageManger,
         UserFacade $userFacade,
+
         private readonly EntityManagerDecorator $em,
         private readonly Passwords              $passwords,
         private readonly LanguageRepository     $languageRepository,
     )
     {
         parent::__construct();
-        
-        $this->languageManager = $languageManger;
+
         $this->userFacade      = $userFacade;
-    }
-    
-    /**
-     * RegisterPresenter destructor.
-     */
-    public function __destruct()
-    {
-        $this->translator = null;
-        $this->languageManager = null;
-        $this->pmManager       = null;
-        $this->bbMailer        = null;
-        $this->storage         = null;
-        $this->userFacade      = null;
-        
-        parent::__destruct();
     }
 
     /**
@@ -104,7 +75,7 @@ class RegisterPresenter extends BasePresenter
         
         $this->translator = $this->translatorFactory->getForumTranslator();
                 
-        $this->template->setTranslator($this->translator);
+        $this->getTemplate()->setTranslator($this->translator);
     }
 
     protected function createComponentRegisterUser(): \Contributte\FormsBootstrap\BootstrapForm
@@ -162,14 +133,9 @@ class RegisterPresenter extends BasePresenter
         }
     }
 
-    /**
-     *
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function registerUserSuccess(Form $form, ArrayHash $values): void
     {
-        $user = new UserEntity();
+        $user = new \App\Model\Entity\UserEntity();
 
         $useEntity = new \App\Model\Entity\UserEntity();
         $useEntity->username = $values->user_name;
@@ -216,10 +182,7 @@ class RegisterPresenter extends BasePresenter
         $this->redirect('Login:default');
     }
 
-    /**
-     *
-     */
-    public function renderDefault()
+    public function renderDefault(): void
     {
     }
 }

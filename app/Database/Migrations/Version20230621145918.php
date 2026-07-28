@@ -52,6 +52,9 @@ final class Version20230621145918 extends AbstractMigration
             ->setComment('Password')
             ->setLength(1024);
 
+        $table->addColumn('language_id', Types::BIGINT)
+            ->setComment('Language ID');
+
         $table->addColumn('is_active', Types::BOOLEAN)
             ->setComment('Is active?');
 
@@ -71,6 +74,7 @@ final class Version20230621145918 extends AbstractMigration
 
         $table
             ->setComment('Users')
+
             ->addUniqueIndex(['email'], 'UK__User__Email')
             ->addUniqueIndex(['uuid'], 'UK__User__UUID')
             ->addUniqueIndex(['username'], 'UK__User__Username');

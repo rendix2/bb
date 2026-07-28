@@ -2,14 +2,14 @@
 
 namespace App\Model\Repository;
 
-use App\Model\Entity\ForumEntity;
+use App\Model\Entity\CategoryEntity;
 use Doctrine\ORM\EntityRepository;
 
 /**
  * class ForumRepository
  *
  * @package App\Model\Repository
- * @extends EntityRepository<ForumEntity>
+ * @extends EntityRepository<CategoryEntity>
  */
 class CategoryRepository extends EntityRepository
 {

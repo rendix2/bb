@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use Ramsey\Uuid\Doctrine\UuidType;
+use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: SessionRepository::class)]
 #[Table(name: 'session')]
@@ -22,6 +24,9 @@ class SessionEntity
     #[GeneratedValue()]
     #[Column(type: Types::BIGINT)]
     public string $id;
+
+    #[Column(type: UuidType::NAME, unique: true)]
+    public UuidInterface $uuid;
 
     #[Column(type: Types::STRING, length: 512)]
     public string $key;

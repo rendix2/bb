@@ -13,8 +13,6 @@ use Doctrine\ORM\EntityRepository;
  */
 class ForumRepository extends EntityRepository
 {
-
-
     /**
      * @param int $id
      *

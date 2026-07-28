@@ -2,6 +2,7 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Repository\CategoryRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
@@ -12,8 +13,10 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
+use Ramsey\Uuid\Doctrine\UuidType;
+use Ramsey\Uuid\UuidInterface;
 
-#[Entity()]
+#[Entity(repositoryClass: CategoryRepository::class)]
 #[Table(name: 'category')]
 class CategoryEntity
 {
@@ -22,6 +25,9 @@ class CategoryEntity
     #[GeneratedValue()]
     #[Column(type: Types::BIGINT)]
     public string $id;
+
+    #[Column(type: UuidType::NAME, unique: true)]
+    public UuidInterface $uuid;
 
     #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'children')]
     #[JoinColumn(nullable: false)]
@@ -35,9 +41,6 @@ class CategoryEntity
 
     #[Column(type: Types::BOOLEAN)]
     public int $active;
-
-
-
 
     /**
      * @var Collection<int, CategoryEntity> $children

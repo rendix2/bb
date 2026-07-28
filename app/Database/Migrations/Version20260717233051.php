@@ -24,7 +24,7 @@ final class Version20260717233051 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $table = $schema->createTable('language');
+        $table = $schema->createTable('public.language');
 
         $table->addColumn('id', Types::BIGINT)
             ->setAutoincrement(true)

@@ -24,11 +24,15 @@ use App\Model\Entity\TopicEntity;
 use App\Model\Entity\TopicWatchEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Repository\LanguageRepository;
+use App\Model\Repository\PostRepository;
+use App\Model\Repository\TopicRepository;
+use App\Model\Repository\UserRepository;
 use App\Models\FavouriteUsersManager;
 use App\Models\LanguageManager;
 use App\Models\ModeratorManager;
 use App\Models\ReportManager;
 use App\Models\UsersManager;
+use App\services\AvatarService;
 use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
 use App\Settings\Avatars;
@@ -49,13 +53,6 @@ use Nette\Utils\DateTime;
  */
 class UserPresenter extends BaseForumPresenter
 {
-    /**
-     * @var LanguageManager $languagesManager
-     * @inject
-     */
-    public LanguageManager $languagesManager;
-
-
     /**
      * @var Avatars $avatar
      * @inject
@@ -116,26 +113,21 @@ class UserPresenter extends BaseForumPresenter
      */
     public Users $users;
     
-    /**
-     *
-     * @var ReportManager $reportsManager
-     * @inject
-     */
-    public ReportManager $reportsManager;
 
 
-    /**
-     * UserPresenter constructor.
-     *
-     * @param UsersManager $manager
-     */
     public function __construct(
         UsersManager $manager,
         private readonly EntityManagerDecorator $em,
         private readonly ReportForm             $reportForm,
         private readonly UserResetPasswordForm  $userResetPasswordForm,
         private readonly UserChangeUserNameForm $userChangeUserNameForm,
-        private readonly LanguageRepository     $languageRepository,
+
+        private readonly LanguageRepository $languageRepository,
+        private readonly TopicRepository    $topicRepository,
+        private readonly PostRepository     $postRepository,
+        private readonly UserRepository     $userRepository,
+
+        private readonly AvatarService $avatarService,
     )
     {
         parent::__construct($manager);
@@ -219,11 +211,14 @@ class UserPresenter extends BaseForumPresenter
      */
     public function renderEdit(): void
     {
-        $user     = $this->getUser();
         $userData = [];
 
-        if ($user->isLoggedIn()) {
-            $userData = $this->getManager()->getById($user->getId());
+        if ($this->getUser()->isLoggedIn()) {
+            $userData = $this->userRepository->findOneBy(
+                [
+                    'id' => $this->getUser()->getId(),
+                ]
+            );
         }
 
         $this['editUserForm']->setDefaults($userData);
@@ -283,13 +278,8 @@ class UserPresenter extends BaseForumPresenter
             ->getRepository(ThankEntity::class)
             ->count();
 
-        $topicsCount = $this->em
-            ->getRepository(TopicEntity::class)
-            ->count();
-
-        $postsCount = $this->em
-            ->getRepository(PostEntity::class)
-            ->count();
+        $topicsCount = $this->topicRepository->count();
+        $postsCount = $this->postRepository->count();
 
         $topicWatchesCount = $this->em
             ->getRepository(TopicWatchEntity::class)
@@ -342,7 +332,7 @@ class UserPresenter extends BaseForumPresenter
             $this->flashMessage('User have no thanks.', self::FLASH_MESSAGE_WARNING);
         }
 
-        $this->template->thanks = $thanks->fetchAll();
+        $this->getTemplate()->thanks = $thanks->fetchAll();
     }
 
     /**
@@ -351,8 +341,6 @@ class UserPresenter extends BaseForumPresenter
      */
     public function actionTopics($user_id, $page = 1)
     {
-        $user = $this->checkUserParam($user_id);
-
         $userEntity = $this->em
             ->getRepository(UserEntity::class)
             ->findOneBy(
@@ -361,13 +349,11 @@ class UserPresenter extends BaseForumPresenter
                 ]
             );
 
-        $topics = $this->em
-            ->getRepository(TopicEntity::class)
-            ->findBy(
-                [
-                    'user' => $userEntity,
-                ]
-            );
+        if ($userEntity === null) {
+            $this->error('User not found');
+        }
+
+        $topics = $this->topicRepository->findByUser($userEntity);
 
         $pag    = new PaginatorControl($topics, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
@@ -589,7 +575,7 @@ class UserPresenter extends BaseForumPresenter
         $user_id = $user->getId();
         
         try {
-            $move = $this->getManager()->moveAvatar($values->user_avatar, $user_id);
+            $move = $this->avatarService->moveAvatar($values->user_avatar, $user_id);
             
             if ($move !== UsersManager::NOT_UPLOADED) {
                 $values->user_avatar = $move;

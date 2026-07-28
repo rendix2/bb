@@ -13,23 +13,24 @@ use App\Forms\ReportForm;
 use App\Forms\TopicFastReplyForm;
 use App\Forms\TopicJumpToForumForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Model\Entity\CategoryEntity;
 use App\Model\Entity\RankEntity;
 use App\Model\Entity\TopicWatchEntity;
 use App\Model\Entity\UserEntity;
+use App\Model\Repository\CategoryRepository;
+use App\Model\Repository\ThankRepository;
+use App\Model\Repository\TopicRepository;
+use App\Model\Repository\UserRepository;
 use App\Models\CategoryManager;
 use App\Models\Entity\PollEntity;
 use App\Models\Entity\PollAnswerEntity;
 use App\Models\Entity\PostEntity;
-use App\Models\Entity\ThankEntity;
 use App\Models\Entity\TopicEntity;
 use App\Models\PollsFacade;
-use App\Models\PostFacade;
 use App\Models\Posts2FilesManager;
-use App\Models\ReportManager;
 use App\Models\ThanksFacade;
 use App\Models\TopicFacade;
 use App\Models\TopicManager;
+use App\services\ScopeService;
 use App\Settings\Avatars;
 use App\Settings\PostSetting;
 use App\Settings\TopicsSetting;
@@ -64,7 +65,6 @@ class TopicPresenter extends BaseForumPresenter
      * @inject
      */
     public Avatars $avatars;
-
     
     /**
      * @var TopicFacade $topicFacade
@@ -78,20 +78,6 @@ class TopicPresenter extends BaseForumPresenter
      * @inject
      */
     public ThanksFacade $thanksFacade;
-
-    /**
-     *
-     * @var PostFacade $postFacade
-     * @inject
-     */
-    public PostFacade $postFacade;
-    
-    /**
-     *
-     * @var ReportManager $reportsManager
-     * @inject
-     */
-    public ReportManager $reportsManager;
     
     /**
      *
@@ -123,17 +109,20 @@ class TopicPresenter extends BaseForumPresenter
     #[Inject]
     public CategoryManager $categoryManager;
 
-    /**
-     * TopicPresenter constructor.
-     *
-     * @param TopicManager $manager
-     */
     public function __construct(
         TopicManager                            $manager,
         private readonly EntityManagerDecorator $em,
         private readonly TopicFastReplyForm     $topicFastReplyForm,
         private readonly ReportForm             $reportForm,
         private readonly TopicJumpToForumForm   $topicJumpToForumForm,
+
+        private readonly ScopeService $scopeService,
+
+
+        private readonly CategoryRepository $categoryRepository,
+        private readonly ThankRepository    $thankRepository,
+        private readonly TopicRepository    $topicRepository,
+        private readonly UserRepository     $userRepository,
     )
     {
         parent::__construct($manager);
@@ -145,10 +134,9 @@ class TopicPresenter extends BaseForumPresenter
      * @param int $topic_id
      * @param int $page
      */
-    public function actionStartWatch($category_id, $forum_id, $topic_id, $page): void
+    public function actionStartWatch(int $category_id, int $forum_id, int $topic_id, int $page): void
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -163,21 +151,16 @@ class TopicPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-
         $user_id = $this->getUser()->getId();
 
-        $topicEntity = $this->em
-            ->getRepository(TopicEntity::class)
+        $topicEntity = $this->topicRepository
             ->findOneBy(
                 [
                     'id' => $topic_id,
                 ]
             );
 
-        $userEntity = $this->em
-            ->getRepository(UserEntity::class)
+        $userEntity = $this->userRepository
             ->findOneBy(
                 [
                     'id' => $user_id,
@@ -210,24 +193,21 @@ class TopicPresenter extends BaseForumPresenter
     {
         $user_id = $this->getUser()->getId();
 
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
                 ]
             );
 
-        $topicEntity = $this->em
-            ->getRepository(\App\Model\Entity\TopicEntity::class)
+        $topicEntity = $this->topicRepository
             ->findOneBy(
                 [
                     'id' => $topic_id,
                 ]
             );
 
-        $userEntity = $this->em
-            ->getRepository(UserEntity::class)
+        $userEntity = $this->userRepository
             ->findOneBy(
                 [
                     'id' => $user_id,
@@ -241,10 +221,6 @@ class TopicPresenter extends BaseForumPresenter
         if ($categoryEntity->active === false) {
             $this->error('Category is not active.');
         }
-
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-        $user_id  = $this->getUser()->getId();
 
         $topicWatchEntity = $this->em
             ->getRepository(TopicWatchEntity::class)
@@ -274,8 +250,7 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function actionThank($category_id, $forum_id, $topic_id): void
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -294,7 +269,7 @@ class TopicPresenter extends BaseForumPresenter
         $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
         $user_id  = $this->getUser()->getId();
         
-        $forumScope = $this->loadForum($forum);
+        $forumScope = $this->scopeService->loadForum($forum);
         
         $this->requireAccess($forumScope, ForumScope::ACTION_THANK);
 
@@ -331,8 +306,7 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function actionDelete($category_id, $forum_id, $topic_id, $page): void
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -362,8 +336,8 @@ class TopicPresenter extends BaseForumPresenter
             $topic->setPoll($pollEntity);
         }
         
-        $forumScope = $this->loadForum($forum);
-        $topicScope = $this->loadTopic($forum, $topic);
+        $forumScope = $this->scopeService->loadForum($forum);
+        $topicScope = $this->scopeService->loadTopic($forum, $topic);
         
         $this->requireAccess($topicScope, TopicScope::ACTION_DELETE);
 
@@ -385,8 +359,7 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function actionDefault($category_id, $forum_id, $topic_id, $page = 1): void
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -404,8 +377,8 @@ class TopicPresenter extends BaseForumPresenter
         $forum    = $this->checkForumParam($forum_id, $category_id);
         $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
         
-        $forumScope = $this->loadForum($forum);
-        $topicScope = $this->loadTopic($forum, $topic);
+        $forumScope = $this->scopeService->loadForum($forum);
+        $topicScope = $this->scopeService->loadTopic($forum, $topic);
 
         $data = $this->postsManager->getFluentByTopicJoinedUser($topic_id);
 
@@ -435,7 +408,7 @@ class TopicPresenter extends BaseForumPresenter
 
         foreach ($posts as $postDibi) {
             $post      = PostEntity::setFromRow($postDibi);
-            $postScope = new PostScope($post, $topicScope, $topic);
+            $postScope = $this->scopeService->loadPost($forum, $topic, $post);
             
             $postDibi->canDelete  = $this->isAllowed($postScope, PostScope::ACTION_DELETE);
             $postDibi->canEdit    = $this->isAllowed($postScope, PostScope::ACTION_EDIT);
@@ -482,16 +455,14 @@ class TopicPresenter extends BaseForumPresenter
             ->getRepository(RankEntity::class)
             ->findAll();
 
-        $topicEntity = $this->em
-            ->getRepository(\App\Model\Entity\TopicEntity::class)
+        $topicEntity = $this->topicRepository
             ->findOneBy(
                 [
                     'id' => $topic_id,
                 ]
             );
 
-        $userEntity = $this->em
-            ->getRepository(UserEntity::class)
+        $userEntity = $this->userRepository
             ->findOneBy(
                 [
                     'id' => $user_id,
@@ -522,8 +493,7 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function renderEdit($category_id, $forum_id, $topic_id = null): void
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -539,7 +509,7 @@ class TopicPresenter extends BaseForumPresenter
         }
 
         $forum      = $this->checkForumParam($forum_id, $category_id);
-        $forumScope = $this->loadForum($forum);
+        $forumScope = $this->scopeService->loadForum($forum);
 
         if ($topic_id) {
             $this->requireAccess($forumScope, ForumScope::ACTION_TOPIC_UPDATE);
@@ -586,8 +556,7 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function renderReport($category_id, $forum_id, $topic_id, $page): void
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -615,24 +584,21 @@ class TopicPresenter extends BaseForumPresenter
     {
         $userId = $this->getUser()->getId();
 
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
                 ]
             );
 
-        $topicEntity = $this->em
-            ->getRepository(\App\Model\Entity\TopicEntity::class)
+        $topicEntity = $this->topicRepository
             ->findOneBy(
                 [
                     'id' => $topic_id,
                 ]
             );
 
-        $userEntity = $this->em
-            ->getRepository(UserEntity::class)
+        $userEntity = $this->userRepository
             ->findOneBy(
                 [
                     'id' => $userId,
@@ -646,9 +612,6 @@ class TopicPresenter extends BaseForumPresenter
         if ($categoryEntity->active === false) {
             $this->error('Category is not active.');
         }
-
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
 
         $watchers = $this->em
             ->getRepository(TopicWatchEntity::class)
@@ -678,8 +641,7 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function renderThanks($category_id, $forum_id, $topic_id): void
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -694,11 +656,8 @@ class TopicPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        $thanks = $this->thankRepository->findByTopicJoinedUser($topic_id);
 
-        $thanks = $this->thanksManager->getAllByTopicJoinedUser($topic_id);
-        
         if (!$thanks) {
             $this->flashMessage('Topic has not any thanks.', self::FLASH_MESSAGE_INFO);
         }
@@ -714,8 +673,7 @@ class TopicPresenter extends BaseForumPresenter
      */
     public function renderFiles($category_id, $forum_id, $topic_id): void
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -729,9 +687,6 @@ class TopicPresenter extends BaseForumPresenter
         if ($categoryEntity->active === false) {
             $this->error('Category is not active.');
         }
-
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
     }
     
     public static function bbCodeParse($text)
@@ -812,10 +767,14 @@ class TopicPresenter extends BaseForumPresenter
         }
 
         if ($topic_id) {
-            $oldTopicDibi = $this->getManager()->getById($topic_id);
-            $oldTopic     = TopicEntity::setFromRow($oldTopicDibi);
-            
-            $firstPost = $this->postsManager->getFirstByTopic($oldTopicDibi->topic_id);
+            $oldTopicEntity = $this->topicRepository
+                ->findOneBy(
+                    [
+                        'id' => $topic_id,
+                    ]
+                );
+
+            $firstPost = $this->postsManager->getFirstByTopic($oldTopicEntity->id);
             $pollDibi  = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
             
             if ($pollDibi) {
@@ -830,8 +789,8 @@ class TopicPresenter extends BaseForumPresenter
             
             $post = PostEntity::setFromRow($firstPost);
             $post->setPost_text($values->post_text);
-            
-            $topic = TopicEntity::setFromRow($oldTopicDibi);
+
+            $topic = TopicEntity::setFromRow($oldTopicEntity);
             $topic->setTopic_id($topic_id)
                   ->setTopic_category_id($category_id)
                   ->setTopic_forum_id($forum_id)
@@ -842,7 +801,7 @@ class TopicPresenter extends BaseForumPresenter
             
             $res = $this->topicFacade->update($topic);
         } else {
-            $post = new PostEntity();
+            $post = new \App\Model\Entity\PostEntity();
             $post->setPost_user_id($user_id)
                  ->setPost_category_id($category_id)
                  ->setPost_forum_id($forum_id)
@@ -853,7 +812,7 @@ class TopicPresenter extends BaseForumPresenter
                  ->setPost_add_user_ip($this->getHttpRequest()->getRemoteAddress())
                  ->setPost_order(1);
             
-            $topic = new TopicEntity();
+            $topic = new \App\Model\Entity\TopicEntity();
             
             $topic->setTopic_category_id($category_id)
                   ->setTopic_forum_id($forum_id)

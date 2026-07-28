@@ -10,8 +10,7 @@ use App\Authorization\Scopes\PostScope;
 use App\Authorization\Scopes\TopicScope;
 use App\Authorization\Scopes\User;
 use App\Database\EntityManagerDecorator;
-use App\Model\Entity\ForumEntity;
-use App\Models\Entity\TopicEntity;
+use App\Model\Repository\ThankRepository;
 use App\Models\Manager;
 use App\Models\ModeratorManager;
 use App\Models\PmManager;
@@ -57,19 +56,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      * @inject
      */
     public Authorizator $authorizator;
-    
-    /**
-     * @var User2GroupManager $users2GroupsManager
-     * @inject
-     */
-    public User2GroupManager $users2GroupsManager;
-    
-    /**
-     *
-     * @var Users2ForumsManager $users2ForumsManager
-     * @inject
-     */
-    public Users2ForumsManager $users2ForumsManager;
+
 
     /**
      * Translator
@@ -77,27 +64,20 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      * @var ITranslator $forumTranslator
      */
     private ITranslator $translator;
-    
-    /**
-     * @var PmManager $pmManager
-     * @inject
-     */
-    public PmManager $pmManager;
 
     /**
      * @var Manager $manager
      */
     private Manager $manager;
 
-    #[Inject]
-    private EntityManagerDecorator $em;
-
     /**
      * ForumPresenter constructor.
      *
      * @param Manager $manager
      */
-    public function __construct(Manager $manager)
+    public function __construct(
+        Manager $manager,
+    )
     {
         parent::__construct();
         
@@ -158,51 +138,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         $identity = new Identity($this->getUser()->id, $this->getUser()->roles);
         
         return new User($identity);
-    }
-
-    protected function loadForum(\App\Model\Entity\ForumEntity $forum): ForumScope
-    {
-        $moderators = $this->moderators->getAllByRight($forum->id);
-        $moderatorsI = [];
-        
-        foreach ($moderators as $moderator) {
-            $moderatorIdentity = new Identity($moderator->user_id, ForumScope::ROLE_MODERATOR);
-            $moderatorUser     = new User($moderatorIdentity);
-            
-            $moderatorsI[] = $moderatorUser;
-        }
-                
-        return new ForumScope($forum, $moderatorsI, $this->users2GroupsManager, $this->users2ForumsManager);
-    }
-
-    /**
-     * @param \App\Model\Entity\ForumEntity $forum
-     * @param TopicEntity $topic
-     *
-     * @return TopicScope
-     */
-    protected function loadTopic(\App\Model\Entity\ForumEntity $forum, \App\Model\Entity\TopicEntity $topic): TopicScope
-    {
-        $topicIdentity = new Identity($topic->getTopic_first_user_id(), [TopicScope::ROLE_AUTHOR]);
-        $topicAuthor   = new User($topicIdentity);
-        
-        $thanks = $this->thanksManager->getAllByTopic($topic->getTopic_id());
-        
-        return new TopicScope($topic, $topicAuthor, $this->loadForum($forum), $thanks);
-    }
-
-    /**
-     * @param ForumEntity $forumEntity
-     * @param \App\Model\Entity\TopicEntity $topicEntity
-     * @param \App\Model\Entity\PostEntity $postEntity
-     *
-     * @return PostScope
-     */
-    protected function loadPost(\App\Model\Entity\ForumEntity $forumEntity, \App\Model\Entity\TopicEntity $topicEntity, \App\Model\Entity\PostEntity $postEntity): PostScope
-    {
-        $postIdentity  = new Identity($postEntity->user->id, [PostScope::ROLE_AUTHOR]);
-                        
-        return new PostScope($postEntity, $this->loadTopic($forumEntity, $topicEntity), $topicEntity);
     }
 
     /**
