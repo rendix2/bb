@@ -1,6 +1,7 @@
 <?php
 namespace App\Controls;
 
+use App\Model\Repository\PollRepository;
 use App\Models\Entity\PollVoteEntity;
 use App\Models\PollsFacade;
 use App\Presenters\Base\BasePresenter;
@@ -45,7 +46,9 @@ class PollControl extends Control
     public function __construct(
         PollsFacade $pollsFacade,
         User        $user,
-        ITranslator $translator
+        ITranslator $translator,
+
+        private readonly PollRepository $pollRepository,
     ) {
         parent::__construct();
         
@@ -96,7 +99,7 @@ class PollControl extends Control
         $template->setTranslator($this->translator);
         $presenter = $this->presenter;
         
-        $poll = $this->pollsFacade->getPollsManager()->getByTopic($presenter->getParameter('topic_id'));
+        $poll = $this->pollRepository->getByTopicId($presenter->getParameter('topic_id'));
 
         if ($poll) {
             $pollAnswers = $this->pollsFacade->getPollsAnswersManager()->getAllByPoll($poll->poll_id);

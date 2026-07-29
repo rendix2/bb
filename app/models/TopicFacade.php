@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Model\Repository\PollRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\ThankRepository;
 use App\Model\Repository\TopicRepository;
@@ -118,9 +119,13 @@ class TopicFacade
         ThanksFacade      $thanksFacade,
         ReportFacade      $reportFacade,
         PollsFacade       $pollsFacade,
-        private readonly PostRepository  $postRepository,
+
         private readonly ThankRepository $thankRepository,
+
         private readonly TopicRepository $topicRepository,
+        private readonly PostRepository  $postRepository,
+
+        private readonly PollRepository $pollRepository,
     ) {
         $this->topicsManager     = $topicsManager;
         $this->topicWatchManager = $topicWatchManager;
@@ -450,28 +455,27 @@ class TopicFacade
 
     /**
      *
-     * @param TopicEntity $topic
+     * @param TopicEntity $topicEntity
      *
      * @return bool
      */
-    public function update(TopicEntity $topic)
+    public function update(\App\Model\Entity\TopicEntity $topicEntity)
     {
         $res = $this->topicsManager->update(
-            $topic->getTopic_id(),
-            ArrayHash::from(['topic_name' => $topic->getTopic_name()])
+            $topicEntity->getTopic_id(),
+            ArrayHash::from(['topic_name' => $topicEntity->getTopic_name()])
         );
 
         $this->postsManager->update(
-            $topic->getPost()->getPost_id(),
-            ArrayHash::from(['post_text' => $topic->getPost()->getPost_text()])
+            $topicEntity->getPost()->getPost_id(),
+            ArrayHash::from(['post_text' => $topicEntity->getPost()->getPost_text()])
         );
-        
-        $pollsManager = $this->pollsFacade->getPollsManager();
-        $topicHasPoll = $pollsManager->getByTopic($topic->getTopic_id());
+
+        $topicHasPoll = $this->pollRepository->getByTopic($topicEntity);
 
         if ($topicHasPoll) {
-            $poll = $topic->getPoll();
-            $poll->setPoll_topic_id($topic->getTopic_id());
+            $poll = $topicEntity->getPoll();
+            $poll->setPoll_topic_id($topicEntity->getTopic_id());
             
             if ($poll->poll_question) {
                 $this->pollsFacade->update($poll);
@@ -479,8 +483,8 @@ class TopicFacade
                 $this->pollsFacade->delete($poll);
             }
         } else {
-            if ($topic->getPoll()) {
-                $this->pollsFacade->add($topic->getPoll());
+            if ($topicEntity->getPoll()) {
+                $this->pollsFacade->add($topicEntity->getPoll());
             }
         }
 

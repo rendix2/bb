@@ -5,24 +5,15 @@ namespace App\ForumModule\Presenters\Base;
 use App\Authorization\Authorizator;
 use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
-use App\Authorization\Scopes\ForumScope;
-use App\Authorization\Scopes\PostScope;
-use App\Authorization\Scopes\TopicScope;
 use App\Authorization\Scopes\User;
-use App\Database\EntityManagerDecorator;
-use App\Model\Repository\ThankRepository;
 use App\Models\Manager;
 use App\Models\ModeratorManager;
-use App\Models\PmManager;
 use App\Models\ThankManager;
 use App\Models\Traits\ForumsTrait;
 use App\Models\Traits\PostTrait;
 use App\Models\Traits\TopicsTrait;
-use App\Models\Users2ForumsManager;
-use App\Models\User2GroupManager;
 use App\Presenters\Base\AuthenticatedPresenter;
 use Exception;
-use Nette\DI\Attributes\Inject;
 use Nette\Localization\ITranslator;
 
 /**

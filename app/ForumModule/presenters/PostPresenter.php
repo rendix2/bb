@@ -13,6 +13,7 @@ use App\Model\Entity\TopicWatchEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
+use App\Model\Repository\PollRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
 use App\Models\CategoryManager;
@@ -116,6 +117,8 @@ class PostPresenter extends BaseForumPresenter
         private readonly TopicRepository    $topicRepository,
         private readonly PostRepository     $postRepository,
 
+        private readonly PollRepository     $pollRepository,
+
         private readonly ScopeService $scopeService,
     )
     {
@@ -180,8 +183,8 @@ class PostPresenter extends BaseForumPresenter
             $this->error('Post was not found.');
         }
         
-        $pollDibi = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
-        
+        $pollDibi = $this->pollRepository->getByTopicId($topic_id);
+
         if ($pollDibi) {
             $pollTimeStamp = $pollDibi->poll_time_to;
             unset($pollDibi->poll_time_to);

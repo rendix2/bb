@@ -17,8 +17,12 @@ use App\Model\Entity\RankEntity;
 use App\Model\Entity\TopicWatchEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Repository\CategoryRepository;
+use App\Model\Repository\PollRepository;
+use App\Model\Repository\PostRepository;
+use App\Model\Repository\RankRepository;
 use App\Model\Repository\ThankRepository;
 use App\Model\Repository\TopicRepository;
+use App\Model\Repository\TopicWatchRepository;
 use App\Model\Repository\UserRepository;
 use App\Models\CategoryManager;
 use App\Models\Entity\PollEntity;
@@ -118,11 +122,16 @@ class TopicPresenter extends BaseForumPresenter
 
         private readonly ScopeService $scopeService,
 
-
         private readonly CategoryRepository $categoryRepository,
-        private readonly ThankRepository    $thankRepository,
         private readonly TopicRepository    $topicRepository,
+        private readonly PostRepository     $postRepository,
         private readonly UserRepository     $userRepository,
+
+        private readonly PollRepository     $pollRepository,
+
+        private readonly RankRepository       $rankRepository,
+        private readonly ThankRepository      $thankRepository,
+        private readonly TopicWatchRepository $topicWatchRepository,
     )
     {
         parent::__construct($manager);
@@ -222,8 +231,7 @@ class TopicPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $topicWatchEntity = $this->em
-            ->getRepository(TopicWatchEntity::class)
+        $topicWatchEntity = $this->topicWatchRepository
             ->findOneBy(
                 [
                     'topic' => $topicEntity,
@@ -273,8 +281,7 @@ class TopicPresenter extends BaseForumPresenter
         
         $this->requireAccess($forumScope, ForumScope::ACTION_THANK);
 
-        $userEntity = $this->em
-            ->getRepository(UserEntity::class)
+        $userEntity = $this->userRepository
             ->findOneBy(
                 [
                     'id' => $user_id,
@@ -323,8 +330,8 @@ class TopicPresenter extends BaseForumPresenter
 
         $forum      = $this->checkForumParam($forum_id, $category_id);
         $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
-        
-        $pollDibi   = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
+
+        $pollDibi = $this->pollRepository->getByTopicId($topic_id);
         
         if ($pollDibi) {
             $pollTimeStamp = $pollDibi->poll_time_to;
@@ -451,8 +458,7 @@ class TopicPresenter extends BaseForumPresenter
     {
         $user_id = $this->getUser()->getId();
 
-        $ranks = $this->em
-            ->getRepository(RankEntity::class)
+        $ranks = $this->rankRepository
             ->findAll();
 
         $topicEntity = $this->topicRepository
@@ -469,8 +475,7 @@ class TopicPresenter extends BaseForumPresenter
                 ]
             );
 
-        $topicWatchEntity = $this->em
-            ->getRepository(TopicWatchEntity::class)
+        $topicWatchEntity = $this->topicWatchRepository
             ->findOneBy(
                 [
                     'topic' => $topicEntity,
@@ -529,7 +534,7 @@ class TopicPresenter extends BaseForumPresenter
                 $this->error('Post was not found.');
             }
 
-            $poll = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
+            $poll = $this->pollRepository->getByTopicId($topic_id);
                         
             if ($poll) {
                 $this['editForm']->setDefaults(
@@ -748,22 +753,19 @@ class TopicPresenter extends BaseForumPresenter
         $topic_id    = $this->getParameter('topic_id');
         $user_id     = $this->getUser()->getId();
         $page        = $this->getParameter('page');
-        
+
+        $pollEntity = null;
+
         if ($values->poll_question) {
-            $pollAnswers = [];
+            $pollEntity = new \App\Model\Entity\PollEntity();
         
             foreach ($values->answers as $answer) {
-                $pollAnswer = PollAnswerEntity::setFromArrayHash($answer);
-                
-                if ($pollAnswer->getPoll_answer()) {
-                    $pollAnswers[] = $pollAnswer;
-                }
+                $pollAnswerEntity = new \App\Model\Entity\PollAnswerEntity();
+                $pollAnswerEntity->poll = $pollEntity;
+                $pollAnswerEntity->text = $answer->poll_answer;
+
+                $pollEntity->answers->add($pollAnswerEntity);
             }
-        
-            $poll = PollEntity::setFromArrayHash($values);
-            $poll->setPollAnswers($pollAnswers);
-        } else {
-            $poll = null;
         }
 
         if ($topic_id) {
@@ -774,16 +776,16 @@ class TopicPresenter extends BaseForumPresenter
                     ]
                 );
 
-            $firstPost = $this->postsManager->getFirstByTopic($oldTopicEntity->id);
-            $pollDibi  = $this->pollsFacade->getPollsManager()->getByTopic($topic_id);
+            $firstPost = $this->postRepository->getFirstByTopic($oldTopicEntity->id);
+            $pollEntity  = $this->pollRepository->getByTopicId($topic_id);
             
-            if ($pollDibi) {
-                $poll->setPoll_id($pollDibi->poll_id);
+            if ($pollEntity) {
+                $pollEntity->setPoll_id($pollDibi->poll_id);
             }
             
             if ($poll) {
                 foreach ($poll->getPollAnswers() as $answer) {
-                    $answer->setPoll_id($pollDibi->poll_id);
+                    $answer->setPoll_id($pollEntity->poll_id);
                 }
             }
             

@@ -103,7 +103,7 @@ class PostManager extends CrudManager
      *
      * @return Row|false
      */
-    public function getFirstByTopic($topic_id)
+    public function getFirstByTopic(int $topic_id)
     {
         return $this->getAllFluent()
             ->where('[post_id] = ',

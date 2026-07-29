@@ -37,4 +37,19 @@ class PostRepository extends EntityRepository
         );
     }
 
+    public function getFirstByTopic(int $topicId): ?PostEntity
+    {
+        $qb = $this->createQueryBuilder('p');
+        $subQb = $this->createQueryBuilder('p2');
+
+        $subQb->select('MIN(p2.id)')
+            ->where('p2.topic = :topicId');
+
+        return $qb->where($qb->expr()->eq('p.id', '(' . $subQb->getDQL() . ')'))
+            ->setParameter('topicId', $topicId)
+
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 }

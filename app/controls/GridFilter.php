@@ -5,6 +5,7 @@ namespace App\Controls;
 use Dibi\Fluent;
 use Exception;
 use InvalidArgumentException;
+use Nette\Application\Attributes\Deprecated;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Http\Session;
@@ -18,6 +19,7 @@ use Nette\Utils\DateTime;
  * @author rendix2
  * @package App\Controls
  */
+#[Deprecated]
 class GridFilter extends Control
 {
     /**
