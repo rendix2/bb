@@ -49,7 +49,7 @@ services:
 
 	-
 		type: App\Model\Repository\RankRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\PollEntity)
+		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\RankEntity)
 
 
 
