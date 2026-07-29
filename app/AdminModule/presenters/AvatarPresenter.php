@@ -4,6 +4,7 @@ namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\PaginatorControl;
+use App\Database\EntityManagerDecorator;
 use App\Model\Repository\UserRepository;
 use App\Models\UsersManager;
 use App\services\AvatarService;
@@ -28,16 +29,13 @@ class AvatarPresenter extends AdminPresenter
      */
     public Avatars $avatars;
 
-    /**
-     * AvatarPresenter constructor.
-     *
-     * @param UsersManager $manager
-     */
     public function __construct(
         UsersManager $manager,
         private readonly UserRepository $userRepository,
 
         private readonly AvatarService $avatarService,
+
+        private readonly EntityManagerDecorator $em,
     )
     {
         parent::__construct($manager);
@@ -79,8 +77,17 @@ class AvatarPresenter extends AdminPresenter
     public function handleDeleteAvatar(int $user_id, string $avatar_name): void
     {
         $this->avatarService->removeAvatarFile($avatar_name);
+
+        $userEntity = $this->userRepository->findOneBy(
+            [
+                'id' => $user_id,
+            ]
+        );
+
+        $userEntity->avatar = null;
         
-        $this->getManager()->update($user_id, ArrayHash::from(['user_avatar' => null]));
+        $this->em->persist($userEntity);
+        $this->em->flush();
         
         $this->flashMessage('Avatar was deleted.', self::FLASH_MESSAGE_SUCCESS);
         

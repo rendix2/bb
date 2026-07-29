@@ -50,7 +50,7 @@ class PmPresenter extends CrudPresenter
         parent::__construct($manager);
     }
 
-    public function checkRequirements($element): void
+    public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
     {
         $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
 

@@ -2,7 +2,6 @@
 
 namespace App\ModeratorModule\Presenters;
 
-use App\Models\PostManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Localization\ITranslator;
 
@@ -20,12 +19,7 @@ class IndexPresenter extends BasePresenter
      */
     private $translator;
     
-    /**
-     * IndexPresenter constructor.
-     *
-     * @param PostManager $manager
-     */
-    public function __construct(PostManager $manager)
+    public function __construct()
     {
         parent::__construct();
     }
@@ -40,12 +34,7 @@ class IndexPresenter extends BasePresenter
         parent::__destruct();
     }
 
-    /**
-     * IndexPresenter checkRequirements
-     *
-     * @param $element
-     */
-    public function checkRequirements($element): void
+    public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
     {
         $this->getUser()->getStorage()->setNamespace(self::FRONT_END_NAMESPACE);
         

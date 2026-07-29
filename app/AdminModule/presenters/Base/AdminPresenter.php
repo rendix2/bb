@@ -22,7 +22,7 @@ abstract class AdminPresenter extends CrudPresenter
     /**
      * @param mixed $element
      */
-    public function checkRequirements($element): void
+    public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
     {
         $user = $this->getUser();
         

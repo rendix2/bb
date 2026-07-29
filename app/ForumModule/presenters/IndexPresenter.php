@@ -11,8 +11,6 @@ use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Models\CategoryManager;
 use App\Models\Crud\CrudNullManager;
-use App\Model\Entity\CategoryEntity;
-use App\Model\Entity\ForumEntity;
 use App\Models\ModeratorManager;
 use Nette\DI\Attributes\Inject;
 
@@ -28,12 +26,6 @@ class IndexPresenter extends BaseForumPresenter
     #[Inject]
     public ModeratorManager $moderatorsManager;
 
-    /**
-     * IndexPresenter constructor.
-     *
-     * @param CrudNullManager $crudNullManager
-     * @param EntityManagerDecorator $em
-     */
     public function __construct(
         CrudNullManager $crudNullManager,
         private readonly EntityManagerDecorator $em,

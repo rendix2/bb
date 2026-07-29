@@ -65,76 +65,42 @@ abstract class ImageDir
         */
     }
 
-    /**
-     * ImageDir destructor.
-     */
-    public function __destruct()
-    {
-        $this->dir = null;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDir()
+    public function getDir(): string
     {
         return $this->dir[self::DIR];
     }
     
-    /**
-     *
-     * @return string
-     */
-    public function getTemplateDir()
+    public function getTemplateDir(): string
     {
         return $this->dir[self::RELATIVE_DIR];
     }
 
-    /**
-     * @return int
-     */
-    public function getMaxHeight()
+    public function getMaxHeight(): int
     {
         return $this->dir[self::MAX_HEIGHT];
     }
 
-    /**
-     * @return int
-     */
-    public function getMaxWidth()
+    public function getMaxWidth(): int
     {
         return $this->dir[self::MAX_WIDTH];
     }
 
-    /**
-     * @return int
-     */
-    public function getMaxFileSize()
+    public function getMaxFileSize(): int
     {
         return $this->dir[self::MAX_FILE_SIZE];
     }
 
-    /**
-     * @return array
-     */
-    public function getEnabledExtensions()
+    public function getEnabledExtensions(): array
     {
         return $this->dir[self::ENABLED_EXTENSIONS];
     }
     
-    /**
-     *
-     * @return SplFileInfo
-     */
-    public function getSPLDir()
+    public function getSPLDir(): SplFileInfo
     {
         return new SplFileInfo($this->getDir());
     }
 
-    /**
-     * @return int
-     */
-    public function getDirSize()
+    public function getDirSize(): int
     {
         $size = 0;
         $extensions = [];
@@ -153,10 +119,7 @@ abstract class ImageDir
         return $size;
     }
 
-    /**
-     * @return int
-     */
-    public function getImageCount()
+    public function getImageCount(): int
     {
         $extensions = [];
         

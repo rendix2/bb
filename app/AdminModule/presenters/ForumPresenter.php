@@ -8,8 +8,9 @@ use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
+use App\Model\Repository\PostRepository;
+use App\Model\Repository\TopicRepository;
 use App\Model\Repository\UserRepository;
-use App\Models\CategoryManager;
 use App\Models\ForumFacade;
 use App\Models\ForumManager;
 use App\Models\ModeratorManager;
@@ -75,7 +76,10 @@ class ForumPresenter extends AdminPresenter
         private readonly EntityManagerDecorator $em,
         private readonly CategoryRepository     $categoryRepository,
         private readonly ForumRepository        $forumRepository,
+        private readonly TopicRepository        $topicRepository,
+        private readonly PostRepository         $postRepository,
         private readonly UserRepository         $userRepository,
+
 
         ForumManager                            $manager,
     )

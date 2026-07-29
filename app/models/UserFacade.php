@@ -148,7 +148,7 @@ class UserFacade
             $this->avatarService->removeAvatarFile($userEntity->user_avatar);
         }
 
-        $posts = $this->postRepository->findByUser($userId);
+        $posts = $this->postRepository->findByUser($userEntity);
                 
         foreach ($posts as $post) {
             $this->postFacade->delete($post->topic, $post);

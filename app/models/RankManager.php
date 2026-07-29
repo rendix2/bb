@@ -24,11 +24,7 @@ class RankManager extends CrudManager
      * @var int
      */
     const NOT_UPLOADED = -5;
-    
-    /**
-     * @var Ranks $ranks
-     */
-    private $ranks;
+
 
     /**
      * RanksManager constructor.
@@ -41,51 +37,5 @@ class RankManager extends CrudManager
     {
         parent::__construct($dibi, $storage);
 
-        $this->ranks = $ranks;
-    }
-
-    /**
-     * @param FileUpload $file
-     * @param int        $id
-     *
-     * @return string
-     */
-    public function moveRank(FileUpload $file, $id): string
-    {
-        if ($file->ok) {
-            $rank = $this->getById($id);
-
-            if ($rank && $rank->rank_file) {
-                $this->removeRankFile($rank->rank_file);
-            }
-
-            $extension = self::getFileExtension($file->name);
-            $hash      = Random::generate(32);
-            $name      = $hash . '.' . $extension;
-
-            $file->move($this->ranks->getDir() . DIRECTORY_SEPARATOR . $name);
-
-            return $name;
-        } else {
-            return self::NOT_UPLOADED;
-        }
-    }
-
-    /**
-     *
-     * @param string $rank_file
-     *
-     * @return bool
-     */
-    public function removeRankFile($rank_file)
-    {
-        try {
-            FileSystem::delete($this->ranks->getDir() . DIRECTORY_SEPARATOR . $rank_file);
-            
-            return true;
-        } catch (IOException $e) {
-            Debugger::log(sprintf('File %s was not deleted.', $this->ranks->getDir() . DIRECTORY_SEPARATOR . $rank_file));
-            return false;
-        }
     }
 }

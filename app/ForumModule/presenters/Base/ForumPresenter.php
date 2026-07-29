@@ -88,7 +88,7 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     /**
      * @param $element
      */
-    public function checkRequirements($element): void
+    public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
     {
         $user = $this->getUser();
         

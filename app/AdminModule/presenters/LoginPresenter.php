@@ -51,7 +51,7 @@ class LoginPresenter extends BasePresenter
      *
      * @param mixed $element
      */
-    public function checkRequirements($element): void
+    public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
     {
         $this->getUser()->getStorage()->setNamespace(self::BACK_END_NAMESPACE);
         

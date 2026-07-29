@@ -1,81 +1,85 @@
 services:
-	Authenticator:
-		class: App\Authenticator
-	RouterFactory: App\Core\RouterFactory::createRouter
-	MysqlDumper:
-		class: Ifsnop\Mysqldump\Mysqldump(%database.default.dsn%, %database.default.username%, %database.default.password%)
-	BBMailer:
-		class: App\Controls\BBMailer
-	GridFilter:
-		factory: App\Controls\GridFilter
-	UserSearchControl:
-		factory:  App\Controls\UserSearchControl
+    Authenticator:
+        class: App\Authenticator
+    RouterFactory: App\Core\RouterFactory::createRouter
+    MysqlDumper:
+        class: Ifsnop\Mysqldump\Mysqldump(%database.default.dsn%, %database.default.username%, %database.default.password%)
+    BBMailer:
+        class: App\Controls\BBMailer
+    GridFilter:
+        factory: App\Controls\GridFilter
+    UserSearchControl:
+        factory:  App\Controls\UserSearchControl
 
-	-
-		type: App\Model\Repository\UserRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\UserEntity)
+    -
+        type: App\Model\Repository\UserRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\UserEntity)
 
-	-
-		type: App\Model\Repository\LanguageRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\LanguageEntity)
+    -
+        type: App\Model\Repository\LanguageRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\LanguageEntity)
 
-	-
-		type: App\Model\Repository\CategoryRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\CategoryEntity)
+    -
+        type: App\Model\Repository\CategoryRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\CategoryEntity)
 
-	-
-		type: App\Model\Repository\ForumRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\ForumEntity)
+    -
+        type: App\Model\Repository\ForumRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\ForumEntity)
 
-	-
-		type: App\Model\Repository\TopicRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\TopicEntity)
+    -
+        type: App\Model\Repository\TopicRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\TopicEntity)
 
-	-
-		type: App\Model\Repository\PostRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\PostEntity)
+    -
+        type: App\Model\Repository\PostRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\PostEntity)
 
-	-
-		type: App\Model\Repository\ThankRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\ThankEntity)
+    -
+        type: App\Model\Repository\ThankRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\ThankEntity)
 
-	-
-		type: App\Model\Repository\TopicWatchRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\TopicWatchEntity)
+    -
+        type: App\Model\Repository\TopicWatchRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\TopicWatchEntity)
 
-	-
-		type: App\Model\Repository\PollRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\PollEntity)
+    -
+        type: App\Model\Repository\PollRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\PollEntity)
 
-	-
-		type: App\Model\Repository\RankRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\RankEntity)
+    -
+        type: App\Model\Repository\RankRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\RankEntity)
+
+    -
+        type: App\Model\Repository\ReportRepository
+        factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\ReportEntity)
 
 
 
 search:
-	-   in: %appDir%
-		classes:
-			- *Factory
-			- *Facade
-			- *Grid
-			- *Service
-			#- *Manager
-			- *Dir
-			- *Form
+    -   in: %appDir%
+        classes:
+            - *Factory
+            - *Facade
+            - *Grid
+            - *Service
+            #- *Manager
+            - *Dir
+            - *Form
 
 
 
 includes:
-	- %configDir%/ext/console.neon
-	- %configDir%/ext/guzzle.neon
-	- %configDir%/ext/nettrine.neon
-	- %configDir%/ext/translation.neon
-	- %configDir%/ext/menu.neon
-	- %configDir%/ext/mailing.neon
-	- %configDir%/ext/redis.neon
-	- %configDir%/ext/pwned.neon
-	- %configDir%/settings.neon
-	#- %configDir%/config.neon
-	- %configDir%/factory.neon
-	- %configDir%/managers.neon
+    - %configDir%/ext/console.neon
+    - %configDir%/ext/guzzle.neon
+    - %configDir%/ext/nettrine.neon
+    - %configDir%/ext/translation.neon
+    - %configDir%/ext/menu.neon
+    - %configDir%/ext/mailing.neon
+    - %configDir%/ext/redis.neon
+    - %configDir%/ext/pwned.neon
+    - %configDir%/settings.neon
+    #- %configDir%/config.neon
+    - %configDir%/factory.neon
+    - %configDir%/managers.neon

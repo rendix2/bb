@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
+use App\Model\Repository\CategoryRepository;
+use App\Model\Repository\ForumRepository;
 
 /**
  * Description of CategoryFacade
@@ -14,22 +16,18 @@ use App\Model\Entity\ForumEntity;
 #[\JetBrains\PhpStorm\Deprecated]
 class CategoryFacade
 {
-    /**
-     * CategoryFacade constructor.
-     *
-     * @param EntityManagerDecorator $em
-     * @param ForumFacade $forumFacade
-     */
     public function __construct(
         private readonly EntityManagerDecorator $em,
         private readonly ForumFacade            $forumFacade,
+
+        private readonly CategoryRepository $categoryRepository,
+        private readonly ForumRepository $forumRepository,
     ) {
     }
 
     public function delete(int $item_id): void
     {
-        $subCategories = $this->em
-            ->getRepository(\App\Model\Entity\CategoryEntity::class)
+        $subCategories = $this->categoryRepository
             ->findBy(
                 [
                     'parent' => $item_id,
@@ -40,8 +38,7 @@ class CategoryFacade
             $this->delete($subCategory->category_id);
         }
 
-        $categoryEntity = $this->em
-            ->getRepository(\App\Model\Entity\CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $item_id,
@@ -51,8 +48,7 @@ class CategoryFacade
         /**
          * @var ForumEntity[] $forums
          */
-        $forums = $this->em
-            ->getRepository(ForumEntity::class)
+        $forums = $this->forumRepository
             ->findBy(
                 [
                     'category' => $categoryEntity,

@@ -4,6 +4,10 @@ namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
+use App\Model\Repository\ForumRepository;
+use App\Model\Repository\PostRepository;
+use App\Model\Repository\ReportRepository;
+use App\Model\Repository\TopicRepository;
 use App\Models\Entity\TopicEntity;
 use App\Utils;
 
@@ -15,49 +19,22 @@ use App\Utils;
  */
 class ReportFacade
 {
-
-    /**
-     * @var PostManager $postsManager
-     */
-    private PostManager $postsManager;
-    
     /**
      *
      * @var ReportManager $reportsManager
      */
     private ReportManager $reportManager;
-    
-    /**
-     *
-     * @var TopicManager $topicsManager
-     */
-    private TopicManager $topicsManager;
-    
-    /**
-     *
-     * @var ForumManager $forumsManager
-     */
-    private ForumManager $forumsManager;
 
-    /**
-     *
-     * ReportFacade constructor
-     *
-     * @param ForumManager $forumsManager
-     * @param TopicManager $topicsManager
-     * @param PostManager $postsManager
-     * @param ReportManager $reportsManager
-     */
     public function __construct(
-        ForumManager  $forumsManager,
-        TopicManager  $topicsManager,
-        PostManager   $postsManager,
         ReportManager $reportsManager,
         private readonly EntityManagerDecorator $em,
+
+        private readonly ForumRepository $forumRepository,
+        private readonly TopicRepository $topicRepository,
+        private readonly PostRepository  $postRepository,
+
+        private readonly ReportRepository $reportRepository,
     ) {
-        $this->forumsManager  = $forumsManager;
-        $this->topicsManager  = $topicsManager;
-        $this->postsManager   = $postsManager;
         $this->reportManager  = $reportsManager;
     }
 
@@ -69,8 +46,7 @@ class ReportFacade
      */
     public function deleteByCategory($category_id)
     {
-        $forums = $this->em
-            ->getRepository(ForumEntity::class)
+        $forums = $this->forumRepository
             ->findBy(
                 [
                     'category' => $category_id,
@@ -78,28 +54,20 @@ class ReportFacade
             );
         
         foreach ($forums as $forum) {
-            $this->deleteByForum($forum->forum_id);
+            $this->deleteByForumId($forum->forum_id);
         }
     }
     
-    /**
-     *
-     * @param int $forum_id
-     *
-     * @return bool
-     */
-    public function deleteByForum($forum_id)
+    public function deleteByForumId(int $forum_id)
     {
-        $forumEntity = $this->em
-            ->getRepository(ForumEntity::class)
+        $forumEntity = $this->forumRepository
             ->findOneBy(
                 [
                     'id' => $forum_id,
                 ]
             );
 
-        $topics = $this->em
-            ->getRepository(\App\Model\Entity\TopicEntity::class)
+        $topics = $this->topicRepository
             ->findBy(
                 [
                     'forum' => $forumEntity,
@@ -109,8 +77,14 @@ class ReportFacade
         foreach ($topics as $topicEntity) {
             $this->deleteByTopic($topicEntity);
         }
-        
-        return $this->reportManager->deleteByForum($forum_id);
+
+        $reports = $this->reportRepository->findByForum($forumEntity);
+
+        foreach ($reports as $report) {
+            $this->em->remove($report);
+        }
+
+        $this->em->flush();
     }
 
     /**
@@ -120,8 +94,8 @@ class ReportFacade
      */
     public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity)
     {
-        $posts     = $this->postsManager->getFluentByTopic($topicEntity->id);
-        $posts_ids = Utils::arrayObjectColumn($posts, 'post_id');
+        $posts = $this->postRepository->findByTopic($topicEntity);
+        $posts_ids = Utils::arrayObjectColumn($posts, 'id');
         
         $this->reportManager->deleteByPosts($posts_ids);
         return $this->reportManager->deleteByTopic($topicEntity->id);

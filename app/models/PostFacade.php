@@ -25,7 +25,7 @@ class PostFacade
      *
      * @var PostManager $postsManager
      */
-    private $postsManager;
+    private PostManager $postsManager;
     
     /**
      *
@@ -295,7 +295,8 @@ class PostFacade
         );
         
         // recount last post info
-        $res = $this->postsManager->delete($postEntity->id);
+        $this->em->remove($postEntity);
+        $this->em->flush();
                 
         // last post
         if ($topic->getTopic_last_post_id() === (int)$postEntity->id && $topic->getTopic_first_post_id() !== (int)$postEntity->id) {

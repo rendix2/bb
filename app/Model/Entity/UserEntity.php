@@ -55,6 +55,9 @@ class UserEntity
     #[Column(type: Types::BOOLEAN)]
     public bool $isActive;
 
+    #[Column(type: Types::STRING, length: 1024, nullable: true)]
+    public ?string $avatar;
+
     #[ManyToOne(targetEntity: LanguageEntity::class, inversedBy: 'users')]
     #[JoinColumn(nullable: false)]
     public LanguageEntity $language;

@@ -5,10 +5,15 @@ namespace App\AdminModule\Presenters;
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
+use App\Controls\PaginatorControl;
 use App\Models\RankManager;
+use App\services\RankService;
 use App\Settings\Ranks;
+use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 /**
  * Description of RankPresenter
@@ -20,35 +25,92 @@ use Nette\Utils\ArrayHash;
 class RankPresenter extends AdminPresenter
 {
     /**
-     * @var int
-     */
-    const N = -1;
-    
-    /**
      * @var Ranks $ranks
      * @inject
      */
     public Ranks $ranks;
 
-    /**
-     * RankPresenter constructor.
-     *
-     * @param RankManager $manager
-     */
-    public function __construct(RankManager $manager)
+    public function __construct(
+        RankManager $manager,
+
+        private readonly RankService $rankService,
+    )
     {
         parent::__construct($manager);
     }
 
-    /**
-     *
-     * @param int|null $id
-     */
-    public function renderEdit($id = null): void
+    public function actionDefault(int $page = 1): void
     {
-        parent::renderEdit($id);
-        
+        if (isset($this['gridFilter'])) {
+            $this->getComponent('gridFilter');
+        }
+
+        $items = $this->getManager()->getAllFluent();
+
+        $this->gf->applyWhere($items);
+        $this->gf->applyOrderBy($items);
+
+        $paginator = new PaginatorControl($items, 20, 5, $page);
+        $this->addComponent($paginator, 'paginator');
+
+        if (!$paginator->getCount()) {
+            $this->flashMessage(sprintf('No %s.', $this->getTitle()), self::FLASH_MESSAGE_DANGER);
+        }
+
+        $this->template->items      = $items->fetchAll();
+        $this->template->countItems = $paginator->getCount();
+    }
+
+    public function renderDefault(int $page = 1): void
+    {
+        $this->template->title = $this->getTitleOnDefault();
+    }
+
+    public function renderEdit(int $id = null): void
+    {
         $this->template->ranksDir = $this->ranks->getTemplateDir();
+
+        if ($id) {
+            if (!is_numeric($id)) {
+                $this->error('Parameter $id of CrudPresenter::renderEdit($id) is not numeric.');
+            }
+
+            $item = $this->getManager()->getById($id);
+
+            if (!$item) {
+                $this->error('Item $' . $this->getTitle() . '[' . $id . '] was not found.');
+            }
+
+            $this['editForm']->setDefaults($item);
+
+            $this->template->item_id = $id;
+            $this->template->item    = $item;
+            $this->template->title   = $this->getTitleOnEdit();
+        } else {
+            $this->template->item_id = null;
+            $this->template->title   = $this->getTitleOnAdd();
+            $this->template->item    = [];
+
+            $this['editForm']->setDefaults([]);
+        }
+    }
+
+
+    public function actionDelete(int $id)
+    {
+        if (!is_numeric($id)) {
+            $this->error('Parameter is not numeric.');
+        }
+
+        $result = $this->getManager()->delete($id);
+
+        if ($result) {
+            $this->flashMessage('Item was deleted.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('Item was not deleted.', self::FLASH_MESSAGE_DANGER);
+        }
+
+        $this->redirect(':' . $this->getName() . ':default');
     }
 
     protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
@@ -95,15 +157,14 @@ class RankPresenter extends AdminPresenter
     }
 
     /**
-     * @param Form      $form
-     * @param ArrayHash $values
+     * @param Form      $form   form
+     * @param ArrayHash $values values
      */
     public function editFormSuccess(Form $form, ArrayHash $values): void
     {
-        $move = $this->getManager()->moveRank(
-            $values->rank_file,
-            $this->getParameter('id')
-        );
+        $id = $this->getParameter('id');
+
+        $move = $this->rankService->moveRank($values->rank_file, $id);
 
         if ($move !== RankManager::NOT_UPLOADED) {
             $values->rank_file = $move;
@@ -111,7 +172,28 @@ class RankPresenter extends AdminPresenter
             unset($values->rank_file);
         }
 
-        parent::editFormSuccess($form, $values);
+        try {
+            if ($id) {
+                $result = $this->getManager()->update($id, $values);
+            } else {
+                $result = $id = $this->getManager()->add($values);
+            }
+
+            if ($result) {
+                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+            } else {
+                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
+            }
+        } catch (DriverException $e) {
+            $this->flashMessage(
+                'There was some problem during saving into database. Form was NOT saved.',
+                self::FLASH_MESSAGE_DANGER
+            );
+
+            Debugger::log($e->getMessage(), ILogger::CRITICAL);
+        }
+
+        $this->redirect(':' . $this->getName() . ':default');
     }
 
     /**

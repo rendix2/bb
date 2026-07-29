@@ -20,11 +20,7 @@ use Tracy\ILogger;
  */
 abstract class CrudPresenter extends AuthenticatedPresenter
 {
-    /**
-     * @var int
-     */
-    const ITEMS_PER_PAGE = 20;
-    
+
     /**
      * @var GridFilter $gf
      */
@@ -109,7 +105,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     /**
      * @param int $id
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id)
     {
         if (!is_numeric($id)) {
             $this->error('Parameter is not numeric.');
@@ -129,18 +125,14 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     /**
      * @param int $page
      */
-    public function actionDefault($page = 1)
+    public function actionDefault(int $page = 1): void
     {
-        if (isset($this['gridFilter'])) {
-            $this->getComponent('gridFilter');
-        }
-
         $items = $this->getManager()->getAllFluent();
 
         $this->gf->applyWhere($items);
         $this->gf->applyOrderBy($items);
 
-        $paginator = new PaginatorControl($items, static::ITEMS_PER_PAGE, 5, $page);
+        $paginator = new PaginatorControl($items, 20, 5, $page);
         $this->addComponent($paginator, 'paginator');
 
         if (!$paginator->getCount()) {
@@ -154,7 +146,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     /**
      * @param int $page
      */
-    public function renderDefault($page = 1)
+    public function renderDefault(int $page = 1): void
     {
         $this->template->title = $this->getTitleOnDefault();
     }
@@ -162,7 +154,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     /**
      * @param int|null $id
      */
-    public function renderEdit($id = null): void
+    public function renderEdit(int $id = null): void
     {
         if ($id) {
             if (!is_numeric($id)) {

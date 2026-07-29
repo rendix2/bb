@@ -368,7 +368,7 @@ class TopicFacade
             return false;
         }
 
-        $posts = $this->postRepository->findByTopic($topic_from_id);
+        $posts = $this->postRepository->findByTopicId($topic_from_id);
 
         $thanks = $this->thankRepository->findByTopicId($topic_from_id);
 

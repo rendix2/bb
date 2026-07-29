@@ -3,6 +3,8 @@
 namespace App\Model\Repository;
 
 use App\Model\Entity\PostEntity;
+use App\Model\Entity\TopicEntity;
+use App\Model\Entity\UserEntity;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -13,7 +15,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class PostRepository extends EntityRepository
 {
-    public function findByUser(int $userId): array
+    public function findByUserId(int $userId): array
     {
         /**
          * @var PostEntity[]
@@ -25,7 +27,19 @@ class PostRepository extends EntityRepository
         );
     }
 
-    public function findByTopic(int $topicId): array
+    public function findByUser(UserEntity $userEntity): array
+    {
+        /**
+         * @var PostEntity[]
+         */
+        return $this->findBy(
+            [
+                'user' => $userEntity,
+            ]
+        );
+    }
+
+    public function findByTopicId(int $topicId): array
     {
         /**
          * @var PostEntity[]
@@ -36,6 +50,19 @@ class PostRepository extends EntityRepository
             ]
         );
     }
+
+    public function findByTopic(TopicEntity $topicEntity): array
+    {
+        /**
+         * @var PostEntity[]
+         */
+        return $this->findBy(
+            [
+                'topic' => $topicEntity,
+            ]
+        );
+    }
+
 
     public function getFirstByTopic(int $topicId): ?PostEntity
     {

@@ -8,6 +8,7 @@ use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
 use App\Model\Repository\CategoryRepository;
+use App\Model\Repository\ForumRepository;
 use App\Models\CategoryManager;
 use Doctrine\DBAL\Exception as DbalException;
 use Nette\Application\UI\Form;
@@ -31,7 +32,9 @@ class CategoryPresenter extends AdminPresenter
      */
     public function __construct(
         private readonly EntityManagerDecorator $em,
-        private readonly CategoryRepository     $categoryRepository,
+
+        private readonly CategoryRepository $categoryRepository,
+        private readonly ForumRepository    $forumRepository,
         CategoryManager $manager
     )
     {
@@ -46,8 +49,7 @@ class CategoryPresenter extends AdminPresenter
     {
         parent::renderDefault($page);
 
-        $allCategories = $this->em
-            ->getRepository(\App\Model\Entity\CategoryEntity::class)
+        $allCategories = $this->categoryRepository
             ->findAll();
 
         $rootCategories = array_filter($allCategories, fn($f) => $f->getParent() === null);
@@ -65,8 +67,7 @@ class CategoryPresenter extends AdminPresenter
                 $this->error('Param id is not numeric.');
             }
 
-            $categoryEntity = $this->em
-                ->getRepository(\App\Model\Entity\CategoryEntity::class)
+            $categoryEntity = $this->categoryRepository
                 ->findOneBy(
                     [
                         'id' => $id,
@@ -79,8 +80,7 @@ class CategoryPresenter extends AdminPresenter
 
             $this['editForm']->setDefaults($categoryEntity);
 
-            $forums = $this->em
-                ->getRepository(ForumEntity::class)
+            $forums = $this->forumRepository
                 ->findBy(
                     [
                         'category' => $id,
