@@ -24,7 +24,6 @@ use App\Model\Repository\ThankRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\TopicWatchRepository;
 use App\Model\Repository\UserRepository;
-use App\Models\CategoryManager;
 use App\Models\Entity\PollEntity;
 use App\Models\Entity\PostEntity;
 use App\Models\Entity\TopicEntity;
@@ -33,6 +32,7 @@ use App\Models\Posts2FilesManager;
 use App\Models\ThanksFacade;
 use App\Models\TopicFacade;
 use App\Models\TopicManager;
+use App\services\BreadcrumbService;
 use App\services\ScopeService;
 use App\Settings\Avatars;
 use App\Settings\PostSetting;
@@ -40,9 +40,7 @@ use App\Settings\TopicsSetting;
 use dibi;
 use Doctrine\DBAL\Exception;
 use Nette\Application\UI\Form;
-use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
-use Nette\DI\Attributes\Inject;
 use Nette\Forms\Container;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
@@ -109,9 +107,6 @@ class TopicPresenter extends BaseForumPresenter
      */
     public Posts2FilesManager $posts2FilesManager;
 
-    #[Inject]
-    public CategoryManager $categoryManager;
-
     public function __construct(
         TopicManager                            $manager,
         private readonly EntityManagerDecorator $em,
@@ -119,7 +114,8 @@ class TopicPresenter extends BaseForumPresenter
         private readonly ReportForm             $reportForm,
         private readonly TopicJumpToForumForm   $topicJumpToForumForm,
 
-        private readonly ScopeService $scopeService,
+        private readonly ScopeService      $scopeService,
+        private readonly BreadcrumbService $breadcrumbService,
 
         private readonly CategoryRepository $categoryRepository,
         private readonly TopicRepository    $topicRepository,
@@ -355,7 +351,7 @@ class TopicPresenter extends BaseForumPresenter
                 ]
             );
 
-        $pollDibi = $this->pollRepository->getByTopicId($topic_id);
+        $pollDibi = $this->pollRepository->findByTopicId($topic_id);
         
         if ($pollDibi) {
             $pollTimeStamp = $pollDibi->poll_time_to;
@@ -574,13 +570,13 @@ class TopicPresenter extends BaseForumPresenter
                     ]
                 );
 
-            $post = $this->postRepository->getFirstByTopicId($topic_id);
+            $post = $this->postRepository->findFirstByTopicId($topic_id);
 
             if (!$post) {
                 $this->error('Post was not found.');
             }
 
-            $poll = $this->pollRepository->getByTopicId($topic_id);
+            $poll = $this->pollRepository->findByTopicId($topic_id);
                         
             if ($poll) {
                 $this['editForm']->setDefaults(
@@ -838,8 +834,8 @@ class TopicPresenter extends BaseForumPresenter
                     ]
                 );
 
-            $firstPost = $this->postRepository->getFirstByTopicId($oldTopicEntity->id);
-            $pollEntity  = $this->pollRepository->getByTopicId($topic_id);
+            $firstPost = $this->postRepository->findFirstByTopicId($oldTopicEntity->id);
+            $pollEntity  = $this->pollRepository->findByTopicId($topic_id);
             
             if ($pollEntity) {
                 $pollEntity->setPoll_id($pollDibi->poll_id);
@@ -889,13 +885,8 @@ class TopicPresenter extends BaseForumPresenter
                   ->setPoll($poll)
                   ->setPost($post);
             
-            $res = $topic_id = $this->topicFacade->add($topic);
+            $res = $topic_id = $this->topicFacade->add($topic, $post);
         }
-
-        // refresh cache on index page to show this last topic
-        $cache = new Cache($this->storage, IndexPresenter::CACHE_NAMESPACE);
-        $cache->remove(IndexPresenter::CACHE_KEY_LAST_TOPIC);
-        $cache->remove(IndexPresenter::CACHE_KEY_TOTAL_TOPICS);
 
         if ($res) {
             $this->flashMessage('Topic was saved.', self::FLASH_MESSAGE_SUCCESS);
@@ -924,8 +915,8 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
-            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            $this->breadcrumbService->getCategoryBreadCrumb($this->getParameter('category_id')),
+            $this->breadcrumbService->getForumBreadCrumb($this->getParameter('forum_id')),
             [['text' => 'menu_topic']]
         );
 
@@ -939,8 +930,8 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
-            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            $this->breadcrumbService->getCategoryBreadCrumb($this->getParameter('category_id')),
+            $this->breadcrumbService->getForumBreadCrumb($this->getParameter('forum_id')),
             [['text' => 'menu_topic']]
         );
 
@@ -954,8 +945,8 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
-            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            $this->breadcrumbService->getCategoryBreadCrumb($this->getParameter('category_id')),
+            $this->breadcrumbService->getForumBreadCrumb($this->getParameter('forum_id')),
             [['link' => 'Topic:default',
                 'params' => [
                     $this->getParameter('category_id'),
@@ -976,8 +967,8 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
-            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            $this->breadcrumbService->getCategoryBreadCrumb($this->getParameter('category_id')),
+            $this->breadcrumbService->getForumBreadCrumb($this->getParameter('forum_id')),
             [['link' => 'Topic:default',
                 'params' => [
                     $this->getParameter('category_id'),
@@ -998,8 +989,8 @@ class TopicPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
-            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            $this->breadcrumbService->getCategoryBreadCrumb($this->getParameter('category_id')),
+            $this->breadcrumbService->getForumBreadCrumb($this->getParameter('forum_id')),
             [['link' => 'Topic:default',
                 'params' => [
                     $this->getParameter('category_id'),

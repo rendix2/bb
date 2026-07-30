@@ -18,22 +18,10 @@ use Nette\Utils\ArrayHash;
  */
 class SendMailToAdminForm extends Control
 {
-    /**
-     *
-     * @var TranslatorFactory $translatorFactory
-     */
     private TranslatorFactory $translatorFactory;
 
-    /**
-     *
-     * @var UsersManager $usersManager
-     */
     private UsersManager $usersManager;
     
-    /**
-     *
-     * @var BBMailer $bbMailer
-     */
     private BBMailer $bbMailer;
 
     /**

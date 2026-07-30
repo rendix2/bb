@@ -4,15 +4,20 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
+use App\Controls\PaginatorControl;
 use App\Controls\UserSearchControl;
 use App\Forms\ReportForm;
 use App\Models\PmManager;
 use App\Models\ReportManager;
 use App\Models\UsersManager;
+use App\Presenters\Base\AuthenticatedPresenter;
 use App\Presenters\crud\CrudPresenter;
+use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 /**
  * Description of PmPresenter
@@ -21,7 +26,7 @@ use Nette\Utils\ArrayHash;
  * @method PmManager getManager()
  * @package App\ForumModule\Presenters
  */
-class PmPresenter extends CrudPresenter
+class PmPresenter extends AuthenticatedPresenter
 {
     /**
      * @var ReportManager $reportsManager
@@ -71,6 +76,55 @@ class PmPresenter extends CrudPresenter
     public function handleSetUserId($user_id, $user_name): void
     {
         $this->redirect('Pm:edit', ['user_id' => $user_id, 'user_name' => $user_name]);
+    }
+
+    /**
+     * @param int $id
+     */
+    public function actionDelete(int $id)
+    {
+        if (!is_numeric($id)) {
+            $this->error('Parameter is not numeric.');
+        }
+
+        $result = $this->getManager()->delete($id);
+
+        if ($result) {
+            $this->flashMessage('Item was deleted.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('Item was not deleted.', self::FLASH_MESSAGE_DANGER);
+        }
+
+        $this->redirect(':' . $this->getName() . ':default');
+    }
+
+    /**
+     * @param int $page
+     */
+    public function actionDefault(int $page = 1): void
+    {
+        $items = $this->getManager()->getAllFluent();
+
+        $this->gf->applyWhere($items);
+        $this->gf->applyOrderBy($items);
+
+        $paginator = new PaginatorControl($items, 20, 5, $page);
+        $this->addComponent($paginator, 'paginator');
+
+        if (!$paginator->getCount()) {
+            $this->flashMessage(sprintf('No %s.', $this->getTitle()), self::FLASH_MESSAGE_DANGER);
+        }
+
+        $this->template->items      = $items->fetchAll();
+        $this->template->countItems = $paginator->getCount();
+    }
+
+    /**
+     * @param int $page
+     */
+    public function renderDefault(int $page = 1): void
+    {
+        $this->template->title = $this->getTitleOnDefault();
     }
 
     /**
@@ -244,6 +298,29 @@ class PmPresenter extends CrudPresenter
         $values->pm_time_sent = time();
         unset($values->user_name);
 
-        parent::editFormSuccess($form, $values);
+        $id = $this->getParameter('id');
+
+        try {
+            if ($id) {
+                $result = $this->getManager()->update($id, $values);
+            } else {
+                $result = $id = $this->getManager()->add($values);
+            }
+
+            if ($result) {
+                $this->flashMessage($this->getTitle() . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+            } else {
+                $this->flashMessage('Nothing to save.', self::FLASH_MESSAGE_INFO);
+            }
+        } catch (DriverException $e) {
+            $this->flashMessage(
+                'There was some problem during saving into database. Form was NOT saved.',
+                self::FLASH_MESSAGE_DANGER
+            );
+
+            Debugger::log($e->getMessage(), ILogger::CRITICAL);
+        }
+
+        $this->redirect(':' . $this->getName() . ':default');
     }
 }

@@ -104,6 +104,18 @@ class UserEntity
     #[ManyToMany(targetEntity: RoleEntity::class, mappedBy: 'users', cascade: ['persist', 'remove'])]
     public Collection $roles;
 
+    /**
+     * @var Collection<int, SessionEntity> $activationKeys
+     */
+    #[OneToMany(targetEntity: SessionEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $sessions;
+
+    /**
+     * @var Collection<int, ThankEntity> $thanks
+     */
+    #[OneToMany(targetEntity: ThankEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $thanks;
+
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
@@ -114,6 +126,8 @@ class UserEntity
         $this->autoLogins = new ArrayCollection();
         $this->emails = new ArrayCollection();
         $this->passwordRequests = new ArrayCollection();
+        $this->sessions = new ArrayCollection();
+        $this->thanks = new ArrayCollection();
 
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;

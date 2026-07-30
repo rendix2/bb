@@ -19,10 +19,6 @@ use Nette\Utils\ArrayHash;
 class TopicJumpToForumForm extends Control
 {
 
-    /**
-     *
-     * @var ITranslator $translator
-     */
     private ITranslator $translator;
 
     public function __construct(
@@ -77,7 +73,7 @@ class TopicJumpToForumForm extends Control
         $this->getPresenter()
             ->redirect(
                 ':Forum:Forum:default',
-                $forumEntity->forum_category_id,
+                $forumEntity->category->id,
                 $values->forum_id
             );
     }

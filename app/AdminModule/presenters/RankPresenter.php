@@ -32,14 +32,12 @@ class RankPresenter extends AdminPresenter
     public Ranks $ranks;
 
     public function __construct(
-        RankManager                     $manager,
-
         private readonly RankRepository $rankRepository,
 
         private readonly RankService    $rankService,
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     public function actionDefault(int $page = 1): void
@@ -69,7 +67,7 @@ class RankPresenter extends AdminPresenter
         $this->template->title = $this->getTitleOnDefault();
     }
 
-    public function renderEdit(int $id = null): void
+    public function renderEdit(int $id): void
     {
         $this->template->ranksDir = $this->ranks->getTemplateDir();
 

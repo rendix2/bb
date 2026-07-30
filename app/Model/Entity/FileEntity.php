@@ -2,6 +2,7 @@
 
 namespace App\Model\Entity;
 
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -29,5 +30,11 @@ class FileEntity
     #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'posts')]
     #[JoinColumn(nullable: false)]
     public UserEntity $user;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    public DateTimeImmutable $createdAt;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?DateTimeImmutable $updatedAt;
 
 }

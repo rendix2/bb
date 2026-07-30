@@ -2,6 +2,7 @@
 
 namespace App\Model\Entity;
 
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -42,16 +43,20 @@ class ReportEntity
     #[JoinColumn(nullable: false)]
     public PostEntity $post;
 
-
     #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'posts')]
     #[JoinColumn(nullable: false)]
     public UserEntity $user;
-
 
     #[Column(type: Types::TEXT, nullable: false)]
     public string $reportText;
 
     #[Column(type: Types::INTEGER, nullable: false)]
     public int $status;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    public DateTimeImmutable $createdAt;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?DateTimeImmutable $updatedAt;
 
 }

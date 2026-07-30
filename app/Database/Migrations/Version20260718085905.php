@@ -26,7 +26,6 @@ final class Version20260718085905 extends AbstractMigration
     {
         $table = $schema->createTable('public.topic');
 
-
         $table->addColumn('id', Types::BIGINT)
             ->setAutoincrement(true)
             ->setComment('ID');
@@ -46,6 +45,15 @@ final class Version20260718085905 extends AbstractMigration
         $table->addColumn('name', Types::STRING)
             ->setComment('Name')
             ->setLength(512);
+
+        $table->addColumn('first_post_id', Types::BIGINT)
+            ->setComment('First post ID');
+
+        $table->addColumn('last_post_id', Types::BIGINT)
+            ->setComment('Last post ID');
+
+        $table->addColumn('poll_id', Types::BIGINT)
+            ->setComment('Poll ID');
 
         $table->addColumn('post_count', Types::BIGINT)
             ->setComment('Post count');

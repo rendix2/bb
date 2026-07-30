@@ -16,11 +16,6 @@ use App\Models\SmileysManager;
  */
 class SmileysPresenter extends AdminPresenter
 {
-    /**
-     * SmileysPresenter constructor.
-     *
-     * @param SmileysManager $manager
-     */
     public function __construct(SmileysManager $manager)
     {
         parent::__construct($manager);

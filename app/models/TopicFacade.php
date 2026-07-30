@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Model\Entity\PostEntity;
 use App\Model\Repository\PollRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\ThankRepository;
@@ -107,14 +108,14 @@ class TopicFacade
      * @param PollsFacade       $pollsFacade
      */
     public function __construct(
-        TopicManager     $topicsManager,
+        TopicManager      $topicsManager,
         TopicWatchManager $topicWatchManager,
-        PostManager      $postsManager,
+        PostManager       $postsManager,
         UsersManager      $usersManager,
-        ThankManager     $thanksManager,
-        ForumManager     $forumsManager,
+        ThankManager      $thanksManager,
+        ForumManager      $forumsManager,
         PostFacade        $postFacade,
-        ReportManager    $reportsManager,
+        ReportManager     $reportsManager,
         TopicWatchFacade  $topicWatchFacade,
         ThanksFacade      $thanksFacade,
         ReportFacade      $reportFacade,
@@ -141,35 +142,30 @@ class TopicFacade
         $this->pollsFacade       = $pollsFacade;
     }
 
-    /**
-     *
-     * @param TopicEntity $topic
-     *
-     * @return Result|int
-     */
-    public function add(TopicEntity $topic)
+    public function add(\App\Model\Entity\TopicEntity $topicEntity, PostEntity $postEntity)
     {
-        $topic_id = $this->topicsManager->add($topic->getArrayHash());
-        $topic->setTopic_id($topic_id);
-        $topic->getPost()->setPost_topic_id($topic_id);
-        
-        if ($topic->getPoll()) {
-            $topic->getPoll()->setPoll_topic_id($topic_id);
-            
-            $this->pollsFacade->add($topic->getPoll());
-        }
-        $this->topicWatchManager->add([$topic->getTopic_user_id()], $topic_id);
+        $topic_id = $this->topicsManager->add($topicEntity->getArrayHash());
 
-        $post_id = $this->postFacade->add($topic->getPost());
+        $topicEntity->setTopic_id($topic_id);
+        $postEntity->topic = $topicEntity;
         
-        $topic->getPost()->setPost_id($post_id);
+        if ($topicEntity->getPoll()) {
+            $topicEntity->getPoll()->setPoll_topic_id($topic_id);
+            
+            $this->pollsFacade->add($topicEntity->getPoll());
+        }
+        $this->topicWatchManager->add([$topicEntity->getTopic_user_id()], $topic_id);
+
+        $post_id = $this->postFacade->add($topicEntity->getPost());
+        
+        $topicEntity->getPost()->setPost_id($post_id);
 
         $this->topicsManager->update(
             $topic_id,
             ArrayHash::from(['topic_first_post_id' => $post_id, 'topic_last_post_id' => $post_id])
         );
 
-        $this->usersManager->update($topic->getTopic_user_id(), ArrayHash::from(
+        $this->usersManager->update($topicEntity->getTopic_user_id(), ArrayHash::from(
             [
                 'user_topic_count%sql' => 'user_topic_count + 1',
                 'user_watch_count%sql' => 'user_watch_count + 1'
@@ -177,7 +173,7 @@ class TopicFacade
         ));
 
         $this->forumsManager->update(
-            $topic->getTopic_forum_id(),
+            $topicEntity->getTopic_forum_id(),
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1'])
         );
 
@@ -360,11 +356,11 @@ class TopicFacade
                 ],
             );
 
-        if (!$topicFrom) {
+        if ($topicFrom === null) {
             return false;
         }
 
-        if (!$topicTarget) {
+        if ($topicTarget === null) {
             return false;
         }
 
@@ -441,8 +437,8 @@ class TopicFacade
     public function mergeWithPosts($topic_target_id, array $post_ids)
     {
         $this->postsManager->updateMulti($post_ids, ArrayHash::from(['post_topic_id' => $topic_target_id]));
-        $last_post = $this->postRepository->getLastByTopicId($topic_target_id);
-        $first_post = $this->postRepository->getFirstByTopicId($topic_target_id);
+        $last_post = $this->postRepository->findLastByTopicId($topic_target_id);
+        $first_post = $this->postRepository->findFirstByTopicId($topic_target_id);
 
         return $this->topicsManager->update($topic_target_id, ArrayHash::from([
             'topic_post_count%sql' => 'topic_post_count + ' . count($post_ids),
@@ -471,7 +467,7 @@ class TopicFacade
             ArrayHash::from(['post_text' => $topicEntity->getPost()->getPost_text()])
         );
 
-        $topicHasPoll = $this->pollRepository->getByTopic($topicEntity);
+        $topicHasPoll = $this->pollRepository->findByTopic($topicEntity);
 
         if ($topicHasPoll) {
             $poll = $topicEntity->getPoll();

@@ -60,10 +60,6 @@ class TopicFastReplyForm extends Control
         return $form;
     }
     
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function fastReplySuccess(Form $form, ArrayHash $values)
     {
         $category_id = $this->presenter->getParameter('category_id');

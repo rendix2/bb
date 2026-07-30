@@ -8,9 +8,10 @@ use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
-use App\Models\CategoryManager;
 use Doctrine\DBAL\Exception as DbalException;
 use Nette\Application\UI\Form;
+use Nette\DI\Attributes\Inject;
+use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -19,26 +20,82 @@ use Tracy\ILogger;
  * Description of CategoryPresenter
  *
  * @author rendix2
- * @method CategoryManager getManager()
  * @package App\AdminModule\Presenters
  */
 class CategoryPresenter extends AdminPresenter
 {
+    #[Inject]
+    public ITranslator $adminTranslator;
+
     public function __construct(
         private readonly EntityManagerDecorator $em,
 
         private readonly CategoryRepository $categoryRepository,
         private readonly ForumRepository    $forumRepository,
-        CategoryManager $manager
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
+    }
+
+    public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
+    {
+        $user = $this->getUser();
+
+        $user->getStorage()->setNamespace(self::BACK_END_NAMESPACE);
+
+        parent::checkRequirements($element);
+
+        if ($this->getName() !== 'Login' && !$user->isLoggedIn()) {
+            $this->redirect(':Admin:Login:default');
+        }
+
+        if (!$user->isInRole('admin')) {
+            $this->error('You are not admin.');
+        }
+    }
+
+    public function startup()
+    {
+        parent::startup();
+
+        $this->adminTranslator = $this->translatorFactory->getAdminTranslator();
+    }
+
+    public function beforeRender(): void
+    {
+        parent::beforeRender();
+
+        $this->getTemplate()->setTranslator($this->adminTranslator);
     }
 
     /**
-     *
-     * @param int $page
+     * handle reorder
      */
+    public function handleReorder()
+    {
+        // todo
+    }
+
+    /**
+     * @param int $id
+     */
+    public function actionDelete(int $id)
+    {
+        if (!is_numeric($id)) {
+            $this->error('Parameter is not numeric.');
+        }
+
+        $result = $this->getManager()->delete($id);
+
+        if ($result) {
+            $this->flashMessage('Item was deleted.', self::FLASH_MESSAGE_SUCCESS);
+        } else {
+            $this->flashMessage('Item was not deleted.', self::FLASH_MESSAGE_DANGER);
+        }
+
+        $this->redirect(':' . $this->getName() . ':default');
+    }
+
     public function renderDefault($page = 1): void
     {
         parent::renderDefault($page);
@@ -51,9 +108,6 @@ class CategoryPresenter extends AdminPresenter
         $this->template->tree = $rootCategories;
     }
 
-    /**
-     * @param int|null $id
-     */
     public function renderEdit($id = null): void
     {
         if ($id) {
@@ -96,14 +150,6 @@ class CategoryPresenter extends AdminPresenter
         }
     }
 
-    /**
-     * handle reorder
-     */
-    public function handleReorder()
-    {
-        // todo
-    }
-
     protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
@@ -142,9 +188,6 @@ class CategoryPresenter extends AdminPresenter
         return $this->gf;
     }
     
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = [
@@ -155,9 +198,6 @@ class CategoryPresenter extends AdminPresenter
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
     
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbEdit(): BreadCrumbControl
     {
         $breadCrumb = [
@@ -169,10 +209,6 @@ class CategoryPresenter extends AdminPresenter
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
-    /**
-     * @param Form      $form   form
-     * @param ArrayHash $values values
-     */
     public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         $id = $this->getParameter('id');

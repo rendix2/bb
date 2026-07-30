@@ -53,7 +53,7 @@ class TopicRepository extends EntityRepository
             ->getArrayResult();
     }
 
-    public function getFirstByForum(int $forumId): ?TopicEntity
+    public function findFirstByForumId(int $forumId): ?TopicEntity
     {
         $qb = $this->createQueryBuilder('_t');
         $subQb = $this->createQueryBuilder('_t2');

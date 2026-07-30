@@ -3,6 +3,7 @@
 namespace App\Model\Entity;
 
 use App\Model\Repository\ForumRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -10,6 +11,7 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\UuidInterface;
@@ -41,5 +43,17 @@ class ForumEntity
     #[GeneratedValue()]
     #[Column(type: Types::BOOLEAN)]
     public bool $active;
+
+    /**
+     * @var Collection<int, TopicEntity> $topics
+     */
+    #[OneToMany(targetEntity: TopicEntity::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
+    public Collection $topics;
+
+    /**
+     * @var Collection<int, ThankEntity> $thanks
+     */
+    #[OneToMany(targetEntity: ThankEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
+    public Collection $thanks;
 
 }

@@ -1,23 +1,20 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Model\Entity;
 
-use App\Model\Repository\GroupRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\UuidInterface;
 
-
-#[Entity(repositoryClass: GroupRepository::class)]
-#[Table(name: 'group')]
-class GroupEntity
+class PostHistoryEntity
 {
+
     #[Id()]
     #[GeneratedValue()]
     #[Column(type: Types::BIGINT)]
@@ -26,9 +23,9 @@ class GroupEntity
     #[Column(type: UuidType::NAME, unique: true)]
     public UuidInterface $uuid;
 
-    #[Column(type: Types::STRING, length: 512, nullable: false)]
-    public string $name;
-
+    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'topics', )]
+    #[JoinColumn(nullable: false)]
+    public PostEntity $post;
 
     #[Column(type: Types::DATETIME_IMMUTABLE)]
     public DateTimeImmutable $createdAt;

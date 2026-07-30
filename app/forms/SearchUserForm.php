@@ -19,7 +19,7 @@ class SearchUserForm extends Control
      *
      * @var ITranslator $translator
      */
-    private $translator;
+    private ITranslator $translator;
     
     /**
      * SearchUserForm constructor.
@@ -32,19 +32,9 @@ class SearchUserForm extends Control
         
         $this->translator = $translator;
     }
-    
-    /**
-     * SearchUserForm destructor.
-     */
-    public function __destruct()
-    {
-        $this->translator = null;
-    }
-    
-    /**
-     * SearchUserForm render.
-     */
-    public function render()
+
+
+    public function render(): void
     {
         $this['searchUserForm']->render();
     }
@@ -61,11 +51,6 @@ class SearchUserForm extends Control
         return $form;
     }
 
-
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function searchUserFormSuccess(Form $form, ArrayHash $values)
     {
         $this->presenter->redirect('Search:userResults', $values->search_user);

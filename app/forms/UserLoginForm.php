@@ -6,7 +6,6 @@ use App\Authenticator;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\SessionEntity;
 use App\Model\Entity\UserEntity;
-use App\Models\SessionManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\TranslatorFactory;
 use DateTimeImmutable;
@@ -16,7 +15,6 @@ use Nette\Http\Session;
 use Nette\Security\AuthenticationException;
 use Nette\Security\User;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Random;
 
 /**
  * Description of UserLoginForm

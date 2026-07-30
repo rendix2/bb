@@ -71,12 +71,12 @@ class IndexPresenter extends BasePresenter
         $sessionRepository = $this->em
             ->getRepository(SessionEntity::class);
 
-        $count = $sessionRepository->getCountOfLoggedUsers();
+        $count = $sessionRepository->findCountOfLoggedUsers();
 
         $loggedUsers = [];
 
         if ($count <= self::MAX_LOGGED_IN_USERS_TO_SHOW) {
-            $loggedUsers = $sessionRepository->getLoggedInUsers();
+            $loggedUsers = $sessionRepository->findLoggedInUsers();
         }
 
         $this->getTemplate()->countLogged = $count;

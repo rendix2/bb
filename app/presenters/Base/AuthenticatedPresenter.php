@@ -4,11 +4,9 @@ namespace App\Presenters\Base;
 
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\SessionEntity;
-use App\Models\SessionManager;
 use DateTimeImmutable;
 use Nette\DI\Attributes\Inject;
 use Nette\Security\User;
-use Nette\Utils\ArrayHash;
 
 /**
  * Description of AuthenticatedPresenter

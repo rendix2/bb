@@ -5,6 +5,7 @@ namespace App\AdminModule\Presenters;
 use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
+use App\Controls\PaginatorControl;
 use App\Database\EntityManagerDecorator;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
@@ -17,8 +18,10 @@ use App\Models\ModeratorManager;
 use App\Models\PostManager;
 use App\Models\TopicManager;
 use App\Models\UsersManager;
+use App\Presenters\Base\AuthenticatedPresenter;
 use Doctrine\DBAL\Exception as DbalException;
 use Nette\Application\UI\Form;
+use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -67,11 +70,6 @@ class ForumPresenter extends AdminPresenter
      */
     public ForumFacade $forumFacade;
 
-    /**
-     * ForumPresenter constructor.
-     *
-     * @param ForumManager $manager
-     */
     public function __construct(
         private readonly EntityManagerDecorator $em,
         private readonly CategoryRepository     $categoryRepository,
@@ -79,12 +77,48 @@ class ForumPresenter extends AdminPresenter
         private readonly TopicRepository        $topicRepository,
         private readonly PostRepository         $postRepository,
         private readonly UserRepository         $userRepository,
-
-
-        ForumManager                            $manager,
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
+    }
+
+    public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
+    {
+        $user = $this->getUser();
+
+        $user->getStorage()->setNamespace(self::BACK_END_NAMESPACE);
+
+        parent::checkRequirements($element);
+
+        if ($this->getName() !== 'Login' && !$user->isLoggedIn()) {
+            $this->redirect(':Admin:Login:default');
+        }
+
+        if (!$user->isInRole('admin')) {
+            $this->error('You are not admin.');
+        }
+    }
+
+    public function startup()
+    {
+        parent::startup();
+
+        $this->adminTranslator = $this->translatorFactory->getAdminTranslator();
+    }
+
+    /**
+     * AdminPresenter beforeRender.
+     */
+    public function beforeRender(): void
+    {
+        parent::beforeRender();
+
+        $this->getTemplate()->setTranslator($this->adminTranslator);
+    }
+
+    public function getTranslator(): ITranslator
+    {
+        return $this->adminTranslator;
     }
 
     /**
@@ -95,13 +129,31 @@ class ForumPresenter extends AdminPresenter
         // todo
     }
 
+    public function actionDefault(int $page = 1): void
+    {
+        $items = $this->getManager()->getAllFluent();
+
+        $this->gf->applyWhere($items);
+        $this->gf->applyOrderBy($items);
+
+        $paginator = new PaginatorControl($items, 20, 5, $page);
+        $this->addComponent($paginator, 'paginator');
+
+        if (!$paginator->getCount()) {
+            $this->flashMessage(sprintf('No %s.', $this->getTitle()), self::FLASH_MESSAGE_DANGER);
+        }
+
+        $this->template->items      = $items->fetchAll();
+        $this->template->countItems = $paginator->getCount();
+    }
+
     /**
      *
      * @param int $page
      */
-    public function renderDefault($page = 1)
+    public function renderDefault($page = 1): void
     {
-        parent::renderDefault($page);
+        $this->template->title = $this->getTitleOnDefault();
 
         $allForums = $this->forumRepository->findAll();
 

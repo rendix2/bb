@@ -15,17 +15,8 @@ use Nette\Utils\ArrayHash;
  */
 class SearchPostForm extends Control
 {
-    /**
-     *
-     * @var ITranslator $translator
-     */
-    private $translator;
+    private ITranslator $translator;
     
-    /**
-     * SearchPostForm constructor.
-     *
-     * @param ITranslator $translator
-     */
     public function __construct(ITranslator $translator)
     {
         parent::__construct();
@@ -33,18 +24,7 @@ class SearchPostForm extends Control
         $this->translator = $translator;
     }
 
-    /**
-     * SearchPostForm destructor.
-     */
-    public function __destruct()
-    {
-        $this->translator = null;
-    }
-
-    /**
-     * SearchPostForm render
-     */
-    public function render()
+    public function render(): void
     {
         $this['searchPostForm']->render();
     }
@@ -61,10 +41,6 @@ class SearchPostForm extends Control
         return $form;
     }
     
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function searchPostFormSuccess(Form $form, ArrayHash $values)
     {
         $this->presenter->redirect('Search:postResults', $values->search_post);

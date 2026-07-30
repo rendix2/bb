@@ -16,20 +16,12 @@ use Nette\Utils\ArrayHash;
 class SearchTopicForm extends Control
 {
 
-    /**
-     * SearchPostForm constructor.
-     *
-     * @param ITranslator $translator
-     */
     public function __construct(private ITranslator $translator)
     {
         parent::__construct();
 
     }
 
-    /**
-     * SearchPostForm render
-     */
     public function render(): void
     {
         $this['searchTopicForm']->render();
@@ -47,10 +39,6 @@ class SearchTopicForm extends Control
         return $form;
     }
     
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function searchTopicFormSuccess(Form $form, ArrayHash $values)
     {
         $this->presenter->redirect('Search:topicResults', $values->search_topic);

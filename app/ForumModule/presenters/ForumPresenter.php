@@ -9,11 +9,10 @@ use App\Controls\PaginatorControl;
 use App\Database\EntityManagerDecorator;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Entity\CategoryEntity;
-use App\Model\Entity\ForumEntity;
 use App\Model\Repository\ForumRepository;
-use App\Models\CategoryManager;
 use App\Models\ForumManager;
 use App\Models\ModeratorManager;
+use App\services\BreadcrumbService;
 use App\services\ScopeService;
 use App\Settings\ForumSettings;
 use App\Settings\TopicsSetting;
@@ -36,9 +35,6 @@ final class ForumPresenter extends BaseForumPresenter
 
     #[Inject]
     public ModeratorManager $moderatorsManager;
-
-    #[Inject]
-    public CategoryManager $categoryManager;
     
     #[Inject]
     public GridFilter $gf;
@@ -55,6 +51,8 @@ final class ForumPresenter extends BaseForumPresenter
         private readonly ScopeService $scopeService,
 
         private readonly ForumRepository $forumRepository,
+
+        private readonly BreadcrumbService $breadcrumbService,
 
         ForumManager $manager
     )
@@ -212,8 +210,8 @@ final class ForumPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
-            $this->getManager()->getBreadCrumb($this->getParameter('forum_id'))
+            $this->breadcrumbService->getCategoryBreadCrumb($this->getParameter('category_id')),
+            $this->breadcrumbService->getForumBreadCrumb($this->getParameter('forum_id'))
         );
 
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
@@ -226,8 +224,8 @@ final class ForumPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
-            $this->getManager()->getBreadCrumb($this->getParameter('forum_id')),
+            $this->breadcrumbService->getCategoryBreadCrumb($this->getParameter('category_id')),
+            $this->breadcrumbService->getForumBreadCrumb($this->getParameter('forum_id')),
             [['link' => 'Forum:rules', 'text' => 'forum_rules', 'params' => [$this->getParameter('category_id'), $this->getParameter('forum_id')]]]
         );
 

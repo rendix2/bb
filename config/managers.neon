@@ -29,16 +29,10 @@ services:
         class: App\Models\TopicWatchManager
     ReportManager:
         class: App\Models\ReportManager
-    SessionManager:
-        class: App\Models\SessionManager
     EmailManager:
         class: App\Models\MailsManager
     ModeratorManager:
         class: App\Models\ModeratorManager
-    FaqManager:
-        class: App\Models\FaqManager
-    FaqAnswersManager:
-        class: App\Models\FaqAnswersManager
     FaqFacade:
         class: App\Models\FaqFacade
     FilesManager:
@@ -49,12 +43,6 @@ services:
         class: App\Models\SmileysManager
     CacheManager:
         class: App\Models\CacheManager
-    PollsManager:
-        class: App\Models\PollsManager
-    PollsAnswersManager:
-        class: App\Models\PollsAnswersManager
-    PollsVotesManager:
-        class: App\Models\PollsVotesManager
     PmManager:
         class: App\Models\PmManager
     PmFacade:
@@ -63,8 +51,6 @@ services:
         class: App\Models\Posts2FilesManager
     PostsHistoryManager:
         class: App\Models\PostsHistoryManager
-    LogsManager:
-        class: App\Models\LogsManager
     UserFavouriteUsersManager:
         class: App\Models\FavouriteUsersManager
     PostFacade:

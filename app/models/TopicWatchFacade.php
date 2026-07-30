@@ -38,14 +38,6 @@ class TopicWatchFacade
     private PostManager $postsManager;
 
 
-    /**
-     * TopicWatchFacade constructor.
-     *
-     * @param UsersManager $usersManager
-     * @param TopicWatchManager $topicWatchManager
-     * @param PostManager $postsManager
-     * @param EntityManagerDecorator $em
-     */
     public function __construct(
         UsersManager      $usersManager,
         TopicWatchManager $topicWatchManager,

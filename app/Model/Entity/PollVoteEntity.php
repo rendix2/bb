@@ -3,6 +3,7 @@
 namespace App\Model\Entity;
 
 use App\Model\Repository\PollRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -49,4 +50,10 @@ class PollVoteEntity
     #[ManyToOne(targetEntity: PollAnswerEntity::class, inversedBy: 'polls')]
     #[JoinColumn(nullable: false)]
     public PollAnswerEntity $pollAnswer;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    public DateTimeImmutable $createdAt;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?DateTimeImmutable $updatedAt;
 }

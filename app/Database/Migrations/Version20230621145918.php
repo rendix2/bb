@@ -55,6 +55,10 @@ final class Version20230621145918 extends AbstractMigration
         $table->addColumn('language_id', Types::BIGINT)
             ->setComment('Language ID');
 
+        $table->addColumn('avatar', Types::STRING)
+            ->setComment('Avatar')
+            ->setNotnull(false);
+
         $table->addColumn('is_active', Types::BOOLEAN)
             ->setComment('Is active?');
 

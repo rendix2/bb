@@ -63,7 +63,7 @@ class PostRepository extends EntityRepository
         );
     }
 
-    public function getFirstByTopicId(int $topicId): ?PostEntity
+    public function findFirstByTopicId(int $topicId): ?PostEntity
     {
         $qb = $this->createQueryBuilder('p');
         $subQb = $this->createQueryBuilder('p2');
@@ -78,7 +78,7 @@ class PostRepository extends EntityRepository
             ->getOneOrNullResult();
     }
 
-    public function getLastByTopicId(int $topicId): ?PostEntity
+    public function findLastByTopicId(int $topicId): ?PostEntity
     {
         $qb = $this->createQueryBuilder('p');
         $subQb = $this->createQueryBuilder('p2');
@@ -108,7 +108,7 @@ class PostRepository extends EntityRepository
             ->getOneOrNullResult();
     }
 
-    public function getFirstByForumId(int $forumId): ?PostEntity
+    public function findFirstByForumId(int $forumId): ?PostEntity
     {
         $qb = $this->createQueryBuilder('_p');
         $subQb = $this->createQueryBuilder('_p2');

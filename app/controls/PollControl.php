@@ -99,7 +99,7 @@ class PollControl extends Control
         $template->setTranslator($this->translator);
         $presenter = $this->presenter;
 
-        $poll = $this->pollRepository->getByTopicId($presenter->getParameter('topic_id'));
+        $poll = $this->pollRepository->findByTopicId($presenter->getParameter('topic_id'));
 
         if ($poll) {
             $pollAnswers = $this->pollAnswerRepository->findByPollId($poll->id);

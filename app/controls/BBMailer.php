@@ -55,32 +55,15 @@ class BBMailer
     private Mails2UsersManager $mails2users;
     
     /**
-     *
-     * @var UsersManager $usersManager
-     */
-    private UsersManager $usersManager;
-
-    /**
      * @var TempDir $tempDir
      */
     private $tempDir;
 
-    /**
-     * BBMailer constructor.
-     *
-     * @param IMailer            $mailer
-     * @param MailsManager       $manager
-     * @param Email              $email
-     * @param Mails2UsersManager $mails2users
-     * @param UsersManager       $usersManager
-     * @param TempDir            $tempDir
-     */
     public function __construct(
         IMailer            $mailer,
         MailsManager       $manager,
         Email              $email,
         Mails2UsersManager $mails2users,
-        UsersManager       $usersManager,
         TempDir            $tempDir,
         private readonly UserRepository $userRepository,
     ) {
@@ -90,7 +73,6 @@ class BBMailer
         
         $this->manager      = $manager;
         $this->mails2users  = $mails2users;
-        $this->usersManager = $usersManager;
         $this->tempDir      = $tempDir;
     }
 

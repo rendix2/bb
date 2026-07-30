@@ -4,6 +4,7 @@ namespace App\Model\Entity;
 
 use App\Database\Types\IpAddressType;
 use App\Model\Repository\ThankRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -27,15 +28,15 @@ class ThankEntity
     #[Column(type: UuidType::NAME, unique: true)]
     public UuidInterface $uuid;
 
-    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'XXX')]
+    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'thanks')]
     #[JoinColumn(nullable: false)]
     public CategoryEntity $category;
 
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'XXX')]
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'thanks')]
     #[JoinColumn(nullable: false)]
     public ForumEntity $forum;
 
-    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'XXX')]
+    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'thanks')]
     #[JoinColumn(nullable: false)]
     public TopicEntity $topic;
 
@@ -49,5 +50,11 @@ class ThankEntity
 
     #[Column(type: IpAddressType::NAME, nullable: false)]
     public string $ipAddress;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    public DateTimeImmutable $createdAt;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?DateTimeImmutable $updatedAt;
 
 }

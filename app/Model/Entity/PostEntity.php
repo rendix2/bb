@@ -4,6 +4,7 @@ namespace App\Model\Entity;
 
 use App\Database\Types\IpAddressType;
 use App\Model\Repository\PostRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
@@ -55,11 +56,25 @@ class PostEntity
     #[Column(type: IpAddressType::NAME, nullable: false)]
     public string $addIpAddress;
 
+    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    public DateTimeImmutable $createdAt;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?DateTimeImmutable $updatedAt;
+
+    /**
+     * @var Collection<int, PostHistoryEntity> $historyPosts
+     */
+    #[OneToMany(targetEntity: PostHistoryEntity::class, mappedBy: 'post', cascade: ['persist', 'remove'],)]
+    public Collection $historyPosts;
+
     /**
      * @var Collection<int, FileEntity> $files
      */
     #[OneToMany(targetEntity: FileEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     public Collection $files;
+
+
 
 
 }

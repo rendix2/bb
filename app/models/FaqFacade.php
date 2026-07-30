@@ -12,17 +12,7 @@ use Nette\Utils\ArrayHash;
  */
 class FaqFacade
 {
-
-    /**
-     *
-     * FaqFacade constructor.
-     *
-     * @param FaqManager        $faqManager
-     * @param FaqAnswersManager $faqAnswersManager
-     */
     public function __construct(
-        private readonly FaqManager        $faqManager,
-        private readonly FaqAnswersManager $faqAnswersManager
     )
     {
     }

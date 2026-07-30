@@ -3,6 +3,8 @@
 namespace App\Model\Entity;
 
 use App\Model\Repository\TopicWatchRepository;
+use DateTimeImmutable;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
@@ -30,4 +32,10 @@ class TopicWatchEntity
     #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'YYY')]
     #[JoinColumn(nullable: false)]
     public TopicEntity $topic;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    public DateTimeImmutable $createdAt;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?DateTimeImmutable $updatedAt;
 }

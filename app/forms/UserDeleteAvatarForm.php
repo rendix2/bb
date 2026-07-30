@@ -26,30 +26,21 @@ class UserDeleteAvatarForm extends Control
      * @var UsersManager $userManager
      */
     private UsersManager $userManager;
-    
+
     /**
      * @var User $user
      */
     private User $user;
-    
+
     /**
      * @var ITranslator $translator
      */
     private ITranslator $translator;
 
-    /**
-     * DeleteAvatarControl constructor.
-     *
-     * @param UsersManager $userManager
-     * @param Avatars      $avatars
-     * @param User         $user
-     * @param ITranslator  $translator
-     */
     public function __construct(
         UsersManager $userManager,
-        Avatars      $avatars,
-        User         $user,
-        ITranslator  $translator,
+        User $user,
+        ITranslator $translator,
 
         private readonly UserRepository $userRepository,
 
@@ -58,8 +49,8 @@ class UserDeleteAvatarForm extends Control
         parent::__construct();
 
         $this->userManager = $userManager;
-        $this->user        = $user;
-        $this->translator  = $translator;
+        $this->user = $user;
+        $this->translator = $translator;
     }
 
     /**
@@ -77,23 +68,24 @@ class UserDeleteAvatarForm extends Control
 
         $form->addCheckbox('delete_avatar', 'Delete avatar');
         $form->addSubmit('send', 'Delete avatar');
-        $form->onSuccess[] = [$this,'deleteAvatarSuccess'];
+        $form->onSuccess[] = [$this, 'deleteAvatarSuccess'];
 
         return $form;
     }
-    
+
     /**
-     * @param Form      $form
+     * @param Form $form
      * @param ArrayHash $values
      */
     public function deleteAvatarSuccess(Form $form, ArrayHash $values): void
     {
         if (isset($values->delete_avatar) && $values->delete_avatar === true) {
-            $userEntity = $this->userRepository->findOneBy(
-                [
-                    'id' => $this->user->getId(),
-                ]
-            );
+            $userEntity = $this->userRepository
+                ->findOneBy(
+                    [
+                        'id' => $this->user->getId(),
+                    ],
+                );
 
             if ($userEntity->user_avatar) {
                 $this->avatarService->removeAvatarFile($userEntity->user_avatar);

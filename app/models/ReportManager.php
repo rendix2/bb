@@ -57,19 +57,6 @@ class ReportManager extends CrudManager
 
     /**
      *
-     * @param int $forum_id
-     *
-     * @return Result|int
-     */
-    public function deleteByForum($forum_id)
-    {
-        return $this->deleteFluent()
-            ->where('[report_forum_id] = %i', $forum_id)
-            ->execute();
-    }
-
-    /**
-     *
      * @param int $user_id
      *
      * @return Result|int

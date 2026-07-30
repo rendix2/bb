@@ -27,11 +27,6 @@ use Nette\Utils\ArrayHash;
 class ReportForm extends Control
 {
     
-    /**
-     * ReportForm constructor.
-     *
-     * @param ReportManager $reportsManager
-     */
     public function __construct(
         ReportManager $reportsManager,
         private readonly EntityManagerDecorator $em,
@@ -40,9 +35,6 @@ class ReportForm extends Control
         parent::__construct();
     }
 
-    /**
-     * ReportForm render.
-     */
     public function render(): void
     {
         $this['reportForm']->render();
@@ -59,10 +51,6 @@ class ReportForm extends Control
         return $form;
     }
     
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function reportFormSuccess(Form $form, ArrayHash $values): void
     {
         $category_id      = $this->presenter->getParameter('category_id');

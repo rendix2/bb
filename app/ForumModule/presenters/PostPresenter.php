@@ -16,7 +16,6 @@ use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PollRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
-use App\Models\CategoryManager;
 use App\Models\Entity\PollEntity;
 use App\Models\Manager;
 use App\Models\PollsFacade;
@@ -25,6 +24,7 @@ use App\Models\Posts2FilesManager;
 use App\Models\PostsHistoryManager;
 use App\Models\PostManager;
 use App\Models\ReportManager;
+use App\services\BreadcrumbService;
 use App\services\ScopeService;
 use App\Settings\PostSetting;
 use Nette\Application\Responses\FileResponse;
@@ -103,7 +103,6 @@ class PostPresenter extends BaseForumPresenter
     public function __construct(
 
         PostManager $manager,
-        private readonly CategoryManager $categoryManager,
         private readonly EntityManagerDecorator $em,
 
         private readonly CategoryRepository $categoryRepository,
@@ -113,20 +112,13 @@ class PostPresenter extends BaseForumPresenter
 
         private readonly PollRepository     $pollRepository,
 
-        private readonly ScopeService $scopeService,
+        private readonly ScopeService      $scopeService,
+        private readonly BreadcrumbService $breadcrumbService,
     )
     {
         parent::__construct($manager);
     }
 
-    /**
-     * @param int $category_id
-     * @param int $forum_id
-     * @param int $topic_id
-     * @param int $post_id
-     * @param int $page
-     * @throws \Exception
-     */
     public function actionDelete($category_id, $forum_id, $topic_id, $post_id, $page): void
     {
         $categoryEntity = $this->categoryRepository
@@ -177,7 +169,7 @@ class PostPresenter extends BaseForumPresenter
             $this->error('Post was not found.');
         }
         
-        $pollDibi = $this->pollRepository->getByTopicId($topic_id);
+        $pollDibi = $this->pollRepository->findByTopicId($topic_id);
 
         if ($pollDibi) {
             $pollTimeStamp = $pollDibi->poll_time_to;
@@ -204,13 +196,6 @@ class PostPresenter extends BaseForumPresenter
         }
     }
 
-    /**
-     *
-     * @param int      $category_id
-     * @param int      $forum_id
-     * @param int      $topic_id
-     * @param int|null $post_id
-     */
     public function renderEdit($category_id, $forum_id, $topic_id, $post_id = null)
     {
         $categoryEntity = $this->categoryRepository
@@ -255,13 +240,6 @@ class PostPresenter extends BaseForumPresenter
         }
     }
 
-    /**
-     * @param int $category_id
-     * @param int $forum_id
-     * @param int $topic_id
-     * @param int $post_id
-     * @param int $page
-     */
     public function renderReport($category_id, $forum_id, $topic_id, $post_id, $page)
     {
         $categoryEntity = $this->categoryRepository
@@ -280,13 +258,6 @@ class PostPresenter extends BaseForumPresenter
         }
     }
 
-    /**
-     *
-     * @param int $category_id
-     * @param int $forum_id
-     * @param int $topic_id
-     * @param int $post_id
-     */
     public function renderHistory($category_id, $forum_id, $topic_id, $post_id)
     {
         $categoryEntity = $this->categoryRepository
@@ -313,14 +284,6 @@ class PostPresenter extends BaseForumPresenter
         $this->template->posts = $postHistory;
     }
 
-    /**
-     *
-     * @param int $category_id
-     * @param int $forum_id
-     * @param int $topic_id
-     * @param int $post_id
-     * @param int $file_id
-     */
     public function actionDownloadFile($category_id, $forum_id, $topic_id, $post_id, $file_id)
     {
         $categoryEntity = $this->categoryRepository
@@ -381,11 +344,6 @@ class PostPresenter extends BaseForumPresenter
         return $form;
     }
     
-    /**
-     *
-     * @param SubmitButton $submit
-     * @param ArrayHash    $values
-     */
     public function preview(SubmitButton $submit, ArrayHash $values): void
     {
         $this['editForm']->setDefaults($values);
@@ -394,11 +352,6 @@ class PostPresenter extends BaseForumPresenter
         $submit->getForm()->addError('Post was not saved. You see preview.');
     }
 
-    /**
-     *
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function editFormOnValidate(Form $form, ArrayHash $values): void
     {
         $user_id = $this->getUser()->getId();
@@ -423,10 +376,6 @@ class PostPresenter extends BaseForumPresenter
         }
     }
 
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         $category_id = $this->getParameter('category_id');
@@ -561,8 +510,8 @@ class PostPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
-            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            $this->breadcrumbService->getCategoryBreadCrumb($this->getParameter('category_id')),
+            $this->breadcrumbService->getForumBreadCrumb($this->getParameter('forum_id')),
             [['link' => 'Topic:default',
                 'text' => 'menu_topic',
                 'params' => [
@@ -581,7 +530,7 @@ class PostPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            $this->breadcrumbService->getForumBreadCrumb($this->getParameter('forum_id')),
             [['link' => 'Topic:default',
                 'text' => 'menu_topic',
                 'params' => [
@@ -600,8 +549,8 @@ class PostPresenter extends BaseForumPresenter
     {
         $breadCrumb = array_merge(
             [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->categoryManager->getBreadCrumb($this->getParameter('category_id')),
-            $this->forumsManager->getBreadCrumb($this->getParameter('forum_id')),
+            $this->breadcrumbService->getCategoryBreadCrumb($this->getParameter('category_id')),
+            $this->breadcrumbService->getForumBreadCrumb($this->getParameter('forum_id')),
             [['link' => 'Topic:default',
                 'text' => 'menu_topic',
                 'params' => [

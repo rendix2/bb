@@ -5,31 +5,27 @@ namespace App\UI\Forum\Category;
 use App\Controls\BreadCrumbControl;
 use App\Database\EntityManagerDecorator;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Model\Entity\CategoryEntity;
-use App\Model\Entity\ForumEntity;
-use App\Models\CategoryManager;
+use App\Model\Repository\CategoryRepository;
+use App\Model\Repository\ForumRepository;
+use App\Models\Crud\CrudNullManager;
 
 /**
  * Description of CategoryPresenter
  *
  * @author rendix2
- * @method CategoryManager getManager()
  * @package App\ForumModule\Presenters
  */
 class CategoryPresenter extends BaseForumPresenter
 {
-    /**
-     * CategoryPresenter constructor.
-     *
-     * @param CategoryManager $manager
-     * @param EntityManagerDecorator $em
-     */
     public function __construct(
-        CategoryManager $manager,
-        private readonly EntityManagerDecorator $em
+        CrudNullManager $crudNullManager,
+        private readonly EntityManagerDecorator $em,
+
+        private readonly CategoryRepository $categoryRepository,
+        private readonly ForumRepository    $forumRepository,
     )
     {
-        parent::__construct($manager);
+        parent::__construct($crudNullManager);
     }
 
     /**
@@ -38,8 +34,7 @@ class CategoryPresenter extends BaseForumPresenter
      */
     public function renderDefault(int $category_id = 0): void
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -63,9 +58,7 @@ class CategoryPresenter extends BaseForumPresenter
                 ->fetchAll();
         */
 
-        $forums = $this
-            ->em
-            ->getRepository(ForumEntity::class)
+        $forums = $this->forumRepository
             ->findBy(
                 [
                     'category' => $categoryEntity,

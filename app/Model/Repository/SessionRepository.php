@@ -16,7 +16,7 @@ class SessionRepository extends EntityRepository
     /**
      * @return SessionEntity[]
      */
-    public function getLoggedInUsers(): array
+    public function findLoggedInUsers(): array
     {
         return $this->createQueryBuilder('_s')
 
@@ -30,7 +30,7 @@ class SessionRepository extends EntityRepository
         ->getResult();
     }
 
-    public function getCountOfLoggedUsers(): int
+    public function findCountOfLoggedUsers(): int
     {
         return $this->createQueryBuilder('s')
 

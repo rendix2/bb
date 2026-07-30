@@ -96,32 +96,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         }
     }
 
-    protected function checkLoggedIn(): bool
-    {
-        $identity = $this->getUser()->identity;
-        
-        if (!$identity) {
-            return false;
-        }
-        
-        return $this->getUser()->isLoggedIn();
-    }
-
-    protected function checkUserLoggedIn(): bool
-    {
-        return $this->checkAdminLoggedIn() && !in_array('guest', $this->getUser()->roles, true);
-    }
-
-    protected function checkJuniorAdminLoggedIn(): bool
-    {
-        return $this->checkLoggedIn() && $this->getUser()->isInRole('juniorAdmin');
-    }
-
-    protected function checkAdminLoggedIn(): bool
-    {
-        return $this->checkLoggedIn() && $this->getUser()->isInRole('admin');
-    }
-
     protected function createComponentMenuAdmin(): MenuControl
     {
         $leftMenu = [

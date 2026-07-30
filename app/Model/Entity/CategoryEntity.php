@@ -3,6 +3,7 @@
 namespace App\Model\Entity;
 
 use App\Model\Repository\CategoryRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
@@ -42,10 +43,28 @@ class CategoryEntity
     #[Column(type: Types::BOOLEAN)]
     public bool $active;
 
+    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    public DateTimeImmutable $createdAt;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?DateTimeImmutable $updatedAt;
+
     /**
      * @var Collection<int, CategoryEntity> $children
      */
     #[OneToMany(targetEntity: CategoryEntity::class, mappedBy: 'parent', cascade: ['persist', 'remove'])]
     public Collection $children;
+
+    /**
+     * @var Collection<int, ForumEntity> $forums
+     */
+    #[OneToMany(targetEntity: ForumEntity::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
+    public Collection $forums;
+
+    /**
+     * @var Collection<int, ThankEntity> $thanks
+     */
+    #[OneToMany(targetEntity: ThankEntity::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
+    public Collection $thanks;
 
 }

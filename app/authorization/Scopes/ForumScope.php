@@ -4,6 +4,7 @@ namespace App\Authorization\Scopes;
 
 use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
+use App\Model\Entity\ForumEntity;
 use App\Models\Users2ForumsManager;
 use App\Models\User2GroupManager;
 
@@ -48,19 +49,19 @@ class ForumScope implements IAuthorizationScope
      */
     private $moderators;
     
-    private $forumEntity;
+    private ForumEntity $forumEntity;
     
     /**
      *
      * @var User2GroupManager $users2GroupsManager
      */
-    private $users2GroupsManager;
+    private User2GroupManager $users2GroupsManager;
     
     private $userPermission;
     
     private $groupPermission;
     
-    private $users2ForumsManager;
+    private Users2ForumsManager $users2ForumsManager;
 
 
     /**
@@ -81,19 +82,6 @@ class ForumScope implements IAuthorizationScope
         $this->moderators          = $moderators;
         $this->users2GroupsManager = $users2GroupsManager;
         $this->users2ForumsManager = $users2ForumsManager;
-    }
-    
-    /**
-     * ForumScope destructor.
-     */
-    public function __destruct()
-    {
-        $this->moderators          = null;
-        $this->forumEntity         = null;
-        $this->users2GroupsManager = null;
-        $this->groupPermission     = null;
-        $this->userPermission      = null;
-        $this->users2ForumsManager = null;
     }
 
     /**

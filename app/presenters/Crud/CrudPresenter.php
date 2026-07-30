@@ -154,7 +154,7 @@ abstract class CrudPresenter extends AuthenticatedPresenter
     /**
      * @param int|null $id
      */
-    public function renderEdit(int $id = null): void
+    public function renderEdit(int $id): void
     {
         if ($id) {
             if (!is_numeric($id)) {

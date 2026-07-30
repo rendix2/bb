@@ -17,37 +17,9 @@ use Nette\Utils\ArrayHash;
  */
 class TopicManager extends CrudManager
 {
-    /**
-     * @param string $topic_name
-     *
-     * @return array
-     */
-    public function findByTopicNameJoinedUser($topic_name)
-    {
-        return $this->getAllFluent()
-            ->innerJoin(self::USERS_TABLE)
-            ->on('[topic_user_id] = user_id')
-            ->where('MATCH([topic_name]) AGAINST (%s IN BOOLEAN MODE)', $topic_name)
-            ->fetchAll();
-    }
 
-    /**
-     * @param int $forum_id
-     *
-     * @return Fluent
-     */
-    public function getFluentByForumJoinedUsersJoinedLastPost($forum_id)
-    {
-        return $this->getAllFluent()
-            ->as('t')
-            ->leftJoin(self::USERS_TABLE)
-            ->as('u')
-            ->on('[t.topic_user_id] = [u.user_id]')
-            ->leftJoin(self::POSTS_TABLE)
-            ->as('p')
-            ->on('[p.post_id] = [t.topic_last_post_id]')
-            ->where('[t.topic_forum_id] = %i', $forum_id);
-    }
+
+
 
     /**
      *

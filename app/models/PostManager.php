@@ -17,11 +17,7 @@ use Nette\Utils\ArrayHash;
  */
 class PostManager extends CrudManager
 {
-    /**
-     * @param int $topic_id
-     *
-     * @return array
-     */
+
     public function getCountOfUsersByTopicId($topic_id)
     {
         return $this->dibi
@@ -32,12 +28,7 @@ class PostManager extends CrudManager
                 ->fetchAll();
     }
 
-    /**
-     * @param int $topic_id
-     * @param int $user_id
-     *
-     * @return mixed
-     */
+
     public function getCountByUser($topic_id, $user_id)
     {
         return $this->getCountFluent()
@@ -46,66 +37,13 @@ class PostManager extends CrudManager
             ->fetchSingle();
     }
 
-    /**
-     * @param int $topic_id
-     *
-     * @return Fluent
-     */
-    public function getFluentByTopicJoinedUser($topic_id)
-    {
-        return $this->getAllFluent()
-            ->as('p')
-            ->innerJoin(self::USERS_TABLE)
-            ->as('u')
-            ->on('[p.post_user_id] = [u.user_id]')
-            ->where('[post_topic_id] = %i', $topic_id);
-    }
-    
-    /**
-     * @param int $topic_id
-     *
-     * @return Fluent
-     */
+
     public function getFluentByTopic($topic_id)
     {
         return $this->getAllFluent()
             ->where('[post_topic_id] = %i', $topic_id);
     }
 
-    /**
-     * @param int $user_id
-     *
-     * @return Fluent
-     */
-    public function getFluentByUser($user_id)
-    {
-        return $this->getAllFluent()
-            ->where('[post_user_id] = %i', $user_id);
-    }
-     
-
-    /**
-     * @param string $post_text
-     *
-     * @return array
-     */
-    public function findPostsJoinedTopic($post_text)
-    {
-        return $this->getAllFluent()
-            ->as('p')
-            ->leftJoin(self::TOPICS_TABLE)
-            ->as('t')
-            ->on('[p.post_topic_id] = [t.topic_id]')
-            ->where('MATCH([p.post_title],[p.post_text]) AGAINST(%s IN BOOLEAN MODE)', $post_text)
-            ->fetchAll();
-    }
-
-    /**
-     *
-     * @param int $user_id
-     *
-     * @return Row
-     */
     public function getLastByUser($user_id)
     {
         return $this->getAllFluent()
@@ -117,13 +55,7 @@ class PostManager extends CrudManager
             )->fetch();
     }
 
-    /**
-     *
-     * @param int $post_id
-     * @param int $target_topic_id
-     *
-     * @return int
-     */
+
     public function copy($post_id, $target_topic_id = null)
     {
         $post = $this->getById($post_id);
@@ -137,14 +69,6 @@ class PostManager extends CrudManager
         return $this->add(ArrayHash::from($post->toArray()));
     }
 
-    /**
-     *
-     * @param string $post_text
-     * @param int $user_id
-     * @param int $time
-     *
-     * @return int
-     */
     public function checkDoublePost($post_text, $user_id, $time)
     {
         return $this->dibi

@@ -35,11 +35,6 @@ class UserFacade
     private Users2ForumsManager $users2ForumsManager;
 
     /**
-     * @var SessionManager $sessionsManager
-     */
-    private SessionManager $sessionsManager;
-
-    /**
      * @var ReportManager $reportsManager
      */
     private ReportManager $reportsManager;
@@ -82,33 +77,14 @@ class UserFacade
      */
     private PmFacade $pmFacade;
 
-    /**
-     * UserFacade constructor.
-     *
-     * @param PostManager        $postsManager
-     * @param PostsHistoryManager $postsHistoryManager
-     * @param PostFacade          $postFacade
-     * @param Mails2UsersManager  $mails2UsersManager
-     * @param ModeratorManager   $moderatorsManager
-     * @param ReportManager      $reportsManager
-     * @param SessionManager     $sessionsManager
-     * @param Users2ForumsManager $users2ForumsManager
-     * @param User2GroupManager $users2GroupsManager
-     * @param UsersManager        $usersManager
-     * @param TranslatorFactory   $translatorFactory
-     * @param PmFacade            $pmFacade
-     */
     public function __construct(
-        PostManager        $postsManager,
         PostsHistoryManager $postsHistoryManager,
         PostFacade          $postFacade,
         Mails2UsersManager  $mails2UsersManager,
         ModeratorManager   $moderatorsManager,
         ReportManager      $reportsManager,
-        SessionManager     $sessionsManager,
         Users2ForumsManager $users2ForumsManager,
         User2GroupManager $users2GroupsManager,
-        //Users2SessionsManager $users2SessionManager,
         UsersManager        $usersManager,
         TranslatorFactory   $translatorFactory,
         PmFacade            $pmFacade,
@@ -124,11 +100,9 @@ class UserFacade
         $this->usersManager         = $usersManager;
         $this->postsHistoryManager  = $postsHistoryManager;
         $this->postFacade           = $postFacade;
-        //$this->users2SessionManager = $users2SessionManager;
         $this->mails2UsersManager   = $mails2UsersManager;
         $this->moderatorsManager    = $moderatorsManager;
         $this->reportsManager       = $reportsManager;
-        $this->sessionsManager      = $sessionsManager;
         $this->users2ForumsManager  = $users2ForumsManager;
         $this->users2GroupsManager  = $users2GroupsManager;
         $this->translatorFactory    = $translatorFactory;
@@ -163,15 +137,22 @@ class UserFacade
 
         foreach ($topicsWatches as $topicsWatch) {
             $this->em->remove($topicsWatch);
-            $this->em->flush();
         }
+
+        $this->em->flush();
 
         //$this->users2SessionManager->deleteByLeft($item_id);
         $this->mails2UsersManager->deleteByRight($userId);
         $this->moderatorsManager->deleteByLeft($userId);
         $this->pmFacade->delete($userId);
         $this->reportsManager->deleteByUser($userId);
-        $this->sessionsManager->deleteByUser($userId);
+
+
+        foreach ($userEntity->sessions as $session) {
+            $this->em->remove($session);
+        }
+
+        $this->em->flush();
 
         $thanks = $this->thankRepository
             ->findBy(

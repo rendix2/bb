@@ -11,7 +11,6 @@ use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
-use App\Models\CategoryManager;
 use App\Models\Crud\CrudNullManager;
 use App\Models\ModeratorManager;
 use Nette\DI\Attributes\Inject;
@@ -20,7 +19,6 @@ use Nette\DI\Attributes\Inject;
  * Description of IndexPresenter
  *
  * @author rendix2
- * @method CategoryManager getManager()
  * @package App\ForumModule\Presenters
  */
 class IndexPresenter extends BaseForumPresenter

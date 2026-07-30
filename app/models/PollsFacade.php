@@ -16,49 +16,14 @@ use App\Models\Entity\PollEntity;
  */
 class PollsFacade
 {
-    /**
-     *
-     * @var PollsManager $pollsManager
-     */
-    private PollsManager $pollsManager;
-    
-    /**
-     *
-     * @var PollsAnswersManager $pollsAnswersManager
-     */
-    private PollsAnswersManager $pollsAnswersManager;
-    
-    /**
-     *
-     * @var PollsVotesManager $pollsVotesManager
-     */
-    private PollsVotesManager $pollsVotesManager;
-
-    /**
-     * PollsFacade constructor.
-     *
-     * @param PollsManager        $pollsManager
-     * @param PollsAnswersManager $pollsAnswersManager
-     * @param PollsVotesManager   $pollsVotesManager
-     */
     public function __construct(
-        PollsManager        $pollsManager,
-        PollsAnswersManager $pollsAnswersManager,
-        PollsVotesManager   $pollsVotesManager,
         private readonly EntityManagerDecorator $em,
-
-        private readonly PollRepository       $pollRepository,
-        private readonly PollAnswerRepository $pollAnswerRepository,
-        private readonly PollVoteRepository   $pollVoteRepository,
-
     ) {
-        $this->pollsManager        = $pollsManager;
-        $this->pollsAnswersManager = $pollsAnswersManager;
-        $this->pollsVotesManager   = $pollsVotesManager;
     }
 
-    public function add(\App\Model\Entity\PollEntity $poll)
+    public function add(\App\Model\Entity\PollEntity $poll): void
     {
+        /*
         $poll_id = $this->pollsManager->add($poll->getArrayHash());
         
         $poll->setPoll_id($poll_id);
@@ -67,13 +32,18 @@ class PollsFacade
             $answer->setPoll_id($poll_id);
             $this->pollsAnswersManager->add($answer->getArrayHash());
         }
+        */
+
+        $this->em->persist($poll);
+        $this->em->flush();
     }
     
-    public function update(\App\Model\Entity\PollEntity $poll)
+    public function update(\App\Model\Entity\PollEntity $pollEntity): void
     {
-        $this->pollsManager->update($poll->id, $poll->getArrayHash());
+        /*
+        $this->pollsManager->update($pollEntity->id, $pollEntity->getArrayHash());
         
-        foreach ($poll->answers as $answer) {
+        foreach ($pollEntity->answers as $answer) {
             $answer_exists = $this->pollAnswerRepository
                 ->findOneBy(
                     [
@@ -87,12 +57,21 @@ class PollsFacade
                 $this->pollsAnswersManager->add($answer->getArrayHash());
             }
         }
+        */
+
+        $this->em->persist($pollEntity);
+        $this->em->flush();
     }
 
-    public function delete(\App\Model\Entity\PollEntity $poll)
+    public function delete(\App\Model\Entity\PollEntity $poll): void
     {
+        /*
         $this->pollsManager->delete($poll->id);
         $this->pollsAnswersManager->deleteByPoll($poll->id);
         $this->pollsVotesManager->deleteByPoll($poll->id);
+        */
+
+        $this->em->remove($poll);
+        $this->em->flush();
     }
 }

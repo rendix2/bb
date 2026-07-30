@@ -2,6 +2,7 @@
 
 namespace App\AdminModule\Presenters\Base;
 
+use App\Presenters\Base\AuthenticatedPresenter;
 use App\Presenters\crud\CrudPresenter;
 use Nette\Localization\ITranslator;
 
@@ -11,7 +12,7 @@ use Nette\Localization\ITranslator;
  * @author rendix2
  * @package App\AdminModule\Presenters\Base
  */
-abstract class AdminPresenter extends CrudPresenter
+abstract class AdminPresenter extends AuthenticatedPresenter
 {
     /**
      * @var ITranslator $adminTranslator

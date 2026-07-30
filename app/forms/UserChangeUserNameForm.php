@@ -19,11 +19,6 @@ use Nette\Utils\ArrayHash;
 class UserChangeUserNameForm extends Control
 {
 
-    /**
-     *
-     * @param UsersManager $usersManager
-     * @param User         $user
-     */
     public function __construct(
         private readonly UsersManager $usersManager,
         private readonly User $user,
@@ -34,9 +29,6 @@ class UserChangeUserNameForm extends Control
 
     }
 
-    /**
-     * UserChangeUserNameForm render.
-     */
     public function render(): void
     {
         $this['changeUserNameForm']->render();
@@ -54,11 +46,6 @@ class UserChangeUserNameForm extends Control
         return $form;
     }
     
-    /**
-     *
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function changeUserNameOnValidate(Form $form, ArrayHash $values): void
     {
         $userEntity = $this->userRepository->findOneByUsername($values->username);
@@ -68,11 +55,6 @@ class UserChangeUserNameForm extends Control
         }
     }
     
-    /**
-     *
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function changeUserNameSuccess(Form $form, ArrayHash $values): void
     {
         $result = $this->usersManager->update($this->user->getId(), $values);

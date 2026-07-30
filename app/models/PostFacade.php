@@ -286,7 +286,7 @@ class PostFacade
 
         // last post
         if ($topicEntity->lastPost->id === $postEntity->id && $topicEntity->firstPost->id !== $postEntity->id) {
-            $last_post = $this->postRepository->getLastByTopicId($postEntity->topic->id);
+            $last_post = $this->postRepository->findLastByTopicId($postEntity->topic->id);
 
             if ($last_post) {
                 $this->topicsManager->update($postEntity->topic->id, ArrayHash::from([
@@ -295,7 +295,7 @@ class PostFacade
                 ]));
             }
         } elseif ($topicEntity->firstPost->id === $postEntity->id && $topicEntity->lastPost->id !== $postEntity->id) {
-            $first_post = $this->postRepository->getFirstByTopicId($postEntity->topic->id);
+            $first_post = $this->postRepository->findFirstByTopicId($postEntity->topic->id);
 
             if ($first_post) {
                 $this->topicsManager->update($postEntity->topic->id, ArrayHash::from([

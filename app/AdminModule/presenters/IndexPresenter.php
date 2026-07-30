@@ -29,6 +29,8 @@ class IndexPresenter extends BasePresenter
 
     public function __construct(
         private readonly EntityManagerDecorator $em,
+
+        private readonly SessionRepository $sessionRepository
     )
     {
     }
@@ -70,18 +72,12 @@ class IndexPresenter extends BasePresenter
      */
     public function renderDefault(): void
     {
-        /**
-         * @var SessionRepository $sessionRepository
-         */
-        $sessionRepository = $this->em
-            ->getRepository(SessionEntity::class);
-
-        $count = $sessionRepository->getCountOfLoggedUsers();
+        $count = $this->sessionRepository->findCountOfLoggedUsers();
 
         $loggedUsers = [];
 
         if ($count <= self::MAX_LOGGED_IN_USERS_TO_SHOW) {
-            $loggedUsers = $sessionRepository->getLoggedInUsers();
+            $loggedUsers = $this->sessionRepository->findLoggedInUsers();
         }
 
         $this->getTemplate()->countLogged   = $count;

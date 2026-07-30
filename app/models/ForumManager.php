@@ -18,17 +18,7 @@ use Nette\Caching\IStorage;
 #[\JetBrains\PhpStorm\Deprecated]
 class ForumManager extends CrudManager
 {
-    /**
-     * ForumsManager constructor.
-     *
-     * @param EntityManagerDecorator $em
-     * @param Connection $dibi
-     * @param IStorage $storage
-     *
-     * @throws DriverException
-     */
     public function __construct(
-        private readonly EntityManagerDecorator $em,
         Connection $dibi,
         IStorage $storage
     )
@@ -57,39 +47,5 @@ class ForumManager extends CrudManager
         }
 
         return $result;
-    }
-
-    /**
-     * @param int $forumId
-     * @return ForumEntity[]
-     */
-    public function getBreadCrumb(int $forumId): array
-    {
-        $forum = $this->em
-            ->getRepository(ForumEntity::class)
-            ->findOneBy(
-                [
-                    'id' => $forumId,
-                ]
-            );
-
-        $crumbs = [];
-        $current = $forum;
-
-        while ($current !== null) {
-            array_unshift($crumbs, [
-                'link'   => 'Forum:default',
-                'params' => [
-                    'category_id' => $current->getCategory()->getId(),
-                    'forum_id'    => $current->getId()
-                ],
-                'text'   => $current->getName(),
-                't'      => 0
-            ]);
-
-            $current = $current->getParent();
-        }
-
-        return $crumbs;
     }
 }

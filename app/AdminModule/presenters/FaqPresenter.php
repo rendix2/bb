@@ -3,9 +3,8 @@
 namespace App\AdminModule\Presenters;
 
 use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
-use App\Models\FaqManager;
+use App\Presenters\Base\AuthenticatedPresenter;
 use Contributte\Datagrid\Datagrid;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Dibi\DriverException;
@@ -19,7 +18,6 @@ use Tracy\ILogger;
  * Description of FaqPresenter
  *
  * @author rendix2
- * @method FaqManager getManager()
  * @package App\AdminModule\Presenters
  */
 class FaqPresenter extends AdminPresenter
@@ -30,9 +28,9 @@ class FaqPresenter extends AdminPresenter
      */
     private ITranslator $adminTranslator;
 
-    public function __construct(FaqManager $manager)
+    public function __construct()
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
@@ -71,9 +69,6 @@ class FaqPresenter extends AdminPresenter
         return $this->adminTranslator;
     }
 
-
-
-
     protected function createComponentEditForm(): BootstrapForm
     {
         $form = new BootstrapForm();
@@ -89,9 +84,6 @@ class FaqPresenter extends AdminPresenter
         return $dataGrid;
     }
 
-    /**
-     * @param int $id
-     */
     public function actionDelete(int $id)
     {
         if (!is_numeric($id)) {
@@ -141,7 +133,7 @@ class FaqPresenter extends AdminPresenter
     /**
      * @param int|null $id
      */
-    public function renderEdit(int $id = null): void
+    public function renderEdit(int $id): void
     {
         if ($id) {
             if (!is_numeric($id)) {

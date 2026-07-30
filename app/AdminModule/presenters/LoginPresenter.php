@@ -3,8 +3,9 @@
 namespace App\AdminModule\Presenters;
 
 use App\Authorization\Authorizator;
+use App\Database\EntityManagerDecorator;
 use App\Forms\UserLoginForm;
-use App\Models\SessionManager;
+use App\Model\Repository\UserRepository;
 use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
 use App\Translator;
@@ -33,24 +34,20 @@ class LoginPresenter extends BasePresenter
     private Translator $translator;
     
     /**
-     * session manager
-     *
-     * @var SessionManager $sessionManager
-     * @inject
-     */
-    public SessionManager $sessionManager;
-    
-    /**
      *
      * @var UserLoginFormFactory $userLoginFormFactory
      * @inject
      */
     public UserLoginFormFactory $userLoginFormFactory;
 
-    /**
-     *
-     * @param mixed $element
-     */
+    public function __construct(
+        private readonly UserRepository $userRepository,
+
+        private readonly EntityManagerDecorator $em,
+    )
+    {
+    }
+
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
     {
         $this->getUser()->getStorage()->setNamespace(self::BACK_END_NAMESPACE);
@@ -58,9 +55,6 @@ class LoginPresenter extends BasePresenter
         parent::checkRequirements($element);
     }
 
-    /**
-     * LoginPresenter startup.
-     */
     public function startup()
     {
         parent::startup();
@@ -82,11 +76,6 @@ class LoginPresenter extends BasePresenter
         return $form;
     }
 
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     *
-     */
     public function adminLoginFormSuccess(Form $form, ArrayHash $values): void
     {
         // check if user is admin
@@ -101,14 +90,28 @@ class LoginPresenter extends BasePresenter
             if (!$user->isInRole(Authorizator::ROLES[5])) {
                 throw new AuthenticationException('You are not admin.');
             }
+
+            $userEntity = $this->userRepository
+                ->findOneBy(
+                    [
+                        'id' => $user->getId(),
+                    ]
+                );
+
+            foreach ($userEntity->sessions as $session) {
+                $this->em->remove($session);
+            }
+
+            $this->em->flush();
             
             $sessionEntity = new \App\Model\Entity\SessionEntity();
-            $sessionEntity->setSession_key($this->getSession()->getId())
-                          ->setSession_user_id($user->getId())
-                          ->setSession_from(time());
-            
-            $this->sessionManager->deleteByUser($user->getId());
-            $this->sessionManager->add($sessionEntity->getArrayHash());
+            $sessionEntity->key = $this->getSession()->getId();
+            $sessionEntity->user = $userEntity;
+            $sessionEntity->lastActivity = new \DateTimeImmutable();
+
+            $this->em->persist($sessionEntity);
+            $this->em->flush();
+
             $user->setExpiration('1 hour');
             $this->flashMessage(
                 'Successfully admin logged in.',
@@ -124,9 +127,6 @@ class LoginPresenter extends BasePresenter
         }
     }
 
-    /**
-     * @return UserLoginForm
-     */
     protected function createComponentLoginForm(): UserLoginForm
     {
         return $this->userLoginFormFactory->create();

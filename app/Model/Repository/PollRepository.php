@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityRepository;
 class PollRepository extends EntityRepository
 {
 
-    public function getByTopicId($topic_id): ?PollEntity
+    public function findByTopicId($topic_id): ?PollEntity
     {
         return $this->findOneBy(
             [
@@ -24,7 +24,7 @@ class PollRepository extends EntityRepository
         );
     }
 
-    public function getByTopic(TopicEntity $topicEntity): ?PollEntity
+    public function findByTopic(TopicEntity $topicEntity): ?PollEntity
     {
         return $this->findOneBy(
             [

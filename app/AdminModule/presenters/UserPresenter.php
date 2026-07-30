@@ -85,19 +85,13 @@ class UserPresenter extends AdminPresenter
         parent::__construct($manager);
     }
 
-    /**
-     * @param int $page
-     */
-    public function renderDefault($page = 1)
+    public function renderDefault($page = 1): void
     {
         parent::renderDefault($page);
         
         $this->getTemplate()->roles = Authorizator::ROLES;
     }
 
-    /**
-     * @param int|null $id
-     */
     public function renderEdit($id = null): void
     {
         parent::renderEdit($id);
