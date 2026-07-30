@@ -6,6 +6,7 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
+use App\Model\Repository\RankRepository;
 use App\Models\RankManager;
 use App\services\RankService;
 use App\Settings\Ranks;
@@ -31,9 +32,11 @@ class RankPresenter extends AdminPresenter
     public Ranks $ranks;
 
     public function __construct(
-        RankManager $manager,
+        RankManager                     $manager,
 
-        private readonly RankService $rankService,
+        private readonly RankRepository $rankRepository,
+
+        private readonly RankService    $rankService,
     )
     {
         parent::__construct($manager);
@@ -57,7 +60,7 @@ class RankPresenter extends AdminPresenter
             $this->flashMessage(sprintf('No %s.', $this->getTitle()), self::FLASH_MESSAGE_DANGER);
         }
 
-        $this->template->items      = $items->fetchAll();
+        $this->template->items = $items->fetchAll();
         $this->template->countItems = $paginator->getCount();
     }
 
@@ -75,7 +78,12 @@ class RankPresenter extends AdminPresenter
                 $this->error('Parameter $id of CrudPresenter::renderEdit($id) is not numeric.');
             }
 
-            $item = $this->getManager()->getById($id);
+            $item = $this->rankRepository
+                ->findOneBy(
+                    [
+                        'id' => $id
+                    ]
+                );
 
             if (!$item) {
                 $this->error('Item $' . $this->getTitle() . '[' . $id . '] was not found.');
@@ -84,12 +92,12 @@ class RankPresenter extends AdminPresenter
             $this['editForm']->setDefaults($item);
 
             $this->template->item_id = $id;
-            $this->template->item    = $item;
-            $this->template->title   = $this->getTitleOnEdit();
+            $this->template->item = $item;
+            $this->template->title = $this->getTitleOnEdit();
         } else {
             $this->template->item_id = null;
-            $this->template->title   = $this->getTitleOnAdd();
-            $this->template->item    = [];
+            $this->template->title = $this->getTitleOnAdd();
+            $this->template->item = [];
 
             $this['editForm']->setDefaults([]);
         }
@@ -116,7 +124,7 @@ class RankPresenter extends AdminPresenter
     protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
-        
+
         $form->addText('rank_name', 'Rank name:')->setRequired(true);
         $form->addInteger('rank_from', 'Rank from:');
         $form->addInteger('rank_to', 'Rank to:');
@@ -132,7 +140,7 @@ class RankPresenter extends AdminPresenter
     }
 
     /**
-     * @param Form      $form
+     * @param Form $form
      * @param ArrayHash $values
      */
     public function editFormValidate(Form $form, ArrayHash $values): void
@@ -156,10 +164,6 @@ class RankPresenter extends AdminPresenter
         }
     }
 
-    /**
-     * @param Form      $form   form
-     * @param ArrayHash $values values
-     */
     public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         $id = $this->getParameter('id');
@@ -209,7 +213,7 @@ class RankPresenter extends AdminPresenter
         $this->gf->addFilter('rank_name', 'rank_name', GridFilter::TEXT_LIKE);
         $this->gf->addFilter('edit', null, GridFilter::NOTHING);
         $this->gf->addFilter('delete', null, GridFilter::NOTHING);
-            
+
         return $this->gf;
     }
 
@@ -233,8 +237,8 @@ class RankPresenter extends AdminPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'Rank:default',  'text' => 'menu_ranks'],
-            2 => ['link' => 'Rank:edit',     'text' => 'menu_rank'],
+            1 => ['link' => 'Rank:default', 'text' => 'menu_ranks'],
+            2 => ['link' => 'Rank:edit', 'text' => 'menu_rank'],
         ];
 
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());

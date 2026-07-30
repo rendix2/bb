@@ -53,4 +53,46 @@ class TopicRepository extends EntityRepository
             ->getArrayResult();
     }
 
+    public function getFirstByForum(int $forumId): ?TopicEntity
+    {
+        $qb = $this->createQueryBuilder('_t');
+        $subQb = $this->createQueryBuilder('_t2');
+
+        $subQb->select('MIN(_t2.id)')
+            ->where('_t2.forum = :forumId');
+
+        return $qb->where($qb->expr()->eq('_t.id', '(' . $subQb->getDQL() . ')'))
+            ->setParameter('forumId', $forumId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findLastByForumId(int $forumId): ?TopicEntity
+    {
+        $qb = $this->createQueryBuilder('_t');
+        $subQb = $this->createQueryBuilder('_t2');
+
+        $subQb->select('MAX(_t2.id)')
+            ->where('_t2.forum = :forumId');
+
+        return $qb->where($qb->expr()->eq('_t.id', '(' . $subQb->getDQL() . ')'))
+            ->setParameter('forumId', $forumId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findNewerTopics(int $forum_id, \DateTimeImmutable $topic_time): array
+    {
+        return $this->createQueryBuilder('_t')
+
+            ->where('_t.forum = :forum')
+            ->setParameter('forum', $forum_id)
+
+            ->andWhere('_t.createdAt > :createdAt')
+            ->setParameter('createdAt', $topic_time)
+
+            ->getQuery()
+            ->getResult();
+    }
+
 }

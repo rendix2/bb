@@ -13,11 +13,11 @@ use App\Forms\ReportForm;
 use App\Forms\TopicFastReplyForm;
 use App\Forms\TopicJumpToForumForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Model\Entity\RankEntity;
 use App\Model\Entity\TopicWatchEntity;
-use App\Model\Entity\UserEntity;
 use App\Model\Repository\CategoryRepository;
+use App\Model\Repository\PollAnswerRepository;
 use App\Model\Repository\PollRepository;
+use App\Model\Repository\PollVoteRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\RankRepository;
 use App\Model\Repository\ThankRepository;
@@ -26,7 +26,6 @@ use App\Model\Repository\TopicWatchRepository;
 use App\Model\Repository\UserRepository;
 use App\Models\CategoryManager;
 use App\Models\Entity\PollEntity;
-use App\Models\Entity\PollAnswerEntity;
 use App\Models\Entity\PostEntity;
 use App\Models\Entity\TopicEntity;
 use App\Models\PollsFacade;
@@ -127,7 +126,9 @@ class TopicPresenter extends BaseForumPresenter
         private readonly PostRepository     $postRepository,
         private readonly UserRepository     $userRepository,
 
-        private readonly PollRepository     $pollRepository,
+        private readonly PollRepository       $pollRepository,
+        private readonly PollAnswerRepository $pollAnswerRepository,
+        private readonly PollVoteRepository   $pollVoteRepository,
 
         private readonly RankRepository       $rankRepository,
         private readonly ThankRepository      $thankRepository,
@@ -273,11 +274,23 @@ class TopicPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $forum      = $this->checkForumParam($forum_id, $category_id);
-        $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        $forumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $forum_id,
+                ]
+            );
+
+        $topicEntity = $this->topicRepository
+            ->findOneBy(
+                [
+                    'id' => $topic_id,
+                ]
+            );
+
         $user_id  = $this->getUser()->getId();
         
-        $forumScope = $this->scopeService->loadForum($forum);
+        $forumScope = $this->scopeService->loadForum($forumEntity);
         
         $this->requireAccess($forumScope, ForumScope::ACTION_THANK);
 
@@ -290,8 +303,8 @@ class TopicPresenter extends BaseForumPresenter
 
         $thankEntity = new \App\Model\Entity\ThankEntity();
         $thankEntity->category = $categoryEntity;
-        $thankEntity->forum = $forum;
-        $thankEntity->topic = $topic;
+        $thankEntity->forum = $forumEntity;
+        $thankEntity->topic = $topicEntity;
         $thankEntity->post = null;
         $thankEntity->user = $userEntity;
         $thankEntity->ipAddress = $this->getHttpRequest()->getRemoteAddress();
@@ -328,8 +341,19 @@ class TopicPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $forum      = $this->checkForumParam($forum_id, $category_id);
-        $topic      = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        $forumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $forum_id,
+                ]
+            );
+
+        $topicEntity = $this->topicRepository
+            ->findOneBy(
+                [
+                    'id' => $topic_id,
+                ]
+            );
 
         $pollDibi = $this->pollRepository->getByTopicId($topic_id);
         
@@ -340,15 +364,15 @@ class TopicPresenter extends BaseForumPresenter
             $pollEntity = PollEntity::setFromRow($pollDibi);
             $pollEntity->setPoll_time_to(DateTime::from($pollTimeStamp));
         
-            $topic->setPoll($pollEntity);
+            $topicEntity->setPoll($pollEntity);
         }
         
-        $forumScope = $this->scopeService->loadForum($forum);
-        $topicScope = $this->scopeService->loadTopic($forum, $topic);
+        $forumScope = $this->scopeService->loadForum($forumEntity);
+        $topicScope = $this->scopeService->loadTopic($forumEntity, $topicEntity);
         
         $this->requireAccess($topicScope, TopicScope::ACTION_DELETE);
 
-        $res = $this->topicFacade->delete($topic);
+        $res = $this->topicFacade->delete($topicEntity);
         
         if ($res) {
             $this->flashMessage('Topic was deleted.', self::FLASH_MESSAGE_SUCCESS);
@@ -381,11 +405,22 @@ class TopicPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        $forumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $forum_id,
+                ]
+            );
+
+        $topicEntity = $this->topicRepository
+            ->findOneBy(
+                [
+                    'id' => $topic_id,
+                ]
+            );
         
-        $forumScope = $this->scopeService->loadForum($forum);
-        $topicScope = $this->scopeService->loadTopic($forum, $topic);
+        $forumScope = $this->scopeService->loadForum($forumEntity);
+        $topicScope = $this->scopeService->loadTopic($forumEntity, $topicEntity);
 
         $data = $this->postsManager->getFluentByTopicJoinedUser($topic_id);
 
@@ -415,7 +450,7 @@ class TopicPresenter extends BaseForumPresenter
 
         foreach ($posts as $postDibi) {
             $post      = PostEntity::setFromRow($postDibi);
-            $postScope = $this->scopeService->loadPost($forum, $topic, $post);
+            $postScope = $this->scopeService->loadPost($forumEntity, $topicEntity, $post);
             
             $postDibi->canDelete  = $this->isAllowed($postScope, PostScope::ACTION_DELETE);
             $postDibi->canEdit    = $this->isAllowed($postScope, PostScope::ACTION_EDIT);
@@ -438,7 +473,7 @@ class TopicPresenter extends BaseForumPresenter
         }
                 
         $this->template->posts = $postsNew;
-        $this->template->topic = $topic;
+        $this->template->topic = $topicEntity;
         
         $this->template->canAddPost    = $this->isAllowed($forumScope, ForumScope::ACTION_POST_ADD);
         $this->template->canDeletePost = $this->isAllowed($forumScope, ForumScope::ACTION_POST_DELETE);
@@ -513,8 +548,14 @@ class TopicPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $forum      = $this->checkForumParam($forum_id, $category_id);
-        $forumScope = $this->scopeService->loadForum($forum);
+        $forumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $forum_id,
+                ]
+            );
+
+        $forumScope = $this->scopeService->loadForum($forumEntity);
 
         if ($topic_id) {
             $this->requireAccess($forumScope, ForumScope::ACTION_TOPIC_UPDATE);
@@ -526,9 +567,14 @@ class TopicPresenter extends BaseForumPresenter
         $post  = [];
         
         if ($topic_id) {
-            $topic = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+            $topic = $this->topicRepository
+                ->findOneBy(
+                    [
+                        'id' => $topic_id,
+                    ]
+                );
 
-            $post = $this->postsManager->getFirstByTopic($topic_id);
+            $post = $this->postRepository->getFirstByTopicId($topic_id);
 
             if (!$post) {
                 $this->error('Post was not found.');
@@ -539,17 +585,22 @@ class TopicPresenter extends BaseForumPresenter
             if ($poll) {
                 $this['editForm']->setDefaults(
                     [
-                        'poll_question' => $poll->poll_question,
+                        'poll_question' => $poll->question,
                         'poll_time_to' => date('d.m.Y', $poll->poll_time_to)
                     ]
                 );
                 
-                $pollAnswers = $this->pollsFacade->getPollsAnswersManager()->getAllByPoll($poll->poll_id);
+                $pollAnswers = $this->pollAnswerRepository->findByPollId($poll->id);
 
                 $this['editForm-answers']->setValues($pollAnswers);
             }
             
-            $this['editForm']->setDefaults(['post_title' => $topic->getTopic_name(), 'post_text' => $post->post_text]);
+            $this['editForm']->setDefaults(
+                [
+                    'post_title' => $topic->name,
+                    'post_text' => $post->text
+                ]
+            );
         }
     }
 
@@ -576,8 +627,19 @@ class TopicPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $forum    = $this->checkForumParam($forum_id, $category_id);
-        $topic    = $this->checkTopicParam($topic_id, $category_id, $forum_id);
+        $forumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $forum_id,
+                ]
+            );
+
+        $topicEntity = $this->topicRepository
+            ->findOneBy(
+                [
+                    'id' => $forum_id,
+                ]
+            );
     }
 
     /**
@@ -776,7 +838,7 @@ class TopicPresenter extends BaseForumPresenter
                     ]
                 );
 
-            $firstPost = $this->postRepository->getFirstByTopic($oldTopicEntity->id);
+            $firstPost = $this->postRepository->getFirstByTopicId($oldTopicEntity->id);
             $pollEntity  = $this->pollRepository->getByTopicId($topic_id);
             
             if ($pollEntity) {

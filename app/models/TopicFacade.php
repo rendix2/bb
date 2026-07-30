@@ -441,8 +441,8 @@ class TopicFacade
     public function mergeWithPosts($topic_target_id, array $post_ids)
     {
         $this->postsManager->updateMulti($post_ids, ArrayHash::from(['post_topic_id' => $topic_target_id]));
-        $last_post  = $this->postsManager->getLastByTopic($topic_target_id);
-        $first_post = $this->postsManager->getFirstByTopic($topic_target_id);
+        $last_post = $this->postRepository->getLastByTopicId($topic_target_id);
+        $first_post = $this->postRepository->getFirstByTopicId($topic_target_id);
 
         return $this->topicsManager->update($topic_target_id, ArrayHash::from([
             'topic_post_count%sql' => 'topic_post_count + ' . count($post_ids),

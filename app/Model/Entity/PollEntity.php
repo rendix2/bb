@@ -46,6 +46,9 @@ class PollEntity
     #[JoinColumn(nullable: false)]
     public TopicEntity $topic;
 
+    #[Column(type: Types::STRING, length: 1024, nullable: false)]
+    public string $question;
+
     /**
      * @var Collection<int, PollAnswerEntity> $passwordRequests
      */

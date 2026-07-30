@@ -89,12 +89,6 @@ class FaqPresenter extends AdminPresenter
         return $dataGrid;
     }
 
-
-
-
-
-
-
     /**
      * @param int $id
      */

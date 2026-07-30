@@ -3,15 +3,10 @@
 namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
-use App\Model\Entity\ForumEntity;
 use App\Model\Repository\ForumRepository;
 use App\Model\Repository\ThankRepository;
 use App\Model\Repository\TopicRepository;
-use App\Models\Entity\PostEntity;
-use App\Models\Entity\ThankEntity;
-use App\Models\Entity\TopicEntity;
 use App\Utils;
-use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -89,12 +84,6 @@ class ThanksFacade
         }
     }
 
-    /**
-     *
-     * @param TopicEntity $topic
-     *
-     * @return int
-     */
     public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity)
     {
         $thanks = $this->thankRepository->findByTopicId($topicEntity->id);
@@ -111,23 +100,17 @@ class ThanksFacade
         return $this->thanksManager->deleteByTopic($topicEntity->id);
     }
 
-    /**
-     *
-     * @param PostEntity $post
-     *
-     * @return bool
-     */
     public function deleteByPost(\App\Model\Entity\PostEntity $post)
     {
-        $count = $this->postsManager->getCountByUser($post->getPost_topic_id(), $post->getPost_user_id());
+        $count = $this->postsManager->getCountByUser($post->topic->id, $post->user->id);
 
         if ($count === 1 || $count === 0) {
             $this->usersManager->update(
-                $post->getPost_user_id(),
+                $post->user->id,
                 ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1'])
             );
 
-            return $this->thanksManager->deleteByUsersAndTopic([$post->getPost_user_id()], $post->getPost_topic_id());
+            return $this->thanksManager->deleteByUsersAndTopic([$post->user->id], $post->topic->id);
         } else {
             return false;
         }

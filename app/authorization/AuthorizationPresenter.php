@@ -3,13 +3,7 @@
 namespace App\Authorization;
 
 use App\Authorization\Scopes\CategoryScope;
-use App\Authorization\Scopes\ForumScope;
-use App\Authorization\Scopes\PostScope;
-use App\Authorization\Scopes\TopicScope;
 use App\Authorization\Scopes\User;
-use App\Models\Entity\ForumEntity;
-use App\Models\Entity\PostEntity;
-use App\Models\Entity\TopicEntity;
 use Exception;
 
 /**

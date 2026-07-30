@@ -10,8 +10,6 @@ use App\Database\EntityManagerDecorator;
 use App\Model\Entity\UserEntity;
 use App\Models\Mails2UsersManager;
 use App\Models\MailsManager;
-use App\Models\UsersManager;
-use App\Utils;
 use Nette\Application\UI\Form;
 use Nette\InvalidArgumentException;
 use Nette\Mail\FallbackMailerException;
@@ -97,10 +95,10 @@ class EmailPresenter extends AdminPresenter
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
 
-        $form->addText('mail_subject', 'mail_subject:')
+        $form->addText('subject', 'Subject')
             ->setRequired(true);
 
-        $form->addTextArea('mail_text', 'mail_text:')
+        $form->addTextArea('text', 'Text')
             ->setRequired(true);
 
         $form->addSubmit('send', 'mail_send');

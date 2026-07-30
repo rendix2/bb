@@ -87,9 +87,14 @@ final class ForumPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $forum      = $this->checkForumParam($forum_id, $category_id);
+        $forumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $forum_id,
+                ]
+            );
         
-        $forumScope = $this->scopeService->loadForum($forum);
+        $forumScope = $this->scopeService->loadForum($forumEntity);
         
         $this->requireAccess($forumScope, ForumScope::ACTION_VIEW);
 
@@ -119,7 +124,7 @@ final class ForumPresenter extends BaseForumPresenter
         $this->template->canAddTopic    = $this->isAllowed($forumScope, ForumScope::ACTION_TOPIC_ADD);
         $this->template->canDeleteTopic = $this->isAllowed($forumScope, ForumScope::ACTION_TOPIC_DELETE);
         
-        $this->template->forum  = $forum;
+        $this->template->forum  = $forumEntity;
         $this->template->topics = $topics->fetchAll();
     }
 
@@ -167,13 +172,18 @@ final class ForumPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $forum    = $this->checkForumParam($forum_id, $category_id);
+        $forumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $forum_id,
+                ]
+            );
 
-        if (!$forum->getForum_rules()) {
+        if (!$forumEntity->getForum_rules()) {
             $this->flashMessage('No forum rules.', self::FLASH_MESSAGE_WARNING);
         }
 
-        $this->template->forum = $forum;
+        $this->template->forum = $forumEntity;
     }
 
     /**

@@ -17,48 +17,6 @@ use Nette\Utils\ArrayHash;
  */
 class TopicManager extends CrudManager
 {
-
-
-    /**
-     * @param int $forum_id
-     *
-     * @return Row|false
-     */
-    public function getLastByForum($forum_id)
-    {
-        return $this->getAllFluent()
-            ->where('[topic_id] = ', $this->dibi
-                ->select('MAX(topic_id)')
-                ->from($this->getTable())
-                ->where('[topic_forum_id] = %i', $forum_id))
-            ->fetch();
-    }
-
-    /**
-     * @param int $forum_id
-     * @param int $topic_time
-     *
-     * @return array|mixed
-     */
-    public function getNewerTopicsCached($forum_id, $topic_time)
-    {
-        $key    = $forum_id . '-' . $topic_time;
-        $cached = $this->managerCache->load($key);
-
-        if (!isset($cached)) {
-            $this->managerCache->save(
-                $key,
-                $cached = $this->getAllFluent()
-                    ->where('[topic_forum_id] = %i', $forum_id)
-                    ->where('[topic_add_time] > %i', $topic_time)
-                    ->fetchAll(),
-                [Cache::EXPIRE => '2 hours']
-            );
-        }
-
-        return $cached;
-    }
-
     /**
      * @param string $topic_name
      *

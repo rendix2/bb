@@ -6,7 +6,6 @@ use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
-use App\Model\Entity\ForumEntity;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Models\CategoryManager;
@@ -25,11 +24,6 @@ use Tracy\ILogger;
  */
 class CategoryPresenter extends AdminPresenter
 {
-    /**
-     * CategoryPresenter constructor.
-     *
-     * @param CategoryManager $manager
-     */
     public function __construct(
         private readonly EntityManagerDecorator $em,
 

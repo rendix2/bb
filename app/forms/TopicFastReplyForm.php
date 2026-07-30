@@ -2,6 +2,11 @@
 
 namespace App\Forms;
 
+use App\Model\Repository\CategoryRepository;
+use App\Model\Repository\ForumRepository;
+use App\Model\Repository\PostRepository;
+use App\Model\Repository\TopicRepository;
+use App\Model\Repository\UserRepository;
 use App\Models\Entity\PostEntity;
 use App\Models\PostFacade;
 use App\Presenters\Base\BasePresenter;
@@ -20,66 +25,21 @@ use Nette\Utils\ArrayHash;
  */
 class TopicFastReplyForm extends Control
 {
-    /**
-     *
-     * @var TranslatorFactory $translatorFactory
-     */
-    private $translatorFactory;
-    
-    /**
-     *
-     * @var User $user
-     */
-    private $user;
-    
-    /**
-     *
-     * @var PostFacade $postFacade
-     */
-    private $postFacade;
-    
-    /**
-     *
-     * @var IRequest $request
-     */
-    private $request;
 
-    /**
-     * TopicFastReplyForm constructor.
-     *
-     * @param TranslatorFactory $translatorFactory
-     * @param User              $user
-     * @param PostFacade        $postFacade
-     * @param IRequest          $request
-     */
     public function __construct(
-        TranslatorFactory $translatorFactory,
-        User              $user,
-        PostFacade        $postFacade,
-        IRequest          $request
+        private readonly TranslatorFactory $translatorFactory,
+        private readonly User              $user,
+        private readonly PostFacade        $postFacade,
+        private readonly IRequest          $request,
+
+        private readonly CategoryRepository $categoryRepository,
+        private readonly ForumRepository    $forumRepository,
+        private readonly TopicRepository    $topicRepository,
+
+        private readonly UserRepository     $userRepository,
     ) {
-        parent::__construct();
-
-        $this->translatorFactory = $translatorFactory;
-        $this->user              = $user;
-        $this->postFacade        = $postFacade;
-        $this->request           = $request;
-    }
-    
-    /**
-     * TopicFastReplyForm destructor.
-     */
-    public function __destruct()
-    {
-        $this->translatorFactory = null;
-        $this->user              = null;
-        $this->postFacade        = null;
-        $this->request           = null;
     }
 
-    /**
-     * TopicFastReplyForm render.
-     */
     public function render(): void
     {
         $this['fastReply']->render();
@@ -91,7 +51,8 @@ class TopicFastReplyForm extends Control
         $form->setTranslator($this->translatorFactory->getForumTranslator());
 
         $form->addGroup('Fast reply');
-        $form->addTextArea('post_text');
+        $form->addTextArea('text');
+
         $form->addSubmit('send', 'Send');
 
         $form->onSuccess[] = [$this, 'fastReplySuccess'];
@@ -110,19 +71,45 @@ class TopicFastReplyForm extends Control
         $topic_id    = $this->presenter->getParameter('topic_id');
         $page        = $this->presenter->getParameter('page');
         $user_id     = $this->user->id;
-        
-        $post = new PostEntity();
-        $post->setPost_user_id($user_id)
-             ->setPost_category_id($category_id)
-             ->setPost_forum_id($forum_id)
-             ->setPost_topic_id($topic_id)
-             ->setPost_title('')
-             ->setPost_text($values->post_text)
-             ->setPost_add_time(time())
-             ->setPost_add_user_ip($this->request->getRemoteAddress())
-             ->setPost_order(1);
 
-        $res = $this->postFacade->add($post);
+        $categoryEntity = $this->categoryRepository
+            ->findOneBy(
+                [
+                    'id' => $category_id,
+                ]
+            );
+
+        $forumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $forum_id,
+                ]
+            );
+
+        $topicEntity = $this->topicRepository
+            ->findOneBy(
+                [
+                    'id' => $topic_id,
+                ]
+            );
+
+        $userEntity = $this->userRepository
+            ->findOneBy(
+                [
+                    'id' => $user_id,
+                ]
+            );
+
+        $postEntity = new \App\Model\Entity\PostEntity();
+        $postEntity->user = $userEntity;
+        $postEntity->category = $categoryEntity;
+        $postEntity->forum = $forumEntity;
+        $postEntity->topic = $topicEntity;
+        $postEntity->title = null;
+        $postEntity->text = $values->text;
+        $postEntity->addIpAddress = $this->request->getRemoteAddress();
+
+        $res = $this->postFacade->add($postEntity);
 
         if ($res) {
             $this->presenter->flashMessage('Post was added.', BasePresenter::FLASH_MESSAGE_SUCCESS);

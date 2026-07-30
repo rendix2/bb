@@ -12,17 +12,6 @@ use Nette\Utils\ArrayHash;
  */
 class FaqFacade
 {
-    /**
-     *
-     * @var FaqManager $faqManager
-     */
-    private $faqManager;
-    
-    /**
-     *
-     * @var FaqAnswersManager $faqAnswersManager
-     */
-    private $faqAnswersManager;
 
     /**
      *
@@ -31,22 +20,17 @@ class FaqFacade
      * @param FaqManager        $faqManager
      * @param FaqAnswersManager $faqAnswersManager
      */
-    public function __construct(FaqManager $faqManager, FaqAnswersManager $faqAnswersManager)
+    public function __construct(
+        private readonly FaqManager        $faqManager,
+        private readonly FaqAnswersManager $faqAnswersManager
+    )
     {
-        $this->faqManager        = $faqManager;
-        $this->faqAnswersManager = $faqAnswersManager;
     }
 
-    /**
-     * @param ArrayHash $item_data
-     */
     public function add(ArrayHash $item_data)
     {
     }
 
-    /**
-     * @param int $item_id
-     */
     public function delete($item_id)
     {
     }

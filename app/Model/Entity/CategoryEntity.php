@@ -40,7 +40,7 @@ class CategoryEntity
     public int $order;
 
     #[Column(type: Types::BOOLEAN)]
-    public int $active;
+    public bool $active;
 
     /**
      * @var Collection<int, CategoryEntity> $children

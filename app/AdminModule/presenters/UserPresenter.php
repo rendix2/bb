@@ -74,11 +74,6 @@ class UserPresenter extends AdminPresenter
      */
     public RankManager $ranksManager;
 
-    /**
-     * UserPresenter constructor.
-     *
-     * @param UsersManager $manager
-     */
     public function __construct(
         private readonly UserGroupsForm     $userGroupsForm,
         private readonly UserForumsForm     $userForumsForm,

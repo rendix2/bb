@@ -4,7 +4,6 @@ namespace App\Authorization\Scopes;
 
 use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
-use App\Models\Entity\ForumEntity;
 use App\Models\Users2ForumsManager;
 use App\Models\User2GroupManager;
 

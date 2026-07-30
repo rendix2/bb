@@ -142,18 +142,18 @@ class ForumPresenter extends AdminPresenter
                 $this->flashMessage('No sub forums.', self::FLASH_MESSAGE_WARNING);
             }
 
-            $lastTopic = $this->topicsManager->getLastByForum($id);
+            $lastTopic = $this->topicRepository->findLastByForumId($id);
 
             if (!$lastTopic) {
                 $this->flashMessage('No last topic.', self::FLASH_MESSAGE_WARNING);
             }
 
-            $lastPost = $this->postsManager->getLastByForum($id);
+            $lastPost = $this->postRepository->findLastByForumId($id);
 
             if ($lastPost) {
                 $userData = $this->userRepository->findOneBy(
                     [
-                        'id' => $lastPost->post_user_id
+                        'id' => $lastPost->user->id
                     ]
                 );
             } else {

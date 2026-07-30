@@ -27,7 +27,6 @@ class TopicJumpToForumForm extends Control
 
     public function __construct(
         ITranslator   $translator,
-        private readonly EntityManagerDecorator $em,
         private readonly ForumRepository        $forumRepository,
     ) {
         parent::__construct();
@@ -68,8 +67,7 @@ class TopicJumpToForumForm extends Control
      */
     public function jumpToForumSuccess(Form $form, ArrayHash $values): void
     {
-        $forumEntity = $this->em
-            ->getRepository(ForumEntity::class)
+        $forumEntity = $this->forumRepository
             ->findOneBy(
                 [
                     'id' => $values->forum_id,

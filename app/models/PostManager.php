@@ -17,8 +17,6 @@ use Nette\Utils\ArrayHash;
  */
 class PostManager extends CrudManager
 {
-
-
     /**
      * @param int $topic_id
      *
@@ -46,99 +44,6 @@ class PostManager extends CrudManager
             ->where('[post_topic_id] = %i', $topic_id)
             ->where('[post_user_id] = %i', $user_id)
             ->fetchSingle();
-    }
-
-    /**
-     * @return Row|false
-     */
-    public function getLast()
-    {
-        return $this->getAllFluent()
-            ->as('p')
-            ->innerJoin(self::TOPICS_TABLE)
-            ->as('t')
-            ->on('[p.topic_id] = [t.id]')
-            ->where('[p.id] = ', $this->dibi
-                ->select('MAX(p1.id)')
-                ->from($this->getTable())
-                ->as('p1')
-            )
-            ->fetch();
-    }
-
-    /**
-     * @param int $forum_id
-     *
-     * @return Row|false
-     */
-    public function getLastByForum($forum_id)
-    {
-        return $this->getAllFluent()
-            ->where('[post_id] = ',
-                $this->dibi
-                    ->select('MAX(post_id)')
-                    ->from($this->getTable())
-                    ->where('[post_forum_id] = %i', $forum_id)
-            )->fetch();
-    }
-
-    /**
-     * @param int $topic_id
-     *
-     * @return Row|false
-     */
-    public function getLastByTopic($topic_id)
-    {
-        return $this->getAllFluent()
-            ->where('[post_id] = ',
-                $this->dibi
-                    ->select('MAX(post_id)')
-                    ->from($this->getTable())
-                    ->where('[post_topic_id] = %i', $topic_id)
-            )->fetch();
-    }
-
-    /**
-     * @param int $topic_id
-     *
-     * @return Row|false
-     */
-    public function getFirstByTopic(int $topic_id)
-    {
-        return $this->getAllFluent()
-            ->where('[post_id] = ',
-                $this->dibi
-                    ->select('MIN(post_id)')
-                    ->from($this->getTable())
-                    ->where('[post_topic_id] = %i', $topic_id)
-            )->fetch();
-    }
-
-    /**
-     * @param int $forum_id
-     * @param int $post_time
-     *
-     * @return array|mixed
-     */
-    public function getNewerPosts($forum_id, $post_time)
-    {
-        $key    = $forum_id . '-' . $post_time;
-        $cached = $this->managerCache->load($key);
-
-        if (!isset($cached)) {
-            $this->managerCache->save(
-                $key,
-                $cached = $this->getAllFluent()
-                    ->where('[post_forum_id] = %i', $forum_id)
-                    ->where('[post_add_time] > %i', $post_time)
-                    ->fetchAll(),
-                [
-                    Cache::EXPIRE => '2 hours',
-                ]
-            );
-        }
-
-        return $cached;
     }
 
     /**

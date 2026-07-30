@@ -100,12 +100,6 @@ class PostPresenter extends BaseForumPresenter
      */
     public Posts2FilesManager $posts2FilesManager;
 
-    /**
-     * PostPresenter constructor.
-     *
-     * @param PostManager $manager
-     * @param EntityManagerDecorator $em
-     */
     public function __construct(
 
         PostManager $manager,
@@ -234,8 +228,14 @@ class PostPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $forum      = $this->checkForumParam($forum_id, $category_id);
-        $forumScope = $this->scopeService->loadForum($forum);
+        $forumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $forum_id,
+                ]
+            );
+
+        $forumScope = $this->scopeService->loadForum($forumEntity);
         
         if ($post_id === null) {
             $this->requireAccess($forumScope, ForumScope::ACTION_POST_ADD);

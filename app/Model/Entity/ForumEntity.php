@@ -38,4 +38,8 @@ class ForumEntity
     #[JoinColumn(nullable: false)]
     public ForumEntity $parent;
 
+    #[GeneratedValue()]
+    #[Column(type: Types::BOOLEAN)]
+    public bool $active;
+
 }

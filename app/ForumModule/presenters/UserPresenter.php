@@ -369,7 +369,7 @@ class UserPresenter extends BaseForumPresenter
      * @param int $user_id
      * @param int $page
      */
-    public function actionWatches($user_id, $page = 1): void
+    public function actionWatches(int $user_id, int $page = 1): void
     {
         $userEntity = $this->em
             ->getRepository(UserEntity::class)

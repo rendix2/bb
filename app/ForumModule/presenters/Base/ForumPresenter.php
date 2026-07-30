@@ -9,9 +9,6 @@ use App\Authorization\Scopes\User;
 use App\Models\Manager;
 use App\Models\ModeratorManager;
 use App\Models\ThankManager;
-use App\Models\Traits\ForumsTrait;
-use App\Models\Traits\PostTrait;
-use App\Models\Traits\TopicsTrait;
 use App\Presenters\Base\AuthenticatedPresenter;
 use Exception;
 use Nette\Localization\ITranslator;
@@ -24,10 +21,6 @@ use Nette\Localization\ITranslator;
  */
 abstract class ForumPresenter extends AuthenticatedPresenter
 {
-    use PostTrait;
-    use TopicsTrait;
-    use ForumsTrait;
-
     /**
      *
      * @var ModeratorManager $moderators
@@ -47,7 +40,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      * @inject
      */
     public Authorizator $authorizator;
-
 
     /**
      * Translator
@@ -85,9 +77,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         return $this->translator;
     }
 
-    /**
-     * @param $element
-     */
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
     {
         $user = $this->getUser();
@@ -97,9 +86,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         parent::checkRequirements($element);
     }
 
-    /**
-     *
-     */
     public function startup()
     {
         parent::startup();
@@ -111,9 +97,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         //$this->template->pm_count = $this->pmManager->getCountSent();
     }
 
-    /**
-     *
-     */
     public function beforeRender(): void
     {
         parent::beforeRender();
@@ -121,9 +104,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         $this->getTemplate()->setTranslator($this->translator);
     }
 
-    /**
-     * @return User
-     */
     protected function getLoggedInUser(): User
     {
         $identity = new Identity($this->getUser()->id, $this->getUser()->roles);
@@ -131,11 +111,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         return new User($identity);
     }
 
-    /**
-     * @param IAuthorizationScope $scope
-     * @param array               $action
-     * @throws Exception
-     */
     protected function requireAccess(IAuthorizationScope $scope, array $action): void
     {
         if (!$this->isAllowed($scope, $action)) {

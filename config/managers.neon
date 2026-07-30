@@ -59,8 +59,6 @@ services:
         class: App\Models\PmManager
     PmFacade:
         class: App\Models\PmFacade
-    RecountManager:
-        class: App\Models\RecountManager
     Posts2FilesManager:
         class: App\Models\Posts2FilesManager
     PostsHistoryManager:

@@ -99,12 +99,6 @@ class PostEntity extends Entity
      * @var int $post_order
      */
     private $post_order;
-    
-    /**
-     *
-     * @var FileEntity[] $files
-     */
-    private $post_files;
 
     /**
      * @return int
@@ -162,45 +156,10 @@ class PostEntity extends Entity
         return $this->post_text;
     }
 
-    /**
-     * @return int
-     */
-    public function getPost_add_time()
-    {
-        return $this->post_add_time;
-    }
 
-    /**
-     * @return string
-     */
-    public function getPost_add_user_ip()
-    {
-        return $this->post_add_user_ip;
-    }
 
-    /**
-     * @return string
-     */
-    public function getPost_edit_user_ip()
-    {
-        return $this->post_edit_user_ip;
-    }
 
-    /**
-     * @return int
-     */
-    public function getPost_edit_count()
-    {
-        return $this->post_edit_count;
-    }
 
-    /**
-     * @return int
-     */
-    public function getPost_last_edit_time()
-    {
-        return $this->post_last_edit_time;
-    }
 
     /**
      * @return int
@@ -210,21 +169,8 @@ class PostEntity extends Entity
         return $this->post_locked;
     }
 
-    /**
-     * @return int
-     */
-    public function getPost_order()
-    {
-        return $this->post_order;
-    }
 
-    /**
-     * @return FileEntity[]
-     */
-    public function getPost_files()
-    {
-        return $this->post_files;
-    }
+
 
     /**
      * @param $post_id
@@ -380,16 +326,6 @@ class PostEntity extends Entity
         return $this;
     }
 
-    /**
-     * @param array $files
-     *
-     * @return PostEntity
-     */
-    public function setPost_files(array $files = [])
-    {
-        $this->post_files = $files;
-        return $this;
-    }
 
     /**
      *
@@ -462,65 +398,5 @@ class PostEntity extends Entity
     
 
 
-    /**
-     * @return array
-     */
-    public function getArray()
-    {
-        $res = [];
-        
-        if (isset($this->post_id)) {
-            $res['post_id'] = $this->post_id;
-        }
-        
-        if (isset($this->post_user_id)) {
-            $res['post_user_id'] = $this->post_user_id;
-        }
-        
-        if (isset($this->post_category_id)) {
-            $res['post_category_id'] = $this->post_category_id;
-        }
 
-        if (isset($this->post_forum_id)) {
-            $res['post_forum_id'] = $this->post_forum_id;
-        }
-
-        if (isset($this->post_topic_id)) {
-            $res['post_topic_id'] = $this->post_topic_id;
-        }
-
-        if (isset($this->post_title)) {
-            $res['post_title'] = $this->post_title;
-        }
-
-        if (isset($this->post_text)) {
-            $res['post_text'] = $this->post_text;
-        }
-
-        if (isset($this->post_add_time)) {
-            $res['post_add_time'] = $this->post_add_time;
-        }
-
-        if (isset($this->post_add_user_ip)) {
-            $res['post_add_user_ip'] = $this->post_add_user_ip;
-        }
-
-        if (isset($this->post_edit_count)) {
-            $res['post_edit_count'] = $this->post_edit_count;
-        }
-
-        if (isset($this->post_last_edit_time)) {
-            $res['post_last_edit_time'] = $this->post_last_edit_time;
-        }
-
-        if (isset($this->post_locked)) {
-            $res['post_locked'] = $this->post_locked;
-        }
-        
-        if (isset($this->post_order)) {
-            $res['post_order'] = $this->post_order;
-        }
-                
-        return $res;
-    }
 }

@@ -39,5 +39,16 @@ class TopicEntity
     #[JoinColumn(nullable: false)]
     public UserEntity $user;
 
+    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'topic')]
+    #[JoinColumn(nullable: false)]
+    public PostEntity $firstPost;
+
+    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'topic')]
+    #[JoinColumn(nullable: true)]
+    public ?PostEntity $lastPost;
+
+    #[Column(type: Types::STRING, length: 1024, nullable: false)]
+    public string $name;
+
 
 }

@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
+use App\Model\Repository\PollAnswerRepository;
+use App\Model\Repository\PollRepository;
+use App\Model\Repository\PollVoteRepository;
 use App\Models\Entity\PollEntity;
 
 /**
@@ -17,19 +20,19 @@ class PollsFacade
      *
      * @var PollsManager $pollsManager
      */
-    private $pollsManager;
+    private PollsManager $pollsManager;
     
     /**
      *
      * @var PollsAnswersManager $pollsAnswersManager
      */
-    private $pollsAnswersManager;
+    private PollsAnswersManager $pollsAnswersManager;
     
     /**
      *
      * @var PollsVotesManager $pollsVotesManager
      */
-    private $pollsVotesManager;
+    private PollsVotesManager $pollsVotesManager;
 
     /**
      * PollsFacade constructor.
@@ -43,81 +46,53 @@ class PollsFacade
         PollsAnswersManager $pollsAnswersManager,
         PollsVotesManager   $pollsVotesManager,
         private readonly EntityManagerDecorator $em,
+
+        private readonly PollRepository       $pollRepository,
+        private readonly PollAnswerRepository $pollAnswerRepository,
+        private readonly PollVoteRepository   $pollVoteRepository,
+
     ) {
         $this->pollsManager        = $pollsManager;
         $this->pollsAnswersManager = $pollsAnswersManager;
         $this->pollsVotesManager   = $pollsVotesManager;
     }
-    
-    /**
-     *
-     * @return PollsManager
-     */
-    public function getPollsManager()
-    {
-        return $this->pollsManager;
-    }
-    
-    /**
-     *
-     * @return PollsAnswersManager
-     */
-    public function getPollsAnswersManager()
-    {
-        return $this->pollsAnswersManager;
-    }
-    
-    /**
-     *
-     * @return PollsVotesManager
-     */
-    public function getPollsVotesManager()
-    {
-        return $this->pollsVotesManager;
-    }
 
-    /**
-     *
-     * @param PollEntity $poll
-     */
-    public function add(PollEntity $poll)
+    public function add(\App\Model\Entity\PollEntity $poll)
     {
         $poll_id = $this->pollsManager->add($poll->getArrayHash());
         
         $poll->setPoll_id($poll_id);
         
-        foreach ($poll->getPollAnswers() as $answer) {
+        foreach ($poll->answers as $answer) {
             $answer->setPoll_id($poll_id);
             $this->pollsAnswersManager->add($answer->getArrayHash());
         }
     }
     
-    /**
-     *
-     * @param PollEntity $poll
-     */
-    public function update(PollEntity $poll)
+    public function update(\App\Model\Entity\PollEntity $poll)
     {
-        $this->pollsManager->update($poll->getPoll_id(), $poll->getArrayHash());
+        $this->pollsManager->update($poll->id, $poll->getArrayHash());
         
-        foreach ($poll->getPollAnswers() as $answer) {
-            $answer_exists = $this->pollsAnswersManager->getById($answer->getPoll_answer_id());
+        foreach ($poll->answers as $answer) {
+            $answer_exists = $this->pollAnswerRepository
+                ->findOneBy(
+                    [
+                        'id' => $answer->id,
+                    ]
+                );
             
             if ($answer_exists) {
-                $this->pollsAnswersManager->update($answer->getPoll_answer_id(), $answer->getArrayHash());
+                $this->pollsAnswersManager->update($answer->id, $answer->getArrayHash());
             } else {
                 $this->pollsAnswersManager->add($answer->getArrayHash());
             }
         }
     }
 
-    /**
-     * @param PollEntity $poll
-     */
-    public function delete(PollEntity $poll)
+    public function delete(\App\Model\Entity\PollEntity $poll)
     {
-        $this->pollsManager->delete($poll->getPoll_id());
-        $this->pollsAnswersManager->deleteByPoll($poll->getPoll_id());
-        $this->pollsVotesManager->deleteByPoll($poll->getPoll_id());
+        $this->pollsManager->delete($poll->id);
+        $this->pollsAnswersManager->deleteByPoll($poll->id);
+        $this->pollsVotesManager->deleteByPoll($poll->id);
     }
 }

@@ -9,6 +9,8 @@ use App\Model\Entity\TopicEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
+use App\Model\Repository\PostRepository;
+use App\Model\Repository\TopicRepository;
 use App\Models\CategoryManager;
 use App\Models\Crud\CrudNullManager;
 use App\Models\ModeratorManager;
@@ -32,6 +34,8 @@ class IndexPresenter extends BaseForumPresenter
 
         private readonly CategoryRepository $categoryRepository,
         private readonly ForumRepository    $forumRepository,
+        private readonly TopicRepository    $topicRepository,
+        private readonly PostRepository     $postRepository,
     )
     {
         parent::__construct($crudNullManager);
@@ -85,11 +89,11 @@ class IndexPresenter extends BaseForumPresenter
                 $result['cats'][$category->category_id]->forums[$forum->forum_id] = $forum;
 
                 $forum->hasNewPosts  = count(
-                    $this->postsManager->getNewerPosts($forum->forum_id, $last_login_time)
+                    $this->postRepository->findNewerPosts($forum->id, $last_login_time)
                 );
 
                 $forum->hasNewTopics = count(
-                    $this->topicsManager->getNewerTopicsCached($forum->forum_id, $last_login_time)
+                    $this->topicRepository->findNewerTopics($forum->id, $last_login_time)
                 );
 
                 $moderators = $this->moderatorsManager->getAllByRightJoined($forum->forum_id);

@@ -9,7 +9,6 @@ use App\Model\Entity\TopicEntity;
 use App\Model\Repository\ForumRepository;
 use App\Models\TopicFacade;
 use App\Models\TopicManager;
-use App\Models\Traits\ForumsTrait;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Nette\Application\UI\Form;
@@ -24,8 +23,6 @@ use Nette\Utils\ArrayHash;
  */
 class TopicPresenter extends ModeratorPresenter
 {
-    
-    use ForumsTrait;
     
     /**
      *
