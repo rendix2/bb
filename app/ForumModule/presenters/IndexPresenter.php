@@ -11,6 +11,7 @@ use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
+use App\Model\Repository\UserRepository;
 use App\Models\Crud\CrudNullManager;
 use App\Models\ModeratorManager;
 use Nette\DI\Attributes\Inject;
@@ -34,6 +35,8 @@ class IndexPresenter extends BaseForumPresenter
         private readonly ForumRepository    $forumRepository,
         private readonly TopicRepository    $topicRepository,
         private readonly PostRepository     $postRepository,
+
+        private readonly UserRepository $userRepository,
     )
     {
         parent::__construct($crudNullManager);
@@ -50,7 +53,18 @@ class IndexPresenter extends BaseForumPresenter
                     'active' => true,
                 ],
                 [
-                    'order' => 'ASC'
+                    'sortOrder' => 'ASC'
+                ]
+            );
+
+        $rootCategories = $this->categoryRepository
+            ->findBy(
+                [
+                    'active' => true,
+                    'parent' => null,
+                ],
+                [
+                    'sortOrder' => 'ASC'
                 ]
             );
 
@@ -61,30 +75,27 @@ class IndexPresenter extends BaseForumPresenter
             $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
         } else {
             // we do not show any new posts
-            $last_login_time = time() + 1;
+            $last_login_time = new \DateTimeImmutable();
         }
 
         foreach ($categories as $category) {
-            $category->forums = [];
-
             $forums = $this->forumRepository
                 ->findBy(
                     [
                         'category' => $category,
                         'active' => true,
-                        'parent_id' => null,
+                        'parent' => null,
                     ],
                     [
-                        'order' => 'ASC'
+                        'sortOrder' => 'ASC'
                     ]
                 );
 
-            $result['cats'][$category->category_id] = $category;
+            $result['cats'][$category->id] = $category;
 
             foreach ($forums as $forum) {
-                $category->forums[$forum->forum_id] = $forum;
-                $forum->moderators                  = [];
-                $result['cats'][$category->category_id]->forums[$forum->forum_id] = $forum;
+                $category->forums[$forum->id] = $forum;
+                $result['cats'][$category->id]->forums[$forum->id] = $forum;
 
                 $forum->hasNewPosts  = count(
                     $this->postRepository->findNewerPosts($forum->id, $last_login_time)
@@ -94,12 +105,14 @@ class IndexPresenter extends BaseForumPresenter
                     $this->topicRepository->findNewerTopics($forum->id, $last_login_time)
                 );
 
-                $moderators = $this->moderatorsManager->getAllByRightJoined($forum->forum_id);
+                //$moderators = $this->moderatorsManager->getAllByRightJoined($forum->id);
+
+                $moderators = $forum->moderatorUsers;
 
                 foreach ($moderators as $moderator) {
                     unset($moderator->user_password);
 
-                    $result['cats'][$category->category_id]->forums[$forum->forum_id]->moderators[$moderator->user_id] = $moderator;
+                    $result['cats'][$category->id]->forums[$forum->id]->moderators[$moderator->user_id] = $moderator;
                 }
             }
         }
@@ -149,32 +162,25 @@ class IndexPresenter extends BaseForumPresenter
         }
         */
 
-        $lastTopic = $this->em
-            ->getRepository(TopicEntity::class)
+        $lastTopic = $this->topicRepository
             ->findOneBy([], ['id' => 'DESC']);
 
-        $lastPost = $this->em
-            ->getRepository(PostEntity::class)
+        $lastPost = $this->postRepository
             ->findOneBy([], ['id' => 'DESC']);
 
-        $lastUser = $this->em
-            ->getRepository(UserEntity::class)
+        $lastUser = $this->userRepository
             ->findOneBy([], ['id' => 'DESC']);
 
-        $totalUserCount = $this->em
-            ->getRepository(UserEntity::class)
+        $totalUserCount = $this->userRepository
             ->count();
 
-        $totalTopicCount = $this->em
-            ->getRepository(TopicEntity::class)
+        $totalTopicCount = $this->topicRepository
             ->count();
 
-        $totalPostCount = $this->em
-            ->getRepository(PostEntity::class)
+        $totalPostCount = $this->postRepository
             ->count();
 
-        $mostPostUser = $this->em
-            ->getRepository(PostEntity::class)
+        $mostPostUser = $this->postRepository
             ->createQueryBuilder('_p')
 
             ->select('COUNT(_p.id) AS post_count')
@@ -191,8 +197,7 @@ class IndexPresenter extends BaseForumPresenter
             ->getQuery()
             ->getOneOrNullResult();
 
-        $mostTopicUser = $this->em
-            ->getRepository(TopicEntity::class)
+        $mostTopicUser = $this->topicRepository
             ->createQueryBuilder('_t')
 
             ->select('COUNT(_t.id) AS topic_count')
@@ -220,5 +225,7 @@ class IndexPresenter extends BaseForumPresenter
         $this->template->totalPosts     = $totalPostCount;
         $this->template->totalTopics    = $totalTopicCount;
         $this->template->data           = $result;
+
+        $this->template->categories = $rootCategories;
     }
 }

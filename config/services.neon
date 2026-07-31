@@ -1,6 +1,4 @@
 services:
-	Authenticator:
-		class: App\Authenticator
 	RouterFactory: App\Core\RouterFactory::createRouter
 	MysqlDumper:
 		class: Ifsnop\Mysqldump\Mysqldump(%database.default.dsn%, %database.default.username%, %database.default.password%)
@@ -10,6 +8,8 @@ services:
 		factory: App\Controls\GridFilter
 	UserSearchControl:
 		factory:  App\Controls\UserSearchControl
+	PollControl:
+		factory:  App\Controls\PollControl
 
 	-
 		type: App\Model\Repository\UserRepository
@@ -89,7 +89,6 @@ includes:
 	- %configDir%/ext/menu.neon
 	- %configDir%/ext/mailing.neon
 	- %configDir%/ext/redis.neon
-	- %configDir%/ext/pwned.neon
 	- %configDir%/settings.neon
 	#- %configDir%/config.neon
 	- %configDir%/factory.neon

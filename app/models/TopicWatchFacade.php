@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
 use App\Model\Repository\ForumRepository;
+use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
 use App\Models\Entity\PostEntity;
 use App\Models\Entity\TopicEntity;
@@ -46,6 +47,7 @@ class TopicWatchFacade
 
         private readonly ForumRepository $forumRepository,
         private readonly TopicRepository $topicRepository,
+        private readonly PostRepository  $postRepository,
     ) {
         $this->usersManager      = $usersManager;
         $this->topicWatchManager = $topicWatchManager;
@@ -105,18 +107,18 @@ class TopicWatchFacade
      */
     public function deleteByPost(\App\Model\Entity\PostEntity $post): void
     {
-        $postCount = $this->postsManager->getCountOfUsersByTopicId($post->getPost_topic_id());
+        $postCount = $this->postRepository->getCountOfUsersByTopicId($post->topic->id);
 
         foreach ($postCount as $ps) {
             // check if user has there only one post so we can delete his topic watching
             // else he can still want to watch this topic
             if ($ps->post_count === 1 || $ps->post_count === 0) {
-                $check = $this->topicWatchManager->fullCheck($post->getPost_topic_id(), $ps->post_user_id);
+                $check = $this->topicWatchManager->fullCheck($post->topic->id, $ps->post_user_id);
 
                 if ($check) {
-                    $this->topicWatchManager->delete($post->getPost_topic_id(), $ps->post_user_id);
+                    $this->topicWatchManager->delete($post->topic->id, $ps->post_user_id);
                     $this->usersManager->update(
-                        $post->getPost_user_id(),
+                        $post->user->id,
                         ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1'])
                     );
                 }

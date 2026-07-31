@@ -9,13 +9,13 @@ use App\Controls\BreadCrumbControl;
 use App\Database\EntityManagerDecorator;
 use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Model\Entity\TopicWatchEntity;
-use App\Model\Entity\UserEntity;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PollRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
+use App\Model\Repository\TopicWatchRepository;
+use App\Model\Repository\UserRepository;
 use App\Models\Entity\PollEntity;
 use App\Models\Manager;
 use App\Models\PollsFacade;
@@ -47,11 +47,7 @@ use Nette\Utils\Random;
  */
 class PostPresenter extends BaseForumPresenter
 {
-    /**
-     * @var ReportManager $reportManager
-     * @inject
-     */
-    public ReportManager $reportManager;
+
     
     /**
      *
@@ -110,16 +106,20 @@ class PostPresenter extends BaseForumPresenter
         private readonly TopicRepository    $topicRepository,
         private readonly PostRepository     $postRepository,
 
-        private readonly PollRepository     $pollRepository,
+        private readonly PollRepository $pollRepository,
+        private readonly UserRepository $userRepository,
+        private readonly TopicWatchRepository $topicWatchRepository,
 
         private readonly ScopeService      $scopeService,
         private readonly BreadcrumbService $breadcrumbService,
+
+        private readonly ReportForm $reportForm,
     )
     {
         parent::__construct($manager);
     }
 
-    public function actionDelete($category_id, $forum_id, $topic_id, $post_id, $page): void
+    public function actionDelete(int $category_id, int $forum_id, int $topic_id, int $post_id, int $page): void
     {
         $categoryEntity = $this->categoryRepository
             ->findOneBy(
@@ -169,7 +169,7 @@ class PostPresenter extends BaseForumPresenter
             $this->error('Post was not found.');
         }
         
-        $pollDibi = $this->pollRepository->findByTopicId($topic_id);
+        $pollDibi = $topicEntity->poll;
 
         if ($pollDibi) {
             $pollTimeStamp = $pollDibi->poll_time_to;
@@ -356,8 +356,7 @@ class PostPresenter extends BaseForumPresenter
     {
         $user_id = $this->getUser()->getId();
 
-        $userEntity = $this->em
-            ->getRepository(UserEntity::class)
+        $userEntity = $this->userRepository
             ->findOneBy(
                 [
                     'id' => $user_id,
@@ -416,8 +415,7 @@ class PostPresenter extends BaseForumPresenter
         }
 
         if ($post_id) {
-            $postOldEntity = $this->em
-                ->getRepository(\App\Model\Entity\PostEntity::class)
+            $postOldEntity = $this->postRepository
                 ->findOneBy(
                     [
                         'id' => $post_id,
@@ -456,8 +454,7 @@ class PostPresenter extends BaseForumPresenter
 
             $result = $this->postFacade->add($post);
 
-            $emails = $this->em
-                ->getRepository(TopicWatchEntity::class)
+            $emails = $this->topicWatchRepository
                 ->createQueryBuilder('_tw')
 
                 ->addSelect('_user')
@@ -567,6 +564,6 @@ class PostPresenter extends BaseForumPresenter
     
     protected function createComponentReportForm(): ReportForm
     {
-        return new ReportForm($this->reportManager);
+        return $this->reportForm;
     }
 }

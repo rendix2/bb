@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Ramsey\Uuid\Doctrine\UuidType;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: PollRepository::class)]
@@ -62,8 +63,14 @@ class PollEntity
     #[OneToMany(targetEntity: PollAnswerEntity::class, mappedBy: 'poll', cascade: ['persist', 'remove'])]
     public Collection $answers;
 
+
     public function __construct()
     {
+        $this->uuid = Uuid::uuid4();
+
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = null;
+
         $this->answers = new ArrayCollection();
     }
 

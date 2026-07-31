@@ -47,14 +47,18 @@ final class Version20260718085905 extends AbstractMigration
             ->setLength(512);
 
         $table->addColumn('first_post_id', Types::BIGINT)
+            ->setNotnull(false)
             ->setComment('First post ID');
 
         $table->addColumn('last_post_id', Types::BIGINT)
+            ->setNotnull(false)
             ->setComment('Last post ID');
 
         $table->addColumn('poll_id', Types::BIGINT)
+            ->setNotnull(false)
             ->setComment('Poll ID');
 
+        /*
         $table->addColumn('post_count', Types::BIGINT)
             ->setComment('Post count');
 
@@ -63,6 +67,7 @@ final class Version20260718085905 extends AbstractMigration
 
         $table->addColumn('locked', Types::BIGINT)
             ->setComment('Locked?');
+        */
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');

@@ -25,11 +25,6 @@ use Tracy\ILogger;
  */
 class LanguagePresenter extends AdminPresenter
 {
-    /**
-     * LanguagePresenter constructor.
-     *
-     * @param LanguageManager $manager
-     */
     public function __construct(
         LanguageManager $manager,
         private readonly EntityManagerDecorator $em,
@@ -38,9 +33,6 @@ class LanguagePresenter extends AdminPresenter
         parent::__construct($manager);
     }
 
-    /**
-     * @param int $id
-     */
     public function actionDelete(int $id)
     {
         if (!is_numeric($id)) {
@@ -58,9 +50,6 @@ class LanguagePresenter extends AdminPresenter
         $this->redirect(':' . $this->getName() . ':default');
     }
 
-    /**
-     * @param int $page
-     */
     public function actionDefault(int $page = 1): void
     {
         $items = $this->getManager()->getAllFluent();
@@ -79,17 +68,11 @@ class LanguagePresenter extends AdminPresenter
         $this->template->countItems = $paginator->getCount();
     }
 
-    /**
-     * @param int $page
-     */
     public function renderDefault(int $page = 1): void
     {
         $this->template->title = $this->getTitleOnDefault();
     }
 
-    /**
-     * @param ?int $id
-     */
     public function renderEdit($id = null): void
     {
         if ($id) {
@@ -135,10 +118,6 @@ class LanguagePresenter extends AdminPresenter
         $this->getTemplate()->countOfUsers = $countOfUsers;
     }
 
-    /**
-     *
-     * @return GridFilter
-     */
     protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->getTranslator());
@@ -195,9 +174,6 @@ class LanguagePresenter extends AdminPresenter
         $this->redirect(':' . $this->getName() . ':default');
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = [
@@ -208,9 +184,6 @@ class LanguagePresenter extends AdminPresenter
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbEdit()
     {
         $breadCrumb = [

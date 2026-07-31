@@ -116,6 +116,12 @@ class UserEntity
     #[OneToMany(targetEntity: ThankEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     public Collection $thanks;
 
+    /**
+     * @var Collection<int, ModeratorUserEntity> $thanks
+     */
+    #[OneToMany(targetEntity: ModeratorUserEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $moderatorUsers;
+
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
@@ -128,6 +134,7 @@ class UserEntity
         $this->passwordRequests = new ArrayCollection();
         $this->sessions = new ArrayCollection();
         $this->thanks = new ArrayCollection();
+        $this->moderatorUsers = new ArrayCollection();
 
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;

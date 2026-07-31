@@ -9,6 +9,7 @@ use App\Controls\PaginatorControl;
 use App\Database\EntityManagerDecorator;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Entity\CategoryEntity;
+use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Models\ForumManager;
 use App\Models\ModeratorManager;
@@ -50,7 +51,8 @@ final class ForumPresenter extends BaseForumPresenter
 
         private readonly ScopeService $scopeService,
 
-        private readonly ForumRepository $forumRepository,
+        private readonly CategoryRepository $categoryRepository,
+        private readonly ForumRepository    $forumRepository,
 
         private readonly BreadcrumbService $breadcrumbService,
 
@@ -69,8 +71,7 @@ final class ForumPresenter extends BaseForumPresenter
      */
     public function actionDefault(int $category_id, int $forum_id, int $page = 1): void
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id
@@ -154,8 +155,7 @@ final class ForumPresenter extends BaseForumPresenter
      */
     public function renderRules(int $category_id, int $forum_id): void
     {
-        $categoryEntity = $this->em
-            ->getRepository(CategoryEntity::class)
+        $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
                     'id' => $category_id

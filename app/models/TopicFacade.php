@@ -192,14 +192,14 @@ class TopicFacade
         $this->topicWatchFacade->deleteByTopic($topicEntity);
         $this->reportFacade->deleteByTopic($topicEntity);
         
-        if ($topicEntity->getPoll()) {
-            $this->pollsFacade->delete($topicEntity->getPoll());
+        if ($topicEntity->poll !== null) {
+            $this->pollsFacade->delete($topicEntity->poll);
         }
         
         $this->usersManager
             ->update($topicEntity->user->id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
         
-        $posts = $this->postsManager->getCountOfUsersByTopicId($topicEntity->id);
+        $posts = $this->postRepository->getCountOfUsersByTopicId($topicEntity->id);
         $users = [];
         
         foreach ($posts as $post) {
@@ -225,13 +225,14 @@ class TopicFacade
      *
      * @return int
      */
-    public function copy($topic_id, $target_forum_id = null)
+    public function copy(int $topic_id, $target_forum_id = null)
     {
-        $posts        = $this->postsManager->getFluentByTopic($topic_id);
+        $posts = $this->postRepository->findByTopicId($topic_id);
+
         $new_topic_id = $this->topicsManager->copy($topic_id, $target_forum_id);
 
         foreach ($posts as $post) {
-            $this->postsManager->copy($post->post_id, $new_topic_id);
+            $this->postsManager->copy($post->id, $new_topic_id);
         }
 
         return $new_topic_id;
@@ -263,8 +264,8 @@ class TopicFacade
             return false;
         }
 
-        $posts    = $this->postsManager->getFluentByTopic($topic_id);
-        $post_ids = Utils::arrayObjectColumn($posts, 'post_id');
+        $posts    = $this->postRepository->findByTopicId($topic_id);
+        $post_ids = Utils::arrayObjectColumn($posts, 'id');
 
         $this->forumsManager->update(
             $source_forum_id,

@@ -34,12 +34,6 @@ class UserPresenter extends AdminPresenter
      */
     private static array $active = [0 => 'Not active', 1 => 'Active'];
 
-
-    /**
-     * @var LanguageManager $languagesManager
-     * @inject
-     */
-    public LanguageManager $languagesManager;
     
     /**
      * @var Avatars $avatar

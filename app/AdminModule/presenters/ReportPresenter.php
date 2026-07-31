@@ -22,19 +22,11 @@ use Tracy\ILogger;
  */
 class ReportPresenter extends AdminPresenter
 {
-    /**
-     * ReportPresenter constructor.
-     *
-     * @param ReportManager $manager
-     */
     public function __construct(ReportManager $manager)
     {
         parent::__construct($manager);
     }
 
-    /**
-     * @param int $id
-     */
     public function actionDelete(int $id)
     {
         if (!is_numeric($id)) {
@@ -52,9 +44,6 @@ class ReportPresenter extends AdminPresenter
         $this->redirect(':' . $this->getName() . ':default');
     }
 
-    /**
-     * @param int $page
-     */
     public function actionDefault(int $page = 1): void
     {
         $items = $this->getManager()->getAllFluent();
@@ -73,17 +62,11 @@ class ReportPresenter extends AdminPresenter
         $this->template->countItems = $paginator->getCount();
     }
 
-    /**
-     * @param int $page
-     */
     public function renderDefault(int $page = 1): void
     {
         $this->template->title = $this->getTitleOnDefault();
     }
 
-    /**
-     * @param int|null $id
-     */
     public function renderEdit(int $id): void
     {
         if ($id) {

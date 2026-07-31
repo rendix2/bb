@@ -3,7 +3,8 @@
 namespace App\Forms;
 
 use App\Model\Entity\UserEntity;
-use Jgxvx\Cilician\Service\Cilician;
+use JordJD\PasswordExposed\Enums\PasswordStatus;
+use JordJD\PasswordExposed\PasswordExposedChecker;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
@@ -27,7 +28,6 @@ class PasswordFormControl extends TextInput
     public function __construct(
         string                      $label,
         private readonly Translator $translator,
-        private readonly Cilician   $cilician,
         private readonly Passwords  $passwords,
     )
     {
@@ -47,9 +47,9 @@ class PasswordFormControl extends TextInput
                     }
 
                     try {
-                        $result = $this->cilician->checkPassword($password);
+                        $passwordStatus = (new PasswordExposedChecker())->passwordExposed($password);
 
-                        return !$result->isPwned();
+                        return $passwordStatus !== PasswordStatus::EXPOSED;
                     } catch (\Exception $e) {
                         return true;
                     }

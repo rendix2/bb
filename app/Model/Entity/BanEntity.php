@@ -5,6 +5,7 @@ namespace App\Model\Entity;
 
 use App\Database\Types\IpAddressType;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -12,6 +13,7 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 use Ramsey\Uuid\Doctrine\UuidType;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity()]
@@ -41,5 +43,13 @@ class BanEntity
 
     #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     public ?DateTimeImmutable $updatedAt;
+
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid4();
+
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = null;
+    }
 
 }

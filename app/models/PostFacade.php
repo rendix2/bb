@@ -316,8 +316,8 @@ class PostFacade
                 ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1'])
             );
 
-            if ($topicEntity->getPoll()) {
-                $this->pollsFacade->delete($topicEntity->getPoll());
+            if ($topicEntity->poll) {
+                $this->pollsFacade->delete($topicEntity->poll);
             }
 
             $this->topicsManager->delete($topicEntity->id);
@@ -325,12 +325,12 @@ class PostFacade
             return 2;
         }
 
-        $lastPostOfUser = $this->postsManager->getLastByUser($postEntity->user->id);
+        $lastPostOfUser = $this->postRepository->findLastByUserId($postEntity->user->id);
 
         if ($lastPostOfUser) {
             $this->usersManager->update(
                 $postEntity->user->id,
-                ArrayHash::from(['user_last_post_time' => $lastPostOfUser->post_add_time])
+                ArrayHash::from(['user_last_post_time' => $lastPostOfUser->createdAt])
             );
         } else {
             $this->usersManager->update(

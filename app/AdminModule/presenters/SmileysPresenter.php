@@ -28,10 +28,6 @@ class SmileysPresenter extends AdminPresenter
         return $form;
     }
     
-    /**
-     *
-     * @return GridFilter
-     */
     protected function createComponentGridFilter()
     {
         $this->gf->setTranslator($this->getTranslator());
@@ -41,10 +37,7 @@ class SmileysPresenter extends AdminPresenter
         return $this->gf;
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
-    protected function createComponentBreadCrumbAll()
+    protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
@@ -54,10 +47,7 @@ class SmileysPresenter extends AdminPresenter
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
-    protected function createComponentBreadCrumbEdit()
+    protected function createComponentBreadCrumbEdit(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default',   'text' => 'menu_index'],

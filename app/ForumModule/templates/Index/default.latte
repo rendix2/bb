@@ -4,30 +4,30 @@
 
     <div class="col-sm-12 main">
         <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
-            {foreach $data['cats'] as $localCategoryId => $cat_values}
+            {foreach $data['cats'] as $category}
                 <tr>
                     <td>
-                        <a href="{link Category:default, $data['cats'][$localCategoryId]->category_id}">{$data['cats'][$localCategoryId]->category_name}</a>
+                        <a href="{link Category:default, $category->id}">{$category->name}</a>
                     </td>
                 </tr>
-                {if count($cat_values['forums'])}
+                {if count($category->forums)}
                     <tr>
                         <td>
                             <table class="table table-striped table-bordered list-table table-hover table-fixed-header table-last-center">
-                                    {foreach $cat_values['forums'] as $forum}
+                                    {foreach $category->forums as $forum}
                                 <tr>
                                     <td>
                                         {if $forum->hasNewTopics || $forum->hasNewPosts}NEW POSTS{/if}
-                                        <a href="{link Forum:default, $forum->forum_category_id, $forum->forum_id}">{$forum->forum_name}</a>
+                                        <a href="{link Forum:default, $forum->category->id, $forum->id}">{$forum->name}</a>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>{$forum->forum_description}</td>
+                                    <td>{$forum->description}</td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        {foreach $forum['moderators'] as $mod}
-                                            <a href="{link User:profile, $mod->user_id}">{$mod->user_name}</a>
+                                        {foreach $forum->moderatorUsers as $moderator}
+                                            <a href="{link User:profile, $moderator->user->id}">{$moderator->user->username}</a>
                                             {if !$iterator->isLast()},{/if}
                                         {/foreach}
                                     </td>
@@ -67,29 +67,29 @@
                     </td>
                     <td>
                         {if $lastTopic}
-                            <a href="{link Topic:default, $lastTopic->topic_category_id, $lastTopic->topic_forum_id, $lastTopic->topic_id}" title="Přidáno: {$lastTopic->topic_add_time|date:'%d.%m.%Y %H:%M:%S'}">{$lastTopic->topic_name}</a>
+                            <a href="{link Topic:default, $lastTopic->category->id, $lastTopic->forum->id, $lastTopic->id}" title="Přidáno: {$lastTopic->topic_add_time|date:'%d.%m.%Y %H:%M:%S'}">{$lastTopic->name}</a>
                         {else}None
                         {/if}
                     </td>
                     <td>
                         {if $lastPost}
-                            <a href="{link Topic:default#post_{$lastPost->post_id}, $lastPost->post_category_id, $lastPost->post_forum_id, $lastPost->post_topic_id, $lastPost->topic_page_count}" title="Přidáno: {$lastPost->post_add_time|date:'%d.%m.%Y %H:%M:%S'}">
-                                {if $lastPost->post_title}
-                                    {$lastPost->post_title}
+                            <a href="{link Topic:default#post_{$lastPost->id}, $lastPost->category->id, $lastPost->forum->id, $lastPost->topic->id, $lastPost->topic_page_count}" title="Přidáno: {$lastPost->post_add_time|date:'%d.%m.%Y %H:%M:%S'}">
+                                {if $lastPost->title}
+                                    {$lastPost->title}
                                 {else}
-                                     {$lastPost->post_id}
+                                     {$lastPost->id}
                                 {/if}
                             </a>
                         {/if}
                     </td>
                     <td>{if $mostPostsUser}
-                            <a href="{link User:profile $mostPostsUser->user_id}">{$mostPostsUser->user_name}</a>
+                            <a href="{link User:profile $mostPostsUser->id}">{$mostPostsUser['username']}</a>
                         ({$mostPostsUser->post_count})
                         {else}No one
                         {/if}
                     </td>
                     <td>{if $mostTopicsUser}
-                            <a href="{link User:profile $mostTopicsUser->user_id}">{$mostTopicsUser->user_name}</a>
+                            <a href="{link User:profile $mostTopicsUser->id}">{$mostTopicsUser['username']}</a>
                             ({$mostTopicsUser->topic_count})
                         {else}No one
                         {/if}

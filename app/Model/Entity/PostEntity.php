@@ -5,6 +5,7 @@ namespace App\Model\Entity;
 use App\Database\Types\IpAddressType;
 use App\Model\Repository\PostRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
@@ -16,6 +17,7 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Ramsey\Uuid\Doctrine\UuidType;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: PostRepository::class)]
@@ -56,6 +58,9 @@ class PostEntity
     #[Column(type: IpAddressType::NAME, nullable: false)]
     public string $addIpAddress;
 
+    #[Column(type: IpAddressType::NAME, nullable: true)]
+    public string $editIpAddress;
+
     #[Column(type: Types::DATETIME_IMMUTABLE)]
     public DateTimeImmutable $createdAt;
 
@@ -74,7 +79,16 @@ class PostEntity
     #[OneToMany(targetEntity: FileEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     public Collection $files;
 
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid4();
 
+        $this->historyPosts = new ArrayCollection();
+        $this->files = new ArrayCollection();
+
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = null;
+    }
 
 
 }

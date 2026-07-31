@@ -2,7 +2,6 @@
 
 namespace App\Forms;
 
-use App\Authenticator;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\SessionEntity;
 use App\Model\Entity\UserEntity;

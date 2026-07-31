@@ -3,6 +3,7 @@
 namespace App\Model\Repository;
 
 use App\Model\Entity\TopicWatchEntity;
+use App\Model\Entity\UserEntity;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -13,5 +14,23 @@ use Doctrine\ORM\EntityRepository;
  */
 class TopicWatchRepository extends EntityRepository
 {
+    public function findByUserId(int $userId): array
+    {
+        return $this->findBy(
+            [
+                'user' => $userId,
+            ]
+        );
+    }
+
+    public function findByUser(UserEntity $userEntity): array
+    {
+        return $this->findBy(
+            [
+                'user' => $userEntity,
+            ]
+        );
+    }
+
 
 }

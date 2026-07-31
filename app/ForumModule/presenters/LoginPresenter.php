@@ -3,10 +3,8 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BBMailer;
-use App\Database\EntityManagerDecorator;
 use App\Forms\UserLoginForm;
 use App\Model\Repository\UserRepository;
-use App\Models\Manager;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;

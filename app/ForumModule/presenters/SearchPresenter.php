@@ -54,7 +54,7 @@ class SearchPresenter extends BaseForumPresenter
     /**
      * @param string $q
      */
-    public function renderTopicResults($q)
+    public function renderTopicResults(string $q): void
     {
         $topics = $this->topicsManager->findByTopicNameJoinedUser($q);
 
@@ -70,7 +70,7 @@ class SearchPresenter extends BaseForumPresenter
     /**
      * @param string $q
      */
-    public function renderUserResults($q): void
+    public function renderUserResults(string $q): void
     {
         $users = $this->getManager()->findLikeByUserName($q);
 
@@ -87,26 +87,17 @@ class SearchPresenter extends BaseForumPresenter
      * forms
      */
 
-    /**
-     * @return SearchPostForm
-     */
-    public function createComponentSearchPostForm()
+    public function createComponentSearchPostForm(): SearchPostForm
     {
         return new SearchPostForm($this->getTranslator());
     }
 
-    /**
-     * @return SearchTopicForm
-     */
-    public function createComponentSearchTopicForm()
+    public function createComponentSearchTopicForm(): SearchTopicForm
     {
         return new SearchTopicForm($this->getTranslator());
     }
 
-    /**
-     * @return SearchUserForm
-     */
-    public function createComponentSearchUserForm()
+    public function createComponentSearchUserForm(): SearchUserForm
     {
         return new SearchUserForm($this->getTranslator());
     }

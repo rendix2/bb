@@ -9,7 +9,9 @@ use App\Model\Repository\UserRepository;
 use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
 use App\Translator;
+use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Form;
+use Nette\DI\Attributes\Inject;
 use Nette\Security\AuthenticationException;
 use Nette\Utils\ArrayHash;
 
@@ -21,27 +23,16 @@ use Nette\Utils\ArrayHash;
  */
 class LoginPresenter extends BasePresenter
 {
-    /**
-     * @persistent
-     * @var string $backlink
-     */
+    #[Persistent]
     public string $backlink = '';
     
-    /**
-     *
-     * @var Translator $translator
-     */
     private Translator $translator;
-    
-    /**
-     *
-     * @var UserLoginFormFactory $userLoginFormFactory
-     * @inject
-     */
-    public UserLoginFormFactory $userLoginFormFactory;
+
 
     public function __construct(
         private readonly UserRepository $userRepository,
+
+        private readonly UserLoginFormFactory $userLoginFormFactory,
 
         private readonly EntityManagerDecorator $em,
     )

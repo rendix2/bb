@@ -3,6 +3,8 @@
 namespace App\Core;
 
 use App\Model\Entity\UserEntity;
+use App\Model\Entity\UserLoginAttemptEntity;
+use App\Model\Repository\LanguageRepository;
 use App\UI\Web\User\Login\UserLoginAttemptCheckService;
 use DateTimeImmutable;
 use Nette\Http\IRequest;
@@ -21,6 +23,8 @@ class UsernameAndPasswordAuthenticator implements Authenticator
         private readonly Passwords                    $passwords,
         private readonly UserLoginAttemptCheckService $userLoginAttemptCheckService,
         private readonly IRequest                     $request,
+
+        private readonly LanguageRepository $languageRepository,
     )
     {
     }
@@ -66,6 +70,13 @@ class UsernameAndPasswordAuthenticator implements Authenticator
             throw new AuthenticationException('Invalid password.');
         }
 
+        $languageEntity = $this->languageRepository
+            ->findOneBy(
+                [
+                    'id' => $userEntity->language->id,
+                ]
+            );
+
         $roles = [];
 
         foreach ($userEntity->roles as $role) {
@@ -74,12 +85,19 @@ class UsernameAndPasswordAuthenticator implements Authenticator
 
         $this->userLoginAttemptCheckService->clearAttempts($username, $ip);
 
+        $data =
+            [
+                'user_name' => $userEntity->username,
+                'lang_file_name' => $languageEntity->fileName,
+                'user_last_login_time' => new DateTimeImmutable(),
+                'user_email' => $userEntity->email,
+                'moderator' => $userEntity->moderatorUsers
+            ];
+
         return new SimpleIdentity(
             $userEntity->id,
             $roles,
-            [
-                'username' => $userEntity->username
-            ],
+            $data
         );
     }
 

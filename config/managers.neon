@@ -11,8 +11,6 @@ services:
         class: App\Models\ThankManager
     TopicManager:
         class: App\Models\TopicManager
-    CategoryManager:
-        class: App\Models\CategoryManager
     RankManager:
         class: App\Models\RankManager
     LanaguageManager:
@@ -37,8 +35,6 @@ services:
         class: App\Models\FaqFacade
     FilesManager:
         class: App\Models\FilesManager
-    BanManager:
-        class: App\Models\BanManager
     SmileysManager:
         class: App\Models\SmileysManager
     CacheManager:

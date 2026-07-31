@@ -29,7 +29,7 @@
                 </li>
                 <li class="nav-item {if $presenter->getName() === 'Forum:User' && $presenter->getAction() !== 'edit' && $user_id == $user->id}active{/if}">
                       <a class="nav-link"
-                       href="{link User:profile $user->getId()}">{$user->identity->getData()['user_name']}</a>
+                       href="{link :Web:User:profile $user->getId()}">{$user->identity->getData()['username']}</a>
                 </li>
                 <li class="nav-item {if $presenter->getName() === 'Forum:Search'}active{/if}">
                     <a class="nav-link" href="{link Search:default}">{_menu_search}</a>

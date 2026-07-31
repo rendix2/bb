@@ -24,7 +24,7 @@ class UserLoginAttemptCheckService
         $this->lockTimeSeconds = 900;
     }
 
-    public function logAttempt(string $username, string $ipAddress): void
+    public function logAttempt(string $username, string $ipAddress): UserLoginAttemptEntity
     {
         if (filter_var($ipAddress, FILTER_VALIDATE_IP) === false) {
             throw new InvalidArgumentException("Neplatná IP adresa: $ipAddress");
@@ -43,6 +43,8 @@ class UserLoginAttemptCheckService
 
         $this->em->persist($userLoginAttemptEntity);
         $this->em->flush();
+
+        return $userLoginAttemptEntity;
     }
 
     public function isIpBlocked(string $ipAddress): bool

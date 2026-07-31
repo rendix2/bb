@@ -4,6 +4,7 @@ namespace App\Model\Entity;
 
 use App\Model\Repository\CategoryRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
@@ -15,6 +16,7 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Ramsey\Uuid\Doctrine\UuidType;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: CategoryRepository::class)]
@@ -31,14 +33,14 @@ class CategoryEntity
     public UuidInterface $uuid;
 
     #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'children')]
-    #[JoinColumn(nullable: false)]
-    public CategoryEntity $parent;
+    #[JoinColumn(nullable: true)]
+    public ?CategoryEntity $parent;
 
     #[Column(type: Types::TEXT)]
     public string $name;
 
-    #[Column(type: Types::INTEGER)]
-    public int $order;
+    #[Column(type: Types::INTEGER, nullable: false)]
+    public int $sortOrder;
 
     #[Column(type: Types::BOOLEAN)]
     public bool $active;
@@ -66,5 +68,17 @@ class CategoryEntity
      */
     #[OneToMany(targetEntity: ThankEntity::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
     public Collection $thanks;
+
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid4();
+
+        $this->children = new ArrayCollection();
+        $this->forums = new ArrayCollection();
+        $this->thanks = new ArrayCollection();
+
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = null;
+    }
 
 }

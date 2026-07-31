@@ -15,10 +15,6 @@ use App\Model\Repository\UserRepository;
 use App\Models\ForumFacade;
 use App\Models\ForumManager;
 use App\Models\ModeratorManager;
-use App\Models\PostManager;
-use App\Models\TopicManager;
-use App\Models\UsersManager;
-use App\Presenters\Base\AuthenticatedPresenter;
 use Doctrine\DBAL\Exception as DbalException;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
@@ -36,19 +32,7 @@ use Tracy\ILogger;
 class ForumPresenter extends AdminPresenter
 {
 
-    /**
-     *
-     * @var TopicManager $topicsManager
-     * @inject
-     */
-    public TopicManager $topicsManager;
 
-    /**
-     *
-     * @var PostManager $postsManager
-     * @inject
-     */
-    public PostManager $postsManager;
 
     /**
      * @var ModeratorManager $moderatorsManager
@@ -56,12 +40,6 @@ class ForumPresenter extends AdminPresenter
      */
     public ModeratorManager $moderatorsManager;
 
-    /**
-     *
-     * @var UsersManager $usersManager
-     * @inject
-     */
-    public UsersManager $usersManager;
 
     /**
      *

@@ -4,6 +4,7 @@ namespace App\Model\Entity;
 
 use App\Model\Repository\TopicRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
@@ -15,6 +16,7 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Ramsey\Uuid\Doctrine\UuidType;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: TopicRepository::class)]
@@ -43,14 +45,14 @@ class TopicEntity
     public UserEntity $user;
 
     #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'topic')]
-    #[JoinColumn(nullable: false)]
-    public PostEntity $firstPost;
+    #[JoinColumn(nullable: true)]
+    public ?PostEntity $firstPost;
 
     #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'topic')]
     #[JoinColumn(nullable: true)]
     public ?PostEntity $lastPost;
 
-    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'topic')]
+    #[ManyToOne(targetEntity: PollEntity::class, inversedBy: 'topic')]
     #[JoinColumn(nullable: true)]
     public ?PollEntity $poll;
 
@@ -74,6 +76,17 @@ class TopicEntity
      */
     #[OneToMany(targetEntity: ThankEntity::class, mappedBy: 'topic', cascade: ['persist', 'remove'])]
     public Collection $thanks;
+
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid4();
+
+        $this->posts = new ArrayCollection();
+        $this->thanks = new ArrayCollection();
+
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = null;
+    }
 
 
 }

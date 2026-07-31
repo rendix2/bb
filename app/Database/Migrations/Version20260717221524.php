@@ -34,6 +34,7 @@ final class Version20260717221524 extends AbstractMigration
             ->setComment('UUID');
 
         $table->addColumn('parent_id', Types::BIGINT)
+            ->setNotnull(false)
             ->setComment('Parent ID');
 
         $table->addColumn('category_id', Types::BIGINT)
@@ -44,16 +45,19 @@ final class Version20260717221524 extends AbstractMigration
             ->setLength(512);
 
         $table->addColumn('description', Types::TEXT)
+            ->setNotnull(false)
             ->setComment('Description');
 
         $table->addColumn('active', Types::BOOLEAN)
             ->setComment('Active');
 
-        $table->addColumn('order', Types::INTEGER)
+        $table->addColumn('sort_order', Types::INTEGER)
             ->setComment('Order');
 
+        /*
         $table->addColumn('thank', Types::INTEGER)
             ->setComment('Thank');
+
 
         $table->addColumn('topic_count', Types::INTEGER)
             ->setComment('Topic count');
@@ -81,8 +85,10 @@ final class Version20260717221524 extends AbstractMigration
 
         $table->addColumn('fast_reply', Types::BOOLEAN)
             ->setComment('Can add fast reply (post)');
+                */
 
         $table->addColumn('rules', Types::TEXT)
+            ->setNotnull(false)
             ->setComment('Rules');
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)

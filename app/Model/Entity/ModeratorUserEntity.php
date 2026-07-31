@@ -2,7 +2,6 @@
 
 namespace App\Model\Entity;
 
-use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -16,8 +15,8 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity()]
-#[Table(name: 'file')]
-class FileEntity
+#[Table(name: 'moderator_user')]
+class ModeratorUserEntity
 {
 
     #[Id()]
@@ -28,22 +27,17 @@ class FileEntity
     #[Column(type: UuidType::NAME, unique: true)]
     public UuidInterface $uuid;
 
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'posts')]
+
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'polls')]
     #[JoinColumn(nullable: false)]
     public UserEntity $user;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE)]
-    public DateTimeImmutable $createdAt;
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'polls')]
+    #[JoinColumn(nullable: false)]
+    public ForumEntity $forum;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    public ?DateTimeImmutable $updatedAt;
-
-    public function __construct()
-    {
+    public function __construct() {
         $this->uuid = Uuid::uuid4();
-
-        $this->createdAt = new DateTimeImmutable();
-        $this->updatedAt = null;
     }
 
 }

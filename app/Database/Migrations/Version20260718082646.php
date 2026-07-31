@@ -24,7 +24,7 @@ final class Version20260718082646 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $table = $schema->createTable('public.moderator');
+        $table = $schema->createTable('public.moderator_user');
 
         $table->addColumn('id', Types::BIGINT)
             ->setAutoincrement(true)

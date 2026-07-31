@@ -5,6 +5,7 @@ namespace App\ForumModule\Presenters;
 use App\Controls\BBMailer;
 use App\Database\EntityManagerDecorator;
 use App\Model\Repository\LanguageRepository;
+use App\Model\Repository\UserRepository;
 use App\Models\LanguageManager;
 use App\Models\PmManager;
 use App\Models\UserFacade;
@@ -31,12 +32,6 @@ class RegisterPresenter extends BasePresenter
     private ITranslator $translator;
 
     /**
-     * @var PmManager $pmManager
-     * @inject
-     */
-    public PmManager $pmManager;
-
-    /**
      * @var BBMailer $bbMailer
      * @inject
      */
@@ -58,7 +53,11 @@ class RegisterPresenter extends BasePresenter
 
         private readonly EntityManagerDecorator $em,
         private readonly Passwords              $passwords,
-        private readonly LanguageRepository     $languageRepository,
+
+
+        private readonly LanguageRepository $languageRepository,
+        private readonly UserRepository     $userRepository,
+
     )
     {
         parent::__construct();
@@ -108,8 +107,7 @@ class RegisterPresenter extends BasePresenter
      */
     public function registerOnValidate(Form $form, ArrayHash $values): void
     {
-        $foundUsersByUsernames = $this->em
-            ->getRepository(\App\Model\Entity\UserEntity::class)
+        $foundUsersByUsernames = $this->userRepository
             ->findBy(
                 [
                     'username' => $values->user_name,
@@ -120,8 +118,7 @@ class RegisterPresenter extends BasePresenter
             $form->addError('User name is already taken.');
         }
 
-        $foundUsersByEmails = $this->em
-            ->getRepository(\App\Model\Entity\UserEntity::class)
+        $foundUsersByEmails = $this->userRepository
             ->findBy(
                 [
                     'email' => $values->user_email,
@@ -157,7 +154,7 @@ class RegisterPresenter extends BasePresenter
         $this->bbMailer->setText(
             sprintf(
                 $this->translator->translate('welcome_mail_text'),
-                $user->user_name,
+                $user->username,
                 $this->link(
                     '//Login:activate',
                     $res,
@@ -165,8 +162,8 @@ class RegisterPresenter extends BasePresenter
                 )
             )
         );
-        $this->bbMailer->send();
 
+        $this->bbMailer->send();
 
         // refresh cache on index page to show this last topic
         $cache = new Cache($this->storage, IndexPresenter::CACHE_NAMESPACE);

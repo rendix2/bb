@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
 use App\Model\Repository\ForumRepository;
+use App\Model\Repository\PostRepository;
 use App\Model\Repository\ThankRepository;
 use App\Model\Repository\TopicRepository;
 use App\Utils;
@@ -39,8 +40,10 @@ class ThanksFacade
         private readonly EntityManagerDecorator $em,
 
         private readonly ThankRepository $thankRepository,
-        private readonly TopicRepository $topicRepository,
+
         private readonly ForumRepository $forumRepository,
+        private readonly TopicRepository $topicRepository,
+        private readonly PostRepository  $postRepository,
     ) {
         $this->thanksManager = $thanksManager;
         $this->usersManager  = $usersManager;
@@ -102,7 +105,7 @@ class ThanksFacade
 
     public function deleteByPost(\App\Model\Entity\PostEntity $post)
     {
-        $count = $this->postsManager->getCountByUser($post->topic->id, $post->user->id);
+        $count = $this->postRepository->getCountByPost($post);
 
         if ($count === 1 || $count === 0) {
             $this->usersManager->update(

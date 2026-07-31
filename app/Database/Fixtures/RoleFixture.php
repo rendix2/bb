@@ -17,7 +17,6 @@ class RoleFixture implements FixtureInterface, OrderedFixtureInterface
         $roleEntity->description = 'Normal role for normal users';
 
         $manager->persist($roleEntity);
-        $manager->flush();
 
         $roleEntity = new RoleEntity();
         $roleEntity->name = "Admin";

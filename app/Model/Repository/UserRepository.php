@@ -4,6 +4,7 @@ namespace App\Model\Repository;
 
 use App\Model\Entity\UserEntity;
 use Doctrine\ORM\EntityRepository;
+use Nette\Security\User;
 
 /**
  * class UserRepository
@@ -75,6 +76,15 @@ class UserRepository extends EntityRepository
 
             ->getQuery()
             ->getResult();
+    }
+
+    public function findOneByUser(User $user): ?UserEntity
+    {
+        return $this->findOneBy(
+            [
+                'id' => $user->getId(),
+            ]
+        );
     }
 
 

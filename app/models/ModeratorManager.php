@@ -28,7 +28,7 @@ class ModeratorManager extends MNManager
         IStorage $storage,
         UsersManager  $left,
         ForumManager $right,
-        $tableName = self::MODERATORS_TABLE
+        $tableName = 'moderator_user'
     ) {
         parent::__construct($dibi, $storage, $left, $right, $tableName);
     }

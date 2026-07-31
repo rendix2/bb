@@ -37,10 +37,11 @@ final class Version20260717221107 extends AbstractMigration
         $table->addColumn('name', Types::TEXT)
             ->setComment('Name');
 
-        $table->addColumn('order', Types::INTEGER)
+        $table->addColumn('sort_order', Types::INTEGER)
             ->setComment('Order');
 
         $table->addColumn('parent_id', Types::BIGINT)
+            ->setNotnull(false)
             ->setComment('Parent ID');
 
         $table->addColumn('active', Types::BOOLEAN)

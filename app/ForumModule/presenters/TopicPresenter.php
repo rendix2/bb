@@ -27,7 +27,6 @@ use App\Model\Repository\UserRepository;
 use App\Models\Entity\PollEntity;
 use App\Models\Entity\PostEntity;
 use App\Models\Entity\TopicEntity;
-use App\Models\PollsFacade;
 use App\Models\Posts2FilesManager;
 use App\Models\ThanksFacade;
 use App\Models\TopicFacade;
@@ -40,7 +39,6 @@ use App\Settings\TopicsSetting;
 use dibi;
 use Doctrine\DBAL\Exception;
 use Nette\Application\UI\Form;
-use Nette\Caching\IStorage;
 use Nette\Forms\Container;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
@@ -86,19 +84,6 @@ class TopicPresenter extends BaseForumPresenter
      * @inject
      */
     public PostSetting $postSettings;
-
-    /**
-     * @var IStorage $storage
-     * @inject
-     */
-    public IStorage $storage;
-    
-    /**
-     *
-     * @var PollsFacade $pollsFacade
-     * @inject
-     */
-    public PollsFacade $pollsFacade;
     
     /**
      *
@@ -129,6 +114,8 @@ class TopicPresenter extends BaseForumPresenter
         private readonly RankRepository       $rankRepository,
         private readonly ThankRepository      $thankRepository,
         private readonly TopicWatchRepository $topicWatchRepository,
+
+        private readonly PollControl $pollControl,
     )
     {
         parent::__construct($manager);
@@ -676,8 +663,7 @@ class TopicPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $watchers = $this->em
-            ->getRepository(TopicWatchEntity::class)
+        $watchers = $this->topicWatchRepository
             ->createQueryBuilder('_tw')
 
             ->addSelect('_user')
@@ -696,13 +682,7 @@ class TopicPresenter extends BaseForumPresenter
         $this->getTemplate()->watchers = $watchers;
     }
 
-    /**
-     *
-     * @param int $category_id
-     * @param int $forum_id
-     * @param int $topic_id
-     */
-    public function renderThanks($category_id, $forum_id, $topic_id): void
+    public function renderThanks(int $category_id, int $forum_id, int $topic_id): void
     {
         $categoryEntity = $this->categoryRepository
             ->findOneBy(
@@ -728,13 +708,7 @@ class TopicPresenter extends BaseForumPresenter
         $this->getTemplate()->thanks = $thanks;
     }
 
-    /**
-     *
-     * @param int $category_id
-     * @param int $forum_id
-     * @param int $topic_id
-     */
-    public function renderFiles($category_id, $forum_id, $topic_id): void
+    public function renderFiles(int $category_id, int $forum_id, int $topic_id): void
     {
         $categoryEntity = $this->categoryRepository
             ->findOneBy(
@@ -895,22 +869,11 @@ class TopicPresenter extends BaseForumPresenter
         $this->redirect(':Forum:Topic:default', $category_id, $forum_id, (string)$topic_id, $page);
     }
     
-    /**
-     *
-     * @return PollControl
-     */
     protected function createComponentPoll(): PollControl
     {
-        return new PollControl($this->pollsFacade, $this->user, $this->getTranslator());
+        return $this->pollControl;
     }
-    
-    /**
-     * bread crumbs
-     */
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = array_merge(
@@ -923,9 +886,6 @@ class TopicPresenter extends BaseForumPresenter
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbEdit(): BreadCrumbControl
     {
         $breadCrumb = array_merge(
@@ -938,9 +898,6 @@ class TopicPresenter extends BaseForumPresenter
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbReport(): BreadCrumbControl
     {
         $breadCrumb = array_merge(
@@ -960,9 +917,6 @@ class TopicPresenter extends BaseForumPresenter
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbThanks(): BreadCrumbControl
     {
         $breadCrumb = array_merge(
@@ -982,9 +936,6 @@ class TopicPresenter extends BaseForumPresenter
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbWatchers(): BreadCrumbControl
     {
         $breadCrumb = array_merge(
@@ -1004,25 +955,16 @@ class TopicPresenter extends BaseForumPresenter
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
-    /**
-     * @return TopicJumpToForumForm
-     */
     protected function createComponentJumpToForum(): TopicJumpToForumForm
     {
         return $this->topicJumpToForumForm;
     }
 
-    /**
-     * @return TopicFastReplyForm
-     */
     protected function createComponentFastReply(): TopicFastReplyForm
     {
         return $this->topicFastReplyForm;
     }
 
-    /**
-     * @return ReportForm
-     */
     protected function createComponentReportForm(): ReportForm
     {
         return $this->reportForm;

@@ -136,4 +136,76 @@ class PostRepository extends EntityRepository
             ->getResult();
     }
 
+    public function getCountOfUsersByTopicId(int $topicId): array
+    {
+        return $this->createQueryBuilder('_p')
+            ->select('COUNT(_p.id) AS post_count')
+            ->addSelect('_u.id AS post_user_id')
+
+            ->innerJoin('_p.user', '_u')
+
+            ->where('_p.topic = :topicId')
+            ->setParameter('topicId', $topicId)
+
+            ->groupBy('_u.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param int $topicId
+     * @param int $userId
+     * @return int
+     */
+    public function getCountByUserId(int $topicId, int $userId): int
+    {
+        return (int) $this->createQueryBuilder('_p')
+            ->select('COUNT(_p.id)')
+
+            ->where('_p.topic = :topicId')
+            ->setParameter('topicId', $topicId)
+
+            ->andWhere('_p.user = :userId')
+            ->setParameter('userId', $userId)
+
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getCountByPost(PostEntity $postEntity): int
+    {
+        return (int) $this->createQueryBuilder('_p')
+            ->select('COUNT(_p.id)')
+
+            ->where('_p.topic = :topicId')
+            ->setParameter('topicId', $postEntity->topic->id)
+
+            ->andWhere('_p.user = :userId')
+            ->setParameter('userId', $postEntity->user->id)
+
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @param int $userId
+     * @return PostEntity|null
+     */
+    public function findLastByUserId(int $userId): ?PostEntity
+    {
+        $qb = $this->createQueryBuilder('_p');
+        $subQb = $this->createQueryBuilder('_p2');
+
+        $subQb->select('MAX(_p2.id)')
+            ->where('_p2.user = :userId');
+
+        return $qb->where(
+            $qb->expr()->eq('_p.id', '(' . $subQb->getDQL() . ')')
+        )
+            ->setParameter('userId', $userId)
+
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 }

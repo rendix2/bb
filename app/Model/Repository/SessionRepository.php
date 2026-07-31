@@ -4,6 +4,7 @@ namespace App\Model\Repository;
 
 use App\Model\Entity\SessionEntity;
 use Doctrine\ORM\EntityRepository;
+use Nette\Http\Session;
 
 /**
  * class SessionRepository
@@ -38,6 +39,16 @@ class SessionRepository extends EntityRepository
 
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function findBySession(Session $session): array
+    {
+        return $this
+            ->findBy(
+                [
+                    'key' => $session->getId(),
+                ]
+            );
     }
 
 }

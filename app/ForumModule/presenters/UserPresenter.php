@@ -16,21 +16,16 @@ use App\Forms\UserChangeUserNameForm;
 use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserResetPasswordForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Model\Entity\PostEntity;
-use App\Model\Entity\RankEntity;
-use App\Model\Entity\SessionEntity;
-use App\Model\Entity\ThankEntity;
-use App\Model\Entity\TopicEntity;
-use App\Model\Entity\TopicWatchEntity;
-use App\Model\Entity\UserEntity;
 use App\Model\Repository\LanguageRepository;
 use App\Model\Repository\PostRepository;
+use App\Model\Repository\RankRepository;
+use App\Model\Repository\SessionRepository;
+use App\Model\Repository\ThankRepository;
 use App\Model\Repository\TopicRepository;
+use App\Model\Repository\TopicWatchRepository;
 use App\Model\Repository\UserRepository;
 use App\Models\FavouriteUsersManager;
-use App\Models\LanguageManager;
 use App\Models\ModeratorManager;
-use App\Models\ReportManager;
 use App\Models\UsersManager;
 use App\services\AvatarService;
 use App\Services\ChangePasswordFactory;
@@ -58,13 +53,13 @@ class UserPresenter extends BaseForumPresenter
      * @inject
      */
     public Avatars $avatar;
-    
+
     /**
      * @var Ranks $ranks
      * @inject
      */
     public Ranks $ranks;
-    
+
     /**
      * @var ModeratorManager $moderatorsManager
      * @inject
@@ -77,28 +72,28 @@ class UserPresenter extends BaseForumPresenter
      * @inject
      */
     public BBMailer $bbMailer;
-    
+
     /**
      *
      * @var ChangePasswordFactory $changePasswordFactory
      * @inject
      */
     public ChangePasswordFactory $changePasswordFactory;
-    
+
     /**
      *
      * @var DeleteAvatarFactory $deleteAvatarFactory
      * @inject
      */
     public DeleteAvatarFactory $deleteAvatarFactory;
-    
+
     /**
      *
      * @var FavouriteUsersManager $favouriteUsersManager
      * @inject
      */
     public FavouriteUsersManager $favouriteUsersManager;
-    
+
     /**
      *
      * @var StartDay $startDay
@@ -112,22 +107,26 @@ class UserPresenter extends BaseForumPresenter
      * @inject
      */
     public Users $users;
-    
 
 
     public function __construct(
-        UsersManager $manager,
+        UsersManager                            $manager,
         private readonly EntityManagerDecorator $em,
         private readonly ReportForm             $reportForm,
         private readonly UserResetPasswordForm  $userResetPasswordForm,
         private readonly UserChangeUserNameForm $userChangeUserNameForm,
 
-        private readonly LanguageRepository $languageRepository,
-        private readonly TopicRepository    $topicRepository,
-        private readonly PostRepository     $postRepository,
-        private readonly UserRepository     $userRepository,
+        private readonly LanguageRepository     $languageRepository,
+        private readonly TopicRepository        $topicRepository,
+        private readonly PostRepository         $postRepository,
+        private readonly UserRepository         $userRepository,
 
-        private readonly AvatarService $avatarService,
+        private readonly ThankRepository      $thankRepository,
+        private readonly TopicWatchRepository $topicWatchRepository,
+        private readonly SessionRepository    $sessionRepository,
+        private readonly RankRepository       $rankRepository,
+
+        private readonly AvatarService          $avatarService,
     )
     {
         parent::__construct($manager);
@@ -146,13 +145,7 @@ class UserPresenter extends BaseForumPresenter
      */
     public function actionLogout()
     {
-        $sessions = $this->em
-            ->getRepository(SessionEntity::class)
-            ->findBy(
-                [
-                    'key' => $this->getSession()->getId(),
-                ]
-            );
+        $sessions = $this->sessionRepository->findBySession($this->getSession());
 
         foreach ($sessions as $session) {
             $this->em->remove($session);
@@ -182,7 +175,7 @@ class UserPresenter extends BaseForumPresenter
         $user = $this->checkUserParam($user_id);
 
         $res = $this->favouriteUsersManager->addByLeft($this->getUser()->getId(), [$user_id]);
-        
+
         if ($res) {
             $this->flashMessage('User was added to favourites.', self::FLASH_MESSAGE_SUCCESS);
         }
@@ -198,7 +191,7 @@ class UserPresenter extends BaseForumPresenter
         $user = $this->checkUserParam($user_id);
 
         $res = $this->favouriteUsersManager->delete($this->getUser()->getId(), $user_id);
-        
+
         if ($res) {
             $this->flashMessage('User was deleted from favourites.', self::FLASH_MESSAGE_SUCCESS);
         }
@@ -211,20 +204,16 @@ class UserPresenter extends BaseForumPresenter
      */
     public function renderEdit(): void
     {
-        $userData = [];
+        $userEntity = [];
 
         if ($this->getUser()->isLoggedIn()) {
-            $userData = $this->userRepository->findOneBy(
-                [
-                    'id' => $this->getUser()->getId(),
-                ]
-            );
+            $userEntity = $this->userRepository->findOneByUser($this->getUser());
         }
 
-        $this['editUserForm']->setDefaults($userData);
-       
+        $this['editUserForm']->setDefaults($userEntity);
+
         $this->template->avatarsDir = $this->avatar->getTemplateDir();
-        $this->template->item       = $userData;
+        $this->template->item = $userEntity;
     }
 
     /**
@@ -235,7 +224,7 @@ class UserPresenter extends BaseForumPresenter
         // give mail and send on that mail mail with info how to change it
         // give link to reset this action if owner of account don't ask to reset pass
     }
-    
+
     /**
      * @param int $user_id
      * @param int $page
@@ -244,8 +233,9 @@ class UserPresenter extends BaseForumPresenter
     {
         $user = $this->checkUserParam($user_id);
 
-        $posts = $this->postsManager->getFluentByUser($user_id);
-        $pag   = new PaginatorControl($posts, 15, 5, $page);
+        $posts = $this->postRepository->findByUserId($user_id);
+
+        $pag = new PaginatorControl($posts, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
 
         if (!$pag->getCount()) {
@@ -262,27 +252,20 @@ class UserPresenter extends BaseForumPresenter
     {
         $user = $this->checkUserParam($user_id);
 
-        $ranks = $this->em
-            ->getRepository(RankEntity::class)
-            ->findAll();
+        $ranks = $this->rankRepository->findAll();
 
-        $specialRankEntity = $this->em
-            ->getRepository(RankEntity::class)
+        $specialRankEntity = $this->rankRepository
             ->findOneBy(
                 [
                     'id' => $user->user_special_rank
                 ]
             );
 
-        $thanksCount = $this->em
-            ->getRepository(ThankEntity::class)
-            ->count();
-
+        $thanksCount = $this->thankRepository->count();
         $topicsCount = $this->topicRepository->count();
         $postsCount = $this->postRepository->count();
 
-        $topicWatchesCount = $this->em
-            ->getRepository(TopicWatchEntity::class)
+        $topicWatchesCount = $this->topicWatchRepository
             ->count();
 
         $rankUser = null;
@@ -295,25 +278,25 @@ class UserPresenter extends BaseForumPresenter
                 break;
             }
         }
-        
+
         $reg = DateTime::from($user->getUser_register_time());
         $now = new DateTime();
 
-        $this->template->specialRank     = $specialRankEntity;
-        $this->template->ranksDir        = $this->ranks->getTemplateDir();
-        $this->template->rank            = $rankUser;
-        $this->template->avatarsDir      = $this->avatar->getTemplateDir();
+        $this->template->specialRank = $specialRankEntity;
+        $this->template->ranksDir = $this->ranks->getTemplateDir();
+        $this->template->rank = $rankUser;
+        $this->template->avatarsDir = $this->avatar->getTemplateDir();
         $this->template->moderatorForums = $this->moderatorsManager->getAllByLeftJoined($user_id);
-        $this->template->thankCount      = $thanksCount;
-        $this->template->topicCount      = $topicsCount;
-        $this->template->postCount       = $postsCount;
+        $this->template->thankCount = $thanksCount;
+        $this->template->topicCount = $topicsCount;
+        $this->template->postCount = $postsCount;
         $this->template->watchTotalCount = $topicWatchesCount;
-        $this->template->userData        = $user;
-        $this->template->roles           = Authorizator::ROLES;
-        $this->template->isFavourite     = $this->favouriteUsersManager->fullCheck($this->getUser()->getId(), $user_id);
-        $this->template->user_id         = $user_id;
-        $this->template->favourites      = $this->favouriteUsersManager->getAllByLeftJoined($user_id);
-        $this->template->runningDays     = $reg->diff($now)->days;
+        $this->template->userData = $user;
+        $this->template->roles = Authorizator::ROLES;
+        $this->template->isFavourite = $this->favouriteUsersManager->fullCheck($this->getUser()->getId(), $user_id);
+        $this->template->user_id = $user_id;
+        $this->template->favourites = $this->favouriteUsersManager->getAllByLeftJoined($user_id);
+        $this->template->runningDays = $reg->diff($now)->days;
     }
 
     /**
@@ -325,7 +308,7 @@ class UserPresenter extends BaseForumPresenter
         $user = $this->checkUserParam($user_id);
 
         $thanks = $this->thanksManager->getFluentByUserJoinedTopic($user_id);
-        $pag    = new PaginatorControl($thanks, 15, 5, $page);
+        $pag = new PaginatorControl($thanks, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
 
         if (!$pag->getCount()) {
@@ -337,12 +320,11 @@ class UserPresenter extends BaseForumPresenter
 
     /**
      * @param int $user_id user_id
-     * @param int $page    page
+     * @param int $page page
      */
     public function actionTopics($user_id, $page = 1)
     {
-        $userEntity = $this->em
-            ->getRepository(UserEntity::class)
+        $userEntity = $this->userRepository
             ->findOneBy(
                 [
                     'id' => $user_id,
@@ -355,7 +337,7 @@ class UserPresenter extends BaseForumPresenter
 
         $topics = $this->topicRepository->findByUser($userEntity);
 
-        $pag    = new PaginatorControl($topics, 15, 5, $page);
+        $pag = new PaginatorControl($topics, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
 
         if (!$pag->getCount()) {
@@ -371,8 +353,7 @@ class UserPresenter extends BaseForumPresenter
      */
     public function actionWatches(int $user_id, int $page = 1): void
     {
-        $userEntity = $this->em
-            ->getRepository(UserEntity::class)
+        $userEntity = $this->userRepository
             ->findOneBy(
                 [
                     'id' => $user_id,
@@ -383,21 +364,15 @@ class UserPresenter extends BaseForumPresenter
             $this->error('User not found');
         }
 
-        $watches = $this->em
-            ->getRepository(TopicWatchEntity::class)
-            ->findOneBy(
-                [
-                    'user' => $userEntity,
-                ]
-            );
-        
-        $pag    = new PaginatorControl($watches, 15, 5, $page);
+        $watches = $this->topicWatchRepository->findByUser($userEntity);
+
+        $pag = new PaginatorControl($watches, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
 
         if (!$pag->getCount()) {
             $this->flashMessage('User have no watches.', self::FLASH_MESSAGE_WARNING);
         }
-           
+
         $this->getTemplate()->watches = $watches;
     }
 
@@ -407,15 +382,15 @@ class UserPresenter extends BaseForumPresenter
     public function actionList($page)
     {
         $users = $this->getManager()->getAllFluent();
-        
+
         $pag = new PaginatorControl($users, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
-        
+
         if (!$pag->getCount()) {
             $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);
         }
-        
-        $this->template->type  = 1;
+
+        $this->template->type = 1;
         $this->template->users = $users->fetchAll();
     }
 
@@ -425,19 +400,19 @@ class UserPresenter extends BaseForumPresenter
     public function renderModeratorList($page)
     {
         $this->setView('list');
-        
-                $users = $this->getManager()
-                ->getAllFluent()
-                ->where('[user_role_id] = %i', 3);
-        
+
+        $users = $this->getManager()
+            ->getAllFluent()
+            ->where('[user_role_id] = %i', 3);
+
         $pag = new PaginatorControl($users, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
-        
+
         if (!$pag->getCount()) {
             $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);
         }
-        
-        $this->template->type  = 3;
+
+        $this->template->type = 3;
         $this->template->users = $users->fetchAll();
     }
 
@@ -447,19 +422,19 @@ class UserPresenter extends BaseForumPresenter
     public function renderAdminList($page)
     {
         $this->setView('list');
-        
+
         $users = $this->getManager()
-                ->getAllFluent()
-                ->where('[user_role_id] = %i', 5);
-        
+            ->getAllFluent()
+            ->where('[user_role_id] = %i', 5);
+
         $pag = new PaginatorControl($users, 15, 5, $page);
         $this->addComponent($pag, 'paginator');
-        
+
         if (!$pag->getCount()) {
             $this->flashMessage('No users.', self::FLASH_MESSAGE_WARNING);
         }
-        
-        $this->template->type  = 5;
+
+        $this->template->type = 5;
         $this->template->users = $users->fetchAll();
     }
 
@@ -467,7 +442,7 @@ class UserPresenter extends BaseForumPresenter
      * @param int $user_id
      * @param int $page
      */
-    public function actionFiles(int $user_id, int$page = 1)
+    public function actionFiles(int $user_id, int $page = 1)
     {
     }
 
@@ -517,7 +492,7 @@ class UserPresenter extends BaseForumPresenter
     {
         return $this->deleteAvatarFactory->getForum();
     }
-    
+
     /**
      * @return UserResetPasswordForm
      */
@@ -530,11 +505,11 @@ class UserPresenter extends BaseForumPresenter
     {
         return $this->userChangeUserNameForm;
     }
-       
+
 
     protected function createComponentEditUserForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
-        $form         = new \Contributte\FormsBootstrap\BootstrapForm();
+        $form = new \Contributte\FormsBootstrap\BootstrapForm();
         $userSettings = $this->users->get();
 
         $form->addText('user_name', 'User name:')
@@ -542,8 +517,8 @@ class UserPresenter extends BaseForumPresenter
 
         $form->addSelect('user_lang_id', 'User language:', $this->languageRepository->findPairs());
 
-        $form->addUpload('user_avatar',  'User avatar:')
-            ->setHtmlAttribute('title', 'Max width: '.$this->avatar->getMaxWidth().'px, max height: '.$this->avatar->getMaxHeight().'px')
+        $form->addUpload('user_avatar', 'User avatar:')
+            ->setHtmlAttribute('title', 'Max width: ' . $this->avatar->getMaxWidth() . 'px, max height: ' . $this->avatar->getMaxHeight() . 'px')
             ->setRequired(false)
             ->addRule(Form::Image, 'user_avatar_file_rule');
 
@@ -552,31 +527,31 @@ class UserPresenter extends BaseForumPresenter
         $form->addSubmit('send', 'Send');
 
         $form->onValidate[] = [$this, 'editUserValidate'];
-        $form->onSuccess[]  = [$this, 'editUserFormSuccess'];
+        $form->onSuccess[] = [$this, 'editUserFormSuccess'];
 
         return $form;
     }
-    
+
     /**
-     * @param Form      $form
+     * @param Form $form
      * @param ArrayHash $values
      */
     public function editUserValidate(Form $form, ArrayHash $values): void
     {
     }
-    
+
     /**
-     * @param Form      $form
+     * @param Form $form
      * @param ArrayHash $values
      */
     public function editUserFormSuccess(Form $form, ArrayHash $values): void
     {
-        $user    = $this->getUser();
+        $user = $this->getUser();
         $user_id = $user->getId();
-        
+
         try {
             $move = $this->avatarService->moveAvatar($values->user_avatar, $user_id);
-            
+
             if ($move !== UsersManager::NOT_UPLOADED) {
                 $values->user_avatar = $move;
             } else {
@@ -601,7 +576,7 @@ class UserPresenter extends BaseForumPresenter
 
         $this->redirect('User:edit');
     }
-    
+
     /**
      * BREAD CRUMBS
      */
@@ -626,8 +601,8 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list',     'text' => 'menu_users'],
-            2 => ['link' => 'User:profile',  'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            2 => ['link' => 'User:profile', 'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
             3 => ['text' => 'menu_posts']
         ];
 
@@ -641,7 +616,7 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list',     'text' => 'menu_users'],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
             2 => ['text' => 'menu_user']
         ];
 
@@ -656,7 +631,7 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list',     'text' => 'menu_users'],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
             2 => ['text' => 'user_admin_contact']
         ];
 
@@ -671,8 +646,8 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list',     'text' => 'menu_users'],
-            2 => ['link' => 'User:profile',  'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            2 => ['link' => 'User:profile', 'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
             3 => ['text' => 'Thanks']
         ];
 
@@ -687,8 +662,8 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list',     'text' => 'menu_users'],
-            2 => ['link' => 'User:profile',  'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            2 => ['link' => 'User:profile', 'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
             3 => ['text' => 'menu_topics']
         ];
 
@@ -703,14 +678,14 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list',     'text' => 'menu_users'],
-            2 => ['link' => 'User:profile',  'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            2 => ['link' => 'User:profile', 'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
             3 => ['text' => 'watches']
         ];
 
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
-    
+
     /**
      *
      * @return BreadCrumbControl
@@ -719,8 +694,8 @@ class UserPresenter extends BaseForumPresenter
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
-            1 => ['link' => 'User:list',     'text' => 'menu_users'],
-            2 => ['link' => 'User:profile',  'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
+            1 => ['link' => 'User:list', 'text' => 'menu_users'],
+            2 => ['link' => 'User:profile', 'text' => 'menu_user', 'params' => [$this->getParameter('user_id')]],
             3 => ['text' => 'Report user']
         ];
 

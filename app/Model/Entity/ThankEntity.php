@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Ramsey\Uuid\Doctrine\UuidType;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: ThankRepository::class)]
@@ -56,5 +57,13 @@ class ThankEntity
 
     #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     public ?DateTimeImmutable $updatedAt;
+
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid4();
+
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = null;
+    }
 
 }

@@ -46,8 +46,8 @@ final class Version20260718094205 extends AbstractMigration
         $table->addColumn('user_id', Types::BIGINT)
             ->setComment('User ID');
 
-        $table->addColumn('title', Types::STRING)
-            ->setLength(512)
+        $table->addColumn('title', Types::TEXT)
+            ->setNotnull(false)
             ->setComment('Title');
 
         $table->addColumn('text', Types::TEXT)
@@ -57,6 +57,7 @@ final class Version20260718094205 extends AbstractMigration
             ->setComment('Add IP Address');
 
         $table->addColumn('edit_ip_address', IpAddressType::NAME)
+            ->setNotnull(false)
             ->setComment('Add IP Address');
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)

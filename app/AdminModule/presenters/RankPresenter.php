@@ -12,6 +12,7 @@ use App\services\RankService;
 use App\Settings\Ranks;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
+use Nette\DI\Attributes\Inject;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -20,15 +21,11 @@ use Tracy\ILogger;
  * Description of RankPresenter
  *
  * @author rendix2
- * @method RankManager getManager()
  * @package App\AdminModule\Presenters
  */
 class RankPresenter extends AdminPresenter
 {
-    /**
-     * @var Ranks $ranks
-     * @inject
-     */
+    #[Inject]
     public Ranks $ranks;
 
     public function __construct(
@@ -137,10 +134,6 @@ class RankPresenter extends AdminPresenter
         return $form;
     }
 
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     */
     public function editFormValidate(Form $form, ArrayHash $values): void
     {
         if ($values->rank_special) {
@@ -198,10 +191,6 @@ class RankPresenter extends AdminPresenter
         $this->redirect(':' . $this->getName() . ':default');
     }
 
-    /**
-     *
-     * @return GridFilter
-     */
     protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->getTranslator());
@@ -215,10 +204,7 @@ class RankPresenter extends AdminPresenter
         return $this->gf;
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
-    protected function createComponentBreadCrumbAll()
+    protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
@@ -228,10 +214,7 @@ class RankPresenter extends AdminPresenter
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
-    protected function createComponentBreadCrumbEdit()
+    protected function createComponentBreadCrumbEdit(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],

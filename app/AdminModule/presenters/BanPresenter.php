@@ -8,8 +8,6 @@ use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\BanEntity;
-use App\Models\BanManager;
-use App\Presenters\Base\AuthenticatedPresenter;
 use Contributte\Datagrid\Datagrid;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
@@ -23,7 +21,6 @@ use Tracy\ILogger;
  * Description of BanPresenter
  *
  * @author rendix2
- * @method BanManager getManager()
  * @package App\AdminModule\Presenters
  */
 class BanPresenter extends AdminPresenter
@@ -33,10 +30,9 @@ class BanPresenter extends AdminPresenter
 
     public function __construct(
         private readonly EntityManagerDecorator $em,
-        BanManager $manager
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
