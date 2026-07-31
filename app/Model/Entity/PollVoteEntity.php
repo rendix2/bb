@@ -28,27 +28,27 @@ class PollVoteEntity
     #[Column(type: UuidType::NAME, unique: true)]
     public UuidInterface $uuid;
 
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'polls')]
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'pollVotes')]
     #[JoinColumn(nullable: false)]
     public UserEntity $user;
 
-    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'polls')]
+    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'pollVotes')]
     #[JoinColumn(nullable: false)]
     public CategoryEntity $category;
 
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'polls')]
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'pollVotes')]
     #[JoinColumn(nullable: false)]
     public ForumEntity $forum;
 
-    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'polls')]
+    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'pollVotes')]
     #[JoinColumn(nullable: false)]
     public TopicEntity $topic;
 
-    #[ManyToOne(targetEntity: PollVoteEntity::class, inversedBy: 'polls')]
+    #[ManyToOne(targetEntity: PollVoteEntity::class, inversedBy: 'votes')]
     #[JoinColumn(nullable: false)]
     public PollVoteEntity $poll;
 
-    #[ManyToOne(targetEntity: PollAnswerEntity::class, inversedBy: 'polls')]
+    #[ManyToOne(targetEntity: PollAnswerEntity::class, inversedBy: 'votes')]
     #[JoinColumn(nullable: false)]
     public PollAnswerEntity $pollAnswer;
 

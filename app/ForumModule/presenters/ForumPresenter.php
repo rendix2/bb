@@ -5,26 +5,23 @@ namespace App\UI\Forum\Forum;
 use App\Authorization\Scopes\ForumScope;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
-use App\Controls\PaginatorControl;
 use App\Database\EntityManagerDecorator;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
-use App\Model\Entity\CategoryEntity;
+use App\Model\Entity\TopicEntity;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Models\ForumManager;
-use App\Models\ModeratorManager;
-use App\Models\TopicManager;
 use App\services\BreadcrumbService;
 use App\services\ScopeService;
 use App\Settings\ForumSettings;
 use App\Settings\TopicsSetting;
+use Contributte\Datagrid\Datagrid;
 use Nette\DI\Attributes\Inject;
 
 /**
  * Description of ForumPresenter
  *
  * @author rendix2
- * @method ForumManager getManager()
  * @package App\ForumModule\Presenters
  */
 final class ForumPresenter extends BaseForumPresenter
@@ -35,18 +32,6 @@ final class ForumPresenter extends BaseForumPresenter
     #[Inject]
     public TopicsSetting $topicSetting;
 
-    #[Inject]
-    public ModeratorManager $moderatorsManager;
-    
-    #[Inject]
-    public GridFilter $gf;
-
-    /**
-     * ForumPresenter constructor.
-     *
-     * @param EntityManagerDecorator $em
-     * @param ForumManager $manager
-     */
     public function __construct(
         private readonly EntityManagerDecorator $em,
 
@@ -56,8 +41,6 @@ final class ForumPresenter extends BaseForumPresenter
         private readonly ForumRepository    $forumRepository,
 
         private readonly BreadcrumbService $breadcrumbService,
-
-        private readonly TopicManager $topicsManager,
 
         ForumManager $manager
     )
@@ -100,34 +83,10 @@ final class ForumPresenter extends BaseForumPresenter
         
         $this->requireAccess($forumScope, ForumScope::ACTION_VIEW);
 
-        $forumSettings = $this->forumSettings->get();
-        $topics        = $this->topicsManager->getFluentByForumJoinedUsersJoinedLastPost($forum_id);
-        
-        if (isset($this['gridFilter'])) {
-            $this->getComponent('gridFilter');
-        }
-
-        $this->gf->applyWhere($topics);
-        $this->gf->applyOrderBy($topics);
-
-        $paginator = new PaginatorControl(
-            $topics,
-            $forumSettings['pagination']['itemsPerPage'],
-            $forumSettings['pagination']['itemsAroundPagination'],
-            $page
-        );
-
-        $this->addComponent($paginator, 'paginator');
-
-        if (!$paginator->getCount()) {
-            $this->flashMessage('No topics.', self::FLASH_MESSAGE_DANGER);
-        }
-
         $this->template->canAddTopic    = $this->isAllowed($forumScope, ForumScope::ACTION_TOPIC_ADD);
         $this->template->canDeleteTopic = $this->isAllowed($forumScope, ForumScope::ACTION_TOPIC_DELETE);
         
         $this->template->forum  = $forumEntity;
-        $this->template->topics = $topics->fetchAll();
     }
 
     /**
@@ -139,13 +98,16 @@ final class ForumPresenter extends BaseForumPresenter
      */
     public function renderDefault(int $category_id, int $forum_id, int $page = 1): void
     {
-        $moderators = $this->moderatorsManager->getAllByRightJoined($forum_id);
-        
+        //$moderators = $this->moderatorsManager->getAllByRightJoined($forum_id);
+
+        /*
         if ($moderators === []) {
             $this->flashMessage('No moderators in forum.', self::FLASH_MESSAGE_INFO);
         }
+        */
 
-        $this->getTemplate()->moderators  = $moderators;
+        //$this->getTemplate()->moderators  = $moderators;
+        $this->getTemplate()->moderators  = [];
         $this->getTemplate()->subForums   = $this->forumRepository->findByParentId($forum_id);
         $this->getTemplate()->logViews    = $this->topicSetting->get()['logViews'];
     }
@@ -180,17 +142,64 @@ final class ForumPresenter extends BaseForumPresenter
                 ]
             );
 
-        if (!$forumEntity->getForum_rules()) {
+        if ($forumEntity->rules === null) {
             $this->flashMessage('No forum rules.', self::FLASH_MESSAGE_WARNING);
         }
 
         $this->template->forum = $forumEntity;
     }
 
+    protected function createComponentDataGrid(): Datagrid
+    {
+        $dataSource = $this->em
+            ->getRepository(TopicEntity::class)
+
+            ->createQueryBuilder('_t')
+
+            ->addSelect('_u')
+            ->innerJoin('_t.user', '_u')
+
+            ->addSelect('_lp')
+            ->leftJoin('_t.lastPost', '_lp');
+
+        $grid = new Datagrid();
+
+        $grid->setPrimaryKey('uuid');
+        $grid->setDataSource($dataSource);
+
+        $grid->addColumnText('name', 'Name');
+
+        $grid->addColumnText('user', 'Username')
+            ->setRenderer(
+                function(TopicEntity $topicEntity) : string {
+                    return $topicEntity->user->username;
+                }
+            );
+
+        $grid->addColumnNumber('post_count', 'Post count')
+            ->setRenderer(
+                function(TopicEntity $topicEntity) : string {
+                    return $topicEntity->posts->count();
+                }
+            );
+
+        $grid->addColumnNumber('view count', 'View count')
+            ->setRenderer(
+                function(TopicEntity $topicEntity) : string {
+                    return $topicEntity->posts->count();
+                }
+            );
+
+        $grid->addColumnDateTime('createdAt', 'Created at');
+
+        return $grid;
+    }
+
     /**
      *
      * @return GridFilter
      */
+    /*
     protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->getTranslator());
@@ -205,6 +214,7 @@ final class ForumPresenter extends BaseForumPresenter
 
         return $this->gf;
     }
+    */
 
     /**
      * @return BreadCrumbControl

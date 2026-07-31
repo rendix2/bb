@@ -42,9 +42,9 @@ class ForumEntity
     #[JoinColumn(nullable: true)]
     public ?CategoryEntity $category;
 
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'forums')]
-    #[JoinColumn(nullable: false)]
-    public ForumEntity $parent;
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'children')]
+    #[JoinColumn(nullable: true)]
+    public ?ForumEntity $parent;
 
     #[Column(type: Types::BOOLEAN)]
     public bool $active;
@@ -53,7 +53,7 @@ class ForumEntity
     //public int $topicCount;
 
     #[Column(type: Types::TEXT, nullable:  true)]
-    public string $rules;
+    public ?string $rules;
 
     #[Column(type: Types::INTEGER, nullable:  false)]
     public int $sortOrder;
@@ -67,7 +67,7 @@ class ForumEntity
     /**
      * @var Collection<int, TopicEntity> $topics
      */
-    #[OneToMany(targetEntity: TopicEntity::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
+    #[OneToMany(targetEntity: TopicEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
     public Collection $topics;
 
     /**
@@ -83,10 +83,34 @@ class ForumEntity
     public Collection $thanks;
 
     /**
+     * @var Collection<int, PollEntity> $polls
+     */
+    #[OneToMany(targetEntity: PollEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
+    public Collection $polls;
+
+    /**
+     * @var Collection<int, PollAnswerEntity> $pollAnswers
+     */
+    #[OneToMany(targetEntity: PollAnswerEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
+    public Collection $pollAnswers;
+
+    /**
+     * @var Collection<int, PollVoteEntity> $pollVotes
+     */
+    #[OneToMany(targetEntity: PollVoteEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
+    public Collection $pollVotes;
+
+    /**
      * @var Collection<int, ModeratorUserEntity> $thanks
      */
     #[OneToMany(targetEntity: ModeratorUserEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
     public Collection $moderatorUsers;
+
+    /**
+     * @var Collection<int, ForumEntity> $thanks
+     */
+    #[OneToMany(targetEntity: ForumEntity::class, mappedBy: 'parent')]
+    public Collection $children;
 
 
 
@@ -105,6 +129,11 @@ class ForumEntity
         $this->posts = new ArrayCollection();
         $this->thanks = new ArrayCollection();
         $this->moderatorUsers = new ArrayCollection();
+        $this->children = new ArrayCollection();
+
+        $this->polls = new ArrayCollection();
+        $this->pollAnswers = new ArrayCollection();
+        $this->pollVotes = new ArrayCollection();
     }
 
 }

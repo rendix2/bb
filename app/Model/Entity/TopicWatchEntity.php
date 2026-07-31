@@ -25,12 +25,12 @@ class TopicWatchEntity
     public UuidInterface $uuid;
 
     #[Id()]
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'XXX')]
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'watches')]
     #[JoinColumn(nullable: false)]
     public UserEntity $user;
 
     #[Id()]
-    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'YYY')]
+    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'watches')]
     #[JoinColumn(nullable: false)]
     public TopicEntity $topic;
 

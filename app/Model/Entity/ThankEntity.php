@@ -41,11 +41,11 @@ class ThankEntity
     #[JoinColumn(nullable: false)]
     public TopicEntity $topic;
 
-    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'XXXX')]
+    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'thanks')]
     #[JoinColumn(nullable: false)]
     public PostEntity $post;
 
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'XXXX')]
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'thanks')]
     #[JoinColumn(nullable: false)]
     public UserEntity $user;
 

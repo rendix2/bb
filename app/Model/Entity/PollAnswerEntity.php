@@ -4,6 +4,7 @@ namespace App\Model\Entity;
 
 use App\Model\Repository\PollRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\Uuid;
@@ -46,7 +48,7 @@ class PollAnswerEntity
     #[JoinColumn(nullable: false)]
     public TopicEntity $topic;
 
-    #[ManyToOne(targetEntity: PollEntity::class, inversedBy: 'pollAnswers')]
+    #[ManyToOne(targetEntity: PollEntity::class, inversedBy: 'answers')]
     #[JoinColumn(nullable: false)]
     public PollEntity $poll;
 
@@ -59,12 +61,20 @@ class PollAnswerEntity
     #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     public ?DateTimeImmutable $updatedAt;
 
+    /**
+     * @var Collection<int, PollVoteEntity> $votes
+     */
+    #[OneToMany(targetEntity: PollVoteEntity::class, mappedBy: 'pollAnswer', cascade: ['persist', 'remove'])]
+    public Collection $votes;
+
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
 
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;
+
+        $this->votes = new ArrayCollection();
     }
 
 }

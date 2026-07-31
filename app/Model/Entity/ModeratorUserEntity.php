@@ -28,11 +28,11 @@ class ModeratorUserEntity
     public UuidInterface $uuid;
 
 
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'polls')]
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'moderatorUsers')]
     #[JoinColumn(nullable: false)]
     public UserEntity $user;
 
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'polls')]
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'moderatorUsers')]
     #[JoinColumn(nullable: false)]
     public ForumEntity $forum;
 

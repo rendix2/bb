@@ -28,9 +28,13 @@ class FileEntity
     #[Column(type: UuidType::NAME, unique: true)]
     public UuidInterface $uuid;
 
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'posts')]
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'files')]
     #[JoinColumn(nullable: false)]
     public UserEntity $user;
+
+    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'files')]
+    #[JoinColumn(nullable: false)]
+    public PostEntity $post;
 
     #[Column(type: Types::DATETIME_IMMUTABLE)]
     public DateTimeImmutable $createdAt;

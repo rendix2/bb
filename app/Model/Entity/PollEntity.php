@@ -58,10 +58,22 @@ class PollEntity
     public ?DateTimeImmutable $updatedAt;
 
     /**
+     * @var Collection<int, PollVoteEntity> $votes
+     */
+    #[OneToMany(targetEntity: PollVoteEntity::class, mappedBy: 'poll', cascade: ['persist', 'remove'])]
+    public Collection $votes;
+
+    /**
      * @var Collection<int, PollAnswerEntity> $passwordRequests
      */
     #[OneToMany(targetEntity: PollAnswerEntity::class, mappedBy: 'poll', cascade: ['persist', 'remove'])]
     public Collection $answers;
+
+    /**
+     * @var Collection<int, TopicEntity> $topicsWithPoll
+     */
+    #[OneToMany(targetEntity: TopicEntity::class, mappedBy: 'poll')]
+    public Collection $topicsWithPoll;
 
 
     public function __construct()
@@ -71,7 +83,9 @@ class PollEntity
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;
 
+        $this->votes = new ArrayCollection();
         $this->answers = new ArrayCollection();
+        $this->topicsWithPoll = new ArrayCollection();
     }
 
 }

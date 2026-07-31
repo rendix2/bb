@@ -110,6 +110,49 @@ class UserEntity
     #[OneToMany(targetEntity: SessionEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     public Collection $sessions;
 
+
+    /**
+     * @var Collection<int, TopicEntity> $topics
+     */
+    #[OneToMany(targetEntity: TopicEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $topics;
+
+    /**
+     * @var Collection<int, PostEntity> $posts
+     */
+    #[OneToMany(targetEntity: PostEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $posts;
+
+    /**
+     * @var Collection<int, PollEntity> $polls
+     */
+    #[OneToMany(targetEntity: PollEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $polls;
+
+    /**
+     * @var Collection<int, PollAnswerEntity> $pollAnswers
+     */
+    #[OneToMany(targetEntity: PollAnswerEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $pollAnswers;
+
+    /**
+     * @var Collection<int, PollVoteEntity> $pollVotes
+     */
+    #[OneToMany(targetEntity: PollVoteEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $pollVotes;
+
+    /**
+     * @var Collection<int, TopicWatchEntity> $watches
+     */
+    #[OneToMany(targetEntity: TopicWatchEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $watches;
+
+    /**
+     * @var Collection<int, FileEntity> $files
+     */
+    #[OneToMany(targetEntity: FileEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    public Collection $files;
+
     /**
      * @var Collection<int, ThankEntity> $thanks
      */
@@ -135,6 +178,14 @@ class UserEntity
         $this->sessions = new ArrayCollection();
         $this->thanks = new ArrayCollection();
         $this->moderatorUsers = new ArrayCollection();
+
+        $this->topics = new ArrayCollection();
+        $this->posts = new ArrayCollection();
+        $this->polls = new ArrayCollection();
+        $this->pollAnswers = new ArrayCollection();
+        $this->pollVotes = new ArrayCollection();
+        $this->watches = new ArrayCollection();
+        $this->files = new ArrayCollection();
 
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;

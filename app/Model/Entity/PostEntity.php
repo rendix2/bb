@@ -41,11 +41,11 @@ class PostEntity
     #[JoinColumn(nullable: false)]
     public CategoryEntity $category;
 
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'x')]
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'posts')]
     #[JoinColumn(nullable: false)]
     public ForumEntity $forum;
 
-    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'x')]
+    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'posts')]
     #[JoinColumn(nullable: false)]
     public TopicEntity $topic;
 
@@ -68,6 +68,19 @@ class PostEntity
     public ?DateTimeImmutable $updatedAt;
 
     /**
+     * @var Collection<int, TopicEntity> $firstInTopics
+     */
+    #[OneToMany(targetEntity: TopicEntity::class, mappedBy: 'firstPost')]
+    public Collection $firstInTopics;
+
+
+    /**
+     * @var Collection<int, TopicEntity> $lastInTopics
+     */
+    #[OneToMany(targetEntity: TopicEntity::class, mappedBy: 'lastPost')]
+    public Collection $lastInTopics;
+
+    /**
      * @var Collection<int, PostHistoryEntity> $historyPosts
      */
     #[OneToMany(targetEntity: PostHistoryEntity::class, mappedBy: 'post', cascade: ['persist', 'remove'],)]
@@ -85,6 +98,9 @@ class PostEntity
 
         $this->historyPosts = new ArrayCollection();
         $this->files = new ArrayCollection();
+
+        $this->firstInTopics = new ArrayCollection();
+        $this->lastInTopics = new ArrayCollection();
 
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;

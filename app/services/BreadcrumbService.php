@@ -39,12 +39,12 @@ class BreadcrumbService
         while ($current !== null) {
             array_unshift($breadcrumbs, [
                 'link' => ':Forum:Category:default',
-                'params' => ['category_id' => $current->getId()],
-                'text' => $current->getName(),
+                'params' => ['category_id' => $current->id],
+                'text' => $current->name,
                 't' => 0,
             ]);
 
-            $current = $current->getParent();
+            $current = $current->parent;
         }
 
         return $breadcrumbs;
@@ -74,14 +74,14 @@ class BreadcrumbService
             array_unshift($breadcrumbs, [
                 'link' => 'Forum:default',
                 'params' => [
-                    'category_id' => $current->getCategory()->getId(),
-                    'forum_id' => $current->getId(),
+                    'category_id' => $current->category->id,
+                    'forum_id' => $current->id,
                 ],
-                'text' => $current->getName(),
+                'text' => $current->name,
                 't' => 0,
             ]);
 
-            $current = $current->getParent();
+            $current = $current->parent;
         }
 
         return $breadcrumbs;

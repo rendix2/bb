@@ -31,8 +31,6 @@ class BreadCrumbControl extends Control
      */
     public function __construct(array $breadCrumb, ITranslator $translator)
     {
-        parent::__construct();
-        
         $this->breadCrumb = $breadCrumb;
         $this->translator = $translator;
     }

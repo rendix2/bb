@@ -67,13 +67,13 @@
                     </td>
                     <td>
                         {if $lastTopic}
-                            <a href="{link Topic:default, $lastTopic->category->id, $lastTopic->forum->id, $lastTopic->id}" title="Přidáno: {$lastTopic->topic_add_time|date:'%d.%m.%Y %H:%M:%S'}">{$lastTopic->name}</a>
+                            <a href="{link Topic:default, $lastTopic->category->id, $lastTopic->forum->id, $lastTopic->id}" title="Přidáno: {$lastTopic->createdAt|date:'%d.%m.%Y %H:%M:%S'}">{$lastTopic->name}</a>
                         {else}None
                         {/if}
                     </td>
                     <td>
                         {if $lastPost}
-                            <a href="{link Topic:default#post_{$lastPost->id}, $lastPost->category->id, $lastPost->forum->id, $lastPost->topic->id, $lastPost->topic_page_count}" title="Přidáno: {$lastPost->post_add_time|date:'%d.%m.%Y %H:%M:%S'}">
+                            <a href="{link Topic:default#post_{$lastPost->id}, $lastPost->category->id, $lastPost->forum->id, $lastPost->topic->id, $lastPost->topic_page_count}" title="Přidáno: {$lastPost->createdAt|date:'%d.%m.%Y %H:%M:%S'}">
                                 {if $lastPost->title}
                                     {$lastPost->title}
                                 {else}
@@ -83,14 +83,14 @@
                         {/if}
                     </td>
                     <td>{if $mostPostsUser}
-                            <a href="{link User:profile $mostPostsUser->id}">{$mostPostsUser['username']}</a>
-                        ({$mostPostsUser->post_count})
+                            <a href="{link User:profile $mostPostsUser['id']}">{$mostPostsUser['username']}</a>
+                        ({$mostPostsUser['post_count']})
                         {else}No one
                         {/if}
                     </td>
                     <td>{if $mostTopicsUser}
-                            <a href="{link User:profile $mostTopicsUser->id}">{$mostTopicsUser['username']}</a>
-                            ({$mostTopicsUser->topic_count})
+                            <a href="{link User:profile $mostTopicsUser['id']}">{$mostTopicsUser['username']}</a>
+                            ({$mostTopicsUser['topic_count']})
                         {else}No one
                         {/if}
                     </td>

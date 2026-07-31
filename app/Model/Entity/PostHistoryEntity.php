@@ -29,7 +29,7 @@ class PostHistoryEntity
     #[Column(type: UuidType::NAME, unique: true)]
     public UuidInterface $uuid;
 
-    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'topics', )]
+    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'historyPosts', )]
     #[JoinColumn(nullable: false)]
     public PostEntity $post;
 
