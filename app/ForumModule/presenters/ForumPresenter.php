@@ -196,27 +196,6 @@ final class ForumPresenter extends BaseForumPresenter
     }
 
     /**
-     *
-     * @return GridFilter
-     */
-    /*
-    protected function createComponentGridFilter(): GridFilter
-    {
-        $this->gf->setTranslator($this->getTranslator());
-        
-        $this->gf->addFilter('topic_id', 'topic_id', GridFilter::TEXT_LIKE);
-        $this->gf->addFilter('topic_name', 'topic_name', GridFilter::TEXT_LIKE);
-        $this->gf->addFilter('user_name', 'topic_author', GridFilter::TEXT_LIKE);
-        $this->gf->addFilter('topic_post_count', 'topic_post_count', GridFilter::FROM_TO_INT);
-        $this->gf->addFilter('topic_view_count', 'topic_count_views', GridFilter::FROM_TO_INT);
-        $this->gf->addFilter('post_add_time', 'topic_last_post_time', GridFilter::DATE_TIME);
-        $this->gf->addFilter('edit', null, GridFilter::NOTHING);
-
-        return $this->gf;
-    }
-    */
-
-    /**
      * @return BreadCrumbControl
      */
     protected function createComponentBreadCrumbAll(): BreadCrumbControl
