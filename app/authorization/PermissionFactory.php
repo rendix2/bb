@@ -103,7 +103,7 @@ class PermissionFactory
         $this->allow($permission, ForumScope::ROLE_MODERATOR, ForumScope::ACTION_POST_UPDATE);
         $this->allow($permission, ForumScope::ROLE_MODERATOR, ForumScope::ACTION_TOPIC_UPDATE);
 
-        $permission->allow(Identity::ROLE_ADMIN, Permission::ALL, Permission::ALL);
+        $permission->allow(Identity::ROLE_ADMIN, Permission::All, Permission::All);
 
         return $permission;
     }

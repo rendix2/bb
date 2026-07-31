@@ -12,7 +12,7 @@ class Identity
 {
     const ROLE_HOST       = 'host';
     const ROLE_REGISTERED = 'registered';
-    const ROLE_ADMIN      = 'admin';
+    const ROLE_ADMIN      = 'Admin';
     
     private $id;
     

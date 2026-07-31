@@ -19,7 +19,6 @@ class ScopeService
 {
 
     public function __construct(
-        private readonly ModeratorManager $moderatorManager,
         private readonly User2GroupManager $users2GroupsManager,
         private readonly Users2ForumsManager $users2ForumsManager,
 
@@ -30,11 +29,11 @@ class ScopeService
 
     public function loadForum(ForumEntity $forum): ForumScope
     {
-        $moderators = $this->moderatorManager->getAllByRight($forum->id);
+        $moderators = $forum->moderatorUsers;
         $moderatorsI = [];
 
         foreach ($moderators as $moderator) {
-            $moderatorIdentity = new Identity($moderator->user_id, ForumScope::ROLE_MODERATOR);
+            $moderatorIdentity = new Identity($moderator->user_id, [ForumScope::ROLE_MODERATOR]);
             $moderatorUser     = new User($moderatorIdentity);
 
             $moderatorsI[] = $moderatorUser;
@@ -45,7 +44,7 @@ class ScopeService
 
     public function loadTopic(ForumEntity $forum, TopicEntity $topic): TopicScope
     {
-        $topicIdentity = new Identity($topic->getTopic_first_user_id(), [TopicScope::ROLE_AUTHOR]);
+        $topicIdentity = new Identity($topic->firstPost->user->id, [TopicScope::ROLE_AUTHOR]);
         $topicAuthor   = new User($topicIdentity);
 
         $thanks = $this->thankRepository->findByTopic($topic);

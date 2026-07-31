@@ -13,6 +13,7 @@ use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Models\ForumManager;
 use App\Models\ModeratorManager;
+use App\Models\TopicManager;
 use App\services\BreadcrumbService;
 use App\services\ScopeService;
 use App\Settings\ForumSettings;
@@ -55,6 +56,8 @@ final class ForumPresenter extends BaseForumPresenter
         private readonly ForumRepository    $forumRepository,
 
         private readonly BreadcrumbService $breadcrumbService,
+
+        private readonly TopicManager $topicsManager,
 
         ForumManager $manager
     )
