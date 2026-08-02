@@ -3,7 +3,7 @@
 namespace App\Controls;
 
 use Nette\Application\UI\Control;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 
 /**
  * Description of BreadCrumbControl
@@ -13,15 +13,9 @@ use Nette\Localization\ITranslator;
  */
 class BreadCrumbControl extends Control
 {
-    /**
-     * @var array $breadCrumb
-     */
     private array $breadCrumb;
     
-    /**
-     * @var ITranslator $translator
-     */
-    private ITranslator $translator;
+    private Translator $translator;
 
     /**
      * BreadCrumbControl constructor.
@@ -29,17 +23,12 @@ class BreadCrumbControl extends Control
      * @param array       $breadCrumb
      * @param ITranslator $translator
      */
-    public function __construct(array $breadCrumb, ITranslator $translator)
+    public function __construct(array $breadCrumb, Translator $translator)
     {
         $this->breadCrumb = $breadCrumb;
         $this->translator = $translator;
     }
 
-    /**
-     * BreadCrumbControl render.
-     *
-     * render breadcrumb
-     */
     public function render(): void
     {
         $sep = DIRECTORY_SEPARATOR;

@@ -112,43 +112,6 @@ final class ForumPresenter extends BaseForumPresenter
         $this->getTemplate()->logViews    = $this->topicSetting->get()['logViews'];
     }
 
-    /**
-     * renders rules of forum
-     *
-     * @param int $category_id
-     * @param int $forum_id
-     */
-    public function renderRules(int $category_id, int $forum_id): void
-    {
-        $categoryEntity = $this->categoryRepository
-            ->findOneBy(
-                [
-                    'id' => $category_id
-                ]
-            );
-
-        if ($categoryEntity === null) {
-            $this->error('Category was not found.');
-        }
-
-        if ($categoryEntity->active === false) {
-            $this->error('Category is not active.');
-        }
-
-        $forumEntity = $this->forumRepository
-            ->findOneBy(
-                [
-                    'id' => $forum_id,
-                ]
-            );
-
-        if ($forumEntity->rules === null) {
-            $this->flashMessage('No forum rules.', self::FLASH_MESSAGE_WARNING);
-        }
-
-        $this->template->forum = $forumEntity;
-    }
-
     protected function createComponentDataGrid(): Datagrid
     {
         $dataSource = $this->em
@@ -204,21 +167,6 @@ final class ForumPresenter extends BaseForumPresenter
             [['link' => 'Index:default', 'text' => 'menu_index']],
             $this->breadcrumbService->getCategoryBreadCrumb($this->getParameter('category_id')),
             $this->breadcrumbService->getForumBreadCrumb($this->getParameter('forum_id'))
-        );
-
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
-    }
-
-    /**
-     * @return BreadCrumbControl
-     */
-    protected function createComponentBreadCrumbRules(): BreadCrumbControl
-    {
-        $breadCrumb = array_merge(
-            [['link' => 'Index:default', 'text' => 'menu_index']],
-            $this->breadcrumbService->getCategoryBreadCrumb($this->getParameter('category_id')),
-            $this->breadcrumbService->getForumBreadCrumb($this->getParameter('forum_id')),
-            [['link' => 'Forum:rules', 'text' => 'forum_rules', 'params' => [$this->getParameter('category_id'), $this->getParameter('forum_id')]]]
         );
 
         return new BreadCrumbControl($breadCrumb, $this->getTranslator());

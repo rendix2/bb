@@ -87,7 +87,7 @@ class UsernameAndPasswordAuthenticator implements Authenticator
 
         $data =
             [
-                'user_name' => $userEntity->username,
+                'username' => $userEntity->username,
                 'lang_file_name' => $languageEntity->fileName,
                 'user_last_login_time' => new DateTimeImmutable(),
                 'user_email' => $userEntity->email,

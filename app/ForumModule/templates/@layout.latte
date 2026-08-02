@@ -21,7 +21,7 @@
             <ul class="navbar-nav">
 
             <li class="nav-item {if $presenter->getName() === 'Forum:Index'}active{/if}">
-                <a class="nav-link" href="{link Index:default}">Index</a></li>
+                <a class="nav-link" href="{link :Forum:Index:default}">Index</a></li>
 
             {if $user->isLoggedIn()}
                 <li class="nav-item {if $presenter->getName() === 'Forum:User' && $presenter->getAction() === 'edit'}active{/if}">

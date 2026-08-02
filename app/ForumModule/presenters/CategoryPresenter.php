@@ -8,6 +8,7 @@ use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Models\Crud\CrudNullManager;
+use Nette\Application\UI\Presenter;
 
 /**
  * Description of CategoryPresenter
@@ -15,7 +16,7 @@ use App\Models\Crud\CrudNullManager;
  * @author rendix2
  * @package App\ForumModule\Presenters
  */
-class CategoryPresenter extends BaseForumPresenter
+class CategoryPresenter extends Presenter
 {
     public function __construct(
         CrudNullManager $crudNullManager,
