@@ -21,12 +21,7 @@ use Nette\Localization\ITranslator;
  */
 abstract class ForumPresenter extends AuthenticatedPresenter
 {
-    /**
-     *
-     * @var ModeratorManager $moderators
-     * @inject
-     */
-    public ModeratorManager $moderators;
+
     
     /**
      *

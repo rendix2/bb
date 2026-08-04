@@ -6,6 +6,7 @@ use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\UserEntity;
+use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
 use App\Models\PostFacade;
 use App\Models\PostsHistoryManager;
@@ -27,13 +28,6 @@ class PostPresenter extends ModeratorPresenter
 {
     /**
      *
-     * @var PostsHistoryManager $postsHistoryManager
-     * @inject
-     */
-    public PostsHistoryManager $postsHistoryManager;
-            
-    /**
-     *
      * @var PostFacade $postFacade
      * @inject
      */
@@ -50,29 +44,26 @@ class PostPresenter extends ModeratorPresenter
         PostManager $manager,
         private readonly EntityManagerDecorator $em,
         private readonly TopicRepository        $topicRepository,
+        private readonly PostRepository         $postRepository,
     )
     {
         parent::__construct($manager);
     }
     
-    /**
-     *
-     * @param int $post_id
-     */
-    public function renderHistory($post_id): void
+    public function renderHistory(int $post_id): void
     {
-        $this->getTemplate()->posts = $this->postsHistoryManager->getByPost($post_id);
+        $postEntity = $this->postRepository->findOneBy(
+            [
+                'id' => $post_id
+            ]
+        );
+
+        $this->getTemplate()->posts = $postEntity->historyPosts;
     }
 
     public function renderPosts(int $topic_id) : void
     {
-        $posts = $this->em
-            ->getRepository(PostEntity::class)
-            ->findBy(
-                [
-                    'topic' => $topic_id,
-                ]
-            );
+        $posts = $this->postRepository->findByTopicId($topic_id);
 
         $this->getTemplate()->posts = $posts;
     }

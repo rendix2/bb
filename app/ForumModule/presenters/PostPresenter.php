@@ -316,6 +316,7 @@ class PostPresenter extends BaseForumPresenter
         
         $this->sendResponse($fileResponse);
     }
+
     protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();

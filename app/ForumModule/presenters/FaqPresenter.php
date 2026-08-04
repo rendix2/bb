@@ -25,10 +25,6 @@ class FaqPresenter extends AuthenticatedPresenter
 
     public function actionDelete(int $id)
     {
-        if (!is_numeric($id)) {
-            $this->error('Parameter is not numeric.');
-        }
-
         $result = $this->getManager()->delete($id);
 
         if ($result) {

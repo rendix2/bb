@@ -56,7 +56,7 @@ class ScopeService
     {
         $postIdentity  = new Identity($postEntity->user->id, [PostScope::ROLE_AUTHOR]);
 
-        return new PostScope($postEntity, $this->loadTopic($forumEntity, $topicEntity), $topicEntity);
+        return new PostScope($postEntity, $this->loadTopic($forumEntity, $topicEntity));
     }
 
 }

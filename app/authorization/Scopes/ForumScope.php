@@ -64,14 +64,6 @@ class ForumScope implements IAuthorizationScope
     private Users2ForumsManager $users2ForumsManager;
 
 
-    /**
-     * ForumScope constructor.
-     *
-     * @param \App\Model\Entity\ForumEntity $forumEntity
-     * @param array $moderators
-     * @param User2GroupManager $users2GroupsManager
-     * @param Users2ForumsManager $users2ForumsManager
-     */
     public function __construct(
         \App\Model\Entity\ForumEntity $forumEntity,
         $moderators,
@@ -97,7 +89,7 @@ class ForumScope implements IAuthorizationScope
         if ($this->userPermission) {
             $this->userPermission = $userForum = $this->users2ForumsManager->getFull(
                 $identity->getId(),
-                $this->forumEntity->getForum_id()
+                $this->forumEntity->id,
             );
         } else {
             $userForum = $this->userPermission;
@@ -144,7 +136,7 @@ class ForumScope implements IAuthorizationScope
             $this->groupPermission = $groupForums = $this->users2GroupsManager
                 ->getForumsPermissionsByUserThroughGroupAndForum(
                     $identity->getId(),
-                    $this->forumEntity->getForum_id()
+                    $this->forumEntity->id,
                 );
         } else {
             $groupForums = $this->groupPermission;

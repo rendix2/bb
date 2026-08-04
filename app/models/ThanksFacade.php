@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
+use App\Model\Entity\ThankEntity;
 use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\ThankRepository;
@@ -89,18 +90,26 @@ class ThanksFacade
 
     public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity)
     {
+        /**
+         * @var ThankEntity[] $thanks
+         */
         $thanks = $this->thankRepository->findByTopicId($topicEntity->id);
 
-        $user_ids = Utils::arrayObjectColumn($thanks, 'thank_user_id');
+        $users = [];
 
-        if (count($user_ids)) {
-            $this->usersManager->updateMulti(
-                $user_ids,
-                ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1'])
-            );
+        foreach ($thanks as $thank) {
+            $users[$thank->user->id] = $thank->user;
         }
 
-        return $this->thanksManager->deleteByTopic($topicEntity->id);
+        foreach ($users as $user) {
+            $user->thank_count--;
+
+            $this->em->persist($user);
+        }
+
+        $this->em->remove($topicEntity);
+
+        $this->em->flush();
     }
 
     public function deleteByPost(\App\Model\Entity\PostEntity $post)

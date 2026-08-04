@@ -12,9 +12,7 @@ use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\UserRepository;
-use App\Models\ForumFacade;
 use App\Models\ForumManager;
-use App\Models\ModeratorManager;
 use Doctrine\DBAL\Exception as DbalException;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
@@ -31,22 +29,6 @@ use Tracy\ILogger;
  */
 class ForumPresenter extends AdminPresenter
 {
-
-
-
-    /**
-     * @var ModeratorManager $moderatorsManager
-     * @inject
-     */
-    public ModeratorManager $moderatorsManager;
-
-
-    /**
-     *
-     * @var ForumFacade $forumFacade
-     * @inject
-     */
-    public ForumFacade $forumFacade;
 
     public function __construct(
         private readonly EntityManagerDecorator $em,
@@ -190,15 +172,13 @@ class ForumPresenter extends AdminPresenter
                 $userData = false;
             }
 
-            $moderators = $this->moderatorsManager->getAllByRightJoined($id);
-
             $this->template->topicData = $lastTopic;
             $this->template->lastPost = $lastPost;
             $this->template->userData = $userData;
             $this->template->item = $item;
             $this->template->title = $this->getTitleOnEdit();
             $this->template->forums = $subForums;
-            $this->template->moderators = $moderators;
+            $this->template->moderators = $forumEntity->moderatorUsers;
         } else {
             $this->template->title = $this->getTitleOnAdd();
             $this->template->forums = [];
@@ -290,21 +270,27 @@ class ForumPresenter extends AdminPresenter
 
         try {
             if ($id) {
-                $result = $this->forumFacade->update($id, $values);
+                $forumEntity = $this->forumRepository->findOneBy(
+                    [
+                        'id' => $id,
+                    ]
+                );
+
+                $forumEntity->name = $values->name;
             } else {
                 $forumEntity = new \App\Model\Entity\ForumEntity();
                 $forumEntity->name = $values->forum_name;
-
-                $this->em->persist($forumEntity);
-                $this->em->flush();
-
-                $this->flashMessage($forumEntity->name . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
-                $this->redrawControl('flashes');
             }
+
+            $this->em->persist($forumEntity);
+            $this->em->flush();
+
+            $this->flashMessage($forumEntity->name . ' was saved.', self::FLASH_MESSAGE_SUCCESS);
+            $this->redrawControl('flashes');
         } catch (DbalException $exception) {
             $this->flashMessage(
                 'There was some problem during saving into database. Form was NOT saved.',
-                self::FLASH_MESSAGE_DANGER
+                'danger'
             );
 
             Debugger::log($exception->getMessage(), ILogger::CRITICAL);

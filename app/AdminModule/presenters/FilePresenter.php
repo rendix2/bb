@@ -11,6 +11,7 @@ use Contributte\FormsBootstrap\BootstrapForm;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -24,16 +25,8 @@ use Tracy\ILogger;
  */
 class FilePresenter extends AdminPresenter
 {
-    /**
-     * @var ITranslator $adminTranslator
-     */
-    private ITranslator $adminTranslator;
+    private Translator $adminTranslator;
 
-    /**
-     * FilePresenter constructor.
-     *
-     * @param FilesManager $manager
-     */
     public function __construct(FilesManager $manager)
     {
         parent::__construct($manager);
@@ -56,9 +49,6 @@ class FilePresenter extends AdminPresenter
         }
     }
 
-    /**
-     * AdminPresenter startup.
-     */
     public function startup()
     {
         parent::startup();
@@ -66,9 +56,6 @@ class FilePresenter extends AdminPresenter
         $this->adminTranslator = $this->translatorFactory->getAdminTranslator();
     }
 
-    /**
-     * AdminPresenter beforeRender.
-     */
     public function beforeRender(): void
     {
         parent::beforeRender();
@@ -84,12 +71,8 @@ class FilePresenter extends AdminPresenter
     /**
      * @param int $id
      */
-    public function actionDelete(int $id)
+    public function actionDelete(int $id): void
     {
-        if (!is_numeric($id)) {
-            $this->error('Parameter is not numeric.');
-        }
-
         $result = $this->getManager()->delete($id);
 
         if ($result) {
@@ -101,9 +84,6 @@ class FilePresenter extends AdminPresenter
         $this->redirect(':' . $this->getName() . ':default');
     }
 
-    /**
-     * @param int $page
-     */
     public function actionDefault(int $page = 1): void
     {
         $items = $this->getManager()->getAllFluent();
@@ -122,17 +102,11 @@ class FilePresenter extends AdminPresenter
         $this->template->countItems = $paginator->getCount();
     }
 
-    /**
-     * @param int $page
-     */
     public function renderDefault(int $page = 1): void
     {
         $this->template->title = $this->getTitleOnDefault();
     }
 
-    /**
-     * @param int|null $id
-     */
     public function renderEdit(int $id): void
     {
         if ($id) {

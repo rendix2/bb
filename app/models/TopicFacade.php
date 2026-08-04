@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Database\EntityManagerDecorator;
 use App\Model\Entity\PostEntity;
+use App\Model\Entity\TopicWatchEntity;
 use App\Model\Repository\PollRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\ThankRepository;
 use App\Model\Repository\TopicRepository;
+use App\Model\Repository\TopicWatchRepository;
 use App\Models\Entity\TopicEntity;
 use App\Utils;
 use Dibi\Result;
@@ -121,12 +124,15 @@ class TopicFacade
         ReportFacade      $reportFacade,
         PollsFacade       $pollsFacade,
 
-        private readonly ThankRepository $thankRepository,
+        private readonly ThankRepository      $thankRepository,
+        private readonly TopicWatchRepository $topicWatchRepository,
 
         private readonly TopicRepository $topicRepository,
         private readonly PostRepository  $postRepository,
 
         private readonly PollRepository $pollRepository,
+
+        private readonly EntityManagerDecorator $em,
     ) {
         $this->topicsManager     = $topicsManager;
         $this->topicWatchManager = $topicWatchManager;
@@ -144,28 +150,29 @@ class TopicFacade
 
     public function add(\App\Model\Entity\TopicEntity $topicEntity, PostEntity $postEntity)
     {
-        $topic_id = $this->topicsManager->add($topicEntity->getArrayHash());
+        $this->em->persist($topicEntity);
+        $this->em->flush();
 
-        $topicEntity->setTopic_id($topic_id);
+        $topic_id = $topicEntity->id;
         $postEntity->topic = $topicEntity;
         
-        if ($topicEntity->getPoll()) {
-            $topicEntity->getPoll()->setPoll_topic_id($topic_id);
-            
-            $this->pollsFacade->add($topicEntity->getPoll());
+        if ($topicEntity->poll) {
+            $this->pollsFacade->add($topicEntity->poll);
         }
-        $this->topicWatchManager->add([$topicEntity->getTopic_user_id()], $topic_id);
 
-        $post_id = $this->postFacade->add($topicEntity->getPost());
-        
-        $topicEntity->getPost()->setPost_id($post_id);
+        $topicWatchEntity = new TopicWatchEntity();
+        $topicWatchEntity->topic = $topicEntity;
+        $topicWatchEntity->user = $topicEntity->user;
 
-        $this->topicsManager->update(
-            $topic_id,
-            ArrayHash::from(['topic_first_post_id' => $post_id, 'topic_last_post_id' => $post_id])
-        );
+        $this->em->persist($topicWatchEntity);
+        $this->em->flush();
 
-        $this->usersManager->update($topicEntity->getTopic_user_id(), ArrayHash::from(
+        $this->postFacade->add($postEntity);
+
+        $topicEntity->firstPost = $postEntity;
+        $topicEntity->lastPost = $postEntity;
+
+        $this->usersManager->update($topicEntity->user->id, ArrayHash::from(
             [
                 'user_topic_count%sql' => 'user_topic_count + 1',
                 'user_watch_count%sql' => 'user_watch_count + 1'
@@ -180,12 +187,6 @@ class TopicFacade
         return $topic_id;
     }
 
-    /**
-     *
-     * @param TopicEntity $topic
-     *
-     * @return Result|int
-     */
     public function delete(\App\Model\Entity\TopicEntity $topicEntity)
     {
         $this->thanksFacade->deleteByTopic($topicEntity);
@@ -371,7 +372,7 @@ class TopicFacade
 
 
         // thanks begin
-        $topicWatches = $this->topicWatchManager->getPairsByLeft($topic_from_id);
+        $topicWatches = $this->topicWatchRepository->findByTopic($topicFrom);
         $targetThanks = $this->thankRepository->findByTopicId($topic_target_id);
 
         $thanksFromUsers   = Utils::arrayObjectColumn($thanks, 'thank_user_id');
@@ -389,8 +390,8 @@ class TopicFacade
         // thanks end
 
         // topics watches begin
-        $topicsWatchesFrom    = $this->topicWatchManager->getAllByLeft($topic_from_id);
-        $topicsWatchesTarget  = $this->topicWatchManager->getAllByLeft($topic_target_id);
+        $topicsWatchesFrom    = $this->topicWatchRepository->findByTopic($topicFrom);
+        $topicsWatchesTarget  = $this->topicWatchRepository->findByTopic($topicTarget);
 
         $topic_watch_from_user_ids   = Utils::arrayObjectColumn($topicsWatchesFrom, 'user_id');
         $topic_watch_target_user_ids = Utils::arrayObjectColumn($topicsWatchesTarget, 'user_id');
@@ -413,7 +414,10 @@ class TopicFacade
             $topicFrom->topic_forum_id,
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1'])
         );
-        $this->thanksManager->deleteByTopic($topic_from_id);
+
+        $this->em->remove($topicFrom);
+        $this->em->flush();
+
         $this->reportsManager->updateByTopic(
             $topic_from_id,
             ArrayHash::from(['report_topic_id' => $topic_target_id, 'report_forum_id' => $topicTarget->topic_forum_id])
@@ -443,23 +447,18 @@ class TopicFacade
 
         return $this->topicsManager->update($topic_target_id, ArrayHash::from([
             'topic_post_count%sql' => 'topic_post_count + ' . count($post_ids),
-            'topic_first_post_id'  => $first_post->post_id,
-            'topic_first_user_id'  => $first_post->post_user_id,
-            'topic_last_post_id'   => $last_post->post_id,
-            'topic_last_user_id'   => $last_post->post_user_id,
+            'topic_first_post_id'  => $first_post->id,
+            'topic_first_user_id'  => $first_post->user->id,
+
+            'topic_last_post_id'   => $last_post->id,
+            'topic_last_user_id'   => $last_post->user->id,
         ]));
     }
 
-    /**
-     *
-     * @param TopicEntity $topicEntity
-     *
-     * @return bool
-     */
     public function update(\App\Model\Entity\TopicEntity $topicEntity)
     {
         $res = $this->topicsManager->update(
-            $topicEntity->getTopic_id(),
+            $topicEntity->id,
             ArrayHash::from(['topic_name' => $topicEntity->getTopic_name()])
         );
 

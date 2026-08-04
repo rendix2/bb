@@ -15,6 +15,7 @@ use App\Forms\TopicJumpToForumForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Entity\TopicWatchEntity;
 use App\Model\Repository\CategoryRepository;
+use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PollAnswerRepository;
 use App\Model\Repository\PollRepository;
 use App\Model\Repository\PollVoteRepository;
@@ -103,6 +104,7 @@ class TopicPresenter extends BaseForumPresenter
         private readonly BreadcrumbService $breadcrumbService,
 
         private readonly CategoryRepository $categoryRepository,
+        private readonly ForumRepository    $forumRepository,
         private readonly TopicRepository    $topicRepository,
         private readonly PostRepository     $postRepository,
         private readonly UserRepository     $userRepository,

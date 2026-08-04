@@ -14,7 +14,9 @@ use App\Presenters\Base\AuthenticatedPresenter;
 use App\Presenters\crud\CrudPresenter;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
+use Nette\DI\Attributes\Inject;
 use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -28,31 +30,19 @@ use Tracy\ILogger;
  */
 class PmPresenter extends AuthenticatedPresenter
 {
-    /**
-     * @var ReportManager $reportsManager
-     * @inject
-     */
+    #[Inject]
     public ReportManager $reportsManager;
 
-    /**
-     *
-     * @var UsersManager $usersManager
-     * @inject
-     */
+    #[Inject]
     public UsersManager $usersManager;
 
-    /**
-     *
-     * @var ITranslator $translator
-     */
-    private ITranslator $translator;
+    private Translator $translator;
 
     public function __construct(
-        PmManager $manager,
         private readonly UserSearchControl $userSearchControl,
         private readonly ReportForm $reportForm,
     ) {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
@@ -78,15 +68,8 @@ class PmPresenter extends AuthenticatedPresenter
         $this->redirect('Pm:edit', ['user_id' => $user_id, 'user_name' => $user_name]);
     }
 
-    /**
-     * @param int $id
-     */
-    public function actionDelete(int $id)
+    public function actionDelete(int $id): void
     {
-        if (!is_numeric($id)) {
-            $this->error('Parameter is not numeric.');
-        }
-
         $result = $this->getManager()->delete($id);
 
         if ($result) {
@@ -98,9 +81,6 @@ class PmPresenter extends AuthenticatedPresenter
         $this->redirect(':' . $this->getName() . ':default');
     }
 
-    /**
-     * @param int $page
-     */
     public function actionDefault(int $page = 1): void
     {
         $items = $this->getManager()->getAllFluent();
@@ -119,18 +99,11 @@ class PmPresenter extends AuthenticatedPresenter
         $this->template->countItems = $paginator->getCount();
     }
 
-    /**
-     * @param int $page
-     */
     public function renderDefault(int $page = 1): void
     {
         $this->template->title = $this->getTitleOnDefault();
     }
 
-    /**
-     *
-     * @param int|null $id
-     */
     public function renderEdit($id = null): void
     {
         if (!$id) {
@@ -149,26 +122,15 @@ class PmPresenter extends AuthenticatedPresenter
         }
     }
 
-    /**
-     * @param int $pm_id
-     */
     public function renderReport($pm_id): void
     {
     }
 
-    /**
-     *
-     * @return ReportForm
-     */
     protected function createComponentReportForm(): ReportForm
     {
         return $this->reportForm;
     }
 
-    /**
-     *
-     * @return GridFilter
-     */
     protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->translator);
@@ -182,18 +144,11 @@ class PmPresenter extends AuthenticatedPresenter
         return $this->gf;
     }
 
-    /**
-     *
-     * @return UserSearchControl
-     */
     protected function createComponentUserSearch(): UserSearchControl
     {
         return $this->userSearchControl;
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = [
@@ -204,9 +159,6 @@ class PmPresenter extends AuthenticatedPresenter
         return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbEdit(): BreadCrumbControl
     {
         $breadCrumb = [
@@ -218,9 +170,6 @@ class PmPresenter extends AuthenticatedPresenter
         return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbUserSearch(): BreadCrumbControl
     {
         $breadCrumb = [
@@ -232,9 +181,6 @@ class PmPresenter extends AuthenticatedPresenter
         return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbReport(): BreadCrumbControl
     {
         $breadCrumb = [
@@ -271,11 +217,6 @@ class PmPresenter extends AuthenticatedPresenter
         return $form;
     }
 
-    /**
-     *
-     * @param Form $form
-     * @param ArrayHash $values
-     */
     public function editFormValidate(Form $form, ArrayHash $values): void
     {
         if (!$values->pm_user_id_to) {
@@ -287,11 +228,6 @@ class PmPresenter extends AuthenticatedPresenter
         }
     }
 
-    /**
-     *
-     * @param Form $form
-     * @param ArrayHash $values
-     */
     public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         $values->pm_user_id_from = $this->getUser()->getId();

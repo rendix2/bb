@@ -14,12 +14,7 @@ use Dibi\Row;
  */
 class PostsHistoryManager extends CrudManager
 {
-    /**
-     *
-     * @param int $post_id
-     *
-     * @return Result|int
-     */
+
     public function deleteByPost($post_id)
     {
         return $this->deleteFluent()
@@ -27,12 +22,6 @@ class PostsHistoryManager extends CrudManager
             ->execute();
     }
 
-    /**
-     *
-     * @param int $user_id
-     *
-     * @return Result|int
-     */
     public function deleteByUser($user_id)
     {
         return $this->deleteFluent()

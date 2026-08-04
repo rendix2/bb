@@ -2,6 +2,7 @@
 
 namespace App\Model\Repository;
 
+use App\Model\Entity\TopicEntity;
 use App\Model\Entity\TopicWatchEntity;
 use App\Model\Entity\UserEntity;
 use Doctrine\ORM\EntityRepository;
@@ -32,5 +33,13 @@ class TopicWatchRepository extends EntityRepository
         );
     }
 
+    public function findByTopic(TopicEntity $topicEntity): array
+    {
+        return $this->findBy(
+            [
+                'topic' => $topicEntity,
+            ]
+        );
+    }
 
 }

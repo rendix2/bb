@@ -17,20 +17,6 @@ use Nette\Utils\ArrayHash;
 class ThankManager extends CrudManager
 {
 
-    /**
-     * @param int $user_id
-     *
-     * @return Fluent
-     */
-    public function getFluentByUserJoinedTopic($user_id)
-    {
-        return $this->getAllFluent()
-            ->as('th')
-            ->innerJoin(self::TOPICS_TABLE)
-            ->as('to')
-            ->on('[th.thank_topic_id] = [to.topic_id]')
-            ->where('[th.thank_user_id] = %i', $user_id);
-    }
 
     /**
      * @param int $topic_id

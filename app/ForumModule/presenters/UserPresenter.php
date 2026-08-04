@@ -307,13 +307,14 @@ class UserPresenter extends BaseForumPresenter
     {
         $user = $this->checkUserParam($user_id);
 
-        $thanks = $this->thanksManager->getFluentByUserJoinedTopic($user_id);
-        $pag = new PaginatorControl($thanks, 15, 5, $page);
-        $this->addComponent($pag, 'paginator');
+        $userEntity = $this->userRepository
+            ->findOneBy(
+            [
+                'id' => $user_id,
+            ]
+        );
 
-        if (!$pag->getCount()) {
-            $this->flashMessage('User have no thanks.', self::FLASH_MESSAGE_WARNING);
-        }
+        $thanks = $userEntity->thanks;
 
         $this->getTemplate()->thanks = $thanks->fetchAll();
     }
