@@ -11,10 +11,6 @@ services:
         class: App\Models\ThankManager
     TopicManager:
         class: App\Models\TopicManager
-    RankManager:
-        class: App\Models\RankManager
-    LanaguageManager:
-        class: App\Models\LanguageManager
     Forums2GroupsManager:
         class: App\Models\Forums2GroupsManager
     Users2GroupManager:
@@ -47,8 +43,6 @@ services:
         class: App\Models\Posts2FilesManager
     PostsHistoryManager:
         class: App\Models\PostsHistoryManager
-    UserFavouriteUsersManager:
-        class: App\Models\FavouriteUsersManager
     PostFacade:
         class: App\Models\PostFacade
     TopicFacade:

@@ -4,14 +4,11 @@ namespace App\ModeratorModule\Presenters;
 
 use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
-use App\Model\Entity\PostEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
 use App\Models\PostFacade;
-use App\Models\PostsHistoryManager;
 use App\Models\PostManager;
-use App\Models\TopicManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Nette\Application\UI\Form;
@@ -32,13 +29,6 @@ class PostPresenter extends ModeratorPresenter
      * @inject
      */
     public PostFacade $postFacade;
-    
-    /**
-     *
-     * @var TopicManager $topicsManager
-     * @inject
-     */
-    public TopicManager $topicsManager;
 
     public function __construct(
         PostManager $manager,
@@ -103,10 +93,6 @@ class PostPresenter extends ModeratorPresenter
         return $form;
     }
 
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function changePostAuthorSuccess(Form $form, ArrayHash $values): void
     {
         $userEntity = $this->em
@@ -149,10 +135,6 @@ class PostPresenter extends ModeratorPresenter
         return $form;
     }
 
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function changeTopicSuccess(Form $form, ArrayHash $values): void
     {
         $res = $this->postFacade->move($this->getParameter('id'), $values->topic_id);

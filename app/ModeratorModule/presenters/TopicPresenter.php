@@ -7,6 +7,7 @@ use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
 use App\Model\Entity\TopicEntity;
 use App\Model\Repository\ForumRepository;
+use App\Model\Repository\TopicRepository;
 use App\Models\TopicFacade;
 use App\Models\TopicManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
@@ -34,7 +35,9 @@ class TopicPresenter extends ModeratorPresenter
     public function __construct(
         TopicManager $manager,
         private readonly EntityManagerDecorator $em,
-        private readonly ForumRepository        $forumRepository,
+
+        private readonly ForumRepository $forumRepository,
+        private readonly TopicRepository $topicRepository,
     )
     {
         parent::__construct($manager);
@@ -47,8 +50,7 @@ class TopicPresenter extends ModeratorPresenter
 
         //$this->isAllowed($forumScope, \App\Authorization\Scopes\Forum::ACTION_TOPIC_UPDATE);
 
-        $topics = $this->em
-            ->getRepository(TopicEntity::class)
+        $topics = $this->topicRepository
             ->findBy(
                 [
                     'forum' => $forum_id,
@@ -103,16 +105,14 @@ class TopicPresenter extends ModeratorPresenter
      */
     public function moveTopicSuccess(Form $form, ArrayHash $values): void
     {
-        $topicEntity = $this->em
-            ->getRepository(TopicEntity::class)
+        $topicEntity = $this->topicRepository
             ->findOneBy(
                 [
                     'id' => $this->getParameter('id'),
                 ]
             );
 
-        $forumEntity = $this->em
-            ->getRepository(ForumEntity::class)
+        $forumEntity = $this->forumRepository
             ->findOneBy(
                 [
                     'id' => $values->forum_id,

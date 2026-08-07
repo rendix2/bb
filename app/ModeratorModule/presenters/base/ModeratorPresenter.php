@@ -2,8 +2,6 @@
 
 namespace App\ModeratorModule\Presenters\Base;
 
-use App\Authorization\AuthorizationPresenter;
-use App\Models\ModeratorManager;
 use App\Presenters\crud\CrudPresenter;
 use Nette\Localization\ITranslator;
 
@@ -22,13 +20,6 @@ abstract class ModeratorPresenter extends CrudPresenter
      * @var ITranslator $adminTranslator
      */
     private ITranslator $translator;
-    
-    /**
-     *
-     * @var ModeratorManager $moderatorsManager
-     * @inject
-     */
-    public ModeratorManager $moderatorsManager;
 
     /**
      * @return ITranslator

@@ -67,6 +67,10 @@ services:
 		type: App\Model\Repository\SessionRepository
 		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\SessionEntity)
 
+	-
+		type: App\Model\Repository\UserFavouriteUserRepository
+		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\UserFavouriteUserEntity)
+
 
 search:
 	-   in: %appDir%

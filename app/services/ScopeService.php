@@ -11,7 +11,6 @@ use App\Model\Entity\ForumEntity;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\TopicEntity;
 use App\Model\Repository\ThankRepository;
-use App\Models\ModeratorManager;
 use App\Models\User2GroupManager;
 use App\Models\Users2ForumsManager;
 

@@ -9,15 +9,15 @@ use App\Controls\PaginatorControl;
 use App\Controls\UserSearchControl;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
+use App\Model\Repository\CategoryRepository;
+use App\Model\Repository\ForumRepository;
+use App\Model\Repository\UserRepository;
 use App\Models\Forums2GroupsManager;
 use App\Models\ForumManager;
 use App\Models\GroupManager;
 use App\Models\User2GroupManager;
-use App\Models\UsersManager;
-use App\Presenters\Base\AuthenticatedPresenter;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -49,29 +49,20 @@ class GroupPresenter extends AdminPresenter
      */
     public ForumManager $forumsManager;
 
-    /**
-     * @var UsersManager $usersManager
-     * @inject
-     */
-    public UsersManager $usersManager;
-
-
-
-
     public function __construct(
-        GroupManager                            $manager,
         private readonly EntityManagerDecorator $em,
+
+        private readonly UserSearchControl $userSearchControl,
+
+        private readonly UserRepository $userRepository,
+
+        private readonly CategoryRepository $categoryRepository,
+        private readonly ForumRepository    $forumRepository,
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
-
-
-
-    /**
-     * @param mixed $element
-     */
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
     {
         $user = $this->getUser();
@@ -109,7 +100,7 @@ class GroupPresenter extends AdminPresenter
         $this->getTemplate()->setTranslator($this->adminTranslator);
     }
 
-    public function getTranslator(): ITranslator
+    public function getTranslator(): Translator
     {
         return $this->adminTranslator;
     }
@@ -123,9 +114,7 @@ class GroupPresenter extends AdminPresenter
     {
         $result = [];
 
-        $forums = $this->em
-            ->getRepository(ForumEntity::class)
-            ->findAll();
+        $forums = $this->forumRepository->findAll();
 
         foreach ($forums as $forum) {
             $result[$forum->forum_id] = false;
@@ -239,7 +228,12 @@ class GroupPresenter extends AdminPresenter
                 );
             } else {
                 $item = $this->template->item;
-                $moderator = $this->usersManager->getById($item->group_moderator_id);
+
+                $moderator = $this->userRepository->findOneBy(
+                    [
+                        'id' => $item->group_moderator_id,
+                    ]
+                );
 
                 $this['editForm']->setDefaults(['group_moderator' => $moderator->user_name]);
             }
@@ -259,9 +253,7 @@ class GroupPresenter extends AdminPresenter
             $permission[$groupForum->forum_id]['topic_fast_reply'] = $groupForum->topic_fast_reply;
         }
 
-        $forums = $this->em
-            ->getRepository(ForumEntity::class)
-            ->findAll();
+        $forums = $this->forumRepository->findAll();
 
         $this->getTemplate()->countOfUsers = $this->users2GroupsManager->getCountByRight($id);
         $this->getTemplate()->forums = $this->forumsManager->createForums($forums, 0);
@@ -344,7 +336,7 @@ class GroupPresenter extends AdminPresenter
      */
     protected function createComponentUserSearch(): UserSearchControl
     {
-        return new UserSearchControl($this->usersManager, $this->getTranslator());
+        return $this->userSearchControl;
     }
 
     protected function createComponentForumsForm(): \Contributte\FormsBootstrap\BootstrapForm

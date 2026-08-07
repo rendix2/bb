@@ -3,16 +3,14 @@
 namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
+use App\Model\Entity\PostHistoryEntity;
 use App\Model\Entity\TopicWatchEntity;
-use App\Model\Entity\UserEntity;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\TopicWatchRepository;
 use App\Model\Repository\UserRepository;
-use App\Models\Entity\PostEntity;
-use App\Models\Entity\TopicEntity;
 use App\Settings\TopicsSetting;
 use Dibi\Result;
 use Nette\Utils\ArrayHash;
@@ -58,12 +56,6 @@ class PostFacade
 
     /**
      *
-     * @var PostsHistoryManager $postsHistoryManager
-     */
-    private PostsHistoryManager $postsHistoryManager;
-
-    /**
-     *
      * @var ThanksFacade $thanksFacade
      */
     private ThanksFacade $thanksFacade;
@@ -103,7 +95,6 @@ class PostFacade
         UsersManager                            $usersManager,
         ReportManager                           $reportsManager,
         ForumManager                            $forumsManager,
-        PostsHistoryManager                     $postsHistoryManager,
         ThanksFacade                            $thanksFacade,
         TopicWatchFacade                        $topicWatchFacade,
         PollsFacade                             $pollsFacade,
@@ -117,10 +108,8 @@ class PostFacade
         private readonly TopicRepository        $topicRepository,
         private readonly PostRepository         $postRepository,
 
-
         private readonly UserRepository         $userRepository,
         private readonly TopicWatchRepository   $topicWatchRepository,
-
     )
     {
         $this->postsManager = $postsManager;
@@ -128,7 +117,6 @@ class PostFacade
         $this->usersManager = $usersManager;
         $this->reportsManager = $reportsManager;
         $this->forumsManager = $forumsManager;
-        $this->postsHistoryManager = $postsHistoryManager;
         $this->thanksFacade = $thanksFacade;
         $this->topicWatchFacade = $topicWatchFacade;
         $this->pollsFacade = $pollsFacade;
@@ -209,13 +197,14 @@ class PostFacade
             $watch = ['user_watch_count%sql' => 'user_watch_count + 1'];
         }
 
-        $this->postsHistoryManager->add(ArrayHash::from([
-            'post_id' => $post_id,
-            'post_user_id' => $user_id,
-            'post_title' => $post->title,
-            'post_text' => $post->text,
-            'post_history_time' => time()
-        ]));
+        $postHistoryEntity = new PostHistoryEntity();
+        $postHistoryEntity->post = $post;
+        $postHistoryEntity->user = $post->user;
+        $postHistoryEntity->title = $post->title;
+        $postHistoryEntity->text = $post->text;
+
+        $this->em->persist($postHistoryEntity);
+        $this->em->flush();
 
         $this->usersManager->update($user_id, ArrayHash::from([
                 'user_post_count%sql' => 'user_post_count + 1',
@@ -229,27 +218,16 @@ class PostFacade
 
     public function update(\App\Model\Entity\PostEntity $postEntity)
     {
-        //$myPost = clone $post;
-        //unset($myPost->post_id);
+        $postHistoryEntity = new PostHistoryEntity();
+        $postHistoryEntity->post = $postEntity;
+        $postHistoryEntity->title = $postEntity->title;
+        $postHistoryEntity->text = $postEntity->text;
+        $postHistoryEntity->user = $postEntity->user;
 
-        $add = $this->postsHistoryManager
-            ->add(
-                ArrayHash::from(
-                    [
-                        'post_id' => $postEntity->id,
-                        'post_user_id' => $postEntity->user->id,
-                        'post_title' => $postEntity->title,
-                        'post_text' => $postEntity->text,
-                        'post_history_time' => time()
-                    ]
-                )
-            );
+        $this->em->persist($postHistoryEntity);
+        $this->em->persist($postEntity);
 
-        $postEntity->setPost_user_id(null);
-
-        $update = $this->postsManager->update($postEntity->id, $postEntity->getArrayHash());
-
-        return $update && $add;
+        $this->em->flush();
     }
 
     /**
@@ -272,7 +250,14 @@ class PostFacade
         );
 
         $this->thanksFacade->deleteByPost($postEntity);
-        $this->postsHistoryManager->deleteByPost($postEntity->id);
+
+        foreach ($postEntity->historyPosts as $historyPost)
+        {
+            $this->em->remove($historyPost);
+        }
+
+        $this->em->flush();
+
         $this->topicWatchFacade->deleteByPost($postEntity);
         $this->reportsManager->deleteByPost($postEntity->id);
         $this->forumsManager->update(

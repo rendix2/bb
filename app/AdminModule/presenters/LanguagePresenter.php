@@ -9,7 +9,6 @@ use App\Controls\PaginatorControl;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\UserEntity;
-use App\Models\LanguageManager;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
@@ -20,17 +19,15 @@ use Tracy\ILogger;
  * Description of LanguagePresenter
  *
  * @author rendix2
- * @method LanguageManager getManager()
  * @package App\AdminModule\Presenters
  */
 class LanguagePresenter extends AdminPresenter
 {
     public function __construct(
-        LanguageManager $manager,
         private readonly EntityManagerDecorator $em,
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     public function actionDelete(int $id)

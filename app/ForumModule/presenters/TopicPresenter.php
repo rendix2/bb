@@ -294,21 +294,18 @@ class TopicPresenter extends BaseForumPresenter
         $thankEntity->user = $userEntity;
         $thankEntity->ipAddress = $this->getHttpRequest()->getRemoteAddress();
 
-        $res = $this->thanksFacade->add($thankEntity);
-        
-        if ($res) {
+        try {
+            $this->thanksFacade->add($thankEntity);
+
             $this->flashMessage('Your thank to this topic.', self::FLASH_MESSAGE_SUCCESS);
+        } catch (Exception $exception) {
+            $this->flashMessage('Thank was not saved');
+            $this->redrawControl('flashs');
         }
         
         $this->redirect('Topic:default', $category_id, $forum_id, $topic_id);
     }
 
-    /**
-     * @param int $category_id
-     * @param int $forum_id
-     * @param int $topic_id
-     * @param int $page
-     */
     public function actionDelete($category_id, $forum_id, $topic_id, $page): void
     {
         $categoryEntity = $this->categoryRepository
@@ -407,7 +404,17 @@ class TopicPresenter extends BaseForumPresenter
         $forumScope = $this->scopeService->loadForum($forumEntity);
         $topicScope = $this->scopeService->loadTopic($forumEntity, $topicEntity);
 
-        $data = $this->postsManager->getFluentByTopicJoinedUser($topic_id);
+        $posts = $this->em
+            ->createQueryBuilder('_p')
+
+            ->addSelect('_u')
+            ->innerJoin('_p.user', '_u')
+
+            ->where('_p.topic = :topic')
+            ->setParameter('topic', $topicEntity)
+
+            ->getQuery()
+            ->getResult();
 
         if ($this->topicSetting->get()['logViews']) {
             $this->getManager()->update($topic_id, ArrayHash::from(['topic_view_count%sql' => 'topic_view_count + 1']));
@@ -416,7 +423,7 @@ class TopicPresenter extends BaseForumPresenter
         $topicSettings = $this->topicSetting->get();
         
         $pagination = new PaginatorControl(
-            $data,
+            $posts,
             $topicSettings['pagination']['itemsPerPage'],
             $topicSettings['pagination']['itemsAroundPagination'],
             $page
@@ -428,20 +435,17 @@ class TopicPresenter extends BaseForumPresenter
             $this->redirect('Forum:default', $category_id, $forum_id);
         }
 
-        $posts     = $data->orderBy('post_id', dibi::ASC)->fetchAll();
         $postsNew  = [];
-        $postScope = null;
         $posts_ids = [];
 
-        foreach ($posts as $postDibi) {
-            $post      = PostEntity::setFromRow($postDibi);
+        foreach ($posts as $post) {
             $postScope = $this->scopeService->loadPost($forumEntity, $topicEntity, $post);
             
-            $postDibi->canDelete  = $this->isAllowed($postScope, PostScope::ACTION_DELETE);
-            $postDibi->canEdit    = $this->isAllowed($postScope, PostScope::ACTION_EDIT);
-            $postDibi->canHistory = $this->isAllowed($postScope, PostScope::ACTION_HISTORY);
+            $post->canDelete  = $this->isAllowed($postScope, PostScope::ACTION_DELETE);
+            $post->canEdit    = $this->isAllowed($postScope, PostScope::ACTION_EDIT);
+            $post->canHistory = $this->isAllowed($postScope, PostScope::ACTION_HISTORY);
            
-            $postsNew[]  = $postDibi;
+            $postsNew[]  = $post;
             $posts_ids[] = $post->getPost_id();
         }
         
@@ -451,7 +455,7 @@ class TopicPresenter extends BaseForumPresenter
             $post->post_files = [];
             
             foreach ($files as $file) {
-                if ($post->post_id === $file->post_id) {
+                if ($post->post_id === $file->post->id) {
                     $post->post_files[] = $file;
                 }
             }

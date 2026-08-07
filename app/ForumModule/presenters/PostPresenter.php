@@ -11,26 +11,20 @@ use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
-use App\Model\Repository\PollRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\TopicWatchRepository;
 use App\Model\Repository\UserRepository;
 use App\Models\Entity\PollEntity;
 use App\Models\Manager;
-use App\Models\PollsFacade;
 use App\Models\PostFacade;
 use App\Models\Posts2FilesManager;
-use App\Models\PostsHistoryManager;
 use App\Models\PostManager;
-use App\Models\ReportManager;
 use App\services\BreadcrumbService;
 use App\services\ScopeService;
 use App\Settings\PostSetting;
 use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Form;
-use Nette\Caching\Cache;
-use Nette\Caching\IStorage;
 use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Http\FileUpload;
@@ -64,30 +58,10 @@ class PostPresenter extends BaseForumPresenter
     public PostFacade $postFacade;
     
     /**
-     *
-     * @var PostsHistoryManager $postsHistoryManager
-     * @inject
-     */
-    public PostsHistoryManager $postsHistoryManager;
-    
-    /**
      * @var PostSetting $postSetting
      * @inject
      */
     public PostSetting $postSetting;
-
-    /**
-     * @var IStorage $storage
-     * @inject
-     */
-    public IStorage $storage;
-    
-    /**
-     *
-     * @var PollsFacade $pollsFacade
-     * @inject
-     */
-    public PollsFacade $pollsFacade;
     
     /**
      *
@@ -106,8 +80,7 @@ class PostPresenter extends BaseForumPresenter
         private readonly TopicRepository    $topicRepository,
         private readonly PostRepository     $postRepository,
 
-        private readonly PollRepository $pollRepository,
-        private readonly UserRepository $userRepository,
+        private readonly UserRepository       $userRepository,
         private readonly TopicWatchRepository $topicWatchRepository,
 
         private readonly ScopeService      $scopeService,
@@ -201,7 +174,7 @@ class PostPresenter extends BaseForumPresenter
         $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
-                    'id' => $category_id
+                    'id' => $category_id,
                 ]
             );
 
@@ -263,7 +236,7 @@ class PostPresenter extends BaseForumPresenter
         $categoryEntity = $this->categoryRepository
             ->findOneBy(
                 [
-                    'id' => $category_id
+                    'id' => $category_id,
                 ]
             );
 
@@ -275,13 +248,17 @@ class PostPresenter extends BaseForumPresenter
             $this->error('Category is not active.');
         }
 
-        $postHistory = $this->postsHistoryManager->getByPost($post_id);
+        $postEntity = $this->postRepository->findOneBy(
+            [
+                'id' => $post_id,
+            ]
+        );
 
-        if (!$postHistory) {
+        if (!$postEntity->historyPosts->count()) {
             $this->flashMessage('Post have no history.', self::FLASH_MESSAGE_WARNING);
         }
 
-        $this->template->posts = $postHistory;
+        $this->template->posts = $postEntity->historyPosts;
     }
 
     public function actionDownloadFile($category_id, $forum_id, $topic_id, $post_id, $file_id)
@@ -488,11 +465,6 @@ class PostPresenter extends BaseForumPresenter
                 );
                 $this->bbMailer->send();
             }
-
-            // refresh cache on index page to show this last topic
-            $cache = new Cache($this->storage, IndexPresenter::CACHE_NAMESPACE);
-            $cache->remove(IndexPresenter::CACHE_KEY_LAST_POST);
-            $cache->remove(IndexPresenter::CACHE_KEY_TOTAL_POSTS);
         }
 
         if ($result) {

@@ -78,7 +78,7 @@ class UserRepository extends EntityRepository
             ->getResult();
     }
 
-    public function findOneByUser(User $user): ?UserEntity
+    public function findOneByNetteUser(User $user): ?UserEntity
     {
         return $this->findOneBy(
             [

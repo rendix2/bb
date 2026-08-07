@@ -15,29 +15,4 @@ use Dibi\Row;
 class PostsHistoryManager extends CrudManager
 {
 
-    public function deleteByPost($post_id)
-    {
-        return $this->deleteFluent()
-            ->where('%n = %i', 'post_id', $post_id)
-            ->execute();
-    }
-
-    public function deleteByUser($user_id)
-    {
-        return $this->deleteFluent()
-            ->where('%n = %i', 'user_id', $user_id)
-            ->execute();
-    }
-
-    /**
-     * @param int $post_id
-     *
-     * @return Row[]
-     */
-    public function getByPost($post_id)
-    {
-        return $this->getAllFluent()
-            ->where('[post_id] = %i', $post_id)
-            ->fetchAll();
-    }
 }

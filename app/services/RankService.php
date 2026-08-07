@@ -3,7 +3,8 @@
 namespace App\services;
 
 use App\Model\Repository\RankRepository;
-use App\Settings\Ranks;
+use App\Settings\RanksDir;
+use Nette\FileNotFoundException;
 use Nette\Http\FileUpload;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
@@ -15,7 +16,7 @@ class RankService
 {
 
     public function __construct(
-        private readonly Ranks $ranks,
+        private readonly RanksDir       $ranks,
 
         private readonly RankRepository $rankRepository
     )
@@ -43,7 +44,7 @@ class RankService
 
             return $name;
         } else {
-            return self::NOT_UPLOADED;
+            throw new FileNotFoundException('Failed to moved');
         }
     }
 

@@ -34,42 +34,7 @@ class ForumFacade
         $this->topicFacade   = $topicFacade;
     }
 
-    /**
-     * @param int       $itemId
-     * @param ArrayHash $itemData
-     * @return bool
-     */
-    public function update(int $itemId, ArrayHash $itemData): bool
-    {
-        $forumEntity = $this->forumRepository
-            ->findOneBy(
-                [
-                    'id' => $itemId,
-                ]
-            );
 
-        if ($forumEntity === null) {
-            return false;
-        }
-
-        if (isset($itemData->forum_parent_id)) {
-            $parent = $itemData->forum_parent_id
-                ? $this->forumRepository->find($itemData->forum_parent_id)
-                : null;
-
-            $forumEntity->parent($parent);
-
-            unset($itemData->forum_parent_id);
-        }
-
-        if (isset($itemData->forum_name)) {
-            $forumEntity->setName($itemData->forum_name);
-        }
-
-        $this->em->flush();
-
-        return true;
-    }
 
     public function delete(ForumEntity $forumEntity): void
     {

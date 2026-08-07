@@ -7,12 +7,12 @@ use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
 use App\Model\Repository\RankRepository;
-use App\Models\RankManager;
 use App\services\RankService;
-use App\Settings\Ranks;
+use App\Settings\RanksDir;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\DI\Attributes\Inject;
+use Nette\FileNotFoundException;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -26,7 +26,7 @@ use Tracy\ILogger;
 class RankPresenter extends AdminPresenter
 {
     #[Inject]
-    public Ranks $ranks;
+    public RanksDir $ranks;
 
     public function __construct(
         private readonly RankRepository $rankRepository,
@@ -66,7 +66,7 @@ class RankPresenter extends AdminPresenter
 
     public function renderEdit(int $id): void
     {
-        $this->template->ranksDir = $this->ranks->getTemplateDir();
+        $this->getTemplate()->ranksDir = $this->ranks->getTemplateDir();
 
         if ($id) {
             if (!is_numeric($id)) {
@@ -159,11 +159,13 @@ class RankPresenter extends AdminPresenter
     {
         $id = $this->getParameter('id');
 
-        $move = $this->rankService->moveRank($values->rank_file, $id);
 
-        if ($move !== RankManager::NOT_UPLOADED) {
+
+        try  {
+            $move = $this->rankService->moveRank($values->rank_file, $id);
+
             $values->rank_file = $move;
-        } else {
+        } catch (FileNotFoundException $exception) {
             unset($values->rank_file);
         }
 

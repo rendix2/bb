@@ -9,7 +9,7 @@ use App\Models\ModeratorManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -20,42 +20,13 @@ use Nette\Utils\ArrayHash;
  */
 class UserModeratorForm extends Control
 {
-    /**
-     *
-     * @var ITranslator $translator
-     */
-    private ITranslator $translator;
-    
-    /**
-     *
-     * @var ModeratorManager $moderatorsManager,
-     */
-    private ModeratorManager $moderatorsManager;
-    
-    /**
-     *
-     * @var ForumManager $forumsManager
-     */
-    private ForumManager $forumsManager;
 
-    /**
-     * UserModeratorForm constructor.
-     *
-     * @param ForumManager     $forumsManager
-     * @param ModeratorManager $moderatorsManager
-     * @param ITranslator       $translator
-     */
     public function __construct(
-        ForumManager     $forumsManager,
-        ModeratorManager $moderatorsManager,
-        ITranslator       $translator,
+        private readonly ForumManager           $forumsManager,
+        private readonly ModeratorManager       $moderatorsManager,
+        private readonly Translator             $translator,
         private readonly EntityManagerDecorator $em
     ) {
-        parent::__construct();
-
-        $this->forumsManager     = $forumsManager;
-        $this->moderatorsManager = $moderatorsManager;
-        $this->translator        = $translator;
     }
 
     /**

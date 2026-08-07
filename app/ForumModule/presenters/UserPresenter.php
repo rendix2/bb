@@ -16,6 +16,7 @@ use App\Forms\UserChangeUserNameForm;
 use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserResetPasswordForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
+use App\Model\Entity\UserFavouriteUserEntity;
 use App\Model\Repository\LanguageRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\RankRepository;
@@ -23,17 +24,17 @@ use App\Model\Repository\SessionRepository;
 use App\Model\Repository\ThankRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\TopicWatchRepository;
+use App\Model\Repository\UserFavouriteUserRepository;
 use App\Model\Repository\UserRepository;
-use App\Models\FavouriteUsersManager;
-use App\Models\ModeratorManager;
 use App\Models\UsersManager;
 use App\services\AvatarService;
 use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
 use App\Settings\Avatars;
-use App\Settings\Ranks;
+use App\Settings\RanksDir;
 use App\Settings\StartDay;
 use App\Settings\Users;
+use Doctrine\DBAL\Exception;
 use Nette\Application\UI\Form;
 use Nette\InvalidArgumentException;
 use Nette\Utils\ArrayHash;
@@ -55,16 +56,10 @@ class UserPresenter extends BaseForumPresenter
     public Avatars $avatar;
 
     /**
-     * @var Ranks $ranks
+     * @var RanksDir $ranks
      * @inject
      */
-    public Ranks $ranks;
-
-    /**
-     * @var ModeratorManager $moderatorsManager
-     * @inject
-     */
-    public ModeratorManager $moderatorsManager;
+    public RanksDir $ranks;
 
     /**
      *
@@ -89,13 +84,6 @@ class UserPresenter extends BaseForumPresenter
 
     /**
      *
-     * @var FavouriteUsersManager $favouriteUsersManager
-     * @inject
-     */
-    public FavouriteUsersManager $favouriteUsersManager;
-
-    /**
-     *
      * @var StartDay $startDay
      * @inject
      */
@@ -110,23 +98,25 @@ class UserPresenter extends BaseForumPresenter
 
 
     public function __construct(
-        UsersManager                            $manager,
-        private readonly EntityManagerDecorator $em,
-        private readonly ReportForm             $reportForm,
-        private readonly UserResetPasswordForm  $userResetPasswordForm,
-        private readonly UserChangeUserNameForm $userChangeUserNameForm,
+        UsersManager                                 $manager,
+        private readonly EntityManagerDecorator      $em,
+        private readonly ReportForm                  $reportForm,
+        private readonly UserResetPasswordForm       $userResetPasswordForm,
+        private readonly UserChangeUserNameForm      $userChangeUserNameForm,
 
-        private readonly LanguageRepository     $languageRepository,
-        private readonly TopicRepository        $topicRepository,
-        private readonly PostRepository         $postRepository,
-        private readonly UserRepository         $userRepository,
+        private readonly LanguageRepository          $languageRepository,
+        private readonly TopicRepository             $topicRepository,
+        private readonly PostRepository              $postRepository,
+        private readonly UserRepository              $userRepository,
 
-        private readonly ThankRepository      $thankRepository,
-        private readonly TopicWatchRepository $topicWatchRepository,
-        private readonly SessionRepository    $sessionRepository,
-        private readonly RankRepository       $rankRepository,
+        private readonly UserFavouriteUserRepository $userFavouriteUserRepository,
 
-        private readonly AvatarService          $avatarService,
+        private readonly ThankRepository             $thankRepository,
+        private readonly TopicWatchRepository        $topicWatchRepository,
+        private readonly SessionRepository           $sessionRepository,
+        private readonly RankRepository              $rankRepository,
+
+        private readonly AvatarService               $avatarService,
     )
     {
         parent::__construct($manager);
@@ -167,33 +157,74 @@ class UserPresenter extends BaseForumPresenter
         // case when you do not send request to reset password
     }
 
-    /**
-     * @param int $user_id
-     */
-    public function handleSetFavourite($user_id)
+    public function handleSetFavourite(int $user_id): void
     {
-        $user = $this->checkUserParam($user_id);
+        $userEntity = $this->userRepository->findOneByNetteUser($this->getUser());
 
-        $res = $this->favouriteUsersManager->addByLeft($this->getUser()->getId(), [$user_id]);
+        $favouriteUserEntity = $this->userRepository
+            ->findOneBy(
+                [
+                    'id' => $user_id,
+                ]
+            );
 
-        if ($res) {
-            $this->flashMessage('User was added to favourites.', self::FLASH_MESSAGE_SUCCESS);
+        if ($userEntity === null) {
+            $this->error('user not found');
+        }
+
+        if ($favouriteUserEntity === null) {
+            $this->error('favourite not found');
+        }
+
+        $userFavouriteUserEntity = new UserFavouriteUserEntity();
+        $userFavouriteUserEntity->user = $userEntity;
+        $userFavouriteUserEntity->favouriteUser = $favouriteUserEntity;
+
+        try {
+            $this->em->persist($userFavouriteUserEntity);
+            $this->em->flush();
+
+            $this->flashMessage('User was added to favourites.', 'success');
+        } catch (Exception $exception) {
+            $this->error('error');
         }
 
         $this->redirect('this');
     }
 
-    /**
-     * @param int $user_id
-     */
-    public function handleUnSetFavourite($user_id): void
+    public function handleUnSetFavourite(int $user_id): void
     {
-        $user = $this->checkUserParam($user_id);
+        $userEntity = $this->userRepository->findOneByNetteUser($this->getUser());
 
-        $res = $this->favouriteUsersManager->delete($this->getUser()->getId(), $user_id);
+        $favouriteUserEntity = $this->userRepository
+            ->findOneBy(
+                [
+                    'id' => $user_id,
+                ]
+            );
 
-        if ($res) {
+        if ($userEntity === null) {
+            $this->error('user not found');
+        }
+
+        if ($favouriteUserEntity === null) {
+            $this->error('favourite not found');
+        }
+
+        $userFavouriteUserEntity = $this->userFavouriteUserRepository->findOneBy(
+            [
+                'user' => $userEntity,
+                'favouriteUser' => $favouriteUserEntity,
+            ]
+        );
+
+        try {
+            $this->em->remove($userFavouriteUserEntity);
+            $this->em->flush();
+
             $this->flashMessage('User was deleted from favourites.', self::FLASH_MESSAGE_SUCCESS);
+        } catch (Exception $exception) {
+            $this->flashMessage($exception->getMessage());
         }
 
         $this->redirect('this');
@@ -207,7 +238,7 @@ class UserPresenter extends BaseForumPresenter
         $userEntity = [];
 
         if ($this->getUser()->isLoggedIn()) {
-            $userEntity = $this->userRepository->findOneByUser($this->getUser());
+            $userEntity = $this->userRepository->findOneByNetteUser($this->getUser());
         }
 
         $this['editUserForm']->setDefaults($userEntity);
@@ -252,6 +283,8 @@ class UserPresenter extends BaseForumPresenter
     {
         $user = $this->checkUserParam($user_id);
 
+        $userEntity = $this->userRepository->findOneByNetteUser($this->getUser());
+
         $ranks = $this->rankRepository->findAll();
 
         $specialRankEntity = $this->rankRepository
@@ -279,6 +312,13 @@ class UserPresenter extends BaseForumPresenter
             }
         }
 
+        $isFavourite = $this->userFavouriteUserRepository->isFavourited($this->getUser(), $userEntity);
+        $favouriteUsers = $this->userFavouriteUserRepository->findBy(
+            [
+                'user' => $userEntity,
+            ]
+        );
+
         $reg = DateTime::from($user->getUser_register_time());
         $now = new DateTime();
 
@@ -286,16 +326,16 @@ class UserPresenter extends BaseForumPresenter
         $this->template->ranksDir = $this->ranks->getTemplateDir();
         $this->template->rank = $rankUser;
         $this->template->avatarsDir = $this->avatar->getTemplateDir();
-        $this->template->moderatorForums = $this->moderatorsManager->getAllByLeftJoined($user_id);
+        $this->template->moderatorForums = $userEntity->moderatorUsers;
         $this->template->thankCount = $thanksCount;
         $this->template->topicCount = $topicsCount;
         $this->template->postCount = $postsCount;
         $this->template->watchTotalCount = $topicWatchesCount;
         $this->template->userData = $user;
         $this->template->roles = Authorizator::ROLES;
-        $this->template->isFavourite = $this->favouriteUsersManager->fullCheck($this->getUser()->getId(), $user_id);
+        $this->template->isFavourite = $isFavourite;
         $this->template->user_id = $user_id;
-        $this->template->favourites = $this->favouriteUsersManager->getAllByLeftJoined($user_id);
+        $this->template->favourites = $favouriteUsers;
         $this->template->runningDays = $reg->diff($now)->days;
     }
 
@@ -305,18 +345,14 @@ class UserPresenter extends BaseForumPresenter
      */
     public function actionThanks($user_id, $page = 1)
     {
-        $user = $this->checkUserParam($user_id);
-
         $userEntity = $this->userRepository
             ->findOneBy(
-            [
-                'id' => $user_id,
-            ]
-        );
+                [
+                    'id' => $user_id,
+                ]
+            );
 
-        $thanks = $userEntity->thanks;
-
-        $this->getTemplate()->thanks = $thanks->fetchAll();
+        $this->getTemplate()->thanks = $userEntity->thanks;
     }
 
     /**

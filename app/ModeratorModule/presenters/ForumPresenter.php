@@ -3,6 +3,7 @@
 namespace App\ModeratorModule\Presenters;
 
 use App\Controls\GridFilter;
+use App\Model\Repository\UserRepository;
 use App\Models\ForumManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 
@@ -20,7 +21,10 @@ class ForumPresenter extends ModeratorPresenter
      *
      * @param ForumManager $manager
      */
-    public function __construct(ForumManager $manager)
+    public function __construct(
+        ForumManager $manager,
+        private readonly UserRepository $userRepository,
+    )
     {
         parent::__construct($manager);
     }
@@ -29,16 +33,19 @@ class ForumPresenter extends ModeratorPresenter
      *
      * @param int $page
      */
-    public function actionDefault($page = 1): void
+    public function actionDefault(int $page = 1): void
     {
     }
 
     /**
      * @param int $page
      */
-    public function renderDefault($page = 1): void
+    public function renderDefault(int $page = 1): void
     {
-        $this->getTemplate()->forums = $this->moderatorsManager->getAllByLeftJoined($this->getUser()->getId());
+        $userEntity = $this->userRepository
+            ->findOneByNetteUser($this->getUser());
+
+        $this->getTemplate()->forums = $userEntity->moderatorUsers;
     }
 
     protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm

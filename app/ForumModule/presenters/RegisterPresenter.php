@@ -3,11 +3,9 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BBMailer;
-use App\Database\EntityManagerDecorator;
+use App\Model\Entity\UserActivationEntity;
 use App\Model\Repository\LanguageRepository;
 use App\Model\Repository\UserRepository;
-use App\Models\LanguageManager;
-use App\Models\PmManager;
 use App\Models\UserFacade;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Form;
@@ -51,13 +49,10 @@ class RegisterPresenter extends BasePresenter
     public function __construct(
         UserFacade $userFacade,
 
-        private readonly EntityManagerDecorator $em,
-        private readonly Passwords              $passwords,
-
+        private readonly Passwords $passwords,
 
         private readonly LanguageRepository $languageRepository,
         private readonly UserRepository     $userRepository,
-
     )
     {
         parent::__construct();
@@ -132,43 +127,33 @@ class RegisterPresenter extends BasePresenter
 
     public function registerUserSuccess(Form $form, ArrayHash $values): void
     {
-        $user = new \App\Model\Entity\UserEntity();
+        $userEntity = new \App\Model\Entity\UserEntity();
+        $userEntity->username = $values->user_name;
+        $userEntity->password = $this->passwords->hash($values->user_password);
+        $userEntity->email = $values->user_email;
 
-        $useEntity = new \App\Model\Entity\UserEntity();
-        $useEntity->username = $values->user_name;
-        $useEntity->password = $this->passwords->hash($values->user_password);
-        $useEntity->email = $values->user_email;
+        $userActivationEntity = new UserActivationEntity();
+        $userActivationEntity->user = $userEntity;
+        $userActivationEntity->activationKey = Random::generate(128);
 
-        $user->setUser_name($values->user_name)
-             ->setUser_password($values->user_password)
-             ->setUser_email($values->user_email)
-             ->setUser_lang_id($values->user_lang_id)
-             ->setUser_register_time(time())
-             ->setUser_role_id(2)
-             ->setUser_activation_key(Random::generate(32));
+        $userEntity->addUserActivationEntity($userActivationEntity);
 
-        $res = $this->userFacade->add($useEntity);
+        $this->userFacade->add($userEntity);
 
         $this->bbMailer->setSubject($this->translator->translate('welcome_mail_subject'));
-        $this->bbMailer->addRecipients([$useEntity->email]);
+        $this->bbMailer->addRecipients([$userEntity->email]);
         $this->bbMailer->setText(
             sprintf(
                 $this->translator->translate('welcome_mail_text'),
-                $user->username,
+                $userEntity->username,
                 $this->link(
                     '//Login:activate',
-                    $res,
-                    $user->user_activation_key
+                    $userActivationEntity->activationKey
                 )
             )
         );
 
         $this->bbMailer->send();
-
-        // refresh cache on index page to show this last topic
-        $cache = new Cache($this->storage, IndexPresenter::CACHE_NAMESPACE);
-        $cache->remove(IndexPresenter::CACHE_KEY_LAST_USER);
-        $cache->remove(IndexPresenter::CACHE_KEY_TOTAL_USERS);
 
         if ($res) {
             $this->flashMessage('User was added.', self::FLASH_MESSAGE_SUCCESS);

@@ -12,13 +12,12 @@ use App\Forms\UserForumsForm;
 use App\Forms\UserGroupsForm;
 use App\Forms\UserModeratorForm;
 use App\Model\Repository\LanguageRepository;
-use App\Models\LanguageManager;
-use App\Models\RankManager;
+use App\Model\Repository\RankRepository;
 use App\Models\UsersManager;
 use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
 use App\Settings\Avatars;
-use App\Settings\Ranks;
+use App\Settings\RanksDir;
 
 /**
  * Description of UserPresenter
@@ -43,10 +42,10 @@ class UserPresenter extends AdminPresenter
     
     /**
      *
-     * @var Ranks $rank
+     * @var RanksDir $rank
      * @inject
      */
-    public Ranks $ranks;
+    public RanksDir $ranks;
 
     /**
      *
@@ -62,21 +61,16 @@ class UserPresenter extends AdminPresenter
      */
     public DeleteAvatarFactory $deleteAvatarFactory;
 
-    /**
-     * @var RankManager $ranksManager
-     * @inject
-     */
-    public RankManager $ranksManager;
-
     public function __construct(
         private readonly UserGroupsForm     $userGroupsForm,
         private readonly UserForumsForm     $userForumsForm,
         private readonly UserModeratorForm  $userModeratorForm,
+
         private readonly LanguageRepository $languageRepository,
-        UsersManager $manager
+        private readonly RankRepository     $rankRepository,
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     public function renderDefault($page = 1): void
@@ -109,7 +103,7 @@ class UserPresenter extends AdminPresenter
         $form->addSelect('user_role_id', 'User role:', Authorizator::ROLES);
         $form->addSelect('user_lang_id', 'User language:', $this->languageRepository->findPairs());
         $form->addTextArea('user_signature', 'User signature:');
-        $form->addSelect('user_special_rank', 'User special rank:', $this->ranksManager->getAllFluent()->where('%n = %i', 'rank_special', 1)->getAllPairs('rank_name'));
+        $form->addSelect('user_special_rank', 'User special rank:', $this->rankRepository->findSpecialRanksPairs());
         //$form->addUpload('user_avatar', 'User avatar:');
 
         $form->addCheckbox('user_active', 'User active:');

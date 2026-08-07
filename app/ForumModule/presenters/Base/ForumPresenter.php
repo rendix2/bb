@@ -7,7 +7,6 @@ use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
 use App\Authorization\Scopes\User;
 use App\Models\Manager;
-use App\Models\ModeratorManager;
 use App\Models\ThankManager;
 use App\Presenters\Base\AuthenticatedPresenter;
 use Exception;

@@ -16,9 +16,6 @@ class Tables
     const PREFIX = '';
 
     
-    const FAVOURITE_USERS_TABLE = self::PREFIX . 'favourite_users';
-
-    
     const FORUM_TABLE = self::PREFIX . 'forums';
     
     const FORUMS2GROUPS_TABLE = self::PREFIX . 'forums2groups';

@@ -4,18 +4,16 @@ namespace App\UI\Forum\Forum;
 
 use App\Authorization\Scopes\ForumScope;
 use App\Controls\BreadCrumbControl;
-use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
-use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Entity\TopicEntity;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
-use App\Models\ForumManager;
 use App\services\BreadcrumbService;
 use App\services\ScopeService;
 use App\Settings\ForumSettings;
 use App\Settings\TopicsSetting;
 use Contributte\Datagrid\Datagrid;
+use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
 
 /**
@@ -24,7 +22,7 @@ use Nette\DI\Attributes\Inject;
  * @author rendix2
  * @package App\ForumModule\Presenters
  */
-final class ForumPresenter extends BaseForumPresenter
+final class ForumPresenter extends Presenter
 {
     #[Inject]
     public ForumSettings $forumSettings;
@@ -41,11 +39,9 @@ final class ForumPresenter extends BaseForumPresenter
         private readonly ForumRepository    $forumRepository,
 
         private readonly BreadcrumbService $breadcrumbService,
-
-        ForumManager $manager
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     /**
@@ -98,17 +94,16 @@ final class ForumPresenter extends BaseForumPresenter
      */
     public function renderDefault(int $category_id, int $forum_id, int $page = 1): void
     {
-        //$moderators = $this->moderatorsManager->getAllByRightJoined($forum_id);
+        $forumEntity = $this->forumRepository->findOneBy(
+            [
+                'id' => $forum_id,
+            ]
+        );
 
-        /*
-        if ($moderators === []) {
-            $this->flashMessage('No moderators in forum.', self::FLASH_MESSAGE_INFO);
-        }
-        */
+        $subForums = $this->forumRepository->findByParentId($forum_id);
 
-        //$this->getTemplate()->moderators  = $moderators;
-        $this->getTemplate()->moderators  = [];
-        $this->getTemplate()->subForums   = $this->forumRepository->findByParentId($forum_id);
+        $this->getTemplate()->moderators  = $forumEntity->moderatorUsers;
+        $this->getTemplate()->subForums   = $subForums;
         $this->getTemplate()->logViews    = $this->topicSetting->get()['logViews'];
     }
 

@@ -2,15 +2,11 @@
 
 namespace App\UI\Forum\Index;
 
-use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\UserRepository;
-use App\Models\Crud\CrudNullManager;
-use App\Models\ModeratorManager;
 use Nette\Application\UI\Presenter;
-use Nette\DI\Attributes\Inject;
 
 /**
  * Description of IndexPresenter

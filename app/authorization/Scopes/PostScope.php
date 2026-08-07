@@ -16,31 +16,20 @@ use App\Models\Entity\TopicEntity;
 class PostScope implements IAuthorizationScope
 {
 
-    const ROLE_AUTHOR    = 'Post:author';
-    const ROLE_DELETER   = 'Post:deleter';
-    const ROLE_EDITOR    = 'Post:editor';
-    const ROLE_HISTORIER = 'Post:historier';
+    const string ROLE_AUTHOR    = 'Post:author';
+    const string ROLE_DELETER   = 'Post:deleter';
+    const string ROLE_EDITOR    = 'Post:editor';
+    const string ROLE_HISTORIER = 'Post:historier';
     
-    const ACTION_VIEW    = [self::class, 'view'];
-    const ACTION_ADD     = [self::class, 'add'];
-    const ACTION_EDIT    = [self::class, 'edit'];
-    const ACTION_DELETE  = [self::class, 'delete'];
-    const ACTION_HISTORY = [self::class, 'history'];
+    const array ACTION_VIEW    = [self::class, 'view'];
+    const array ACTION_ADD     = [self::class, 'add'];
+    const array ACTION_EDIT    = [self::class, 'edit'];
+    const array ACTION_DELETE  = [self::class, 'delete'];
+    const array ACTION_HISTORY = [self::class, 'history'];
     
-    /**
-     *
-     * @var TopicEntity $topic
-     */
-    private TopicEntity|TopicScope $topicScope;
+    private TopicScope $topicScope;
     
-    /**
-     *
-     * @var PostEntity $post
-     */
-    private \App\Model\Entity\PostEntity|PostEntity $post;
-
-
-
+    private \App\Model\Entity\PostEntity $post;
     public function __construct(\App\Model\Entity\PostEntity $post, TopicScope $topicScope)
     {
         $this->post        = $post;

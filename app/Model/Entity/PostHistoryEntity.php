@@ -33,6 +33,28 @@ class PostHistoryEntity
     #[JoinColumn(nullable: false)]
     public PostEntity $post;
 
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'posts')]
+    #[JoinColumn(nullable: false)]
+    public UserEntity $user;
+
+    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'posts')]
+    #[JoinColumn(nullable: false)]
+    public CategoryEntity $category;
+
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'posts')]
+    #[JoinColumn(nullable: false)]
+    public ForumEntity $forum;
+
+    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'posts')]
+    #[JoinColumn(nullable: false)]
+    public TopicEntity $topic;
+
+    #[Column(type: Types::TEXT, nullable: true)]
+    public ?string $title;
+
+    #[Column(type: Types::TEXT, nullable: false)]
+    public string $text;
+
     #[Column(type: Types::DATETIME_IMMUTABLE)]
     public DateTimeImmutable $createdAt;
 

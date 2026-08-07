@@ -2,11 +2,13 @@
 
 namespace App\Controls;
 
+use App\Model\Repository\UserRepository;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -23,21 +25,12 @@ class UserSearchControl extends Control
      */
     private UsersManager $usersManager;
     
-    /**
-     *
-     * @var ITranslator $translator
-     */
-    private ITranslator $translator;
+    private Translator $translator;
     
-    /**
-     *
-     * @param UsersManager $usersManager
-     * @param ITranslator  $translator
-     *
-     */
     public function __construct(
         UsersManager $usersManager,
-        ITranslator  $translator
+        private readonly UserRepository $userRepository,
+        Translator  $translator,
     ) {
         parent::__construct();
         

@@ -6,7 +6,7 @@ services:
     Avatars:
         class: App\Settings\Avatars(%avatars%)
     Ranks:
-        class: App\Settings\Ranks(%ranks%)
+        class: App\Settings\RanksDir(%ranks%)
     TempDir:
         class: App\Settings\TempDir(%tempDir%)
     CacheDir:
