@@ -4,10 +4,8 @@ namespace App\Forms;
 
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
-use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\UserRepository;
-use App\Models\Entity\PostEntity;
 use App\Models\PostFacade;
 use App\Presenters\Base\BasePresenter;
 use App\Services\TranslatorFactory;

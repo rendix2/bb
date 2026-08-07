@@ -29,11 +29,6 @@ class ThanksFacade
      */
     private UsersManager $usersManager;
 
-    /**
-     * @var PostManager $postsManager
-     */
-    private PostManager $postsManager;
-
     public function __construct(
         ThankManager $thanksManager,
         UsersManager  $usersManager,
@@ -48,7 +43,6 @@ class ThanksFacade
     ) {
         $this->thanksManager = $thanksManager;
         $this->usersManager  = $usersManager;
-        $this->postsManager  = $postsManager;
     }
 
     public function add(\App\Model\Entity\ThankEntity $thank)

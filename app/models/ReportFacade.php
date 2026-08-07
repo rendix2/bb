@@ -2,13 +2,7 @@
 
 namespace App\Models;
 
-use App\Database\EntityManagerDecorator;
-use App\Model\Entity\ForumEntity;
-use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PostRepository;
-use App\Model\Repository\ReportRepository;
-use App\Model\Repository\TopicRepository;
-use App\Models\Entity\TopicEntity;
 use App\Utils;
 
 /**

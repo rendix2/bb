@@ -10,7 +10,6 @@ use App\Model\Repository\PostRepository;
 use App\Model\Repository\ThankRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\TopicWatchRepository;
-use App\Models\Entity\TopicEntity;
 use App\Utils;
 use Dibi\Result;
 use Nette\Utils\ArrayHash;
@@ -148,7 +147,7 @@ class TopicFacade
         $this->pollsFacade       = $pollsFacade;
     }
 
-    public function add(\App\Model\Entity\TopicEntity $topicEntity, PostEntity $postEntity)
+    public function add(\App\Model\Entity\TopicEntity $topicEntity, PostEntity $postEntity): void
     {
         $this->em->persist($topicEntity);
         $this->em->flush();
@@ -180,11 +179,9 @@ class TopicFacade
         ));
 
         $this->forumsManager->update(
-            $topicEntity->getTopic_forum_id(),
+            $topicEntity->forum->id,
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1'])
         );
-
-        return $topic_id;
     }
 
     public function delete(\App\Model\Entity\TopicEntity $topicEntity)
@@ -218,25 +215,6 @@ class TopicFacade
         );
 
         return $this->topicsManager->delete($topicEntity->id);
-    }
-
-    /**
-     * @param int      $topic_id
-     * @param int|null $target_forum_id
-     *
-     * @return int
-     */
-    public function copy(int $topic_id, $target_forum_id = null)
-    {
-        $posts = $this->postRepository->findByTopicId($topic_id);
-
-        $new_topic_id = $this->topicsManager->copy($topic_id, $target_forum_id);
-
-        foreach ($posts as $post) {
-            $this->postsManager->copy($post->id, $new_topic_id);
-        }
-
-        return $new_topic_id;
     }
 
     /**

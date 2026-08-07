@@ -4,7 +4,6 @@ namespace App\Authorization\Scopes;
 
 use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
-use App\Models\Entity\TopicEntity;
 
 /**
  * Description of Topic

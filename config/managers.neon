@@ -49,8 +49,6 @@ services:
         class: App\Models\TopicFacade
     ForumFacade:
         class: App\Models\ForumFacade
-    CategoryFacade:
-        class: App\Models\CategoryFacade
     UserFacade:
         class: App\Models\UserFacade
     ThanksFacade:

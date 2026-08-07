@@ -9,9 +9,9 @@ use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
 use App\Models\PostFacade;
 use App\Models\PostManager;
-use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -21,7 +21,7 @@ use Nette\Utils\ArrayHash;
  * @method PostManager getManager()
  * @package App\ModeratorModule\Presenters
  */
-class PostPresenter extends ModeratorPresenter
+class PostPresenter extends Presenter
 {
     /**
      *
@@ -31,13 +31,12 @@ class PostPresenter extends ModeratorPresenter
     public PostFacade $postFacade;
 
     public function __construct(
-        PostManager $manager,
         private readonly EntityManagerDecorator $em,
         private readonly TopicRepository        $topicRepository,
         private readonly PostRepository         $postRepository,
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
     
     public function renderHistory(int $post_id): void

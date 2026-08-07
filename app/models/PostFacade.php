@@ -127,7 +127,11 @@ class PostFacade
 
     public function add(\App\Model\Entity\PostEntity $post)
     {
-        $post_id = $this->postsManager->add($post->getArrayHash());
+        $this->em->persist($post);
+        $this->em->flush();
+
+        $post_id = $post->id;
+
         $user_id = $post->user->id;
         $forum_id = $post->forum->id;
         $topic_id = $post->topic->id;

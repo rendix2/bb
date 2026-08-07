@@ -17,49 +17,7 @@ use App\Model\Repository\ForumRepository;
 class CategoryFacade
 {
     public function __construct(
-        private readonly EntityManagerDecorator $em,
-        private readonly ForumFacade            $forumFacade,
-
-        private readonly CategoryRepository $categoryRepository,
-        private readonly ForumRepository $forumRepository,
     ) {
     }
 
-    public function delete(int $item_id): void
-    {
-        $subCategories = $this->categoryRepository
-            ->findBy(
-                [
-                    'parent' => $item_id,
-                ]
-            );
-        
-        foreach ($subCategories as $subCategory) {
-            $this->delete($subCategory->category_id);
-        }
-
-        $categoryEntity = $this->categoryRepository
-            ->findOneBy(
-                [
-                    'id' => $item_id,
-                ]
-            );
-
-        /**
-         * @var ForumEntity[] $forums
-         */
-        $forums = $this->forumRepository
-            ->findBy(
-                [
-                    'category' => $categoryEntity,
-                ]
-            );
-        
-        foreach ($forums as $forum) {
-            $this->forumFacade->delete($forum);
-        }
-
-        $this->em->remove($categoryEntity);
-        $this->em->flush();
-    }
 }

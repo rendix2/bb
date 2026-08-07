@@ -3,14 +3,8 @@
 namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
-use App\Model\Entity\ForumEntity;
-use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PostRepository;
-use App\Model\Repository\TopicRepository;
-use App\Models\Entity\PostEntity;
-use App\Models\Entity\TopicEntity;
 use App\Utils;
-use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -42,14 +36,12 @@ class TopicWatchFacade
     public function __construct(
         UsersManager      $usersManager,
         TopicWatchManager $topicWatchManager,
-        PostManager      $postsManager,
         private readonly EntityManagerDecorator $em,
 
         private readonly PostRepository  $postRepository,
     ) {
         $this->usersManager      = $usersManager;
         $this->topicWatchManager = $topicWatchManager;
-        $this->postsManager      = $postsManager;
     }
 
     public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity): int
@@ -67,10 +59,6 @@ class TopicWatchFacade
         return $this->topicWatchManager->deleteByLeft($topicEntity->id);
     }
 
-    /**
-     *
-     * @param PostEntity $post
-     */
     public function deleteByPost(\App\Model\Entity\PostEntity $post): void
     {
         $postCount = $this->postRepository->getCountOfUsersByTopicId($post->topic->id);

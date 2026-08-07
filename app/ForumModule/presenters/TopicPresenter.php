@@ -13,7 +13,10 @@ use App\Forms\ReportForm;
 use App\Forms\TopicFastReplyForm;
 use App\Forms\TopicJumpToForumForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
+use App\Model\Entity\CategoryEntity;
+use App\Model\Entity\ForumEntity;
 use App\Model\Entity\TopicWatchEntity;
+use App\Model\Entity\UserEntity;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PollAnswerRepository;
@@ -26,8 +29,6 @@ use App\Model\Repository\TopicRepository;
 use App\Model\Repository\TopicWatchRepository;
 use App\Model\Repository\UserRepository;
 use App\Models\Entity\PollEntity;
-use App\Models\Entity\PostEntity;
-use App\Models\Entity\TopicEntity;
 use App\Models\Posts2FilesManager;
 use App\Models\ThanksFacade;
 use App\Models\TopicFacade;
@@ -37,9 +38,9 @@ use App\services\ScopeService;
 use App\Settings\Avatars;
 use App\Settings\PostSetting;
 use App\Settings\TopicsSetting;
-use dibi;
 use Doctrine\DBAL\Exception;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
 use Nette\Forms\Container;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
@@ -51,7 +52,7 @@ use Nette\Utils\DateTime;
  * @method TopicManager getManager()
  * @package App\ForumModule\Presenters
  */
-class TopicPresenter extends BaseForumPresenter
+class TopicPresenter extends Presenter
 {
     /**
      * @var TopicsSetting $topicSetting
@@ -780,10 +781,6 @@ class TopicPresenter extends BaseForumPresenter
         return $form;
     }
     
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         $category_id = $this->getParameter('category_id');
@@ -792,85 +789,92 @@ class TopicPresenter extends BaseForumPresenter
         $user_id     = $this->getUser()->getId();
         $page        = $this->getParameter('page');
 
-        $pollEntity = null;
+        $categoryEntity = $this->categoryRepository
+            ->findOneBy(
+                [
+                    'id' => $category_id,
+                ]
+            );
 
-        if ($values->poll_question) {
-            $pollEntity = new \App\Model\Entity\PollEntity();
-        
-            foreach ($values->answers as $answer) {
-                $pollAnswerEntity = new \App\Model\Entity\PollAnswerEntity();
-                $pollAnswerEntity->poll = $pollEntity;
-                $pollAnswerEntity->text = $answer->poll_answer;
+        $forumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $forum_id,
+                ]
+            );
 
-                $pollEntity->answers->add($pollAnswerEntity);
+        $pollEntity = $this->pollRepository->findByTopicId($topic_id);
+
+        $userEntity = $this->userRepository->findOneByNetteUser($this->getUser());
+
+        $createPoll = function (
+            ArrayHash $values,
+            CategoryEntity $categoryEntity,
+            ForumEntity $forumEntity,
+            \App\Model\Entity\TopicEntity $topicEntity,
+            UserEntity $userEntity,
+        ) : ?\App\Model\Entity\PollEntity
+        {
+            if ($values->poll_question) {
+                $pollEntity = new \App\Model\Entity\PollEntity();
+                $pollEntity->category = $categoryEntity;
+                $pollEntity->forum = $forumEntity;
+                $pollEntity->topic = $topicEntity;
+                $pollEntity->user = $userEntity;
+
+                foreach ($values->answers as $answer) {
+                    $pollAnswerEntity = new \App\Model\Entity\PollAnswerEntity();
+                    $pollAnswerEntity->poll = $pollEntity;
+                    //$pollAnswerEntity->text = $answer->poll_answer;
+                    $pollAnswerEntity->category = $categoryEntity;
+                    $pollAnswerEntity->forum = $forumEntity;
+                    $pollAnswerEntity->topic = $topicEntity;
+                    $pollAnswerEntity->user = $userEntity;
+
+                    $pollEntity->answers->add($pollAnswerEntity);
+                }
+
+                return $pollEntity;
             }
-        }
+
+            return null;
+        };
 
         if ($topic_id) {
-            $oldTopicEntity = $this->topicRepository
+            $topicEntity = $this->topicRepository
                 ->findOneBy(
                     [
                         'id' => $topic_id,
                     ]
                 );
 
-            $firstPost = $this->postRepository->findFirstByTopicId($oldTopicEntity->id);
-            $pollEntity  = $this->pollRepository->findByTopicId($topic_id);
+            $topicEntity->category = $categoryEntity;
+            $topicEntity->forum = $forumEntity;
+            $topicEntity->poll = $createPoll($values, $categoryEntity, $forumEntity, $topicEntity, $userEntity);
+            $topicEntity->user = $userEntity;
+            $topicEntity->name = $values->name;
             
-            if ($pollEntity) {
-                $pollEntity->setPoll_id($pollDibi->poll_id);
-            }
-            
-            if ($poll) {
-                foreach ($poll->getPollAnswers() as $answer) {
-                    $answer->setPoll_id($pollEntity->poll_id);
-                }
-            }
-            
-            $post = PostEntity::setFromRow($firstPost);
-            $post->setPost_text($values->post_text);
-
-            $topic = TopicEntity::setFromRow($oldTopicEntity);
-            $topic->setTopic_id($topic_id)
-                  ->setTopic_category_id($category_id)
-                  ->setTopic_forum_id($forum_id)
-                  ->setTopic_user_id($user_id)
-                  ->setTopic_name($values->post_title)
-                  ->setPost($post)
-                  ->setPoll($poll);
-            
-            $res = $this->topicFacade->update($topic);
+            $this->em->persist($topicEntity);
+            $this->em->flush();
         } else {
-            $post = new \App\Model\Entity\PostEntity();
-            $post->setPost_user_id($user_id)
-                 ->setPost_category_id($category_id)
-                 ->setPost_forum_id($forum_id)
-                 ->setPost_topic_id($topic_id)
-                 ->setPost_title($values->post_title)
-                 ->setPost_text($values->post_text)
-                 ->setPost_add_time(time())
-                 ->setPost_add_user_ip($this->getHttpRequest()->getRemoteAddress())
-                 ->setPost_order(1);
+            $topicEntity = new \App\Model\Entity\TopicEntity();
+            $topicEntity->category = $categoryEntity;
+            $topicEntity->forum = $forumEntity;
+            $topicEntity->user = $userEntity;
+            $topicEntity->name = $values->name;
+            $topicEntity->poll = $createPoll($values, $categoryEntity, $forumEntity, $topicEntity, $userEntity);
+
+            $postEntity = new \App\Model\Entity\PostEntity();
+            $postEntity->category = $categoryEntity;
+            $postEntity->forum = $forumEntity;
+            $postEntity->topic = $topicEntity;
+            $postEntity->text = $values->text;
+            $postEntity->addIpAddress = $this->getHttpRequest()->getRemoteAddress();
             
-            $topic = new \App\Model\Entity\TopicEntity();
-            
-            $topic->setTopic_category_id($category_id)
-                  ->setTopic_forum_id($forum_id)
-                  ->setTopic_user_id($user_id)
-                  ->setTopic_name($values->post_title)
-                  ->setTopic_add_time(time())
-                  ->setTopic_first_user_id($user_id)
-                  ->setTopic_last_user_id($user_id)
-                  ->setTopic_page_count(1)
-                  ->setPoll($poll)
-                  ->setPost($post);
-            
-            $res = $topic_id = $this->topicFacade->add($topic, $post);
+            $this->topicFacade->add($topicEntity, $postEntity);
         }
 
-        if ($res) {
-            $this->flashMessage('Topic was saved.', self::FLASH_MESSAGE_SUCCESS);
-        }
+        $this->flashMessage('Topic was saved.', self::FLASH_MESSAGE_SUCCESS);
         
         $this->redirect(':Forum:Topic:default', $category_id, $forum_id, (string)$topic_id, $page);
     }
