@@ -22,17 +22,10 @@ use Nette\Utils\ArrayHash;
  * @package App\Models\Crud
  */
 #[\JetBrains\PhpStorm\Deprecated]
-abstract class CrudManager extends Manager //implements ICrudManager
+abstract class CrudManager extends Manager
 {
 
-    /**
-     * @return Row[]
-     */
-    public function getAll()
-    {
-        return $this->getAllFluent()
-            ->fetchAll();
-    }
+
 
     /**
      * @param int $item_id

@@ -13,14 +13,6 @@ use Nette\Caching\IStorage;
  */
 class Users2ForumsManager extends MNManager
 {
-    /**
-     * Users2ForumsManager constructor.
-     *
-     * @param Connection    $dibi
-     * @param IStorage      $storage
-     * @param UsersManager  $left
-     * @param ForumManager $right
-     */
     public function __construct(Connection $dibi, IStorage $storage, UsersManager $left, ForumManager $right)
     {
         parent::__construct($dibi, $storage, $left, $right, 'user_forum');

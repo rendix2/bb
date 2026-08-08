@@ -2,23 +2,18 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
-use App\Models\SmileysManager;
+use Nette\Application\UI\Presenter;
+use Nette\Localization\Translator;
 
-/**
- * Description of SmileysPresenter
- *
- * @author rendix2
- * @method SmileysManager getManager()
- * @package App\AdminModule\Presenters
- */
-class SmileysPresenter extends AdminPresenter
+class SmileysPresenter extends Presenter
 {
-    public function __construct(SmileysManager $manager)
+    public function __construct(
+        private readonly Translator $translator,
+    )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
@@ -30,7 +25,7 @@ class SmileysPresenter extends AdminPresenter
     
     protected function createComponentGridFilter()
     {
-        $this->gf->setTranslator($this->getTranslator());
+        $this->gf->setTranslator($this->translator);
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
 
@@ -44,7 +39,7 @@ class SmileysPresenter extends AdminPresenter
             1 => ['text' => 'menu_smileys']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     protected function createComponentBreadCrumbEdit(): BreadCrumbControl
@@ -55,6 +50,6 @@ class SmileysPresenter extends AdminPresenter
             2 => ['link' => 'Smileys:edit',    'text' => 'menu_smiley'],
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 }

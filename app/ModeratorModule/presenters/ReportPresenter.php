@@ -5,6 +5,7 @@ namespace App\ModeratorModule\Presenters;
 use App\Controls\GridFilter;
 use App\Models\ReportManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
+use Nette\Localization\Translator;
 
 /**
  * Description of ReportPresenter
@@ -15,19 +16,14 @@ use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
  */
 class ReportPresenter extends ModeratorPresenter
 {
-    /**
-     * ReportPresenter constructor.
-     *
-     * @param ReportManager $manager
-     */
-    public function __construct(ReportManager $manager)
+    public function __construct(
+        ReportManager $manager,
+        private readonly Translator $translator,
+    )
     {
         parent::__construct($manager);
     }
 
-    /**
-     *
-     */
     protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
@@ -44,7 +40,7 @@ class ReportPresenter extends ModeratorPresenter
 
     protected function createComponentGridFilter(): GridFilter
     {
-        $this->gf->setTranslator($this->getTranslator());
+        $this->gf->setTranslator($this->translator);
         
         $gf = $this->gf;
         $gf->addFilter('report_id', 'report_id', GridFilter::INT_EQUAL);

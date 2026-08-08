@@ -140,54 +140,18 @@ abstract class Manager extends Tables
     }
     
     /**
-     * Manager destructor.
-     */
-    public function __destruct()
-    {
-        if ($this->dibi && $this->dibi->isConnected()) {
-            $this->dibi->disconnect();
-        }
-                
-        $this->dibi         = null;
-        $this->table        = null;
-        $this->primaryKey   = null;
-        $this->managerCache = null;
-        $this->storage      = null;
-        $this->columnNames  = null;
-    }
-    
-    /**
      * @return string
      */
     public function getTableAlias()
     {
         return mb_substr($this->table, 0, 1);
     }
-    
-    /**
-     * 
-     * @return string
-     */
-    public function getAliasedTableName()
-    {
-        return sprintf('%s.%s', $this->getTableAlias(), $this->table);
-    }
-    
-    /**
-     * 
-     * @return string
-     */
+
     public function getAliasedPrimaryKey()
     {
         return sprintf('%s.%s', $this->getTableAlias(), $this->getPrimaryKey());
     }
 
-    /**
-     * @param bool $pascal
-     * 
-     * @return string
-     * @see https://stackoverflow.com/questions/1993721/how-to-convert-camelcase-to-camel-case
-     */
     private function getNameOfTableFromClass($pascal)
     {
         $origClassName = str_replace('Manager', '', get_class($this));

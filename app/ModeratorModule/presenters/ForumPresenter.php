@@ -4,42 +4,21 @@ namespace App\ModeratorModule\Presenters;
 
 use App\Controls\GridFilter;
 use App\Model\Repository\UserRepository;
-use App\Models\ForumManager;
-use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
+use Nette\Application\UI\Presenter;
 
-/**
- * Description of ForumPresenter
- *
- * @author rendix2
- * @method ForumManager getManager()
- * @package App\ModeratorModule\Presenters
- */
-class ForumPresenter extends ModeratorPresenter
+class ForumPresenter extends Presenter
 {
-    /**
-     * ForumPresenter constructor.
-     *
-     * @param ForumManager $manager
-     */
     public function __construct(
-        ForumManager $manager,
         private readonly UserRepository $userRepository,
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
-    /**
-     *
-     * @param int $page
-     */
     public function actionDefault(int $page = 1): void
     {
     }
 
-    /**
-     * @param int $page
-     */
     public function renderDefault(int $page = 1): void
     {
         $userEntity = $this->userRepository
@@ -61,10 +40,6 @@ class ForumPresenter extends ModeratorPresenter
         return $form;
     }
     
-    /**
-     *
-     * @return GridFilter
-     */
     protected function createComponentGridFilter(): GridFilter
     {
         $this->gf->setTranslator($this->getTranslator());

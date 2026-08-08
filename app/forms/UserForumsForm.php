@@ -10,7 +10,7 @@ use App\Models\Users2ForumsManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -21,34 +21,16 @@ use Nette\Utils\ArrayHash;
  */
 class UserForumsForm extends Control
 {
-    /**
-     * @var ForumManager $forumsManager
-     */
     private ForumManager $forumsManager;
 
-    /**
-     *
-     * @var Users2ForumsManager $users2ForumsManager
-     */
     private Users2ForumsManager $users2ForumsManager;
 
-    /**
-     *
-     * @var ITranslator $translator
-     */
-    private ITranslator $translator;
+    private Translator $translator;
 
-    /**
-     * UserForumsForm constructor.
-     *
-     * @param ForumManager       $forumsManager
-     * @param Users2ForumsManager $users2ForumsManager
-     * @param ITranslator         $translator
-     */
     public function __construct(
         ForumManager       $forumsManager,
         Users2ForumsManager $users2ForumsManager,
-        ITranslator         $translator,
+        Translator         $translator,
         private readonly EntityManagerDecorator $em,
         private readonly ForumRepository $forumRepository,
     ) {
@@ -154,7 +136,7 @@ class UserForumsForm extends Control
         $forums = [];
 
         foreach ($databaseForums as $forum) {
-            $forums[$forum->forum_id] = $forum->forum_id;
+            $forums[$forum->forum_id] = $forum->id;
             $users[$forum->forum_id]  = (int)$user_id;
         }
 

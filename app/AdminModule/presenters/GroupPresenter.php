@@ -18,6 +18,8 @@ use App\Models\GroupManager;
 use App\Models\User2GroupManager;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -29,7 +31,7 @@ use Tracy\ILogger;
  * @method GroupManager getManager()
  * @package App\AdminModule\Presenters
  */
-class GroupPresenter extends AdminPresenter
+class GroupPresenter extends Presenter
 {
     /**
      * @var User2GroupManager $users2Groups
@@ -56,8 +58,9 @@ class GroupPresenter extends AdminPresenter
 
         private readonly UserRepository $userRepository,
 
-        private readonly CategoryRepository $categoryRepository,
         private readonly ForumRepository    $forumRepository,
+
+        private readonly Translator $translator
     )
     {
         parent::__construct();
@@ -80,36 +83,6 @@ class GroupPresenter extends AdminPresenter
         }
     }
 
-    /**
-     * AdminPresenter startup.
-     */
-    public function startup()
-    {
-        parent::startup();
-
-        $this->adminTranslator = $this->translatorFactory->getAdminTranslator();
-    }
-
-    /**
-     * AdminPresenter beforeRender.
-     */
-    public function beforeRender(): void
-    {
-        parent::beforeRender();
-
-        $this->getTemplate()->setTranslator($this->adminTranslator);
-    }
-
-    public function getTranslator(): Translator
-    {
-        return $this->adminTranslator;
-    }
-
-    /**
-     * @param array $added_forum_row
-     *
-     * @return array
-     */
     private function map(array $added_forum_row): array
     {
         $result = [];
@@ -279,13 +252,9 @@ class GroupPresenter extends AdminPresenter
         return $form;
     }
 
-    /**
-     *
-     * @return GridFilter
-     */
     protected function createComponentGridFilter()
     {
-        $this->gf->setTranslator($this->getTranslator());
+        $this->gf->setTranslator($this->translator);
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('group_id', 'group_id', GridFilter::INT_EQUAL);
@@ -296,10 +265,6 @@ class GroupPresenter extends AdminPresenter
         return $this->gf;
     }
 
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     */
     public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         unset($values->group_moderator);
@@ -330,10 +295,6 @@ class GroupPresenter extends AdminPresenter
         $this->redirect(':' . $this->getName() . ':default');
     }
 
-    /**
-     *
-     * @return UserSearchControl
-     */
     protected function createComponentUserSearch(): UserSearchControl
     {
         return $this->userSearchControl;
@@ -342,7 +303,7 @@ class GroupPresenter extends AdminPresenter
     protected function createComponentForumsForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
-        $form->setTranslator($this->getTranslator());
+        $form->setTranslator($this->translator);
 
         $form->addSubmit('send', 'Send');
         $form->onSuccess[] = [$this, 'forumsSuccess'];
@@ -399,9 +360,6 @@ class GroupPresenter extends AdminPresenter
         $this->forums2groupsManager->addForums2group($group_id, $data);
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = [
@@ -409,7 +367,7 @@ class GroupPresenter extends AdminPresenter
             1 => ['text' => 'menu_groups']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     /**
@@ -423,6 +381,6 @@ class GroupPresenter extends AdminPresenter
             2 => ['link' => 'Group:edit', 'text' => 'menu_group'],
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 }

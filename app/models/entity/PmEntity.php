@@ -58,12 +58,6 @@ class PmEntity extends Entity
      */
     private $pm_time_sent;
 
-    /**
-     *
-     * @var int $pm_time_read
-     */
-    private $pm_time_read;
-
 
 
 
@@ -134,50 +128,4 @@ class PmEntity extends Entity
         return $this;
     }
 
-
-
-
-
-    /**
-     *
-     * @return array
-     */
-    public function getArray()
-    {
-        $res = [];
-        
-        if (isset($this->pm_id)) {
-            $res['pm_id'] = $this->pm_id;
-        }
-        
-        if (isset($this->pm_user_id_from)) {
-            $res['pm_user_id_from'] = $this->pm_user_id_from;
-        }
-
-        if (isset($this->pm_user_id_to)) {
-            $res['pm_user_id_to'] = $this->pm_user_id_to;
-        }
-
-        if (isset($this->pm_subject)) {
-            $res['pm_subject'] = $this->pm_subject;
-        }
-
-        if (isset($this->pm_text)) {
-            $res['pm_text'] = $this->pm_text;
-        }
-
-        if (isset($this->pm_status)) {
-            $res['pm_status'] = $this->pm_status;
-        }
-        
-        if (isset($this->pm_time_sent)) {
-            $res['pm_time_sent'] = $this->pm_time_sent;
-        }
-
-        if (isset($this->pm_status)) {
-            $res['pm_time_read'] = $this->pm_time_read;
-        }
-        
-        return $res;
-    }
 }

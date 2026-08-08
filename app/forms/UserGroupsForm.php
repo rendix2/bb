@@ -8,7 +8,7 @@ use App\Models\User2GroupManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -19,27 +19,14 @@ use Nette\Utils\ArrayHash;
  */
 class UserGroupsForm extends Control
 {
-    /**
-     *
-     * @var User2GroupManager
-     */
+
     private User2GroupManager $users2GroupsManager;
     
-    /**
-     *
-     * @var ITranslator $translator
-     */
-    private ITranslator $translator;
+    private Translator $translator;
 
-    /**
-     * UserGroupsForm constructor.
-     *
-     * @param User2GroupManager $users2GroupsManager
-     * @param ITranslator         $translator
-     */
     public function __construct(
         User2GroupManager $users2GroupsManager,
-        ITranslator         $translator,
+        Translator         $translator,
         private readonly EntityManagerDecorator $em
     ) {
         parent::__construct();

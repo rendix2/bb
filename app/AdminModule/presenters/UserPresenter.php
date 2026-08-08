@@ -18,6 +18,8 @@ use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
 use App\Settings\Avatars;
 use App\Settings\RanksDir;
+use Nette\Application\UI\Presenter;
+use Nette\Localization\Translator;
 
 /**
  * Description of UserPresenter
@@ -26,7 +28,7 @@ use App\Settings\RanksDir;
  * @method UsersManager getManager()
  * @package App\AdminModule\Presenters
  */
-class UserPresenter extends AdminPresenter
+class UserPresenter extends Presenter
 {
     /**
      * @var array $active
@@ -68,6 +70,8 @@ class UserPresenter extends AdminPresenter
 
         private readonly LanguageRepository $languageRepository,
         private readonly RankRepository     $rankRepository,
+
+        private readonly Translator $translator,
     )
     {
         parent::__construct();
@@ -122,7 +126,7 @@ class UserPresenter extends AdminPresenter
      */
     protected function createComponentGridFilter(): GridFilter
     {
-        $this->gf->setTranslator($this->getTranslator());
+        $this->gf->setTranslator($this->translator);
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('user_id', 'user_id', GridFilter::INT_EQUAL);
@@ -192,7 +196,7 @@ class UserPresenter extends AdminPresenter
             1 => ['text' => 'menu_users']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     /**
@@ -206,6 +210,6 @@ class UserPresenter extends AdminPresenter
             2 => ['link' => 'User:edit',     'text' => 'menu_user'],
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 }

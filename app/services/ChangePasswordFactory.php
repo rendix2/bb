@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Database\EntityManagerDecorator;
 use App\Forms\UserChangePasswordForm;
-use App\Models\UsersManager;
+use App\Model\Repository\UserRepository;
 use App\Settings\Users;
+use Nette\Localization\Translator;
+use Nette\Security\Passwords;
 use Nette\Security\User;
 
 /**
@@ -15,58 +18,18 @@ use Nette\Security\User;
  */
 class ChangePasswordFactory
 {
-    /**
-     *
-     * @var UsersManager $userManager
-     */
-    private $userManager;
-    
-    /**
-     * @var User $user
-     */
-    private $user;
-    
-    /**
-     *
-     * @var Users $users
-     */
-    private $users;
-    
-    /**
-     *
-     * @var TranslatorFactory $translatorFactory
-     */
-    private $translatorFactory;
-    
-    /**
-     * ChangePasswordFactory constructor.
-     *
-     * @param UsersManager      $userManager
-     * @param TranslatorFactory $translatorFactory
-     * @param User              $user
-     * @param Users             $users
-     */
     public function __construct(
-        UsersManager      $userManager,
-        TranslatorFactory $translatorFactory,
-        User              $user,
-        Users             $users
+        private readonly Translator $translator,
+
+        private readonly EntityManagerDecorator $em,
+
+        private readonly UserRepository $userRepository,
+
+        private readonly Passwords $passwords,
+
+        private readonly User  $user,
+        private readonly Users $users
     ) {
-        $this->userManager       = $userManager;
-        $this->user              = $user;
-        $this->users             = $users;
-        $this->translatorFactory = $translatorFactory;
-    }
-    
-    /**
-     * ChangePasswordFactory destructor.
-     */
-    public function __destruct()
-    {
-        $this->userManager       = null;
-        $this->user              = null;
-        $this->users             = null;
-        $this->translatorFactory = null;
     }
 
     /**
@@ -76,10 +39,12 @@ class ChangePasswordFactory
     public function getForum(): UserChangePasswordForm
     {
         return new UserChangePasswordForm(
-            $this->userManager,
-            $this->translatorFactory->getForumTranslator(),
+            $this->translator,
             $this->user,
-            $this->users
+            $this->users,
+            $this->em,
+            $this->userRepository,
+            $this->passwords,
         );
     }
 
@@ -90,10 +55,12 @@ class ChangePasswordFactory
     public function getAdmin(): UserChangePasswordForm
     {
         return new UserChangePasswordForm(
-            $this->userManager,
-            $this->translatorFactory->getAdminTranslator(),
+            $this->translator,
             $this->user,
-            $this->users
+            $this->users,
+            $this->em,
+            $this->userRepository,
+            $this->passwords,
         );
     }
 }

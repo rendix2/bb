@@ -8,10 +8,10 @@ use App\Model\Repository\TopicRepository;
 use App\Model\Repository\UserRepository;
 use App\Models\PostFacade;
 use App\Presenters\Base\BasePresenter;
-use App\Services\TranslatorFactory;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Http\IRequest;
+use Nette\Localization\Translator;
 use Nette\Security\User;
 use Nette\Utils\ArrayHash;
 
@@ -25,7 +25,8 @@ class TopicFastReplyForm extends Control
 {
 
     public function __construct(
-        private readonly TranslatorFactory $translatorFactory,
+        private readonly Translator $translator,
+
         private readonly User              $user,
         private readonly PostFacade        $postFacade,
         private readonly IRequest          $request,
@@ -46,7 +47,7 @@ class TopicFastReplyForm extends Control
     protected function createComponentFastReply(): \Contributte\FormsBootstrap\BootstrapForm
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
-        $form->setTranslator($this->translatorFactory->getForumTranslator());
+        $form->setTranslator($this->translator);
 
         $form->addGroup('Fast reply');
         $form->addTextArea('text');

@@ -9,13 +9,13 @@ use App\Controls\BreadCrumbControl;
 use App\Database\EntityManagerDecorator;
 use App\Forms\ReportForm;
 use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
+use App\Model\Entity\PostHistoryEntity;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\TopicWatchRepository;
 use App\Model\Repository\UserRepository;
-use App\Models\Entity\PollEntity;
 use App\Models\Manager;
 use App\Models\PostFacade;
 use App\Models\Posts2FilesManager;
@@ -25,11 +25,12 @@ use App\services\ScopeService;
 use App\Settings\PostSetting;
 use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
 use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Http\FileUpload;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\DateTime;
 use Nette\Utils\Random;
 
 /**
@@ -39,7 +40,7 @@ use Nette\Utils\Random;
  * @method PostManager getManager()
  * @package App\ForumModule\Presenters
  */
-class PostPresenter extends BaseForumPresenter
+class PostPresenter extends Presenter
 {
 
     
@@ -74,6 +75,8 @@ class PostPresenter extends BaseForumPresenter
 
         PostManager $manager,
         private readonly EntityManagerDecorator $em,
+
+        private readonly Translator $translator,
 
         private readonly CategoryRepository $categoryRepository,
         private readonly ForumRepository    $forumRepository,
@@ -140,18 +143,6 @@ class PostPresenter extends BaseForumPresenter
 
         if ($postEntity === null) {
             $this->error('Post was not found.');
-        }
-        
-        $pollDibi = $topicEntity->poll;
-
-        if ($pollDibi) {
-            $pollTimeStamp = $pollDibi->poll_time_to;
-            unset($pollDibi->poll_time_to);
-        
-            $pollEntity = PollEntity::setFromRow($pollDibi);
-            $pollEntity->setPoll_time_to(DateTime::from($pollTimeStamp));
-
-            $topicEntity->setPoll($pollEntity);
         }
 
         $postScope = $this->scopeService->loadPost($forumEntity, $topicEntity, $postEntity);
@@ -360,6 +351,29 @@ class PostPresenter extends BaseForumPresenter
         $topic_id    = $this->getParameter('topic_id');
         $post_id     = $this->getParameter('post_id');
         $user_id     = $this->getUser()->getId();
+
+        $categoryEntity = $this->categoryRepository
+            ->findOneBy(
+                [
+                    'id' => $category_id,
+                ]
+            );
+
+        $forumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $forum_id,
+                ]
+            );
+
+        $topicEntity = $this->topicRepository
+            ->findOneBy(
+                [
+                    'id' => $topic_id,
+                ]
+            );
+
+        $userEntity = $this->userRepository->findOneByNetteUser($this->getUser());
         
         if (count($values->files)) {
             $postFiles = [];
@@ -399,36 +413,42 @@ class PostPresenter extends BaseForumPresenter
                         'id' => $post_id,
                     ]
                 );
-            
-            $postNew = new \App\Model\Entity\PostEntity();
-            $postNew->setPost_id($post_id)
-                    ->setPost_user_id($postOldEntity->user->id)
-                    ->setPost_category_id($category_id)
-                    ->setPost_forum_id($forum_id)
-                    ->setPost_topic_id($topic_id)
-                    ->setPost_title($values->post_title)
-                    ->setPost_text($values->post_text)
-                    ->setPost_add_time($postOldEntity->getPost_add_time())
-                    ->setPost_add_user_ip($postOldEntity->getPost_add_user_ip())
-                    ->setPost_edit_user_ip($this->getHttpRequest()->getRemoteAddress())
-                    ->setPost_edit_count($postOldEntity->getPost_edit_count() + 1)
-                    ->setPost_last_edit_time(time())
-                    ->setPost_locked($postNew->getPost_locked())
-                    ->setPost_order($postOldEntity->getPost_order())
-                    ->setPost_files($postFiles);
+
+            $postOldEntity->category = $categoryEntity;
+            $postOldEntity->forum = $forumEntity;
+            $postOldEntity->topic = $topicEntity;
+            $postOldEntity->user = $userEntity;
+            $postOldEntity->title = $values->title;
+            $postOldEntity->text = $values->text;
+            $postOldEntity->editIpAddress = $this->getHttpRequest()->getRemoteAddress();
+
+            $postHistoryUpdate = new PostHistoryEntity();
+            $postHistoryUpdate->post = $postOldEntity;
+            $postHistoryUpdate->category = $categoryEntity;
+            $postHistoryUpdate->forum = $forumEntity;
+            $postHistoryUpdate->topic = $topicEntity;
+            $postHistoryUpdate->post = $postOldEntity;
+            $postHistoryUpdate->user = $userEntity;
+            $postHistoryUpdate->title = $values->title;
+            $postHistoryUpdate->text = $values->text;
+
+            $this->em->persist($postOldEntity);
+            $this->em->persist($postHistoryUpdate);
+            $this->em->flush();
                                           
-            $result = $this->postFacade->update($postNew);
+            //$result = $this->postFacade->update($postNew);
         } else {
             $post = new \App\Model\Entity\PostEntity();
-            $post->setPost_user_id($user_id)
-                 ->setPost_category_id($category_id)
-                 ->setPost_forum_id($forum_id)
-                 ->setPost_topic_id($topic_id)
-                 ->setPost_title($values->post_title)
-                 ->setPost_text($values->post_text)
-                 ->setPost_add_user_ip($this->getHttpRequest()->getRemoteAddress())
-                 ->setPost_order(1)
-                 ->setPost_files($postFiles);
+            $post->category = $categoryEntity;
+            $post->forum = $forumEntity;
+            $post->topic = $topicEntity;
+            $post->title = $values->title;
+            $post->text = $values->text;
+            $post->addIpAddress = $this->getHttpRequest()->getRemoteAddress();
+
+            foreach ($postFiles as $postFile) {
+                $post->files->add($postFile);
+            }
 
             $result = $this->postFacade->add($post);
 
@@ -456,10 +476,10 @@ class PostPresenter extends BaseForumPresenter
             
             if (count($emailsArray)) {
                 $this->bbMailer->addRecipients($emailsArray);
-                $this->bbMailer->setSubject($this->getTranslator()->translate('topic_watch_mail_subject'));
+                $this->bbMailer->setSubject($this->translator->translate('topic_watch_mail_subject'));
                 $this->bbMailer->setText(
                     sprintf(
-                        $this->getTranslator()->translate('topic_watch_mail_text'),
+                        $this->translator->translate('topic_watch_mail_text'),
                         $this->link('//Topic:default', $category_id, $forum_id, $topic_id)
                     )
                 );
@@ -493,7 +513,7 @@ class PostPresenter extends BaseForumPresenter
             [['text' => 'menu_post']]
         );
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     protected function createComponentBreadCrumbReport(): BreadCrumbControl
@@ -512,7 +532,7 @@ class PostPresenter extends BaseForumPresenter
             [['text' => 'report_post']]
         );
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     protected function createComponentBreadCrumbHistory(): BreadCrumbControl
@@ -532,7 +552,7 @@ class PostPresenter extends BaseForumPresenter
             [['text' => 'post_history']]
         );
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
     
     protected function createComponentReportForm(): ReportForm

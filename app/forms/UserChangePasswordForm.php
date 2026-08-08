@@ -4,13 +4,12 @@ namespace App\Forms;
 
 use App\Database\EntityManagerDecorator;
 use App\Model\Repository\UserRepository;
-use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use App\Settings\Users;
 use Doctrine\DBAL\Exception;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Security\Passwords;
 use Nette\Security\User;
 use Nette\Utils\ArrayHash;
@@ -18,7 +17,7 @@ use Nette\Utils\ArrayHash;
 class UserChangePasswordForm extends Control
 {
     public function __construct(
-        private readonly ITranslator  $translator,
+        private readonly Translator  $translator,
         private readonly User         $user,
         private readonly Users        $users,
 

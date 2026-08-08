@@ -1,6 +1,4 @@
 services:
-    TranslatorFactory:
-        class: App\Services\TranslatorFactory
     UserLoginFormFactory: App\Services\UserLoginFormFactory
     ChangePasswordFactory:
         class: App\Services\ChangePasswordFactory

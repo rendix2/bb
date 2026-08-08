@@ -2,14 +2,12 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\PaginatorControl;
-use App\Presenters\Base\AuthenticatedPresenter;
 use Contributte\Datagrid\Datagrid;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Application\UI\Presenter;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -20,14 +18,8 @@ use Tracy\ILogger;
  * @author rendix2
  * @package App\AdminModule\Presenters
  */
-class FaqPresenter extends AdminPresenter
+class FaqPresenter extends Presenter
 {
-
-    /**
-     * @var ITranslator $adminTranslator
-     */
-    private ITranslator $adminTranslator;
-
     public function __construct()
     {
         parent::__construct();
@@ -48,25 +40,6 @@ class FaqPresenter extends AdminPresenter
         if (!$user->isInRole('admin')) {
             $this->error('You are not admin.');
         }
-    }
-
-    public function beforeRender(): void
-    {
-        parent::beforeRender();
-
-        $this->getTemplate()->setTranslator($this->adminTranslator);
-    }
-
-    public function startup()
-    {
-        parent::startup();
-
-        $this->adminTranslator = $this->translatorFactory->getAdminTranslator();
-    }
-
-    public function getTranslator(): ITranslator
-    {
-        return $this->adminTranslator;
     }
 
     protected function createComponentEditForm(): BootstrapForm

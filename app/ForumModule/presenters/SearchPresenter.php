@@ -6,8 +6,10 @@ use App\Controls\BreadCrumbControl;
 use App\Forms\SearchPostForm;
 use App\Forms\SearchTopicForm;
 use App\Forms\SearchUserForm;
-use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
+use App\Model\Repository\TopicRepository;
 use App\Models\UsersManager;
+use Nette\Application\UI\Presenter;
+use Nette\Localization\Translator;
 
 /**
  * Description of SearchPresenter
@@ -16,16 +18,17 @@ use App\Models\UsersManager;
  * @method UsersManager getManager()
  * @package App\ForumModule\Presenters
  */
-class SearchPresenter extends BaseForumPresenter
+class SearchPresenter extends Presenter
 {
-    /**
-     * SearchPresenter constructor.
-     *
-     * @param UsersManager $userManager
-     */
-    public function __construct(UsersManager $userManager)
+
+    public function __construct(
+
+        private readonly Translator $translator,
+
+        private readonly TopicRepository $topicRepository,
+    )
     {
-        parent::__construct($userManager);
+        parent::__construct();
     }
 
     /**
@@ -64,7 +67,7 @@ class SearchPresenter extends BaseForumPresenter
 
         $this['searchTopicForm-searchTopicForm']->setDefaults(['search_topic' => $q]);
 
-        $this->template->topics = $topics;
+        $this->getTemplate()->topics = $topics;
     }
 
     /**
@@ -83,46 +86,33 @@ class SearchPresenter extends BaseForumPresenter
         $this->getTemplate()->users = $users;
     }
     
-    /**
-     * forms
-     */
 
     public function createComponentSearchPostForm(): SearchPostForm
     {
-        return new SearchPostForm($this->getTranslator());
+        return new SearchPostForm($this->translator);
     }
 
     public function createComponentSearchTopicForm(): SearchTopicForm
     {
-        return new SearchTopicForm($this->getTranslator());
+        return new SearchTopicForm($this->translator);
     }
 
     public function createComponentSearchUserForm(): SearchUserForm
     {
-        return new SearchUserForm($this->getTranslator());
+        return new SearchUserForm($this->translator);
     }
 
-    /**
-     * BREADCRUMBS
-     */
-
-    /**
-     * @return BreadCrumbControl
-     */
-    protected function createComponentBreadCrumbDefault()
+    protected function createComponentBreadCrumbDefault(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default', 'text' => 'menu_index'],
             1 => ['text' => 'menu_search']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
-    protected function createComponentBreadCrumbPostResults()
+    protected function createComponentBreadCrumbPostResults(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default',  'text' => 'menu_index'],
@@ -130,13 +120,10 @@ class SearchPresenter extends BaseForumPresenter
             2 => ['text' => 'menu_post']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
-    protected function createComponentBreadCrumbTopicResults()
+    protected function createComponentBreadCrumbTopicResults(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default',  'text' => 'menu_index'],
@@ -144,13 +131,10 @@ class SearchPresenter extends BaseForumPresenter
             2 => ['text' => 'menu_topic']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
-    protected function createComponentBreadCrumbUserResults()
+    protected function createComponentBreadCrumbUserResults(): BreadCrumbControl
     {
         $breadCrumb = [
             0 => ['link' => 'Index:default',  'text' => 'menu_index'],
@@ -158,6 +142,6 @@ class SearchPresenter extends BaseForumPresenter
             2 => ['text' => 'menu_user']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 }

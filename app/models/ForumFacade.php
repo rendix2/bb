@@ -17,11 +17,6 @@ use Nette\Utils\ArrayHash;
  */
 class ForumFacade
 {
-    /**
-     *
-     * @var TopicFacade $topicFacade
-     */
-    private TopicFacade $topicFacade;
 
     public function __construct(
         private readonly EntityManagerDecorator $em,
@@ -29,12 +24,9 @@ class ForumFacade
         private readonly ForumRepository $forumRepository,
         private readonly TopicRepository $topicRepository,
 
-        TopicFacade   $topicFacade,
+        private readonly TopicFacade   $topicFacade,
     ) {
-        $this->topicFacade   = $topicFacade;
     }
-
-
 
     public function delete(ForumEntity $forumEntity): void
     {

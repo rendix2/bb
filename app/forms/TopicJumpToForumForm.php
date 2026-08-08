@@ -2,12 +2,10 @@
 
 namespace App\Forms;
 
-use App\Database\EntityManagerDecorator;
-use App\Model\Entity\ForumEntity;
 use App\Model\Repository\ForumRepository;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -19,10 +17,10 @@ use Nette\Utils\ArrayHash;
 class TopicJumpToForumForm extends Control
 {
 
-    private ITranslator $translator;
+    private Translator $translator;
 
     public function __construct(
-        ITranslator   $translator,
+        Translator   $translator,
         private readonly ForumRepository        $forumRepository,
     ) {
         parent::__construct();

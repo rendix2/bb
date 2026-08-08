@@ -8,9 +8,9 @@ use App\Authorization\Identity;
 use App\Authorization\Scopes\User;
 use App\Models\Manager;
 use App\Models\ThankManager;
-use App\Presenters\Base\AuthenticatedPresenter;
 use Exception;
-use Nette\Localization\ITranslator;
+use Nette\Application\UI\Presenter;
+use Nette\Localization\Translator;
 
 /**
  * Description of ForumPresenter
@@ -18,7 +18,7 @@ use Nette\Localization\ITranslator;
  * @author rendix2
  * @package App\ForumModule\Presenters\Base
  */
-abstract class ForumPresenter extends AuthenticatedPresenter
+abstract class ForumPresenter extends Presenter
 {
 
     
@@ -35,23 +35,10 @@ abstract class ForumPresenter extends AuthenticatedPresenter
      */
     public Authorizator $authorizator;
 
-    /**
-     * Translator
-     *
-     * @var ITranslator $forumTranslator
-     */
-    private ITranslator $translator;
+    private Translator $translator;
 
-    /**
-     * @var Manager $manager
-     */
     private Manager $manager;
 
-    /**
-     * ForumPresenter constructor.
-     *
-     * @param Manager $manager
-     */
     public function __construct(
         Manager $manager,
     )
@@ -66,11 +53,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
         return $this->manager;
     }
 
-    public function getTranslator(): ITranslator
-    {
-        return $this->translator;
-    }
-
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
     {
         $user = $this->getUser();
@@ -83,8 +65,6 @@ abstract class ForumPresenter extends AuthenticatedPresenter
     public function startup()
     {
         parent::startup();
-
-        $this->translator = $this->translatorFactory->getForumTranslator();
 
         //$this->em->getRepository()
 

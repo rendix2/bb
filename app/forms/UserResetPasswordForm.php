@@ -3,11 +3,10 @@
 namespace App\Forms;
 
 use App\Model\Repository\UserRepository;
-use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
-use App\Services\TranslatorFactory;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -18,20 +17,10 @@ use Nette\Utils\ArrayHash;
  */
 class UserResetPasswordForm extends Control
 {
-    /**
-     *
-     * @var TranslatorFactory $translatorFactory
-     */
-    private TranslatorFactory $translateFactory;
-
-
     public function __construct(
-        TranslatorFactory $translatorFactory,
+        private readonly Translator $translator,
         private readonly UserRepository $userRepository,
     ) {
-        parent::__construct();
-        
-        $this->translateFactory = $translatorFactory;
     }
 
     /**
@@ -47,7 +36,7 @@ class UserResetPasswordForm extends Control
     protected function createComponentResetPasswordForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
-        $form->setTranslator($this->translateFactory->getForumTranslator());
+        $form->setTranslator($this->translator);
         $form->addEmail('user_email', 'User email:');
         $form->addSubmit('send', 'Reset');
 

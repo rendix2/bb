@@ -6,14 +6,12 @@ use App\Controls\BBMailer;
 use App\Forms\UserLoginForm;
 use App\Model\Repository\UserRepository;
 use App\Models\UsersManager;
-use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
-use App\Translator;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Random;
-use Nette\Utils\Strings;
 
 /**
  * Description of LoginPresenter
@@ -21,12 +19,8 @@ use Nette\Utils\Strings;
  * @author rendix2
  * @package App\ForumModule\Presenters
  */
-class LoginPresenter extends BasePresenter
+class LoginPresenter extends Presenter
 {
-    /**
-     * @var string $backlink
-     * @persistent
-     */
     #[Persistent]
     public string $backlink = '';
     
@@ -43,31 +37,15 @@ class LoginPresenter extends BasePresenter
      */
     public BBMailer $bbMailer;
 
-    /**
-     * @var Translator $translator
-     */
-    private Translator $translator;
-
-    /**
-     * @var UsersManager $usersManager
-     */
     public UsersManager $usersManager;
 
     public function __construct(
+        private readonly \Nette\Localization\Translator $translator,
+
         private readonly UserRepository $userRepository,
     )
     {
         parent::__construct();
-    }
-
-    /**
-     * LoginPresenter startup.
-     */
-    public function startup()
-    {
-        parent::startup();
-
-        $this->translator = $this->translatorFactory->getForumTranslator();
     }
 
     /**
@@ -81,22 +59,8 @@ class LoginPresenter extends BasePresenter
         parent::checkRequirements($element);
     }
     
-    /**
-     * before render method
-     * sets translator
-     */
-    public function beforeRender(): void
-    {
-        parent::beforeRender();
 
-        $this->temgeplate->setTranslator($this->translatorFactory->getForumTranslator());
-    }
-
-    /**
-     * @param int    $user_id
-     * @param string $key
-     */
-    public function actionActivate($user_id, $key): void
+    public function actionActivate(int $user_id, string $key): void
     {
         $ok = true;
 

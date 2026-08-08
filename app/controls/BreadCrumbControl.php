@@ -13,20 +13,11 @@ use Nette\Localization\Translator;
  */
 class BreadCrumbControl extends Control
 {
-    private array $breadCrumb;
-    
-    private Translator $translator;
-
-    /**
-     * BreadCrumbControl constructor.
-     *
-     * @param array       $breadCrumb
-     * @param ITranslator $translator
-     */
-    public function __construct(array $breadCrumb, Translator $translator)
+    public function __construct(
+        private readonly array $breadCrumb,
+        private readonly Translator $translator
+    )
     {
-        $this->breadCrumb = $breadCrumb;
-        $this->translator = $translator;
     }
 
     public function render(): void

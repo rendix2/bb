@@ -7,7 +7,6 @@ use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
 use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 
@@ -19,23 +18,13 @@ use Nette\Utils\ArrayHash;
  */
 class UserSearchControl extends Control
 {
-    /**
-     *
-     * @var UsersManager $usersManager
-     */
-    private UsersManager $usersManager;
-    
-    private Translator $translator;
-    
+
     public function __construct(
-        UsersManager $usersManager,
-        private readonly UserRepository $userRepository,
-        Translator  $translator,
+        private readonly UsersManager $usersManager,
+        private readonly Translator  $translator,
     ) {
         parent::__construct();
-        
-        $this->usersManager = $usersManager;
-        $this->translator   = $translator;
+
     }
 
     /**

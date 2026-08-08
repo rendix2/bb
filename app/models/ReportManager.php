@@ -16,9 +16,6 @@ use Nette\Utils\ArrayHash;
 class ReportManager extends CrudManager
 {
 
-    /**
-     * @return Fluent
-     */
     public function getAllFluent()
     {
         return $this->dibi
@@ -42,12 +39,6 @@ class ReportManager extends CrudManager
             ->on('[r.report_reported_user_id] = [u2.user_id]');
     }
 
-    /**
-     *
-     * @param int $post_id
-     *
-     * @return Result|int
-     */
     public function deleteByPost($post_id)
     {
         return $this->deleteFluent()
@@ -55,25 +46,6 @@ class ReportManager extends CrudManager
             ->execute();
     }
 
-    /**
-     *
-     * @param int $user_id
-     *
-     * @return Result|int
-     */
-    public function deleteByUser($user_id)
-    {
-        return $this->deleteFluent()
-            ->where('[report_user_id] = %i', $user_id)
-            ->execute();
-    }
-
-    /**
-     *
-     * @param int $topic_id
-     *
-     * @return Result|int
-     */
     public function deleteByTopic($topic_id)
     {
         return $this->deleteFluent()
@@ -81,12 +53,6 @@ class ReportManager extends CrudManager
             ->execute();
     }
 
-    /**
-     *
-     * @param array $post_ids
-     *
-     * @return bool
-     */
     public function deleteByPosts(array $post_ids)
     {
         return $this->deleteFluent()
@@ -94,13 +60,6 @@ class ReportManager extends CrudManager
             ->execute();
     }
 
-    /**
-     *
-     * @param int       $post_id
-     * @param ArrayHash $item_data
-     *
-     * @return Result|int
-     */
     public function updateByPost($post_id, ArrayHash $item_data)
     {
         return $this->updateFluent($item_data)
@@ -108,13 +67,6 @@ class ReportManager extends CrudManager
             ->execute();
     }
 
-    /**
-     *
-     * @param int       $topic_id
-     * @param ArrayHash $item_data
-     *
-     * @return bool
-     */
     public function updateByTopic($topic_id, ArrayHash $item_data)
     {
         return $this->updateFluent($item_data)

@@ -3,12 +3,11 @@
 namespace App\AdminModule\Presenters;
 
 use App\Database\EntityManagerDecorator;
-use App\Model\Entity\SessionEntity;
 use App\Model\Repository\SessionRepository;
-use App\Presenters\Base\BasePresenter;
 use App\Settings\Avatars;
 use App\Settings\CacheDir;
 use Doctrine\DBAL\Exception as DbalException;
+use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
 
 /**
@@ -17,7 +16,7 @@ use Nette\DI\Attributes\Inject;
  * @author rendix2
  * @package App\AdminModule\Presenters
  */
-class IndexPresenter extends BasePresenter
+class IndexPresenter extends Presenter
 {
     const int MAX_LOGGED_IN_USERS_TO_SHOW = 200;
 
@@ -35,10 +34,6 @@ class IndexPresenter extends BasePresenter
     {
     }
 
-    /**
-     *
-     * @param mixed $element
-     */
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
     {
         $user = $this->getUser();
@@ -56,20 +51,7 @@ class IndexPresenter extends BasePresenter
         }
     }
 
-    /**
-     * IndexPresenter beforeRender.
-     *
-     */
-    public function beforeRender(): void
-    {
-        parent::beforeRender();
-        
-        $this->getTemplate()->setTranslator($this->translatorFactory->getAdminTranslator());
-    }
 
-    /**
-     *
-     */
     public function renderDefault(): void
     {
         $count = $this->sessionRepository->findCountOfLoggedUsers();
@@ -88,9 +70,6 @@ class IndexPresenter extends BasePresenter
         $this->getTemplate()->cacheDirSize  = $this->cacheDir->getDirSize();
     }
     
-    /**
-     * truncate sessions
-     */
     public function actionDeleteSessions(): void
     {
         try {
@@ -104,9 +83,6 @@ class IndexPresenter extends BasePresenter
         $this->redirect('Index:default');
     }
 
-    /**
-     * logout user
-     */
     public function actionLogout(): void
     {
         $this->getUser()->logout(true);

@@ -5,9 +5,9 @@ namespace App\Forms;
 use App\Controls\BBMailer;
 use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
-use App\Services\TranslatorFactory;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -18,27 +18,17 @@ use Nette\Utils\ArrayHash;
  */
 class SendMailToAdminForm extends Control
 {
-    private TranslatorFactory $translatorFactory;
-
     private UsersManager $usersManager;
     
     private BBMailer $bbMailer;
 
-    /**
-     * SendMailToAdminForm constructor.
-     *
-     * @param TranslatorFactory $translatorFactory
-     * @param UsersManager      $usersManager
-     * @param BBMailer          $bbMailer
-     */
     public function __construct(
-        TranslatorFactory $translatorFactory,
+        private readonly Translator $translator,
         UsersManager      $usersManager,
         BBMailer          $bbMailer
     ) {
         parent::__construct();
-        
-        $this->translatorFactory = $translatorFactory;
+
         $this->usersManager      = $usersManager;
         $this->bbMailer          = $bbMailer;
     }
@@ -54,7 +44,7 @@ class SendMailToAdminForm extends Control
     protected function createComponentSendMailToAdmin(): \Contributte\FormsBootstrap\BootstrapForm
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
-        $form->setTranslator($this->translatorFactory->getForumTranslator());
+        $form->setTranslator($this->translator);
         
         $form->addText('mail_subject', 'Mail subject:')
             ->setRequired('Subject is required.');

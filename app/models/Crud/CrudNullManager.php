@@ -16,7 +16,7 @@ use Nette\Utils\ArrayHash;
  */
 #[\JetBrains\PhpStorm\Deprecated]
 
-class CrudNullManager extends CrudManager implements ICrudManager
+class CrudNullManager extends CrudManager
 {
     /**
      * @var Connection $connection
@@ -34,26 +34,7 @@ class CrudNullManager extends CrudManager implements ICrudManager
         $this->connection = $dibi;
     }
     
-    public function __destruct()
-    {
-        $this->dibi = null;
-        
-        parent::__destruct();
-    }
 
-    /**
-     * @return array|void
-     */
-    public function getAll()
-    {
-    }
-
-    /**
-     * @return array|mixed|void
-     */
-    public function getAllCached()
-    {
-    }
 
     /**
      * @return Fluent
@@ -63,23 +44,6 @@ class CrudNullManager extends CrudManager implements ICrudManager
         return $this->connection->select('1');
     }
 
-    /**
-     * @param string $second
-     *
-     * @return array|void
-     */
-    public function getAllPairs($second)
-    {
-    }
-
-    /**
-     * @param string $second
-     *
-     * @return array|mixed|void
-     */
-    public function getAllPairsCached($second)
-    {
-    }
 
     /**
      * @param int $item_id
@@ -90,28 +54,6 @@ class CrudNullManager extends CrudManager implements ICrudManager
     {
     }
 
-    /**
-     * @param array $item_id
-     *
-     * @return array|void
-     */
-    public function getByIds(array $item_id)
-    {
-    }
-
-    /**
-     * @return string|void
-     */
-    public function getCount()
-    {
-    }
-     
- /**
-     * @return string
-     */
-    public function getCountCached()
-    {
-    }
 
     /**
      * @return string
@@ -152,14 +94,6 @@ class CrudNullManager extends CrudManager implements ICrudManager
     {
     }
 
-    /**
-     * @param array $item_id
-     *
-     * @return void
-     */
-    public function deleteMulti(array $item_id)
-    {
-    }
 
     /**
      * @param int       $item_id
@@ -171,13 +105,4 @@ class CrudNullManager extends CrudManager implements ICrudManager
     {
     }
 
-    /**
-     * @param array     $item_id
-     * @param ArrayHash $item_data
-     *
-     * @return void
-     */
-    public function updateMulti(array $item_id, ArrayHash $item_data)
-    {
-    }
 }

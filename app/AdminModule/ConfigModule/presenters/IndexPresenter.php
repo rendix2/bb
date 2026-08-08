@@ -2,18 +2,17 @@
 
 namespace App\AdminModule\ConfigModule\Presenters;
 
-use App\Database\EntityManagerDecorator;
-use App\Model\Entity\SessionEntity;
 use App\Model\Repository\SessionRepository;
-use App\Presenters\Base\BasePresenter;
 use App\Settings\Avatars;
+use Nette\Application\UI\Presenter;
+use Nette\Localization\Translator;
 
 /**
  * Description of IndexPresenter
  *
  * @author rendix2
  */
-class IndexPresenter extends BasePresenter
+class IndexPresenter extends Presenter
 {
     /**
      * @var int
@@ -27,15 +26,14 @@ class IndexPresenter extends BasePresenter
     public Avatars $avatar;
 
     public function __construct(
-        private readonly EntityManagerDecorator $em,
+        private readonly Translator $translator,
+
+
+        private readonly SessionRepository $sessionRepository,
     )
     {
     }
 
-    /**
-     *
-     * @param mixed $element
-     */
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
     {
         $user = $this->getUser();
@@ -53,25 +51,9 @@ class IndexPresenter extends BasePresenter
         }
     }
 
-    /**
-     * IndexPresenter beforeRender.
-     */
-    public function beforeRender(): void
-    {
-        parent::beforeRender();
-        
-        $this->getTemplate()->setTranslator($this->translatorFactory->getAdminTranslator());
-    }
-
     public function renderDefault(): void
     {
-        /**
-         * @var SessionRepository $sessionRepository
-         */
-        $sessionRepository = $this->em
-            ->getRepository(SessionEntity::class);
-
-        $count = $sessionRepository->findCountOfLoggedUsers();
+        $sessionRepository = $this->sessionRepository->findCountOfLoggedUsers();
 
         $loggedUsers = [];
 

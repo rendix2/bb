@@ -19,15 +19,6 @@ use Nette\Caching\IStorage;
  */
 class TopicWatchManager extends MNManager
 {
-    /**
-     * TopicWatchManager constructor.
-     *
-     * @param Connection    $dibi
-     * @param IStorage      $storage
-     * @param TopicManager $left
-     * @param UsersManager  $right
-     * @param string        $tableName
-     */
     public function __construct(
         Connection    $dibi,
         IStorage      $storage,

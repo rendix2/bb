@@ -10,7 +10,7 @@ use App\Model\Repository\UserRepository;
 use App\Presenters\Base\BasePresenter;
 use Dibi\UniqueConstraintViolationException;
 use Nette\Application\UI\Control;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Security\User;
 
 /**
@@ -21,21 +21,15 @@ use Nette\Security\User;
  */
 class PollControl extends Control
 {
-    /**
-     *
-     * @var User $user ;
-     */
+
     private User $user;
 
-    /**
-     *
-     * @var ITranslator $translator
-     */
-    private ITranslator $translator;
+
+    private Translator $translator;
 
     public function __construct(
         User                                  $user,
-        ITranslator                           $translator,
+        Translator                           $translator,
 
         private readonly PollRepository       $pollRepository,
         private readonly PollAnswerRepository $pollAnswerRepository,

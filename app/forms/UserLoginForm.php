@@ -6,11 +6,11 @@ use App\Database\EntityManagerDecorator;
 use App\Model\Entity\SessionEntity;
 use App\Model\Entity\UserEntity;
 use App\Presenters\Base\BasePresenter;
-use App\Services\TranslatorFactory;
 use DateTimeImmutable;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Http\Session;
+use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
 use Nette\Security\User;
 use Nette\Utils\ArrayHash;
@@ -28,12 +28,7 @@ class UserLoginForm extends Control
      * @persistent
      */
     public string $backlink = '';
-    
-    /**
-     *
-     * @var TranslatorFactory $translatorFactory
-     */
-    private TranslatorFactory $translatorFactory;
+
     
     /**
      *
@@ -51,14 +46,11 @@ class UserLoginForm extends Control
      *
      */
     public function __construct(
-        TranslatorFactory $translatorFactory,
+        private readonly Translator $translator,
         User              $user,
         Session           $session,
         private readonly EntityManagerDecorator $em,
     ) {
-        parent::__construct();
-        
-        $this->translatorFactory = $translatorFactory;
         $this->user              = $user;
         $this->session           = $session;
     }
@@ -75,7 +67,7 @@ class UserLoginForm extends Control
     protected function createComponentLoginForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
-        $form->setTranslator($this->translatorFactory->getForumTranslator());
+        $form->setTranslator($this->translator);
 
         $form->addText('user_name', 'Login:');
         $form->addPassword('user_password', 'Password:');

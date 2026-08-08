@@ -14,14 +14,6 @@ use Nette\Caching\IStorage;
  */
 class User2GroupManager extends MNManager
 {
-    /**
-     * Users2GroupsManager constructor.
-     *
-     * @param Connection    $dibi
-     * @param IStorage      $storage
-     * @param UsersManager  $left
-     * @param GroupManager $right
-     */
     public function __construct(Connection $dibi, IStorage $storage, UsersManager $left, GroupManager $right)
     {
         parent::__construct($dibi, $storage,$left, $right, 'user_group');

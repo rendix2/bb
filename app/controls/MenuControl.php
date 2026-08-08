@@ -2,8 +2,9 @@
 
 namespace App\Controls;
 
+use Nette\Application\Attributes\Deprecated;
 use Nette\Application\UI\Control;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 
 /**
  * Description of MenuControl
@@ -11,58 +12,22 @@ use Nette\Localization\ITranslator;
  * @author rendix2
  * @package App\Controls
  */
+#[Deprecated]
 class MenuControl extends Control
 {
-    /**
-     * @var array $leftMenu
-     */
-    private $leftMenu;
 
-    /**
-     * @var array $rightMenu
-     */
-    private $rightMenu;
-
-    /**
-     * @var ITranslator $translator
-     */
-    private $translator;
-
-    /**
-     * MenuControl constructor.
-     *
-     * @param ITranslator $translator
-     * @param array       $leftMenu
-     * @param array       $rightMenu
-     */
     public function __construct(
-        ITranslator $translator,
-        array       $leftMenu = [],
-        array       $rightMenu = []
+        private readonly Translator $translator,
+        private readonly array       $leftMenu = [],
+        private readonly array       $rightMenu = []
     ) {
         parent::__construct();
-        
-        $this->translator = $translator;
-        $this->leftMenu   = $leftMenu;
-        $this->rightMenu  = $rightMenu;
-    }
-    
-    /**
-     * MenuControl destructor.
-     */
-    public function __destruct()
-    {
-        $this->translator = null;
-        $this->leftMenu   = null;
-        $this->rightMenu  = null;
+
     }
 
-    /**
-     * MenuControl render.
-     */
-    public function render()
+    public function render(): void
     {
-        $template = $this->template;
+        $template = $this->getTemplate();
         $sep      = DIRECTORY_SEPARATOR;
                 
         $template->setFile(__DIR__ . $sep . 'templates' . $sep . 'menu' . $sep . 'menu.latte');

@@ -32,7 +32,6 @@ class ThanksFacade
     public function __construct(
         ThankManager $thanksManager,
         UsersManager  $usersManager,
-        PostManager  $postsManager,
         private readonly EntityManagerDecorator $em,
 
         private readonly ThankRepository $thankRepository,
@@ -82,7 +81,7 @@ class ThanksFacade
         }
     }
 
-    public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity)
+    public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity): void
     {
         /**
          * @var ThankEntity[] $thanks

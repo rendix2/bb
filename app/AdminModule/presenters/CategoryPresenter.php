@@ -10,8 +10,8 @@ use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use Doctrine\DBAL\Exception as DbalException;
 use Nette\Application\UI\Form;
-use Nette\DI\Attributes\Inject;
-use Nette\Localization\ITranslator;
+use Nette\Application\UI\Presenter;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -22,12 +22,11 @@ use Tracy\ILogger;
  * @author rendix2
  * @package App\AdminModule\Presenters
  */
-class CategoryPresenter extends AdminPresenter
+class CategoryPresenter extends Presenter
 {
-    #[Inject]
-    public ITranslator $adminTranslator;
-
     public function __construct(
+        private readonly Translator $translator,
+
         private readonly EntityManagerDecorator $em,
 
         private readonly CategoryRepository $categoryRepository,
@@ -54,20 +53,6 @@ class CategoryPresenter extends AdminPresenter
         }
     }
 
-    public function startup()
-    {
-        parent::startup();
-
-        $this->adminTranslator = $this->translatorFactory->getAdminTranslator();
-    }
-
-    public function beforeRender(): void
-    {
-        parent::beforeRender();
-
-        $this->getTemplate()->setTranslator($this->adminTranslator);
-    }
-
     /**
      * handle reorder
      */
@@ -76,10 +61,7 @@ class CategoryPresenter extends AdminPresenter
         // todo
     }
 
-    /**
-     * @param int $id
-     */
-    public function actionDelete(int $id)
+    public function actionDelete(int $id): void
     {
         if (!is_numeric($id)) {
             $this->error('Parameter is not numeric.');
@@ -177,7 +159,7 @@ class CategoryPresenter extends AdminPresenter
      */
     protected function createComponentGridFilter(): GridFilter
     {
-        $this->gf->setTranslator($this->getTranslator());
+        $this->gf->setTranslator($this->translator);
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('category_id', 'category_id', GridFilter::INT_EQUAL);
@@ -195,7 +177,7 @@ class CategoryPresenter extends AdminPresenter
             1 => ['text' => 'menu_categories']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
     
     protected function createComponentBreadCrumbEdit(): BreadCrumbControl
@@ -206,7 +188,7 @@ class CategoryPresenter extends AdminPresenter
             2 => ['link' => 'Category:edit',    'text' => 'menu_category'],
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     public function editFormSuccess(Form $form, ArrayHash $values): void

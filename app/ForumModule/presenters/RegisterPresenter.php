@@ -7,11 +7,10 @@ use App\Model\Entity\UserActivationEntity;
 use App\Model\Repository\LanguageRepository;
 use App\Model\Repository\UserRepository;
 use App\Models\UserFacade;
-use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Form;
-use Nette\Caching\Cache;
+use Nette\Application\UI\Presenter;
 use Nette\Caching\IStorage;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Security\Passwords;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Random;
@@ -22,13 +21,8 @@ use Nette\Utils\Random;
  * @author rendix2
  * @package App\ForumModule\Presenters
  */
-class RegisterPresenter extends BasePresenter
+class RegisterPresenter extends Presenter
 {
-    /**
-     * @var ITranslator $translator
-     */
-    private ITranslator $translator;
-
     /**
      * @var BBMailer $bbMailer
      * @inject
@@ -47,6 +41,8 @@ class RegisterPresenter extends BasePresenter
     private UserFacade $userFacade;
 
     public function __construct(
+        private readonly Translator $translator,
+
         UserFacade $userFacade,
 
         private readonly Passwords $passwords,
@@ -66,8 +62,6 @@ class RegisterPresenter extends BasePresenter
     public function startup()
     {
         parent::startup();
-        
-        $this->translator = $this->translatorFactory->getForumTranslator();
                 
         $this->getTemplate()->setTranslator($this->translator);
     }

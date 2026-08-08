@@ -2,15 +2,13 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
 use App\Models\FilesManager;
 use Contributte\Datagrid\Datagrid;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
@@ -23,13 +21,13 @@ use Tracy\ILogger;
  * @method FilesManager getManager()
  * @package App\AdminModule\Presenters
  */
-class FilePresenter extends AdminPresenter
+class FilePresenter extends Presenter
 {
-    private Translator $adminTranslator;
-
-    public function __construct(FilesManager $manager)
+    public function __construct(
+        private readonly Translator $translator
+    )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
@@ -49,28 +47,7 @@ class FilePresenter extends AdminPresenter
         }
     }
 
-    public function startup()
-    {
-        parent::startup();
 
-        $this->adminTranslator = $this->translatorFactory->getAdminTranslator();
-    }
-
-    public function beforeRender(): void
-    {
-        parent::beforeRender();
-
-        $this->getTemplate()->setTranslator($this->adminTranslator);
-    }
-
-    public function getTranslator(): ITranslator
-    {
-        return $this->adminTranslator;
-    }
-
-    /**
-     * @param int $id
-     */
     public function actionDelete(int $id): void
     {
         $result = $this->getManager()->delete($id);

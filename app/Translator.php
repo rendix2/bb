@@ -4,8 +4,7 @@ namespace App;
 
 use App\Settings\AppDir;
 use Nette\InvalidArgumentException;
-use Nette\Localization\ITranslator;
-use Stringable;
+
 
 /**
  * Description of Translator
@@ -13,7 +12,7 @@ use Stringable;
  * @author rendix2
  * @package App
  */
-class Translator implements ITranslator
+class Translator implements \Nette\Localization\Translator
 {
     /**
      * @var string $module

@@ -18,17 +18,7 @@ class ThankManager extends CrudManager
 {
 
 
-    /**
-     * @param int $topic_id
-     *
-     * @return Result|int
-     */
-    public function deleteByTopic($topic_id)
-    {
-        return $this->deleteFluent()
-            ->where('[thank_topic_id] = %i', $topic_id)
-            ->execute();
-    }
+
     
     /**
      *

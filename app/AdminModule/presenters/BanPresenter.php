@@ -11,8 +11,8 @@ use App\Model\Entity\BanEntity;
 use Contributte\Datagrid\Datagrid;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
-use Nette\DI\Attributes\Inject;
-use Nette\Localization\ITranslator;
+use Nette\Application\UI\Presenter;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -23,13 +23,13 @@ use Tracy\ILogger;
  * @author rendix2
  * @package App\AdminModule\Presenters
  */
-class BanPresenter extends AdminPresenter
+class BanPresenter extends Presenter
 {
-    #[Inject]
-    public ITranslator $adminTranslator;
 
     public function __construct(
         private readonly EntityManagerDecorator $em,
+
+        private readonly Translator $translator,
     )
     {
         parent::__construct();
@@ -56,19 +56,14 @@ class BanPresenter extends AdminPresenter
     {
         parent::startup();
 
-        $this->adminTranslator = $this->translatorFactory->getAdminTranslator();
+        $this->translator = $this->translator;
     }
 
     public function beforeRender(): void
     {
         parent::beforeRender();
 
-        $this->getTemplate()->setTranslator($this->adminTranslator);
-    }
-
-    public function getTranslator(): ITranslator
-    {
-        return $this->adminTranslator;
+        $this->getTemplate()->setTranslator($this->translator);
     }
 
     public function actionEdit(int $id): void
@@ -212,12 +207,9 @@ class BanPresenter extends AdminPresenter
         return $grid;
     }
     
-    /**
-     * @return GridFilter
-     */
     protected function createComponentGridFilter()
     {
-        $this->gf->setTranslator($this->getTranslator());
+        $this->gf->setTranslator($this->translator);
             
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('ban_id', 'ban_id', GridFilter::INT_EQUAL);
@@ -240,7 +232,7 @@ class BanPresenter extends AdminPresenter
             1 => ['text' => 'menu_bans']
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
     
     /**
@@ -254,6 +246,6 @@ class BanPresenter extends AdminPresenter
             2 => ['link' => 'Ban:default',   'text' => 'menu_ban'],
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 }

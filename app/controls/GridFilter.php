@@ -9,7 +9,7 @@ use Nette\Application\Attributes\Deprecated;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Http\Session;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
 
@@ -89,7 +89,7 @@ class GridFilter extends Control
     
     /**
      *
-     * @var ITranslator $translator
+     * @var Translator $translator
      */
     private $translator;
 
@@ -105,22 +105,9 @@ class GridFilter extends Control
         $this->filters = [];
         $this->session = $session;
     }
-    
-    /**
-     *
-     */
-    public function __destruct()
-    {
-        $this->form       = null;
-        $this->filters    = null;
-        $this->session    = null;
-        $this->translator = null;
-    }
 
-    /**
-     * @param ITranslator $translator
-     */
-    public function setTranslator(ITranslator $translator)
+
+    public function setTranslator(Translator $translator) : void
     {
         $this->translator = $translator;
     }

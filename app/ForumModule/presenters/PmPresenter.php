@@ -11,11 +11,10 @@ use App\Models\PmManager;
 use App\Models\ReportManager;
 use App\Models\UsersManager;
 use App\Presenters\Base\AuthenticatedPresenter;
-use App\Presenters\crud\CrudPresenter;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
-use Nette\Localization\ITranslator;
 use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
@@ -28,7 +27,7 @@ use Tracy\ILogger;
  * @method PmManager getManager()
  * @package App\ForumModule\Presenters
  */
-class PmPresenter extends AuthenticatedPresenter
+class PmPresenter extends Presenter
 {
     #[Inject]
     public ReportManager $reportsManager;
@@ -36,9 +35,9 @@ class PmPresenter extends AuthenticatedPresenter
     #[Inject]
     public UsersManager $usersManager;
 
-    private Translator $translator;
-
     public function __construct(
+        private readonly Translator $translator,
+
         private readonly UserSearchControl $userSearchControl,
         private readonly ReportForm $reportForm,
     ) {
@@ -55,8 +54,6 @@ class PmPresenter extends AuthenticatedPresenter
     public function startup()
     {
         parent::startup();
-
-        $this->translator = $this->translatorFactory->getForumTranslator();
 
         $this->getTemplate()->setTranslator($this->translator);
 

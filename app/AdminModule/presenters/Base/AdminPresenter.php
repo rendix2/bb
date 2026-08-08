@@ -3,8 +3,6 @@
 namespace App\AdminModule\Presenters\Base;
 
 use App\Presenters\Base\AuthenticatedPresenter;
-use App\Presenters\crud\CrudPresenter;
-use Nette\Localization\ITranslator;
 
 /**
  * Description of AdminPresenter¨
@@ -14,12 +12,6 @@ use Nette\Localization\ITranslator;
  */
 abstract class AdminPresenter extends AuthenticatedPresenter
 {
-    /**
-     * @var ITranslator $adminTranslator
-     */
-    private ITranslator $adminTranslator;
-
-
     /**
      * @param mixed $element
      */
@@ -38,30 +30,5 @@ abstract class AdminPresenter extends AuthenticatedPresenter
         if (!$user->isInRole('admin')) {
             $this->error('You are not admin.');
         }
-    }
-
-    /**
-     * AdminPresenter startup.
-     */
-    public function startup()
-    {
-        parent::startup();
-
-        $this->adminTranslator = $this->translatorFactory->getAdminTranslator();
-    }
-
-    /**
-     * AdminPresenter beforeRender.
-     */
-    public function beforeRender(): void
-    {
-        parent::beforeRender();
-
-        $this->getTemplate()->setTranslator($this->adminTranslator);
-    }
-    
-    public function getTranslator(): ITranslator
-    {
-        return $this->adminTranslator;
     }
 }

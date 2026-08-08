@@ -19,30 +19,14 @@ use Nette\Security\User;
 
 class PmManager extends CrudManager
 {
-   
-    /**
-     *
-     * @var User $user
-     */
-    private User $user;
 
-    /**
-     * PmManager constructor.
-     *
-     * @param Connection $dibi
-     * @param IStorage   $storage
-     * @param User       $user
-     *
-     * @throws Exception
-     */
     public function __construct(
         Connection $dibi,
         IStorage   $storage,
-        User       $user
+        private User       $user
     ) {
         parent::__construct($dibi, $storage);
 
-        $this->user = $user;
     }
 
     /**
@@ -69,30 +53,5 @@ class PmManager extends CrudManager
             ->where('pm_status = %s', 'sent')
             ->fetchSingle();
     }
-    
-    /**
-     *
-     * @param int $user_id
-     *
-     * @return bool
-     */
-    public function deleteByUserFrom($user_id)
-    {
-        return $this->deleteFluent()
-            ->where('[pm_user_id_from] = %i', $user_id)
-            ->execute();
-    }
-    
-    /**
-     *
-     * @param int $user_id
-     *
-     * @return bool
-     */
-    public function deleteByUserTo($user_id)
-    {
-        return $this->deleteFluent()
-            ->where('[pm_user_id_to] = %i', $user_id)
-            ->execute();
-    }
+
 }

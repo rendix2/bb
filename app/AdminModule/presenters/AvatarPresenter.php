@@ -2,7 +2,6 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\PaginatorControl;
 use App\Database\EntityManagerDecorator;
 use App\Model\Repository\UserRepository;
@@ -13,8 +12,7 @@ use Contributte\Datagrid\Datagrid;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
-use Nette\DI\Attributes\Inject;
-use Nette\Localization\ITranslator;
+use Nette\Application\UI\Presenter;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -26,13 +24,8 @@ use Tracy\ILogger;
  * @method UsersManager getManager()
  * @package App\AdminModule\Presenters
  */
-class AvatarPresenter extends AdminPresenter
+class AvatarPresenter extends Presenter
 {
-    #[Inject]
-    public Avatars $avatars;
-
-    #[Inject]
-    public ITranslator $adminTranslator;
 
     public function __construct(
         UsersManager $manager,
@@ -41,9 +34,11 @@ class AvatarPresenter extends AdminPresenter
         private readonly AvatarService $avatarService,
 
         private readonly EntityManagerDecorator $em,
+
+        private readonly Avatars $avatars,
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
@@ -64,31 +59,6 @@ class AvatarPresenter extends AdminPresenter
     }
 
     /**
-     * AdminPresenter startup.
-     */
-    public function startup()
-    {
-        parent::startup();
-
-        $this->adminTranslator = $this->translatorFactory->getAdminTranslator();
-    }
-
-    /**
-     * AdminPresenter beforeRender.
-     */
-    public function beforeRender(): void
-    {
-        parent::beforeRender();
-
-        $this->getTemplate()->setTranslator($this->adminTranslator);
-    }
-
-    public function getTranslator(): ITranslator
-    {
-        return $this->adminTranslator;
-    }
-
-    /**
      * @param int $id
      */
     public function actionDelete(int $id)
@@ -100,7 +70,7 @@ class AvatarPresenter extends AdminPresenter
         $result = $this->getManager()->delete($id);
 
         if ($result) {
-            $this->flashMessage('Item was deleted.', self::FLASH_MESSAGE_SUCCESS);
+            $this->flashMessage('Item was deleted.', 'success');
         } else {
             $this->flashMessage('Item was not deleted.', self::FLASH_MESSAGE_DANGER);
         }
@@ -108,10 +78,6 @@ class AvatarPresenter extends AdminPresenter
         $this->redirect(':' . $this->getName() . ':default');
     }
 
-
-    /**
-     * @param int|null $id
-     */
     public function renderEdit(int $id): void
     {
         if ($id) {
@@ -139,10 +105,6 @@ class AvatarPresenter extends AdminPresenter
         }
     }
 
-    /**
-     * @param Form      $form   form
-     * @param ArrayHash $values values
-     */
     public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         $id = $this->getParameter('id');
@@ -171,11 +133,6 @@ class AvatarPresenter extends AdminPresenter
         $this->redirect(':' . $this->getName() . ':default');
     }
 
-
-
-    /**
-     * @param int $page
-     */
     public function actionDefault($page = 1): void
     {
         $avatars = $this->userRepository->findWithAvatar();
@@ -191,20 +148,12 @@ class AvatarPresenter extends AdminPresenter
         $this->template->countItems  = $paginator->getCount();
     }
     
-    /**
-     *
-     * @param int $page
-     */
     public function renderDefault($page = 1): void
     {
         $this->template->avatarsSize = $this->avatars->getDirSize();
         $this->template->avatarsDir  = $this->avatars->getSPLDir()->getBasename();
     }
 
-    /**
-     * @param int    $user_id
-     * @param string $avatar_name
-     */
     public function handleDeleteAvatar(int $user_id, string $avatar_name): void
     {
         $this->avatarService->removeAvatarFile($avatar_name);

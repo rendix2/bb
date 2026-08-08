@@ -6,7 +6,6 @@ use App\Authorization\Authorizator;
 use App\Controls\MenuControl;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\BanEntity;
-use App\Services\TranslatorFactory;
 use Nette;
 use Nette\Http\IResponse;
 use App\BBCode;
@@ -37,11 +36,10 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
     const string MODERATOR_END_SPACE = 'moderator';
 
     #[Nette\DI\Attributes\Inject]
-    public TranslatorFactory $translatorFactory;
-
-    #[Nette\DI\Attributes\Inject]
     public EntityManagerDecorator $aem;
 
+    #[Nette\DI\Attributes\Inject]
+    public \Nette\Localization\Translator $translator;
 
     /**
      * beforeRender function
@@ -61,14 +59,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
         parent::startup();
 
         $this->banUser();
-
-        $this->template->id          = $this->getParameter('id');
-        $this->template->user_id     = $this->getParameter('user_id');
-        $this->template->category_id = $this->getParameter('category_id');
-        $this->template->forum_id    = $this->getParameter('forum_id');
-        $this->template->topic_id    = $this->getParameter('topic_id');
-        $this->template->post_id     = $this->getParameter('post_id');
-        $this->template->page        = $this->getParameter('page');
     }
 
     private function banUser(): void
@@ -123,6 +113,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter
             1 => ['presenter' => ':Forum:Index:default', 'title' => 'menu_forum'],
         ];
 
-        return new MenuControl($this->translatorFactory->getAdminTranslator(), $leftMenu, $rightMenu);
+        return new MenuControl($this->translator, $leftMenu, $rightMenu);
     }
 }

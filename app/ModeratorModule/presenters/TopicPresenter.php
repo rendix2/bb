@@ -4,8 +4,6 @@ namespace App\ModeratorModule\Presenters;
 
 use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
-use App\Model\Entity\ForumEntity;
-use App\Model\Entity\TopicEntity;
 use App\Model\Repository\ForumRepository;
 use App\Model\Repository\TopicRepository;
 use App\Models\TopicFacade;
@@ -13,6 +11,7 @@ use App\Models\TopicManager;
 use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -22,7 +21,7 @@ use Nette\Utils\ArrayHash;
  * @method TopicManager getManager()
  * @package App\ModeratorModule\Presenters
  */
-class TopicPresenter extends ModeratorPresenter
+class TopicPresenter extends Presenter
 {
     
     /**
@@ -33,14 +32,13 @@ class TopicPresenter extends ModeratorPresenter
     public TopicFacade $topicFacade;
 
     public function __construct(
-        TopicManager $manager,
         private readonly EntityManagerDecorator $em,
 
         private readonly ForumRepository $forumRepository,
         private readonly TopicRepository $topicRepository,
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     public function renderTopics(int $forum_id): void
@@ -76,15 +74,6 @@ class TopicPresenter extends ModeratorPresenter
 
         return $form;
     }
-    
-    /**
-     *
-     * @return GridFilter
-     */
-    protected function createComponentGridFilter(): GridFilter
-    {
-        return $this->gf;
-    }
 
     protected function createComponentMoveTopic(): BootstrapForm
     {
@@ -99,10 +88,6 @@ class TopicPresenter extends ModeratorPresenter
         return $form;
     }
 
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function moveTopicSuccess(Form $form, ArrayHash $values): void
     {
         $topicEntity = $this->topicRepository
@@ -138,10 +123,6 @@ class TopicPresenter extends ModeratorPresenter
         return $form;
     }
 
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function changeTopicAuthorSuccess(Form $form, ArrayHash $values): void
     {
     }
@@ -160,10 +141,6 @@ class TopicPresenter extends ModeratorPresenter
         return $form;
     }
 
-    /**
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function mergeTopicSuccess(Form $form, ArrayHash $values): void
     {
         $this->topicFacade->mergeTwoTopics($values->from_id, $values->target_id);

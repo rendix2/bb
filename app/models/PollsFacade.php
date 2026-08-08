@@ -3,10 +3,7 @@
 namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
-use App\Model\Repository\PollAnswerRepository;
-use App\Model\Repository\PollRepository;
-use App\Model\Repository\PollVoteRepository;
-use App\Models\Entity\PollEntity;
+
 
 /**
  * Description of PollsFacade

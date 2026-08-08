@@ -11,6 +11,7 @@ use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\UserEntity;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -25,6 +26,8 @@ class LanguagePresenter extends AdminPresenter
 {
     public function __construct(
         private readonly EntityManagerDecorator $em,
+
+        private readonly Translator $translator,
     )
     {
         parent::__construct();
@@ -117,7 +120,7 @@ class LanguagePresenter extends AdminPresenter
 
     protected function createComponentGridFilter(): GridFilter
     {
-        $this->gf->setTranslator($this->getTranslator());
+        $this->gf->setTranslator($this->translator);
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('lang_id', 'lang_id', GridFilter::INT_EQUAL);
@@ -178,7 +181,7 @@ class LanguagePresenter extends AdminPresenter
             1 => ['text' => 'menu_languages']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     protected function createComponentBreadCrumbEdit()
@@ -189,6 +192,6 @@ class LanguagePresenter extends AdminPresenter
             2 => ['link' => 'Language:edit',    'text' => 'menu_language'],
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 }

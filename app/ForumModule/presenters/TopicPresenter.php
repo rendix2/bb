@@ -12,7 +12,6 @@ use App\Database\EntityManagerDecorator;
 use App\Forms\ReportForm;
 use App\Forms\TopicFastReplyForm;
 use App\Forms\TopicJumpToForumForm;
-use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Entity\CategoryEntity;
 use App\Model\Entity\ForumEntity;
 use App\Model\Entity\TopicWatchEntity;
@@ -28,7 +27,6 @@ use App\Model\Repository\ThankRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\TopicWatchRepository;
 use App\Model\Repository\UserRepository;
-use App\Models\Entity\PollEntity;
 use App\Models\Posts2FilesManager;
 use App\Models\ThanksFacade;
 use App\Models\TopicFacade;
@@ -296,12 +294,13 @@ class TopicPresenter extends Presenter
         $thankEntity->ipAddress = $this->getHttpRequest()->getRemoteAddress();
 
         try {
-            $this->thanksFacade->add($thankEntity);
+            $this->em->persist($thankEntity);
+            $this->em->flush();
 
             $this->flashMessage('Your thank to this topic.', self::FLASH_MESSAGE_SUCCESS);
         } catch (Exception $exception) {
             $this->flashMessage('Thank was not saved');
-            $this->redrawControl('flashs');
+            $this->redrawControl('flashes');
         }
         
         $this->redirect('Topic:default', $category_id, $forum_id, $topic_id);
@@ -315,14 +314,6 @@ class TopicPresenter extends Presenter
                     'id' => $category_id
                 ]
             );
-
-        if ($categoryEntity === null) {
-            $this->error('Category was not found.');
-        }
-
-        if ($categoryEntity->active === false) {
-            $this->error('Category is not active.');
-        }
 
         $forumEntity = $this->forumRepository
             ->findOneBy(
@@ -338,16 +329,24 @@ class TopicPresenter extends Presenter
                 ]
             );
 
-        $pollDibi = $this->pollRepository->findByTopicId($topic_id);
-        
-        if ($pollDibi) {
-            $pollTimeStamp = $pollDibi->poll_time_to;
-            unset($pollDibi->poll_time_to);
-        
-            $pollEntity = PollEntity::setFromRow($pollDibi);
-            $pollEntity->setPoll_time_to(DateTime::from($pollTimeStamp));
-        
-            $topicEntity->setPoll($pollEntity);
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
+        if ($forumEntity === null) {
+            $this->error('Forum was not found.');
+        }
+
+        if ($forumEntity->active === false) {
+            $this->error('Forum is not active.');
+        }
+
+        if ($topicEntity === null) {
+            $this->error('Topic was not found.');
         }
         
         $forumScope = $this->scopeService->loadForum($forumEntity);
@@ -358,7 +357,7 @@ class TopicPresenter extends Presenter
         $res = $this->topicFacade->delete($topicEntity);
         
         if ($res) {
-            $this->flashMessage('Topic was deleted.', self::FLASH_MESSAGE_SUCCESS);
+            $this->flashMessage('Topic was deleted.', 'success');
         }
         
         $this->redirect('Forum:default', $category_id, $forum_id, $page);
@@ -380,14 +379,6 @@ class TopicPresenter extends Presenter
                 ]
             );
 
-        if ($categoryEntity === null) {
-            $this->error('Category was not found.');
-        }
-
-        if ($categoryEntity->active === false) {
-            $this->error('Category is not active.');
-        }
-
         $forumEntity = $this->forumRepository
             ->findOneBy(
                 [
@@ -401,6 +392,26 @@ class TopicPresenter extends Presenter
                     'id' => $topic_id,
                 ]
             );
+
+        if ($categoryEntity === null) {
+            $this->error('Category was not found.');
+        }
+
+        if ($categoryEntity->active === false) {
+            $this->error('Category is not active.');
+        }
+
+        if ($forumEntity === null) {
+            $this->error('Forum was not found.');
+        }
+
+        if ($forumEntity->active === false) {
+            $this->error('Forum is not active.');
+        }
+
+        if ($topicEntity === null) {
+            $this->error('Topic was not found.');
+        }
         
         $forumScope = $this->scopeService->loadForum($forumEntity);
         $topicScope = $this->scopeService->loadTopic($forumEntity, $topicEntity);
@@ -483,8 +494,7 @@ class TopicPresenter extends Presenter
     {
         $user_id = $this->getUser()->getId();
 
-        $ranks = $this->rankRepository
-            ->findAll();
+        $ranks = $this->rankRepository->findAll();
 
         $topicEntity = $this->topicRepository
             ->findOneBy(
@@ -512,7 +522,7 @@ class TopicPresenter extends Presenter
         $this->getTemplate()->topicWatch = $topicWatchEntity;
         $this->getTemplate()->ranks      = $ranks;
         
-        //$this->template->thanks     = $this->thanksManager->getAllJoinedUserByTopic($topic_id);
+        $this->template->thanks     = $topicEntity->thanks;
         $this->getTemplate()->signatureDelimiter = $this->postSettings->get()['signatureDelimiter'];
     }
 

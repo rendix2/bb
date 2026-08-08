@@ -13,9 +13,10 @@ use App\Models\Mails2UsersManager;
 use App\Models\MailsManager;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
 use Nette\InvalidArgumentException;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Mail\FallbackMailerException;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
@@ -28,7 +29,7 @@ use Tracy\ILogger;
  * @method MailsManager getManager()
  * @package App\AdminModule\Presenters
  */
-class EmailPresenter extends AdminPresenter
+class EmailPresenter extends Presenter
 {
 
     #[Inject]
@@ -37,15 +38,13 @@ class EmailPresenter extends AdminPresenter
     #[Inject]
     public Mails2UsersManager $mail2UsersManager;
 
-    #[Inject]
-    public ITranslator $adminTranslator;
 
     public function __construct(
-        MailsManager $manager,
         private readonly EntityManagerDecorator $em,
+        private readonly Translator $translator,
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
@@ -65,35 +64,7 @@ class EmailPresenter extends AdminPresenter
         }
     }
 
-    /**
-     * AdminPresenter startup.
-     */
-    public function startup()
-    {
-        parent::startup();
-
-        $this->adminTranslator = $this->translatorFactory->getAdminTranslator();
-    }
-
-    /**
-     * AdminPresenter beforeRender.
-     */
-    public function beforeRender(): void
-    {
-        parent::beforeRender();
-
-        $this->getTemplate()->setTranslator($this->adminTranslator);
-    }
-
-    public function getTranslator(): ITranslator
-    {
-        return $this->adminTranslator;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function actionDelete(int $id)
+    public function actionDelete(int $id): void
     {
         if (!is_numeric($id)) {
             $this->error('Parameter is not numeric.');
@@ -177,7 +148,7 @@ class EmailPresenter extends AdminPresenter
      */
     protected function createComponentGridFilter(): GridFilter
     {
-        $this->gf->setTranslator($this->getTranslator());
+        $this->gf->setTranslator($this->translator);
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('mail_id', 'mail_id', GridFilter::INT_EQUAL);
@@ -190,7 +161,7 @@ class EmailPresenter extends AdminPresenter
     protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
         $form = new \Contributte\FormsBootstrap\BootstrapForm();
-        $form->setTranslator($this->getTranslator());
+        $form->setTranslator($this->translator);
 
         $form->addText('mail_subject', 'mail_subject:')
             ->setDisabled();
@@ -285,7 +256,7 @@ class EmailPresenter extends AdminPresenter
             1 => ['text' => 'menu_emails']
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
     
     protected function createComponentBreadCrumbEdit(): BreadCrumbControl
@@ -296,7 +267,7 @@ class EmailPresenter extends AdminPresenter
             2 => ['link' => 'Email:edit',    'text' => 'menu_email'],
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
     
     protected function createComponentBreadCrumbSend(): BreadCrumbControl
@@ -307,6 +278,6 @@ class EmailPresenter extends AdminPresenter
             2 => ['link' => 'Email:send',    'text' => 'mail_send'],
         ];
         
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 }

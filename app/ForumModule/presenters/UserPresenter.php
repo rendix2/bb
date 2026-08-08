@@ -36,7 +36,9 @@ use App\Settings\StartDay;
 use App\Settings\Users;
 use Doctrine\DBAL\Exception;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
 use Nette\InvalidArgumentException;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
 
@@ -47,7 +49,7 @@ use Nette\Utils\DateTime;
  * @method UsersManager getManager()
  * @package App\ForumModule\Presenters
  */
-class UserPresenter extends BaseForumPresenter
+class UserPresenter extends Presenter
 {
     /**
      * @var Avatars $avatar
@@ -98,6 +100,8 @@ class UserPresenter extends BaseForumPresenter
 
 
     public function __construct(
+        private readonly Translator $translator,
+
         UsersManager                                 $manager,
         private readonly EntityManagerDecorator      $em,
         private readonly ReportForm                  $reportForm,
@@ -514,7 +518,7 @@ class UserPresenter extends BaseForumPresenter
 
     protected function createComponentSendMailToAdmin(): SendMailToAdminForm
     {
-        return new SendMailToAdminForm($this->translatorFactory, $this->getManager(), $this->bbMailer);
+        return new SendMailToAdminForm($this->translator, $this->getManager(), $this->bbMailer);
     }
 
     protected function createComponentChangePasswordControl(): UserChangePasswordForm
@@ -628,7 +632,7 @@ class UserPresenter extends BaseForumPresenter
             1 => ['text' => 'menu_user']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     /**
@@ -643,7 +647,7 @@ class UserPresenter extends BaseForumPresenter
             3 => ['text' => 'menu_posts']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     /**
@@ -657,7 +661,7 @@ class UserPresenter extends BaseForumPresenter
             2 => ['text' => 'menu_user']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     /**
@@ -672,7 +676,7 @@ class UserPresenter extends BaseForumPresenter
             2 => ['text' => 'user_admin_contact']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     /**
@@ -688,7 +692,7 @@ class UserPresenter extends BaseForumPresenter
             3 => ['text' => 'Thanks']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     /**
@@ -704,7 +708,7 @@ class UserPresenter extends BaseForumPresenter
             3 => ['text' => 'menu_topics']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     /**
@@ -720,7 +724,7 @@ class UserPresenter extends BaseForumPresenter
             3 => ['text' => 'watches']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     /**
@@ -736,6 +740,6 @@ class UserPresenter extends BaseForumPresenter
             3 => ['text' => 'Report user']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 }

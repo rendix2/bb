@@ -5,7 +5,6 @@ namespace App\Controls;
 use App\Model\Repository\UserRepository;
 use App\Models\Mails2UsersManager;
 use App\Models\MailsManager;
-use App\Models\UsersManager;
 use App\Settings\Email;
 use App\Settings\TempDir;
 use App\Utils;

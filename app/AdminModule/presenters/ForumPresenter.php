@@ -2,7 +2,6 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
@@ -12,25 +11,20 @@ use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\UserRepository;
-use App\Models\ForumManager;
 use Doctrine\DBAL\Exception as DbalException;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Application\UI\Presenter;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
 
-/**
- * Description of ForumPresenter
- *
- * @author rendix2
- * @method ForumManager getManager()
- * @package App\AdminModule\Presenters
- */
-class ForumPresenter extends AdminPresenter
+class ForumPresenter extends Presenter
 {
 
     public function __construct(
+        private readonly Translator $translator,
+
         private readonly EntityManagerDecorator $em,
         private readonly CategoryRepository     $categoryRepository,
         private readonly ForumRepository        $forumRepository,
@@ -57,28 +51,6 @@ class ForumPresenter extends AdminPresenter
         if (!$user->isInRole('admin')) {
             $this->error('You are not admin.');
         }
-    }
-
-    public function startup()
-    {
-        parent::startup();
-
-        $this->adminTranslator = $this->translatorFactory->getAdminTranslator();
-    }
-
-    /**
-     * AdminPresenter beforeRender.
-     */
-    public function beforeRender(): void
-    {
-        parent::beforeRender();
-
-        $this->getTemplate()->setTranslator($this->adminTranslator);
-    }
-
-    public function getTranslator(): ITranslator
-    {
-        return $this->adminTranslator;
     }
 
     /**
@@ -305,7 +277,7 @@ class ForumPresenter extends AdminPresenter
      */
     protected function createComponentGridFilter(): GridFilter
     {
-        $this->gf->setTranslator($this->getTranslator());
+        $this->gf->setTranslator($this->translator);
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('forum_id', 'forum_id', GridFilter::INT_EQUAL);
@@ -316,9 +288,6 @@ class ForumPresenter extends AdminPresenter
         return $this->gf;
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = [
@@ -326,12 +295,9 @@ class ForumPresenter extends AdminPresenter
             1 => ['text' => 'menu_forums']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbEdit(): BreadCrumbControl
     {
         $breadCrumb = [
@@ -340,6 +306,6 @@ class ForumPresenter extends AdminPresenter
             2 => ['link' => 'Forum:edit', 'text' => 'menu_forum'],
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 }

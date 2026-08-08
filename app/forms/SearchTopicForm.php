@@ -4,7 +4,7 @@ namespace App\Forms;
 
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -16,10 +16,8 @@ use Nette\Utils\ArrayHash;
 class SearchTopicForm extends Control
 {
 
-    public function __construct(private ITranslator $translator)
+    public function __construct(private readonly Translator $translator)
     {
-        parent::__construct();
-
     }
 
     public function render(): void
@@ -41,6 +39,6 @@ class SearchTopicForm extends Control
     
     public function searchTopicFormSuccess(Form $form, ArrayHash $values)
     {
-        $this->presenter->redirect('Search:topicResults', $values->search_topic);
+        $this->getPresenter()->redirect('Search:topicResults', $values->search_topic);
     }
 }

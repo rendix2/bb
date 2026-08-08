@@ -3,7 +3,6 @@
 namespace App\ModeratorModule\Presenters\Base;
 
 use App\Presenters\crud\CrudPresenter;
-use Nette\Localization\ITranslator;
 
 /**
  * Description of ModeratorPresenter
@@ -13,22 +12,6 @@ use Nette\Localization\ITranslator;
  */
 abstract class ModeratorPresenter extends CrudPresenter
 {
-    //use AuthorizationPresenter;
-    
-    /**
-     *
-     * @var ITranslator $adminTranslator
-     */
-    private ITranslator $translator;
-
-    /**
-     * @return ITranslator
-     */
-    public function getTranslator(): ITranslator
-    {
-        return $this->translator;
-    }
-
     /**
      * ModeratorPresenter checkRequirements
      *
@@ -41,23 +24,5 @@ abstract class ModeratorPresenter extends CrudPresenter
         parent::checkRequirements($element);
     }
 
-    /**
-     * ModeratorPresenter startup.
-     */
-    public function startup()
-    {
-        parent::startup();
-        
-        $this->translator = $this->translatorFactory->getForumTranslator();
-    }
 
-    /**
-     * ModeratorPresenter beforeRender.
-     */
-    public function beforeRender(): void
-    {
-        parent::beforeRender();
-
-        $this->getTemplate()->setTranslator($this->translator);
-    }
 }

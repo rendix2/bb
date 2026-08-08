@@ -19,10 +19,7 @@ class Tables
     const FORUM_TABLE = self::PREFIX . 'forums';
     
     const FORUMS2GROUPS_TABLE = self::PREFIX . 'forums2groups';
-    
 
-    
-    const MODERATORS_TABLE = self::PREFIX . 'moderator';
     
 
     

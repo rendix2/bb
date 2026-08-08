@@ -2,10 +2,8 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Controls\GridFilter;
-use App\Models\CacheManager;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Security\User;
@@ -15,10 +13,9 @@ use Nette\Utils\ArrayHash;
  * Description of CachePresenter
  *
  * @author rendix2
- * @method CacheManager getManager()
  * @package App\AdminModule\Presenters
  */
-class CachePresenter extends AdminPresenter
+class CachePresenter extends Presenter
 {
     
     /**
@@ -27,22 +24,13 @@ class CachePresenter extends AdminPresenter
      */
     private Cache $cache;
 
-    /**
-     * CachePresenter constructor.
-     *
-     * @param CacheManager $manager
-     * @param IStorage     $storage
-     */
-    public function __construct(CacheManager $manager, IStorage $storage)
+    public function __construct(IStorage $storage)
     {
-        parent::__construct($manager);
+        parent::__construct();
         
         $this->cache = new Cache($storage);
     }
 
-    /**
-     * CachePresenter startup.
-     */
     public function startup()
     {
         parent::startup();
@@ -58,15 +46,6 @@ class CachePresenter extends AdminPresenter
         }
     }
 
-    /**
-     * CachePresenter beforeRender.
-     */
-    public function beforeRender(): void
-    {
-        parent::beforeRender();
-
-        $this->getTemplate()->setTranslator($this->translatorFactory->getAdminTranslator());
-    }
 
     protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm
     {
@@ -78,25 +57,10 @@ class CachePresenter extends AdminPresenter
         return $form;
     }
     
-    /**
-     * deletes ALL cache
-     *
-     * @param Form      $form
-     * @param ArrayHash $values
-     */
     public function editFormSuccess(Form $form, ArrayHash $values): void
     {
         $this->cache->clean([Cache::All => Cache::All]);
-        $this->flashMessage('Cache was deleted.', self::FLASH_MESSAGE_SUCCESS);
+        $this->flashMessage('Cache was deleted.', 'success');
         $this->redirect('this');
-    }
-    
-    /**
-     *
-     * @return GridFilter
-     */
-    protected function createComponentGridFilter(): GridFilter
-    {
-        return $this->gf;
     }
 }

@@ -2,13 +2,14 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
 use App\Models\ReportManager;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -20,11 +21,13 @@ use Tracy\ILogger;
  * @method ReportManager getManager()
  * @package App\AdminModule\Presenters
  */
-class ReportPresenter extends AdminPresenter
+class ReportPresenter extends Presenter
 {
-    public function __construct(ReportManager $manager)
+    public function __construct(
+        private readonly Translator $translator
+    )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     public function actionDelete(int $id)
@@ -147,7 +150,7 @@ class ReportPresenter extends AdminPresenter
      */
     protected function createComponentGridFilter(): GridFilter
     {
-        $this->gf->setTranslator($this->getTranslator());
+        $this->gf->setTranslator($this->translator);
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('report_id', 'report_id', GridFilter::INT_EQUAL);
@@ -182,7 +185,7 @@ class ReportPresenter extends AdminPresenter
             1 => ['text' => 'menu_reports']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     /**
@@ -196,6 +199,6 @@ class ReportPresenter extends AdminPresenter
             2 => ['link' => 'Report:edit',    'text' => 'menu_report'],
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 }

@@ -4,11 +4,10 @@ namespace App\UI\Forum\Category;
 
 use App\Controls\BreadCrumbControl;
 use App\Database\EntityManagerDecorator;
-use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
-use App\Models\Crud\CrudNullManager;
 use Nette\Application\UI\Presenter;
+use Nette\Localization\Translator;
 
 /**
  * Description of CategoryPresenter
@@ -19,14 +18,15 @@ use Nette\Application\UI\Presenter;
 class CategoryPresenter extends Presenter
 {
     public function __construct(
-        CrudNullManager $crudNullManager,
         private readonly EntityManagerDecorator $em,
+
+        private readonly Translator $translator,
 
         private readonly CategoryRepository $categoryRepository,
         private readonly ForumRepository    $forumRepository,
     )
     {
-        parent::__construct($crudNullManager);
+        parent::__construct();
     }
 
     /**
@@ -93,6 +93,6 @@ class CategoryPresenter extends Presenter
             1 => ['text' => 'menu_category']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 }

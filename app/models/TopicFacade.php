@@ -22,106 +22,19 @@ use Nette\Utils\ArrayHash;
  */
 class TopicFacade
 {
-    /**
-     *
-     * @var TopicManager $topicsManager
-     */
-    private TopicManager $topicsManager;
-
-    /**
-     *
-     * @var TopicWatchManager $topicWatchManager
-     */
-    private TopicWatchManager $topicWatchManager;
-
-    /**
-     *
-     * @var PostManager $postsManager
-     */
-    private PostManager $postsManager;
-
-    /**
-     *
-     * @var UsersManager $usersManager
-     */
-    private UsersManager $usersManager;
-
-    /**
-     *
-     * @var ThankManager $thanksManager
-     */
-    private ThankManager $thanksManager;
-
-    /**
-     *
-     * @var ForumManager $forumsManager
-     */
-    private ForumManager $forumsManager;
-
-    /**
-     *
-     * @var PostFacade $postFacade
-     */
-    private PostFacade $postFacade;
-
-    /**
-     * @var ReportManager $reportsManager
-     */
-    private ReportManager $reportsManager;
-    
-    /**
-     *
-     * @var TopicWatchFacade $topicWatchFacade
-     */
-    private TopicWatchFacade $topicWatchFacade;
-    
-    /**
-     *
-     * @var ThanksFacade $thanksFacade
-     */
-    private ThanksFacade $thanksFacade;
-
-    /**
-     * @var ReportFacade $reportFacade
-     */
-    private ReportFacade $reportFacade;
-    
-    /**
-     *
-     * @var PollsFacade $pollsFacade
-     */
-    private PollsFacade $pollsFacade;
-
-    /**
-     *
-     * TopicFacade constructor
-     *
-     * @param TopicManager     $topicsManager
-     * @param TopicWatchManager $topicWatchManager
-     * @param PostManager      $postsManager
-     * @param UsersManager      $usersManager
-     * @param ThankManager     $thanksManager
-     * @param ForumManager     $forumsManager
-     * @param PostFacade        $postFacade
-     * @param ReportManager    $reportsManager
-     * @param TopicWatchFacade  $topicWatchFacade
-     * @param ThanksFacade      $thanksFacade
-     * @param ReportFacade      $reportFacade
-     * @param PollsFacade       $pollsFacade
-     */
     public function __construct(
-        TopicManager      $topicsManager,
-        TopicWatchManager $topicWatchManager,
-        PostManager       $postsManager,
-        UsersManager      $usersManager,
-        ThankManager      $thanksManager,
-        ForumManager      $forumsManager,
-        PostFacade        $postFacade,
-        ReportManager     $reportsManager,
-        TopicWatchFacade  $topicWatchFacade,
-        ThanksFacade      $thanksFacade,
-        ReportFacade      $reportFacade,
-        PollsFacade       $pollsFacade,
+        private readonly TopicManager      $topicsManager,
+        private readonly TopicWatchManager $topicWatchManager,
+        private readonly PostManager       $postsManager,
+        private readonly UsersManager      $usersManager,
+        private readonly ThankManager      $thanksManager,
+        private readonly ForumManager      $forumsManager,
+        private readonly PostFacade        $postFacade,
+        private readonly ReportManager     $reportsManager,
+        private readonly TopicWatchFacade  $topicWatchFacade,
+        private readonly ThanksFacade      $thanksFacade,
+        private readonly ReportFacade      $reportFacade,
+        private readonly PollsFacade       $pollsFacade,
 
         private readonly ThankRepository      $thankRepository,
         private readonly TopicWatchRepository $topicWatchRepository,
@@ -133,18 +46,6 @@ class TopicFacade
 
         private readonly EntityManagerDecorator $em,
     ) {
-        $this->topicsManager     = $topicsManager;
-        $this->topicWatchManager = $topicWatchManager;
-        $this->postsManager      = $postsManager;
-        $this->usersManager      = $usersManager;
-        $this->thanksManager     = $thanksManager;
-        $this->postFacade        = $postFacade;
-        $this->forumsManager     = $forumsManager;
-        $this->reportsManager    = $reportsManager;
-        $this->topicWatchFacade  = $topicWatchFacade;
-        $this->thanksFacade      = $thanksFacade;
-        $this->reportFacade      = $reportFacade;
-        $this->pollsFacade       = $pollsFacade;
     }
 
     public function add(\App\Model\Entity\TopicEntity $topicEntity, PostEntity $postEntity): void
@@ -401,7 +302,12 @@ class TopicFacade
             ArrayHash::from(['report_topic_id' => $topic_target_id, 'report_forum_id' => $topicTarget->topic_forum_id])
         );
         $this->topicWatchManager->mergeByLeft($topic_target_id, $topicWatches);
-        $this->topicWatchManager->deleteByLeft($topic_from_id);
+
+        foreach ($topicFrom->watches as $watch) {
+            $this->em->remove($watch);
+        }
+
+        $this->em->flush();
         
         $post_ids = Utils::arrayObjectColumn($posts, 'post_id');
 

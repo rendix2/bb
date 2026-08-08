@@ -2,7 +2,6 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
@@ -11,8 +10,10 @@ use App\services\RankService;
 use App\Settings\RanksDir;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
 use Nette\FileNotFoundException;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -23,15 +24,15 @@ use Tracy\ILogger;
  * @author rendix2
  * @package App\AdminModule\Presenters
  */
-class RankPresenter extends AdminPresenter
+class RankPresenter extends Presenter
 {
-    #[Inject]
-    public RanksDir $ranks;
-
     public function __construct(
+        private readonly Translator $translator,
+
         private readonly RankRepository $rankRepository,
 
-        private readonly RankService    $rankService,
+        private readonly RankService $rankService,
+        private readonly RanksDir    $ranksDir,
     )
     {
         parent::__construct();
@@ -52,7 +53,7 @@ class RankPresenter extends AdminPresenter
         $this->addComponent($paginator, 'paginator');
 
         if (!$paginator->getCount()) {
-            $this->flashMessage(sprintf('No %s.', $this->getTitle()), self::FLASH_MESSAGE_DANGER);
+            $this->flashMessage(sprintf('No %s.', $this->getTitle()), 'success');
         }
 
         $this->template->items = $items->fetchAll();
@@ -66,7 +67,7 @@ class RankPresenter extends AdminPresenter
 
     public function renderEdit(int $id): void
     {
-        $this->getTemplate()->ranksDir = $this->ranks->getTemplateDir();
+        $this->getTemplate()->ranksDir = $this->ranksDir->getTemplateDir();
 
         if ($id) {
             if (!is_numeric($id)) {
@@ -195,7 +196,7 @@ class RankPresenter extends AdminPresenter
 
     protected function createComponentGridFilter(): GridFilter
     {
-        $this->gf->setTranslator($this->getTranslator());
+        $this->gf->setTranslator($this->translator);
 
         $this->gf->addFilter('multiDelete', null, GridFilter::NOTHING);
         $this->gf->addFilter('rank_id', 'rank_id', GridFilter::INT_EQUAL);
@@ -213,7 +214,7 @@ class RankPresenter extends AdminPresenter
             1 => ['text' => 'menu_ranks']
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
     protected function createComponentBreadCrumbEdit(): BreadCrumbControl
@@ -224,6 +225,6 @@ class RankPresenter extends AdminPresenter
             2 => ['link' => 'Rank:edit', 'text' => 'menu_rank'],
         ];
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 }

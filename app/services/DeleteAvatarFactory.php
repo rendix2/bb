@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Database\EntityManagerDecorator;
 use App\Forms\UserDeleteAvatarForm;
+use App\Model\Repository\UserRepository;
 use App\Models\UsersManager;
 use App\Settings\Avatars;
+use Nette\Localization\Translator;
 use Nette\Security\User;
 
 /**
@@ -16,58 +19,16 @@ use Nette\Security\User;
 class DeleteAvatarFactory
 {
 
-    /**
-     *
-     * @var UsersManager $userManager
-     */
-    private $userManager;
-    
-    /**
-     *
-     * @var Avatars $avatars
-     */
-    private $avatars;
-    
-    /**
-     *
-     * @var User $user
-     */
-    private $user;
-    
-    /**
-     * @var TranslatorFactory $translatorFactory
-     */
-    private $translatorFactory;
-    
-    /**
-     * DeleteAvatarFactory constructor.
-     *
-     * @param UsersManager      $usersManager
-     * @param Avatars           $avatars
-     * @param User              $user
-     * @param TranslatorFactory $translatorFactory
-     */
     public function __construct(
-        UsersManager      $usersManager,
-        Avatars           $avatars,
-        User              $user,
-        TranslatorFactory $translatorFactory
+        private readonly EntityManagerDecorator $em,
+        private readonly Translator             $translator,
+
+        private readonly UserRepository $userRepository,
+
+        private readonly AvatarService $avatarService,
+
+        private readonly User              $user
     ) {
-        $this->userManager       = $usersManager;
-        $this->avatars           = $avatars;
-        $this->user              = $user;
-        $this->translatorFactory = $translatorFactory;
-    }
-    
-    /**
-     * DeleteAvatarFactory destructor.
-     */
-    public function __destruct()
-    {
-        $this->userManager       = null;
-        $this->avatars           = null;
-        $this->user              = null;
-        $this->translatorFactory = null;
     }
 
     /**
@@ -77,10 +38,11 @@ class DeleteAvatarFactory
     public function getForum()
     {
         return new UserDeleteAvatarForm(
-            $this->userManager,
-            $this->avatars,
+            $this->em,
             $this->user,
-            $this->translatorFactory->getForumTranslator()
+            $this->translator,
+            $this->userRepository,
+            $this->avatarService,
         );
     }
     
@@ -91,10 +53,11 @@ class DeleteAvatarFactory
     public function getAdmin()
     {
         return new UserDeleteAvatarForm(
-            $this->userManager,
-            $this->avatars,
+            $this->em,
             $this->user,
-            $this->translatorFactory->getAdminTranslator()
+            $this->translator,
+            $this->userRepository,
+            $this->avatarService,
         );
     }
 }

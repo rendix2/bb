@@ -5,13 +5,13 @@ namespace App\AdminModule\Presenters;
 use App\Authorization\Authorizator;
 use App\Database\EntityManagerDecorator;
 use App\Forms\UserLoginForm;
+use App\Model\Entity\SessionEntity;
 use App\Model\Repository\UserRepository;
 use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
-use App\Translator;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Form;
-use Nette\DI\Attributes\Inject;
+use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
 use Nette\Utils\ArrayHash;
 
@@ -25,9 +25,6 @@ class LoginPresenter extends BasePresenter
 {
     #[Persistent]
     public string $backlink = '';
-    
-    private Translator $translator;
-
 
     public function __construct(
         private readonly UserRepository $userRepository,
@@ -35,6 +32,8 @@ class LoginPresenter extends BasePresenter
         private readonly UserLoginFormFactory $userLoginFormFactory,
 
         private readonly EntityManagerDecorator $em,
+
+        private readonly Translator $translator,
     )
     {
     }
@@ -44,14 +43,6 @@ class LoginPresenter extends BasePresenter
         $this->getUser()->getStorage()->setNamespace(self::BACK_END_NAMESPACE);
         
         parent::checkRequirements($element);
-    }
-
-    public function startup()
-    {
-        parent::startup();
-        
-        $this->translator = $this->translatorFactory->getAdminTranslator();
-        $this->getTemplate()->setTranslator($this->translator);
     }
 
     protected function createComponentAdminLoginForm(): \Contributte\FormsBootstrap\BootstrapForm
@@ -95,7 +86,7 @@ class LoginPresenter extends BasePresenter
 
             $this->em->flush();
             
-            $sessionEntity = new \App\Model\Entity\SessionEntity();
+            $sessionEntity = new SessionEntity();
             $sessionEntity->key = $this->getSession()->getId();
             $sessionEntity->user = $userEntity;
             $sessionEntity->lastActivity = new \DateTimeImmutable();
