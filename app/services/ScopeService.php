@@ -10,16 +10,19 @@ use App\Authorization\Scopes\User;
 use App\Model\Entity\ForumEntity;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\TopicEntity;
+use App\Model\Repository\GroupForumPermissionRepository;
 use App\Model\Repository\ThankRepository;
+use App\Model\Repository\UserForumPermissionRepository;
 use App\Models\User2GroupManager;
-use App\Models\Users2ForumsManager;
 
 class ScopeService
 {
 
     public function __construct(
         private readonly User2GroupManager $users2GroupsManager,
-        private readonly Users2ForumsManager $users2ForumsManager,
+
+        private readonly UserForumPermissionRepository $userForumPermissionRepository,
+        private readonly GroupForumPermissionRepository $groupForumPermissionRepository,
 
         private readonly ThankRepository $thankRepository,
     )
@@ -38,7 +41,7 @@ class ScopeService
             $moderatorsI[] = $moderatorUser;
         }
 
-        return new ForumScope($forum, $moderatorsI, $this->users2GroupsManager, $this->users2ForumsManager);
+        return new ForumScope($forum, $moderatorsI, $this->users2GroupsManager, $this->userForumPermissionRepository);
     }
 
     public function loadTopic(ForumEntity $forum, TopicEntity $topic): TopicScope

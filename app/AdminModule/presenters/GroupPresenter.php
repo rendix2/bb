@@ -2,18 +2,16 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
 use App\Controls\UserSearchControl;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
-use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\Model\Repository\UserRepository;
+use App\Models\ForumFacade;
 use App\Models\Forums2GroupsManager;
-use App\Models\ForumManager;
 use App\Models\GroupManager;
 use App\Models\User2GroupManager;
 use Dibi\DriverException;
@@ -45,14 +43,10 @@ class GroupPresenter extends Presenter
      */
     public Forums2GroupsManager $forums2groupsManager;
 
-    /**
-     * @var ForumManager $forumsManager
-     * @inject
-     */
-    public ForumManager $forumsManager;
-
     public function __construct(
         private readonly EntityManagerDecorator $em,
+
+        private readonly ForumFacade $forumFacade,
 
         private readonly UserSearchControl $userSearchControl,
 
@@ -229,7 +223,7 @@ class GroupPresenter extends Presenter
         $forums = $this->forumRepository->findAll();
 
         $this->getTemplate()->countOfUsers = $this->users2GroupsManager->getCountByRight($id);
-        $this->getTemplate()->forums = $this->forumsManager->createForums($forums, 0);
+        $this->getTemplate()->forums = $this->forumFacade->createForums($forums, 0);
         $this->getTemplate()->permissions = $permission;
     }
 
@@ -329,11 +323,10 @@ class GroupPresenter extends Presenter
         $topic_thank = $form->getHttpData($form::DATA_TEXT, 'topic_thank[]');
         $topic_fast_reply = $form->getHttpData($form::DATA_TEXT, 'topic_fast_reply[]');
 
-        $count = $this->em
-            ->getRepository(ForumEntity::class)
+        $count = $this->forumRepository
             ->count();
 
-        $forums = $this->em->getRepository(ForumEntity::class)
+        $forums = $this->forumRepository
             ->findAll();
 
         $forumsPermissions = [];

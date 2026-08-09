@@ -25,27 +25,4 @@ class ForumManager extends CrudManager
     {
         parent::__construct($dibi, $storage);
     }
-
-    /**
-     * @param ForumEntity[] $forums
-     * @param int $forum_parent_id
-     *
-     * @return array
-     */
-    public function createForums(array $forums, int $forum_parent_id): array
-    {
-        $result = [];
-
-        foreach ($forums as $forum) {
-            if ($forum->parent->id === $forum_parent_id) {
-                $result[$forum->id] = $forum;
-                $result[$forum->id]['childs'] = $this->createForums(
-                    $forums,
-                    $forum->id
-                );
-            }
-        }
-
-        return $result;
-    }
 }

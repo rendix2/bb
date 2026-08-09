@@ -5,8 +5,8 @@ namespace App\Forms;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
 use App\Model\Repository\ForumRepository;
-use App\Models\ForumManager;
-use App\Models\Users2ForumsManager;
+use App\Model\Repository\UserForumPermissionRepository;
+use App\Models\ForumFacade;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
@@ -21,23 +21,18 @@ use Nette\Utils\ArrayHash;
  */
 class UserForumsForm extends Control
 {
-    private ForumManager $forumsManager;
-
-    private Users2ForumsManager $users2ForumsManager;
-
     private Translator $translator;
 
     public function __construct(
-        ForumManager       $forumsManager,
-        Users2ForumsManager $users2ForumsManager,
         Translator         $translator,
         private readonly EntityManagerDecorator $em,
         private readonly ForumRepository $forumRepository,
+
+        private readonly ForumFacade $forumFacade,
+
+        private readonly UserForumPermissionRepository $userForumPermissionRepository,
     ) {
         parent::__construct();
-        
-        $this->forumsManager       = $forumsManager;
-        $this->users2ForumsManager = $users2ForumsManager;
         $this->translator          = $translator;
     }
 
@@ -54,23 +49,33 @@ class UserForumsForm extends Control
         $id     = $this->presenter->getParameter('id');
         $data   = [];
 
-        $forums = $this->users2ForumsManager->getAllByLeft($id);
-        $databaseForums = $this->forumRepository->findAll();
+        $userForums = $this->userForumPermissionRepository->findBy(
+            [
+                'user' => $id,
+            ]
+        );
+        $allForums = $this->forumRepository->findAll();
 
-        foreach ($forums as $permission) {
-            $data[$permission->forum_id]['post_add']         = $permission->post_add;
-            $data[$permission->forum_id]['post_update']      = $permission->post_update;
-            $data[$permission->forum_id]['post_delete']      = $permission->post_delete;
-            $data[$permission->forum_id]['topic_add']        = $permission->topic_add;
-            $data[$permission->forum_id]['topic_update']     = $permission->topic_update;
-            $data[$permission->forum_id]['topic_delete']     = $permission->topic_delete;
-            $data[$permission->forum_id]['topic_thank']      = $permission->topic_thank;
-            $data[$permission->forum_id]['topic_fast_reply'] = $permission->topic_fast_reply;
+        foreach ($userForums as $userForum) {
+            $data[$userForum->forum_id]['post_add']         = $userForum->post_add;
+            $data[$userForum->forum_id]['post_update']      = $userForum->post_update;
+            $data[$userForum->forum_id]['post_delete']      = $userForum->post_delete;
+            $data[$userForum->forum_id]['topic_add']        = $userForum->topic_add;
+            $data[$userForum->forum_id]['topic_update']     = $userForum->topic_update;
+            $data[$userForum->forum_id]['topic_delete']     = $userForum->topic_delete;
+            $data[$userForum->forum_id]['topic_thank']      = $userForum->topic_thank;
+            $data[$userForum->forum_id]['topic_fast_reply'] = $userForum->topic_fast_reply;
         }
 
-        $this->template->countOfUsers = $this->users2ForumsManager->getCountByRight($id);
+        $countOfUsers = $this->userForumPermissionRepository->count(
+            [
+                'user' => $id
+            ]
+        );
+
+        $this->template->countOfUsers = $countOfUsers;
         $this->template->permissions  = $data;
-        $this->template->forums       = $this->forumsManager->createForums($databaseForums, 0);
+        $this->template->forums       = $this->forumFacade->createForums($allForums, 0);
 
         $this->template->render();
     }
@@ -153,8 +158,15 @@ class UserForumsForm extends Control
             'user_id'          => $users
         ];
 
+        /*
+        $userForumPermissionEntity = new UserForumPermissionEntity();
+        $userForumPermissionEntity->user = $us
+
+        $this->em->persist();
+
         $this->users2ForumsManager->deleteByLeft($user_id);
         $this->users2ForumsManager->addNative($permission);
+        */
         
         $this->presenter->flashMessage('Forum was saved.', BasePresenter::FLASH_MESSAGE_SUCCESS);
         $this->presenter->redirect('User:edit', $user_id);

@@ -5,7 +5,8 @@ namespace App\Authorization\Scopes;
 use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
 use App\Model\Entity\ForumEntity;
-use App\Models\Users2ForumsManager;
+use App\Model\Repository\GroupForumPermissionRepository;
+use App\Model\Repository\UserForumPermissionRepository;
 use App\Models\User2GroupManager;
 
 /**
@@ -47,33 +48,26 @@ class ForumScope implements IAuthorizationScope
      *
      * @var User[] $moderators
      */
-    private $moderators;
+    private array $moderators;
     
     private ForumEntity $forumEntity;
     
-    /**
-     *
-     * @var User2GroupManager $users2GroupsManager
-     */
     private User2GroupManager $users2GroupsManager;
     
-    private $userPermission;
-    
     private $groupPermission;
-    
-    private Users2ForumsManager $users2ForumsManager;
 
 
     public function __construct(
         \App\Model\Entity\ForumEntity $forumEntity,
         $moderators,
+
+        private readonly UserForumPermissionRepository $userForumPermissionRepository,
+        private readonly GroupForumPermissionRepository $groupForumPermissionRepository,
         User2GroupManager $users2GroupsManager,
-        Users2ForumsManager $users2ForumsManager
     ) {
         $this->forumEntity         = $forumEntity;
         $this->moderators          = $moderators;
         $this->users2GroupsManager = $users2GroupsManager;
-        $this->users2ForumsManager = $users2ForumsManager;
     }
 
     /**
@@ -86,14 +80,12 @@ class ForumScope implements IAuthorizationScope
         $roles = [self::ROLE_FORUM_VIEWER];
 
         //user
-        if ($this->userPermission) {
-            $this->userPermission = $userForum = $this->users2ForumsManager->getFull(
-                $identity->getId(),
-                $this->forumEntity->id,
-            );
-        } else {
-            $userForum = $this->userPermission;
-        }
+        $userForum = $this->userForumPermissionRepository->findOneBy(
+            [
+                'user' => $identity->getId(),
+                'forum' => $this->forumEntity,
+            ]
+        );
 
         if ($userForum) {
             $userForum = $userForum[0];

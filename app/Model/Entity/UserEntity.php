@@ -160,9 +160,9 @@ class UserEntity
     public Collection $thanks;
 
     /**
-     * @var Collection<int, ModeratorUserEntity> $thanks
+     * @var Collection<int, UserModeratorEntity> $thanks
      */
-    #[OneToMany(targetEntity: ModeratorUserEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    #[OneToMany(targetEntity: UserModeratorEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     public Collection $moderatorUsers;
 
     public function __construct()

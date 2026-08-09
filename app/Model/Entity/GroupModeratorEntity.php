@@ -11,12 +11,11 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Ramsey\Uuid\Doctrine\UuidType;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity()]
-#[Table(name: 'moderator_user')]
-class ModeratorUserEntity
+#[Table(name: 'group_moderator')]
+class GroupModeratorEntity
 {
 
     #[Id()]
@@ -27,17 +26,14 @@ class ModeratorUserEntity
     #[Column(type: UuidType::NAME, unique: true)]
     public UuidInterface $uuid;
 
-
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'moderatorUsers')]
-    #[JoinColumn(nullable: false)]
-    public UserEntity $user;
-
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'moderatorUsers')]
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'sessions')]
     #[JoinColumn(nullable: false)]
     public ForumEntity $forum;
 
-    public function __construct() {
-        $this->uuid = Uuid::uuid4();
-    }
+
+    #[ManyToOne(targetEntity: GroupEntity::class, inversedBy: 'sessions')]
+    #[JoinColumn(nullable: false)]
+    public GroupEntity $group;
+
 
 }

@@ -24,7 +24,7 @@ use Tracy\ILogger;
 class FilePresenter extends Presenter
 {
     public function __construct(
-        private readonly Translator $translator
+        private readonly Translator $translator,
     )
     {
         parent::__construct();

@@ -7,7 +7,6 @@ use App\Authorization\IAuthorizationScope;
 use App\Authorization\Identity;
 use App\Authorization\Scopes\User;
 use App\Models\Manager;
-use App\Models\ThankManager;
 use Exception;
 use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
@@ -20,14 +19,6 @@ use Nette\Localization\Translator;
  */
 abstract class ForumPresenter extends Presenter
 {
-
-    
-    /**
-     *
-     * @var ThankManager $thanksManager
-     * @inject
-     */
-    public ThankManager $thanksManager;
 
     /**
      * @var Authorizator $authorizator

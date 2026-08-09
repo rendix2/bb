@@ -101,9 +101,9 @@ class ForumEntity
     public Collection $pollVotes;
 
     /**
-     * @var Collection<int, ModeratorUserEntity> $thanks
+     * @var Collection<int, UserModeratorEntity> $thanks
      */
-    #[OneToMany(targetEntity: ModeratorUserEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
+    #[OneToMany(targetEntity: UserModeratorEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
     public Collection $moderatorUsers;
 
     /**
