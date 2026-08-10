@@ -3,7 +3,6 @@
 namespace App\Controls;
 
 use App\Model\Repository\UserRepository;
-use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
@@ -20,7 +19,7 @@ class UserSearchControl extends Control
 {
 
     public function __construct(
-        private readonly UsersManager $usersManager,
+        private readonly UserRepository $userRepository,
         private readonly Translator  $translator,
     ) {
         parent::__construct();
@@ -66,7 +65,7 @@ class UserSearchControl extends Control
      */
     public function success(Form $form, ArrayHash $values): void
     {
-        $users = $this->usersManager->findLikeByUserName($values->username);
+        $users = $this->userRepository->findLikeByUserName($values->username);
         
         if (!count($users)) {
             $this->getPresenter()->flashMessage('User was not found.', BasePresenter::FLASH_MESSAGE_DANGER);

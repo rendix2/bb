@@ -23,19 +23,9 @@ use Tracy\Debugger;
 class UsersManager extends CrudManager
 {
 
-    /**
-     * @var int
-     */
-    const NOT_UPLOADED = -5;
+    const int NOT_UPLOADED = -5;
 
 
-    /**
-     * UsersManager constructor.
-     *
-     * @param Connection $dibi
-     * @param IStorage   $storage
-     * @param Avatars    $avatars
-     */
     public function __construct(
         Connection $dibi,
         IStorage   $storage,
@@ -44,32 +34,4 @@ class UsersManager extends CrudManager
         parent::__construct($dibi, $storage);
     }
 
-    /**
-     * @param int $user_id
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function canBeActivated($user_id, $key)
-    {
-        return $this->dibi
-            ->select('1')
-            ->from($this->getTable())
-            ->where('[' . $this->getPrimaryKey() . '] = %i', $user_id)
-            ->where('[user_activation_key] = %s', $key)
-            ->where('[user_active] = %i', 0)
-            ->fetchSingle();
-    }
-
-    /**
-     * @param string $user_name
-     *
-     * @return Row[]
-     */
-    public function findLikeByUserName($user_name)
-    {
-        return $this->getAllFluent()
-            ->where('[user_name] LIKE %~like~', $user_name)
-            ->fetchAll();
-    }
 }

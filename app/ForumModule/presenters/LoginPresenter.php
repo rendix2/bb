@@ -4,6 +4,7 @@ namespace App\ForumModule\Presenters;
 
 use App\Controls\BBMailer;
 use App\Forms\UserLoginForm;
+use App\Model\Repository\UserActivationRepository;
 use App\Model\Repository\UserRepository;
 use App\Models\UsersManager;
 use App\Services\UserLoginFormFactory;
@@ -41,6 +42,7 @@ class LoginPresenter extends Presenter
 
     public function __construct(
         private readonly \Nette\Localization\Translator $translator,
+        private readonly UserActivationRepository $userActivationRepository,
 
         private readonly UserRepository $userRepository,
     )
@@ -75,7 +77,7 @@ class LoginPresenter extends Presenter
         }
 
         // after register
-        $can = $this->usersManager->canBeActivated($user_id, $key);
+        $can = $this->userActivationRepository->findForActivation($user_id, $key);
 
         if (!$can) {
             $this->flashMessage('You cannot be activated.', self::FLASH_MESSAGE_DANGER);

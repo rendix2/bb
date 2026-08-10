@@ -7,6 +7,7 @@ use App\Forms\SearchPostForm;
 use App\Forms\SearchTopicForm;
 use App\Forms\SearchUserForm;
 use App\Model\Repository\TopicRepository;
+use App\Model\Repository\UserRepository;
 use App\Models\UsersManager;
 use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
@@ -26,6 +27,8 @@ class SearchPresenter extends Presenter
         private readonly Translator $translator,
 
         private readonly TopicRepository $topicRepository,
+
+        private readonly UserRepository $userRepository
     )
     {
         parent::__construct();
@@ -75,10 +78,10 @@ class SearchPresenter extends Presenter
      */
     public function renderUserResults(string $q): void
     {
-        $users = $this->getManager()->findLikeByUserName($q);
+        $users = $this->userRepository->findLikeByUserName($q);
 
         if (!$users) {
-            $this->flashMessage('User was not found.', self::FLASH_MESSAGE_WARNING);
+            $this->flashMessage('User was not found.', 'warning');
         }
 
         $this['searchUserForm-searchUserForm']->setDefaults(['search_user' => $q]);
