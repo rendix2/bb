@@ -160,8 +160,6 @@ class RankPresenter extends Presenter
     {
         $id = $this->getParameter('id');
 
-
-
         try  {
             $move = $this->rankService->moveRank($values->rank_file, $id);
 

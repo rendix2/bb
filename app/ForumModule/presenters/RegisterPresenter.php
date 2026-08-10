@@ -128,7 +128,7 @@ class RegisterPresenter extends Presenter
 
         $userActivationEntity = new UserActivationEntity();
         $userActivationEntity->user = $userEntity;
-        $userActivationEntity->activationKey = Random::generate(128);
+        $userActivationEntity->activationKey = Random::generate(256);
 
         $userEntity->addUserActivationEntity($userActivationEntity);
 

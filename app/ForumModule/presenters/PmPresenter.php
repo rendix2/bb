@@ -8,13 +8,9 @@ use App\Controls\PaginatorControl;
 use App\Controls\UserSearchControl;
 use App\Forms\ReportForm;
 use App\Models\PmManager;
-use App\Models\ReportManager;
-use App\Models\UsersManager;
-use App\Presenters\Base\AuthenticatedPresenter;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
-use Nette\DI\Attributes\Inject;
 use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
@@ -29,11 +25,6 @@ use Tracy\ILogger;
  */
 class PmPresenter extends Presenter
 {
-    #[Inject]
-    public ReportManager $reportsManager;
-
-    #[Inject]
-    public UsersManager $usersManager;
 
     public function __construct(
         private readonly Translator $translator,

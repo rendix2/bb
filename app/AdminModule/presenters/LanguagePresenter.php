@@ -11,6 +11,7 @@ use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\UserEntity;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
@@ -22,7 +23,7 @@ use Tracy\ILogger;
  * @author rendix2
  * @package App\AdminModule\Presenters
  */
-class LanguagePresenter extends AdminPresenter
+class LanguagePresenter extends Presenter
 {
     public function __construct(
         private readonly EntityManagerDecorator $em,

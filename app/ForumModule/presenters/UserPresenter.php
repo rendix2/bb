@@ -593,11 +593,8 @@ class UserPresenter extends Presenter
         try {
             $move = $this->avatarService->moveAvatar($values->user_avatar, $user_id);
 
-            if ($move !== UsersManager::NOT_UPLOADED) {
-                $values->user_avatar = $move;
-            } else {
-                unset($values->user_avatar);
-            }
+            $values->user_avatar = $move;
+
         } catch (InvalidArgumentException $e) {
             $this->flashMessage($e->getMessage());
             unset($values->user_avatar);

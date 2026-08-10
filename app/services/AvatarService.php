@@ -4,6 +4,7 @@ namespace App\services;
 
 use App\Model\Repository\UserRepository;
 use App\Settings\Avatars;
+use Nette\FileNotFoundException;
 use Nette\Http\FileUpload;
 use Nette\InvalidArgumentException;
 use Nette\IOException;
@@ -62,7 +63,7 @@ class AvatarService
 
             return $name;
         } else {
-            return self::NOT_UPLOADED;
+            throw new FileNotFoundException('Failed to moved');
         }
     }
 

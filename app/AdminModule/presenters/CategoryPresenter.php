@@ -197,13 +197,19 @@ class CategoryPresenter extends Presenter
 
         try {
             if ($id) {
-                $categoryParentEntity = $this->em
-                    ->getRepository(\App\Model\Entity\CategoryEntity::class)
-                    ->find($values->parent);
+                $categoryParentEntity = $this->categoryRepository
+                    ->findOneBy(
+                        [
+                            'id' => $values->parent,
+                        ]
+                    );
 
-                $categoryEntity = $this->em
-                    ->getRepository(\App\Model\Entity\CategoryEntity::class)
-                    ->find($id);
+                $categoryEntity = $this->categoryRepository
+                    ->findOneBy(
+                        [
+                            'id' => $id
+                        ]
+                    );
 
                 if ($categoryEntity === null) {
                     $this->flashMessage('Category not found', self::FLASH_MESSAGE_DANGER);
@@ -217,9 +223,12 @@ class CategoryPresenter extends Presenter
                 $this->em->flush();
 
             } else {
-                $categoryParentEntity = $this->em
-                    ->getRepository(\App\Model\Entity\CategoryEntity::class)
-                    ->find($values->parent);
+                $categoryParentEntity = $this->categoryRepository
+                    ->findOneBy(
+                        [
+                            'id' => $values->parent,
+                        ]
+                    );
 
                 $categoryEntity = new \App\Model\Entity\CategoryEntity();
                 $categoryEntity->name = $values->name;

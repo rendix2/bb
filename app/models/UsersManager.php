@@ -23,9 +23,6 @@ use Tracy\Debugger;
 class UsersManager extends CrudManager
 {
 
-    const int NOT_UPLOADED = -5;
-
-
     public function __construct(
         Connection $dibi,
         IStorage   $storage,

@@ -7,7 +7,6 @@ use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
 use App\Controls\UserSearchControl;
 use App\Database\EntityManagerDecorator;
-use App\Model\Entity\ForumEntity;
 use App\Model\Repository\ForumRepository;
 use App\Model\Repository\UserRepository;
 use App\Models\ForumFacade;

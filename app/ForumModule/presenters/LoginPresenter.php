@@ -3,10 +3,10 @@
 namespace App\ForumModule\Presenters;
 
 use App\Controls\BBMailer;
+use App\Database\EntityManagerDecorator;
 use App\Forms\UserLoginForm;
 use App\Model\Repository\UserActivationRepository;
 use App\Model\Repository\UserRepository;
-use App\Models\UsersManager;
 use App\Services\UserLoginFormFactory;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Form;
@@ -38,13 +38,13 @@ class LoginPresenter extends Presenter
      */
     public BBMailer $bbMailer;
 
-    public UsersManager $usersManager;
-
     public function __construct(
         private readonly \Nette\Localization\Translator $translator,
         private readonly UserActivationRepository $userActivationRepository,
 
         private readonly UserRepository $userRepository,
+
+        private readonly EntityManagerDecorator $em,
     )
     {
         parent::__construct();
@@ -85,12 +85,24 @@ class LoginPresenter extends Presenter
         }
 
         if ($ok) {
-            $this->usersManager
-                ->update($user_id, ArrayHash::from([
-                    'user_active' => 1,
-                    'user_activation_key' => null
-                ]));
-            $this->flashMessage('You have been activated.', self::FLASH_MESSAGE_SUCCESS);
+            $userEntity = $this->userRepository
+                ->findOneBy(
+                    [
+                        'id' => $user_id,
+                    ]
+                );
+
+            if ($userEntity === null) {
+                $this->error('User not found');
+            }
+
+            $userEntity->isActive = true;
+            $userEntity->activationKeys->clear();
+
+            $this->em->persist($userEntity);
+            $this->em->flush();
+
+            $this->flashMessage('You have been activated.', 'success');
             $this->redirect('Login:default');
         } else {
             $this->redirect('Index:default');
@@ -131,9 +143,12 @@ class LoginPresenter extends Presenter
 
         if ($userEntity) {
             if (!$userEntity->isActive) {
-                $key = Random::generate(32);
+                $lastActivationKey = $userEntity->activationKeys->last();
 
-                $this->usersManager->update($userEntity->id, ArrayHash::from(['user_activation_key' => $key]));
+                $lastActivationKey->activationKey = Random::generate(256);
+
+                $this->em->persist($lastActivationKey);
+                $this->em->flush();
 
                 $this->bbMailer->addRecipients([$values->user_email]);
                 $this->bbMailer->setSubject($this->translator->translate('welcome_mail_subject'));
