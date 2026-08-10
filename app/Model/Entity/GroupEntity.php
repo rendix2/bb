@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\Uuid;
@@ -30,6 +32,9 @@ class GroupEntity
     #[Column(type: Types::STRING, length: 512, nullable: false)]
     public string $name;
 
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'groups')]
+    #[JoinColumn(nullable: false)]
+    public UserEntity $moderator;
 
     #[Column(type: Types::DATETIME_IMMUTABLE)]
     public DateTimeImmutable $createdAt;

@@ -24,7 +24,6 @@ class TopicFacade
 {
     public function __construct(
         private readonly TopicManager      $topicsManager,
-        private readonly TopicWatchManager $topicWatchManager,
         private readonly PostManager       $postsManager,
         private readonly UsersManager      $usersManager,
         private readonly ThankManager      $thanksManager,
@@ -301,7 +300,23 @@ class TopicFacade
             $topic_from_id,
             ArrayHash::from(['report_topic_id' => $topic_target_id, 'report_forum_id' => $topicTarget->topic_forum_id])
         );
-        $this->topicWatchManager->mergeByLeft($topic_target_id, $topicWatches);
+        //$this->topicWatchManager->mergeByLeft($topic_target_id, $topicWatches);
+
+        $missingWatches = $this->topicWatchRepository->findMissingWatchesByTopics($topicFrom, $topicTarget);
+
+        foreach ($missingWatches as $missingWatch) {
+            $newTopicWatch = new TopicWatchEntity();
+            $newTopicWatch->topic = $topicTarget;
+            $newTopicWatch->user = $missingWatch->user;
+
+            $this->em->persist($newTopicWatch);
+        }
+
+        foreach ($topicFrom->watches as $watch) {
+            $this->em->remove($watch);
+        }
+
+        $this->em->flush();
 
         foreach ($topicFrom->watches as $watch) {
             $this->em->remove($watch);
@@ -343,7 +358,7 @@ class TopicFacade
     {
         $res = $this->topicsManager->update(
             $topicEntity->id,
-            ArrayHash::from(['topic_name' => $topicEntity->getTopic_name()])
+            ArrayHash::from(['topic_name' => $topicEntity->name])
         );
 
         $this->postsManager->update(

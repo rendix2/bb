@@ -93,7 +93,6 @@ class TopicPresenter extends Presenter
     public Posts2FilesManager $posts2FilesManager;
 
     public function __construct(
-        TopicManager                            $manager,
         private readonly EntityManagerDecorator $em,
         private readonly TopicFastReplyForm     $topicFastReplyForm,
         private readonly ReportForm             $reportForm,
@@ -119,7 +118,7 @@ class TopicPresenter extends Presenter
         private readonly PollControl $pollControl,
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     /**

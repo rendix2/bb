@@ -24,9 +24,6 @@ class Tables
 
     
     const TOPICS_TABLE = self::PREFIX . 'topic';
-    
-    const TOPIC_WATCH_TABLE = self::PREFIX . 'topics_watch';
-
 
     const USERS_TABLE = self::PREFIX . 'users';
 

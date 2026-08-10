@@ -111,36 +111,7 @@ abstract class MNManager extends Manager
         $this->rightAliasedKey = self::ALIAS . '.' . $this->rightKey;
     }
 
-    /**
-     * MNManager destructor.
-     */
-    public function __destruct()
-    {
-        $this->left            = null;
-        $this->right           = null;
-        $this->table           = null;
-        $this->leftKey         = null;
-        $this->rightKey        = null;
-        $this->leftAliasedKey  = null;
-        $this->rightAliasedKey = null;
-                
-        parent::__destruct();
-    }
-    
-    /**
-     * get all
-     */
 
-    /**
-     * returns all table
-     *
-     * @return Row[]
-     */
-    public function getAll()
-    {
-        return $this->getAllFluent()
-            ->fetchAll();
-    }
 
     /**
      * get by left
@@ -157,15 +128,6 @@ abstract class MNManager extends Manager
             ->where('%n = %i', $this->leftKey, $left_id);
     }
 
-    /**
-     * @param int $left_id
-     *
-     * @return Row[]
-     */
-    public function getAllByLeft($left_id)
-    {
-        return $this->getFluentByLeft($left_id)->fetchAll();
-    }
     
     /**
      * @param int $left_id
@@ -220,16 +182,6 @@ abstract class MNManager extends Manager
     {
         return $this->getAllFluent()
             ->where('%n IN %in', $this->leftKey, $left_id);
-    }
-    
-    /**
-     * @param array $left_id
-     *
-     * @return Row[]
-     */
-    public function getAllByLefts(array $left_id)
-    {
-        return $this->getFluentByLefts($left_id)->fetchAll();
     }
 
     /**
@@ -289,127 +241,11 @@ abstract class MNManager extends Manager
             ->fetchAll();
     }
     
-    
-    /**
-     * get by right joined
-     */
-    
-    /**
-     * @param int $right_id
-     *
-     * @return Fluent
-     */
-    public function getFluentByRightJoined($right_id)
-    {
-        $aliasL = $this->left->getTableAlias();
 
-        return $this->dibi->select($aliasL . '.*')
-            ->from($this->table)
-            ->as(self::ALIAS)
-            ->innerJoin($this->left->getTable())
-            ->as($aliasL)
-            ->on('%n = %n', $this->left->getAliasedPrimaryKey(), $this->leftAliasedKey)
-            ->where('%n = %i', $this->rightAliasedKey, $right_id);
-    }
     
-    /**
-     * @param int $right_id
-     *
-     * @return Row[]
-     */
-    public function getAllByRightJoined($right_id)
-    {
-        return $this->getFluentByRightJoined($right_id)
-            ->fetchAll();
-    }
+
     
-    /**
-     * get by rights
-     */
-    
-    /**
-     * @param array $right_id
-     *
-     * @return Fluent
-     */
-    public function getFluentByRights(array $right_id)
-    {
-        return $this->getAllFluent()
-            ->where('%n IN %in', $this->rightKey, $right_id);
-    }
-    
-    /**
-     * @param array $right_id
-     *
-     * @return Row[]
-     */
-    public function getAllByRights(array $right_id)
-    {
-        return $this->getFluentByRights($right_id)
-                ->fetchAll();
-    }
-    
-    /**
-     * get by rights joined
-     */
-    
-    /**
-     * @param array $right_id
-     *
-     * @return Fluent
-     */
-    public function getFluentByRightsJoined(array $right_id)
-    {
-        return $this->dibi->select('*')
-            ->from($this->table)
-            ->as(self::ALIAS)
-            ->innerJoin($this->left->getTable())
-            ->as($this->left->getTableAlias())
-            ->on('%n = %n', $this->left->getAliasedPrimaryKey(), $this->leftAliasedKey)
-            ->where('%n IN %in', $this->rightAliasedKey, $right_id);
-    }
-    
-    /**
-     * @param array $right_id
-     *
-     * @return Row[]
-     */
-    public function getAllByRightsJoined(array $right_id)
-    {
-        return $this->getFluentByRightsJoined($right_id)
-            ->fetchAll();
-    }
-    
-    /**
-     * get all
-     */
-    
-    /**
-     * @param int $left_id
-     * @param int $right_id
-     *
-     * @return Fluent
-     */
-    public function getFluentFull($left_id, $right_id)
-    {
-        return $this->dibi
-            ->select('*')
-            ->from($this->table)
-            ->as(self::ALIAS)
-            ->where('%n = %i', $this->leftAliasedKey, $left_id)
-            ->where('%n = %i', $this->rightAliasedKey, $right_id);
-    }
-    
-    /**
-     * @param int $left_id
-     * @param int $right_id
-     *
-     * @return Row
-     */
-    public function getFull($left_id, $right_id)
-    {
-        return $this->getFluentFull($left_id, $right_id)->fetch();
-    }
+
 
     /**
      * @param int $left_id
@@ -441,28 +277,7 @@ abstract class MNManager extends Manager
             ->where('%n = %i', $this->rightAliasedKey, $right_id)
             ->fetch();
     }
-    
-    /**
-     * check exists
-     */
-    
-    /**
-     * checks if relations exists
-     *
-     * @param int $left_id
-     * @param int $right_id
-     *
-     * @return bool
-     */
-    public function fullCheck($left_id, $right_id)
-    {
-        return $this->dibi
-                ->select('1')
-                ->from($this->table)
-                ->where('%n = %i', $this->leftKey, $left_id)
-                ->where('%n = %i', $this->rightKey, $right_id)
-                ->fetchSingle() === 1;
-    }
+
     
     /**
      * get counts
@@ -542,22 +357,6 @@ abstract class MNManager extends Manager
         return $this->add($values, $left_id, null);
     }
     
-    /**
-     *
-     * @param int   $left_id
-     * @param array $values
-     */
-    public function mergeByLeft($left_id, array $values)
-    {
-        $left_values = $this->getPairsByLeft($left_id);
-        $diff        = array_diff($values, $left_values);
-        
-        if (count($diff)) {
-            $this->add($diff, $left_id, null);
-        }
-    }
-
-
     /**
      * @param int $left_id
      *

@@ -19,8 +19,6 @@ services:
         class: App\Models\Users2ForumsManager
     Mails2UsersManager:
         class: App\Models\Mails2UsersManager
-    TopicWatchManager:
-        class: App\Models\TopicWatchManager
     ReportManager:
         class: App\Models\ReportManager
     EmailManager:
