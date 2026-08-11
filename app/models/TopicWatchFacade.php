@@ -34,18 +34,8 @@ class TopicWatchFacade
         $this->usersManager      = $usersManager;
     }
 
-    public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity): int
+    public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity): void
     {
-        $topicsWatches = $topicEntity->watches;
-        $user_ids      = Utils::arrayObjectColumn($topicsWatches->toArray(), 'user_id');
-
-        if (count($user_ids)) {
-            $this->usersManager->updateMulti(
-                $user_ids,
-                ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1'])
-            );
-        }
-
         foreach ($topicEntity->watches as $watch) {
             $this->em->remove($watch);
         }
@@ -71,10 +61,6 @@ class TopicWatchFacade
                 if ($topicWatchEntity) {
                     $this->em->remove($topicWatchEntity);
                     $this->em->flush();
-                    $this->usersManager->update(
-                        $post->user->id,
-                        ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1'])
-                    );
                 }
             }
         }

@@ -5,17 +5,9 @@ namespace App\Services;
 use App\Database\EntityManagerDecorator;
 use App\Forms\UserDeleteAvatarForm;
 use App\Model\Repository\UserRepository;
-use App\Models\UsersManager;
-use App\Settings\Avatars;
 use Nette\Localization\Translator;
 use Nette\Security\User;
 
-/**
- * Description of DeleteAvatarFactory
- *
- * @author rendix2
- * @package App\Services
- */
 class DeleteAvatarFactory
 {
 

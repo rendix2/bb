@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
+use App\Model\Entity\PostEntity;
 use App\Model\Entity\ThankEntity;
+use App\Model\Entity\TopicEntity;
 use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PostRepository;
 use App\Model\Repository\ThankRepository;
 use App\Model\Repository\TopicRepository;
-use App\Utils;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -19,38 +20,22 @@ use Nette\Utils\ArrayHash;
  */
 class ThanksFacade
 {
-    /**
-     * @var ThankManager $thanksManager
-     */
-    private ThankManager $thanksManager;
-    
-    /**
-     * @var UsersManager $usersManager
-     */
-    private UsersManager $usersManager;
 
     public function __construct(
-        ThankManager $thanksManager,
-        UsersManager  $usersManager,
+        private readonly ThankManager           $thanksManager,
+        private readonly UsersManager           $usersManager,
         private readonly EntityManagerDecorator $em,
 
-        private readonly ThankRepository $thankRepository,
+        private readonly ThankRepository        $thankRepository,
 
-        private readonly ForumRepository $forumRepository,
-        private readonly TopicRepository $topicRepository,
-        private readonly PostRepository  $postRepository,
+        private readonly ForumRepository        $forumRepository,
+        private readonly TopicRepository        $topicRepository,
+        private readonly PostRepository         $postRepository,
     ) {
-        $this->thanksManager = $thanksManager;
-        $this->usersManager  = $usersManager;
     }
 
-    public function add(\App\Model\Entity\ThankEntity $thank)
+    public function add(ThankEntity $thank)
     {
-        $this->usersManager->update(
-            $thank->user->id,
-            ArrayHash::from(['user_thank_count%sql' => 'user_thank_count + 1'])
-        );
-
         $this->em->persist($thank);
         $this->em->flush();
     }
@@ -81,7 +66,7 @@ class ThanksFacade
         }
     }
 
-    public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity): void
+    public function deleteByTopic(TopicEntity $topicEntity): void
     {
         /**
          * @var ThankEntity[] $thanks
@@ -105,16 +90,11 @@ class ThanksFacade
         $this->em->flush();
     }
 
-    public function deleteByPost(\App\Model\Entity\PostEntity $post)
+    public function deleteByPost(PostEntity $post)
     {
         $count = $this->postRepository->getCountByPost($post);
 
         if ($count === 1 || $count === 0) {
-            $this->usersManager->update(
-                $post->user->id,
-                ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1'])
-            );
-
             return $this->thanksManager->deleteByUsersAndTopic([$post->user->id], $post->topic->id);
         } else {
             return false;

@@ -152,6 +152,7 @@ class PostFacade
             $this->posts2FilesManger->addByLeft($post_id, $files_ids);
         }
 
+        /*
         $this->topicsManager->update(
             $topic_id,
             ArrayHash::from([
@@ -161,6 +162,7 @@ class PostFacade
                 'topic_page_count' => ceil(($topicEntity->getTopic_post_count() + 1) / $this->topicSettings->get()['pagination']['itemsPerPage'])
             ])
         );
+        */
 
         $topicEntity = $this->topicRepository
             ->findOneBy(
@@ -237,6 +239,7 @@ class PostFacade
      */
     public function delete(\App\Model\Entity\TopicEntity $topicEntity, \App\Model\Entity\PostEntity $postEntity)
     {
+        /*
         $this->usersManager->update(
             $postEntity->user->id,
             ArrayHash::from(['user_post_count%sql' => 'user_post_count - 1'])
@@ -248,6 +251,7 @@ class PostFacade
                 'topic_page_count' => ceil(($topicEntity->getTopic_post_count() - 1) / $this->topicSettings->get()['pagination']['itemsPerPage'])
             ])
         );
+        */
 
         $this->thanksFacade->deleteByPost($postEntity);
 
@@ -260,10 +264,12 @@ class PostFacade
 
         $this->topicWatchFacade->deleteByPost($postEntity);
         $this->reportsManager->deleteByPost($postEntity->id);
+        /*
         $this->forumsManager->update(
             $postEntity->forum->id,
             ArrayHash::from(['forum_post_count%sql' => 'forum_post_count - 1'])
         );
+        */
 
         // recount last post info
         $this->em->remove($postEntity);
@@ -273,33 +279,42 @@ class PostFacade
         if ($topicEntity->lastPost->id === $postEntity->id && $topicEntity->firstPost->id !== $postEntity->id) {
             $last_post = $this->postRepository->findLastByTopicId($postEntity->topic->id);
 
+            /*
             if ($last_post) {
                 $this->topicsManager->update($postEntity->topic->id, ArrayHash::from([
                     'topic_last_post_id' => $last_post->id,
                     'topic_last_user_id' => $last_post->user->id
                 ]));
             }
+            */
         } elseif ($topicEntity->firstPost->id === $postEntity->id && $topicEntity->lastPost->id !== $postEntity->id) {
             $first_post = $this->postRepository->findFirstByTopicId($postEntity->topic->id);
 
+            /*
             if ($first_post) {
                 $this->topicsManager->update($postEntity->topic->id, ArrayHash::from([
                     'topic_first_post_id' => $first_post->id,
                     'topic_first_user_id' => $first_post->user->id
                 ]));
             }
+            */
         } elseif ($topicEntity->lastPost->id === $topicEntity->firstPost->id && $topicEntity->firstPost->id === $postEntity->id) {
+            /*
             $this->forumsManager->update(
                 $postEntity->forum->id,
                 ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1'])
             );
+            */
             $this->thanksFacade->deleteByTopic($topicEntity);
             $this->reportsManager->deleteByTopic($topicEntity->id);
             $this->topicWatchFacade->deleteByTopic($topicEntity);
+
+            /*
             $this->usersManager->update(
                 $topicEntity->user->id,
                 ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1'])
             );
+            */
 
             if ($topicEntity->poll) {
                 $this->pollsFacade->delete($topicEntity->poll);
@@ -310,6 +325,7 @@ class PostFacade
             return 2;
         }
 
+        /*
         $lastPostOfUser = $this->postRepository->findLastByUserId($postEntity->user->id);
 
         if ($lastPostOfUser) {
@@ -323,6 +339,7 @@ class PostFacade
                 ArrayHash::from(['user_last_post_time' => 0])
             );
         }
+        */
 
         return $res;
     }

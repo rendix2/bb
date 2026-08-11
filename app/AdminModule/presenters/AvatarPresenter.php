@@ -28,7 +28,6 @@ class AvatarPresenter extends Presenter
 {
 
     public function __construct(
-        UsersManager $manager,
         private readonly UserRepository $userRepository,
 
         private readonly AvatarService $avatarService,

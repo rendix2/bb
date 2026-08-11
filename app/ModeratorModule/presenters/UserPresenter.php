@@ -3,26 +3,13 @@
 namespace App\ModeratorModule\Presenters;
 
 use App\Controls\GridFilter;
-use App\Models\UsersManager;
-use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
+use Nette\Application\UI\Presenter;
 
-/**
- * Description of UserPresenter
- *
- * @author rendix2
- * @method UsersManager getManager()
- * @package App\ModeratorModule\Presenters
- */
-class UserPresenter extends ModeratorPresenter
+class UserPresenter extends Presenter
 {
-    /**
-     * UserPresenter constructor.
-     *
-     * @param UsersManager $manager
-     */
-    public function __construct(UsersManager $manager)
+    public function __construct()
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     /**

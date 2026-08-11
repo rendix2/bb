@@ -2,31 +2,25 @@
 
 namespace App\Forms;
 
+use App\Database\EntityManagerDecorator;
 use App\Model\Repository\UserRepository;
-use App\Models\UsersManager;
 use App\Presenters\Base\BasePresenter;
+use Doctrine\DBAL\Exception as DbalException;
 use Nette\Application\UI\Form;
 use Nette\Security\User;
 use \Nette\Application\UI\Control;
 use Nette\Utils\ArrayHash;
 
-/**
- * Description of ChangeUserNameForm
- *
- * @author rendix2
- * @package App\Forms
- */
 class UserChangeUserNameForm extends Control
 {
 
     public function __construct(
-        private readonly UsersManager $usersManager,
         private readonly User $user,
         private readonly UserRepository $userRepository,
+
+        private readonly EntityManagerDecorator $em
     )
     {
-        parent::__construct();
-
     }
 
     public function render(): void
@@ -57,12 +51,20 @@ class UserChangeUserNameForm extends Control
     
     public function changeUserNameSuccess(Form $form, ArrayHash $values): void
     {
-        $result = $this->usersManager->update($this->user->getId(), $values);
-        
-        if ($result) {
-            $this->presenter->flashMessage('User name was changed.', BasePresenter::FLASH_MESSAGE_SUCCESS);
-        } else {
-            $this->presenter->flashMessage('Nothing to change.', BasePresenter::FLASH_MESSAGE_INFO);
+        $userEntity = $this->userRepository
+            ->findOneByNetteUser($this->user);
+
+        $userEntity->username = $values->username;
+
+        try {
+            $this->em->persist($userEntity);
+            $this->em->flush();
+
+            $this->getPresenter()->flashMessage('User name was changed.', BasePresenter::FLASH_MESSAGE_SUCCESS);
+            $this->getPresenter()->redrawControl('flashes;');
+        } catch (DbalException $exception) {
+           $this->getPresenter()->flashMessage($exception->getMessage(), 'danger');
+           $this->getPresenter()->redrawControl('danger');
         }
     }
 }

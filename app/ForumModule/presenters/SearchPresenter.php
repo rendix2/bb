@@ -8,7 +8,6 @@ use App\Forms\SearchTopicForm;
 use App\Forms\SearchUserForm;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\UserRepository;
-use App\Models\UsersManager;
 use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
 
@@ -16,7 +15,6 @@ use Nette\Localization\Translator;
  * Description of SearchPresenter
  *
  * @author rendix2
- * @method UsersManager getManager()
  * @package App\ForumModule\Presenters
  */
 class SearchPresenter extends Presenter
