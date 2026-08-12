@@ -48,12 +48,6 @@ class PostFacade
 
     /**
      *
-     * @var ForumManager $forumsManager
-     */
-    private ForumManager $forumsManager;
-
-    /**
-     *
      * @var ThanksFacade $thanksFacade
      */
     private ThanksFacade $thanksFacade;
@@ -90,9 +84,7 @@ class PostFacade
     public function __construct(
         PostManager                             $postsManager,
         TopicManager                            $topicsManager,
-        UsersManager                            $usersManager,
         ReportManager                           $reportsManager,
-        ForumManager                            $forumsManager,
         ThanksFacade                            $thanksFacade,
         TopicWatchFacade                        $topicWatchFacade,
         PollsFacade                             $pollsFacade,
@@ -110,9 +102,7 @@ class PostFacade
     {
         $this->postsManager = $postsManager;
         $this->topicsManager = $topicsManager;
-        $this->usersManager = $usersManager;
         $this->reportsManager = $reportsManager;
-        $this->forumsManager = $forumsManager;
         $this->thanksFacade = $thanksFacade;
         $this->topicWatchFacade = $topicWatchFacade;
         $this->pollsFacade = $pollsFacade;
@@ -208,12 +198,14 @@ class PostFacade
         $this->em->persist($postHistoryEntity);
         $this->em->flush();
 
+        /*
         $this->usersManager->update($user_id, ArrayHash::from([
                 'user_post_count%sql' => 'user_post_count + 1',
                 'user_last_post_time' => time()
             ] + $watch));
 
         $this->forumsManager->update($forum_id, ArrayHash::from(['forum_post_count%sql' => 'forum_post_count + 1']));
+        */
 
         return $post_id;
     }
@@ -378,6 +370,8 @@ class PostFacade
 
         $target_forum_id = $targetTopicEntity->topic_forum_id;
 
+
+        /*
         if ($source_topic_id !== $target_topic_id) {
             $this->topicsManager->update(
                 $source_topic_id,
@@ -399,6 +393,7 @@ class PostFacade
                 ArrayHash::from(['forum_post_count%sql' => 'forum_post_count + 1'])
             );
         }
+        */
 
         $this->reportsManager->updateByPost($post_id, ArrayHash::from(['report_topic_id' => $target_topic_id]));
 
