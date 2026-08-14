@@ -70,7 +70,7 @@ class CategoryPresenter extends Presenter
             $this->flashMessage('No forums in this category.', self::FLASH_MESSAGE_DANGER);
         }
 
-        $this->template->forums = $forums;
+        $this->getTemplate()->forums = $forums;
 
         /*
         if ($categories) {

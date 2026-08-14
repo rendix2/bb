@@ -23,7 +23,7 @@ class FaqPresenter extends AuthenticatedPresenter
         parent::__construct();
     }
 
-    public function actionDelete(int $id)
+    public function actionDelete(int $id): void
     {
         $result = $this->getManager()->delete($id);
 

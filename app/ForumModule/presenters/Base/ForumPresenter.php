@@ -39,10 +39,6 @@ abstract class ForumPresenter extends Presenter
         $this->manager = $manager;
     }
 
-    public function getManager(): Manager
-    {
-        return $this->manager;
-    }
 
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
     {

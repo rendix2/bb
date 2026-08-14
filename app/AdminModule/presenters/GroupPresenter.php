@@ -9,11 +9,11 @@ use App\Controls\UserSearchControl;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\GroupEntity;
 use App\Model\Repository\ForumRepository;
+use App\Model\Repository\GroupForumPermissionRepository;
 use App\Model\Repository\GroupRepository;
 use App\Model\Repository\UserRepository;
 use App\Models\ForumFacade;
 use App\Models\Forums2GroupsManager;
-use App\Models\User2GroupManager;
 use Doctrine\DBAL\Exception as DbalException;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
@@ -22,12 +22,6 @@ use Nette\Utils\ArrayHash;
 
 class GroupPresenter extends Presenter
 {
-    /**
-     * @var User2GroupManager $users2Groups
-     * @inject
-     */
-    public User2GroupManager $users2GroupsManager;
-
     /**
      * @var Forums2GroupsManager $forums2groups
      * @inject
@@ -45,6 +39,8 @@ class GroupPresenter extends Presenter
         private readonly GroupRepository $groupRepository,
 
         private readonly ForumRepository $forumRepository,
+
+        private readonly GroupForumPermissionRepository $groupForumPermissionRepository,
 
         private readonly Translator $translator,
     ) {
@@ -215,7 +211,12 @@ class GroupPresenter extends Presenter
         }
 
         $permission = [];
-        $groupForums = $this->forums2groupsManager->getAllByRight($id);
+        $groupForums = $this->groupForumPermissionRepository
+            ->findBy(
+                [
+                    'group' => $id,
+                ]
+            );
 
         foreach ($groupForums as $groupForum) {
             $permission[$groupForum->forum_id]['post_add'] = $groupForum->post_add;
@@ -228,9 +229,16 @@ class GroupPresenter extends Presenter
             $permission[$groupForum->forum_id]['topic_fast_reply'] = $groupForum->topic_fast_reply;
         }
 
+        $countOfUsers = $this->groupForumPermissionRepository
+            ->count(
+                [
+                    'group' => $id,
+                ]
+            );
+
         $forums = $this->forumRepository->findAll();
 
-        $this->getTemplate()->countOfUsers = $this->users2GroupsManager->getCountByRight($id);
+        $this->getTemplate()->countOfUsers = $countOfUsers;
         $this->getTemplate()->forums = $this->forumFacade->createForums($forums, 0);
         $this->getTemplate()->permissions = $permission;
     }
@@ -324,10 +332,6 @@ class GroupPresenter extends Presenter
         return $form;
     }
 
-    /**
-     * @param Form $form
-     * @param ArrayHash $values
-     */
     public function forumsSuccess(Form $form, ArrayHash $values): void
     {
         $group_id = $this->getParameter('id');
@@ -382,9 +386,6 @@ class GroupPresenter extends Presenter
         return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbEdit(): BreadCrumbControl
     {
         $breadCrumb = [
