@@ -7,7 +7,6 @@ use App\Authorization\Identity;
 use App\Model\Entity\ForumEntity;
 use App\Model\Repository\GroupForumPermissionRepository;
 use App\Model\Repository\UserForumPermissionRepository;
-use App\Models\User2GroupManager;
 
 /**
  * Description of Forum
@@ -52,8 +51,6 @@ class ForumScope implements IAuthorizationScope
     
     private ForumEntity $forumEntity;
     
-    private User2GroupManager $users2GroupsManager;
-    
     private $groupPermission;
 
 
@@ -63,11 +60,9 @@ class ForumScope implements IAuthorizationScope
 
         private readonly UserForumPermissionRepository $userForumPermissionRepository,
         private readonly GroupForumPermissionRepository $groupForumPermissionRepository,
-        User2GroupManager $users2GroupsManager,
     ) {
         $this->forumEntity         = $forumEntity;
         $this->moderators          = $moderators;
-        $this->users2GroupsManager = $users2GroupsManager;
     }
 
     /**
@@ -125,8 +120,8 @@ class ForumScope implements IAuthorizationScope
 
         // group
         if ($this->groupPermission) {
-            $this->groupPermission = $groupForums = $this->users2GroupsManager
-                ->getForumsPermissionsByUserThroughGroupAndForum(
+            $this->groupPermission = $groupForums = $this->groupForumPermissionRepository
+                ->findPermissionsByUserAndForum(
                     $identity->getId(),
                     $this->forumEntity->id,
                 );

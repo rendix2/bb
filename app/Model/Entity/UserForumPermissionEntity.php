@@ -15,6 +15,6 @@ class UserForumPermissionEntity
 
     #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'sessions')]
     #[JoinColumn(nullable: false)]
-    public ForumEntity $forumEntity;
+    public ForumEntity $forum;
 
 }
