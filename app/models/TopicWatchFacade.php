@@ -16,22 +16,13 @@ use Nette\Utils\ArrayHash;
  */
 class TopicWatchFacade
 {
-    /**
-     *
-     * @var UsersManager $usersManager
-     */
-    private UsersManager $usersManager;
-
 
     public function __construct(
-        UsersManager      $usersManager,
         private readonly EntityManagerDecorator $em,
 
-        private readonly PostRepository  $postRepository,
-
+        private readonly PostRepository       $postRepository,
         private readonly TopicWatchRepository $topicWatchRepository,
     ) {
-        $this->usersManager      = $usersManager;
     }
 
     public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity): void

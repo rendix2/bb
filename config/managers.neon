@@ -9,8 +9,6 @@ services:
         class: App\Models\UsersManager
     ThankManager:
         class: App\Models\ThankManager
-    TopicManager:
-        class: App\Models\TopicManager
     Forums2GroupsManager:
         class: App\Models\Forums2GroupsManager
     Users2GroupManager:

@@ -2,25 +2,15 @@
 
 namespace App\ModeratorModule\Presenters;
 
-use App\Controls\GridFilter;
 use App\Database\EntityManagerDecorator;
 use App\Model\Repository\ForumRepository;
 use App\Model\Repository\TopicRepository;
 use App\Models\TopicFacade;
-use App\Models\TopicManager;
-use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Utils\ArrayHash;
 
-/**
- * Description of TopicPresenter
- *
- * @author rendix2
- * @method TopicManager getManager()
- * @package App\ModeratorModule\Presenters
- */
 class TopicPresenter extends Presenter
 {
     

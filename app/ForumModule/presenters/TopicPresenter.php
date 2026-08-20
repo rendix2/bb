@@ -30,7 +30,6 @@ use App\Model\Repository\UserRepository;
 use App\Models\Posts2FilesManager;
 use App\Models\ThanksFacade;
 use App\Models\TopicFacade;
-use App\Models\TopicManager;
 use App\services\BreadcrumbService;
 use App\services\ScopeService;
 use App\Settings\Avatars;
@@ -41,15 +40,7 @@ use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Forms\Container;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\DateTime;
 
-/**
- * Description of TopicPresenter
- *
- * @author rendix2
- * @method TopicManager getManager()
- * @package App\ForumModule\Presenters
- */
 class TopicPresenter extends Presenter
 {
     /**
@@ -353,12 +344,9 @@ class TopicPresenter extends Presenter
         
         $this->requireAccess($topicScope, TopicScope::ACTION_DELETE);
 
-        $res = $this->topicFacade->delete($topicEntity);
+        $this->topicFacade->delete($topicEntity);
         
-        if ($res) {
-            $this->flashMessage('Topic was deleted.', 'success');
-        }
-        
+        $this->flashMessage('Topic was deleted.', 'success');
         $this->redirect('Forum:default', $category_id, $forum_id, $page);
     }
 
@@ -427,9 +415,11 @@ class TopicPresenter extends Presenter
             ->getQuery()
             ->getResult();
 
+        /*
         if ($this->topicSetting->get()['logViews']) {
             $this->getManager()->update($topic_id, ArrayHash::from(['topic_view_count%sql' => 'topic_view_count + 1']));
         }
+        */
 
         $topicSettings = $this->topicSetting->get();
         

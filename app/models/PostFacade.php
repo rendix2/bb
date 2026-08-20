@@ -9,7 +9,6 @@ use App\Model\Repository\PostRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\TopicWatchRepository;
 use App\Model\Repository\UserRepository;
-use App\Settings\TopicsSetting;
 use Dibi\Result;
 use Nette\Utils\ArrayHash;
 
@@ -26,19 +25,6 @@ class PostFacade
      * @var PostManager $postsManager
      */
     private PostManager $postsManager;
-
-    /**
-     *
-     * @var TopicManager $topicsManager
-     */
-    private TopicManager $topicsManager;
-
-
-    /**
-     *
-     * @var UsersManager $usersManager
-     */
-    private UsersManager $usersManager;
 
     /**
      *
@@ -66,12 +52,6 @@ class PostFacade
 
     /**
      *
-     * @var TopicsSetting $topicSettings
-     */
-    private TopicsSetting $topicSettings;
-
-    /**
-     *
      * @var FilesManager $filesManager
      */
     private FilesManager $filesManager;
@@ -83,12 +63,10 @@ class PostFacade
 
     public function __construct(
         PostManager                             $postsManager,
-        TopicManager                            $topicsManager,
         ReportManager                           $reportsManager,
         ThanksFacade                            $thanksFacade,
         TopicWatchFacade                        $topicWatchFacade,
         PollsFacade                             $pollsFacade,
-        TopicsSetting                           $topicSettings,
         FilesManager                            $filesManager,
         Posts2FilesManager                      $posts2FilesManger,
         private readonly EntityManagerDecorator $em,
@@ -101,12 +79,10 @@ class PostFacade
     )
     {
         $this->postsManager = $postsManager;
-        $this->topicsManager = $topicsManager;
         $this->reportsManager = $reportsManager;
         $this->thanksFacade = $thanksFacade;
         $this->topicWatchFacade = $topicWatchFacade;
         $this->pollsFacade = $pollsFacade;
-        $this->topicSettings = $topicSettings;
         $this->filesManager = $filesManager;
         $this->posts2FilesManger = $posts2FilesManger;
     }
@@ -312,7 +288,8 @@ class PostFacade
                 $this->pollsFacade->delete($topicEntity->poll);
             }
 
-            $this->topicsManager->delete($topicEntity->id);
+            $this->em->remove($topicEntity);
+            $this->em->flush();
 
             return 2;
         }

@@ -2,7 +2,6 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Authorization\Authorizator;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
@@ -13,7 +12,6 @@ use App\Forms\UserGroupsForm;
 use App\Forms\UserModeratorForm;
 use App\Model\Repository\LanguageRepository;
 use App\Model\Repository\RankRepository;
-use App\Models\UsersManager;
 use App\Services\ChangePasswordFactory;
 use App\Services\DeleteAvatarFactory;
 use App\Settings\Avatars;
@@ -21,13 +19,6 @@ use App\Settings\RanksDir;
 use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
 
-/**
- * Description of UserPresenter
- *
- * @author rendix2
- * @method UsersManager getManager()
- * @package App\AdminModule\Presenters
- */
 class UserPresenter extends Presenter
 {
     /**
