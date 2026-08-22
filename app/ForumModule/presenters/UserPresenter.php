@@ -15,7 +15,6 @@ use App\Forms\UserChangePasswordForm;
 use App\Forms\UserChangeUserNameForm;
 use App\Forms\UserDeleteAvatarForm;
 use App\Forms\UserResetPasswordForm;
-use App\ForumModule\Presenters\Base\ForumPresenter as BaseForumPresenter;
 use App\Model\Entity\UserFavouriteUserEntity;
 use App\Model\Repository\LanguageRepository;
 use App\Model\Repository\PostRepository;

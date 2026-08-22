@@ -40,7 +40,6 @@ use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Forms\Container;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\DateTime;
 
 class TopicPresenter extends Presenter
 {
@@ -345,12 +344,9 @@ class TopicPresenter extends Presenter
         
         $this->requireAccess($topicScope, TopicScope::ACTION_DELETE);
 
-        $res = $this->topicFacade->delete($topicEntity);
+        $this->topicFacade->delete($topicEntity);
         
-        if ($res) {
-            $this->flashMessage('Topic was deleted.', 'success');
-        }
-        
+        $this->flashMessage('Topic was deleted.', 'success');
         $this->redirect('Forum:default', $category_id, $forum_id, $page);
     }
 

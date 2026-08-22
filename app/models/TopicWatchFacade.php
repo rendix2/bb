@@ -18,11 +18,9 @@ class TopicWatchFacade
 {
 
     public function __construct(
-        UsersManager      $usersManager,
         private readonly EntityManagerDecorator $em,
 
-        private readonly PostRepository  $postRepository,
-
+        private readonly PostRepository       $postRepository,
         private readonly TopicWatchRepository $topicWatchRepository,
     ) {
     }

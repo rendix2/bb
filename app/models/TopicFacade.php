@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Database\EntityManagerDecorator;
+use App\Model\Entity\PollEntity;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\TopicWatchEntity;
 use App\Model\Repository\ForumRepository;
@@ -89,7 +90,7 @@ class TopicFacade
         */
     }
 
-    public function delete(\App\Model\Entity\TopicEntity $topicEntity)
+    public function delete(\App\Model\Entity\TopicEntity $topicEntity): void
     {
         $this->thanksFacade->deleteByTopic($topicEntity);
         $this->topicWatchFacade->deleteByTopic($topicEntity);
@@ -105,18 +106,19 @@ class TopicFacade
         */
 
         $posts = $this->postRepository->getCountOfUsersByTopicId($topicEntity->id);
+
+        /*
         $users = [];
 
         foreach ($posts as $post) {
             $users[] = $post->post_user_id;
 
-            /*
             $this->usersManager->update(
                 $post->post_user_id,
                 ArrayHash::from(['user_post_count%sql' => 'user_post_count - ' . $post->post_count])
             );
-            */
         }
+        */
 
         /*
         $this->forumsManager->update(
@@ -129,15 +131,7 @@ class TopicFacade
         $this->em->flush();
     }
 
-    /**
-     * moves topic to another forum
-     *
-     * @param int $topic_id
-     * @param int $target_forum_id
-     *
-     * @return bool|Result|int
-     */
-    public function move($topic_id, $target_forum_id)
+    public function move($topic_id, $target_forum_id): void
     {
         $topic = $this->topicRepository->findOneBy(
             [
@@ -153,13 +147,20 @@ class TopicFacade
             );
 
         if ($topic === null) {
-            return false;
+            return;
         }
 
-        $source_forum_id = $topic->topic_forum_id;
+        $sourceForumEntity = $topic->forum;
 
-        if ($source_forum_id === $target_forum_id) {
-            return false;
+        $targetForumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $target_forum_id,
+                ]
+            );
+
+        if ($sourceForumEntity->id === $target_forum_id) {
+            return;
         }
 
         $posts = $this->postRepository->findByTopicId($topic_id);
@@ -461,27 +462,18 @@ class TopicFacade
         */
     }
 
-    public function update(\App\Model\Entity\TopicEntity $topicEntity, PostEntity $postEntity): void
+    public function update(
+        \App\Model\Entity\TopicEntity $topicEntity,
+        PollEntity $pollEntity,
+        PostEntity $postEntity
+    ): void
     {
+        $topicEntity->poll = $pollEntity;
+        $postEntity->topic = $topicEntity;
+
         $this->em->persist($topicEntity);
         $this->em->persist($postEntity);
         $this->em->flush();
 
-        $topicHasPoll = $this->pollRepository->findByTopic($topicEntity);
-
-        if ($topicHasPoll) {
-            $poll = $topicEntity->poll;
-            $poll->topic = $topicEntity;
-
-            if ($poll->question) {
-                $this->pollsFacade->update($poll);
-            } else {
-                $this->pollsFacade->delete($poll);
-            }
-        } else {
-            if ($topicEntity->poll) {
-                $this->pollsFacade->add($topicEntity->poll);
-            }
-        }
     }
 }

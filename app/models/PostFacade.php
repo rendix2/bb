@@ -20,6 +20,17 @@ use Dibi\Result;
  */
 class PostFacade
 {
+    /**
+     *
+     * @var PostManager $postsManager
+     */
+    private PostManager $postsManager;
+
+    /**
+     *
+     * @var ReportManager $reportsManager
+     */
+    private ReportManager $reportsManager;
 
     /**
      *
@@ -51,6 +62,8 @@ class PostFacade
     private Posts2FilesManager $posts2FilesManger;
 
     public function __construct(
+        PostManager                             $postsManager,
+        ReportManager                           $reportsManager,
         ThanksFacade                            $thanksFacade,
         TopicWatchFacade                        $topicWatchFacade,
         PollsFacade                             $pollsFacade,
@@ -66,6 +79,8 @@ class PostFacade
         private readonly ReportRepository       $reportRepository,
     )
     {
+        $this->postsManager = $postsManager;
+        $this->reportsManager = $reportsManager;
         $this->thanksFacade = $thanksFacade;
         $this->topicWatchFacade = $topicWatchFacade;
         $this->pollsFacade = $pollsFacade;
