@@ -73,7 +73,7 @@
                     </td>
                     <td>
                         {if $lastPost}
-                            <a href="{link Topic:default#post_{$lastPost->id}, $lastPost->category->id, $lastPost->forum->id, $lastPost->topic->id, $lastPost->topic_page_count}" title="Přidáno: {$lastPost->createdAt|date:'%d.%m.%Y %H:%M:%S'}">
+                            <a href="{link Topic:default#post_{$lastPost->id}, $lastPost->category->id, $lastPost->forum->id, $lastPost->topic->id}" title="Přidáno: {$lastPost->createdAt|date:'%d.%m.%Y %H:%M:%S'}">
                                 {if $lastPost->title}
                                     {$lastPost->title}
                                 {else}

@@ -7,10 +7,10 @@ use App\Database\EntityManagerDecorator;
 use App\Forms\UserLoginForm;
 use App\Model\Entity\SessionEntity;
 use App\Model\Repository\UserRepository;
-use App\Presenters\Base\BasePresenter;
 use App\Services\UserLoginFormFactory;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
 use Nette\Utils\ArrayHash;
@@ -21,7 +21,7 @@ use Nette\Utils\ArrayHash;
  * @author rendix2
  * @package App\AdminModule\Presenters
  */
-class LoginPresenter extends BasePresenter
+class LoginPresenter extends Presenter
 {
     #[Persistent]
     public string $backlink = '';

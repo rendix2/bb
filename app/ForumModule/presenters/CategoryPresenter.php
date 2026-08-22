@@ -4,6 +4,7 @@ namespace App\UI\Forum\Category;
 
 use App\Controls\BreadCrumbControl;
 use App\Database\EntityManagerDecorator;
+use App\Model\Facade\CategoryFacade;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use Nette\Application\UI\Presenter;
@@ -22,6 +23,8 @@ class CategoryPresenter extends Presenter
 
         private readonly Translator $translator,
 
+        private readonly CategoryFacade $categoryFacade,
+
         private readonly CategoryRepository $categoryRepository,
         private readonly ForumRepository    $forumRepository,
     )
@@ -29,10 +32,6 @@ class CategoryPresenter extends Presenter
         parent::__construct();
     }
 
-    /**
-     *
-     * @param int $category_id
-     */
     public function renderDefault(int $category_id = 0): void
     {
         $categoryEntity = $this->categoryRepository
@@ -50,7 +49,9 @@ class CategoryPresenter extends Presenter
             $this->error('Category is not active.');
         }
 
-        //$categories = $this->getManager()->getMptt()->get_tree($category_id);
+        $categories = $this->categoryRepository->findAll();
+
+        $categories = $this->categoryFacade->createCategories($categories, 0);
 
         /*
         $forums = $this->forumsManager
@@ -71,6 +72,7 @@ class CategoryPresenter extends Presenter
         }
 
         $this->getTemplate()->forums = $forums;
+        $this->getTemplate()->categories = $categories;
 
         /*
         if ($categories) {
@@ -83,9 +85,6 @@ class CategoryPresenter extends Presenter
         */
     }
     
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbCategory(): BreadCrumbControl
     {
         $breadCrumb = [

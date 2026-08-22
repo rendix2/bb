@@ -2,7 +2,6 @@
 
 namespace App\Model\Repository;
 
-use App\Model\Entity\TopicWatchEntity;
 use App\Model\Entity\UserActivationEntity;
 use Doctrine\ORM\EntityRepository;
 

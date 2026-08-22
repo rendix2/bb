@@ -9,9 +9,6 @@ use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Utils\ArrayHash;
 use SplFileInfo;
-use Nette\PhpGenerator\Factory;
-use Tracy;
-use Tracy\Debugger;
 
 /**
  * Manager wraps dibi connection to database

@@ -9,38 +9,26 @@ services:
         class: App\Models\UsersManager
     ThankManager:
         class: App\Models\ThankManager
-    TopicManager:
-        class: App\Models\TopicManager
     Forums2GroupsManager:
         class: App\Models\Forums2GroupsManager
     Users2GroupManager:
         class: App\Models\User2GroupManager
-    Users2ForumsManager:
-        class: App\Models\Users2ForumsManager
     Mails2UsersManager:
         class: App\Models\Mails2UsersManager
     ReportManager:
         class: App\Models\ReportManager
     EmailManager:
         class: App\Models\MailsManager
-    ModeratorManager:
-        class: App\Models\ModeratorManager
     FaqFacade:
         class: App\Models\FaqFacade
     FilesManager:
         class: App\Models\FilesManager
-    SmileysManager:
-        class: App\Models\SmileysManager
-    CacheManager:
-        class: App\Models\CacheManager
     PmManager:
         class: App\Models\PmManager
-    PmFacade:
-        class: App\Models\PmFacade
+#    PmFacade:
+#        class: App\Models\PmFacade
     Posts2FilesManager:
         class: App\Models\Posts2FilesManager
-    PostsHistoryManager:
-        class: App\Models\PostsHistoryManager
     PostFacade:
         class: App\Models\PostFacade
     TopicFacade:

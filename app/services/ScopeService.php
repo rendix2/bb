@@ -41,7 +41,7 @@ class ScopeService
             $moderatorsI[] = $moderatorUser;
         }
 
-        return new ForumScope($forum, $moderatorsI, $this->users2GroupsManager, $this->userForumPermissionRepository);
+        return new ForumScope($forum, $moderatorsI, $this->userForumPermissionRepository, $this->groupForumPermissionRepository, $this->users2GroupsManager);
     }
 
     public function loadTopic(ForumEntity $forum, TopicEntity $topic): TopicScope

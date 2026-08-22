@@ -2,7 +2,6 @@
 
 namespace App\AdminModule\Presenters;
 
-use App\AdminModule\Presenters\Base\AdminPresenter;
 use App\Controls\BBMailer;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;

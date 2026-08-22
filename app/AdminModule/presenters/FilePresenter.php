@@ -3,6 +3,8 @@
 namespace App\AdminModule\Presenters;
 
 use App\Controls\PaginatorControl;
+use App\Database\EntityManagerDecorator;
+use App\Model\Repository\FileRepository;
 use App\Models\FilesManager;
 use Contributte\Datagrid\Datagrid;
 use Contributte\FormsBootstrap\BootstrapForm;
@@ -24,7 +26,12 @@ use Tracy\ILogger;
 class FilePresenter extends Presenter
 {
     public function __construct(
+
         private readonly Translator $translator,
+
+        private readonly EntityManagerDecorator $em,
+
+        private readonly FileRepository $fileRepository
     )
     {
         parent::__construct();
@@ -50,7 +57,14 @@ class FilePresenter extends Presenter
 
     public function actionDelete(int $id): void
     {
-        $result = $this->getManager()->delete($id);
+        $fileEntity = $this->fileRepository->findBy(
+            [
+                'id' => $id,
+            ]
+        );
+
+        $this->em->remove($fileEntity);
+        $this->em->flush();
 
         if ($result) {
             $this->flashMessage('Item was deleted.', self::FLASH_MESSAGE_SUCCESS);

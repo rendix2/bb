@@ -2,43 +2,42 @@
 
 namespace App\Models;
 
+use App\Database\EntityManagerDecorator;
 use App\Model\Repository\PostRepository;
-use App\Utils;
+use App\Model\Repository\ReportRepository;
 
-/**
- * Description of ReportFacade
- *
- * @author rendix2
- * @package App\Models
- */
+
 class ReportFacade
 {
-    /**
-     *
-     * @var ReportManager $reportsManager
-     */
-    private ReportManager $reportManager;
 
     public function __construct(
-        ReportManager $reportsManager,
+        private readonly EntityManagerDecorator $em,
 
         private readonly PostRepository  $postRepository,
 
+        private readonly ReportRepository $reportRepository,
+
     ) {
-        $this->reportManager  = $reportsManager;
     }
 
-    /**
-     *
-     * @param \App\Model\Entity\TopicEntity $topicEntity
-     * @return  bool
-     */
-    public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity)
+    public function deleteByTopic(\App\Model\Entity\TopicEntity $topicEntity): void
     {
         $posts = $this->postRepository->findByTopic($topicEntity);
-        $posts_ids = Utils::arrayObjectColumn($posts, 'id');
-        
-        $this->reportManager->deleteByPosts($posts_ids);
-        return $this->reportManager->deleteByTopic($topicEntity->id);
+
+        $reportedPosts = $this->reportRepository->findByPosts($posts);
+
+        foreach ($reportedPosts as $reportedPost) {
+            $this->em->remove($reportedPost);
+        }
+
+        $this->em->flush();
+
+        $reportedTopics = $this->reportRepository->findByTopic($topicEntity);
+
+        foreach ($reportedTopics as $reportedTopic) {
+            $this->em->remove($reportedTopic);
+        }
+
+        $this->em->flush();
     }
 }

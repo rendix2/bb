@@ -30,7 +30,8 @@ class PermissionFactory
         
         $permission->addRole(TopicScope::ROLE_THANKER); // can thank
         $permission->addRole(TopicScope::ROLE_NOT_THANKER); // cant thank
-        
+
+        $permission->addRole(Identity::ROLE_GUEST);
         $permission->addRole(Identity::ROLE_HOST);
         $permission->addRole(Identity::ROLE_REGISTERED, [Identity::ROLE_HOST, TopicScope::ROLE_NOT_THANKER]);
                 

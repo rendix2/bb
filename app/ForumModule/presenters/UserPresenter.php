@@ -422,7 +422,7 @@ class UserPresenter extends Presenter
      */
     public function actionList($page)
     {
-        $users = $this->getManager()->getAllFluent();
+        $users = $this->userRepository->findAll();
 
         $pag = new PaginatorControl($users, 15, 5, $page);
         $this->addComponent($pag, 'paginator');

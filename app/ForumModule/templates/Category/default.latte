@@ -19,7 +19,7 @@
                 <ul>
                 {foreach $forums as $forum}
                     <li>
-                        <a href="{link Forum:default, $category_id, $forum['forum_id']}">{$forum['forum_name']}</a>
+                        <a href="{link Forum:default, $forum->category->id, $forum->id}">{$forum->name}</a>
                     </li>
                 {/foreach}
                 </ul>
@@ -35,7 +35,7 @@
                 <ul>
                 {foreach $categories as $category}
                     <li>
-                        <a href="{link Category:default, $category['category_id']}">{$category['category_name']}</a>
+                        <a href="{link Category:default, $category->id}">{$category->name}</a>
                     </li>
 
                     {if is_array($category['children'])}

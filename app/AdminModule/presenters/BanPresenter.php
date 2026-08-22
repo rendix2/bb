@@ -17,12 +17,6 @@ use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 use Tracy\ILogger;
 
-/**
- * Description of BanPresenter
- *
- * @author rendix2
- * @package App\AdminModule\Presenters
- */
 class BanPresenter extends Presenter
 {
 

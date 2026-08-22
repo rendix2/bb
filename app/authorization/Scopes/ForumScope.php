@@ -171,6 +171,7 @@ class ForumScope implements IAuthorizationScope
         }
 
         // forum
+        /*
         if ($this->forumEntity->getForum_post_add() && !in_array(self::ROLE_FORUM_POST_ADDER, $roles, true)) {
             $roles[] = self::ROLE_FORUM_POST_ADDER;
         }
@@ -209,6 +210,7 @@ class ForumScope implements IAuthorizationScope
                 break;
             }
         }
+        */
 
         return $roles;
     }

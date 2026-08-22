@@ -3,25 +3,17 @@
 namespace App\ModeratorModule\Presenters;
 
 use App\Controls\GridFilter;
-use App\Models\ReportManager;
-use App\ModeratorModule\Presenters\Base\ModeratorPresenter;
+
+use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
 
-/**
- * Description of ReportPresenter
- *
- * @author rendix2
- * @method ReportManager getManager()
- * @package App\ModeratorModule\Presenters
- */
-class ReportPresenter extends ModeratorPresenter
+class ReportPresenter extends Presenter
 {
     public function __construct(
-        ReportManager $manager,
         private readonly Translator $translator,
     )
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
     protected function createComponentEditForm(): \Contributte\FormsBootstrap\BootstrapForm

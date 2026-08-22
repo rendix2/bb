@@ -3,6 +3,7 @@
 namespace App\ModeratorModule\Presenters;
 
 use App\Presenters\Base\BasePresenter;
+use Nette\Application\UI\Presenter;
 
 /**
  * Description of IndexPresenter
@@ -10,7 +11,7 @@ use App\Presenters\Base\BasePresenter;
  * @author rendix2
  * @package App\ModeratorModule\Presenters
  */
-class IndexPresenter extends BasePresenter
+class IndexPresenter extends Presenter
 {
     public function __construct()
     {

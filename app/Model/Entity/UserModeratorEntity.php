@@ -15,7 +15,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity()]
-#[Table(name: 'user_moderator')]
+#[Table(name: 'moderator_user')]
 class UserModeratorEntity
 {
 

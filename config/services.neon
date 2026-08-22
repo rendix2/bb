@@ -71,6 +71,30 @@ services:
 		type: App\Model\Repository\UserFavouriteUserRepository
 		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\UserFavouriteUserEntity)
 
+	-
+		type: App\Model\Repository\UserActivationRepository
+		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\UserActivationEntity)
+
+	-
+		type: App\Model\Repository\GroupRepository
+		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\GroupEntity)
+
+	-
+		type: App\Model\Repository\GroupForumPermissionRepository
+		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\GroupForumPermissionEntity)
+
+	-
+		type: App\Model\Repository\FileRepository
+		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\FileEntity)
+
+	-
+		type: App\Model\Repository\UserModeratorRepository
+		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\UserModeratorEntity)
+
+	-
+		type: App\Model\Repository\UserForumPermissionRepository
+		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\UserForumPermissionEntity)
+
 
 search:
 	-   in: %appDir%

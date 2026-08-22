@@ -5,12 +5,15 @@ namespace App\AdminModule\Presenters;
 use App\Controls\BreadCrumbControl;
 use App\Controls\GridFilter;
 use App\Controls\PaginatorControl;
+use App\Database\EntityManagerDecorator;
+use App\Model\Repository\ReportRepository;
 use App\Models\ReportManager;
 use Dibi\DriverException;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
+use stdClass;
 use Tracy\Debugger;
 use Tracy\ILogger;
 
@@ -24,7 +27,12 @@ use Tracy\ILogger;
 class ReportPresenter extends Presenter
 {
     public function __construct(
-        private readonly Translator $translator
+        private readonly Translator $translator,
+
+        private readonly EntityManagerDecorator $em,
+
+        private readonly ReportRepository $reportRepository,
+
     )
     {
         parent::__construct();
@@ -32,11 +40,24 @@ class ReportPresenter extends Presenter
 
     public function actionDelete(int $id)
     {
-        if (!is_numeric($id)) {
-            $this->error('Parameter is not numeric.');
+        $reportEntity = $this->reportRepository
+            ->findOneBy(
+                [
+                    'id' => $id,
+                ]
+            );
+
+        if ($reportEntity === null) {
+            $flashMessage = new stdClass();
+            $flashMessage->message = 'Report was not found.';
+            $flashMessage->typer = 'danger';
+
+            $this->flashMessage($flashMessage);
+            $this->redrawControl('flashes');
         }
 
-        $result = $this->getManager()->delete($id);
+        $this->em->remove($reportEntity);
+        $this->em->flush();
 
         if ($result) {
             $this->flashMessage('Item was deleted.', self::FLASH_MESSAGE_SUCCESS);
@@ -49,7 +70,7 @@ class ReportPresenter extends Presenter
 
     public function actionDefault(int $page = 1): void
     {
-        $items = $this->getManager()->getAllFluent();
+        $items = $this->reportRepository->findAll();
 
         $this->gf->applyWhere($items);
         $this->gf->applyOrderBy($items);

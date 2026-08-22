@@ -5,8 +5,10 @@ namespace App\Models;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\TopicWatchEntity;
+use App\Model\Repository\ForumRepository;
 use App\Model\Repository\PollRepository;
 use App\Model\Repository\PostRepository;
+use App\Model\Repository\ReportRepository;
 use App\Model\Repository\ThankRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\TopicWatchRepository;
@@ -23,25 +25,24 @@ use Nette\Utils\ArrayHash;
 class TopicFacade
 {
     public function __construct(
-        private readonly TopicManager      $topicsManager,
-        private readonly PostManager       $postsManager,
-        private readonly UsersManager      $usersManager,
-        private readonly ThankManager      $thanksManager,
-        private readonly ForumManager      $forumsManager,
-        private readonly PostFacade        $postFacade,
-        private readonly ReportManager     $reportsManager,
-        private readonly TopicWatchFacade  $topicWatchFacade,
-        private readonly ThanksFacade      $thanksFacade,
-        private readonly ReportFacade      $reportFacade,
-        private readonly PollsFacade       $pollsFacade,
+        private readonly PostManager $postsManager,
+        private readonly ThankManager $thanksManager,
+        private readonly PostFacade $postFacade,
+        private readonly TopicWatchFacade $topicWatchFacade,
+        private readonly ThanksFacade $thanksFacade,
+        private readonly ReportFacade $reportFacade,
+        private readonly PollsFacade $pollsFacade,
 
-        private readonly ThankRepository      $thankRepository,
+        private readonly ThankRepository $thankRepository,
         private readonly TopicWatchRepository $topicWatchRepository,
 
+        private readonly ForumRepository $forumRepository,
         private readonly TopicRepository $topicRepository,
-        private readonly PostRepository  $postRepository,
+        private readonly PostRepository $postRepository,
 
         private readonly PollRepository $pollRepository,
+
+        private readonly ReportRepository $reportRepository,
 
         private readonly EntityManagerDecorator $em,
     ) {
@@ -54,7 +55,7 @@ class TopicFacade
 
         $topic_id = $topicEntity->id;
         $postEntity->topic = $topicEntity;
-        
+
         if ($topicEntity->poll) {
             $this->pollsFacade->add($topicEntity->poll);
         }
@@ -71,17 +72,21 @@ class TopicFacade
         $topicEntity->firstPost = $postEntity;
         $topicEntity->lastPost = $postEntity;
 
+        /*
         $this->usersManager->update($topicEntity->user->id, ArrayHash::from(
             [
                 'user_topic_count%sql' => 'user_topic_count + 1',
                 'user_watch_count%sql' => 'user_watch_count + 1'
             ]
         ));
+        */
 
+        /*
         $this->forumsManager->update(
             $topicEntity->forum->id,
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count + 1'])
         );
+        */
     }
 
     public function delete(\App\Model\Entity\TopicEntity $topicEntity)
@@ -89,32 +94,39 @@ class TopicFacade
         $this->thanksFacade->deleteByTopic($topicEntity);
         $this->topicWatchFacade->deleteByTopic($topicEntity);
         $this->reportFacade->deleteByTopic($topicEntity);
-        
+
         if ($topicEntity->poll !== null) {
             $this->pollsFacade->delete($topicEntity->poll);
         }
-        
+
+        /*
         $this->usersManager
             ->update($topicEntity->user->id, ArrayHash::from(['user_topic_count%sql' => 'user_topic_count - 1']));
-        
+        */
+
         $posts = $this->postRepository->getCountOfUsersByTopicId($topicEntity->id);
         $users = [];
-        
+
         foreach ($posts as $post) {
             $users[] = $post->post_user_id;
 
+            /*
             $this->usersManager->update(
                 $post->post_user_id,
                 ArrayHash::from(['user_post_count%sql' => 'user_post_count - ' . $post->post_count])
             );
+            */
         }
 
+        /*
         $this->forumsManager->update(
             $topicEntity->forum->id,
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1'])
         );
+        */
 
-        return $this->topicsManager->delete($topicEntity->id);
+        $this->em->remove($topicEntity);
+        $this->em->flush();
     }
 
     /**
@@ -130,22 +142,30 @@ class TopicFacade
         $topic = $this->topicRepository->findOneBy(
             [
                 'id' => $topic_id,
-            ]
+            ],
         );
+
+        $targetForumEntity = $this->forumRepository
+            ->findOneBy(
+                [
+                    'id' => $target_forum_id,
+                ],
+            );
 
         if ($topic === null) {
             return false;
         }
-        
+
         $source_forum_id = $topic->topic_forum_id;
 
         if ($source_forum_id === $target_forum_id) {
             return false;
         }
 
-        $posts    = $this->postRepository->findByTopicId($topic_id);
+        $posts = $this->postRepository->findByTopicId($topic_id);
         $post_ids = Utils::arrayObjectColumn($posts, 'id');
 
+        /*
         $this->forumsManager->update(
             $source_forum_id,
             ArrayHash::from(
@@ -164,12 +184,50 @@ class TopicFacade
                 ]
             )
         );
-        
-        $this->postsManager->updateMulti($post_ids, ArrayHash::from(['post_forum_id' => $target_forum_id]));
-        $this->reportsManager->updateByTopic($topic_id, ArrayHash::from(['report_forum_id' => $target_forum_id]));
-        $this->thanksManager->updateByTopic($topic_id, ArrayHash::from(['thank_forum_id' => $target_forum_id]));
-        
-        return $this->topicsManager->update($topic_id, ArrayHash::from(['topic_forum_id' => $target_forum_id]));
+        */
+
+        foreach ($posts as $post) {
+            $post->forum = $targetForumEntity;
+
+            $this->em->persist($post);
+        }
+
+        $this->em->flush();
+
+        $reports = $this->reportRepository
+            ->findBy(
+                [
+                    'topic' => $topic,
+                ],
+            );
+
+        foreach ($reports as $report) {
+            $report->forum = $targetForumEntity;
+
+            $this->em->persist($report);
+        }
+
+        $this->em->flush();
+
+        $thanks = $this->thankRepository
+            ->findBy(
+                [
+                    'topic' => $topic_id,
+                ]
+            );
+
+        foreach ($thanks as $thank) {
+            $thank->forum = $targetForumEntity;
+
+            $this->em->persist($thank);
+        }
+
+        $this->em->flush();
+
+        $topic->forum = $targetForumEntity;
+
+        $this->em->persist($topic);
+        $this->em->flush();
     }
 
     /**
@@ -185,7 +243,7 @@ class TopicFacade
             ->where('[post_topic_id] = %i', $topic_from_id)
             ->where('[post_id] > %i', $from_post_id)
             ->fetchAll();
-        
+
         $post_ids = Utils::arrayObjectColumn($posts, 'post_id');
 
         return $this->mergeWithPosts($topic_target_id, $post_ids);
@@ -253,53 +311,81 @@ class TopicFacade
         $topicWatches = $this->topicWatchRepository->findByTopic($topicFrom);
         $targetThanks = $this->thankRepository->findByTopicId($topic_target_id);
 
-        $thanksFromUsers   = Utils::arrayObjectColumn($thanks, 'thank_user_id');
+        $thanksFromUsers = Utils::arrayObjectColumn($thanks, 'thank_user_id');
         $thanksTargetUsers = Utils::arrayObjectColumn($targetThanks, 'thank_user_id');
-        
-        $same_thanks     = array_intersect($thanksTargetUsers, $thanksFromUsers);
+
+        $same_thanks = array_intersect($thanksTargetUsers, $thanksFromUsers);
         $missing_thanks = array_diff($thanksFromUsers, $thanksTargetUsers);
 
+        /*
         $this->usersManager->updateMulti(
             $same_thanks,
             ArrayHash::from(['user_thank_count%sql' => 'user_thank_count - 1'])
         );
+        */
 
         $this->thanksManager->deleteByUsersAndTopic($same_thanks, $topic_from_id);
         // thanks end
 
         // topics watches begin
-        $topicsWatchesFrom    = $this->topicWatchRepository->findByTopic($topicFrom);
-        $topicsWatchesTarget  = $this->topicWatchRepository->findByTopic($topicTarget);
+        $topicsWatchesFrom = $this->topicWatchRepository->findByTopic($topicFrom);
+        $topicsWatchesTarget = $this->topicWatchRepository->findByTopic($topicTarget);
 
-        $topic_watch_from_user_ids   = Utils::arrayObjectColumn($topicsWatchesFrom, 'user_id');
+        $topic_watch_from_user_ids = Utils::arrayObjectColumn($topicsWatchesFrom, 'user_id');
         $topic_watch_target_user_ids = Utils::arrayObjectColumn($topicsWatchesTarget, 'user_id');
 
-        $same_watches    = array_intersect($topic_watch_from_user_ids, $topic_watch_target_user_ids);
+        $same_watches = array_intersect($topic_watch_from_user_ids, $topic_watch_target_user_ids);
         $missing_watches = array_diff($topic_watch_target_user_ids, $topic_watch_from_user_ids);
 
+        /*
         $this->usersManager->updateMulti(
             $same_watches,
             ArrayHash::from(['user_watch_count%sql' => 'user_watch_count - 1'])
         );
+        */
 
         // topics watches
 
+        $thanks = $this->thankRepository
+            ->findBy(
+                [
+                    'id' => $same_watches,
+                ]
+            );
+
+        foreach ($thanks as $thank) {
+            $thank->topic = $topicTarget;
+
+            $this->em->persist($thank);
+        }
+
+        $this->em->flush();
+
+        /*
         $this->thanksManager->updateMultiByUser(
             $missing_thanks,
-            ArrayHash::from(['thank_topic_id' => $topic_target_id])
+            ArrayHash::from(['thank_topic_id' => $topic_target_id]),
         );
         $this->forumsManager->update(
             $topicFrom->topic_forum_id,
             ArrayHash::from(['forum_topic_count%sql' => 'forum_topic_count - 1'])
         );
+        */
 
         $this->em->remove($topicFrom);
         $this->em->flush();
 
-        $this->reportsManager->updateByTopic(
-            $topic_from_id,
-            ArrayHash::from(['report_topic_id' => $topic_target_id, 'report_forum_id' => $topicTarget->topic_forum_id])
-        );
+        $reportedTopics = $this->reportRepository->findByTopic($topicFrom);
+
+        foreach ($reportedTopics as $reportedTopic) {
+            $reportedTopic->topic = $topicTarget;
+            $reportedTopic->forum = $topicTarget->forum;
+
+            $this->em->persist($reportedTopic);
+        }
+
+        $this->em->flush();
+
         //$this->topicWatchManager->mergeByLeft($topic_target_id, $topicWatches);
 
         $missingWatches = $this->topicWatchRepository->findMissingWatchesByTopics($topicFrom, $topicTarget);
@@ -323,66 +409,79 @@ class TopicFacade
         }
 
         $this->em->flush();
-        
+
         $post_ids = Utils::arrayObjectColumn($posts, 'post_id');
 
         $this->mergeWithPosts($topic_target_id, $post_ids);
-        $this->topicsManager->delete($topic_from_id);
+
+        $this->em->remove($topicFrom);
+        $this->em->flush();
 
         return true;
     }
 
-    /**
-     * @param int   $topic_target_id
-     * @param array $post_ids
-     *
-     * @return Result|int
-     */
-    public function mergeWithPosts($topic_target_id, array $post_ids)
+    public function mergeWithPosts(int $topic_target_id, array $post_ids)
     {
         $this->postsManager->updateMulti($post_ids, ArrayHash::from(['post_topic_id' => $topic_target_id]));
-        $last_post = $this->postRepository->findLastByTopicId($topic_target_id);
-        $first_post = $this->postRepository->findFirstByTopicId($topic_target_id);
 
+        $topicEntity = $this->topicRepository
+            ->findOneBy(
+                [
+                    'id' => $topic_target_id,
+                ]
+            );
+
+        foreach ($post_ids as $postId) {
+            $postEntity = $this->postRepository
+                ->findOneBy(
+                    [
+                        'id' => $postId,
+                    ]
+                );
+
+            $postEntity->topic = $topicEntity;
+
+            $this->em->persist($postEntity);
+        }
+
+        $this->em->flush();;
+
+        $lastPost = $this->postRepository->findLastByTopicId($topic_target_id);
+        $firstPost = $this->postRepository->findFirstByTopicId($topic_target_id);
+
+        /*
         return $this->topicsManager->update($topic_target_id, ArrayHash::from([
-            'topic_post_count%sql' => 'topic_post_count + ' . count($post_ids),
-            'topic_first_post_id'  => $first_post->id,
-            'topic_first_user_id'  => $first_post->user->id,
+            //'topic_post_count%sql' => 'topic_post_count + ' . count($post_ids),
+            'topic_first_post_id' => $firstPost->id,
+            'topic_first_user_id' => $firstPost->user->id,
 
-            'topic_last_post_id'   => $last_post->id,
-            'topic_last_user_id'   => $last_post->user->id,
+            'topic_last_post_id' => $lastPost->id,
+            'topic_last_user_id' => $lastPost->user->id,
         ]));
+        */
     }
 
-    public function update(\App\Model\Entity\TopicEntity $topicEntity)
+    public function update(\App\Model\Entity\TopicEntity $topicEntity, PostEntity $postEntity): void
     {
-        $res = $this->topicsManager->update(
-            $topicEntity->id,
-            ArrayHash::from(['topic_name' => $topicEntity->name])
-        );
-
-        $this->postsManager->update(
-            $topicEntity->getPost()->getPost_id(),
-            ArrayHash::from(['post_text' => $topicEntity->getPost()->getPost_text()])
-        );
+        $this->em->persist($topicEntity);
+        $this->em->persist($postEntity);
+        $this->em->flush();
 
         $topicHasPoll = $this->pollRepository->findByTopic($topicEntity);
 
         if ($topicHasPoll) {
-            $poll = $topicEntity->getPoll();
-            $poll->setPoll_topic_id($topicEntity->getTopic_id());
-            
-            if ($poll->poll_question) {
+            $poll = $topicEntity->poll;
+            $poll->topic = $topicEntity;
+
+            if ($poll->question) {
                 $this->pollsFacade->update($poll);
             } else {
                 $this->pollsFacade->delete($poll);
             }
         } else {
-            if ($topicEntity->getPoll()) {
-                $this->pollsFacade->add($topicEntity->getPoll());
+            if ($topicEntity->poll) {
+                $this->pollsFacade->add($topicEntity->poll);
             }
         }
-
-        return $res;
     }
 }

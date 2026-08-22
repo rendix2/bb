@@ -16,12 +16,12 @@ class Authorizator
     /**
      * @var string
      */
-    const ROLES = [ 1 => 'guest', 2 => 'registered', 3 => 'moderator', 4 => 'juniorAdmin', 5 => 'admin'];
+    const array ROLES = [ 1 => 'guest', 2 => 'registered', 3 => 'moderator', 4 => 'juniorAdmin', 5 => 'admin'];
     
     /**
      * @var IAuthorizator $authorizator
      */
-    private $authorizator;
+    private IAuthorizator $authorizator;
 
     /**
      * Authorizator constructor.
@@ -31,14 +31,6 @@ class Authorizator
     public function __construct(IAuthorizator $authorizator)
     {
         $this->authorizator = $authorizator;
-    }
-    
-    /**
-     * Authorizator destructor.
-     */
-    public function __destruct()
-    {
-        $this->authorizator = null;
     }
 
     /**

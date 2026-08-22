@@ -57,10 +57,7 @@ class AvatarPresenter extends Presenter
         }
     }
 
-    /**
-     * @param int $id
-     */
-    public function actionDelete(int $id)
+    public function actionDelete(int $id): void
     {
         if (!is_numeric($id)) {
             $this->error('Parameter is not numeric.');

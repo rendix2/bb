@@ -9,12 +9,14 @@ use App\Model\Entity\TopicEntity;
 use App\Model\Repository\CategoryRepository;
 use App\Model\Repository\ForumRepository;
 use App\services\BreadcrumbService;
+use App\services\CheckPermissionService;
 use App\services\ScopeService;
 use App\Settings\ForumSettings;
 use App\Settings\TopicsSetting;
 use Contributte\Datagrid\Datagrid;
 use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
+use Nette\Localization\Translator;
 
 /**
  * Description of ForumPresenter
@@ -31,6 +33,8 @@ final class ForumPresenter extends Presenter
     public TopicsSetting $topicSetting;
 
     public function __construct(
+        private readonly Translator $translator,
+
         private readonly EntityManagerDecorator $em,
 
         private readonly ScopeService $scopeService,
@@ -39,10 +43,13 @@ final class ForumPresenter extends Presenter
         private readonly ForumRepository    $forumRepository,
 
         private readonly BreadcrumbService $breadcrumbService,
+
+        private readonly CheckPermissionService $checkPermissionService,
     )
     {
         parent::__construct();
     }
+
 
     /**
      * action default
@@ -77,12 +84,12 @@ final class ForumPresenter extends Presenter
         
         $forumScope = $this->scopeService->loadForum($forumEntity);
         
-        $this->requireAccess($forumScope, ForumScope::ACTION_VIEW);
+        $this->checkPermissionService->requireAccess($forumScope, ForumScope::ACTION_VIEW);
 
-        $this->template->canAddTopic    = $this->isAllowed($forumScope, ForumScope::ACTION_TOPIC_ADD);
-        $this->template->canDeleteTopic = $this->isAllowed($forumScope, ForumScope::ACTION_TOPIC_DELETE);
+        $this->template->canAddTopic    = $this->checkPermissionService->isAllowed($forumScope, ForumScope::ACTION_TOPIC_ADD);
+        $this->template->canDeleteTopic = $this->checkPermissionService->isAllowed($forumScope, ForumScope::ACTION_TOPIC_DELETE);
         
-        $this->template->forum  = $forumEntity;
+        $this->getTemplate()->forum  = $forumEntity;
     }
 
     /**
@@ -153,9 +160,6 @@ final class ForumPresenter extends Presenter
         return $grid;
     }
 
-    /**
-     * @return BreadCrumbControl
-     */
     protected function createComponentBreadCrumbAll(): BreadCrumbControl
     {
         $breadCrumb = array_merge(
@@ -164,6 +168,6 @@ final class ForumPresenter extends Presenter
             $this->breadcrumbService->getForumBreadCrumb($this->getParameter('forum_id'))
         );
 
-        return new BreadCrumbControl($breadCrumb, $this->getTranslator());
+        return new BreadCrumbControl($breadCrumb, $this->translator);
     }
 }

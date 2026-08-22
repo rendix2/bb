@@ -6,12 +6,11 @@ use App\Database\EntityManagerDecorator;
 use App\Model\Entity\PostHistoryEntity;
 use App\Model\Entity\TopicWatchEntity;
 use App\Model\Repository\PostRepository;
+use App\Model\Repository\ReportRepository;
 use App\Model\Repository\TopicRepository;
 use App\Model\Repository\TopicWatchRepository;
 use App\Model\Repository\UserRepository;
-use App\Settings\TopicsSetting;
 use Dibi\Result;
-use Nette\Utils\ArrayHash;
 
 /**
  * Description of PostFacade
@@ -21,30 +20,6 @@ use Nette\Utils\ArrayHash;
  */
 class PostFacade
 {
-    /**
-     *
-     * @var PostManager $postsManager
-     */
-    private PostManager $postsManager;
-
-    /**
-     *
-     * @var TopicManager $topicsManager
-     */
-    private TopicManager $topicsManager;
-
-
-    /**
-     *
-     * @var UsersManager $usersManager
-     */
-    private UsersManager $usersManager;
-
-    /**
-     *
-     * @var ReportManager $reportsManager
-     */
-    private ReportManager $reportsManager;
 
     /**
      *
@@ -66,12 +41,6 @@ class PostFacade
 
     /**
      *
-     * @var TopicsSetting $topicSettings
-     */
-    private TopicsSetting $topicSettings;
-
-    /**
-     *
      * @var FilesManager $filesManager
      */
     private FilesManager $filesManager;
@@ -82,13 +51,9 @@ class PostFacade
     private Posts2FilesManager $posts2FilesManger;
 
     public function __construct(
-        PostManager                             $postsManager,
-        TopicManager                            $topicsManager,
-        ReportManager                           $reportsManager,
         ThanksFacade                            $thanksFacade,
         TopicWatchFacade                        $topicWatchFacade,
         PollsFacade                             $pollsFacade,
-        TopicsSetting                           $topicSettings,
         FilesManager                            $filesManager,
         Posts2FilesManager                      $posts2FilesManger,
         private readonly EntityManagerDecorator $em,
@@ -98,15 +63,12 @@ class PostFacade
 
         private readonly UserRepository         $userRepository,
         private readonly TopicWatchRepository   $topicWatchRepository,
+        private readonly ReportRepository       $reportRepository,
     )
     {
-        $this->postsManager = $postsManager;
-        $this->topicsManager = $topicsManager;
-        $this->reportsManager = $reportsManager;
         $this->thanksFacade = $thanksFacade;
         $this->topicWatchFacade = $topicWatchFacade;
         $this->pollsFacade = $pollsFacade;
-        $this->topicSettings = $topicSettings;
         $this->filesManager = $filesManager;
         $this->posts2FilesManger = $posts2FilesManger;
     }
@@ -255,7 +217,15 @@ class PostFacade
         $this->em->flush();
 
         $this->topicWatchFacade->deleteByPost($postEntity);
-        $this->reportsManager->deleteByPost($postEntity->id);
+
+        $reportedPosts = $this->reportRepository->findByPost($postEntity);
+
+        foreach ($reportedPosts as $reportedPost) {
+            $this->em->remove($reportedPost);
+        }
+
+        $this->em->flush();
+
         /*
         $this->forumsManager->update(
             $postEntity->forum->id,
@@ -298,7 +268,15 @@ class PostFacade
             );
             */
             $this->thanksFacade->deleteByTopic($topicEntity);
-            $this->reportsManager->deleteByTopic($topicEntity->id);
+
+            $reportedTopics = $this->reportRepository->findByTopic($topicEntity);
+
+            foreach ($reportedTopics as $reportedTopic) {
+                $this->em->remove($reportedTopic);
+            }
+
+            $this->em->flush();
+
             $this->topicWatchFacade->deleteByTopic($topicEntity);
 
             /*
@@ -312,7 +290,8 @@ class PostFacade
                 $this->pollsFacade->delete($topicEntity->poll);
             }
 
-            $this->topicsManager->delete($topicEntity->id);
+            $this->em->remove($topicEntity);
+            $this->em->flush();
 
             return 2;
         }
@@ -395,8 +374,10 @@ class PostFacade
         }
         */
 
-        $this->reportsManager->updateByPost($post_id, ArrayHash::from(['report_topic_id' => $target_topic_id]));
 
-        return $this->postsManager->update($post_id, ArrayHash::from(['post_topic_id' => $target_topic_id]));
+        $postEntity->topic = $targetTopicEntity;
+
+        $this->em->persist($postEntity);
+        $this->em->flush();
     }
 }

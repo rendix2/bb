@@ -11,8 +11,13 @@ namespace App\Authorization;
 class Identity
 {
     const ROLE_HOST       = 'host';
+
+    const string ROLE_GUEST = 'guest';
+
     const ROLE_REGISTERED = 'registered';
     const ROLE_ADMIN      = 'Admin';
+
+
     
     private $id;
     

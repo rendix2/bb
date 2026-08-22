@@ -2,80 +2,46 @@
 
 namespace App\AdminModule\ConfigModule\Presenters;
 
-use App\AdminModule\Presenters\Base\AdminPresenter;
-use App\Models\UsersManager;
 use App\Settings\DatabaseBackupDir;
 use Ifsnop\Mysqldump\Mysqldump;
 use Nette\Application\Responses\FileResponse;
+use Nette\Application\UI\Presenter;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 
-/**
- * Description of ConfigPresenter¨
- *
- * @author rendix2
- * @method UsersManager getManager()
- */
-class DatabasePresenter extends AdminPresenter
+class DatabasePresenter extends Presenter
 {
     /**
      *
      * @var Mysqldump
      * @inject
      */
-    public $exporter;
+    public Mysqldump $exporter;
     
     /**
      * @var DatabaseBackupDir $databaseDir
      * @inject
      */
-    public $databaseDir;
+    public DatabaseBackupDir $databaseDir;
 
-    /**
-     * DatabasePresenter constructor.
-     *
-     * @param UsersManager $manager
-     */
-    public function __construct(UsersManager $manager)
+    public function __construct()
     {
-        parent::__construct($manager);
+        parent::__construct();
     }
 
-    /**
-     * @return mixed|void
-     */
-    protected function createComponentEditForm()
-    {
-        return null;
-    }
 
-    /**
-     *
-     * @return null
-     */
-    protected function createComponentGridFilter()
-    {
-        return $this->gf;
-    }
-
-    /**
-     *
-     */
-    public function renderDumps()
+    public function renderDumps(): void
     {
         $sqls = Finder::findFiles('*.sql')->in($this->databaseDir->get());
         
         if (!count($sqls)) {
-            $this->flashMessage('No files to download.', self::FLASH_MESSAGE_WARNING);
+            $this->flashMessage('No files to download.', 'warning');
         }
         
         $this->template->sqls = $sqls;
     }
 
-    /**
-     * @param string $name
-     */
-    public function actionDeleteDump($name)
+    public function actionDeleteDump(string $name): void
     {
         FileSystem::delete($this->databaseDir->get() . DIRECTORY_SEPARATOR . $name);
         $this->redirect(':Admin:Config:Database:dumps');
@@ -84,7 +50,7 @@ class DatabasePresenter extends AdminPresenter
     /**
      * @param string $name
      */
-    public function actionDownloadDump($name)
+    public function actionDownloadDump(string $name)
     {
         $this->sendResponse(new FileResponse($this->databaseDir->get() . DIRECTORY_SEPARATOR . $name));
     }

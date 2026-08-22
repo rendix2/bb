@@ -30,7 +30,6 @@ use App\Model\Repository\UserRepository;
 use App\Models\Posts2FilesManager;
 use App\Models\ThanksFacade;
 use App\Models\TopicFacade;
-use App\Models\TopicManager;
 use App\services\BreadcrumbService;
 use App\services\ScopeService;
 use App\Settings\Avatars;
@@ -43,13 +42,6 @@ use Nette\Forms\Container;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\DateTime;
 
-/**
- * Description of TopicPresenter
- *
- * @author rendix2
- * @method TopicManager getManager()
- * @package App\ForumModule\Presenters
- */
 class TopicPresenter extends Presenter
 {
     /**
@@ -427,9 +419,11 @@ class TopicPresenter extends Presenter
             ->getQuery()
             ->getResult();
 
+        /*
         if ($this->topicSetting->get()['logViews']) {
             $this->getManager()->update($topic_id, ArrayHash::from(['topic_view_count%sql' => 'topic_view_count + 1']));
         }
+        */
 
         $topicSettings = $this->topicSetting->get();
         
@@ -442,7 +436,7 @@ class TopicPresenter extends Presenter
         $this->addComponent($pagination, 'paginator');
 
         if (!$pagination->getCount()) {
-            $this->flashMessage('No posts.', self::FLASH_MESSAGE_WARNING);
+            $this->flashMessage('No posts.', 'warning');
             $this->redirect('Forum:default', $category_id, $forum_id);
         }
 
