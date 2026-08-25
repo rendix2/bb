@@ -31,6 +31,7 @@ use App\Models\Posts2FilesManager;
 use App\Models\ThanksFacade;
 use App\Models\TopicFacade;
 use App\services\BreadcrumbService;
+use App\services\CheckPermissionService;
 use App\services\ScopeService;
 use App\Settings\Avatars;
 use App\Settings\PostSetting;
@@ -107,6 +108,8 @@ class TopicPresenter extends Presenter
         private readonly TopicWatchRepository $topicWatchRepository,
 
         private readonly PollControl $pollControl,
+
+        private readonly  CheckPermissionService $checkPermissionService,
     )
     {
         parent::__construct();
@@ -226,35 +229,8 @@ class TopicPresenter extends Presenter
         $this->redirect('Topic:default', $category_id, $forum_id, $topic_id, $page);
     }
 
-    /**
-     * @param int $category_id
-     * @param int $forum_id
-     * @param int $topic_id
-     */
-    public function actionThank($category_id, $forum_id, $topic_id): void
+    public function actionThank(string $category_id, string $forum_id, string $topic_id): void
     {
-        $categoryEntity = $this->categoryRepository
-            ->findOneBy(
-                [
-                    'id' => $category_id
-                ]
-            );
-
-        if ($categoryEntity === null) {
-            $this->error('Category was not found.');
-        }
-
-        if ($categoryEntity->active === false) {
-            $this->error('Category is not active.');
-        }
-
-        $forumEntity = $this->forumRepository
-            ->findOneBy(
-                [
-                    'id' => $forum_id,
-                ]
-            );
-
         $topicEntity = $this->topicRepository
             ->findOneBy(
                 [
@@ -262,11 +238,19 @@ class TopicPresenter extends Presenter
                 ]
             );
 
+        if ($topicEntity === null) {
+            $this->error('Topic was not found.');
+        }
+
+        if ($topicEntity->forum->id !== $forum_id || $topicEntity->category->id !== $category_id) {
+            $this->error('Invalid URL hierarchy.');
+        }
+
         $user_id  = $this->getUser()->getId();
         
-        $forumScope = $this->scopeService->loadForum($forumEntity);
+        $forumScope = $this->scopeService->loadForum($topicEntity->forum);
         
-        $this->requireAccess($forumScope, ForumScope::ACTION_THANK);
+        $this->checkPermissionService->requireAccess($forumScope, ForumScope::ACTION_THANK);
 
         $userEntity = $this->userRepository
             ->findOneBy(
@@ -276,8 +260,8 @@ class TopicPresenter extends Presenter
             );
 
         $thankEntity = new \App\Model\Entity\ThankEntity();
-        $thankEntity->category = $categoryEntity;
-        $thankEntity->forum = $forumEntity;
+        $thankEntity->category = $topicEntity->category;
+        $thankEntity->forum = $topicEntity->forum;
         $thankEntity->topic = $topicEntity;
         $thankEntity->post = null;
         $thankEntity->user = $userEntity;
@@ -296,22 +280,8 @@ class TopicPresenter extends Presenter
         $this->redirect('Topic:default', $category_id, $forum_id, $topic_id);
     }
 
-    public function actionDelete($category_id, $forum_id, $topic_id, $page): void
+    public function actionDelete(string $category_id, string $forum_id, string $topic_id, $page): void
     {
-        $categoryEntity = $this->categoryRepository
-            ->findOneBy(
-                [
-                    'id' => $category_id
-                ]
-            );
-
-        $forumEntity = $this->forumRepository
-            ->findOneBy(
-                [
-                    'id' => $forum_id,
-                ]
-            );
-
         $topicEntity = $this->topicRepository
             ->findOneBy(
                 [
@@ -319,28 +289,16 @@ class TopicPresenter extends Presenter
                 ]
             );
 
-        if ($categoryEntity === null) {
-            $this->error('Category was not found.');
-        }
-
-        if ($categoryEntity->active === false) {
-            $this->error('Category is not active.');
-        }
-
-        if ($forumEntity === null) {
-            $this->error('Forum was not found.');
-        }
-
-        if ($forumEntity->active === false) {
-            $this->error('Forum is not active.');
-        }
-
         if ($topicEntity === null) {
             $this->error('Topic was not found.');
         }
+
+        if ($topicEntity->forum->id !== $forum_id || $topicEntity->category->id !== $category_id) {
+            $this->error('Invalid URL hierarchy.');
+        }
         
-        $forumScope = $this->scopeService->loadForum($forumEntity);
-        $topicScope = $this->scopeService->loadTopic($forumEntity, $topicEntity);
+        $forumScope = $this->scopeService->loadForum($topicEntity->forum);
+        $topicScope = $this->scopeService->loadTopic($topicEntity->forum, $topicEntity);
         
         $this->requireAccess($topicScope, TopicScope::ACTION_DELETE);
 
@@ -350,13 +308,6 @@ class TopicPresenter extends Presenter
         $this->redirect('Forum:default', $category_id, $forum_id, $page);
     }
 
-    /**
-     *
-     * @param int $category_id
-     * @param int $forum_id
-     * @param int $topic_id
-     * @param int $page
-     */
     public function actionDefault($category_id, $forum_id, $topic_id, $page = 1): void
     {
         $categoryEntity = $this->categoryRepository
