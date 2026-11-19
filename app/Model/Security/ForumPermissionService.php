@@ -129,7 +129,8 @@ class ForumPermissionService
         }
 
         ['flags' => $flags, 'moderator' => $moderator] = $this->forumRoles($user, $post->forum);
-        $open = !$post->topic->isLocked;
+        // a locked topic or a locked post takes the rights of the author (not of a moderator)
+        $open = !$post->topic->isLocked && !$post->isLocked;
         $author = $post->user->id === $user->id;
 
         if ($moderator) {

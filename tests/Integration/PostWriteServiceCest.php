@@ -5,6 +5,8 @@ namespace Tests\Integration;
 use App\Model\Entity\CategoryEntity;
 use App\Model\Entity\ForumEntity;
 use App\Model\Entity\PostEntity;
+use App\Model\Entity\PostHistoryEntity;
+use App\Model\Entity\UserModeratorEntity;
 use App\Model\Entity\TopicEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Service\PostWriteException;
@@ -105,6 +107,51 @@ class PostWriteServiceCest
 
         // a different text is fine
         $I->assertInstanceOf(PostEntity::class, $this->service->reply($user, $topic, 'Another text', null, '127.0.0.1'));
+    }
+
+    public function anEditKeepsThePreviousVersionInTheHistory(IntegrationTester $I) : void
+    {
+        $author = $I->createUser('Author', role: 'Normal');
+        $topic = $this->createTopicOf($I, $author);
+        $post = $this->service->reply($author, $topic, 'The original text', 'Original', '127.0.0.1');
+
+        $this->service->edit($author, $post, 'Changed', 'The changed text', '10.0.0.1');
+
+        $I->assertSame('The changed text', $post->text);
+        $I->assertSame('Changed', $post->title);
+        $I->assertSame('10.0.0.1', $post->editIpAddress);
+        $I->assertNotNull($post->updatedAt);
+        $history = $I->em()->getRepository(PostHistoryEntity::class)->findBy(['post' => $post]);
+        $I->assertCount(1, $history);
+        $I->assertSame('The original text', $history[0]->text);
+        $I->assertSame('Original', $history[0]->title);
+        $I->assertSame($author, $history[0]->user);
+
+        // nothing changed: no new version in the history
+        $this->service->edit($author, $post, 'Changed', 'The changed text', '10.0.0.1');
+        $I->assertSame(1, $I->em()->getRepository(PostHistoryEntity::class)->count(['post' => $post]));
+    }
+
+    public function aLockedPostIsEditedOnlyByAModerator(IntegrationTester $I) : void
+    {
+        $author = $I->createUser('Author', role: 'Normal');
+        $other = $I->createUser('Other', role: 'Normal');
+        $moderator = $I->createUser('Moderator', role: 'Normal');
+        $topic = $this->createTopicOf($I, $author);
+        $post = $this->service->reply($author, $topic, 'The original text', null, '127.0.0.1');
+
+        $moderatorEntity = new UserModeratorEntity();
+        $moderatorEntity->user = $moderator;
+        $moderatorEntity->forum = $topic->forum;
+        $I->em()->persist($moderatorEntity);
+        $post->isLocked = true;
+        $I->em()->flush();
+
+        $this->expectError($I, PostWriteService::ERROR_NOT_ALLOWED, fn () => $this->service->edit($author, $post, null, 'Changed by the author', '127.0.0.1'));
+        $this->expectError($I, PostWriteService::ERROR_NOT_ALLOWED, fn () => $this->service->edit($other, $post, null, 'Changed by another user', '127.0.0.1'));
+
+        $this->service->edit($moderator, $post, null, 'Changed by the moderator', '127.0.0.1');
+        $I->assertSame('Changed by the moderator', $post->text);
     }
 
     private function expectError(IntegrationTester $I, string $message, callable $write) : void

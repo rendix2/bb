@@ -1,0 +1,16 @@
+{
+  "title": "Úprava příspěvku",
+  "historyHint": "Předchozí znění příspěvku se uloží do historie.",
+  "form": {
+    "protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+    "title": {
+      "label": "Titulek (nepovinný)"
+    },
+    "text": {
+      "label": "Text (Markdown)",
+      "required": "Napište text příspěvku."
+    },
+    "send": "Uložit úpravu",
+    "success": "Příspěvek byl upraven."
+  }
+}

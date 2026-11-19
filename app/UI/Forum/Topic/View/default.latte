@@ -17,7 +17,11 @@
                 <span n:if="$ranks[$post->user->id]" class="badge badge-secondary post-rank">{$ranks[$post->user->id]->name}</span>
                 <span class="small text-muted">{_forum-topic-view.posts}: <span class="post-count">{$postCounts[$post->user->id]}</span></span>
             </span>
-            <span class="small text-muted">{$post->createdAt|date:'j. n. Y H:i'}</span>
+            <span class="small text-muted">
+                {$post->createdAt|date:'j. n. Y H:i'}
+                <span n:if="$post->updatedAt" class="post-edited">({_forum-topic-view.edited} {$post->updatedAt|date:'j. n. Y H:i'})</span>
+                <a n:if="$canEdit[$post->id]" n:href=":Forum:Post:Edit:default $post->uuid->toString()" class="post-edit-link">{_forum-topic-view.edit}</a>
+            </span>
         </div>
         <div class="card-body">
             <h5 n:if="$post->title" class="card-title">{$post->title}</h5>

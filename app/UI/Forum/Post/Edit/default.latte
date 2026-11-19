@@ -1,0 +1,11 @@
+{block title}{_forum-post-edit.title}: {$post->topic->name}{/block}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $post->category, forum: $post->forum, topic: $post->topic}
+
+    <h1>{_forum-post-edit.title}</h1>
+
+    {control editPostForm}
+
+    <p class="small text-muted">{_forum-post-edit.historyHint}</p>
+{/block}

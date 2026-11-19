@@ -1,0 +1,16 @@
+{
+  "title": "Edit the post",
+  "historyHint": "The previous version of the post is kept in its history.",
+  "form": {
+    "protection": "The form has expired, please send it again.",
+    "title": {
+      "label": "Title (optional)"
+    },
+    "text": {
+      "label": "Text (Markdown)",
+      "required": "Write the text of the post."
+    },
+    "send": "Save the change",
+    "success": "The post was edited."
+  }
+}

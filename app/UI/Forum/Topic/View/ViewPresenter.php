@@ -95,6 +95,13 @@ class ViewPresenter extends Presenter
         $this->template->postCounts = $postCounts;
         $this->template->ranks = $ranks;
         $this->template->paginator = $paginator;
+        $canEdit = [];
+
+        foreach ($posts as $post) {
+            $canEdit[$post->id] = $this->permissions->isAllowed($this->currentUser, $post, ForumPrivilege::EDIT);
+        }
+
+        $this->template->canEdit = $canEdit;
         $this->template->canReply = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::REPLY);
         $this->template->canFastReply = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::FAST_REPLY);
     }

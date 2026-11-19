@@ -5,6 +5,7 @@ namespace App\Model\Service;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
 use App\Model\Entity\PostEntity;
+use App\Model\Entity\PostHistoryEntity;
 use App\Model\Entity\TopicEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Security\ForumPermissionService;
@@ -84,6 +85,42 @@ class PostWriteService
         });
 
         return $topic;
+    }
+
+    /**
+     * Edits the post: the previous version goes to post_history (who changed it and when), the post gets the new title
+     * and text, the time and IP address of the edit.
+     */
+    public function edit(UserEntity $editor, PostEntity $post, ?string $title, string $text, string $ipAddress) : void
+    {
+        if (!$this->permissions->isAllowed($editor, $post, ForumPrivilege::EDIT)) {
+            throw new PostWriteException(self::ERROR_NOT_ALLOWED);
+        }
+
+        $text = $this->checkText($text);
+        $title = $title !== null && Strings::trim($title) !== '' ? Strings::trim($title) : null;
+
+        if ($title === $post->title && $text === $post->text) {
+            return;
+        }
+
+        $history = new PostHistoryEntity();
+        $history->post = $post;
+        $history->user = $editor;
+        $history->category = $post->category;
+        $history->forum = $post->forum;
+        $history->topic = $post->topic;
+        $history->title = $post->title;
+        $history->text = $post->text;
+
+        $post->title = $title;
+        $post->text = $text;
+        $post->editIpAddress = $ipAddress;
+        $post->updatedAt = new DateTimeImmutable();
+
+        $this->em->wrapInTransaction(function () use ($history) : void {
+            $this->em->persist($history);
+        });
     }
 
     private function checkText(string $text) : string

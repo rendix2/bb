@@ -12,5 +12,7 @@
     },
     "send": "Send",
     "success": "The reply was saved."
-  }
+  },
+  "edited": "edited",
+  "edit": "Edit"
 }
