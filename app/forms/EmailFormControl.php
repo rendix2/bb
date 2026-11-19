@@ -3,14 +3,14 @@
 namespace App\Forms;
 
 use App\Database\EntityManagerDecorator;
+use App\Forms\Renderer\IconBootstrapRenderer;
 use App\Model\Entity\UserEmailEntity;
 use App\Model\Entity\UserEntity;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Inputs\TextInput;
 use Nette\Application\UI\Form;
-use Nette\Forms\Controls\BaseControl;
+use Nette\Forms\Control;
 use Nette\Localization\Translator;
-use Nette\Utils\Html;
 
 /**
  * class EmailFormControl
@@ -27,23 +27,27 @@ class EmailFormControl extends TextInput
     {
         parent::__construct($label);
 
+        $this->setOption(IconBootstrapRenderer::ICON, 'fas fa-at');
+
         $this
             ->setHtmlType('email')
             ->setNullable(BootstrapForm::$allwaysUseNullable)
             ->setRequired('admin-user-edit.form.email.required')
             ->addRule(Form::Email, 'admin-user-edit.form.email.invalidFormat')
             ->setMaxLength(512)
+            ->addFilter(static fn (mixed $value) : mixed => is_string($value) ? mb_strtolower(trim($value)) : $value)
 
             ->addRule(
-                function (BaseControl $control): bool {
-                    $email = (string) $control->getValue();
+                function (Control $control) : bool {
+                    $value = $control->getValue();
+                    $email = is_string($value) ? $value : '';
 
                     if ($email === '' || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
                         return true;
                     }
 
                     if ($this->checkEmailExists($email)) {
-                        $control->addError($this->translator->translate('admin-user-edit.form.email.exists', ['email' => $email]));
+                        $this->addError($this->translator->translate('admin-user-edit.form.email.exists', ['email' => $email]));
 
                         return true;
                     }
@@ -53,14 +57,14 @@ class EmailFormControl extends TextInput
             );
     }
 
-    public function setExcludeUserId(string|int|null $userId): self
+    public function setExcludeUserId(string|int|null $userId) : self
     {
         $this->excludeUserId = $userId;
 
         return $this;
     }
 
-    private function checkEmailExists(string $email): bool
+    private function checkEmailExists(string $email) : bool
     {
         $qbUser = $this
             ->em
@@ -68,8 +72,8 @@ class EmailFormControl extends TextInput
             ->createQueryBuilder('u')
             ->select('COUNT(u.id)')
 
-            ->where('u.email = :email')
-            ->setParameter('email', $email);
+            ->where('LOWER(u.email) = :email')
+            ->setParameter('email', mb_strtolower($email));
 
         if ($this->excludeUserId !== null) {
             $qbUser->andWhere('u.id != :excludeUserId')
@@ -86,8 +90,8 @@ class EmailFormControl extends TextInput
             ->createQueryBuilder('ue')
             ->select('COUNT(ue.id)')
 
-            ->where('ue.email = :email')
-            ->setParameter('email', $email);
+            ->where('LOWER(ue.email) = :email')
+            ->setParameter('email', mb_strtolower($email));
 
         if ($this->excludeUserId !== null) {
             $qbHistory
@@ -97,27 +101,4 @@ class EmailFormControl extends TextInput
 
         return (int) $qbHistory->getQuery()->getSingleScalarResult() > 0;
     }
-
-    public function getControl(): Html
-    {
-        $control = parent::getControl();
-        $control->addClass('form-control');
-
-        $wrapper = Html::el('div')->addClass('input-group');
-
-        $addon = Html::el('span')->addClass('input-group-text');
-        $icon = Html::el('i')->addClass('fa fa-at');
-
-        $addon->addHtml($icon);
-
-        $wrapper->addHtml($addon);
-        $wrapper->addHtml($control);
-
-        return $wrapper;
-    }
-}
-
-interface EmailFormControlFactory
-{
-    public function create(string $label): EmailFormControl;
 }

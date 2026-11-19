@@ -2,9 +2,8 @@
 
 namespace App\Core;
 
+use App\Database\EntityManagerDecorator;
 use App\Model\Entity\UserEntity;
-use App\Model\Entity\UserLoginAttemptEntity;
-use App\Model\Repository\LanguageRepository;
 use App\UI\Web\User\Login\UserLoginAttemptCheckService;
 use DateTimeImmutable;
 use Nette\Http\IRequest;
@@ -13,18 +12,23 @@ use Nette\Security\Authenticator;
 use Nette\Security\IIdentity;
 use Nette\Security\Passwords;
 use Nette\Security\SimpleIdentity;
-use App\Database\EntityManagerDecorator;
 
+/**
+ * The login by username and password. It does not reveal which accounts exist (account enumeration): an unknown username and
+ * a wrong password get the same message (INVALID_CREDENTIALS), and an unknown username costs a password hash too, so it does
+ * not answer faster. "The account is not active" is said only after the right password of that account.
+ */
 class UsernameAndPasswordAuthenticator implements Authenticator
 {
+    public const string INVALID_CREDENTIALS = 'web-user-login.error.invalidCredentials';
+
+    public const string NOT_ACTIVE = 'web-user-login.error.userNotActive';
 
     public function __construct(
         private readonly EntityManagerDecorator       $em,
         private readonly Passwords                    $passwords,
         private readonly UserLoginAttemptCheckService $userLoginAttemptCheckService,
         private readonly IRequest                     $request,
-
-        private readonly LanguageRepository $languageRepository,
     )
     {
     }
@@ -34,48 +38,33 @@ class UsernameAndPasswordAuthenticator implements Authenticator
         $ip = $this->request->getRemoteAddress() ?? '0.0.0.0';
 
         if ($this->userLoginAttemptCheckService->isIpBlocked($ip)) {
-            throw new AuthenticationException('Z této IP adresy je příliš mnoho pokusů. Zkuste to prosím později.');
+            throw new AuthenticationException('web-user-login.error.ipBlocked');
         }
 
         if ($this->userLoginAttemptCheckService->isUserNameBlocked($username)) {
-            throw new AuthenticationException('Tento účet je dočasně zablokován. Zkuste to prosím později.');
+            throw new AuthenticationException('web-user-login.error.userBlocked');
         }
 
-        /**
-         * @var ?UserEntity $userEntity
-         */
-        $userEntity = $this->em
-            ->getRepository(UserEntity::class)
-            ->findOneBy(
-                [
-                    'username' => $username,
-                ]
-            );
+        $userEntity = $this->em->getRepository(UserEntity::class)->findOneByUsername($username);
 
         if ($userEntity === null) {
+            // the same work as the check of a real password: an unknown username must not answer faster
+            $this->passwords->hash($password);
             $this->userLoginAttemptCheckService->logAttempt($username, $ip);
 
-            throw new AuthenticationException('User not found.');
-        }
-
-        if (!$userEntity->isActive) {
-            $this->userLoginAttemptCheckService->logAttempt($username, $ip);
-
-            throw new AuthenticationException('User is not active');
+            throw new AuthenticationException(self::INVALID_CREDENTIALS);
         }
 
         if (!$this->passwords->verify($password, $userEntity->password)) {
             $this->userLoginAttemptCheckService->logAttempt($username, $ip);
 
-            throw new AuthenticationException('Invalid password.');
+            throw new AuthenticationException(self::INVALID_CREDENTIALS);
         }
 
-        $languageEntity = $this->languageRepository
-            ->findOneBy(
-                [
-                    'id' => $userEntity->language->id,
-                ]
-            );
+        if (!$userEntity->isActive) {
+            // the visitor knows the password: telling him why he cannot log in reveals nothing
+            throw new AuthenticationException(self::NOT_ACTIVE);
+        }
 
         $roles = [];
 
@@ -83,22 +72,16 @@ class UsernameAndPasswordAuthenticator implements Authenticator
             $roles[] = $role->name;
         }
 
-        $this->userLoginAttemptCheckService->clearAttempts($username, $ip);
-
-        $data =
-            [
-                'username' => $userEntity->username,
-                'lang_file_name' => $languageEntity->fileName,
-                'user_last_login_time' => new DateTimeImmutable(),
-                'user_email' => $userEntity->email,
-                'moderator' => $userEntity->moderatorUsers
-            ];
+        $this->userLoginAttemptCheckService->clearAttempts($username);
 
         return new SimpleIdentity(
             $userEntity->id,
             $roles,
-            $data
+            [
+                'username' => $userEntity->username,
+                // bb: the forum index shows what is new since the login
+                'user_last_login_time' => new DateTimeImmutable(),
+            ],
         );
     }
-
 }

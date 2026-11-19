@@ -3,11 +3,11 @@
 namespace App\Forms;
 
 use App\Database\EntityManagerDecorator;
+use App\Forms\Renderer\IconBootstrapRenderer;
 use App\Model\Entity\UserEntity;
 use Contributte\FormsBootstrap\Inputs\TextInput;
-use Nette\Forms\Controls\BaseControl;
+use Nette\Forms\Control;
 use Nette\Localization\Translator;
-use Nette\Utils\Html;
 
 class UsernameFormControl extends TextInput
 {
@@ -17,16 +17,19 @@ class UsernameFormControl extends TextInput
         string                                  $label,
         private readonly Translator             $translator,
         private readonly EntityManagerDecorator $em
-    ) {
+    )
+    {
         parent::__construct($label);
+
+        $this->setOption(IconBootstrapRenderer::ICON, 'fas fa-user');
 
         $this
             ->setRequired('admin-user-edit.form.username.required')
             ->setMaxLength(512)
             ->addRule(
-                function (BaseControl $control): bool
-                {
-                    $username = (string) $control->getValue();
+                function (Control $control) : bool {
+                    $value = $control->getValue();
+                    $username = is_string($value) ? $value : '';
 
                     if ($username === '') {
                         return true;
@@ -36,7 +39,7 @@ class UsernameFormControl extends TextInput
                         $message = $this->translator
                             ->translate('admin-user-edit.form.username.exists', ['username' => $username]);
 
-                        $control->addError($message);
+                        $this->addError($message);
 
                         return true;
                     }
@@ -46,21 +49,22 @@ class UsernameFormControl extends TextInput
             );
     }
 
-    public function setExcludeUserId(string|int|null $userId): self
+    public function setExcludeUserId(string|int|null $userId) : self
     {
         $this->excludeUserId = $userId;
+
         return $this;
     }
 
-    private function checkUsernameExists(string $username): bool
+    private function checkUsernameExists(string $username) : bool
     {
         $qb = $this->em
             ->getRepository(UserEntity::class)
             ->createQueryBuilder('u')
             ->select('COUNT(u.id)')
 
-            ->where('u.username = :username')
-            ->setParameter('username', $username);
+            ->where('LOWER(u.username) = :username')
+            ->setParameter('username', mb_strtolower($username));
 
         if ($this->excludeUserId !== null) {
             $qb
@@ -70,25 +74,4 @@ class UsernameFormControl extends TextInput
 
         return (int) $qb->getQuery()->getSingleScalarResult() > 0;
     }
-
-    public function getControl(): Html
-    {
-        $control = parent::getControl();
-        $control->addClass('form-control');
-
-        $wrapper = Html::el('div')->addClass('input-group');
-        $addon = Html::el('span')->addClass('input-group-text');
-        $icon = Html::el('i')->addClass('fa fa-user');
-
-        $addon->addHtml($icon);
-        $wrapper->addHtml($addon);
-        $wrapper->addHtml($control);
-
-        return $wrapper;
-    }
-}
-
-interface UsernameFormControlFactory
-{
-    public function create(string $label): UsernameFormControl;
 }

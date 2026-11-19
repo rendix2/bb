@@ -1,0 +1,11 @@
+{
+  "select": "Select",
+
+  "yes": "Yes",
+  "no": "No",
+
+  "operationFailed": "The operation failed.",
+
+  "Please enter a valid email address." : "Please enter a valid email address",
+  "This field is required.": "This field is required."
+}

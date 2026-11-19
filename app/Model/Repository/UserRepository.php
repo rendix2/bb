@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Model\Repository;
 
@@ -14,7 +14,6 @@ use Nette\Security\User;
  */
 class UserRepository extends EntityRepository
 {
-
     public function findOneById(string $id) : ?UserEntity
     {
         return $this
@@ -35,34 +34,47 @@ class UserRepository extends EntityRepository
             );
     }
 
+    /**
+     * `John@x.cz` and `john@x.cz` are one e-mail.
+     */
     public function findOneByEmail(string $email) : ?UserEntity
     {
-        return $this
-            ->findOneBy(
-                [
-                    'email' => $email,
-                ]
-            );
+        /** @var ?UserEntity $user */
+        $user = $this
+            ->createQueryBuilder('u')
+            ->where('LOWER(u.email) = :email')
+            ->setParameter('email', mb_strtolower(trim($email)))
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $user;
     }
 
-    public function findByEmails(array $emails): array
+    /**
+     * `Admin` and `admin` are one account.
+     */
+    public function findOneByUsername(string $username) : ?UserEntity
     {
-        return $this
-            ->findBy(
-                [
-                    'email' => $emails,
-                ]
-            );
+        /** @var ?UserEntity $user */
+        $user = $this
+            ->createQueryBuilder('u')
+            ->where('LOWER(u.username) = :username')
+            ->setParameter('username', mb_strtolower($username))
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $user;
     }
 
-    public function findOneByUsername(string $username): ?UserEntity
+    // bb: the methods below are used by the old code (app/controls, app/forms, app/*Module) and go with it
+
+    /**
+     * @param string[] $emails
+     * @return UserEntity[]
+     */
+    public function findByEmails(array $emails) : array
     {
-        return $this
-            ->findOneBy(
-                [
-                    'username' => $username,
-                ]
-            );
+        return $this->findBy(['email' => $emails]);
     }
 
     /**
@@ -73,30 +85,25 @@ class UserRepository extends EntityRepository
         return $this
             ->createQueryBuilder('_u')
             ->where('_u.avatar IS NOT NULL')
-
             ->getQuery()
             ->getResult();
     }
 
-    public function findOneByNetteUser(User $user): ?UserEntity
+    public function findOneByNetteUser(User $user) : ?UserEntity
     {
-        return $this->findOneBy(
-            [
-                'id' => $user->getId(),
-            ]
-        );
+        return $this->findOneBy(['id' => $user->getId()]);
     }
 
-    public function findLikeByUserName(string $userName): array
+    /**
+     * @return UserEntity[]
+     */
+    public function findLikeByUserName(string $userName) : array
     {
-        return $this->createQueryBuilder('_u')
+        return $this
+            ->createQueryBuilder('_u')
             ->where('_u.username LIKE :name')
             ->setParameter('name', '%' . $userName . '%')
-
             ->getQuery()
             ->getResult();
     }
-
-
-
 }

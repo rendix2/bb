@@ -3,16 +3,17 @@
 namespace App\UI\Web\User\Registration;
 
 use App\Forms\EmailFormControlFactory;
+use App\Forms\IconBootstrapForm;
 use App\Forms\PasswordFormControlFactory;
+use App\Forms\Renderer\IconBootstrapRenderer;
 use App\Forms\UsernameFormControlFactory;
 use App\Model\Facade\UserFacade;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Contributte\Translation\Translator;
-use Doctrine\DBAL\Exception as DbalException;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
-use Nette\Mail\SmtpException;
+use stdClass;
 use Throwable;
 
 class RegistrationPresenter extends Presenter
@@ -28,25 +29,22 @@ class RegistrationPresenter extends Presenter
         parent::__construct();
     }
 
-    public function actionDefault() : void
+    public function createComponentRegistrationForm() : IconBootstrapForm
     {
-    }
-
-    public function createComponentRegistrationForm() : BootstrapForm
-    {
-        $form = new BootstrapForm();
+        $form = new IconBootstrapForm();
         BootstrapForm::switchBootstrapVersion(BootstrapVersion::V5);
 
         $form->setTranslator($this->translator);
-        $form->addProtection('Please try again.');
 
         $form->addText('name', 'admin-user-edit.form.name.label')
             ->setRequired('admin-user-edit.form.name.required')
-            ->setMaxLength(512);
+            ->setMaxLength(512)
+            ->setOption(IconBootstrapRenderer::ICON, 'fas fa-id-card');
 
         $form->addText('surname', 'admin-user-edit.form.surname.label')
             ->setRequired('admin-user-edit.form.surname.required')
-            ->setMaxLength(512);
+            ->setMaxLength(512)
+            ->setOption(IconBootstrapRenderer::ICON, 'fas fa-id-card');
 
         $form->addComponent(
             $this->usernameFormControlFactory->create($this->translator->translate('admin-user-edit.form.username.label')),
@@ -63,14 +61,16 @@ class RegistrationPresenter extends Presenter
 
         $form->addPassword('password2', 'admin-user-edit.form.password2.label')
             ->setOmitted()
+            ->setOption(IconBootstrapRenderer::ICON, 'fas fa-lock')
             ->setRequired('admin-user-edit.form.password2.required')
             ->addRule(Form::MinLength, $this->translator->translate('admin-user-edit.form.password2.ruleMinLength', ['minChars' => 8]), 8)
 
             ->addConditionOn($passwordControl, Form::Filled, true)
-                ->addRule(Form::Equal, 'admin-user-edit.form.password2.ruleEqual', $passwordControl)
+            ->addRule(Form::Equal, 'admin-user-edit.form.password2.ruleEqual', $passwordControl)
             ->endCondition();
 
-        $form->addSubmit('send', 'web-user-registration.form.submit.label');
+        $form->addSubmit('send', 'web-user-registration.form.submit.label')
+            ->setOption(IconBootstrapRenderer::ICON, 'fas fa-user-plus');
 
         $form->onSuccess[] = [$this, 'registrationFormSuccess'];
 
@@ -79,26 +79,27 @@ class RegistrationPresenter extends Presenter
 
     public function registrationFormSuccess(Form $form) : void
     {
-        $values = $form->getValues();
+        $values = $form->getValues(RegistrationValues::class);
 
         try {
             $this->userFacade->register($values);
 
-            $this->flashMessage(
-                $this->translator->translate('web-user-registration.form.submit.success', ['username' => $values->username]),
-                'success'
-            );
-            $this->redrawControl('flashes');
-        } catch (DbalException $exception) {
-            $this->flashMessage($exception->getMessage(), 'danger');
-            $this->redrawControl('flashes');
-        } catch (SmtpException $exception) {
-            $this->flashMessage($exception->getMessage(), 'danger');
+            $flash = new stdClass();
+            $flash->place = 'general';
+            $flash->type = 'success';
+            $flash->message = $this->translator->translate('web-user-registration.form.submit.success', ['username' => $values->username]);
+
+            $this->flashMessage($flash);
             $this->redrawControl('flashes');
         } catch (Throwable $exception) {
-            $this->flashMessage($exception->getMessage(), 'danger');
+            bdump($exception);
+            $flash = new stdClass();
+            $flash->place = 'general';
+            $flash->type = 'danger';
+            $flash->message = $this->translator->translate('messages.operationFailed');
+
+            $this->flashMessage($flash);
             $this->redrawControl('flashes');
         }
     }
-
 }

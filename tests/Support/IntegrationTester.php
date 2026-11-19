@@ -119,7 +119,10 @@ class IntegrationTester extends Actor
         return $this->grabService(EntityManagerDecorator::class);
     }
 
-    private function firstLanguage() : LanguageEntity
+    /**
+     * bb: users.language_id is NOT NULL; a user made by a test gets the first language of the fixtures.
+     */
+    public function firstLanguage() : LanguageEntity
     {
         $language = $this->grabService(EntityManagerDecorator::class)->getRepository(LanguageEntity::class)->findOneBy([], ['id' => 'ASC']);
 

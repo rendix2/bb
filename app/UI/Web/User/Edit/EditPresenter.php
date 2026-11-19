@@ -2,6 +2,9 @@
 
 namespace App\UI\Web\User\Edit;
 
+use App\Database\EntityManagerDecorator;
+use App\Forms\IconBootstrapForm;
+use App\Forms\Renderer\IconBootstrapRenderer;
 use App\Model\Entity\UserEntity;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
@@ -11,7 +14,7 @@ use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
 use Nette\Localization\Translator;
-use App\Database\EntityManagerDecorator;
+use stdClass;
 
 /**
  * class EditPresenter
@@ -20,11 +23,11 @@ use App\Database\EntityManagerDecorator;
  */
 class EditPresenter extends Presenter
 {
-
     public function __construct(
         private readonly EntityManagerDecorator $em,
         private readonly Translator             $translator,
-    ) {
+    )
+    {
         parent::__construct();
     }
 
@@ -54,29 +57,6 @@ class EditPresenter extends Presenter
         );
     }
 
-    protected function createComponentEditForm() : BootstrapForm
-    {
-        $form = new BootstrapForm();
-        BootstrapForm::switchBootstrapVersion(BootstrapVersion::V5);
-
-        $form->setTranslator($this->translator);
-        $form->addProtection('Please try again.');
-
-        $form->addText('name', 'admin-user-edit.form.name.label')
-            ->setRequired('admin-user-edit.form.name.required')
-            ->setMaxLength(512);
-
-        $form->addText('surname', 'admin-user-edit.form.surname.label')
-            ->setRequired('admin-user-edit.form.surname.required')
-            ->setMaxLength(512);
-
-        $form->addSubmit('send', 'web-user-edit.form.submit.label');
-
-        $form->onSuccess[] = [$this, 'editFormSuccess'];
-
-        return $form;
-    }
-
     public function editFormSuccess(Form $form) : void
     {
         $values = $form->getValues(EditUserProfileValues::class);
@@ -101,15 +81,47 @@ class EditPresenter extends Presenter
             $this->em->persist($userEntity);
             $this->em->flush();
 
-            $this->flashMessage(
-                $this->translator->translate('web-user-edit.form.submit.success'),
-                'success',
-            );
+            $flash = new stdClass();
+            $flash->place = 'general';
+            $flash->type = 'success';
+            $flash->message = $this->translator->translate('web-user-edit.form.submit.success');
+
+            $this->flashMessage($flash);
             $this->redrawControl('flashes');
         } catch (DbalException $exception) {
-            $this->flashMessage($exception->getMessage(), 'danger');
+            bdump($exception);
+            $flash = new stdClass();
+            $flash->place = 'general';
+            $flash->type = 'danger';
+            $flash->message = $this->translator->translate('messages.operationFailed');
+
+            $this->flashMessage($flash);
             $this->redrawControl('flashes');
         }
     }
 
+    protected function createComponentEditForm() : IconBootstrapForm
+    {
+        $form = new IconBootstrapForm();
+        BootstrapForm::switchBootstrapVersion(BootstrapVersion::V5);
+
+        $form->setTranslator($this->translator);
+
+        $form->addText('name', 'admin-user-edit.form.name.label')
+            ->setRequired('admin-user-edit.form.name.required')
+            ->setMaxLength(512)
+            ->setOption(IconBootstrapRenderer::ICON, 'fas fa-id-card');
+
+        $form->addText('surname', 'admin-user-edit.form.surname.label')
+            ->setRequired('admin-user-edit.form.surname.required')
+            ->setMaxLength(512)
+            ->setOption(IconBootstrapRenderer::ICON, 'fas fa-id-card');
+
+        $form->addSubmit('send', 'web-user-edit.form.submit.label')
+            ->setOption(IconBootstrapRenderer::ICON, 'fas fa-save');
+
+        $form->onSuccess[] = [$this, 'editFormSuccess'];
+
+        return $form;
+    }
 }

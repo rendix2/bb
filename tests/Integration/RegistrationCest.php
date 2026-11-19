@@ -4,7 +4,7 @@ namespace Tests\Integration;
 
 use App\Model\Entity\UserEntity;
 use App\Model\Facade\UserFacade;
-use Nette\Utils\ArrayHash;
+use App\UI\Web\User\Registration\RegistrationValues;
 use Tests\Support\IntegrationTester;
 
 /**
@@ -23,13 +23,14 @@ class RegistrationCest
         try {
             $username = 'Registration' . random_int(100000, 999999);
 
-            $I->grabService(UserFacade::class)->register(ArrayHash::from([
-                'name' => 'Reg',
-                'surname' => 'Istration',
-                'username' => $username,
-                'email' => strtolower($username) . '@example.com',
-                'password' => IntegrationTester::PASSWORD,
-            ]));
+            $values = new RegistrationValues();
+            $values->name = 'Reg';
+            $values->surname = 'Istration';
+            $values->username = $username;
+            $values->email = strtolower($username) . '@example.com';
+            $values->password = IntegrationTester::PASSWORD;
+
+            $I->grabService(UserFacade::class)->register($values);
 
             $em->clear();
             $user = $em->getRepository(UserEntity::class)->findOneBy(['username' => $username]);

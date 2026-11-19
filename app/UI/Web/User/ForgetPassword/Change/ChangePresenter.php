@@ -1,8 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\UI\Web\User\ForgetPassword\Change;
 
+use App\Database\EntityManagerDecorator;
+use App\Forms\IconBootstrapForm;
 use App\Forms\PasswordFormControlFactory;
+use App\Forms\Renderer\IconBootstrapRenderer;
 use App\Model\Entity\UserAutoLoginEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Entity\UserPasswordEntity;
@@ -15,12 +18,11 @@ use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
 use Nette\Localization\Translator;
-use App\Database\EntityManagerDecorator;
 use Nette\Security\Passwords;
+use stdClass;
 
 class ChangePresenter extends Presenter
 {
-
     public function __construct(
         private readonly EntityManagerDecorator     $em,
         private readonly Translator                 $translator,
@@ -31,7 +33,7 @@ class ChangePresenter extends Presenter
         parent::__construct();
     }
 
-    public function actionDefault(string $userId, string $forgetKey): void
+    public function actionDefault(string $userId, string $forgetKey) : void
     {
         /**
          * @var ?UserEntity $userEntity
@@ -65,7 +67,7 @@ class ChangePresenter extends Presenter
                 ->getRepository(UserPasswordRequestEntity::class)
                 ->findBy(
                     [
-                        'user' => $userEntity
+                        'user' => $userEntity,
                     ]
                 );
 
@@ -78,23 +80,19 @@ class ChangePresenter extends Presenter
         }
     }
 
-    public function renderDefault(string $userId, string $forgetKey) : void
+    public function createComponentChangePasswordForm() : IconBootstrapForm
     {
-    }
-
-    public function createComponentChangePasswordForm() : BootstrapForm
-    {
-        $form = new BootstrapForm();
+        $form = new IconBootstrapForm();
         BootstrapForm::switchBootstrapVersion(BootstrapVersion::V5);
 
         $form->setTranslator($this->translator);
-        $form->addProtection('Please try again.');
 
         $passwordControl = $this->passwordFactory->create((string) $this->translator->translate('web-user-changePassword.form.newPassword.label'));
         $form->addComponent($passwordControl, 'password');
 
         $form->addPassword('password2', 'admin-user-edit.form.password2.label')
             ->setOmitted()
+            ->setOption(IconBootstrapRenderer::ICON, 'fas fa-lock')
             ->setRequired('admin-user-edit.form.password2.required')
             ->addRule(Form::MinLength, $this->translator->translate('admin-user-edit.form.password2.ruleMinLength', ['minChars' => 8]), 8)
 
@@ -102,7 +100,8 @@ class ChangePresenter extends Presenter
             ->addRule(Form::Equal, 'admin-user-edit.form.password2.ruleEqual', $passwordControl)
             ->endCondition();
 
-        $form->addSubmit('send', 'web-user-forgetPassword-request.form.submit.label');
+        $form->addSubmit('send', 'web-user-forgetPassword-request.form.submit.label')
+            ->setOption(IconBootstrapRenderer::ICON, 'fas fa-save');
 
         $form->onValidate[] = [$this, 'changePasswordFormOnValidate'];
         $form->onSuccess[] = [$this, 'changePasswordFormSuccess'];
@@ -119,7 +118,7 @@ class ChangePresenter extends Presenter
             ->getRepository(UserEntity::class)
             ->findOneBy(
                 [
-                    'id' => $this->getParameter('userId')
+                    'id' => $this->getParameter('userId'),
                 ]
             );
 
@@ -162,7 +161,7 @@ class ChangePresenter extends Presenter
             ->getRepository(UserPasswordRequestEntity::class)
             ->findOneBy(
                 [
-                    'user' => $userEntity
+                    'user' => $userEntity,
                 ]
             );
 
@@ -174,7 +173,7 @@ class ChangePresenter extends Presenter
             ->getRepository(UserPasswordRequestEntity::class)
             ->findBy(
                 [
-                    'user' => $userEntity
+                    'user' => $userEntity,
                 ]
             );
 
@@ -209,19 +208,26 @@ class ChangePresenter extends Presenter
             $this->em->persist($userEntity);
             $this->em->flush();
 
-            $this->flashMessage(
-                $this->translator->translate('web-user-changePassword.form.submit.success'),
-                'success'
-            );
+            $flash = new stdClass();
+            $flash->place = 'general';
+            $flash->type = 'success';
+            $flash->message = $this->translator->translate('web-user-changePassword.form.submit.success');
+
+            $this->flashMessage($flash);
             $this->redrawControl('flashes');
             $this->redrawControl('editFormWrapper');
             $this->redrawControl('editForm');
 
             $this->redirect(':Web:User:Login:default');
         } catch (DbalException $exception) {
-            $this->flashMessage($exception->getMessage(), 'danger');
+            bdump($exception);
+            $flash = new stdClass();
+            $flash->place = 'general';
+            $flash->type = 'danger';
+            $flash->message = $this->translator->translate('web-user-forgetPassword-set.form.submit.error');
+
+            $this->flashMessage($flash);
             $this->redrawControl('flashes');
         }
     }
-
 }

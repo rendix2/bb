@@ -5,6 +5,7 @@ namespace App\UI\Web\User\Logout;
 use App\Core\AutoLoginService;
 use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
+use stdClass;
 
 class LogoutPresenter extends Presenter
 {
@@ -18,16 +19,22 @@ class LogoutPresenter extends Presenter
 
     public function actionDefault() : void
     {
-        // logging out somebody who is logged out is no error (a double click, a second tab, the back button)
+        // Odhlášení už odhlášeného není chyba (typicky dvojklik na odkaz, otevřená druhá záložka,
+        // vrácení se v historii prohlížeče zpět) - stačí ho poslat na login, ne mu ukázat error page.
         if (!$this->getUser()->isLoggedIn()) {
             $this->redirect(':Web:User:Login:default');
         }
 
-        // the "stay logged in" token goes from the database and the cookie from the browser
+        // token "zůstat přihlášen" pryč z databáze i cookie z prohlížeče
         $this->autoLoginService->forget($this);
 
         $this->getUser()->logout(true);
-        $this->flashMessage($this->translator->translate('web-user-logout.success'), 'success');
+        $flash = new stdClass();
+        $flash->place = 'general';
+        $flash->type = 'success';
+        $flash->message = $this->translator->translate('web-user-logout.success');
+
+        $this->flashMessage($flash);
         $this->redirect(':Web:User:Login:default');
     }
 }

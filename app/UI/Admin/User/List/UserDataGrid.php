@@ -14,6 +14,8 @@ use Doctrine\DBAL\Exception as DbalException;
 use Doctrine\ORM\QueryBuilder;
 use Nette\Forms\Container;
 use Nette\Localization\Translator;
+use Tracy\Debugger;
+use Tracy\ILogger;
 use App\Database\EntityManagerDecorator;
 
 class UserDataGrid
@@ -157,7 +159,9 @@ class UserDataGrid
 
                 $this->grid->reload();
             } catch (DbalException $exception) {
-                $this->grid->presenter->flashMessage($exception->getMessage(), 'danger');
+                // the text of the exception goes to the log, the user gets a translated message
+                Debugger::log($exception, ILogger::EXCEPTION);
+                $this->grid->presenter->flashMessage($this->translator->translate('messages.operationFailed'), 'danger');
                 $this->grid->presenter->redrawControl('flashes');
             }
         };
@@ -258,7 +262,9 @@ class UserDataGrid
                 $this->grid->reload();
                 bdump('OK');
             } catch (DbalException $exception) {
-                $this->grid->presenter->flashMessage($exception->getMessage(), 'danger');
+                // the text of the exception goes to the log, the user gets a translated message
+                Debugger::log($exception, ILogger::EXCEPTION);
+                $this->grid->presenter->flashMessage($this->translator->translate('messages.operationFailed'), 'danger');
                 $this->grid->presenter->redrawControl('flashes');
                 bdump('FAIL');
             }

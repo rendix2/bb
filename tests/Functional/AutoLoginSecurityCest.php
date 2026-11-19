@@ -7,8 +7,8 @@ use App\Database\EntityManagerDecorator;
 use App\Model\Entity\UserAutoLoginEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Facade\UserFacade;
+use App\UI\Admin\User\Edit\EditUserValues;
 use DateTimeImmutable;
-use Nette\Utils\ArrayHash;
 use Tests\Support\FunctionalTester;
 
 /**
@@ -132,8 +132,13 @@ class AutoLoginSecurityCest
         $this->loginAndStay($I, $user);
         $I->assertSame(1, $this->rowCount($I, $user));
 
-        // bb: the facade takes the ArrayHash of the admin form
-        $values = ArrayHash::from(['isActive' => false]);
+        $values = new EditUserValues();
+        $values->name = $user->name;
+        $values->surname = $user->surname;
+        $values->username = $user->username;
+        $values->email = $user->email;
+        $values->password = '';
+        $values->isActive = false;
 
         /** @var UserFacade $facade */
         $facade = $I->grabService(UserFacade::class);
