@@ -33,6 +33,9 @@ hlášení, ranky, avatary, moderace, admin). Historie od 2018 (dibi + MySQL), o
 - Repozitáře se registrují v `config/services.neon` přes `entityManagerDecorator::getRepository(...)`.
 
 ## Cíle modernizace (2026-11-19, detail v Obsidianu „2026-11-19 BB – cíle a analýza modernizace“)
+- **Pořadí: nejdřív odstranit dibi** (převést starý kód na Doctrine do `app/UI` + `app/Model`, pak legacy smazat), teprve potom ostatní.
+- bb nikde neběží, žádná produkční data: MySQL se jen maže, nic se nepřevádí.
+- bb **sleduje web-project** (šablona, stejně jako alfred a family-tree), změny z ní se portují.
 - Pryč s dibi, MySQL, traity a statickými metodami. Codestyle contributte/qa (společný `ruleset.xml` z web-project), PHPStan level 10, sladit s web-project (tests/, Makefile, latte-lint, konvenční testy).
 - Dotazy: hybrid jako ve web-project. Jednoduché `find`/`findOneBy` přímo přes `$em->getRepository()`, repozitářová metoda jen pro QB s joiny/agregací, opakovaný dotaz nebo doménové pravidlo (s přesným `@return`). Žádné prázdné repozitáře ani wrappery `findByXId`/`findByX`.
 
