@@ -40,5 +40,6 @@
   "pollVoted": "Your vote was saved.",
   "pollEnds": "voting ends",
   "pollEnded": "voting ended",
-  "addPoll": "Add a poll"
+  "addPoll": "Add a poll",
+  "quote": "Quote"
 }

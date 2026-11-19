@@ -3,6 +3,7 @@
 namespace App\UI\Forum\Topic\Reply;
 
 use App\Database\EntityManagerDecorator;
+use App\Model\Entity\PostEntity;
 use App\Model\Entity\TopicEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Security\ForumPermissionService;
@@ -38,7 +39,7 @@ class ReplyPresenter extends Presenter
         parent::__construct();
     }
 
-    public function actionDefault(string $uuid) : void
+    public function actionDefault(string $uuid, ?string $quote = null) : void
     {
         $topic = $this->em->getRepository(TopicEntity::class)->findOneBy(['uuid' => $uuid]);
 
@@ -58,6 +59,16 @@ class ReplyPresenter extends Presenter
 
         $this->topic = $topic;
         $this->currentUser = $user;
+
+        if ($quote !== null && !$this['replyForm']->isSubmitted()) {
+            // a post of THIS topic only; the quote is Markdown the user may still change
+            $quoted = $this->em->getRepository(PostEntity::class)->findOneBy(['uuid' => $quote, 'topic' => $topic]);
+
+            if ($quoted !== null) {
+                $lines = array_map(static fn (string $line) : string => '> ' . $line, explode("\n", $quoted->text));
+                $this['replyForm']->setDefaults(['text' => '> **' . $quoted->user->username . "** napsal:\n>\n" . implode("\n", $lines) . "\n\n"]);
+            }
+        }
     }
 
     public function renderDefault() : void

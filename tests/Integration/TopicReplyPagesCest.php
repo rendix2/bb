@@ -117,6 +117,18 @@ class TopicReplyPagesCest
         $I->assertSame(1, $I->em()->getRepository(PostEntity::class)->count(['topic' => $topic]));
     }
 
+    public function aQuoteFillsTheReplyWithTheQuotedPost(IntegrationTester $I) : void
+    {
+        $topic = $this->createTopic($I);
+        $user = $I->createUser('Quoter', role: 'Normal');
+        $I->login($user->username, IntegrationTester::PASSWORD);
+
+        $I->amOnPage('/forum.topic.view/' . $topic->uuid->toString());
+        $I->click('.post-quote-link');
+
+        $I->seeInField('text', "> **" . $topic->user->username . "** napsal:\n>\n> First post of the topic\n\n");
+    }
+
     private function lastPostOf(IntegrationTester $I, TopicEntity $topic) : PostEntity
     {
         $I->em()->clear();

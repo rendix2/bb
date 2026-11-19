@@ -36,6 +36,7 @@
             <span class="small text-muted">
                 {$post->createdAt|date:'j. n. Y H:i'}
                 <span n:if="$post->updatedAt" class="post-edited">({_forum-topic-view.edited} {$post->updatedAt|date:'j. n. Y H:i'})</span>
+                <a n:if="$canReply" n:href=":Forum:Topic:Reply:default $topic->uuid->toString(), quote: $post->uuid->toString()" class="post-quote-link">{_forum-topic-view.quote}</a>
                 <a n:if="$canEdit[$post->id]" n:href=":Forum:Post:Edit:default $post->uuid->toString()" class="post-edit-link">{_forum-topic-view.edit}</a>
                 <a n:if="$canDelete[$post->id]" n:href=":Forum:Post:Delete:default $post->uuid->toString()" class="post-delete-link">{_forum-topic-view.delete}</a>
                 <span n:if="$post->isLocked" class="post-locked" title={_forum-topic-view.postLocked}>&#128274;</span>
