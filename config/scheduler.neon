@@ -1,0 +1,20 @@
+# Crons of bb as contributte/scheduler jobs (the same setup as alfred).
+# Run `php bin/console scheduler:run` every minute (cron of the host or `make scheduler-loop` in the container);
+# scheduler:list shows the jobs, scheduler:force-run <key> runs one now. Lock files: %tempDir%/scheduler (temp/console/scheduler).
+#
+# The extension of contributte/scheduler cannot take a service with arguments as a job: every job is a service below tagged
+# `scheduler.job: <key>`, SchedulerJobsExtension adds it to the scheduler.
+
+extensions:
+    scheduler: Contributte\Scheduler\DI\SchedulerExtension
+    schedulerJobs: App\ConsoleModule\DI\SchedulerJobsExtension
+
+scheduler:
+    path: '%tempDir%/scheduler'
+
+services:
+    # the queued mails (watchers of topics), every minute
+    mailQueueJob:
+        factory: App\ConsoleModule\Scheduler\CommandJob('* * * * *', @App\ConsoleModule\Commands\SendMailQueueCommand)
+        autowired: false
+        tags: [scheduler.job: mailQueue]

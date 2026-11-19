@@ -109,3 +109,13 @@ test: test-build
 # line coverage of app/ (codeception.yml `coverage:`): pcov is in the dev image only and off by default
 coverage: test-build
 	php -d pcov.enabled=1 vendor/bin/codecept run --coverage --coverage-html --coverage-text
+
+# contributte/scheduler (config/scheduler.neon), run inside the container (opt-in, nothing starts it on its own):
+# scheduler-run = the due jobs once (what a cron of the host runs every minute), scheduler-loop = every minute until Ctrl+C
+scheduler-run:
+	mkdir -p temp/console/scheduler
+	php bin/console scheduler:run
+
+scheduler-loop:
+	mkdir -p temp/console/scheduler
+	while true; do php bin/console scheduler:run; sleep 60; done

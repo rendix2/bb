@@ -123,3 +123,4 @@ includes:
 	#- config.neon
 	- factory.neon
 	- managers.neon
+	- scheduler.neon
