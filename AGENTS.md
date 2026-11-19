@@ -39,8 +39,9 @@ hlášení, ranky, avatary, moderace, admin). Historie od 2018 (dibi + MySQL), o
 - Repozitáře se registrují v `config/services.neon` přes `entityManagerDecorator::getRepository(...)`.
 
 ## Přepis (rozhodnutí 2026-11-19)
-- **bb se píše celé znovu, nehledě na historii.** Starý kód (`app/models`, `app/*Module`, `app/presenters`, `app/forms`, `app/controls`, ...) ani stará verze
-  v gitu nejsou specifikace; nové funkce se navrhují od nuly do `app/UI` nad Doctrine modelem podle konvencí web-project.
+- **bb se píše znovu, ale funkčně zhruba jak to bylo.** Nový kód vzniká od nuly v `app/UI` nad Doctrine modelem podle konvencí web-project
+  (nekopírovat a nepřevádět starý kód 1:1, git historie se neprochází).
+- **Starý kód se NEMAŽE předem:** zůstává jako připomínka funkcí (co fórum umělo). Starou část smaž až ve chvíli, kdy ji nová stránka nahradí.
 
 ## Cíle modernizace (2026-11-19, detail v Obsidianu „2026-11-19 BB – cíle a analýza modernizace“)
 - **Pořadí: nejdřív odstranit dibi** (převést starý kód na Doctrine do `app/UI` + `app/Model`, pak legacy smazat), teprve potom ostatní.
