@@ -121,6 +121,69 @@ class UserProfileService
     }
 
     /**
+     * One page of his posts the viewer may read, the newest first, with their topics.
+     *
+     * @return array{count: int, items: list<PostEntity>}
+     */
+    public function postsPage(UserEntity $user, ?UserEntity $viewer, int $offset, int $limit) : array
+    {
+        $forumIds = $this->visibility->visibleForumIds($viewer);
+
+        if ($forumIds === []) {
+            return ['count' => 0, 'items' => []];
+        }
+
+        $count = $this->visiblePosts($user, $forumIds)
+            ->select('COUNT(_p.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        /** @var list<PostEntity> $posts */
+        $posts = $this->visiblePosts($user, $forumIds)
+            ->select('_p', '_t')
+            ->orderBy('_p.createdAt', 'DESC')
+            ->addOrderBy('_p.id', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
+        return ['count' => (int) $count, 'items' => $posts];
+    }
+
+    /**
+     * One page of his topics the viewer may read, the newest first, with their forums.
+     *
+     * @return array{count: int, items: list<TopicEntity>}
+     */
+    public function topicsPage(UserEntity $user, ?UserEntity $viewer, int $offset, int $limit) : array
+    {
+        $forumIds = $this->visibility->visibleForumIds($viewer);
+
+        if ($forumIds === []) {
+            return ['count' => 0, 'items' => []];
+        }
+
+        $count = $this->visibleTopics($user, $forumIds)
+            ->select('COUNT(_t.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        /** @var list<TopicEntity> $topics */
+        $topics = $this->visibleTopics($user, $forumIds)
+            ->select('_t', '_f')
+            ->innerJoin('_t.forum', '_f')
+            ->orderBy('_t.createdAt', 'DESC')
+            ->addOrderBy('_t.id', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
+        return ['count' => (int) $count, 'items' => $topics];
+    }
+
+    /**
      * His posts in the forums of $forumIds whose topic is in an active category (as Forum:Topic:View requires).
      *
      * @param list<int> $forumIds

@@ -3,67 +3,35 @@
 namespace App\UI\Web\User\View;
 
 use App\Database\EntityManagerDecorator;
-use App\Model\Entity\UserEntity;
 use App\Model\Repository\PostRepository;
 use App\Model\Security\ForumPrivilege;
 use App\Model\Service\UserProfileService;
 use App\Model\Service\UserRankService;
-use Nette\Application\UI\Presenter;
+use App\UI\Web\User\Accessory\ProfilePresenter;
 
 /**
  * class ViewPresenter
  *
- * bb: the profile of the forum (rank, counts, registration, moderated forums), only for logged-in users (a guest goes to the
- * login and comes back); the name and the surname see only the user himself and the admin. Without uuid it is the own profile.
+ * bb: the profile of the forum (rank, counts, registration, moderated forums), only for logged-in users (ProfilePresenter);
+ * the name and the surname see only the user himself and the admin. Without uuid it is the own profile.
  *
  * @package App\UI\Web\User\View
  */
-class ViewPresenter extends Presenter
+class ViewPresenter extends ProfilePresenter
 {
-    private UserEntity $userEntity;
-
-    private UserEntity $viewer;
-
     public function __construct(
-        private readonly EntityManagerDecorator $em,
+        EntityManagerDecorator $em,
         private readonly PostRepository $postRepository,
         private readonly UserProfileService $userProfileService,
         private readonly UserRankService $userRankService,
     )
     {
-        parent::__construct();
+        parent::__construct($em);
     }
 
     public function actionDefault(?string $uuid = null) : void
     {
-        if (!$this->getUser()->isLoggedIn()) {
-            $this->redirect(':Web:User:Login:default', ['backlink' => $this->storeRequest()]);
-        }
-
-        $viewer = $this->em->find(UserEntity::class, $this->getUser()->getId());
-
-        if ($viewer === null) {
-            $this->error('User not found');
-        }
-
-        $this->viewer = $viewer;
-
-        if ($uuid === null) {
-            $this->redirect('this', ['uuid' => $viewer->uuid->toString()]);
-        }
-
-        $userRepository = $this->em->getRepository(UserEntity::class);
-
-        /**
-         * @var ?UserEntity $userEntity
-         */
-        $userEntity = $userRepository->findOneByUuid($uuid);
-
-        if ($userEntity === null) {
-            $this->error('User not found');
-        }
-
-        $this->userEntity = $userEntity;
+        $this->loadProfile($uuid);
     }
 
     public function renderDefault(?string $uuid = null) : void

@@ -139,6 +139,72 @@ class UserProfilePagesCest
     }
 
     /**
+     * Slice 4c: his posts and topics only from the forums the viewer may read (the old lists showed also hidden forums), the post
+     * links to the page of its topic.
+     */
+    public function thePostsAndTopicsOfAUserAreOnlyFromVisibleForums(IntegrationTester $I) : void
+    {
+        $author = $I->createUser('Active', role: 'Normal');
+        [, $visibleTopic, $visiblePost] = $this->createTopic($I, $author, 'Open forum', true, true);
+        [, $inactiveTopic, $inactivePost] = $this->createTopic($I, $author, 'Closed forum', false, true);
+        [, $hiddenTopic, $hiddenPost] = $this->createTopic($I, $author, 'Forum of closed category', true, false);
+
+        $reader = $I->createUser('Reader', role: 'Normal');
+        $I->login($reader->username, IntegrationTester::PASSWORD);
+
+        $I->amOnPage('/web.user.posts/' . $author->uuid->toString());
+        $I->seeResponseCodeIs(200);
+        $I->see($visiblePost->text, '.user-post');
+        $I->dontSee($inactivePost->text);
+        $I->dontSee($hiddenPost->text);
+        $I->seeElement('a.user-post-topic[href*="' . $visibleTopic->uuid->toString() . '"][href*="#post-' . $visiblePost->id . '"]');
+
+        $I->amOnPage('/web.user.topics/' . $author->uuid->toString());
+        $I->seeResponseCodeIs(200);
+        $I->see($visibleTopic->name, '.user-topic-name');
+        $I->dontSee($inactiveTopic->name);
+        $I->dontSee($hiddenTopic->name);
+
+        $I->amOnPage('/web.user.view/' . $author->uuid->toString());
+        $I->click('.profile-post-count');
+        $I->seeInCurrentUrl('/web.user.posts/');
+    }
+
+    public function thePostsOfAUserArePaginatedNewestFirst(IntegrationTester $I) : void
+    {
+        $author = $I->createUser('Many', role: 'Normal');
+        [, $topic, $first] = $this->createTopic($I, $author, 'Busy forum', true, true);
+        $perPage = 25;
+        $last = $first;
+
+        for ($i = 0; $i < $perPage; $i++) {
+            $last = $this->addPost($I, $topic, $author);
+        }
+
+        $I->login($author->username, IntegrationTester::PASSWORD);
+
+        $I->amOnPage('/web.user.posts/');
+        $I->seeInCurrentUrl($author->uuid->toString());
+        $I->seeNumberOfElements('.user-post', $perPage);
+        $I->seeElement('a.user-post-topic[href*="#post-' . $last->id . '"]');
+        $I->dontSeeElement('a.user-post-topic[href*="#post-' . $first->id . '"]');
+
+        $I->amOnPage('/web.user.posts/' . $author->uuid->toString() . '?page=2');
+        $I->seeNumberOfElements('.user-post', 1);
+        $I->seeElement('a.user-post-topic[href*="#post-' . $first->id . '"]');
+    }
+
+    public function theActivityPagesNeedLogin(IntegrationTester $I) : void
+    {
+        $author = $I->createUser('Hidden', role: 'Normal');
+
+        foreach (['posts', 'topics'] as $page) {
+            $I->amOnPage('/web.user.' . $page . '/' . $author->uuid->toString());
+            $I->seeElement('#frm-loginForm');
+        }
+    }
+
+    /**
      * @return array{ForumEntity, TopicEntity, PostEntity}
      */
     private function createTopic(IntegrationTester $I, UserEntity $author, string $forumName, bool $forumActive, bool $categoryActive) : array
@@ -181,7 +247,7 @@ class UserProfilePagesCest
         $post->forum = $topic->forum;
         $post->topic = $topic;
         $post->title = null;
-        $post->text = 'A post in ' . $topic->name;
+        $post->text = 'A post in ' . $topic->name . ' ' . random_int(100000, 999999);
         $post->addIpAddress = '127.0.0.1';
         $post->editIpAddress = null;
         $I->em()->persist($post);

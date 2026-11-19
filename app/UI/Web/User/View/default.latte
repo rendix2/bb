@@ -25,10 +25,10 @@
             <dd class="col-6 profile-registered">{$userEntity->createdAt|date:'j. n. Y'}</dd>
 
             <dt class="col-6">{_web-user-view.posts}</dt>
-            <dd class="col-6 profile-post-count">{$counts['posts']}</dd>
+            <dd class="col-6"><a n:href=":Web:User:Posts:default $userEntity->uuid->toString()" class="profile-post-count">{$counts['posts']}</a></dd>
 
             <dt class="col-6">{_web-user-view.topics}</dt>
-            <dd class="col-6 profile-topic-count">{$counts['topics']}</dd>
+            <dd class="col-6"><a n:href=":Web:User:Topics:default $userEntity->uuid->toString()" class="profile-topic-count">{$counts['topics']}</a></dd>
 
             <dt class="col-6">{_web-user-view.thanks}</dt>
             <dd class="col-6 profile-thank-count">{$counts['thanks']}</dd>

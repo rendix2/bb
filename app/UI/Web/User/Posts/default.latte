@@ -1,0 +1,26 @@
+{block title}{_web-user-posts.header, [username: $userEntity->username]}{/block}
+
+{block content}
+<div class="mt-2 user-posts">
+    <h1 class="h4">{_web-user-posts.header, [username: $userEntity->username]}</h1>
+    <p><a n:href=":Web:User:View:default $userEntity->uuid->toString()">{_web-user-posts.profile}</a></p>
+
+    {include '../../../Forum/@paginator.latte', paginator: $paginator}
+
+    <table class="table table-sm">
+        <thead>
+            <tr><th>{_web-user-posts.date}</th><th>{_web-user-posts.topic}</th><th>{_web-user-posts.text}</th></tr>
+        </thead>
+        <tbody>
+            <tr n:foreach="$items as $post" class="user-post">
+                <td class="text-nowrap">{$post->createdAt|date:'j. n. Y H:i'}</td>
+                <td><a href="{link :Forum:Topic:View:default $post->topic->uuid->toString(), page: $pages[$post->id]}#post-{$post->id}" class="user-post-topic">{$post->topic->name}</a></td>
+                <td class="small">{$post->text|truncate:200}</td>
+            </tr>
+            <tr n:if="!$items"><td colspan="3" class="text-muted">{_web-user-posts.none}</td></tr>
+        </tbody>
+    </table>
+
+    {include '../../../Forum/@paginator.latte', paginator: $paginator}
+</div>
+{/block}
