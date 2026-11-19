@@ -2,6 +2,7 @@
 
 namespace App\UI\Admin\User\Create;
 
+use App\Core\DefaultLanguageService;
 use App\Core\AutoLoginAuthenticator;
 use App\Forms\EmailFormControlFactory;
 use App\Forms\PasswordFormControlFactory;
@@ -31,6 +32,7 @@ class CreatePresenter extends AdminBasePresenter
         private readonly PasswordFormControlFactory $passwordFormControlFactory,
         private readonly EmailFormControlFactory    $emailFormControlFactory,
         private readonly UsernameFormControlFactory $usernameFormControlFactory,
+        private readonly DefaultLanguageService     $defaultLanguageService,
     )
     {
         parent::__construct();
@@ -101,6 +103,7 @@ class CreatePresenter extends AdminBasePresenter
         $userEntity->email = $values->email;
         $userEntity->password = $passwordHash;
         $userEntity->isActive = $values->isActive;
+        $userEntity->language = $this->defaultLanguageService->get();
 
         $userPasswordEntity = new UserPasswordEntity();
         $userPasswordEntity->user = $userEntity;

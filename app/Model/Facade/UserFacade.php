@@ -2,6 +2,7 @@
 
 namespace App\Model\Facade;
 
+use App\Core\DefaultLanguageService;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\MailEntity;
 use App\Model\Entity\UserActivationEntity;
@@ -33,6 +34,7 @@ class UserFacade
         private readonly Passwords              $passwords,
         private readonly IMailBuilderFactory    $mailBuilderFactory,
         private readonly Translator             $translator,
+        private readonly DefaultLanguageService $defaultLanguageService,
     )
     {
     }
@@ -59,6 +61,7 @@ class UserFacade
         $userEntity->email = $values->email;
         $userEntity->password = $password;
         $userEntity->isActive = false;
+        $userEntity->language = $this->defaultLanguageService->get();
 
         $userPasswordEntity = new UserPasswordEntity();
         $userPasswordEntity->user = $userEntity;
