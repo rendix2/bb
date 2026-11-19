@@ -11,8 +11,6 @@ services:
 		factory: App\Controls\GridFilter
 	UserSearchControl:
 		factory:  App\Controls\UserSearchControl
-	PollControl:
-		factory:  App\Controls\PollControl
 
 	-
 		type: App\Model\Repository\UserRepository
