@@ -15,6 +15,15 @@ final class RouterFactory
     {
         $router = new RouteList;
 
+        // the default action addressed by uuid without "/default/" (/forum.topic.view/<uuid>); first, so links are generated short
+        $router->addRoute('<presenter>/<uuid>', [
+                'action' => 'default',
+                'uuid' => [
+                    Route::Pattern => '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}',
+                ],
+            ]
+        );
+
         $router->addRoute('<presenter>/<action>/<uuid>', [
                 'presenter' => 'Web:Home',
                 'action' => 'edit',

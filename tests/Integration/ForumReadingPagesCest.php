@@ -129,12 +129,26 @@ class ForumReadingPagesCest
 
         $forum->active = false;
         $I->em()->flush();
-        $I->seePageIsRefused('/forum.forum.rules/default/' . $forum->uuid->toString(), 404);
+        $I->seePageIsRefused('/forum.forum.rules/' . $forum->uuid->toString(), 404);
+    }
+
+    public function pagesHaveShortUrlsAndTheLongOnesStillWork(IntegrationTester $I) : void
+    {
+        [, $forum, $topic] = $this->createTopic($I, 'Routes', 1);
+
+        // links are generated without "/default/"
+        $I->amOnPage($this->url('forum', $forum->uuid->toString()));
+        $I->seeInSource('href="' . $this->url('topic', $topic->uuid->toString()) . '"');
+
+        // the long form still opens the page (redirected to the short one)
+        $I->amOnPage('/forum.topic.view/default/' . $topic->uuid->toString());
+        $I->seeResponseCodeIs(200);
+        $I->see($topic->name, 'h1');
     }
 
     private function url(string $page, string $uuid) : string
     {
-        return '/forum.' . $page . '.view/default/' . $uuid;
+        return '/forum.' . $page . '.view/' . $uuid;
     }
 
     /**
