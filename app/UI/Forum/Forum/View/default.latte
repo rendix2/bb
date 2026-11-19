@@ -1,0 +1,44 @@
+{block title}{$forum->name}{/block}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $forum->category, forum: $forum}
+
+    <h1>{$forum->name}</h1>
+    <p n:if="$forum->description" class="text-muted">{$forum->description}</p>
+
+    <p n:if="$forum->moderatorUsers->count()" class="small">
+        {_forum-forum-view.moderators}:
+        {foreach $forum->moderatorUsers as $moderator}<a n:href=":Web:User:View:default $moderator->user->uuid->toString()">{$moderator->user->username}</a>{sep}, {/sep}{/foreach}
+    </p>
+
+    <div n:if="$subforums" class="list-group mb-3">
+        <a n:foreach="$subforums as $subforum" n:href=":Forum:Forum:View:default $subforum->uuid->toString()" class="list-group-item list-group-item-action">{$subforum->name}</a>
+    </div>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>{_forum-forum-view.topic}</th>
+                <th>{_forum-forum-view.author}</th>
+                <th>{_forum-forum-view.posts}</th>
+                <th>{_forum-forum-view.views}</th>
+                <th>{_forum-forum-view.lastPost}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr n:foreach="$topics as $row" data-topic={$row['topic']->uuid->toString()}>
+                <td>
+                    <span n:if="$row['topic']->isLocked" class="topic-locked" title={_forum-forum-view.locked}>&#128274;</span>
+                    <a n:href=":Forum:Topic:View:default $row['topic']->uuid->toString()">{$row['topic']->name}</a>
+                </td>
+                <td><a n:href=":Web:User:View:default $row['topic']->user->uuid->toString()">{$row['topic']->user->username}</a></td>
+                <td>{$row['postCount']}</td>
+                <td>{$row['topic']->viewCount}</td>
+                <td>{$row['lastPostAt']|date:'j. n. Y H:i'}</td>
+            </tr>
+            <tr n:if="!$topics"><td colspan="5">{_forum-forum-view.noTopics}</td></tr>
+        </tbody>
+    </table>
+
+    {include '../../@paginator.latte', paginator: $paginator}
+{/block}

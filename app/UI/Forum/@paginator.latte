@@ -1,0 +1,16 @@
+{* Pages of a list: links to the current page with the parameter page *}
+<nav n:if="$paginator->getPageCount() > 1" aria-label="pages">
+    <ul class="pagination">
+        <li class={[page-item, disabled => $paginator->isFirst()]}>
+            <a class="page-link" n:href="this page: $paginator->getPage() - 1">&laquo;</a>
+        </li>
+        {for $p = 1; $p <= $paginator->getPageCount(); $p++}
+            <li class={[page-item, active => $p === $paginator->getPage()]}>
+                <a class="page-link" n:href="this page: $p">{$p}</a>
+            </li>
+        {/for}
+        <li class={[page-item, disabled => $paginator->isLast()]}>
+            <a class="page-link" n:href="this page: $paginator->getPage() + 1">&raquo;</a>
+        </li>
+    </ul>
+</nav>

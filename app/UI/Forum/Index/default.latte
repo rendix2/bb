@@ -7,7 +7,7 @@
             {foreach $categories as $category}
                 <tr>
                     <td>
-                        <a href="{link Category:default, $category->id}">{$category->name}</a>
+                        <a href="{link :Forum:Category:View:default, $category->uuid->toString()}">{$category->name}</a>
                     </td>
                 </tr>
                 {if count($category->forums)}
@@ -18,7 +18,7 @@
                                 <tr>
                                     <td>
                                         {if $forum->hasNewTopics || $forum->hasNewPosts}NEW POSTS{/if}
-                                        <a href="{link Forum:default, $forum->category->id, $forum->id}">{$forum->name}</a>
+                                        <a href="{link :Forum:Forum:View:default, $forum->uuid->toString()}">{$forum->name}</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -27,7 +27,7 @@
                                 <tr>
                                     <td>
                                         {foreach $forum->moderatorUsers as $moderator}
-                                            <a href="{link User:profile, $moderator->user->id}">{$moderator->user->username}</a>
+                                            <a href="{link :Web:User:View:default, $moderator->user->uuid->toString()}">{$moderator->user->username}</a>
                                             {if !$iterator->isLast()},{/if}
                                         {/foreach}
                                     </td>
@@ -62,18 +62,18 @@
                     <td>{$totalPosts}</td>
                     <td>
                         {if $lastUser}
-                            <a href="{link User:profile, $lastUser->id}">{$lastUser->username}</a>
+                            <a href="{link :Web:User:View:default, $lastUser->uuid->toString()}">{$lastUser->username}</a>
                         {/if}
                     </td>
                     <td>
                         {if $lastTopic}
-                            <a href="{link Topic:default, $lastTopic->category->id, $lastTopic->forum->id, $lastTopic->id}" title="Přidáno: {$lastTopic->createdAt|date:'%d.%m.%Y %H:%M:%S'}">{$lastTopic->name}</a>
+                            <a href="{link :Forum:Topic:View:default, $lastTopic->uuid->toString()}" title="Přidáno: {$lastTopic->createdAt|date:'%d.%m.%Y %H:%M:%S'}">{$lastTopic->name}</a>
                         {else}None
                         {/if}
                     </td>
                     <td>
                         {if $lastPost}
-                            <a href="{link Topic:default#post_{$lastPost->id}, $lastPost->category->id, $lastPost->forum->id, $lastPost->topic->id}" title="Přidáno: {$lastPost->createdAt|date:'%d.%m.%Y %H:%M:%S'}">
+                            <a href="{link :Forum:Topic:View:default#post-{$lastPost->id}, $lastPost->topic->uuid->toString()}" title="Přidáno: {$lastPost->createdAt|date:'%d.%m.%Y %H:%M:%S'}">
                                 {if $lastPost->title}
                                     {$lastPost->title}
                                 {else}
@@ -83,13 +83,13 @@
                         {/if}
                     </td>
                     <td>{if $mostPostsUser}
-                            <a href="{link User:profile $mostPostsUser['id']}">{$mostPostsUser['username']}</a>
+                            <a href="{link :Web:User:View:default, $mostPostsUser['uuid']->toString()}">{$mostPostsUser['username']}</a>
                         ({$mostPostsUser['post_count']})
                         {else}No one
                         {/if}
                     </td>
                     <td>{if $mostTopicsUser}
-                            <a href="{link User:profile $mostTopicsUser['id']}">{$mostTopicsUser['username']}</a>
+                            <a href="{link :Web:User:View:default, $mostTopicsUser['uuid']->toString()}">{$mostTopicsUser['username']}</a>
                             ({$mostTopicsUser['topic_count']})
                         {else}No one
                         {/if}

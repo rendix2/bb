@@ -1,0 +1,26 @@
+{block title}{$category->name}{/block}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $category}
+
+    <h1>{$category->name}</h1>
+
+    <div n:if="$subcategories" class="list-group mb-3">
+        <a n:foreach="$subcategories as $subcategory" n:href=":Forum:Category:View:default $subcategory->uuid->toString()" class="list-group-item list-group-item-action">{$subcategory->name}</a>
+    </div>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr><th>{_forum-category-view.forum}</th></tr>
+        </thead>
+        <tbody>
+            <tr n:foreach="$forums as $forum">
+                <td>
+                    <a n:href=":Forum:Forum:View:default $forum->uuid->toString()">{$forum->name}</a>
+                    <div n:if="$forum->description" class="small text-muted">{$forum->description}</div>
+                </td>
+            </tr>
+            <tr n:if="!$forums"><td>{_forum-category-view.noForums}</td></tr>
+        </tbody>
+    </table>
+{/block}

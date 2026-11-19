@@ -1,0 +1,12 @@
+{* Breadcrumb of the forum pages: Index > category > forum > topic (whatever of them is given) *}
+{default $category = null}
+{default $forum = null}
+{default $topic = null}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a n:href=":Forum:Index:default">{_forum-breadcrumb.index}</a></li>
+        <li n:if="$category" class="breadcrumb-item"><a n:href=":Forum:Category:View:default $category->uuid->toString()">{$category->name}</a></li>
+        <li n:if="$forum" class="breadcrumb-item"><a n:href=":Forum:Forum:View:default $forum->uuid->toString()">{$forum->name}</a></li>
+        <li n:if="$topic" class="breadcrumb-item active" aria-current="page">{$topic->name}</li>
+    </ol>
+</nav>

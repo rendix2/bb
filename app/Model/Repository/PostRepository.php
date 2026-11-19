@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Model\Repository;
 
@@ -15,6 +15,55 @@ use Doctrine\ORM\EntityRepository;
  */
 class PostRepository extends EntityRepository
 {
+
+    /**
+     * One page of the posts of a topic, oldest first, with their authors and the special ranks of the authors.
+     *
+     * @return list<PostEntity>
+     */
+    public function findPageOfTopic(TopicEntity $topic, int $offset, int $limit) : array
+    {
+        return $this->createQueryBuilder('_p')
+            ->select('_p', '_u', '_r')
+            ->innerJoin('_p.user', '_u')
+            ->leftJoin('_u.rank', '_r')
+            ->where('_p.topic = :topic')
+            ->setParameter('topic', $topic)
+            ->orderBy('_p.id', 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Number of posts of each of the users (one query for a whole page of posts).
+     *
+     * @param list<int> $userIds
+     * @return array<int, int> user id => number of posts
+     */
+    public function countByUsers(array $userIds) : array
+    {
+        if ($userIds === []) {
+            return [];
+        }
+
+        $rows = $this->createQueryBuilder('_p')
+            ->select('IDENTITY(_p.user) AS userId', 'COUNT(_p.id) AS postCount')
+            ->where('_p.user IN (:users)')
+            ->setParameter('users', $userIds)
+            ->groupBy('_p.user')
+            ->getQuery()
+            ->getArrayResult();
+
+        $counts = array_fill_keys($userIds, 0);
+
+        foreach ($rows as $row) {
+            $counts[(int) $row['userId']] = (int) $row['postCount'];
+        }
+
+        return $counts;
+    }
     public function findByUserId(int $userId): array
     {
         /**

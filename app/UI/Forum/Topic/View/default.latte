@@ -1,0 +1,33 @@
+{block title}{$topic->name}{/block}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $topic->category, forum: $topic->forum, topic: $topic}
+
+    <h1>
+        <span n:if="$topic->isLocked" class="topic-locked" title={_forum-topic-view.locked}>&#128274;</span>
+        {$topic->name}
+    </h1>
+
+    {include '../../@paginator.latte', paginator: $paginator}
+
+    <div n:foreach="$posts as $post" id="post-{$post->id}" class="card mb-3 post">
+        <div class="card-header d-flex justify-content-between">
+            <span>
+                <a n:href=":Web:User:View:default $post->user->uuid->toString()" class="post-author">{$post->user->username}</a>
+                <span n:if="$ranks[$post->user->id]" class="badge badge-secondary post-rank">{$ranks[$post->user->id]->name}</span>
+                <span class="small text-muted">{_forum-topic-view.posts}: <span class="post-count">{$postCounts[$post->user->id]}</span></span>
+            </span>
+            <span class="small text-muted">{$post->createdAt|date:'j. n. Y H:i'}</span>
+        </div>
+        <div class="card-body">
+            <h5 n:if="$post->title" class="card-title">{$post->title}</h5>
+            <div class="post-text">{$post->text|breakLines}</div>
+            <div n:if="$post->user->signature" class="post-signature small text-muted">
+                <hr>
+                {$post->user->signature|breakLines}
+            </div>
+        </div>
+    </div>
+
+    {include '../../@paginator.latte', paginator: $paginator}
+{/block}

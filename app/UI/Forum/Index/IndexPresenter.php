@@ -98,6 +98,7 @@ class IndexPresenter extends Presenter
             ->select('COUNT(_p.id) AS post_count')
             ->addSelect('_u.id')
             ->addSelect('_u.username')
+            ->addSelect('_u.uuid')
 
             ->innerJoin('_p.user', '_u')
 
@@ -115,6 +116,7 @@ class IndexPresenter extends Presenter
             ->select('COUNT(_t.id) AS topic_count')
             ->addSelect('_u.id')
             ->addSelect('_u.username')
+            ->addSelect('_u.uuid')
 
             ->innerJoin('_t.user', '_u')
 
