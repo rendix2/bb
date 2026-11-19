@@ -25,9 +25,12 @@ final class Version20241103230453 extends AbstractMigration
             ->setAutoincrement(true)
             ->setComment('ID');
 
-        $table->addColumn('token', Types::STRING)
-            ->setLength(1024)
-            ->setComment('Token; saved in cookie');
+        $table->addColumn('token_hash', Types::STRING)
+            ->setLength(64)
+            ->setComment('SHA-256 of the token saved in the cookie');
+
+        $table->addColumn('valid_until', Types::DATETIME_IMMUTABLE)
+            ->setComment('Token is valid until');
 
         $table->addColumn('ip_address', IpAddressType::NAME)
             ->setComment('IP address');
@@ -38,7 +41,7 @@ final class Version20241103230453 extends AbstractMigration
             ->setComment('User agent');
 
         $table->addColumn('country_code', Types::STRING)
-            ->setLength(2)
+            ->setLength(16)
             ->setNotnull(false)
             ->setComment('Country code');
 
@@ -60,6 +63,7 @@ final class Version20241103230453 extends AbstractMigration
             ->setComment('User auto logins')
 
             ->addIndex(['user_id'], 'K__User_auto_login__User_id')
+            ->addUniqueIndex(['token_hash'], 'UK__User_auto_login__Token_hash')
 
             ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__User_auto_login__User_id');
     }

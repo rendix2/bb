@@ -160,6 +160,11 @@ services:
         create: App\Core\AutoLoginAuthenticator
         autowired: self
 
+    # "stay logged in" on every page: the cookie logs the visitor in, a deactivated user is logged out (AutoLoginService)
+    application.application:
+        setup:
+            - '$onPresenter[]' = [@App\Core\AutoLoginService, tryLogin]
+
 extensions:
     chatbot: App\DI\ServicesExtension
     dibi: Dibi\Bridges\Nette\DibiExtension3

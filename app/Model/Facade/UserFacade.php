@@ -170,6 +170,11 @@ class UserFacade
 
             if (isset($values->isActive)) {
                 $userEntity->isActive = (bool) $values->isActive;
+
+                if (!$userEntity->isActive) {
+                    // a deactivated user keeps nothing that logs him in (his session ends at the next request, AutoLoginService)
+                    $userEntity->autoLogins->clear();
+                }
             }
 
             $userEntity->updatedAt = new DateTimeImmutable();

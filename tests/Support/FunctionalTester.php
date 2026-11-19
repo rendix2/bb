@@ -33,7 +33,8 @@ class FunctionalTester extends Actor
     public const ROLE_USER = 'User';
     public const ROLE_ADMIN = 'Admin';
 
-    private const PASSWORD = 'Abcdefgh1234!x';
+    /** the password of the users made by createUser() and loginAs() */
+    public const string PASSWORD = 'Abcdefgh1234!x';
 
     /**
      * Logs in as the role: the admin is the fixture user TestUsername; the plain user is created for the test (role Normal, removed
@@ -103,6 +104,30 @@ class FunctionalTester extends Actor
         $source = $this->grabPageSource();
         $this->assertStringNotContainsString('id="tracy-bs"', $source, $what);
         $this->assertStringNotContainsString('Nette\\Application\\BadRequestException', $source, $what);
+    }
+
+    /**
+     * An account for the test (password PASSWORD, language of the fixtures, removed after the test by CleanupTestData).
+     */
+    public function createUser(string $label, bool $active = true) : UserEntity
+    {
+        $em = $this->grabService(EntityManagerDecorator::class);
+        $tag = $label . random_int(100000, 999999);
+
+        $user = new UserEntity();
+        $user->name = 'Functional';
+        $user->surname = 'Test';
+        $user->username = $tag;
+        $user->email = strtolower($tag) . '@example.com';
+        $user->password = $this->grabService(Passwords::class)->hash(self::PASSWORD);
+        $user->language = $this->firstLanguage();
+        $user->isActive = $active;
+
+        $em->persist($user);
+        $em->flush();
+        $this->trackCreatedEntity(UserEntity::class, $user->id);
+
+        return $user;
     }
 
     private function createPlainUser() : UserEntity

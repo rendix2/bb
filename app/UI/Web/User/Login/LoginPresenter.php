@@ -2,30 +2,29 @@
 
 namespace App\UI\Web\User\Login;
 
-use App\Core\AutoLoginAuthenticator;
+use App\Core\AutoLoginService;
 use App\Core\UsernameAndPasswordAuthenticator;
-use App\Model\Entity\UserAutoLoginEntity;
+use App\Database\EntityManagerDecorator;
 use App\Model\Entity\UserEntity;
 use App\Service\GeoIpService;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Doctrine\DBAL\Exception as DbalException;
-use donatj\UserAgent\UserAgentParser;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
 use Nette\Security\AuthenticationException;
-use Nette\Utils\Random;
-use App\Database\EntityManagerDecorator;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class LoginPresenter extends Presenter
 {
-
     public function __construct(
         private readonly Translator                       $translator,
         private readonly EntityManagerDecorator           $em,
         private readonly UsernameAndPasswordAuthenticator $usernameAndPasswordAuthenticator,
         private readonly GeoIpService                     $geoIpService,
+        private readonly AutoLoginService                 $autoLoginService,
     )
     {
         parent::__construct();
@@ -34,7 +33,7 @@ class LoginPresenter extends Presenter
     public function renderDefault() : void
     {
         if ($this->getUser()->isLoggedIn()) {
-            $this->flashMessage('You are already logged in', 'danger');
+            $this->flashMessage($this->translator->translate('web-user-login.alreadyLoggedIn'), 'danger');
             $this->redrawControl('flashes');
         }
     }
@@ -73,71 +72,48 @@ class LoginPresenter extends Presenter
     {
         $values = $form->getValues(LoginValues::class);
 
-        $username = $values->username;
-        $password = $values->password;
-        $stayLoggedIn = $values->stayLoggedIn;
-        $ip = $this->getHttpRequest()->getRemoteAddress();
-
         try {
             $this->getUser()->setAuthenticator($this->usernameAndPasswordAuthenticator);
-            $this->getUser()->login($username, $password);
-            $this->getUser()->setExpiration('2 hours');
-
-            if ($stayLoggedIn) {
-                $autoLoginToken = Random::generate(128);
-
-                $this->getHttpResponse()->setCookie(AutoLoginAuthenticator::COOKIE_NAME, $autoLoginToken, null);
-
-                $userEntity = $this->em
-                    ->getRepository(UserEntity::class)
-                    ->findOneBy(
-                        [
-                            'id' => $this->getUser()->getId(),
-                            'username' => $username,
-                        ]
-                    );
-
-                if ($userEntity === null) {
-                    throw new AuthenticationException('Uživatel nebyl nalezen po přihlášení.');
-                }
-
-                if ($ip === null) {
-                    $geoIpCountry = 'Unknown';
-                    $ip = 'Unknown';
-                } else {
-                    $geoIpArray = $this->geoIpService->getInfo($ip);
-
-                    $geoIpCountry = $geoIpArray['country'];
-                }
-
-                $parser = new UserAgentParser();
-                $ua = $parser->parse();
-
-                $userAutoLoginEntity = new UserAutoLoginEntity();
-                $userAutoLoginEntity->user = $userEntity;
-                $userAutoLoginEntity->token = $autoLoginToken;
-                $userAutoLoginEntity->ipAddress = $ip;
-                $userAutoLoginEntity->countryCode = $geoIpCountry;
-                $userAutoLoginEntity->userAgent = $ua->browser();
-
-                try {
-                    $this->em->persist($userAutoLoginEntity);
-                    $this->em->flush();
-                } catch (DbalException $exception) {
-                    $this->flashMessage($exception->getMessage(), 'danger');
-                    $this->redrawControl('flashes');
-                }
-            }
-
-            $this->flashMessage(
-                $this->translator->translate('web-user-login.form.submit.success'),
-                'success'
-            );
-            $this->redirect(':Web:Home:default');
+            $this->getUser()->login($values->username, $values->password);
+            // without "stay logged in" the session really ends soon; with it the autoLogin cookie keeps the user logged in.
+            // Not longer than session.expiration in config/common.neon (14 days), Nette refuses that.
+            $this->getUser()->setExpiration($values->stayLoggedIn ? '14 days' : '2 hours');
         } catch (AuthenticationException $exception) {
-            $this->flashMessage($exception->getMessage(), 'danger');
+            // the authenticators throw translation keys, never a text for the user
+            $this->flashMessage($this->translator->translate($exception->getMessage()), 'danger');
             $this->redrawControl('flashes');
+
+            return;
         }
+
+        if ($values->stayLoggedIn) {
+            $this->remember();
+        }
+
+        $this->flashMessage($this->translator->translate('web-user-login.form.submit.success'), 'success');
+        $this->redirect(':Web:Home:default');
     }
 
+    /**
+     * "Stay logged in": a token, its cookie survives closing the browser (AutoLoginService::remember()). A failure does not undo
+     * the login, the user is only told.
+     */
+    private function remember() : void
+    {
+        $userEntity = $this->em->find(UserEntity::class, $this->getUser()->getId());
+
+        if ($userEntity === null) {
+            return;
+        }
+
+        $ip = $this->getHttpRequest()->getRemoteAddress();
+        $countryCode = $ip === null ? null : $this->geoIpService->getInfo($ip)['country'];
+
+        try {
+            $this->autoLoginService->remember($this, $userEntity, $ip ?? '0.0.0.0', $countryCode);
+        } catch (DbalException $exception) {
+            Debugger::log($exception, ILogger::EXCEPTION);
+            $this->flashMessage($this->translator->translate('web-user-login.form.submit.autoLoginError'), 'danger');
+        }
+    }
 }

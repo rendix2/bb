@@ -30,7 +30,8 @@ class UserLoginAttemptEntity
     #[Column(length: 512, nullable: true, options: ['comment' => 'User agent'])]
     public ?string $userAgent;
 
-    #[Column(length: 2, nullable: true, options: ['comment' => 'Country code'])]
+    // GeoIpService answers 'Local' for a private address: 2 characters were too few (every wrong password ended in a 500)
+    #[Column(length: 16, nullable: true, options: ['comment' => 'Country code'])]
     public ?string $countryCode;
 
     #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]

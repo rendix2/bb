@@ -38,7 +38,7 @@ final class Version20250624214039 extends AbstractMigration
             ->setComment('User agent');
 
         $table->addColumn('country_code', Types::STRING)
-            ->setLength(2)
+            ->setLength(16)
             ->setNotnull(false)
             ->setComment('Country code');
 

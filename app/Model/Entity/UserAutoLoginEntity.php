@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping\Table;
 #[Table(name: 'user_auto_login', options: ['comment' => 'User auto logins'])]
 class UserAutoLoginEntity
 {
+    public const int LIFETIME_DAYS = 30;
 
     #[Id()]
     #[GeneratedValue()]
@@ -27,8 +28,14 @@ class UserAutoLoginEntity
     #[JoinColumn(unique: false, nullable: false, onDelete: 'CASCADE', options: ['comment' => 'User ID'])]
     public UserEntity $user;
 
-    #[Column(type: Types::STRING, length: 1024, options: ['comment' => 'Token; saved in cookie'])]
-    public string $token;
+    /**
+     * SHA-256 (hex) of the token in the cookie, never the token itself: a leaked table logs nobody in. Unique, so it is a plain index lookup.
+     */
+    #[Column(type: Types::STRING, length: 64, unique: true, options: ['comment' => 'SHA-256 of the token saved in the cookie'])]
+    public string $tokenHash;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Token is valid until'])]
+    public DateTimeImmutable $validUntil;
 
     #[Column(type: IpAddressType::NAME, nullable: false, options: ['comment' => 'IP address'])]
     public string $ipAddress;
@@ -36,7 +43,8 @@ class UserAutoLoginEntity
     #[Column(length: 512, nullable: true, options: ['comment' => 'User agent'])]
     public ?string $userAgent;
 
-    #[Column(length: 2, nullable: true, options: ['comment' => 'Country code'])]
+    // GeoIpService answers 'Local' for a private address: 2 characters were too few (the login with "stay logged in" failed)
+    #[Column(length: 16, nullable: true, options: ['comment' => 'Country code'])]
     public ?string $countryCode;
 
     #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
@@ -50,9 +58,9 @@ class UserAutoLoginEntity
         $this->userAgent = null;
         $this->countryCode = null;
 
+        $this->validUntil = new DateTimeImmutable('+' . self::LIFETIME_DAYS . ' days');
+
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;
     }
-
-
 }

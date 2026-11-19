@@ -1,6 +1,6 @@
 {
   "form.username.label": "Uživatelské jméno",
-  "form.username.required": "Uživatelské jméné je povinné.",
+  "form.username.required": "Uživatelské jméno je povinné.",
 
   "form.password.label": "Heslo",
   "form.password.required": "Heslo je povinné.",
@@ -9,8 +9,16 @@
 
   "form.submit.name": "Přihlásit se",
   "form.submit.success": "Úspěšně přihlášen",
+  "form.submit.autoLoginError": "Přihlášení proběhlo, ale volbu \"zůstat přihlášen\" se nepodařilo uložit.",
+
+  "alreadyLoggedIn": "Již jste přihlášeni.",
 
   "no_account_yet": "Nemáš zatím účet?",
   "registration": "Registrace",
-  "login": "Přihlášení"
+  "login": "Přihlášení",
+  "error.ipBlocked": "Z této IP adresy je příliš mnoho pokusů. Zkuste to prosím později.",
+  "error.userBlocked": "Tento účet je dočasně zablokován. Zkuste to prosím později.",
+  "error.invalidCredentials": "Nesprávné uživatelské jméno nebo heslo.",
+  "error.userNotActive": "Účet není aktivní.",
+  "error.userNotFoundAfterLogin": "Uživatel nebyl nalezen po přihlášení."
 }

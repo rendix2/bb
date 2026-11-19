@@ -9,8 +9,16 @@
 
   "form.submit.name": "Login",
   "form.submit.success": "Successfully logged in",
+  "form.submit.autoLoginError": "You are logged in, but the \"stay logged in\" option could not be saved.",
+
+  "alreadyLoggedIn": "You are already logged in.",
 
   "no_account_yet": "No account yet?",
   "registration": "Registration",
-  "login": "Login"
+  "login": "Login",
+  "error.ipBlocked": "Too many attempts from this IP address. Please try again later.",
+  "error.userBlocked": "This account is temporarily blocked. Please try again later.",
+  "error.invalidCredentials": "Invalid username or password.",
+  "error.userNotActive": "The account is not active.",
+  "error.userNotFoundAfterLogin": "The user was not found after the login."
 }

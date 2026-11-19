@@ -1,12 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\UI\Admin;
 
-use App\Core\AutoLoginAuthenticator;
+use App\Core\AutoLoginService;
 use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
 use Nette\Http\IResponse;
-use Nette\Security\AuthenticationException;
 
 /**
  * class AdminBasePresenter
@@ -16,31 +15,19 @@ use Nette\Security\AuthenticationException;
 abstract class AdminBasePresenter extends Presenter
 {
     #[Inject]
-    public AutoLoginAuthenticator $autoLoginAuthenticator;
+    public AutoLoginService $autoLoginService;
 
     public function startup() : void
     {
         parent::startup();
 
-        if (!$this->getUser()->isLoggedIn()) {
-            $this->getUser()->setAuthenticator($this->autoLoginAuthenticator);
-
-            $autoLoginCookie = $this->getHttpRequest()->getCookie(AutoLoginAuthenticator::COOKIE_NAME);
-
-            if ($autoLoginCookie === null) {
-                $this->error('Not logged in', IResponse::S401_Unauthorized);
-            } else {
-                try {
-                    $this->getUser()->login($autoLoginCookie, '');
-                } catch (AuthenticationException $exception) {
-                    $this->error('Not logged in', IResponse::S401_Unauthorized);
-                }
-            }
+        // the admin has to be logged in: the "stay logged in" cookie is the last chance, otherwise 401
+        if (!$this->getUser()->isLoggedIn() && !$this->autoLoginService->login($this)) {
+            $this->error('Not logged in', IResponse::S401_Unauthorized);
         }
 
         if (!$this->getUser()->isInRole('Admin')) {
             $this->error('Forbidden', IResponse::S403_Forbidden);
         }
     }
-
 }
