@@ -6,47 +6,38 @@ use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
-use Ramsey\Uuid\Doctrine\UuidType;
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 
+/**
+ * Membership of a user in a group, unique by (user, group).
+ */
 #[Entity()]
-#[Table(name: 'user_group')]
+#[Table(name: 'group_member', options: ['comment' => 'Group members'])]
+#[Index(name: 'K__Group_member__User_id', columns: ['user_id'])]
+#[Index(name: 'K__Group_member__Group_id', columns: ['group_id'])]
 class UserGroupMemberEntity
 {
 
     #[Id()]
-    #[GeneratedValue()]
-    #[Column(type: Types::BIGINT)]
-    public string $id;
-
-    #[Column(type: UuidType::NAME, unique: true)]
-    public UuidInterface $uuid;
-
-    #[ManyToOne(targetEntity: UserEntity::class)]
-    #[JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ManyToOne(targetEntity: UserEntity::class, cascade: ['persist'])]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'User ID'])]
     public UserEntity $user;
 
-    #[ManyToOne(targetEntity: GroupEntity::class)]
-    #[JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[Id()]
+    #[ManyToOne(targetEntity: GroupEntity::class, cascade: ['persist'])]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Group ID'])]
     public GroupEntity $group;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
-
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    public ?DateTimeImmutable $updatedAt;
 
     public function __construct()
     {
-        $this->uuid = Uuid::uuid4();
         $this->createdAt = new DateTimeImmutable();
-        $this->updatedAt = null;
     }
 
 }

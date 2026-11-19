@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Database\Migrations;
 
@@ -10,28 +8,17 @@ use Doctrine\DBAL\Schema\PrimaryKeyConstraintEditor;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
-use Ramsey\Uuid\Doctrine\UuidType;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20260718085213 extends AbstractMigration
 {
-    public function getDescription(): string
+    public function getDescription() : string
     {
-        return '';
+        return 'create group_member table';
     }
 
-    public function up(Schema $schema): void
+    public function up(Schema $schema) : void
     {
-        $table = $schema->createTable('public.user_group');
-
-        $table->addColumn('id', Types::BIGINT)
-            ->setAutoincrement(true)
-            ->setComment('ID');
-
-        $table->addColumn('uuid', UuidType::NAME)
-            ->setComment('UUID');
+        $table = $schema->createTable('public.group_member');
 
         $table->addColumn('user_id', Types::BIGINT)
             ->setComment('User ID');
@@ -42,28 +29,27 @@ final class Version20260718085213 extends AbstractMigration
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
-            ->setNotnull(false)
-            ->setComment('Updated at');
-
+        // the primary key (user_id, group_id) makes a membership unique
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);
-        $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
+        $primaryKey->setColumnNames(
+            new UnqualifiedName(Identifier::unquoted('user_id')),
+            new UnqualifiedName(Identifier::unquoted('group_id'))
+        );
 
-        $table->addPrimaryKeyConstraint($primaryKey->create());
+        $table->addPrimaryKeyConstraint($primaryKey->create())
+            ->setComment('Group members')
 
-        $table
-            ->setComment('Users Groups')
-            ->addIndex(['user_id'], 'K__User_group__User_id')
-            ->addIndex(['group_id'], 'K__User_group__Group_id')
+            ->addIndex(['user_id'], 'K__Group_member__User_id')
+            ->addIndex(['group_id'], 'K__Group_member__Group_id')
 
-            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__User_group__User_id')
-            ->addForeignKeyConstraint('group', ['group_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__User_group__Group_id');
+            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Group_member__User_id')
+            ->addForeignKeyConstraint('group', ['group_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Group_member__Group_id');
     }
 
-    public function down(Schema $schema): void
+    public function down(Schema $schema) : void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-
+        $schema->dropTable('public.group_member');
     }
+
 }
