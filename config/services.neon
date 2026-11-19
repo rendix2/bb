@@ -1,6 +1,7 @@
 services:
 	RouterFactory: App\Core\RouterFactory::createRouter
 	- App\Model\Service\MarkdownRenderer
+	- App\UI\Forum\Accessory\ForumJumpFormFactory
 	- App\ConsoleModule\Commands\SendMailQueueCommand
 	MysqlDumper:
 		class: Ifsnop\Mysqldump\Mysqldump(%database.default.dsn%, %database.default.username%, %database.default.password%)

@@ -20,6 +20,7 @@ use App\Model\Service\TopicWatchService;
 use App\Model\Service\TopicPaginationService;
 use App\Model\Service\UserRankService;
 use App\Settings\TopicsSetting;
+use App\UI\Forum\Accessory\ForumJumpFormFactory;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Nette\Application\UI\Form;
@@ -52,6 +53,7 @@ class ViewPresenter extends Presenter
         private readonly PollService $pollService,
         private readonly AttachmentService $attachmentService,
         private readonly ReportService $reportService,
+        private readonly ForumJumpFormFactory $forumJumpFormFactory,
     ) {
         parent::__construct();
     }
@@ -145,6 +147,14 @@ class ViewPresenter extends Presenter
         $this->template->canDeleteTopic = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::DELETE);
         $this->template->canReply = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::REPLY);
         $this->template->canFastReply = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::FAST_REPLY);
+    }
+
+    /**
+     * Jump to another forum (GET, changes nothing).
+     */
+    protected function createComponentForumJumpForm() : BootstrapForm
+    {
+        return $this->forumJumpFormFactory->create($this->topic->forum);
     }
 
     protected function createComponentFastReplyForm() : BootstrapForm

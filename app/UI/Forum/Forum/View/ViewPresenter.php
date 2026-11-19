@@ -10,6 +10,8 @@ use App\Model\Security\ForumPermissionService;
 use App\Model\Security\ForumPrivilege;
 use App\Model\Repository\TopicRepository;
 use App\Settings\ForumSettings;
+use App\UI\Forum\Accessory\ForumJumpFormFactory;
+use Contributte\FormsBootstrap\BootstrapForm;
 use Nette\Application\UI\Presenter;
 use Nette\Utils\Paginator;
 
@@ -22,6 +24,7 @@ class ViewPresenter extends Presenter
         private readonly EntityManagerDecorator $em,
         private readonly ForumSettings $forumSettings,
         private readonly ForumPermissionService $permissions,
+        private readonly ForumJumpFormFactory $forumJumpFormFactory,
     ) {
         parent::__construct();
     }
@@ -50,6 +53,15 @@ class ViewPresenter extends Presenter
 
         $currentUser = $this->getUser()->isLoggedIn() ? $this->em->find(UserEntity::class, $this->getUser()->getId()) : null;
         $this->template->canAddTopic = $this->permissions->isAllowed($currentUser, $forum, ForumPrivilege::TOPIC_ADD);
+        $this['forumJumpForm-forum']->setDefaultValue($forum->uuid->toString());
+    }
+
+    /**
+     * Jump to another forum (GET, changes nothing).
+     */
+    protected function createComponentForumJumpForm() : BootstrapForm
+    {
+        return $this->forumJumpFormFactory->create();
     }
 
 }

@@ -79,6 +79,8 @@
     <p n:if="$topic->isLocked" class="alert alert-secondary">{_forum-topic-view.lockedNotice}</p>
     <p n:if="$canReply"><a n:href=":Forum:Topic:Reply:default $topic->uuid->toString()" class="btn btn-primary reply-link">{_forum-topic-view.reply}</a></p>
 
+    <div class="forum-jump-box mb-3">{control forumJumpForm}</div>
+
     <div n:if="$canFastReply" class="card fast-reply">
         <div class="card-header">{_forum-topic-view.fastReply}</div>
         <div class="card-body">{control fastReplyForm}</div>
