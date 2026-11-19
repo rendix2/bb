@@ -15,7 +15,12 @@ hlášení, ranky, avatary, moderace, admin). Historie od 2018 (dibi + MySQL), o
 - Větev `master`, `composer.lock` je verzovaný, `package-lock.json` je v repu taky.
 - ⚠️ `make all` / `make dirs-build` → `create-dirs` **smaže `vendor`, `node_modules`, `temp`**. Nepouštět bez potřeby.
 - `make db` = drop celé DB + migrace + fixtures (destruktivní).
-- `make phpstan` (level 2 + strict rules + doctrine), `make rector`. Testy **neexistují** (žádné `tests/`).
+- `make phpstan` (level 2 + strict rules + doctrine), `make rector`.
+- **Testy: Codeception jako web-project** (od 2026-11-19): `make unit|integration|functional|acceptance|test|coverage` (bez `dirs-build`, nic nemaže).
+  Sady Unit (bez DB), Integration (DI kontejner + dev DB), Functional (PhpBrowser na `bb-web`), Acceptance (`selenium-chrome`, porty 4744/5903/7903).
+  Převzaté konvenční testy: `tests/Unit/MigrationConventionsCest`, `tests/Integration/Schema/*`, `MigrationsDownUpCest`, `BigIntIdentifiersCest`,
+  `ForeignKeyOnDeleteCest` (= cíl kroku 0: srovnat entity a migrace). Skupina `known-bug` (Make ji přeskakuje) = záměrně padající do opravy:
+  `NoStaticMethodsOrTraitsCest`, `QueriesUseTheQueryBuilderCest` (starý dibi kód, Bootstrap, RouterFactory).
 - Codestyle: `ruleset.xml` → **ninjify/coding-standard** (ne contributte/qa jako ostatní projekty); `composer qa` skript chybí.
 - Konzole: `php bin/console` (contributte/console; migrations, fixtures, `database:create`).
 

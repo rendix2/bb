@@ -1,0 +1,12 @@
+# Suite for unit tests: a class or a method in isolation, source-code scans, form mappers with fakes.
+# Only Asserts: no DI container, no database, no network (guarded by tests/Unit/UnitTestsStayIsolatedCest).
+# A test that needs a service or the database belongs to Integration.
+
+error_level: "E_ALL"
+
+actor: UnitTester
+suite_namespace: Tests\Unit
+modules:
+    enabled:
+        - Asserts
+step_decorators: ~

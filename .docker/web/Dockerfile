@@ -1,34 +1,67 @@
 FROM php:8.4-apache
 
 # update
-RUN apt-get update
+RUN apt update
 
 # SW needed
-RUN apt-get install make -y --fix-missing
+RUN apt install make -y --fix-missing
+RUN apt install ccache apt-utils -y --fix-missing
+RUN apt install gcc -y --fix-missing
+
+# GD
+RUN apt install zlib1g-dev libpng-dev libavif-dev libwebp-dev libjpeg-dev libxpm-dev libfreetype6-dev -y --fix-missing
+RUN docker-php-ext-configure gd --enable-gd --with-jpeg --with-freetype --with-webp --with-avif --with-xpm
+RUN docker-php-ext-install -j "$(nproc)" gd
 
 # PDO
-RUN apt-get install libpq-dev -y --fix-missing
+RUN apt install libpq-dev -y --fix-missing
 RUN docker-php-ext-install -j "$(nproc)" pdo
-RUN docker-php-ext-install -j "$(nproc)" pdo_mysql
 RUN docker-php-ext-install -j "$(nproc)" pdo_pgsql
+# MySQL: only until the legacy dibi code and MySQL are removed (see AGENTS.md)
+RUN docker-php-ext-install -j "$(nproc)" pdo_mysql
 
-# intl
-RUN apt-get install libicu-dev -y --fix-missing
-RUN docker-php-ext-install -j "$(nproc)" intl
+# ZIP (needed by composer packages of the test tooling, php-webdriver)
+RUN apt install -y libzip-dev
+RUN docker-php-ext-install zip
 
 # Opcache
 RUN docker-php-ext-configure opcache --enable-opcache
 RUN docker-php-ext-install -j "$(nproc)" opcache
 
+# google
+RUN docker-php-ext-install -j "$(nproc)" bcmath
+
+# crypting messages
+RUN apt install libssl-dev -y --fix-missing
+RUN docker-php-ext-install -j "$(nproc)" openssl; exit 0
+RUN cp /usr/src/php/ext/openssl/config0.m4 /usr/src/php/ext/openssl/config.m4
+RUN docker-php-ext-install -j "$(nproc)" openssl
+
+# search by ascii
+RUN apt install libicu-dev -y --fix-missing
+RUN docker-php-ext-install -j "$(nproc)" intl
+
+# code coverage (`make coverage` / `composer coverage`): pcov, ONLY in this dev image (never in prod.Dockerfile) and switched
+# off (pcov.enabled=0), so normal runs are as fast as without it; the coverage run turns it on with `php -d pcov.enabled=1`
+RUN pecl install pcov && docker-php-ext-enable pcov
+RUN echo "pcov.enabled=0" > /usr/local/etc/php/conf.d/docker-php-ext-pcov-off.ini
+
+# OPcache: the same opcache.ini as alfred and family-tree, dev and production
+COPY ./.docker/web/config/opcache.ini /usr/local/etc/php/conf.d/zzz-opcache-custom.ini
+
 # mod rewrite
 RUN a2enmod rewrite
+RUN service apache2 restart
+
+# set ServerName and prevent some warning
+RUN echo "ServerName bb-web" >> /etc/apache2/apache2.conf
 
 # Installation of Composer
-RUN apt-get install git zip libzip-dev -y --fix-missing
+RUN apt install git zip libzip-dev -y --fix-missing
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 # Custom php.ini
-#COPY ./.docker/web/config/php.ini /usr/local/etc/php/
+COPY ./.docker/web/config/php.ini /usr/local/etc/php/
 
 # install npm and node.js
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules

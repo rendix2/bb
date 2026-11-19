@@ -16,3 +16,7 @@ www/postFiles/*
 # assets
 www/assets
 www/dist
+
+# tests
+tests/_output
+tests/Support/_generated

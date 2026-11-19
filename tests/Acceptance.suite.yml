@@ -1,0 +1,31 @@
+# Suite for acceptance tests: a real browser (Selenium / Chrome) against the running web container.
+
+actor: AcceptanceTester
+suite_namespace: Tests\Acceptance
+modules:
+    enabled:
+        - Asserts
+        - WebDriver:
+              url: http://bb-web
+              host: selenium-chrome
+              browser: chrome
+        - Contributte\Codeception\Module\NetteDIModule:
+              tempDir: ../../temp/codeception/acceptance
+              logDir: ../../log/codeception
+              appDir: ../../app
+              wwwDir: ../../www
+              configFiles:
+                  - ../../config/codeception/common.neon
+                  - ../../config/codeception/local.neon
+              newContainerForEachTest: true
+              removeDefaultExtensions: false
+              debugMode: true
+        - Tests\Support\Helper\CleanupTestData
+
+step_decorators:
+    - Codeception\Step\ConditionalAssertion
+    - Codeception\Step\TryTo
+    - Codeception\Step\Retry
+# the code of the application runs in the web server here (no c3 / remote coverage): `--coverage` measures Unit + Integration
+coverage:
+    enabled: false

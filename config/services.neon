@@ -110,14 +110,14 @@ search:
 
 
 includes:
-	- %configDir%/ext/console.neon
-	- %configDir%/ext/guzzle.neon
-	- %configDir%/ext/nettrine.neon
-	- %configDir%/ext/translation.neon
-	- %configDir%/ext/menu.neon
-	- %configDir%/ext/mailing.neon
-	- %configDir%/ext/redis.neon
-	- %configDir%/settings.neon
-	#- %configDir%/config.neon
-	- %configDir%/factory.neon
-	- %configDir%/managers.neon
+	- ext/console.neon
+	- ext/guzzle.neon
+	- ext/nettrine.neon
+	- ext/translation.neon
+	- ext/menu.neon
+	- ext/mailing.neon
+	- ext/redis.neon
+	- settings.neon
+	#- config.neon
+	- factory.neon
+	- managers.neon

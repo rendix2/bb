@@ -13,6 +13,18 @@ services:
       - bb-redis
     tty: true
 
+  selenium-chrome:
+    image: selenium/standalone-chrome:latest
+    volumes:
+      - /dev/shm:/dev/shm
+    ports:
+      - "4744:4444"
+      - "5903:5900"
+      - "7903:7900"
+    depends_on:
+      - bb-postgres
+      - bb-web
+
   bb-mysql:
     image: mysql:8.0.40
     ports:

@@ -3,7 +3,11 @@
     "description": "The sandbox is a pre-packaged Nette Framework project, basic configured structure for your application.",
     "homepage": "https://nette.org",
     "type": "project",
-    "license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
+    "license": [
+        "BSD-3-Clause",
+        "GPL-2.0",
+        "GPL-3.0"
+    ],
     "authors": [
         {
             "name": "David Grudl",
@@ -74,7 +78,12 @@
         "roave/security-advisories": "dev-latest",
         "symfony/thanks": "^1",
         "rector/rector": "^2.5",
-        "fakerphp/faker": "^1.24"
+        "fakerphp/faker": "^1.24",
+        "codeception/module-asserts": "^3.3",
+        "codeception/module-phpbrowser": "^4.1",
+        "codeception/module-webdriver": "^4.0",
+        "contributte/codeception": "^1.6",
+        "nikic/php-parser": "^5.0"
     },
     "autoload": {
         "psr-4": {
@@ -90,5 +99,8 @@
             "phpstan/extension-installer": true,
             "php-http/discovery": true
         }
+    },
+    "conflict": {
+        "contributte/codeception": "1.6.1"
     }
 }
