@@ -1,0 +1,8 @@
+{
+  "error": {
+    "own": "You cannot report your own post.",
+    "already": "You have already reported this post.",
+    "empty": "Write the reason of the report.",
+    "tooLong": "The reason of the report is too long."
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Report the post",
+  "intro": "The post will be reported to the moderators of the forum. Write what is wrong with it.",
+  "already": "You have already reported this post, the moderators will look at it.",
+  "protection": "The form has expired, please send it again.",
+  "text": {
+    "label": "Reason of the report",
+    "required": "Write the reason of the report."
+  },
+  "send": "Report",
+  "cancel": "Back to the topic",
+  "success": "The post was reported, thank you."
+}

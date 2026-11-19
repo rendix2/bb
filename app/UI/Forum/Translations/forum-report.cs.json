@@ -1,0 +1,8 @@
+{
+  "error": {
+    "own": "Vlastní příspěvek nahlásit nelze.",
+    "already": "Tento příspěvek už jste nahlásili.",
+    "empty": "Napište důvod nahlášení.",
+    "tooLong": "Důvod nahlášení je příliš dlouhý."
+  }
+}

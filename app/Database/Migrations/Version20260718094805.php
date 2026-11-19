@@ -36,7 +36,7 @@ final class Version20260718094805 extends AbstractMigration
             ->setComment('Report text');
 
         $table->addColumn('status', Types::INTEGER)
-            ->setComment('Status');
+            ->setComment('Status (0 = open)');
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
@@ -72,6 +72,7 @@ final class Version20260718094805 extends AbstractMigration
             ->addIndex(['post_id'], 'K__Report__Post_id')
             ->addIndex(['topic_id'], 'K__Report__Topic_id')
             ->addIndex(['user_id'], 'K__Report__User_id')
+            ->addUniqueIndex(['user_id', 'post_id'], 'UK__Report__User_id_post_id')
             ->addUniqueIndex(['uuid'], 'UK__Report__Uuid')
 
             ->addForeignKeyConstraint('category', ['category_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Category_id')

@@ -14,6 +14,7 @@ use App\Model\Entity\PollEntity;
 use App\Model\Service\AttachmentService;
 use App\Model\Service\PollService;
 use App\Model\Service\PostWriteService;
+use App\Model\Service\ReportService;
 use App\Model\Service\ThankService;
 use App\Model\Service\TopicWatchService;
 use App\Model\Service\TopicPaginationService;
@@ -50,6 +51,7 @@ class ViewPresenter extends Presenter
         private readonly TopicWatchService $topicWatchService,
         private readonly PollService $pollService,
         private readonly AttachmentService $attachmentService,
+        private readonly ReportService $reportService,
     ) {
         parent::__construct();
     }
@@ -115,16 +117,19 @@ class ViewPresenter extends Presenter
         $this->template->paginator = $paginator;
         $canEdit = [];
         $canDelete = [];
+        $canReport = [];
         $firstPostId = $paginator->isFirst() && $posts !== [] ? $posts[0]->id : null;
 
         foreach ($posts as $post) {
             $canEdit[$post->id] = $this->permissions->isAllowed($this->currentUser, $post, ForumPrivilege::EDIT);
             // the first post goes only with its topic (Forum:Topic:Delete)
             $canDelete[$post->id] = $post->id !== $firstPostId && $this->permissions->isAllowed($this->currentUser, $post, ForumPrivilege::DELETE);
+            $canReport[$post->id] = $this->reportService->mayReport($this->currentUser, $post);
         }
 
         $this->template->canEdit = $canEdit;
         $this->template->canDelete = $canDelete;
+        $this->template->canReport = $canReport;
         $this->template->canThank = $this->currentUser !== null && $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::THANK);
         $this->template->postThanks = $this->thankService->postThanks($posts, $this->currentUser);
         $this->template->topicThankCount = $this->thankService->topicThankCount($this->topic);

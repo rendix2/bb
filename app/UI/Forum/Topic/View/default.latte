@@ -39,6 +39,7 @@
                 <a n:if="$canReply" n:href=":Forum:Topic:Reply:default $topic->uuid->toString(), quote: $post->uuid->toString()" class="post-quote-link">{_forum-topic-view.quote}</a>
                 <a n:if="$canEdit[$post->id]" n:href=":Forum:Post:Edit:default $post->uuid->toString()" class="post-edit-link">{_forum-topic-view.edit}</a>
                 <a n:if="$canDelete[$post->id]" n:href=":Forum:Post:Delete:default $post->uuid->toString()" class="post-delete-link">{_forum-topic-view.delete}</a>
+                <a n:if="$canReport[$post->id]" n:href=":Forum:Post:Report:default $post->uuid->toString()" class="post-report-link">{_forum-topic-view.report}</a>
                 <span n:if="$post->isLocked" class="post-locked" title={_forum-topic-view.postLocked}>&#128274;</span>
                 <span class="post-thanks small">{_forum-topic-view.thanks}: <span class="post-thank-count">{$postThanks['counts'][$post->id]}</span></span>
                 <span n:if="$canThank && $post->user->id !== $user->getId() && !isset($postThanks['thankedByUser'][$post->id])" class="post-thank-form d-inline-block">{control "thankPostForm-$post->id"}</span>

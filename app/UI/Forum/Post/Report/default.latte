@@ -1,0 +1,21 @@
+{block title}{_forum-post-report.title}: {$post->topic->name}{/block}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $post->category, forum: $post->forum, topic: $post->topic}
+
+    <h1>{_forum-post-report.title}</h1>
+
+    <div class="card mb-3">
+        <div class="card-header">{$post->user->username}, {$post->createdAt|date:'j. n. Y H:i'}</div>
+        <div class="card-body post-text">{$post->text|markdown}</div>
+    </div>
+
+    {if $alreadyReported}
+        <p class="alert alert-info report-already">{_forum-post-report.already}</p>
+    {else}
+        <p>{_forum-post-report.intro}</p>
+        {control reportForm}
+    {/if}
+
+    <a n:href=":Forum:Topic:View:default $post->topic->uuid->toString()" class="btn btn-link">{_forum-post-report.cancel}</a>
+{/block}

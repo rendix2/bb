@@ -55,4 +55,30 @@ class SchemaAssociationsCest
 
         $I->assertSame([], $missing, 'ManyToOne associations without cascade persist.');
     }
+
+    /**
+     * inversedBy must name a collection of the target entity that belongs to THIS entity. Doctrine's SchemaValidator
+     * compares only the field names, so ReportEntity::$user with inversedBy 'posts' (UserEntity::$posts holds the posts,
+     * mappedBy 'user') passed it.
+     */
+    public function inversedByPointsBackToTheOwningEntity(IntegrationTester $I) : void
+    {
+        $wrong = [];
+        foreach ($this->schema->entities() as $meta) {
+            foreach ($meta->associationMappings as $field => $association) {
+                if (!$association->isOwningSide() || $association->inversedBy === null) {
+                    continue;
+                }
+
+                $inverse = $I->grabService(EntityManagerDecorator::class)->getClassMetadata($association->targetEntity)->associationMappings[$association->inversedBy] ?? null;
+
+                if ($inverse === null || $inverse->targetEntity !== $meta->getName()) {
+                    $wrong[] = $this->schema->label($meta, $field) . ': inversedBy ' . $association->inversedBy . ' targets '
+                        . ($inverse === null ? 'nothing' : $inverse->targetEntity);
+                }
+            }
+        }
+
+        $I->assertSame([], $wrong, 'inversedBy pointing to a collection of another entity.');
+    }
 }

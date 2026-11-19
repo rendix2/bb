@@ -1,0 +1,13 @@
+{
+  "title": "Nahlášení příspěvku",
+  "intro": "Příspěvek bude nahlášen moderátorům fóra. Napište, co je s ním v nepořádku.",
+  "already": "Tento příspěvek už jste nahlásili, moderátoři se jím budou zabývat.",
+  "protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+  "text": {
+    "label": "Důvod nahlášení",
+    "required": "Napište důvod nahlášení."
+  },
+  "send": "Nahlásit",
+  "cancel": "Zpět do tématu",
+  "success": "Příspěvek byl nahlášen, děkujeme."
+}

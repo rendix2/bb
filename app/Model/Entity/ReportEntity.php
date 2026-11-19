@@ -12,12 +12,15 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity()]
 #[Table(name: 'report', options: ['comment' => 'Post reports'])]
+// one report per user and post
+#[UniqueConstraint(name: 'UK__Report__User_id_post_id', columns: ['user_id', 'post_id'])]
 class ReportEntity
 {
 
@@ -45,7 +48,7 @@ class ReportEntity
     #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Post ID'])]
     public PostEntity $post;
 
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'posts', cascade: ['persist'])]
+    #[ManyToOne(targetEntity: UserEntity::class, cascade: ['persist'])]
     #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'User ID'])]
     public UserEntity $user;
 
@@ -55,7 +58,7 @@ class ReportEntity
     #[Column(type: Types::TEXT, nullable: false, options: ['comment' => 'Report text'])]
     public string $reportText;
 
-    #[Column(type: Types::INTEGER, nullable: false, options: ['comment' => 'Status'])]
+    #[Column(type: Types::INTEGER, nullable: false, options: ['comment' => 'Status (0 = open)'])]
     public int $status;
 
     #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]

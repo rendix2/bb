@@ -41,5 +41,6 @@
   "pollEnds": "voting ends",
   "pollEnded": "voting ended",
   "addPoll": "Add a poll",
-  "quote": "Quote"
+  "quote": "Quote",
+  "report": "Report"
 }
