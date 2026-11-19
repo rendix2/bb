@@ -21,10 +21,10 @@
         </div>
         <div class="card-body">
             <h5 n:if="$post->title" class="card-title">{$post->title}</h5>
-            <div class="post-text">{$post->text|breakLines}</div>
+            <div class="post-text">{$post->text|markdown}</div>
             <div n:if="$post->user->signature" class="post-signature small text-muted">
                 <hr>
-                {$post->user->signature|breakLines}
+                {$post->user->signature|markdown}
             </div>
         </div>
     </div>

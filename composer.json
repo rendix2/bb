@@ -63,7 +63,8 @@
         "contributte/menu-control": "^3.2",
         "ext-mbstring": "*",
         "donatj/phpuseragentparser": "^1.12",
-        "jord-jd/password_exposed": "^5.1"
+        "jord-jd/password_exposed": "^5.1",
+        "league/commonmark": "^2.7"
     },
     "require-dev": {
         "nette/tester": "^v2.3.5",

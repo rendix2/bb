@@ -1,0 +1,10 @@
+{
+  "error": {
+    "notAllowed": "You are not allowed to do this.",
+    "tooShort": "The text of the post is too short.",
+    "tooLong": "The text of the post is too long.",
+    "flood": "You are writing too fast, try again in a moment.",
+    "doublePost": "You have just posted the same text into this topic.",
+    "topicName": "Enter the name of the topic (at most 1024 characters)."
+  }
+}

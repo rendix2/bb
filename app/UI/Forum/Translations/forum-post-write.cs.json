@@ -1,0 +1,10 @@
+{
+  "error": {
+    "notAllowed": "Na tuto akci nemáte oprávnění.",
+    "tooShort": "Text příspěvku je příliš krátký.",
+    "tooLong": "Text příspěvku je příliš dlouhý.",
+    "flood": "Píšete příliš rychle, zkuste to za chvíli znovu.",
+    "doublePost": "Stejný příspěvek jste do tohoto tématu právě poslali.",
+    "topicName": "Zadejte název tématu (nejvýše 1024 znaků)."
+  }
+}

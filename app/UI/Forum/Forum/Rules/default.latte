@@ -5,6 +5,6 @@
 
     <h1>{_forum-forum-rules.title}</h1>
 
-    <div n:if="$forum->rules" class="forum-rules">{$forum->rules|breakLines}</div>
+    <div n:if="$forum->rules" class="forum-rules">{$forum->rules|markdown}</div>
     <p n:if="!$forum->rules" class="text-muted">{_forum-forum-rules.none}</p>
 {/block}

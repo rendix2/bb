@@ -97,7 +97,7 @@ class ForumReadingPagesCest
     }
 
     /**
-     * Regression 2026-11-19: the old topic page printed the text and the signature with |noescape.
+     * Regression 2026-11-19: the old topic page printed the text and the signature with |noescape (HTML of TinyMCE).
      */
     public function theTextAndTheSignatureAreEscaped(IntegrationTester $I) : void
     {
@@ -111,8 +111,8 @@ class ForumReadingPagesCest
         $I->seeInSource('&lt;script&gt;');
         $I->dontSeeInSource("<img src=x onerror");
         $I->seeInSource('&lt;img src=x onerror');
-        // new lines become <br>
-        $I->seeInSource('<br>');
+        // the text is Markdown (MarkdownRenderer): a paragraph, HTML of the input escaped
+        $I->seeInSource('<p>second line</p>');
     }
 
     public function theForumRulesAreShownEscapedAndOnlyForAnActiveForum(IntegrationTester $I) : void

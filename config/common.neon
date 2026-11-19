@@ -89,6 +89,8 @@ latte:
     strictParsing: yes
     strictTypes: true
     locale: cs_CZ
+    extensions:
+        - App\UI\Accessory\LatteExtension
 
 di:
     debugger: true
