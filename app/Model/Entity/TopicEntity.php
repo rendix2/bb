@@ -66,12 +66,6 @@ class TopicEntity
     public ?DateTimeImmutable $updatedAt;
 
     /**
-     * @var Collection<int, TopicEntity> $posts
-     */
-    #[OneToMany(targetEntity: TopicEntity::class, mappedBy: 'topic', cascade: ['persist', 'remove'])]
-    public Collection $topics;
-
-    /**
      * @var Collection<int, PostEntity> $posts
      */
     #[OneToMany(targetEntity: PostEntity::class, mappedBy: 'topic', cascade: ['persist', 'remove'])]
@@ -113,7 +107,6 @@ class TopicEntity
     {
         $this->uuid = Uuid::uuid4();
 
-        $this->topics = new ArrayCollection();
         $this->posts = new ArrayCollection();
         $this->thanks = new ArrayCollection();
         $this->polls = new ArrayCollection();

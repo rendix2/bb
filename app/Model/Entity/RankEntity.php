@@ -15,7 +15,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: RankRepository::class)]
-#[Table(name: 'role')]
+#[Table(name: 'rank')]
 class RankEntity
 {
     #[Id()]

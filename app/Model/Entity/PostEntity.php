@@ -59,7 +59,7 @@ class PostEntity
     public string $addIpAddress;
 
     #[Column(type: IpAddressType::NAME, nullable: true)]
-    public string $editIpAddress;
+    public ?string $editIpAddress;
 
     #[Column(type: Types::DATETIME_IMMUTABLE)]
     public DateTimeImmutable $createdAt;
@@ -89,7 +89,7 @@ class PostEntity
     /**
      * @var Collection<int, FileEntity> $files
      */
-    #[OneToMany(targetEntity: FileEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    #[OneToMany(targetEntity: FileEntity::class, mappedBy: 'post', cascade: ['persist', 'remove'])]
     public Collection $files;
 
     public function __construct()

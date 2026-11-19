@@ -32,7 +32,7 @@ class GroupEntity
     #[Column(type: Types::STRING, length: 512, nullable: false)]
     public string $name;
 
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'groups')]
+    #[ManyToOne(targetEntity: UserEntity::class)]
     #[JoinColumn(nullable: false)]
     public UserEntity $moderator;
 

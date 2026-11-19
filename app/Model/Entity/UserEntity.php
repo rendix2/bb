@@ -58,7 +58,7 @@ class UserEntity
     #[Column(type: Types::STRING, length: 1024, nullable: true)]
     public ?string $avatar;
 
-    #[ManyToOne(targetEntity: LanguageEntity::class, inversedBy: 'users')]
+    #[ManyToOne(targetEntity: LanguageEntity::class)]
     #[JoinColumn(nullable: false)]
     public LanguageEntity $language;
 

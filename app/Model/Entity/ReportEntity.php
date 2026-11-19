@@ -16,7 +16,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity()]
-#[Table(name: 'post')]
+#[Table(name: 'report')]
 class ReportEntity
 {
 
@@ -28,19 +28,19 @@ class ReportEntity
     #[Column(type: UuidType::NAME, unique: true)]
     public UuidInterface $uuid;
 
-    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'XXXX')]
+    #[ManyToOne(targetEntity: CategoryEntity::class)]
     #[JoinColumn(nullable: false)]
     public CategoryEntity $category;
 
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'XXXX')]
+    #[ManyToOne(targetEntity: ForumEntity::class)]
     #[JoinColumn(nullable: false)]
     public ForumEntity $forum;
 
-    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'XXXX')]
+    #[ManyToOne(targetEntity: TopicEntity::class)]
     #[JoinColumn(nullable: false)]
     public TopicEntity $topic;
 
-    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'XXXX')]
+    #[ManyToOne(targetEntity: PostEntity::class)]
     #[JoinColumn(nullable: false)]
     public PostEntity $post;
 

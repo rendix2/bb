@@ -2,7 +2,7 @@
 
 namespace App\Model\Entity;
 
-use App\Model\Repository\UserRepository;
+use App\Model\Repository\UserFavouriteUserRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
@@ -16,7 +16,7 @@ use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-#[Entity(repositoryClass: UserRepository::class)]
+#[Entity(repositoryClass: UserFavouriteUserRepository::class)]
 #[Table(name: 'user_favourite')]
 class UserFavouriteUserEntity
 {
@@ -28,11 +28,11 @@ class UserFavouriteUserEntity
     #[Column(type: UuidType::NAME, unique: true)]
     public UuidInterface $uuid;
 
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'passwords')]
+    #[ManyToOne(targetEntity: UserEntity::class)]
     #[JoinColumn(nullable: false)]
     public UserEntity $user;
 
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'passwords')]
+    #[ManyToOne(targetEntity: UserEntity::class)]
     #[JoinColumn(nullable: false)]
     public UserEntity $favouriteUser;
 

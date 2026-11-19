@@ -41,7 +41,7 @@ class ThankEntity
     #[JoinColumn(nullable: false)]
     public TopicEntity $topic;
 
-    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'thanks')]
+    #[ManyToOne(targetEntity: PostEntity::class)]
     #[JoinColumn(nullable: false)]
     public PostEntity $post;
 

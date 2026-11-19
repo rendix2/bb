@@ -44,9 +44,9 @@ class PollVoteEntity
     #[JoinColumn(nullable: false)]
     public TopicEntity $topic;
 
-    #[ManyToOne(targetEntity: PollVoteEntity::class, inversedBy: 'votes')]
+    #[ManyToOne(targetEntity: PollEntity::class, inversedBy: 'votes')]
     #[JoinColumn(nullable: false)]
-    public PollVoteEntity $poll;
+    public PollEntity $poll;
 
     #[ManyToOne(targetEntity: PollAnswerEntity::class, inversedBy: 'votes')]
     #[JoinColumn(nullable: false)]

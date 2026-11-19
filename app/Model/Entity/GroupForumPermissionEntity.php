@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
 #[Entity(repositoryClass: GroupForumPermissionRepository::class)]
-#[Table(name: 'permission_group_forum')]
+#[Table(name: 'group_forum')]
 class GroupForumPermissionEntity
 {
 
@@ -22,12 +22,12 @@ class GroupForumPermissionEntity
     #[Column(type: Types::INTEGER, unique: true)]
     public int $id;
 
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'sessions')]
+    #[ManyToOne(targetEntity: ForumEntity::class)]
     #[JoinColumn(nullable: false)]
     public ForumEntity $forum;
 
 
-    #[ManyToOne(targetEntity: GroupEntity::class, inversedBy: 'sessions')]
+    #[ManyToOne(targetEntity: GroupEntity::class)]
     #[JoinColumn(nullable: false)]
     public GroupEntity $group;
 

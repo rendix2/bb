@@ -26,12 +26,12 @@ class GroupModeratorEntity
     #[Column(type: UuidType::NAME, unique: true)]
     public UuidInterface $uuid;
 
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'sessions')]
+    #[ManyToOne(targetEntity: ForumEntity::class)]
     #[JoinColumn(nullable: false)]
     public ForumEntity $forum;
 
 
-    #[ManyToOne(targetEntity: GroupEntity::class, inversedBy: 'sessions')]
+    #[ManyToOne(targetEntity: GroupEntity::class)]
     #[JoinColumn(nullable: false)]
     public GroupEntity $group;
 

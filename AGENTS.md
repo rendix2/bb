@@ -41,5 +41,6 @@ hlášení, ranky, avatary, moderace, admin). Historie od 2018 (dibi + MySQL), o
 - Dotazy: hybrid jako ve web-project. Jednoduché `find`/`findOneBy` přímo přes `$em->getRepository()`, repozitářová metoda jen pro QB s joiny/agregací, opakovaný dotaz nebo doménové pravidlo (s přesným `@return`). Žádné prázdné repozitáře ani wrappery `findByXId`/`findByX`.
 
 ## Pravidla (navíc ke globálnímu ~/.claude/CLAUDE.md)
+- **Migrace: 1 tabulka = 1 migrace** (Schema API, `public.` prefix, komentáře sloupců, indexy `K__Tabulka__sloupec`, FK `FK__Tabulka__sloupec`). Migrace se smí **upravovat zpětně** (nic neběží v produkci) – změnu tabulky dej do její zakládací migrace, ne do nové ALTER migrace; DB pak znovu `make db`.
 - Nový kód jen do nové struktury (`app/UI`, `app/Model`), DB přes Doctrine/QueryBuilder, ne dibi.
 - Tajemství: `config/env/*.neon` obsahují přístupy – nevypisovat.
