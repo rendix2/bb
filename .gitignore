@@ -12,3 +12,7 @@ www/postFiles/*
 .docker/mysql/data
 .docker/postgres/data
 .docker/redis/data
+
+# assets
+www/assets
+www/dist
