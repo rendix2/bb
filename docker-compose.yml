@@ -4,7 +4,7 @@ services:
       context: ./
       dockerfile: ./.docker/web/Dockerfile
     ports:
-      - "9080:80"
+      - "9380:80"
     volumes:
       - ./:/var/www/html/
     depends_on:
@@ -32,7 +32,7 @@ services:
       POSTGRES_USER: bb
       POSTGRES_PASSWORD: password
     ports:
-      - "5432:5432"
+      - "5732:5432"
     volumes:
       - ./.docker/postgres/data:/var/lib/postgresql/data
 
@@ -40,7 +40,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - "9082:8080"
+      - "9382:8080"
     environment:
       ADMINER_DEFAULT_SERVER: bb-postgres
     depends_on:
@@ -51,6 +51,6 @@ services:
     image: redis:latest
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "6479:6379"
     volumes:
       - ./.docker/redis/data:/data

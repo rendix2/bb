@@ -9,8 +9,9 @@ hlášení, ranky, avatary, moderace, admin). Historie od 2018 (dibi + MySQL), o
 **přepis na Doctrine (nettrine) + PostgreSQL + nová UI struktura**.
 
 ## Prostředí
-- Docker: `docker compose up -d`, služba **`bb-web`** (PHP 8.4 Apache, port 9080), `bb-postgres` (5432),
-  `bb-mysql` (4306, legacy), `bb-redis`, `bb-adminer` (9082). Příkazy: `docker compose exec -T bb-web …`.
+- Docker: `docker compose up -d`, služba **`bb-web`** (PHP 8.4 Apache, http://localhost:9380), adminer 9382, `bb-postgres` 5732,
+  `bb-redis` 6479, `bb-mysql` 4306 (legacy, mizí). Porty jsou zvolené tak, aby běžel zároveň s alfred/web-project/family-tree.
+  Příkazy: `docker compose exec -T bb-web …`.
 - Větev `master`, `composer.lock` je verzovaný, `package-lock.json` je v repu taky.
 - ⚠️ `make all` / `make dirs-build` → `create-dirs` **smaže `vendor`, `node_modules`, `temp`**. Nepouštět bez potřeby.
 - `make db` = drop celé DB + migrace + fixtures (destruktivní).
