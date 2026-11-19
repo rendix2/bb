@@ -11,6 +11,7 @@ use App\Model\Security\ForumPermissionService;
 use App\Model\Security\ForumPrivilege;
 use App\Model\Service\PostWriteException;
 use App\Model\Entity\PollEntity;
+use App\Model\Service\AttachmentService;
 use App\Model\Service\PollService;
 use App\Model\Service\PostWriteService;
 use App\Model\Service\ThankService;
@@ -48,6 +49,7 @@ class ViewPresenter extends Presenter
         private readonly ThankService $thankService,
         private readonly TopicWatchService $topicWatchService,
         private readonly PollService $pollService,
+        private readonly AttachmentService $attachmentService,
     ) {
         parent::__construct();
     }
@@ -128,6 +130,7 @@ class ViewPresenter extends Presenter
         $this->template->topicThankCount = $this->thankService->topicThankCount($this->topic);
         $this->template->hasThankedTopic = $this->thankService->hasThankedTopic($this->currentUser, $this->topic);
         $this->template->isWatching = $this->topicWatchService->isWatching($this->currentUser, $this->topic);
+        $this->template->attachments = $this->attachmentService->attachmentsOf($posts);
         $this->template->poll = $this->poll;
         $this->template->pollResults = $this->poll !== null ? $this->pollService->results($this->poll) : [];
         $this->template->pollOpen = $this->poll !== null && $this->pollService->isOpen($this->poll);

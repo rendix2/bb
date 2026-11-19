@@ -7,6 +7,7 @@ use App\Model\Entity\ForumEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Security\ForumPermissionService;
 use App\Model\Security\ForumPrivilege;
+use App\Model\Service\AttachmentService;
 use App\Model\Service\PostWriteException;
 use App\Model\Service\PostWriteService;
 use Contributte\FormsBootstrap\BootstrapForm;
@@ -30,6 +31,7 @@ class CreatePresenter extends Presenter
         private readonly ForumPermissionService $permissions,
         private readonly PostWriteService $postWriteService,
         private readonly Translator $translator,
+        private readonly AttachmentService $attachmentService,
     ) {
         parent::__construct();
     }
@@ -77,6 +79,8 @@ class CreatePresenter extends Presenter
         $form->addTextArea('text', 'forum-topic-create.form.text.label', rows: 12)
             ->setRequired('forum-topic-create.form.text.required');
 
+        $form->addMultiUpload('attachments', 'forum-topic-create.form.attachments.label');
+
         $form->addSubmit('send', 'forum-topic-create.form.send');
         // shows the text as it will look (Markdown), saves nothing
         $form->addSubmit('preview', 'forum-topic-create.form.preview')
@@ -98,7 +102,12 @@ class CreatePresenter extends Presenter
         $values = $form->getValues(CreateTopicValues::class);
 
         try {
+            /** @var list<\Nette\Http\FileUpload> $uploads */
+            $uploads = array_values(array_filter((array) $form->getValues('array')['attachments'], static fn (\Nette\Http\FileUpload $upload) : bool => $upload->hasFile()));
+            // a wrong attachment stops the whole post
+            $this->attachmentService->validate($uploads);
             $topic = $this->postWriteService->createTopic($this->currentUser, $this->forum, $values->name, $values->text, (string) $this->getHttpRequest()->getRemoteAddress());
+            $this->attachmentService->store($this->currentUser, $this->postWriteService->firstPostOf($topic), $uploads);
         } catch (PostWriteException $exception) {
             $form->addError($exception->getMessage());
 

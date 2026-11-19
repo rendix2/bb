@@ -36,6 +36,7 @@ class PostWriteService
         private readonly ForumPermissionService $permissions,
         private readonly PostSetting $postSetting,
         private readonly TopicNotificationService $topicNotification,
+        private readonly AttachmentService $attachments,
     ) {
     }
 
@@ -154,8 +155,11 @@ class PostWriteService
             throw new PostWriteException(self::ERROR_FIRST_POST);
         }
 
+        $paths = $this->attachments->pathsOf([$post]);
         $this->em->remove($post);
         $this->em->flush();
+        // the files on the disk too (the old code left them there)
+        $this->attachments->deleteFiles($paths);
     }
 
     /**
@@ -167,8 +171,16 @@ class PostWriteService
             throw new PostWriteException(self::ERROR_NOT_ALLOWED);
         }
 
+        $paths = $this->attachments->pathsOf($this->em->getRepository(PostEntity::class)->findBy(['topic' => $topic]));
         $this->em->remove($topic);
         $this->em->flush();
+        $this->attachments->deleteFiles($paths);
+    }
+
+    public function firstPostOf(TopicEntity $topic) : PostEntity
+    {
+        return $this->em->getRepository(PostEntity::class)->findOneBy(['topic' => $topic], ['id' => 'ASC'])
+            ?? throw new \LogicException('A topic without posts.');
     }
 
     /**

@@ -10,4 +10,7 @@ final class CreateTopicValues
     public string $name;
 
     public string $text;
+
+    /** @var list<\Nette\Http\FileUpload> */
+    public array $attachments;
 }

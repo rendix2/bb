@@ -44,6 +44,20 @@ parameters:
             totalPosts: 1 hour
             primaryKey: 10 day
         filesDir: %wwwDir%/postFiles
+        # attachments of posts (App\Model\Service\AttachmentService): stored OUTSIDE www/ under random names, served by a presenter
+        attachments:
+            dir: %appDir%/../data/attachments
+            maxSize: 5242880 # 5 MB per file
+            maxFiles: 5 # per post
+            # the type is detected from the content (finfo), never taken from the client
+            allowedTypes:
+                image/jpeg: jpg
+                image/png: png
+                image/gif: gif
+                image/webp: webp
+                application/pdf: pdf
+                application/zip: zip
+                text/plain: txt
         minLength: 5 # int or null
         maxLength: 100000 # int or null
         minUserTimeInterval: 20

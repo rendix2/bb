@@ -7,6 +7,7 @@ use App\Model\Entity\TopicEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Security\ForumPermissionService;
 use App\Model\Security\ForumPrivilege;
+use App\Model\Service\AttachmentService;
 use App\Model\Service\PostWriteException;
 use App\Model\Service\PostWriteService;
 use App\Model\Service\TopicPaginationService;
@@ -32,6 +33,7 @@ class ReplyPresenter extends Presenter
         private readonly PostWriteService $postWriteService,
         private readonly TopicPaginationService $topicPagination,
         private readonly Translator $translator,
+        private readonly AttachmentService $attachmentService,
     ) {
         parent::__construct();
     }
@@ -78,6 +80,8 @@ class ReplyPresenter extends Presenter
         $form->addTextArea('text', 'forum-topic-reply.form.text.label', rows: 12)
             ->setRequired('forum-topic-reply.form.text.required');
 
+        $form->addMultiUpload('attachments', 'forum-topic-reply.form.attachments.label');
+
         $form->addSubmit('send', 'forum-topic-reply.form.send');
         // shows the text as it will look (Markdown), saves nothing
         $form->addSubmit('preview', 'forum-topic-reply.form.preview')
@@ -99,7 +103,12 @@ class ReplyPresenter extends Presenter
         $values = $form->getValues(ReplyValues::class);
 
         try {
+            /** @var list<\Nette\Http\FileUpload> $uploads */
+            $uploads = array_values(array_filter((array) $form->getValues('array')['attachments'], static fn (\Nette\Http\FileUpload $upload) : bool => $upload->hasFile()));
+            // a wrong attachment stops the whole post
+            $this->attachmentService->validate($uploads);
             $post = $this->postWriteService->reply($this->currentUser, $this->topic, $values->text, $values->title, (string) $this->getHttpRequest()->getRemoteAddress());
+            $this->attachmentService->store($this->currentUser, $post, $uploads);
         } catch (PostWriteException $exception) {
             $form->addError($exception->getMessage());
 

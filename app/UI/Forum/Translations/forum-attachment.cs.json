@@ -1,0 +1,8 @@
+{
+  "error": {
+    "upload": "Soubor se nepodařilo nahrát.",
+    "type": "Tento typ souboru nelze přiložit.",
+    "size": "Soubor je příliš velký.",
+    "count": "Příloh je příliš mnoho."
+  }
+}

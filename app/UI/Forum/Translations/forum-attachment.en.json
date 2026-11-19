@@ -1,0 +1,8 @@
+{
+  "error": {
+    "upload": "The file could not be uploaded.",
+    "type": "This type of file cannot be attached.",
+    "size": "The file is too large.",
+    "count": "Too many attachments."
+  }
+}

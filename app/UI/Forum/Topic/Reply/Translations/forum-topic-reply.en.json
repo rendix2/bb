@@ -12,6 +12,9 @@
     },
     "send": "Send the reply",
     "success": "The reply was saved.",
-    "preview": "Preview"
+    "preview": "Preview",
+    "attachments": {
+      "label": "Attachments (at most 5 files of 5 MB: images, PDF, ZIP, TXT)"
+    }
   }
 }

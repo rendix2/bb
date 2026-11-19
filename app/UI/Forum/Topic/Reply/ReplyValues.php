@@ -10,4 +10,7 @@ final class ReplyValues
     public string $title;
 
     public string $text;
+
+    /** @var list<\Nette\Http\FileUpload> */
+    public array $attachments;
 }

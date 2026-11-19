@@ -12,6 +12,9 @@
     },
     "send": "Odeslat odpověď",
     "success": "Odpověď byla uložena.",
-    "preview": "Náhled"
+    "preview": "Náhled",
+    "attachments": {
+      "label": "Přílohy (nejvýše 5 souborů po 5 MB: obrázky, PDF, ZIP, TXT)"
+    }
   }
 }

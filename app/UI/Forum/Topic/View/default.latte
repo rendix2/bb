@@ -47,6 +47,12 @@
         <div class="card-body">
             <h5 n:if="$post->title" class="card-title">{$post->title}</h5>
             <div class="post-text">{$post->text|markdown}</div>
+            <ul n:if="isset($attachments[$post->id])" class="post-attachments small">
+                <li n:foreach="$attachments[$post->id] as $file">
+                    <a n:href=":Forum:Post:Attachment:default $file->uuid->toString()">{$file->originalName}</a>
+                    ({$file->size|bytes})
+                </li>
+            </ul>
             <div n:if="$post->user->signature" class="post-signature small text-muted">
                 <hr>
                 {$post->user->signature|markdown}

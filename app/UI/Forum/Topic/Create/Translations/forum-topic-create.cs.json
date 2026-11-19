@@ -13,6 +13,9 @@
     },
     "send": "Založit téma",
     "success": "Téma bylo založeno.",
-    "preview": "Náhled"
+    "preview": "Náhled",
+    "attachments": {
+      "label": "Přílohy (nejvýše 5 souborů po 5 MB: obrázky, PDF, ZIP, TXT)"
+    }
   }
 }

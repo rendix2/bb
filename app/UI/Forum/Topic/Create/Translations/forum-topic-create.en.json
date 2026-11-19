@@ -13,6 +13,9 @@
     },
     "send": "Start the topic",
     "success": "The topic was started.",
-    "preview": "Preview"
+    "preview": "Preview",
+    "attachments": {
+      "label": "Attachments (at most 5 files of 5 MB: images, PDF, ZIP, TXT)"
+    }
   }
 }
