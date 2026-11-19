@@ -1,0 +1,17 @@
+{
+  "title": "Nové téma",
+  "markdownHint": "Text pište v Markdownu: **tučně**, *kurzíva*, [odkaz](https://…), seznamy začínají „- “.",
+  "form": {
+    "protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+    "name": {
+      "label": "Název tématu",
+      "required": "Zadejte název tématu."
+    },
+    "text": {
+      "label": "Text (Markdown)",
+      "required": "Napište text prvního příspěvku."
+    },
+    "send": "Založit téma",
+    "success": "Téma bylo založeno."
+  }
+}

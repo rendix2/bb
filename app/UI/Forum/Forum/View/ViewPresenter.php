@@ -5,6 +5,9 @@ namespace App\UI\Forum\Forum\View;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
 use App\Model\Entity\TopicEntity;
+use App\Model\Entity\UserEntity;
+use App\Model\Security\ForumPermissionService;
+use App\Model\Security\ForumPrivilege;
 use App\Model\Repository\TopicRepository;
 use App\Settings\ForumSettings;
 use Nette\Application\UI\Presenter;
@@ -18,6 +21,7 @@ class ViewPresenter extends Presenter
     public function __construct(
         private readonly EntityManagerDecorator $em,
         private readonly ForumSettings $forumSettings,
+        private readonly ForumPermissionService $permissions,
     ) {
         parent::__construct();
     }
@@ -43,6 +47,9 @@ class ViewPresenter extends Presenter
             ->findBy(['parent' => $forum, 'active' => true], ['sortOrder' => 'ASC']);
         $this->template->topics = $topicRepository->findPageOfForum($forum, $paginator->getOffset(), $paginator->getLength());
         $this->template->paginator = $paginator;
+
+        $currentUser = $this->getUser()->isLoggedIn() ? $this->em->find(UserEntity::class, $this->getUser()->getId()) : null;
+        $this->template->canAddTopic = $this->permissions->isAllowed($currentUser, $forum, ForumPrivilege::TOPIC_ADD);
     }
 
 }

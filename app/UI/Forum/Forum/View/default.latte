@@ -12,6 +12,8 @@
         {foreach $forum->moderatorUsers as $moderator}<a n:href=":Web:User:View:default $moderator->user->uuid->toString()">{$moderator->user->username}</a>{sep}, {/sep}{/foreach}
     </p>
 
+    <p n:if="$canAddTopic"><a n:href=":Forum:Topic:Create:default $forum->uuid->toString()" class="btn btn-primary create-topic-link">{_forum-forum-view.newTopic}</a></p>
+
     <div n:if="$subforums" class="list-group mb-3">
         <a n:foreach="$subforums as $subforum" n:href=":Forum:Forum:View:default $subforum->uuid->toString()" class="list-group-item list-group-item-action">{$subforum->name}</a>
     </div>

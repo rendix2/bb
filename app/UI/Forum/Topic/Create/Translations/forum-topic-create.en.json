@@ -1,0 +1,17 @@
+{
+  "title": "New topic",
+  "markdownHint": "Write the text in Markdown: **bold**, *italic*, [link](https://…), lists start with \"- \".",
+  "form": {
+    "protection": "The form has expired, please send it again.",
+    "name": {
+      "label": "Name of the topic",
+      "required": "Enter the name of the topic."
+    },
+    "text": {
+      "label": "Text (Markdown)",
+      "required": "Write the text of the first post."
+    },
+    "send": "Start the topic",
+    "success": "The topic was started."
+  }
+}

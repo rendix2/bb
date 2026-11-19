@@ -1,0 +1,11 @@
+{block title}{_forum-topic-create.title}: {$forum->name}{/block}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $forum->category, forum: $forum}
+
+    <h1>{_forum-topic-create.title}</h1>
+
+    {control createTopicForm}
+
+    <p class="small text-muted">{_forum-topic-create.markdownHint}</p>
+{/block}
