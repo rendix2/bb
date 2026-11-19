@@ -25,5 +25,14 @@
   "topicLockedDone": "The topic was locked.",
   "topicUnlockedDone": "The topic was unlocked.",
   "postLockedDone": "The post was locked.",
-  "postUnlockedDone": "The post was unlocked."
+  "postUnlockedDone": "The post was unlocked.",
+  "thanks": "Thanks",
+  "topicThanks": "Thanks for the topic",
+  "thankTopic": "Thank for the topic",
+  "thankPost": "Thank",
+  "thankDone": "Thank you, the thanks were saved.",
+  "watch": "Watch the topic",
+  "unwatch": "Stop watching",
+  "watchDone": "You watch the topic, we will e-mail you about new replies.",
+  "unwatchDone": "You no longer watch the topic."
 }

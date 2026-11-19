@@ -25,5 +25,14 @@
   "topicLockedDone": "Téma bylo zamčeno.",
   "topicUnlockedDone": "Téma bylo odemčeno.",
   "postLockedDone": "Příspěvek byl zamčen.",
-  "postUnlockedDone": "Příspěvek byl odemčen."
+  "postUnlockedDone": "Příspěvek byl odemčen.",
+  "thanks": "Poděkování",
+  "topicThanks": "Poděkování za téma",
+  "thankTopic": "Poděkovat za téma",
+  "thankPost": "Poděkovat",
+  "thankDone": "Děkujeme, poděkování bylo uloženo.",
+  "watch": "Sledovat téma",
+  "unwatch": "Přestat sledovat",
+  "watchDone": "Téma sledujete, o nových odpovědích vám pošleme e-mail.",
+  "unwatchDone": "Téma už nesledujete."
 }

@@ -23,6 +23,8 @@
                 <a n:if="$canEdit[$post->id]" n:href=":Forum:Post:Edit:default $post->uuid->toString()" class="post-edit-link">{_forum-topic-view.edit}</a>
                 <a n:if="$canDelete[$post->id]" n:href=":Forum:Post:Delete:default $post->uuid->toString()" class="post-delete-link">{_forum-topic-view.delete}</a>
                 <span n:if="$post->isLocked" class="post-locked" title={_forum-topic-view.postLocked}>&#128274;</span>
+                <span class="post-thanks small">{_forum-topic-view.thanks}: <span class="post-thank-count">{$postThanks['counts'][$post->id]}</span></span>
+                <span n:if="$canThank && $post->user->id !== $user->getId() && !isset($postThanks['thankedByUser'][$post->id])" class="post-thank-form d-inline-block">{control "thankPostForm-$post->id"}</span>
                 <span n:if="$canModerate" class="post-lock-form d-inline-block">{control "lockPostForm-$post->id"}</span>
             </span>
         </div>
@@ -38,6 +40,11 @@
 
     {include '../../@paginator.latte', paginator: $paginator}
 
+    <div class="topic-actions mb-2">
+        <span class="topic-thanks">{_forum-topic-view.topicThanks}: <span class="topic-thank-count">{$topicThankCount}</span></span>
+        <span n:if="$canThank && $topic->user->id !== $user->getId() && !$hasThankedTopic" class="topic-thank-form d-inline-block">{control thankTopicForm}</span>
+        <span n:if="$user->isLoggedIn()" class="topic-watch-form d-inline-block">{control watchForm}</span>
+    </div>
     <div n:if="$canModerate" class="topic-lock-form mb-2">{control lockTopicForm}</div>
     <p n:if="$canDeleteTopic"><a n:href=":Forum:Topic:Delete:default $topic->uuid->toString()" class="btn btn-outline-danger btn-sm topic-delete-link">{_forum-topic-view.deleteTopic}</a></p>
     <p n:if="$topic->isLocked" class="alert alert-secondary">{_forum-topic-view.lockedNotice}</p>

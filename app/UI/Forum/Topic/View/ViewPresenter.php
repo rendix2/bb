@@ -11,6 +11,8 @@ use App\Model\Security\ForumPermissionService;
 use App\Model\Security\ForumPrivilege;
 use App\Model\Service\PostWriteException;
 use App\Model\Service\PostWriteService;
+use App\Model\Service\ThankService;
+use App\Model\Service\TopicWatchService;
 use App\Model\Service\TopicPaginationService;
 use App\Model\Service\UserRankService;
 use App\Settings\TopicsSetting;
@@ -39,6 +41,8 @@ class ViewPresenter extends Presenter
         private readonly PostWriteService $postWriteService,
         private readonly TopicPaginationService $topicPagination,
         private readonly Translator $translator,
+        private readonly ThankService $thankService,
+        private readonly TopicWatchService $topicWatchService,
     ) {
         parent::__construct();
     }
@@ -55,6 +59,11 @@ class ViewPresenter extends Presenter
 
         if ($this->getUser()->isLoggedIn()) {
             $this->currentUser = $this->em->find(UserEntity::class, $this->getUser()->getId());
+        }
+
+        if ($this->currentUser !== null) {
+            // a watcher who opened the topic may be notified about the next reply again
+            $this->topicWatchService->visited($this->currentUser, $topic);
         }
 
         if ((bool) $this->topicsSetting->get()['logViews']) {
@@ -108,6 +117,11 @@ class ViewPresenter extends Presenter
 
         $this->template->canEdit = $canEdit;
         $this->template->canDelete = $canDelete;
+        $this->template->canThank = $this->currentUser !== null && $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::THANK);
+        $this->template->postThanks = $this->thankService->postThanks($posts, $this->currentUser);
+        $this->template->topicThankCount = $this->thankService->topicThankCount($this->topic);
+        $this->template->hasThankedTopic = $this->thankService->hasThankedTopic($this->currentUser, $this->topic);
+        $this->template->isWatching = $this->topicWatchService->isWatching($this->currentUser, $this->topic);
         $this->template->canModerate = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::MODERATE);
         $this->template->canDeleteTopic = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::DELETE);
         $this->template->canReply = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::REPLY);
@@ -137,7 +151,7 @@ class ViewPresenter extends Presenter
      */
     protected function createComponentLockTopicForm() : BootstrapForm
     {
-        $form = $this->moderationForm($this->topic->isLocked ? 'forum-topic-view.unlockTopic' : 'forum-topic-view.lockTopic');
+        $form = $this->buttonForm($this->topic->isLocked ? 'forum-topic-view.unlockTopic' : 'forum-topic-view.lockTopic');
         $form->onSuccess[] = function () : void {
             $this->moderate(fn (UserEntity $user) => $this->postWriteService->setTopicLocked($user, $this->topic, !$this->topic->isLocked));
             $this->flashMessage($this->topic->isLocked ? 'forum-topic-view.topicLockedDone' : 'forum-topic-view.topicUnlockedDone', 'success');
@@ -159,7 +173,7 @@ class ViewPresenter extends Presenter
                 $this->error('Post was not found.');
             }
 
-            $form = $this->moderationForm($post->isLocked ? 'forum-topic-view.unlockPost' : 'forum-topic-view.lockPost');
+            $form = $this->buttonForm($post->isLocked ? 'forum-topic-view.unlockPost' : 'forum-topic-view.lockPost');
             $form->onSuccess[] = function () use ($post) : void {
                 $this->moderate(fn (UserEntity $user) => $this->postWriteService->setPostLocked($user, $post, !$post->isLocked));
                 $this->flashMessage($post->isLocked ? 'forum-topic-view.postLockedDone' : 'forum-topic-view.postUnlockedDone', 'success');
@@ -170,7 +184,82 @@ class ViewPresenter extends Presenter
         });
     }
 
-    private function moderationForm(string $caption) : BootstrapForm
+    /**
+     * Thank the topic (POST + CSRF; permission, own topic and "once" checked when written).
+     */
+    protected function createComponentThankTopicForm() : BootstrapForm
+    {
+        $form = $this->buttonForm('forum-topic-view.thankTopic');
+        $form->onSuccess[] = function () : void {
+            $this->userAction(fn (UserEntity $user) => $this->thankService->thankTopic($user, $this->topic, (string) $this->getHttpRequest()->getRemoteAddress()), 'forum-topic-view.thankDone');
+            $this->redirect('this');
+        };
+
+        return $form;
+    }
+
+    /**
+     * Thank one post of the page: one form per post id.
+     */
+    protected function createComponentThankPostForm() : Multiplier
+    {
+        return new Multiplier(function (string $postId) : BootstrapForm {
+            $post = $this->em->getRepository(PostEntity::class)->findOneBy(['id' => (int) $postId, 'topic' => $this->topic]);
+
+            if ($post === null) {
+                $this->error('Post was not found.');
+            }
+
+            $form = $this->buttonForm('forum-topic-view.thankPost');
+            $form->onSuccess[] = function () use ($post) : void {
+                $this->userAction(fn (UserEntity $user) => $this->thankService->thankPost($user, $post, (string) $this->getHttpRequest()->getRemoteAddress()), 'forum-topic-view.thankDone');
+                $this->redirect('this#post-' . $post->id);
+            };
+
+            return $form;
+        });
+    }
+
+    /**
+     * Watch / stop watching the topic (logged-in users).
+     */
+    protected function createComponentWatchForm() : BootstrapForm
+    {
+        $watching = $this->topicWatchService->isWatching($this->currentUser, $this->topic);
+        $form = $this->buttonForm($watching ? 'forum-topic-view.unwatch' : 'forum-topic-view.watch');
+        $form->onSuccess[] = function () use ($watching) : void {
+            $this->userAction(
+                fn (UserEntity $user) => $watching
+                    ? $this->topicWatchService->unwatch($user, $this->topic)
+                    : $this->topicWatchService->watch($user, $this->topic),
+                $watching ? 'forum-topic-view.unwatchDone' : 'forum-topic-view.watchDone',
+            );
+            $this->redirect('this');
+        };
+
+        return $form;
+    }
+
+    /**
+     * An action of a logged-in user: the result (or the error) as a flash message.
+     *
+     * @param callable(UserEntity): void $action
+     */
+    private function userAction(callable $action, string $successMessage) : void
+    {
+        if ($this->currentUser === null) {
+            $this->error('Not logged in.', 403);
+        }
+
+        try {
+            $action($this->currentUser);
+            $this->flashMessage($successMessage, 'success');
+        } catch (PostWriteException $exception) {
+            $this->flashMessage($exception->getMessage(), 'danger');
+        }
+    }
+
+    private function buttonForm(string $caption) : BootstrapForm
     {
         $form = new BootstrapForm();
         BootstrapForm::switchBootstrapVersion(BootstrapVersion::V5);
