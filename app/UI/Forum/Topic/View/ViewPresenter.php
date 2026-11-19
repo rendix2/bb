@@ -10,6 +10,8 @@ use App\Model\Entity\UserEntity;
 use App\Model\Security\ForumPermissionService;
 use App\Model\Security\ForumPrivilege;
 use App\Model\Service\PostWriteException;
+use App\Model\Entity\PollEntity;
+use App\Model\Service\PollService;
 use App\Model\Service\PostWriteService;
 use App\Model\Service\ThankService;
 use App\Model\Service\TopicWatchService;
@@ -33,6 +35,8 @@ class ViewPresenter extends Presenter
 
     private ?UserEntity $currentUser = null;
 
+    private ?PollEntity $poll = null;
+
     public function __construct(
         private readonly EntityManagerDecorator $em,
         private readonly TopicsSetting $topicsSetting,
@@ -43,6 +47,7 @@ class ViewPresenter extends Presenter
         private readonly Translator $translator,
         private readonly ThankService $thankService,
         private readonly TopicWatchService $topicWatchService,
+        private readonly PollService $pollService,
     ) {
         parent::__construct();
     }
@@ -56,6 +61,7 @@ class ViewPresenter extends Presenter
         }
 
         $this->topic = $topic;
+        $this->poll = $this->pollService->pollOf($topic);
 
         if ($this->getUser()->isLoggedIn()) {
             $this->currentUser = $this->em->find(UserEntity::class, $this->getUser()->getId());
@@ -122,6 +128,11 @@ class ViewPresenter extends Presenter
         $this->template->topicThankCount = $this->thankService->topicThankCount($this->topic);
         $this->template->hasThankedTopic = $this->thankService->hasThankedTopic($this->currentUser, $this->topic);
         $this->template->isWatching = $this->topicWatchService->isWatching($this->currentUser, $this->topic);
+        $this->template->poll = $this->poll;
+        $this->template->pollResults = $this->poll !== null ? $this->pollService->results($this->poll) : [];
+        $this->template->pollOpen = $this->poll !== null && $this->pollService->isOpen($this->poll);
+        $this->template->canVote = $this->poll !== null && $this->pollService->mayVote($this->currentUser, $this->poll);
+        $this->template->canAddPoll = $this->poll === null && $this->pollService->mayAddPoll($this->currentUser, $this->topic);
         $this->template->canModerate = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::MODERATE);
         $this->template->canDeleteTopic = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::DELETE);
         $this->template->canReply = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::REPLY);
@@ -257,6 +268,38 @@ class ViewPresenter extends Presenter
         } catch (PostWriteException $exception) {
             $this->flashMessage($exception->getMessage(), 'danger');
         }
+    }
+
+    /**
+     * Vote in the poll of the topic (one answer, once; checked when written).
+     */
+    protected function createComponentVoteForm() : BootstrapForm
+    {
+        $form = new BootstrapForm();
+        BootstrapForm::switchBootstrapVersion(BootstrapVersion::V5);
+
+        $form->setTranslator($this->translator);
+        $form->addProtection('forum-topic-view.form.protection');
+
+        $answers = [];
+
+        foreach ($this->poll !== null ? $this->pollService->results($this->poll) : [] as $row) {
+            $answers[$row['answer']->id] = $row['answer']->text;
+        }
+
+        $form->addRadioList('answer', null, $answers)
+            ->setTranslator(null)
+            ->setRequired('forum-topic-view.pollChoose');
+        $form->addSubmit('vote', 'forum-topic-view.pollVote');
+
+        $form->onSuccess[] = function (Form $form) : void {
+            $poll = $this->poll ?? $this->error('The topic has no poll.');
+            $answerId = (int) $form->getValues('array')['answer'];
+            $this->userAction(fn (UserEntity $user) => $this->pollService->vote($user, $poll, $answerId), 'forum-topic-view.pollVoted');
+            $this->redirect('this');
+        };
+
+        return $form;
     }
 
     private function buttonForm(string $caption) : BootstrapForm

@@ -1,0 +1,19 @@
+{
+  "title": "Nová anketa",
+  "form": {
+    "protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+    "question": {
+      "label": "Otázka",
+      "required": "Zadejte otázku ankety."
+    },
+    "answers": {
+      "label": "Odpovědi (každá na samostatném řádku, 2–20)",
+      "required": "Zadejte odpovědi ankety."
+    },
+    "endsAt": {
+      "label": "Konec hlasování (nepovinný)"
+    },
+    "send": "Přidat anketu",
+    "success": "Anketa byla přidána."
+  }
+}

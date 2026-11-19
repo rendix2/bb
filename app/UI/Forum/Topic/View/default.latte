@@ -10,6 +10,22 @@
 
     {include '../../@paginator.latte', paginator: $paginator}
 
+    <div n:if="$poll" class="card mb-3 poll">
+        <div class="card-header">
+            <strong class="poll-question">{$poll->question}</strong>
+            <span n:if="$poll->endsAt" class="small text-muted">({if $pollOpen}{_forum-topic-view.pollEnds}{else}{_forum-topic-view.pollEnded}{/if} {$poll->endsAt|date:'j. n. Y H:i'})</span>
+        </div>
+        <div class="card-body">
+            {var $total = array_sum(array_column($pollResults, 'votes'))}
+            <div n:foreach="$pollResults as $row" class="poll-answer">
+                {$row['answer']->text}: <span class="poll-votes">{$row['votes']}</span>
+                ({$total > 0 ? round($row['votes'] / $total * 100) : 0} %)
+            </div>
+            <div n:if="$canVote" class="poll-vote-form mt-2">{control voteForm}</div>
+        </div>
+    </div>
+    <p n:if="$canAddPoll"><a n:href=":Forum:Topic:Poll:default $topic->uuid->toString()" class="btn btn-outline-primary btn-sm add-poll-link">{_forum-topic-view.addPoll}</a></p>
+
     <div n:foreach="$posts as $post" id="post-{$post->id}" class="card mb-3 post">
         <div class="card-header d-flex justify-content-between">
             <span>

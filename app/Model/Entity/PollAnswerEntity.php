@@ -2,6 +2,7 @@
 
 namespace App\Model\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use App\Model\Repository\PollRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;

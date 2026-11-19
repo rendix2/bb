@@ -34,5 +34,11 @@
   "watch": "Sledovat téma",
   "unwatch": "Přestat sledovat",
   "watchDone": "Téma sledujete, o nových odpovědích vám pošleme e-mail.",
-  "unwatchDone": "Téma už nesledujete."
+  "unwatchDone": "Téma už nesledujete.",
+  "pollVote": "Hlasovat",
+  "pollChoose": "Zvolte odpověď.",
+  "pollVoted": "Váš hlas byl uložen.",
+  "pollEnds": "hlasování končí",
+  "pollEnded": "hlasování skončilo",
+  "addPoll": "Přidat anketu"
 }

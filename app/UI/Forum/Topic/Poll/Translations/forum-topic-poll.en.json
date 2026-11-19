@@ -1,0 +1,19 @@
+{
+  "title": "New poll",
+  "form": {
+    "protection": "The form has expired, please send it again.",
+    "question": {
+      "label": "Question",
+      "required": "Enter the question of the poll."
+    },
+    "answers": {
+      "label": "Answers (one per line, 2–20)",
+      "required": "Enter the answers of the poll."
+    },
+    "endsAt": {
+      "label": "End of voting (optional)"
+    },
+    "send": "Add the poll",
+    "success": "The poll was added."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "error": {
+    "exists": "Téma už anketu má.",
+    "question": "Zadejte otázku ankety (nejvýše 1024 znaků).",
+    "answers": "Anketa musí mít 2 až 20 odpovědí.",
+    "ended": "Hlasování v anketě skončilo.",
+    "voted": "V této anketě jste už hlasovali.",
+    "answer": "Zvolte jednu z odpovědí ankety."
+  }
+}

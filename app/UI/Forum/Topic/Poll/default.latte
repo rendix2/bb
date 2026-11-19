@@ -1,0 +1,9 @@
+{block title}{_forum-topic-poll.title}: {$topic->name}{/block}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $topic->category, forum: $topic->forum, topic: $topic}
+
+    <h1>{_forum-topic-poll.title}</h1>
+
+    {control addPollForm}
+{/block}

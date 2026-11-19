@@ -34,5 +34,11 @@
   "watch": "Watch the topic",
   "unwatch": "Stop watching",
   "watchDone": "You watch the topic, we will e-mail you about new replies.",
-  "unwatchDone": "You no longer watch the topic."
+  "unwatchDone": "You no longer watch the topic.",
+  "pollVote": "Vote",
+  "pollChoose": "Choose an answer.",
+  "pollVoted": "Your vote was saved.",
+  "pollEnds": "voting ends",
+  "pollEnded": "voting ended",
+  "addPoll": "Add a poll"
 }

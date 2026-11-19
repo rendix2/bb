@@ -1,0 +1,10 @@
+{
+  "error": {
+    "exists": "The topic already has a poll.",
+    "question": "Enter the question of the poll (at most 1024 characters).",
+    "answers": "A poll has 2 to 20 answers.",
+    "ended": "The voting in the poll has ended.",
+    "voted": "You have already voted in this poll.",
+    "answer": "Choose one of the answers of the poll."
+  }
+}
