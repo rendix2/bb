@@ -32,6 +32,10 @@ hlášení, ranky, avatary, moderace, admin). Historie od 2018 (dibi + MySQL), o
   Commity „remove old model, update entity“ = postupná migrace.
 - Repozitáře se registrují v `config/services.neon` přes `entityManagerDecorator::getRepository(...)`.
 
+## Cíle modernizace (2026-11-19, detail v Obsidianu „2026-11-19 BB – cíle a analýza modernizace“)
+- Pryč s dibi, MySQL, traity a statickými metodami. Codestyle contributte/qa (společný `ruleset.xml` z web-project), PHPStan level 10, sladit s web-project (tests/, Makefile, latte-lint, konvenční testy).
+- Dotazy: hybrid jako ve web-project. Jednoduché `find`/`findOneBy` přímo přes `$em->getRepository()`, repozitářová metoda jen pro QB s joiny/agregací, opakovaný dotaz nebo doménové pravidlo (s přesným `@return`). Žádné prázdné repozitáře ani wrappery `findByXId`/`findByX`.
+
 ## Pravidla (navíc ke globálnímu ~/.claude/CLAUDE.md)
 - Nový kód jen do nové struktury (`app/UI`, `app/Model`), DB přes Doctrine/QueryBuilder, ne dibi.
 - Tajemství: `config/env/*.neon` obsahují přístupy – nevypisovat.
