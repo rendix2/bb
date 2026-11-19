@@ -3,6 +3,7 @@
 namespace Tests\Support;
 
 use App\Database\EntityManagerDecorator;
+use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\RoleEntity;
 use App\Model\Entity\UserEntity;
 use Codeception\Actor;
@@ -118,6 +119,8 @@ class FunctionalTester extends Actor
         $user->username = $tag;
         $user->email = $tag . '@example.com';
         $user->password = $this->grabService(Passwords::class)->hash(self::PASSWORD);
+        // bb: a user always has a language (users.language_id NOT NULL); the fixtures create the languages
+        $user->language = $this->firstLanguage();
         $user->isActive = true;
         $user->addRoleEntity($role);
 
@@ -126,5 +129,16 @@ class FunctionalTester extends Actor
         $this->trackCreatedEntity(UserEntity::class, $user->id);
 
         return $user;
+    }
+
+    private function firstLanguage() : LanguageEntity
+    {
+        $language = $this->grabService(EntityManagerDecorator::class)->getRepository(LanguageEntity::class)->findOneBy([], ['id' => 'ASC']);
+
+        if ($language === null) {
+            throw new \LogicException('The fixtures have no language.');
+        }
+
+        return $language;
     }
 }

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Database\Migrations;
 
@@ -12,17 +10,14 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 use Ramsey\Uuid\Doctrine\UuidType;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
-final class Version20260717233051 extends AbstractMigration
+final class Version20230621145917 extends AbstractMigration
 {
-    public function getDescription(): string
+    public function getDescription() : string
     {
-        return '';
+        return 'create language table';
     }
 
-    public function up(Schema $schema): void
+    public function up(Schema $schema) : void
     {
         $table = $schema->createTable('public.language');
 
@@ -34,12 +29,12 @@ final class Version20260717233051 extends AbstractMigration
             ->setComment('UUID');
 
         $table->addColumn('name', Types::STRING)
-            ->setComment('Name')
-            ->setLength(512);
+            ->setLength(512)
+            ->setComment('Name');
 
         $table->addColumn('file_name', Types::STRING)
-            ->setComment('File name')
-            ->setLength(512);
+            ->setLength(512)
+            ->setComment('File name');
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
@@ -52,15 +47,15 @@ final class Version20260717233051 extends AbstractMigration
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
-        $table->addPrimaryKeyConstraint($primaryKey->create());
+        $table->addPrimaryKeyConstraint($primaryKey->create())
+            ->setComment('Languages')
 
-        $table
-            ->setComment('Languages');
+            ->addUniqueIndex(['uuid'], 'UK__Language__Uuid');
     }
 
-    public function down(Schema $schema): void
+    public function down(Schema $schema) : void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-
+        $schema->dropTable('public.language');
     }
+
 }

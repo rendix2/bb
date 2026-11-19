@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Database\Migrations;
 
@@ -13,17 +11,14 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 use Ramsey\Uuid\Doctrine\UuidType;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20260718094805 extends AbstractMigration
 {
-    public function getDescription(): string
+    public function getDescription() : string
     {
-        return '';
+        return 'create report table';
     }
 
-    public function up(Schema $schema): void
+    public function up(Schema $schema) : void
     {
         $table = $schema->createTable('public.report');
 
@@ -33,6 +28,22 @@ final class Version20260718094805 extends AbstractMigration
 
         $table->addColumn('uuid', UuidType::NAME)
             ->setComment('UUID');
+
+        $table->addColumn('ip_address', IpAddressType::NAME)
+            ->setComment('IP Address');
+
+        $table->addColumn('report_text', Types::TEXT)
+            ->setComment('Report text');
+
+        $table->addColumn('status', Types::INTEGER)
+            ->setComment('Status');
+
+        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+            ->setComment('Created at');
+
+        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+            ->setNotnull(false)
+            ->setComment('Updated at');
 
         $table->addColumn('category_id', Types::BIGINT)
             ->setComment('Category ID');
@@ -49,42 +60,30 @@ final class Version20260718094805 extends AbstractMigration
         $table->addColumn('user_id', Types::BIGINT)
             ->setComment('User ID');
 
-        $table->addColumn('ip_address', IpAddressType::NAME)
-            ->setComment('IP Address');
-
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
-            ->setComment('Created at');
-
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
-            ->setNotnull(false)
-            ->setComment('Updated at');
-
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
-        $table->addPrimaryKeyConstraint($primaryKey->create());
+        $table->addPrimaryKeyConstraint($primaryKey->create())
+            ->setComment('Post reports')
 
-        $table
-            ->setComment('Post Reports')
-
-            ->addIndex(['user_id'], 'K__Report__User_id')
             ->addIndex(['category_id'], 'K__Report__Category_id')
             ->addIndex(['forum_id'], 'K__Report__Forum_id')
-            ->addIndex(['topic_id'], 'K__Report__Topic_id')
             ->addIndex(['post_id'], 'K__Report__Post_id')
+            ->addIndex(['topic_id'], 'K__Report__Topic_id')
+            ->addIndex(['user_id'], 'K__Report__User_id')
+            ->addUniqueIndex(['uuid'], 'UK__Report__Uuid')
 
-            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__User_id')
             ->addForeignKeyConstraint('category', ['category_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Category_id')
             ->addForeignKeyConstraint('forum', ['forum_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Forum_id')
+            ->addForeignKeyConstraint('post', ['post_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Post_id')
             ->addForeignKeyConstraint('topic', ['topic_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Topic_id')
-            ->addForeignKeyConstraint('post', ['post_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Post_id');
-
+            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__User_id');
     }
 
-    public function down(Schema $schema): void
+    public function down(Schema $schema) : void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-
+        $schema->dropTable('public.report');
     }
+
 }

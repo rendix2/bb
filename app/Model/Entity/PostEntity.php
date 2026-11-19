@@ -21,64 +21,51 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: PostRepository::class)]
-#[Table(name: 'post')]
+#[Table(name: 'post', options: ['comment' => 'Posts'])]
 class PostEntity
 {
 
     #[Id()]
     #[GeneratedValue()]
-    #[Column(type: Types::BIGINT)]
-    public string $id;
+    #[Column(type: Types::BIGINT, options: ['comment' => 'ID'])]
+    public int $id;
 
-    #[Column(type: UuidType::NAME, unique: true)]
+    #[Column(type: UuidType::NAME, unique: true, options: ['comment' => 'UUID'])]
     public UuidInterface $uuid;
 
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'posts')]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'posts', cascade: ['persist'])]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'User ID'])]
     public UserEntity $user;
 
-    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'posts')]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'posts', cascade: ['persist'])]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Category ID'])]
     public CategoryEntity $category;
 
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'posts')]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'posts', cascade: ['persist'])]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Forum ID'])]
     public ForumEntity $forum;
 
-    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'posts')]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'posts', cascade: ['persist'])]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Topic ID'])]
     public TopicEntity $topic;
 
-    #[Column(type: Types::TEXT, nullable: true)]
+    #[Column(type: Types::TEXT, nullable: true, options: ['comment' => 'Title'])]
     public ?string $title;
 
-    #[Column(type: Types::TEXT, nullable: false)]
+    #[Column(type: Types::TEXT, nullable: false, options: ['comment' => 'Text'])]
     public string $text;
 
-    #[Column(type: IpAddressType::NAME, nullable: false)]
+    #[Column(type: IpAddressType::NAME, nullable: false, options: ['comment' => 'Add IP address'])]
     public string $addIpAddress;
 
-    #[Column(type: IpAddressType::NAME, nullable: true)]
+    #[Column(type: IpAddressType::NAME, nullable: true, options: ['comment' => 'Edit IP address'])]
     public ?string $editIpAddress;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
-
-    /**
-     * @var Collection<int, TopicEntity> $firstInTopics
-     */
-    #[OneToMany(targetEntity: TopicEntity::class, mappedBy: 'firstPost')]
-    public Collection $firstInTopics;
-
-
-    /**
-     * @var Collection<int, TopicEntity> $lastInTopics
-     */
-    #[OneToMany(targetEntity: TopicEntity::class, mappedBy: 'lastPost')]
-    public Collection $lastInTopics;
 
     /**
      * @var Collection<int, PostHistoryEntity> $historyPosts
@@ -99,12 +86,8 @@ class PostEntity
         $this->historyPosts = new ArrayCollection();
         $this->files = new ArrayCollection();
 
-        $this->firstInTopics = new ArrayCollection();
-        $this->lastInTopics = new ArrayCollection();
-
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;
     }
-
 
 }

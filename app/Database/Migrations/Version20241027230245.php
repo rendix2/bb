@@ -9,14 +9,11 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20241027230245 extends AbstractMigration
 {
     public function getDescription() : string
     {
-        return 'create roles table';
+        return 'create role table';
     }
 
     public function up(Schema $schema) : void
@@ -28,8 +25,8 @@ final class Version20241027230245 extends AbstractMigration
             ->setComment('ID');
 
         $table->addColumn('name', Types::STRING)
-            ->setComment('Name')
-            ->setLength(512);
+            ->setLength(512)
+            ->setComment('Name');
 
         $table->addColumn('description', Types::TEXT)
             ->setComment('Name');
@@ -45,9 +42,7 @@ final class Version20241027230245 extends AbstractMigration
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
-        $table->addPrimaryKeyConstraint($primaryKey->create());
-
-        $table
+        $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('Roles');
     }
 
@@ -55,4 +50,5 @@ final class Version20241027230245 extends AbstractMigration
     {
         $schema->dropTable('public.role');
     }
+
 }

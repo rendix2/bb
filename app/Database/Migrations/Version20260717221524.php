@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Database\Migrations;
 
@@ -12,17 +10,14 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 use Ramsey\Uuid\Doctrine\UuidType;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20260717221524 extends AbstractMigration
 {
-    public function getDescription(): string
+    public function getDescription() : string
     {
-        return '';
+        return 'create forum table';
     }
 
-    public function up(Schema $schema): void
+    public function up(Schema $schema) : void
     {
         $table = $schema->createTable('public.forum');
 
@@ -33,16 +28,8 @@ final class Version20260717221524 extends AbstractMigration
         $table->addColumn('uuid', UuidType::NAME)
             ->setComment('UUID');
 
-        $table->addColumn('parent_id', Types::BIGINT)
-            ->setNotnull(false)
-            ->setComment('Parent ID');
-
-        $table->addColumn('category_id', Types::BIGINT)
-            ->setComment('Category ID');
-
-        $table->addColumn('name', Types::STRING)
-            ->setComment('Name')
-            ->setLength(512);
+        $table->addColumn('name', Types::TEXT)
+            ->setComment('Name');
 
         $table->addColumn('description', Types::TEXT)
             ->setNotnull(false)
@@ -51,45 +38,12 @@ final class Version20260717221524 extends AbstractMigration
         $table->addColumn('active', Types::BOOLEAN)
             ->setComment('Active');
 
-        $table->addColumn('sort_order', Types::INTEGER)
-            ->setComment('Order');
-
-        /*
-        $table->addColumn('thank', Types::INTEGER)
-            ->setComment('Thank');
-
-
-        $table->addColumn('topic_count', Types::INTEGER)
-            ->setComment('Topic count');
-
-        $table->addColumn('post_count', Types::INTEGER)
-            ->setComment('Post count');
-
-        $table->addColumn('post_add', Types::BOOLEAN)
-            ->setComment('Can add post');
-
-        $table->addColumn('post_delete', Types::BOOLEAN)
-            ->setComment('Can delete post');
-
-        $table->addColumn('post_update', Types::BOOLEAN)
-            ->setComment('Can update post');
-
-        $table->addColumn('topic_add', Types::BOOLEAN)
-            ->setComment('Can add topic');
-
-        $table->addColumn('topic_delete', Types::BOOLEAN)
-            ->setComment('Can delete topic');
-
-        $table->addColumn('topic_update', Types::BOOLEAN)
-            ->setComment('Can update topic');
-
-        $table->addColumn('fast_reply', Types::BOOLEAN)
-            ->setComment('Can add fast reply (post)');
-                */
-
         $table->addColumn('rules', Types::TEXT)
             ->setNotnull(false)
             ->setComment('Rules');
+
+        $table->addColumn('sort_order', Types::INTEGER)
+            ->setComment('Order');
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
@@ -98,24 +52,32 @@ final class Version20260717221524 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Updated at');
 
+        $table->addColumn('category_id', Types::BIGINT)
+            ->setNotnull(false)
+            ->setComment('Category ID');
+
+        $table->addColumn('parent_id', Types::BIGINT)
+            ->setNotnull(false)
+            ->setComment('Parent ID');
+
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
-        $table->addPrimaryKeyConstraint($primaryKey->create());
-
-        $table
+        $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('Forums')
-            ->addIndex(['parent_id'], 'K__Forum__Parent_id')
+
             ->addIndex(['category_id'], 'K__Forum__Category_id')
+            ->addIndex(['parent_id'], 'K__Forum__Parent_id')
+            ->addUniqueIndex(['uuid'], 'UK__Forum__Uuid')
 
-            ->addForeignKeyConstraint('forum', ['parent_id'], ['id'], name: 'FK__Forum__Parent_id')
-            ->addForeignKeyConstraint('category', ['category_id'], ['id'], name: 'FK__Category__id');
+            ->addForeignKeyConstraint('category', ['category_id'], ['id'], name: 'FK__Forum__Category_id')
+            ->addForeignKeyConstraint('forum', ['parent_id'], ['id'], name: 'FK__Forum__Parent_id');
     }
 
-    public function down(Schema $schema): void
+    public function down(Schema $schema) : void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-
+        $schema->dropTable('public.forum');
     }
+
 }

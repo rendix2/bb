@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Database\Migrations;
 
@@ -11,29 +9,20 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20260720123217 extends AbstractMigration
 {
-    public function getDescription(): string
+    public function getDescription() : string
     {
-        return '';
+        return 'create private_message_participant table';
     }
 
-    public function up(Schema $schema): void
+    public function up(Schema $schema) : void
     {
         $table = $schema->createTable('public.private_message_participant');
 
         $table->addColumn('id', Types::BIGINT)
             ->setAutoincrement(true)
             ->setComment('ID');
-
-        $table->addColumn('thread_id', Types::BIGINT)
-            ->setComment('Private message Thread ID');
-
-        $table->addColumn('user_id', Types::BIGINT)
-            ->setComment('User ID');
 
         $table->addColumn('is_read', Types::BOOLEAN)
             ->setComment('Is read');
@@ -51,26 +40,30 @@ final class Version20260720123217 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Updated at');
 
+        $table->addColumn('thread_id', Types::BIGINT)
+            ->setComment('Private message Thread ID');
+
+        $table->addColumn('user_id', Types::BIGINT)
+            ->setComment('User ID');
+
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
-        $table->addPrimaryKeyConstraint($primaryKey->create());
-
-        $table
+        $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('Private message participants')
 
-            ->addIndex(['user_id'], 'K__Private_message_participant__User_id')
             ->addIndex(['thread_id'], 'K__Private_message_participant__Thread_id')
+            ->addIndex(['user_id'], 'K__Private_message_participant__User_id')
+            ->addUniqueIndex(['user_id', 'thread_id'], 'UK__Private_message_participant__User_id_thread_id')
 
-            ->addUniqueIndex(['user_id', 'thread_id'], 'U__Private_message_participant__User_id__Thread_id')
-
-            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Private_message_participant__User_id')
-            ->addForeignKeyConstraint('private_message_thread', ['thread_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Private_message_participant__Thread_id',);
+            ->addForeignKeyConstraint('private_message_thread', ['thread_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Private_message_participant__Thread_id')
+            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Private_message_participant__User_id');
     }
 
-    public function down(Schema $schema): void
+    public function down(Schema $schema) : void
     {
-        $schema->dropTable('private_message_participant');
+        $schema->dropTable('public.private_message_participant');
     }
+
 }

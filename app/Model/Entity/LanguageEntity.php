@@ -16,28 +16,28 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: LanguageRepository::class)]
-#[Table(name: 'language')]
+#[Table(name: 'language', options: ['comment' => 'Languages'])]
 class LanguageEntity
 {
 
     #[Id()]
     #[GeneratedValue()]
-    #[Column(type: Types::BIGINT)]
-    public string $id;
+    #[Column(type: Types::BIGINT, options: ['comment' => 'ID'])]
+    public int $id;
 
-    #[Column(type: UuidType::NAME, unique: true)]
+    #[Column(type: UuidType::NAME, unique: true, options: ['comment' => 'UUID'])]
     public UuidInterface $uuid;
 
-    #[Column(type: Types::STRING, length: 512)]
+    #[Column(type: Types::STRING, length: 512, options: ['comment' => 'Name'])]
     public string $name;
 
-    #[Column(type: Types::STRING, length: 512)]
+    #[Column(type: Types::STRING, length: 512, options: ['comment' => 'File name'])]
     public string $fileName;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
 

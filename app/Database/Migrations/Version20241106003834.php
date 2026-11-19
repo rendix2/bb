@@ -9,30 +9,24 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20241106003834 extends AbstractMigration
 {
     public function getDescription() : string
     {
-        return 'create user forgotten password requests';
+        return 'create user_password_request table';
     }
 
     public function up(Schema $schema) : void
     {
         $table = $schema->createTable('public.user_password_request');
 
-        $table->addColumn('id', Types::INTEGER)
+        $table->addColumn('id', Types::BIGINT)
             ->setAutoincrement(true)
             ->setComment('ID');
 
-        $table->addColumn('user_id', Types::BIGINT)
-            ->setComment('User ID');
-
         $table->addColumn('forget_key', Types::STRING)
-            ->setComment('Forget password key')
-            ->setLength(1024);
+            ->setLength(1024)
+            ->setComment('Forget password key');
 
         $table->addColumn('valid_until', Types::DATETIME_IMMUTABLE)
             ->setComment('Key is valid until');
@@ -44,15 +38,19 @@ final class Version20241106003834 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Updated at');
 
+        $table->addColumn('user_id', Types::BIGINT)
+            ->setComment('User ID');
+
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
         $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('User forgotten passwords requests')
-            ->addUniqueIndex(['user_id'], 'UK__User_password_request__User_id')
-            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK_User_password_request__User_id');
 
+            ->addUniqueIndex(['user_id'], 'UK__User_password_request__User_id')
+
+            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__User_password_request__User_id');
     }
 
     public function down(Schema $schema) : void
@@ -61,5 +59,3 @@ final class Version20241106003834 extends AbstractMigration
     }
 
 }
-
-

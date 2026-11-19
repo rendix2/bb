@@ -10,17 +10,14 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20250624214039 extends AbstractMigration
 {
-    public function getDescription(): string
+    public function getDescription() : string
     {
-        return '';
+        return 'create user_login_attempt table';
     }
 
-    public function up(Schema $schema): void
+    public function up(Schema $schema) : void
     {
         $table = $schema->createTable('public.user_login_attempt');
 
@@ -29,16 +26,20 @@ final class Version20250624214039 extends AbstractMigration
             ->setComment('ID');
 
         $table->addColumn('username', Types::STRING)
-            ->setComment('Username')
-            ->setLength(512);
+            ->setLength(512)
+            ->setComment('Username');
 
         $table->addColumn('ip_address', IpAddressType::NAME)
             ->setComment('IP Address');
 
         $table->addColumn('user_agent', Types::STRING)
+            ->setLength(512)
+            ->setNotnull(false)
             ->setComment('User agent');
 
         $table->addColumn('country_code', Types::STRING)
+            ->setLength(2)
+            ->setNotnull(false)
             ->setComment('Country code');
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
@@ -52,7 +53,7 @@ final class Version20250624214039 extends AbstractMigration
             ->setComment('User login attempts');
     }
 
-    public function down(Schema $schema): void
+    public function down(Schema $schema) : void
     {
         $schema->dropTable('public.user_login_attempt');
     }

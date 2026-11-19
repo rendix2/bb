@@ -9,14 +9,11 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20241104124958 extends AbstractMigration
 {
     public function getDescription() : string
     {
-        return 'create user_email history table';
+        return 'create user_email table';
     }
 
     public function up(Schema $schema) : void
@@ -27,12 +24,9 @@ final class Version20241104124958 extends AbstractMigration
             ->setAutoincrement(true)
             ->setComment('ID');
 
-        $table->addColumn('user_id', Types::BIGINT)
-            ->setComment('User ID');
-
         $table->addColumn('email', Types::STRING)
-            ->setComment('Email')
-            ->setLength(512);
+            ->setLength(512)
+            ->setComment('Email');
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
@@ -41,14 +35,18 @@ final class Version20241104124958 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Updated at');
 
+        $table->addColumn('user_id', Types::BIGINT)
+            ->setComment('User ID');
+
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
         $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('User email history')
+
             ->addIndex(['user_id'], 'K__User_email__User_id')
-            ->addIndex(['email'], 'IDX_User_email_Email')
+
             ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__User_email__User_id');
     }
 

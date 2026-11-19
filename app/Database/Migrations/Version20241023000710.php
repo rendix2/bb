@@ -9,11 +9,12 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20241023000710 extends AbstractMigration
 {
+    public function getDescription() : string
+    {
+        return 'create user_password table';
+    }
 
     public function up(Schema $schema) : void
     {
@@ -23,12 +24,9 @@ final class Version20241023000710 extends AbstractMigration
             ->setAutoincrement(true)
             ->setComment('ID');
 
-        $table->addColumn('user_id', Types::BIGINT)
-            ->setComment('User ID');
-
         $table->addColumn('password', Types::STRING)
-            ->setComment('Password')
-            ->setLength(1024);
+            ->setLength(1024)
+            ->setComment('Password');
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
@@ -37,13 +35,18 @@ final class Version20241023000710 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Updated at');
 
+        $table->addColumn('user_id', Types::BIGINT)
+            ->setComment('User ID');
+
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
         $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('User password history')
+
             ->addIndex(['user_id'], 'K__User_password__User_id')
+
             ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__User_password__User_id');
     }
 
@@ -53,4 +56,3 @@ final class Version20241023000710 extends AbstractMigration
     }
 
 }
-

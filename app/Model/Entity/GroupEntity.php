@@ -18,28 +18,29 @@ use Ramsey\Uuid\UuidInterface;
 
 
 #[Entity(repositoryClass: GroupRepository::class)]
-#[Table(name: 'group')]
+// plural like users: `group` is an SQL keyword (INSERT INTO group ... was a syntax error)
+#[Table(name: 'groups', options: ['comment' => 'Groups'])]
 class GroupEntity
 {
     #[Id()]
     #[GeneratedValue()]
-    #[Column(type: Types::BIGINT)]
-    public string $id;
+    #[Column(type: Types::BIGINT, options: ['comment' => 'ID'])]
+    public int $id;
 
-    #[Column(type: UuidType::NAME, unique: true)]
+    #[Column(type: UuidType::NAME, unique: true, options: ['comment' => 'UUID'])]
     public UuidInterface $uuid;
 
-    #[Column(type: Types::STRING, length: 512, nullable: false)]
+    #[Column(type: Types::STRING, length: 512, nullable: false, options: ['comment' => 'Name'])]
     public string $name;
 
-    #[ManyToOne(targetEntity: UserEntity::class)]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: UserEntity::class, cascade: ['persist'])]
+    #[JoinColumn(nullable: false, options: ['comment' => 'Moderator ID'])]
     public UserEntity $moderator;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     public function __construct()

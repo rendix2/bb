@@ -10,9 +10,6 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20241103230453 extends AbstractMigration
 {
     public function getDescription() : string
@@ -28,20 +25,21 @@ final class Version20241103230453 extends AbstractMigration
             ->setAutoincrement(true)
             ->setComment('ID');
 
-        $table->addColumn('user_id', Types::BIGINT)
-            ->setComment('User ID');
-
         $table->addColumn('token', Types::STRING)
-            ->setComment('Token; saved in cookie')
-            ->setLength(1024);
+            ->setLength(1024)
+            ->setComment('Token; saved in cookie');
 
         $table->addColumn('ip_address', IpAddressType::NAME)
             ->setComment('IP address');
 
         $table->addColumn('user_agent', Types::STRING)
+            ->setLength(512)
+            ->setNotnull(false)
             ->setComment('User agent');
 
         $table->addColumn('country_code', Types::STRING)
+            ->setLength(2)
+            ->setNotnull(false)
             ->setComment('Country code');
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
@@ -50,6 +48,9 @@ final class Version20241103230453 extends AbstractMigration
         $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
+
+        $table->addColumn('user_id', Types::BIGINT)
+            ->setComment('User ID');
 
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);

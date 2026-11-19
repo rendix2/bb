@@ -9,9 +9,6 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20241105005240 extends AbstractMigration
 {
     public function getDescription() : string
@@ -28,7 +25,7 @@ final class Version20241105005240 extends AbstractMigration
             ->setComment('ID');
 
         $table->addColumn('email_to', Types::STRING)
-            ->setLength(512)
+            ->setLength(255)
             ->setComment('Email to');
 
         $table->addColumn('subject', Types::STRING)
@@ -50,8 +47,7 @@ final class Version20241105005240 extends AbstractMigration
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
         $table->addPrimaryKeyConstraint($primaryKey->create())
-            ->setComment('Mail history')
-            ->addIndex(['email_to'], 'K__Mail__Email_to');
+            ->setComment('Mail history');
     }
 
     public function down(Schema $schema) : void

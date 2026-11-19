@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Database\Migrations;
 
@@ -13,17 +11,14 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 use Ramsey\Uuid\Doctrine\UuidType;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20260718095044 extends AbstractMigration
 {
-    public function getDescription(): string
+    public function getDescription() : string
     {
-        return '';
+        return 'create session table';
     }
 
-    public function up(Schema $schema): void
+    public function up(Schema $schema) : void
     {
         $table = $schema->createTable('public.session');
 
@@ -34,18 +29,12 @@ final class Version20260718095044 extends AbstractMigration
         $table->addColumn('uuid', UuidType::NAME)
             ->setComment('UUID');
 
-        $table->addColumn('user_id', Types::BIGINT)
-            ->setComment('User ID');
-
         $table->addColumn('key', Types::STRING)
             ->setLength(512)
             ->setComment('Key');
 
         $table->addColumn('ip_address', IpAddressType::NAME)
             ->setComment('IP Address');
-
-        $table->addColumn('last_activity', Types::DATETIME_IMMUTABLE)
-            ->setComment('Last activity');
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
@@ -54,22 +43,28 @@ final class Version20260718095044 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Updated at');
 
+        $table->addColumn('last_activity', Types::DATETIME_IMMUTABLE)
+            ->setComment('Last activity');
+
+        $table->addColumn('user_id', Types::BIGINT)
+            ->setComment('User ID');
+
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
-        $table->addPrimaryKeyConstraint($primaryKey->create());
-
-        $table
+        $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('Sessions')
+
             ->addIndex(['user_id'], 'K__Session__User_id')
+            ->addUniqueIndex(['uuid'], 'UK__Session__Uuid')
 
             ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Session__User_id');
     }
 
-    public function down(Schema $schema): void
+    public function down(Schema $schema) : void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-
+        $schema->dropTable('public.session');
     }
+
 }

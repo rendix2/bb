@@ -10,15 +10,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 use Ramsey\Uuid\Doctrine\UuidType;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20230621145918 extends AbstractMigration
 {
-
     public function getDescription() : string
     {
-        return 'create user table';
+        return 'create users table';
     }
 
     public function up(Schema $schema) : void
@@ -33,34 +29,32 @@ final class Version20230621145918 extends AbstractMigration
             ->setComment('UUID');
 
         $table->addColumn('name', Types::STRING)
-            ->setComment('Name')
-            ->setLength(512);
+            ->setLength(512)
+            ->setComment('Name');
 
         $table->addColumn('surname', Types::STRING)
-            ->setComment('Surname')
-            ->setLength(512);
+            ->setLength(512)
+            ->setComment('Surname');
 
         $table->addColumn('username', Types::STRING)
-            ->setComment('Username')
-            ->setLength(512);
+            ->setLength(512)
+            ->setComment('Username');
 
         $table->addColumn('email', Types::STRING)
-            ->setComment('Email')
-            ->setLength(512);
+            ->setLength(512)
+            ->setComment('Email');
 
         $table->addColumn('password', Types::STRING)
-            ->setComment('Password')
-            ->setLength(1024);
-
-        $table->addColumn('language_id', Types::BIGINT)
-            ->setComment('Language ID');
-
-        $table->addColumn('avatar', Types::STRING)
-            ->setComment('Avatar')
-            ->setNotnull(false);
+            ->setLength(1024)
+            ->setComment('Password');
 
         $table->addColumn('is_active', Types::BOOLEAN)
             ->setComment('Is active?');
+
+        $table->addColumn('avatar', Types::STRING)
+            ->setLength(1024)
+            ->setNotnull(false)
+            ->setComment('Avatar');
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
@@ -69,19 +63,22 @@ final class Version20230621145918 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Updated at');
 
+        $table->addColumn('language_id', Types::BIGINT)
+            ->setComment('Language ID');
 
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
-        $table->addPrimaryKeyConstraint($primaryKey->create());
-
-        $table
+        $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('Users')
 
-            ->addUniqueIndex(['email'], 'UK__User__Email')
-            ->addUniqueIndex(['uuid'], 'UK__User__UUID')
-            ->addUniqueIndex(['username'], 'UK__User__Username');
+            ->addIndex(['language_id'], 'K__Users__Language_id')
+            ->addUniqueIndex(['email'], 'UK__Users__Email')
+            ->addUniqueIndex(['username'], 'UK__Users__Username')
+            ->addUniqueIndex(['uuid'], 'UK__Users__Uuid')
+
+            ->addForeignKeyConstraint('language', ['language_id'], ['id'], name: 'FK__Users__Language_id');
     }
 
     public function down(Schema $schema) : void

@@ -36,11 +36,10 @@ class ForeignKeyOnDeleteCest
             ['table' => 'user_activation', 'column' => 'user_id', 'referencedTable' => 'users', 'onDelete' => 'CASCADE'],
             ['table' => 'user_auto_login', 'column' => 'user_id', 'referencedTable' => 'users', 'onDelete' => 'CASCADE'],
             ['table' => 'user_email', 'column' => 'user_id', 'referencedTable' => 'users', 'onDelete' => 'CASCADE'],
-            ['table' => 'user_email_change_request', 'column' => 'user_id', 'referencedTable' => 'users', 'onDelete' => 'CASCADE'],
             ['table' => 'user_password', 'column' => 'user_id', 'referencedTable' => 'users', 'onDelete' => 'CASCADE'],
             ['table' => 'user_password_request', 'column' => 'user_id', 'referencedTable' => 'users', 'onDelete' => 'CASCADE'],
         ];
-        $this->guardedTables = ['user_activation', 'user_auto_login', 'user_email', 'user_email_change_request', 'user_password', 'user_password_request'];
+        $this->guardedTables = ['user_activation', 'user_auto_login', 'user_email', 'user_password', 'user_password_request'];
 
         $this->em = $I->grabService(EntityManagerDecorator::class);
         $this->allMetadata = $this->em->getMetadataFactory()->getAllMetadata();

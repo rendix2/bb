@@ -11,32 +11,32 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 
 #[Entity()]
-#[Table(name: 'mail')]
+#[Table(name: 'mail', options: ['comment' => 'Mail history'])]
 class MailEntity
 {
 
     #[Id()]
     #[GeneratedValue()]
-    #[Column(type: Types::BIGINT)]
-    public string $id;
+    #[Column(type: Types::BIGINT, options: ['comment' => 'ID'])]
+    public int $id;
 
-    #[Column(type: Types::STRING, nullable: false)]
+    #[Column(type: Types::STRING, nullable: false, options: ['comment' => 'Email to'])]
     public string $emailTo;
 
     //#[ManyToOne(targetEntity: UserEmailEntity::class)]
     //#[JoinColumn('emailTo', unique: true, nullable: false)]
     //public UserEmailEntity $userEmail;
 
-    #[Column(type: Types::STRING, length: 1024, nullable: false)]
+    #[Column(type: Types::STRING, length: 1024, nullable: false, options: ['comment' => 'Subject'])]
     public string $subject;
 
-    #[Column(type: Types::TEXT, nullable: false)]
+    #[Column(type: Types::TEXT, nullable: false, options: ['comment' => 'Body'])]
     public string $body;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     public function __construct()

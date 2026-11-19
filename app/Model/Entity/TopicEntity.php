@@ -20,49 +20,37 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: TopicRepository::class)]
-#[Table(name: 'topic')]
+#[Table(name: 'topic', options: ['comment' => 'Topics'])]
 class TopicEntity
 {
 
     #[Id()]
     #[GeneratedValue()]
-    #[Column(type: Types::BIGINT)]
-    public string $id;
+    #[Column(type: Types::BIGINT, options: ['comment' => 'ID'])]
+    public int $id;
 
-    #[Column(type: UuidType::NAME, unique: true)]
+    #[Column(type: UuidType::NAME, unique: true, options: ['comment' => 'UUID'])]
     public UuidInterface $uuid;
 
-    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'topics')]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'topics', cascade: ['persist'])]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Category ID'])]
     public CategoryEntity $category;
 
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'topics')]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'topics', cascade: ['persist'])]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Forum ID'])]
     public ForumEntity $forum;
 
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'topics')]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'topics', cascade: ['persist'])]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'User ID'])]
     public UserEntity $user;
 
-    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'firstInTopics')]
-    #[JoinColumn(nullable: true)]
-    public ?PostEntity $firstPost;
-
-    #[ManyToOne(targetEntity: PostEntity::class, inversedBy: 'lastInTopics')]
-    #[JoinColumn(nullable: true)]
-    public ?PostEntity $lastPost;
-
-    #[ManyToOne(targetEntity: PollEntity::class, inversedBy: 'topicsWithPoll')]
-    #[JoinColumn(nullable: true)]
-    public ?PollEntity $poll;
-
-    #[Column(type: Types::STRING, length: 1024, nullable: false)]
+    #[Column(type: Types::STRING, length: 1024, nullable: false, options: ['comment' => 'Name'])]
     public string $name;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     /**
@@ -82,8 +70,6 @@ class TopicEntity
      */
     #[OneToMany(targetEntity: PollEntity::class, mappedBy: 'topic', cascade: ['persist', 'remove'])]
     public Collection $polls;
-
-
 
     /**
      * @var Collection<int, TopicWatchEntity> $watches
@@ -118,6 +104,5 @@ class TopicEntity
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;
     }
-
 
 }

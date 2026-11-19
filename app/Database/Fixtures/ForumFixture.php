@@ -45,7 +45,6 @@ class ForumFixture implements FixtureInterface, OrderedFixtureInterface
                 $forum->sortOrder = $f;
                 //$forum->topicCount = 0;
 
-
                 $manager->persist($forum);
 
                 for ($t = 1; $t <= 10; $t++) {
@@ -66,9 +65,6 @@ class ForumFixture implements FixtureInterface, OrderedFixtureInterface
 
                     $manager->persist($firstPost);
 
-                    $topic->firstPost = $firstPost;
-                    $topic->lastPost = $firstPost;
-
                     $manager->persist($topic);
 
                     $replyCount = rand(5, 25);
@@ -83,8 +79,6 @@ class ForumFixture implements FixtureInterface, OrderedFixtureInterface
                         $reply->addIpAddress = $faker->ipv4;
 
                         $manager->persist($reply);
-
-                        $topic->lastPost = $reply;
                     }
                 }
             }

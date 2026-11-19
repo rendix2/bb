@@ -9,9 +9,6 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20241102092516 extends AbstractMigration
 {
     public function getDescription() : string
@@ -27,12 +24,9 @@ final class Version20241102092516 extends AbstractMigration
             ->setAutoincrement(true)
             ->setComment('ID');
 
-        $table->addColumn('user_id', Types::BIGINT)
-            ->setComment('User ID');
-
         $table->addColumn('activation_key', Types::STRING)
-            ->setComment('Activation key')
-            ->setLength(1024);
+            ->setLength(1024)
+            ->setComment('Activation key');
 
         $table->addColumn('valid_until', Types::DATETIME_IMMUTABLE)
             ->setComment('Key is valid until');
@@ -44,6 +38,9 @@ final class Version20241102092516 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Updated at');
 
+        $table->addColumn('user_id', Types::BIGINT)
+            ->setComment('User ID');
+
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
@@ -51,9 +48,9 @@ final class Version20241102092516 extends AbstractMigration
         $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('User activation keys')
 
-            ->addUniqueIndex(['user_id'], 'UK__user_activation__user_id')
+            ->addUniqueIndex(['user_id'], 'UK__User_activation__User_id')
 
-            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__user_activation__user_id');
+            ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__User_activation__User_id');
     }
 
     public function down(Schema $schema) : void
@@ -62,4 +59,3 @@ final class Version20241102092516 extends AbstractMigration
     }
 
 }
-

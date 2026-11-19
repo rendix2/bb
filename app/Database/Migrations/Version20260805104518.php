@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Database\Migrations;
 
@@ -11,19 +9,15 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 use Ramsey\Uuid\Doctrine\UuidType;
-use function RectorPrefix202607\React\Promise\race;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20260805104518 extends AbstractMigration
 {
-    public function getDescription(): string
+    public function getDescription() : string
     {
-        return '';
+        return 'create rank table';
     }
 
-    public function up(Schema $schema): void
+    public function up(Schema $schema) : void
     {
         $table = $schema->createTable('public.rank');
 
@@ -51,15 +45,16 @@ final class Version20260805104518 extends AbstractMigration
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
-        $table->addPrimaryKeyConstraint($primaryKey->create());
+        $table->addPrimaryKeyConstraint($primaryKey->create())
+            ->setComment('Ranks')
 
-        $table
-            ->setComment('Ranks');
+            ->addUniqueIndex(['file_name'], 'UK__Rank__File_name')
+            ->addUniqueIndex(['uuid'], 'UK__Rank__Uuid');
     }
 
-    public function down(Schema $schema): void
+    public function down(Schema $schema) : void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-
+        $schema->dropTable('public.rank');
     }
+
 }

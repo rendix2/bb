@@ -2,6 +2,8 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Repository\UserModeratorRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -14,30 +16,41 @@ use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-#[Entity()]
-#[Table(name: 'moderator_user')]
+/**
+ * A user who moderates a forum.
+ */
+#[Entity(repositoryClass: UserModeratorRepository::class)]
+#[Table(name: 'moderator_user', options: ['comment' => 'Users moderating forums'])]
 class UserModeratorEntity
 {
 
     #[Id()]
     #[GeneratedValue()]
-    #[Column(type: Types::BIGINT)]
-    public string $id;
+    #[Column(type: Types::BIGINT, options: ['comment' => 'ID'])]
+    public int $id;
 
-    #[Column(type: UuidType::NAME, unique: true)]
+    #[Column(type: UuidType::NAME, unique: true, options: ['comment' => 'UUID'])]
     public UuidInterface $uuid;
 
-
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'moderatorUsers')]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'moderatorUsers', cascade: ['persist'])]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'User ID'])]
     public UserEntity $user;
 
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'moderatorUsers')]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'moderatorUsers', cascade: ['persist'])]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Forum ID'])]
     public ForumEntity $forum;
 
-    public function __construct() {
+    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
+    public DateTimeImmutable $createdAt;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
+    public ?DateTimeImmutable $updatedAt;
+
+    public function __construct()
+    {
         $this->uuid = Uuid::uuid4();
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = null;
     }
 
 }

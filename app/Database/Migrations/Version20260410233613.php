@@ -10,17 +10,14 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20260410233613 extends AbstractMigration
 {
-    public function getDescription(): string
+    public function getDescription() : string
     {
-        return '';
+        return 'create geo_ip_cache table';
     }
 
-    public function up(Schema $schema): void
+    public function up(Schema $schema) : void
     {
         $table = $schema->createTable('public.geo_ip_cache');
 
@@ -51,11 +48,12 @@ final class Version20260410233613 extends AbstractMigration
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
         $table->addPrimaryKeyConstraint($primaryKey->create())
-            ->setComment('Geo IP Cache');
+            ->setComment('Geo IP cache');
     }
 
-    public function down(Schema $schema): void
+    public function down(Schema $schema) : void
     {
         $schema->dropTable('public.geo_ip_cache');
     }
+
 }

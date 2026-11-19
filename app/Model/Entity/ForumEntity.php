@@ -20,48 +20,48 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: ForumRepository::class)]
-#[Table(name: 'forum')]
+#[Table(name: 'forum', options: ['comment' => 'Forums'])]
 class ForumEntity
 {
 
     #[Id()]
     #[GeneratedValue()]
-    #[Column(type: Types::BIGINT)]
-    public string $id;
+    #[Column(type: Types::BIGINT, options: ['comment' => 'ID'])]
+    public int $id;
 
-    #[Column(type: UuidType::NAME, unique: true)]
+    #[Column(type: UuidType::NAME, unique: true, options: ['comment' => 'UUID'])]
     public UuidInterface $uuid;
 
-    #[Column(type: Types::TEXT)]
+    #[Column(type: Types::TEXT, options: ['comment' => 'Name'])]
     public string $name;
 
-    #[Column(type: Types::TEXT)]
+    #[Column(type: Types::TEXT, nullable: true, options: ['comment' => 'Description'])]
     public ?string $description;
 
-    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'forums')]
-    #[JoinColumn(nullable: true)]
+    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'forums', cascade: ['persist'])]
+    #[JoinColumn(nullable: true, options: ['comment' => 'Category ID'])]
     public ?CategoryEntity $category;
 
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'children')]
-    #[JoinColumn(nullable: true)]
+    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'children', cascade: ['persist'])]
+    #[JoinColumn(nullable: true, options: ['comment' => 'Parent ID'])]
     public ?ForumEntity $parent;
 
-    #[Column(type: Types::BOOLEAN)]
+    #[Column(type: Types::BOOLEAN, options: ['comment' => 'Active'])]
     public bool $active;
 
     //#[Column(type: Types::INTEGER)]
     //public int $topicCount;
 
-    #[Column(type: Types::TEXT, nullable:  true)]
+    #[Column(type: Types::TEXT, nullable:  true, options: ['comment' => 'Rules'])]
     public ?string $rules;
 
-    #[Column(type: Types::INTEGER, nullable:  false)]
+    #[Column(type: Types::INTEGER, nullable:  false, options: ['comment' => 'Order'])]
     public int $sortOrder;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     /**

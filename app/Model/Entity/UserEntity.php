@@ -26,46 +26,46 @@ use Ramsey\Uuid\UuidInterface;
  * @package App\Model\Entity
  */
 #[Entity(repositoryClass: UserRepository::class)]
-#[Table(name: 'users')]
+#[Table(name: 'users', options: ['comment' => 'Users'])]
 class UserEntity
 {
     #[Id()]
     #[GeneratedValue()]
-    #[Column(type: Types::BIGINT, unique: true)]
-    public string $id;
+    #[Column(type: Types::BIGINT, unique: true, options: ['comment' => 'ID'])]
+    public int $id;
 
-    #[Column(type: UuidType::NAME, unique: true)]
+    #[Column(type: UuidType::NAME, unique: true, options: ['comment' => 'UUID'])]
     public UuidInterface $uuid;
 
-    #[Column(type: Types::STRING, length: 512)]
+    #[Column(type: Types::STRING, length: 512, options: ['comment' => 'Name'])]
     public string $name;
 
-    #[Column(type: Types::STRING, length: 512)]
+    #[Column(type: Types::STRING, length: 512, options: ['comment' => 'Surname'])]
     public string $surname;
 
-    #[Column(type: Types::STRING, length: 512, unique: true)]
+    #[Column(type: Types::STRING, length: 512, unique: true, options: ['comment' => 'Username'])]
     public string $username;
 
-    #[Column(type: Types::STRING, length: 512, unique: true)]
+    #[Column(type: Types::STRING, length: 512, unique: true, options: ['comment' => 'Email'])]
     public string $email;
 
-    #[Column(type: Types::STRING, length: 1024)]
+    #[Column(type: Types::STRING, length: 1024, options: ['comment' => 'Password'])]
     public string $password;
 
-    #[Column(type: Types::BOOLEAN)]
+    #[Column(type: Types::BOOLEAN, options: ['comment' => 'Is active?'])]
     public bool $isActive;
 
-    #[Column(type: Types::STRING, length: 1024, nullable: true)]
+    #[Column(type: Types::STRING, length: 1024, nullable: true, options: ['comment' => 'Avatar'])]
     public ?string $avatar;
 
-    #[ManyToOne(targetEntity: LanguageEntity::class)]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: LanguageEntity::class, cascade: ['persist'])]
+    #[JoinColumn(nullable: false, options: ['comment' => 'Language ID'])]
     public LanguageEntity $language;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     /**
@@ -101,7 +101,8 @@ class UserEntity
     /**
      * @var Collection<int, RoleEntity> $roles
      */
-    #[ManyToMany(targetEntity: RoleEntity::class, mappedBy: 'users', cascade: ['persist', 'remove'])]
+    // no cascade 'remove': it would delete the roles themselves, not the join rows (see RoleEntity::$users)
+    #[ManyToMany(targetEntity: RoleEntity::class, mappedBy: 'users', cascade: ['persist'])]
     public Collection $roles;
 
     /**

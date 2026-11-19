@@ -16,28 +16,28 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity(TopicWatchRepository::class)]
-#[Table(name: 'topic_watch')]
+#[Table(name: 'topic_watch', options: ['comment' => 'Topic watches'])]
 class TopicWatchEntity
 {
 
 
-    #[Column(type: UuidType::NAME, unique: true)]
+    #[Column(type: UuidType::NAME, unique: true, options: ['comment' => 'UUID'])]
     public UuidInterface $uuid;
 
     #[Id()]
-    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'watches')]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'watches', cascade: ['persist'])]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'User ID'])]
     public UserEntity $user;
 
     #[Id()]
-    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'watches')]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'watches', cascade: ['persist'])]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Topic ID'])]
     public TopicEntity $topic;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     public function __construct()
