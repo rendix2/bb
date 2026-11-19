@@ -1,24 +1,53 @@
+{block title}{_web-user-view.header}: {$userEntity->username}{/block}
+
 {block content}
-<div class="card border-0 overflow-hidden mt-1" style="max-width: 400px;">
-    <!-- Horní barevný pruh pro vizuální efekt -->
+<div class="card border-0 overflow-hidden mt-1 user-profile" style="max-width: 600px;">
     <div class="card-header bg-primary text-white border-0" style="height: 80px;">
-        <h1 class="h5 mb-0 fw-bold"><i class="fas fa-user"></i> {$userEntity->name} {$userEntity->surname}</h1>
+        <h1 class="h5 mb-0 fw-bold"><i class="fas fa-user"></i> <span class="profile-username">{$userEntity->username}</span></h1>
     </div>
 
     <div class="card-body pt-0 text-center">
-        <!-- Avatar (Iniciály) -->
+        {* the avatar comes in 4e; until then the initials of the username (the filter is UTF-8 safe, substr() cut "Č" in half) *}
         <div class="rounded-circle bg-white shadow-sm d-flex align-items-center justify-content-center mx-auto"
              style="width: 80px; height: 80px; margin-top: -40px; border: 4px solid white;">
-            <span class="h3 mb-0 text-primary fw-bold">
-                {substr($userEntity->name, 0, 1)}{substr($userEntity->surname, 0, 1)}
-            </span>
+            <span class="h3 mb-0 text-primary fw-bold profile-initials">{$userEntity->username|substr:0,1|upper}</span>
         </div>
 
         <div class="mt-3">
+            <p n:if="$showRealName" class="mb-1 profile-real-name">{$userEntity->name} {$userEntity->surname}</p>
             <p class="text-muted mb-3">
-                <span class="badge bg-light text-secondary border">@{$userEntity->username}</span>
+                <span n:if="$rank" class="badge bg-secondary profile-rank">{$rank->name}</span>
             </p>
         </div>
+
+        <dl class="row text-start mb-0">
+            <dt class="col-6">{_web-user-view.registered}</dt>
+            <dd class="col-6 profile-registered">{$userEntity->createdAt|date:'j. n. Y'}</dd>
+
+            <dt class="col-6">{_web-user-view.posts}</dt>
+            <dd class="col-6 profile-post-count">{$counts['posts']}</dd>
+
+            <dt class="col-6">{_web-user-view.topics}</dt>
+            <dd class="col-6 profile-topic-count">{$counts['topics']}</dd>
+
+            <dt class="col-6">{_web-user-view.thanks}</dt>
+            <dd class="col-6 profile-thank-count">{$counts['thanks']}</dd>
+
+            <dt class="col-6">{_web-user-view.moderates}</dt>
+            <dd class="col-6 profile-moderated-forums">
+                {foreach $moderatedForums as $forum}<a n:href=":Forum:Forum:View:default $forum->uuid->toString()">{$forum->name}</a>{sep}, {/sep}{else}–{/foreach}
+            </dd>
+        </dl>
+
+        <div n:if="$userEntity->signature" class="text-start small text-muted profile-signature">
+            <hr>
+            {$userEntity->signature|markdown}
+        </div>
+    </div>
+
+    <div class="card-footer bg-transparent">
+        <a n:href=":Forum:Index:default" class="btn btn-link btn-sm">{_web-user-view.forum}</a>
+        <a n:if="$isOwn" n:href=":Web:User:Edit:default" class="btn btn-link btn-sm profile-edit-link">{_web-user-view.edit}</a>
     </div>
 </div>
 {/block}

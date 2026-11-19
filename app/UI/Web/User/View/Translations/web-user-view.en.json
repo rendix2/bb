@@ -1,3 +1,10 @@
 {
-  "header": "Profile"
+  "header": "Profile",
+  "registered": "Registered",
+  "posts": "Posts",
+  "topics": "Topics",
+  "thanks": "Thanks received",
+  "moderates": "Moderates",
+  "forum": "Forum",
+  "edit": "Edit the profile"
 }

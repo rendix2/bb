@@ -27,7 +27,8 @@
             {* search, member list, private messages and the profile come with their slices (users, PM) *}
             {if $user->isLoggedIn()}
                 <li class="nav-item">
-                    <a class="nav-link" n:href=":Web:User:Edit:default">{$user->getIdentity()->getData()['username']}</a>
+                    {* the own profile: Web:User:View without uuid finds it by the id of the logged-in user (the identity has no uuid) *}
+                    <a class="nav-link own-profile-link" n:href=":Web:User:View:default">{$user->getIdentity()->getData()['username']}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" n:href=":Web:User:Logout:default">{_forum-layout.logout}</a>

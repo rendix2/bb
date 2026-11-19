@@ -12,6 +12,7 @@ use App\Model\Service\GeoIpService;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Doctrine\DBAL\Exception as DbalException;
+use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
@@ -20,6 +21,12 @@ use stdClass;
 
 class LoginPresenter extends Presenter
 {
+    /**
+     * bb: the page that sent the guest here (storeRequest(), e.g. the profile of a user); persistent, so the form keeps it.
+     */
+    #[Persistent]
+    public string $backlink = '';
+
     public function __construct(
         private readonly Translator                       $translator,
         private readonly EntityManagerDecorator           $em,
@@ -138,6 +145,8 @@ class LoginPresenter extends Presenter
             $flash->message = $this->translator->translate('web-user-login.form.submit.success');
 
             $this->flashMessage($flash);
+            // bb: back to the page that asked for the login (only a request stored in the session of this user)
+            $this->restoreRequest($this->backlink);
             $this->redirect(':Web:Home:default');
         } catch (AuthenticationException $exception) {
             $flash = new stdClass();

@@ -1,3 +1,10 @@
 {
-  "header": "Profil"
+  "header": "Profil",
+  "registered": "Registrace",
+  "posts": "Příspěvků",
+  "topics": "Témat",
+  "thanks": "Přijatých poděkování",
+  "moderates": "Moderuje",
+  "forum": "Fórum",
+  "edit": "Upravit profil"
 }

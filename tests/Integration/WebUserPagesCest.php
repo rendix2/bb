@@ -188,9 +188,13 @@ class WebUserPagesCest
         $I->assertNotNull($saved->updatedAt);
     }
 
-    public function theProfileOfUserIsPublicByUuid(IntegrationTester $I) : void
+    /**
+     * bb: the profiles only for logged-in users (decision of 2026-11-19, more in UserProfilePagesCest).
+     */
+    public function theProfileOfUserIsShownByUuidToLoggedInUser(IntegrationTester $I) : void
     {
         $user = $I->createUser('inview');
+        $I->login($user->username, IntegrationTester::PASSWORD);
 
         $I->amOnPage('/web.user.view/default/' . $user->uuid);
         $I->seeResponseCodeIs(200);
