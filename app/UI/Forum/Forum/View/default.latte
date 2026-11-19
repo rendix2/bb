@@ -5,6 +5,7 @@
 
     <h1>{$forum->name}</h1>
     <p n:if="$forum->description" class="text-muted">{$forum->description}</p>
+    <p n:if="$forum->rules"><a n:href=":Forum:Forum:Rules:default $forum->uuid->toString()" class="forum-rules-link">{_forum-forum-view.rules}</a></p>
 
     <p n:if="$forum->moderatorUsers->count()" class="small">
         {_forum-forum-view.moderators}:

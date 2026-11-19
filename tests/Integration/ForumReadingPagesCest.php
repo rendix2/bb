@@ -115,6 +115,23 @@ class ForumReadingPagesCest
         $I->seeInSource('<br>');
     }
 
+    public function theForumRulesAreShownEscapedAndOnlyForAnActiveForum(IntegrationTester $I) : void
+    {
+        [, $forum] = $this->createTopic($I, 'Rules', 1);
+        $forum->rules = "Be nice.\n<script>alert('rules')</script>";
+        $I->em()->flush();
+
+        $I->amOnPage($this->url('forum', $forum->uuid->toString()));
+        $I->click('.forum-rules-link');
+        $I->seeResponseCodeIs(200);
+        $I->see('Be nice.', '.forum-rules');
+        $I->dontSeeInSource("<script>alert('rules')</script>");
+
+        $forum->active = false;
+        $I->em()->flush();
+        $I->seePageIsRefused('/forum.forum.rules/default/' . $forum->uuid->toString(), 404);
+    }
+
     private function url(string $page, string $uuid) : string
     {
         return '/forum.' . $page . '.view/default/' . $uuid;

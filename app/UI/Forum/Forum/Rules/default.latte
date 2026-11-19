@@ -1,17 +1,10 @@
-{define title}{_forum_rules}{/define}
-
-{define breadCrumb}
-    <div class="float-left">
-        {control breadCrumbRules}
-    </div>
-{/define}
+{block title}{_forum-forum-rules.title}: {$forum->name}{/block}
 
 {block content}
-    {include breadCrumb}
+    {include '../../@breadcrumb.latte', category: $forum->category, forum: $forum}
 
-    <div class="col-sm-12 main">
-        {$forumEntity->rules}
-    </div>
+    <h1>{_forum-forum-rules.title}</h1>
 
-    {include breadCrumb}
+    <div n:if="$forum->rules" class="forum-rules">{$forum->rules|breakLines}</div>
+    <p n:if="!$forum->rules" class="text-muted">{_forum-forum-rules.none}</p>
 {/block}
