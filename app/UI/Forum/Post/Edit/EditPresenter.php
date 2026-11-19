@@ -62,6 +62,7 @@ class EditPresenter extends Presenter
 
     public function renderDefault() : void
     {
+        $this->template->preview ??= null;
         $this->template->post = $this->post;
     }
 
@@ -80,6 +81,9 @@ class EditPresenter extends Presenter
             ->setRequired('forum-post-edit.form.text.required');
 
         $form->addSubmit('send', 'forum-post-edit.form.send');
+        // shows the text as it will look (Markdown), saves nothing
+        $form->addSubmit('preview', 'forum-post-edit.form.preview')
+            ->setHtmlAttribute('class', 'btn btn-outline-secondary');
 
         $form->onSuccess[] = $this->editPostFormSucceeded(...);
 
@@ -88,6 +92,12 @@ class EditPresenter extends Presenter
 
     private function editPostFormSucceeded(Form $form) : void
     {
+        if ($form['preview'] instanceof \Nette\Forms\Controls\SubmitButton && $form['preview']->isSubmittedBy()) {
+            $this->template->preview = (string) $form->getUntrustedValues()->text;
+
+            return;
+        }
+
         $values = $form->getValues(EditPostValues::class);
 
         try {

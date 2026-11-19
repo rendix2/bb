@@ -5,6 +5,11 @@
 
     <h1>{_forum-topic-reply.title}: {$topic->name}</h1>
 
+    <div n:if="$preview !== null" class="card mb-3 post-preview">
+        <div class="card-header">{_forum-topic-reply.form.preview}</div>
+        <div class="card-body">{$preview|markdown}</div>
+    </div>
+
     {control replyForm}
 
     <p class="small text-muted">{_forum-topic-reply.markdownHint}</p>

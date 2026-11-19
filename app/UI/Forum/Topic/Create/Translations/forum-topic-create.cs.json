@@ -12,6 +12,7 @@
       "required": "Napište text prvního příspěvku."
     },
     "send": "Založit téma",
-    "success": "Téma bylo založeno."
+    "success": "Téma bylo založeno.",
+    "preview": "Náhled"
   }
 }

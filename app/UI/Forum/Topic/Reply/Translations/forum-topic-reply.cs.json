@@ -11,6 +11,7 @@
       "required": "Napište text odpovědi."
     },
     "send": "Odeslat odpověď",
-    "success": "Odpověď byla uložena."
+    "success": "Odpověď byla uložena.",
+    "preview": "Náhled"
   }
 }

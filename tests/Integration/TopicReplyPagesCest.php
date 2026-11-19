@@ -101,6 +101,22 @@ class TopicReplyPagesCest
         $I->seePageIsRefused('/forum.topic.reply/' . $topic->uuid->toString(), 403);
     }
 
+    public function thePreviewShowsTheTextAndSavesNothing(IntegrationTester $I) : void
+    {
+        $topic = $this->createTopic($I);
+        $user = $I->createUser('Preview', role: 'Normal');
+        $I->login($user->username, IntegrationTester::PASSWORD);
+
+        $I->amOnPage('/forum.topic.reply/' . $topic->uuid->toString());
+        $I->fillField('text', 'A *previewed* reply');
+        $I->click('preview');
+
+        $I->seeInSource('<em>previewed</em>');
+        $I->seeElement('.post-preview');
+        $I->seeInField('text', 'A *previewed* reply');
+        $I->assertSame(1, $I->em()->getRepository(PostEntity::class)->count(['topic' => $topic]));
+    }
+
     private function lastPostOf(IntegrationTester $I, TopicEntity $topic) : PostEntity
     {
         $I->em()->clear();

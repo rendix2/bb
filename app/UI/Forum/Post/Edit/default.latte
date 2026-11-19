@@ -5,6 +5,11 @@
 
     <h1>{_forum-post-edit.title}</h1>
 
+    <div n:if="$preview !== null" class="card mb-3 post-preview">
+        <div class="card-header">{_forum-post-edit.form.preview}</div>
+        <div class="card-body">{$preview|markdown}</div>
+    </div>
+
     {control editPostForm}
 
     <p class="small text-muted">{_forum-post-edit.historyHint}</p>

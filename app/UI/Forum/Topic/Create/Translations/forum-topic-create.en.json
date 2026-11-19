@@ -12,6 +12,7 @@
       "required": "Write the text of the first post."
     },
     "send": "Start the topic",
-    "success": "The topic was started."
+    "success": "The topic was started.",
+    "preview": "Preview"
   }
 }

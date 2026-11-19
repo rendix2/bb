@@ -60,6 +60,7 @@ class ReplyPresenter extends Presenter
 
     public function renderDefault() : void
     {
+        $this->template->preview ??= null;
         $this->template->topic = $this->topic;
     }
 
@@ -78,6 +79,9 @@ class ReplyPresenter extends Presenter
             ->setRequired('forum-topic-reply.form.text.required');
 
         $form->addSubmit('send', 'forum-topic-reply.form.send');
+        // shows the text as it will look (Markdown), saves nothing
+        $form->addSubmit('preview', 'forum-topic-reply.form.preview')
+            ->setHtmlAttribute('class', 'btn btn-outline-secondary');
 
         $form->onSuccess[] = $this->replyFormSucceeded(...);
 
@@ -86,6 +90,12 @@ class ReplyPresenter extends Presenter
 
     private function replyFormSucceeded(Form $form) : void
     {
+        if ($form['preview'] instanceof \Nette\Forms\Controls\SubmitButton && $form['preview']->isSubmittedBy()) {
+            $this->template->preview = (string) $form->getUntrustedValues()->text;
+
+            return;
+        }
+
         $values = $form->getValues(ReplyValues::class);
 
         try {
