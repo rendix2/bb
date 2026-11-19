@@ -1,0 +1,13 @@
+{block title}{_forum-post-delete.title}{/block}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $post->category, forum: $post->forum, topic: $post->topic}
+
+    <h1>{_forum-post-delete.title}</h1>
+    <p>{_forum-post-delete.question}</p>
+
+    <div class="card mb-3"><div class="card-body post-text">{$post->text|markdown}</div></div>
+
+    {control deleteForm}
+    <a n:href=":Forum:Topic:View:default $post->topic->uuid->toString()" class="btn btn-link">{_forum-post-delete.cancel}</a>
+{/block}

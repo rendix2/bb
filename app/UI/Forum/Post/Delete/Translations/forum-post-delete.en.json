@@ -1,0 +1,8 @@
+{
+  "title": "Delete the post",
+  "question": "Do you really want to delete this post? Its history and thanks go too.",
+  "protection": "The form has expired, please send it again.",
+  "confirm": "Delete the post",
+  "cancel": "Back to the topic",
+  "success": "The post was deleted."
+}

@@ -14,5 +14,7 @@
     "success": "Odpověď byla uložena."
   },
   "edited": "upraveno",
-  "edit": "Upravit"
+  "edit": "Upravit",
+  "delete": "Smazat",
+  "deleteTopic": "Smazat téma"
 }

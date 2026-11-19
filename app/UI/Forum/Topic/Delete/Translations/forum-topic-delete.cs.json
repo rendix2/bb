@@ -1,0 +1,8 @@
+{
+  "title": "Smazání tématu",
+  "question": "Opravdu chcete smazat celé téma se všemi příspěvky? Tuto akci nelze vrátit.",
+  "protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+  "confirm": "Smazat téma",
+  "cancel": "Zpět do tématu",
+  "success": "Téma bylo smazáno."
+}

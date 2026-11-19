@@ -1,0 +1,8 @@
+{
+  "title": "Delete the topic",
+  "question": "Do you really want to delete the whole topic with all its posts? This cannot be undone.",
+  "protection": "The form has expired, please send it again.",
+  "confirm": "Delete the topic",
+  "cancel": "Back to the topic",
+  "success": "The topic was deleted."
+}

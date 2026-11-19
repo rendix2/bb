@@ -21,6 +21,7 @@
                 {$post->createdAt|date:'j. n. Y H:i'}
                 <span n:if="$post->updatedAt" class="post-edited">({_forum-topic-view.edited} {$post->updatedAt|date:'j. n. Y H:i'})</span>
                 <a n:if="$canEdit[$post->id]" n:href=":Forum:Post:Edit:default $post->uuid->toString()" class="post-edit-link">{_forum-topic-view.edit}</a>
+                <a n:if="$canDelete[$post->id]" n:href=":Forum:Post:Delete:default $post->uuid->toString()" class="post-delete-link">{_forum-topic-view.delete}</a>
             </span>
         </div>
         <div class="card-body">
@@ -35,6 +36,7 @@
 
     {include '../../@paginator.latte', paginator: $paginator}
 
+    <p n:if="$canDeleteTopic"><a n:href=":Forum:Topic:Delete:default $topic->uuid->toString()" class="btn btn-outline-danger btn-sm topic-delete-link">{_forum-topic-view.deleteTopic}</a></p>
     <p n:if="$topic->isLocked" class="alert alert-secondary">{_forum-topic-view.lockedNotice}</p>
     <p n:if="$canReply"><a n:href=":Forum:Topic:Reply:default $topic->uuid->toString()" class="btn btn-primary reply-link">{_forum-topic-view.reply}</a></p>
 

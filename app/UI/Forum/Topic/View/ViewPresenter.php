@@ -96,12 +96,18 @@ class ViewPresenter extends Presenter
         $this->template->ranks = $ranks;
         $this->template->paginator = $paginator;
         $canEdit = [];
+        $canDelete = [];
+        $firstPostId = $paginator->isFirst() && $posts !== [] ? $posts[0]->id : null;
 
         foreach ($posts as $post) {
             $canEdit[$post->id] = $this->permissions->isAllowed($this->currentUser, $post, ForumPrivilege::EDIT);
+            // the first post goes only with its topic (Forum:Topic:Delete)
+            $canDelete[$post->id] = $post->id !== $firstPostId && $this->permissions->isAllowed($this->currentUser, $post, ForumPrivilege::DELETE);
         }
 
         $this->template->canEdit = $canEdit;
+        $this->template->canDelete = $canDelete;
+        $this->template->canDeleteTopic = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::DELETE);
         $this->template->canReply = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::REPLY);
         $this->template->canFastReply = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::FAST_REPLY);
     }

@@ -27,6 +27,7 @@ class PostWriteService
     public const string ERROR_FLOOD = 'forum-post-write.error.flood';
     public const string ERROR_DOUBLE_POST = 'forum-post-write.error.doublePost';
     public const string ERROR_TOPIC_NAME = 'forum-post-write.error.topicName';
+    public const string ERROR_FIRST_POST = 'forum-post-write.error.firstPost';
 
     private const int TOPIC_NAME_MAX_LENGTH = 1024;
 
@@ -121,6 +122,49 @@ class PostWriteService
         $this->em->wrapInTransaction(function () use ($history) : void {
             $this->em->persist($history);
         });
+    }
+
+    public function isFirstPost(PostEntity $post) : bool
+    {
+        $first = $this->em->getRepository(PostEntity::class)
+            ->createQueryBuilder('_p')
+            ->select('MIN(_p.id)')
+            ->where('_p.topic = :topic')
+            ->setParameter('topic', $post->topic)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return (int) $first === $post->id;
+    }
+
+    /**
+     * Deletes a reply (with its history, thanks and files by the foreign keys); the first post goes only with its topic.
+     */
+    public function deletePost(UserEntity $user, PostEntity $post) : void
+    {
+        if (!$this->permissions->isAllowed($user, $post, ForumPrivilege::DELETE)) {
+            throw new PostWriteException(self::ERROR_NOT_ALLOWED);
+        }
+
+        if ($this->isFirstPost($post)) {
+            throw new PostWriteException(self::ERROR_FIRST_POST);
+        }
+
+        $this->em->remove($post);
+        $this->em->flush();
+    }
+
+    /**
+     * Deletes a topic with all its posts (and what hangs on them, by the foreign keys).
+     */
+    public function deleteTopic(UserEntity $user, TopicEntity $topic) : void
+    {
+        if (!$this->permissions->isAllowed($user, $topic, ForumPrivilege::DELETE)) {
+            throw new PostWriteException(self::ERROR_NOT_ALLOWED);
+        }
+
+        $this->em->remove($topic);
+        $this->em->flush();
     }
 
     private function checkText(string $text) : string

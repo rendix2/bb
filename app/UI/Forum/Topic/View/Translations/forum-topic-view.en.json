@@ -14,5 +14,7 @@
     "success": "The reply was saved."
   },
   "edited": "edited",
-  "edit": "Edit"
+  "edit": "Edit",
+  "delete": "Delete",
+  "deleteTopic": "Delete the topic"
 }

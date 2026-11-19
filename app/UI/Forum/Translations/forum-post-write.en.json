@@ -5,6 +5,7 @@
     "tooLong": "The text of the post is too long.",
     "flood": "You are writing too fast, try again in a moment.",
     "doublePost": "You have just posted the same text into this topic.",
-    "topicName": "Enter the name of the topic (at most 1024 characters)."
+    "topicName": "Enter the name of the topic (at most 1024 characters).",
+    "firstPost": "The first post of a topic cannot be deleted alone, delete the whole topic."
   }
 }

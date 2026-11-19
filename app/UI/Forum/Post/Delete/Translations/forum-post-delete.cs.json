@@ -1,0 +1,8 @@
+{
+  "title": "Smazání příspěvku",
+  "question": "Opravdu chcete tento příspěvek smazat? Smaže se i jeho historie a poděkování.",
+  "protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+  "confirm": "Smazat příspěvek",
+  "cancel": "Zpět do tématu",
+  "success": "Příspěvek byl smazán."
+}

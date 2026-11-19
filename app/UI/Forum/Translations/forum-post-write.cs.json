@@ -5,6 +5,7 @@
     "tooLong": "Text příspěvku je příliš dlouhý.",
     "flood": "Píšete příliš rychle, zkuste to za chvíli znovu.",
     "doublePost": "Stejný příspěvek jste do tohoto tématu právě poslali.",
-    "topicName": "Zadejte název tématu (nejvýše 1024 znaků)."
+    "topicName": "Zadejte název tématu (nejvýše 1024 znaků).",
+    "firstPost": "První příspěvek tématu nelze smazat samostatně, smažte celé téma."
   }
 }
