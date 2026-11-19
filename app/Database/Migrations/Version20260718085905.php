@@ -32,6 +32,12 @@ final class Version20260718085905 extends AbstractMigration
             ->setLength(1024)
             ->setComment('Name');
 
+        $table->addColumn('is_locked', Types::BOOLEAN)
+            ->setComment('Is locked?');
+
+        $table->addColumn('view_count', Types::INTEGER)
+            ->setComment('View count');
+
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
 

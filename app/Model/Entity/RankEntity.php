@@ -26,6 +26,13 @@ class RankEntity
     #[Column(type: UuidType::NAME, unique: true, options: ['comment' => 'UUID'])]
     public UuidInterface $uuid;
 
+    #[Column(type: Types::STRING, length: 512, options: ['comment' => 'Name'])]
+    public string $name;
+
+    // the rank of a user with at least this many posts; null for a special rank (given by the admin)
+    #[Column(type: Types::INTEGER, nullable: true, options: ['comment' => 'Minimum posts'])]
+    public ?int $minPosts;
+
     #[Column(type: Types::TEXT, unique: true, options: ['comment' => 'File name'])]
     public string $fileName;
 

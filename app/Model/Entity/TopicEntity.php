@@ -47,6 +47,12 @@ class TopicEntity
     #[Column(type: Types::STRING, length: 1024, nullable: false, options: ['comment' => 'Name'])]
     public string $name;
 
+    #[Column(type: Types::BOOLEAN, options: ['comment' => 'Is locked?'])]
+    public bool $isLocked;
+
+    #[Column(type: Types::INTEGER, options: ['comment' => 'View count'])]
+    public int $viewCount;
+
     #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
@@ -92,6 +98,8 @@ class TopicEntity
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
+        $this->isLocked = false;
+        $this->viewCount = 0;
 
         $this->posts = new ArrayCollection();
         $this->thanks = new ArrayCollection();

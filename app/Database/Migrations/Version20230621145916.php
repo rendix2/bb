@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 use Ramsey\Uuid\Doctrine\UuidType;
 
-final class Version20260805104518 extends AbstractMigration
+final class Version20230621145916 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -27,6 +27,14 @@ final class Version20260805104518 extends AbstractMigration
 
         $table->addColumn('uuid', UuidType::NAME)
             ->setComment('UUID');
+
+        $table->addColumn('name', Types::STRING)
+            ->setLength(512)
+            ->setComment('Name');
+
+        $table->addColumn('min_posts', Types::INTEGER)
+            ->setNotnull(false)
+            ->setComment('Minimum posts');
 
         $table->addColumn('file_name', Types::TEXT)
             ->setComment('File name');

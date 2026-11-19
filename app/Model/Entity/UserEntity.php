@@ -58,6 +58,14 @@ class UserEntity
     #[Column(type: Types::STRING, length: 1024, nullable: true, options: ['comment' => 'Avatar'])]
     public ?string $avatar;
 
+    #[Column(type: Types::TEXT, nullable: true, options: ['comment' => 'Signature'])]
+    public ?string $signature;
+
+    // a special rank given by the admin; without it the rank follows the post count (RankEntity::$minPosts)
+    #[ManyToOne(targetEntity: RankEntity::class, cascade: ['persist'])]
+    #[JoinColumn(nullable: true, onDelete: 'SET NULL', options: ['comment' => 'Special rank ID'])]
+    public ?RankEntity $rank;
+
     #[ManyToOne(targetEntity: LanguageEntity::class, cascade: ['persist'])]
     #[JoinColumn(nullable: false, options: ['comment' => 'Language ID'])]
     public LanguageEntity $language;
@@ -169,6 +177,8 @@ class UserEntity
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
+        $this->signature = null;
+        $this->rank = null;
 
         $this->passwords = new ArrayCollection();
         $this->roles = new ArrayCollection();

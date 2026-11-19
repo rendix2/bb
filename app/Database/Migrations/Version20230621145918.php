@@ -56,12 +56,20 @@ final class Version20230621145918 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Avatar');
 
+        $table->addColumn('signature', Types::TEXT)
+            ->setNotnull(false)
+            ->setComment('Signature');
+
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
 
         $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
+
+        $table->addColumn('rank_id', Types::BIGINT)
+            ->setNotnull(false)
+            ->setComment('Special rank ID');
 
         $table->addColumn('language_id', Types::BIGINT)
             ->setComment('Language ID');
@@ -74,11 +82,13 @@ final class Version20230621145918 extends AbstractMigration
             ->setComment('Users')
 
             ->addIndex(['language_id'], 'K__Users__Language_id')
+            ->addIndex(['rank_id'], 'K__Users__Rank_id')
             ->addUniqueIndex(['email'], 'UK__Users__Email')
             ->addUniqueIndex(['username'], 'UK__Users__Username')
             ->addUniqueIndex(['uuid'], 'UK__Users__Uuid')
 
-            ->addForeignKeyConstraint('language', ['language_id'], ['id'], name: 'FK__Users__Language_id');
+            ->addForeignKeyConstraint('language', ['language_id'], ['id'], name: 'FK__Users__Language_id')
+            ->addForeignKeyConstraint('rank', ['rank_id'], ['id'], options: ['onDelete' => 'SET NULL'], name: 'FK__Users__Rank_id');
     }
 
     public function down(Schema $schema) : void

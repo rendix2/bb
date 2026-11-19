@@ -3,6 +3,7 @@
 namespace App\Database\Fixtures;
 
 use App\Model\Entity\LanguageEntity;
+use App\Model\Entity\RankEntity;
 use App\Model\Entity\RoleEntity;
 use App\Model\Entity\UserEmailEntity;
 use App\Model\Entity\UserEntity;
@@ -43,6 +44,8 @@ class UserFixture implements FixtureInterface, OrderedFixtureInterface, Containe
         $userEntity->email = 'test@test.test';
         $userEntity->password = $password;
         $userEntity->language = $czechLanguageEntity;
+        $userEntity->signature = 'Správce testovacího fóra.';
+        $userEntity->rank = $manager->getRepository(RankEntity::class)->findOneBy(['name' => RankFixture::SpecialRankName]);
 
         $userPasswordEntity = new UserPasswordEntity();
         $userPasswordEntity->password = $password;
