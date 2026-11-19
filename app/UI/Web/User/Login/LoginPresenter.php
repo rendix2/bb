@@ -8,7 +8,7 @@ use App\Database\EntityManagerDecorator;
 use App\Forms\IconBootstrapForm;
 use App\Forms\Renderer\IconBootstrapRenderer;
 use App\Model\Entity\UserEntity;
-use App\Service\GeoIpService;
+use App\Model\Service\GeoIpService;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Doctrine\DBAL\Exception as DbalException;

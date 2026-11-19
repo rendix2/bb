@@ -354,33 +354,34 @@
         },
         {
             "name": "contributte/guzzlette",
-            "version": "v3.4.0",
+            "version": "v3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/contributte/guzzlette.git",
-                "reference": "11b8059493fa6cfc774f67b76b095257e7c78e28"
+                "reference": "2615e68a3305d55200a4095a74e0cd0ec5978262"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contributte/guzzlette/zipball/11b8059493fa6cfc774f67b76b095257e7c78e28",
-                "reference": "11b8059493fa6cfc774f67b76b095257e7c78e28",
+                "url": "https://api.github.com/repos/contributte/guzzlette/zipball/2615e68a3305d55200a4095a74e0cd0ec5978262",
+                "reference": "2615e68a3305d55200a4095a74e0cd0ec5978262",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "^7.5.0",
+                "guzzlehttp/guzzle": "^7.5.0 || ^8.0",
                 "nette/di": "^3.1.2",
                 "nette/utils": "^3.2.8 || ^4.0.0",
                 "php": ">=8.2",
+                "psr/log": "^3.0",
                 "tracy/tracy": "^2.9.5"
             },
             "require-dev": {
                 "contributte/qa": "~0.4.0",
                 "contributte/tester": "~0.4.0",
                 "mockery/mockery": "^1.5.1",
-                "phpstan/phpstan": "^1.9.4",
-                "phpstan/phpstan-deprecation-rules": "^1.1.1",
-                "phpstan/phpstan-nette": "^1.2.0",
-                "phpstan/phpstan-strict-rules": "^1.4.4"
+                "phpstan/phpstan": "^2.2.8",
+                "phpstan/phpstan-deprecation-rules": "^2.0.5",
+                "phpstan/phpstan-nette": "^2.0.12",
+                "phpstan/phpstan-strict-rules": "^2.0.12"
             },
             "type": "library",
             "extra": {
@@ -415,7 +416,7 @@
             ],
             "support": {
                 "issues": "https://github.com/contributte/guzzlette/issues",
-                "source": "https://github.com/contributte/guzzlette/tree/v3.4.0"
+                "source": "https://github.com/contributte/guzzlette/tree/v3.5.0"
             },
             "funding": [
                 {
@@ -427,7 +428,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-01-12T16:32:19+00:00"
+            "time": "2026-08-15T10:06:40+00:00",
+            "published-time": "2026-09-07T17:50:29+00:00"
         },
         {
             "name": "contributte/mail",
@@ -2351,16 +2353,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.13.4",
+            "version": "2.13.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "ad5e3f872690e1151e1171de2963150fc45ea1e3"
+                "reference": "5aa00c5418afbe3f435910af0e98cb03d659c49d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/ad5e3f872690e1151e1171de2963150fc45ea1e3",
-                "reference": "ad5e3f872690e1151e1171de2963150fc45ea1e3",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/5aa00c5418afbe3f435910af0e98cb03d659c49d",
+                "reference": "5aa00c5418afbe3f435910af0e98cb03d659c49d",
                 "shasum": ""
             },
             "require": {
@@ -2450,7 +2452,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.13.4"
+                "source": "https://github.com/guzzle/psr7/tree/2.13.5"
             },
             "funding": [
                 {
@@ -2466,8 +2468,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-11-17T16:15:51+00:00",
-            "published-time": "2026-11-17T16:16:24+00:00"
+            "time": "2026-11-19T20:34:53+00:00",
+            "published-time": "2026-11-19T20:36:04+00:00"
         },
         {
             "name": "ifsnop/mysqldump-php",
@@ -7274,22 +7276,22 @@
         },
         {
             "name": "tracy/tracy",
-            "version": "v2.12.0",
+            "version": "v2.12.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/tracy.git",
-                "reference": "535eda4871fd04f2756c8d95f6bdfa43706d79be"
+                "reference": "2664bd9456cb745ff1fb0b31efa79fe2f411bef3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/tracy/zipball/535eda4871fd04f2756c8d95f6bdfa43706d79be",
-                "reference": "535eda4871fd04f2756c8d95f6bdfa43706d79be",
+                "url": "https://api.github.com/repos/nette/tracy/zipball/2664bd9456cb745ff1fb0b31efa79fe2f411bef3",
+                "reference": "2664bd9456cb745ff1fb0b31efa79fe2f411bef3",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-session": "*",
-                "php": "8.2 - 8.5"
+                "php": "8.2 - 8.6"
             },
             "conflict": {
                 "nette/di": "<3.0"
@@ -7303,7 +7305,7 @@
                 "nette/tester": "^2.6",
                 "nette/utils": "^3.0 || ^4.0",
                 "phpstan/extension-installer": "^1.4@stable",
-                "phpstan/phpstan": "^2.1@stable",
+                "phpstan/phpstan": "^2.3@stable",
                 "psr/log": "^1.0 || ^2.0 || ^3.0"
             },
             "type": "library",
@@ -7331,26 +7333,28 @@
                 {
                     "name": "David Grudl",
                     "homepage": "https://davidgrudl.com"
-                },
-                {
-                    "name": "Nette Community",
-                    "homepage": "https://nette.org/contributors"
                 }
             ],
-            "description": "😎  Tracy: the addictive tool to ease debugging PHP code for cool developers. Friendly design, logging, profiler, advanced features like debugging AJAX calls or CLI support. You will love it.",
+            "description": "😎 Tracy: the addictive PHP debugger. Clear error pages with full context, a debug bar, readable dumps, AJAX and CLI support, and logging with e-mail alerts in production.",
             "homepage": "https://tracy.nette.org",
             "keywords": [
-                "Xdebug",
-                "debug",
+                "debug bar",
                 "debugger",
+                "debugging",
+                "dump",
+                "error handler",
+                "logging",
                 "nette",
-                "profiler"
+                "tracy",
+                "var_dump",
+                "whoops"
             ],
             "support": {
                 "issues": "https://github.com/nette/tracy/issues",
-                "source": "https://github.com/nette/tracy/tree/v2.12.0"
+                "source": "https://github.com/nette/tracy/tree/v2.12.2"
             },
-            "time": "2026-05-04T00:23:53+00:00"
+            "time": "2026-10-21T05:14:18+00:00",
+            "published-time": "2026-10-21T23:23:22+00:00"
         },
         {
             "name": "ublaboo/datagrid",

@@ -3,18 +3,25 @@
 namespace Tests\Integration;
 
 use App\Core\UsernameAndPasswordAuthenticator;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\GeoIpCacheEntity;
 use App\Model\Entity\UserEntity;
+use App\Model\Service\GeoIpService;
 use App\UI\Web\User\ForgetPassword\Request\UserPasswordRequestAttemptCheckService;
 use App\UI\Web\User\Login\UserLoginAttemptCheckService;
+use Contributte\Guzzlette\ClientFactory;
+use Contributte\Guzzlette\SnapshotStack;
+use DateTimeImmutable;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use InvalidArgumentException;
 use Nette\Security\AuthenticationException;
 use Tests\Support\IntegrationTester;
 
 /**
  * The services behind the account pages: the repository of the users (case-insensitive lookups), the throttling of the password
- * requests and of the logins.
- *
- * bb: the two tests of the GeoIP lookup of web-project are not here, bb still has its older GeoIpService (http, no fallback).
+ * requests and of the logins, and the GeoIP lookup with its cache (the provider is a Guzzle MockHandler, no network).
  */
 class AccountServicesCest
 {
@@ -70,5 +77,64 @@ class AccountServicesCest
 
         $attempts->clearAttempts($user->username);
         $I->assertSame($user->id, $authenticator->authenticate($user->username, IntegrationTester::PASSWORD)->getId());
+    }
+
+    public function aPublicAddressIsLookedUpOnceAndThenTakenFromTheCache(IntegrationTester $I) : void
+    {
+        $mock = new MockHandler([
+            new Response(200, [], '{"success":true,"country_code":"CZ","city":"Praha"}'),
+            new Response(200, [], '{"success":true,"country_code":"XX","city":"Nowhere"}'),
+        ]);
+        $service = $this->geoIp($I, $mock);
+        $ip = $this->publicIp();
+
+        $lookedUp = $service->getInfo($ip);
+        $cached = $service->getInfo($ip);
+
+        $I->assertSame(['country' => 'CZ', 'city' => 'Praha'], $lookedUp);
+        $I->assertSame($lookedUp, $cached);
+        $I->assertSame(1, $mock->count(), 'The cached address was looked up again.');
+
+        $request = $mock->getLastRequest();
+        $I->assertNotNull($request);
+        $I->assertSame('https', $request->getUri()->getScheme());
+    }
+
+    public function aFailedLookupAnswersFromAnOldCacheOrUnknown(IntegrationTester $I) : void
+    {
+        $ip = $this->publicIp();
+        $cache = new GeoIpCacheEntity();
+        $cache->ipAddress = $ip;
+        $cache->countryCode = 'SK';
+        $cache->city = 'Bratislava';
+        $cache->updatedAt = new DateTimeImmutable('-30 days');
+        $I->em()->persist($cache);
+        $I->em()->flush();
+
+        $mock = new MockHandler([
+            new Response(500, [], 'down'),
+            new Response(200, [], '{"success":false}'),
+        ]);
+        $service = $this->geoIp($I, $mock);
+
+        $I->assertSame(['country' => 'SK', 'city' => 'Bratislava'], $service->getInfo($ip));
+        $I->assertSame(['country' => '??', 'city' => '??'], $service->getInfo($this->publicIp()));
+        $I->assertSame(0, $mock->count());
+    }
+
+    private function geoIp(IntegrationTester $I, MockHandler $mock) : GeoIpService
+    {
+        $clientFactory = new ClientFactory(new SnapshotStack());
+        $clientFactory->setHandlerStack(HandlerStack::create($mock));
+
+        return new GeoIpService($clientFactory, $I->grabService(EntityManagerDecorator::class));
+    }
+
+    /**
+     * A public address (not private, not reserved) nobody has looked up yet.
+     */
+    private function publicIp() : string
+    {
+        return '81.' . random_int(0, 255) . '.' . random_int(0, 255) . '.' . random_int(1, 254);
     }
 }

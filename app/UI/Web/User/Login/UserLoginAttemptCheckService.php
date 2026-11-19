@@ -5,7 +5,7 @@ namespace App\UI\Web\User\Login;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\UserLoginAttemptEntity;
 use App\Model\Service\BrowserNameService;
-use App\Service\GeoIpService;
+use App\Model\Service\GeoIpService;
 use DateTimeImmutable;
 use InvalidArgumentException;
 
