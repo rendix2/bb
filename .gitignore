@@ -22,4 +22,4 @@ tests/_output
 tests/Support/_generated
 
 # uploaded attachments of posts (outside www/)
-data
+/data
