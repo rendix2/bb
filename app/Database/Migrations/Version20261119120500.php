@@ -28,6 +28,21 @@ final class Version20261119120500 extends AbstractMigration
         $table->addColumn('uuid', UuidType::NAME)
             ->setComment('UUID');
 
+        $table->addColumn('original_name', Types::STRING)
+            ->setLength(255)
+            ->setComment('Original name');
+
+        $table->addColumn('stored_name', Types::STRING)
+            ->setLength(64)
+            ->setComment('Stored name');
+
+        $table->addColumn('mime_type', Types::STRING)
+            ->setLength(255)
+            ->setComment('MIME type');
+
+        $table->addColumn('size', Types::BIGINT)
+            ->setComment('Size in bytes');
+
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
 
@@ -50,6 +65,7 @@ final class Version20261119120500 extends AbstractMigration
 
             ->addIndex(['post_id'], 'K__File__Post_id')
             ->addIndex(['user_id'], 'K__File__User_id')
+            ->addUniqueIndex(['stored_name'], 'UK__File__Stored_name')
             ->addUniqueIndex(['uuid'], 'UK__File__Uuid')
 
             ->addForeignKeyConstraint('post', ['post_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__File__Post_id')

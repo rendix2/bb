@@ -32,6 +32,10 @@ final class Version20260730221032 extends AbstractMigration
             ->setLength(1024)
             ->setComment('Question');
 
+        $table->addColumn('ends_at', Types::DATETIME_IMMUTABLE)
+            ->setNotnull(false)
+            ->setComment('Ends at');
+
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
 
@@ -60,8 +64,8 @@ final class Version20260730221032 extends AbstractMigration
 
             ->addIndex(['category_id'], 'K__Poll__Category_id')
             ->addIndex(['forum_id'], 'K__Poll__Forum_id')
-            ->addIndex(['topic_id'], 'K__Poll__Topic_id')
             ->addIndex(['user_id'], 'K__Poll__User_id')
+            ->addUniqueIndex(['topic_id'], 'UK__Poll__Topic_id')
             ->addUniqueIndex(['uuid'], 'UK__Poll__Uuid')
 
             ->addForeignKeyConstraint('category', ['category_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Poll__Category_id')

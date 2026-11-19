@@ -42,12 +42,18 @@ final class Version20241105005240 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Updated at');
 
+        $table->addColumn('sent_at', Types::DATETIME_IMMUTABLE)
+            ->setNotnull(false)
+            ->setComment('Sent at');
+
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
 
         $table->addPrimaryKeyConstraint($primaryKey->create())
-            ->setComment('Mail history');
+            ->setComment('Mail queue and history')
+
+            ->addIndex(['sent_at'], 'K__Mail__Sent_at');
     }
 
     public function down(Schema $schema) : void

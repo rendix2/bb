@@ -2,6 +2,7 @@
 
 namespace App\Model\Entity;
 
+use Doctrine\ORM\Mapping\Index;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
@@ -11,7 +12,8 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 
 #[Entity()]
-#[Table(name: 'mail', options: ['comment' => 'Mail history'])]
+#[Table(name: 'mail', options: ['comment' => 'Mail queue and history'])]
+#[Index(name: 'K__Mail__Sent_at', columns: ['sent_at'])]
 class MailEntity
 {
 
@@ -39,8 +41,13 @@ class MailEntity
     #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
+    // null = waits in the queue (sent by the console command), else when it was sent
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Sent at'])]
+    public ?DateTimeImmutable $sentAt;
+
     public function __construct()
     {
+        $this->sentAt = null;
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;
     }

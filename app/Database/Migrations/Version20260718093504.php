@@ -49,7 +49,8 @@ final class Version20260718093504 extends AbstractMigration
             ->setComment('Topic ID');
 
         $table->addColumn('post_id', Types::BIGINT)
-            ->setComment('Post ID');
+            ->setNotnull(false)
+            ->setComment('Post ID (null = thanks for the topic)');
 
         $table->addColumn('user_id', Types::BIGINT)
             ->setComment('User ID');
@@ -66,6 +67,8 @@ final class Version20260718093504 extends AbstractMigration
             ->addIndex(['post_id'], 'K__Thank__Post_id')
             ->addIndex(['topic_id'], 'K__Thank__Topic_id')
             ->addIndex(['user_id'], 'K__Thank__User_id')
+            ->addUniqueIndex(['user_id', 'post_id'], 'UK__Thank__User_id_post_id')
+            ->addUniqueIndex(['user_id', 'topic_id'], 'UK__Thank__User_id_topic_id', options: ['where' => '(post_id IS NULL)'])
             ->addUniqueIndex(['uuid'], 'UK__Thank__Uuid')
 
             ->addForeignKeyConstraint('category', ['category_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Thank__Category_id')

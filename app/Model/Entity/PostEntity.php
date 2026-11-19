@@ -61,6 +61,10 @@ class PostEntity
     #[Column(type: IpAddressType::NAME, nullable: true, options: ['comment' => 'Edit IP address'])]
     public ?string $editIpAddress;
 
+    // a locked post cannot be edited or deleted by its author (only by a moderator)
+    #[Column(type: Types::BOOLEAN, options: ['comment' => 'Is locked?'])]
+    public bool $isLocked;
+
     #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
@@ -81,6 +85,7 @@ class PostEntity
 
     public function __construct()
     {
+        $this->isLocked = false;
         $this->uuid = Uuid::uuid4();
 
         $this->historyPosts = new ArrayCollection();

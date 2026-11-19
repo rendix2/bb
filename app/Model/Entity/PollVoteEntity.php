@@ -2,6 +2,7 @@
 
 namespace App\Model\Entity;
 
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use App\Model\Repository\PollRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
@@ -18,6 +19,8 @@ use Ramsey\Uuid\UuidInterface;
 
 #[Entity()]
 #[Table(name: 'poll_vote', options: ['comment' => 'Poll vote'])]
+// one vote per user and poll
+#[UniqueConstraint(name: 'UK__Poll_vote__Poll_id_user_id', columns: ['poll_id', 'user_id'])]
 class PollVoteEntity
 {
     #[Id()]

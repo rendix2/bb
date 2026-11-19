@@ -34,6 +34,10 @@ class TopicWatchEntity
     #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Topic ID'])]
     public TopicEntity $topic;
 
+    // a mail about a new reply was queued; reset when the user opens the topic again (one mail until the next visit)
+    #[Column(type: Types::BOOLEAN, options: ['comment' => 'Is notified?'])]
+    public bool $isNotified;
+
     #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
@@ -42,6 +46,7 @@ class TopicWatchEntity
 
     public function __construct()
     {
+        $this->isNotified = false;
         $this->uuid = Uuid::uuid4();
 
         $this->createdAt = new DateTimeImmutable();

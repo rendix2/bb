@@ -2,6 +2,7 @@
 
 namespace App\Model\Entity;
 
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use App\Database\Types\IpAddressType;
 use App\Model\Repository\ThankRepository;
 use DateTimeImmutable;
@@ -19,6 +20,9 @@ use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: ThankRepository::class)]
 #[Table(name: 'thank', options: ['comment' => 'Thanks'])]
+// a thank of a topic has no post: once per user and post, once per user and topic (the partial index)
+#[UniqueConstraint(name: 'UK__Thank__User_id_post_id', columns: ['user_id', 'post_id'])]
+#[UniqueConstraint(name: 'UK__Thank__User_id_topic_id', columns: ['user_id', 'topic_id'], options: ['where' => '(post_id IS NULL)'])]
 class ThankEntity
 {
     #[Id()]
@@ -42,8 +46,8 @@ class ThankEntity
     public TopicEntity $topic;
 
     #[ManyToOne(targetEntity: PostEntity::class, cascade: ['persist'])]
-    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Post ID'])]
-    public PostEntity $post;
+    #[JoinColumn(nullable: true, onDelete: 'CASCADE', options: ['comment' => 'Post ID (null = thanks for the topic)'])]
+    public ?PostEntity $post;
 
     #[ManyToOne(targetEntity: UserEntity::class, inversedBy: 'thanks', cascade: ['persist'])]
     #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'User ID'])]

@@ -24,6 +24,9 @@ final class Version20260718094030 extends AbstractMigration
         $table->addColumn('uuid', UuidType::NAME)
             ->setComment('UUID');
 
+        $table->addColumn('is_notified', Types::BOOLEAN)
+            ->setComment('Is notified?');
+
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
 

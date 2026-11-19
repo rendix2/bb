@@ -36,6 +36,19 @@ class FileEntity
     #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Post ID'])]
     public PostEntity $post;
 
+    #[Column(type: Types::STRING, length: 255, options: ['comment' => 'Original name'])]
+    public string $originalName;
+
+    // random name of the file in the attachment storage (outside www/)
+    #[Column(type: Types::STRING, length: 64, unique: true, options: ['comment' => 'Stored name'])]
+    public string $storedName;
+
+    #[Column(type: Types::STRING, length: 255, options: ['comment' => 'MIME type'])]
+    public string $mimeType;
+
+    #[Column(type: Types::BIGINT, options: ['comment' => 'Size in bytes'])]
+    public int $size;
+
     #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 

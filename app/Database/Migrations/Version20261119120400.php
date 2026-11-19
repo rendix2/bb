@@ -66,6 +66,7 @@ final class Version20261119120400 extends AbstractMigration
             ->addIndex(['poll_id'], 'K__Poll_vote__Poll_id')
             ->addIndex(['topic_id'], 'K__Poll_vote__Topic_id')
             ->addIndex(['user_id'], 'K__Poll_vote__User_id')
+            ->addUniqueIndex(['poll_id', 'user_id'], 'UK__Poll_vote__Poll_id_user_id')
             ->addUniqueIndex(['uuid'], 'UK__Poll_vote__Uuid')
 
             ->addForeignKeyConstraint('category', ['category_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Poll_vote__Category_id')

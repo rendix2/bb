@@ -2,6 +2,7 @@
 
 namespace App\Model\Entity;
 
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use App\Model\Repository\PollRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,6 +22,8 @@ use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: PollRepository::class)]
 #[Table(name: 'poll', options: ['comment' => 'Polls'])]
+// one poll per topic
+#[UniqueConstraint(name: 'UK__Poll__Topic_id', columns: ['topic_id'])]
 class PollEntity
 {
 
@@ -51,6 +54,10 @@ class PollEntity
     #[Column(type: Types::STRING, length: 1024, nullable: false, options: ['comment' => 'Question'])]
     public string $question;
 
+    // null = open forever
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Ends at'])]
+    public ?DateTimeImmutable $endsAt;
+
     #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
@@ -71,6 +78,7 @@ class PollEntity
 
     public function __construct()
     {
+        $this->endsAt = null;
         $this->uuid = Uuid::uuid4();
 
         $this->createdAt = new DateTimeImmutable();
