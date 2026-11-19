@@ -1,0 +1,34 @@
+{block title}{_forum-topic-thanks.title}: {$topic->name}{/block}
+
+{define thankUsers, $thanks}
+    <ul class="thank-users">
+        <li n:foreach="$thanks as $thank">
+            <a n:href=":Web:User:View:default $thank->user->uuid->toString()" class="thank-user">{$thank->user->username}</a>
+            <span class="small text-muted">{$thank->createdAt|date:'j. n. Y H:i'}</span>
+        </li>
+    </ul>
+{/define}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $topic->category, forum: $topic->forum, topic: $topic}
+
+    <h1>{_forum-topic-thanks.title}</h1>
+
+    <h2 class="h4">{_forum-topic-thanks.topic}</h2>
+    <div class="topic-thanks-list">
+        {if $topicThanks}
+            {include thankUsers, $topicThanks}
+        {else}
+            <p class="text-muted">{_forum-topic-thanks.none}</p>
+        {/if}
+    </div>
+
+    <h2 class="h4">{_forum-topic-thanks.posts}</h2>
+    <div n:foreach="$postThanks as $row" class="post-thanks-list mb-2" id="post-thanks-{$row['post']->id}">
+        <a href="{link :Forum:Topic:View:default $topic->uuid->toString(), page: $row['page']}#post-{$row['post']->id}">{_forum-topic-thanks.post} {$row['post']->user->username}, {$row['post']->createdAt|date:'j. n. Y H:i'}</a>
+        {include thankUsers, $row['thanks']}
+    </div>
+    <p n:if="!$postThanks" class="text-muted">{_forum-topic-thanks.none}</p>
+
+    <a n:href=":Forum:Topic:View:default $topic->uuid->toString()" class="btn btn-link">{_forum-topic-thanks.back}</a>
+{/block}

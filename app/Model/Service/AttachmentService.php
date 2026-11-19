@@ -5,6 +5,7 @@ namespace App\Model\Service;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\FileEntity;
 use App\Model\Entity\PostEntity;
+use App\Model\Entity\TopicEntity;
 use App\Model\Entity\UserEntity;
 use App\Settings\PostSetting;
 use Nette\Http\FileUpload;
@@ -129,6 +130,28 @@ class AttachmentService
         }
 
         return $byPost;
+    }
+
+    /**
+     * All attachments of the topic, by the posts in their order.
+     *
+     * @return list<FileEntity>
+     */
+    public function attachmentsOfTopic(TopicEntity $topic) : array
+    {
+        /** @var list<FileEntity> */
+        return $this->em->getRepository(FileEntity::class)
+            ->createQueryBuilder('_f')
+            ->addSelect('_p', '_u')
+            ->join('_f.post', '_p')
+            ->join('_f.user', '_u')
+            ->where('_p.topic = :topic')
+            ->setParameter('topic', $topic)
+            ->orderBy('_p.createdAt', 'ASC')
+            ->addOrderBy('_p.id', 'ASC')
+            ->addOrderBy('_f.id', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**

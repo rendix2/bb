@@ -1,0 +1,29 @@
+{block title}{_forum-topic-attachments.title}: {$topic->name}{/block}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $topic->category, forum: $topic->forum, topic: $topic}
+
+    <h1>{_forum-topic-attachments.title}</h1>
+
+    <table n:if="$files" class="table table-sm topic-attachments">
+        <thead>
+            <tr>
+                <th>{_forum-topic-attachments.file}</th>
+                <th>{_forum-topic-attachments.size}</th>
+                <th>{_forum-topic-attachments.author}</th>
+                <th>{_forum-topic-attachments.uploaded}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr n:foreach="$files as $file">
+                <td><a n:href=":Forum:Post:Attachment:default $file->uuid->toString()" class="attachment-link">{$file->originalName}</a></td>
+                <td>{$file->size|bytes}</td>
+                <td><a n:href=":Web:User:View:default $file->user->uuid->toString()">{$file->user->username}</a></td>
+                <td>{$file->createdAt|date:'j. n. Y H:i'}</td>
+            </tr>
+        </tbody>
+    </table>
+    <p n:if="!$files" class="text-muted">{_forum-topic-attachments.none}</p>
+
+    <a n:href=":Forum:Topic:View:default $topic->uuid->toString()" class="btn btn-link">{_forum-topic-attachments.back}</a>
+{/block}

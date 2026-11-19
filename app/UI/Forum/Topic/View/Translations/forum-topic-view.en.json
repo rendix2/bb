@@ -42,5 +42,8 @@
   "pollEnded": "voting ended",
   "addPoll": "Add a poll",
   "quote": "Quote",
-  "report": "Report"
+  "report": "Report",
+  "whoThanked": "Who thanked",
+  "attachments": "Attachments of the topic",
+  "watchers": "Who watches"
 }

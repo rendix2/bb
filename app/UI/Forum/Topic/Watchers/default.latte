@@ -1,0 +1,17 @@
+{block title}{_forum-topic-watchers.title}: {$topic->name}{/block}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $topic->category, forum: $topic->forum, topic: $topic}
+
+    <h1>{_forum-topic-watchers.title}</h1>
+
+    <ul n:if="$watches" class="topic-watchers">
+        <li n:foreach="$watches as $watch">
+            <a n:href=":Web:User:View:default $watch->user->uuid->toString()" class="watcher">{$watch->user->username}</a>
+            <span class="small text-muted">{_forum-topic-watchers.since} {$watch->createdAt|date:'j. n. Y H:i'}</span>
+        </li>
+    </ul>
+    <p n:if="!$watches" class="text-muted">{_forum-topic-watchers.none}</p>
+
+    <a n:href=":Forum:Topic:View:default $topic->uuid->toString()" class="btn btn-link">{_forum-topic-watchers.back}</a>
+{/block}

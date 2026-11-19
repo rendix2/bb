@@ -58,6 +58,29 @@ class ThankService
     }
 
     /**
+     * All thanks in the topic with their users: those of the topic first, then by the posts in their order.
+     *
+     * @return list<ThankEntity>
+     */
+    public function thanksOf(TopicEntity $topic) : array
+    {
+        /** @var list<ThankEntity> */
+        return $this->em->getRepository(ThankEntity::class)
+            ->createQueryBuilder('_t')
+            ->addSelect('_u', '_p', 'CASE WHEN _p.id IS NULL THEN 0 ELSE 1 END AS HIDDEN topicFirst')
+            ->join('_t.user', '_u')
+            ->leftJoin('_t.post', '_p')
+            ->where('_t.topic = :topic')
+            ->setParameter('topic', $topic)
+            ->orderBy('topicFirst', 'ASC')
+            ->addOrderBy('_p.createdAt', 'ASC')
+            ->addOrderBy('_p.id', 'ASC')
+            ->addOrderBy('_t.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Number of thanks of each post and the posts the user has thanked (one query each for a page of posts).
      *
      * @param list<PostEntity> $posts

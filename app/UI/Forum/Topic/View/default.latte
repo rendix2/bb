@@ -69,6 +69,11 @@
         <span n:if="$canThank && $topic->user->id !== $user->getId() && !$hasThankedTopic" class="topic-thank-form d-inline-block">{control thankTopicForm}</span>
         <span n:if="$user->isLoggedIn()" class="topic-watch-form d-inline-block">{control watchForm}</span>
     </div>
+    <p class="topic-lists small">
+        <a n:href=":Forum:Topic:Thanks:default $topic->uuid->toString()" class="topic-thanks-link">{_forum-topic-view.whoThanked}</a>
+        · <a n:href=":Forum:Topic:Attachments:default $topic->uuid->toString()" class="topic-attachments-link">{_forum-topic-view.attachments}</a>
+        <span n:if="$canModerate">· <a n:href=":Forum:Topic:Watchers:default $topic->uuid->toString()" class="topic-watchers-link">{_forum-topic-view.watchers}</a></span>
+    </p>
     <div n:if="$canModerate" class="topic-lock-form mb-2">{control lockTopicForm}</div>
     <p n:if="$canDeleteTopic"><a n:href=":Forum:Topic:Delete:default $topic->uuid->toString()" class="btn btn-outline-danger btn-sm topic-delete-link">{_forum-topic-view.deleteTopic}</a></p>
     <p n:if="$topic->isLocked" class="alert alert-secondary">{_forum-topic-view.lockedNotice}</p>

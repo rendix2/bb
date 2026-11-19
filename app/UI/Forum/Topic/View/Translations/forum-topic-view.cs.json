@@ -42,5 +42,8 @@
   "pollEnded": "hlasování skončilo",
   "addPoll": "Přidat anketu",
   "quote": "Citovat",
-  "report": "Nahlásit"
+  "report": "Nahlásit",
+  "whoThanked": "Kdo poděkoval",
+  "attachments": "Přílohy tématu",
+  "watchers": "Kdo sleduje"
 }
