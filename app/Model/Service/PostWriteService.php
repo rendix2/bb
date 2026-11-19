@@ -35,6 +35,7 @@ class PostWriteService
         private readonly EntityManagerDecorator $em,
         private readonly ForumPermissionService $permissions,
         private readonly PostSetting $postSetting,
+        private readonly TopicNotificationService $topicNotification,
     ) {
     }
 
@@ -53,6 +54,9 @@ class PostWriteService
         $post = $this->newPost($user, $topic, $text, $title, $ipAddress);
         $this->em->persist($post);
         $this->em->flush();
+
+        // queued mails to the watchers (sent by mail:send-queue)
+        $this->topicNotification->notifyWatchers($post);
 
         return $post;
     }

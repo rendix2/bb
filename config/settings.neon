@@ -1,4 +1,6 @@
 services:
+    SiteUrl:
+        class: App\Settings\SiteUrl(%env.url%)
     WwwDir:
         class: App\Settings\WwwDir(%wwwDir%)
     AppDir:

@@ -1,6 +1,7 @@
 parameters:
     env:
-        url: localhost
+        # the absolute URL of the web (links in mails, App\Settings\SiteUrl)
+        url: 'http://localhost:9380'
 
     database:
         default:
