@@ -8,7 +8,7 @@ use Tests\Support\FunctionalTester;
 
 /**
  * The profile of the forum over HTTP (slice 4b): the links to the profiles in the forum work for a guest (he gets the login, not a
- * 500) and for a logged-in user (the profile), and the forum layout links the own profile.
+ * 500) and for a logged-in user (the profile), and the forum layout links the own profile. The settings of 4d.
  */
 class UserProfileCest
 {
@@ -74,6 +74,24 @@ class UserProfileCest
         $I->seePageIsOk('own profile');
         $I->see($user->username, '.profile-username');
         $I->seeInCurrentUrl($user->uuid->toString());
+    }
+
+    /**
+     * Slice 4d over HTTP: the signature saved on Web:User:Edit (CSRF token of the form) is shown on the profile as Markdown.
+     */
+    public function theSignatureFromTheSettingsIsShownOnTheProfile(FunctionalTester $I) : void
+    {
+        $user = $I->createUser('signature');
+        $I->login($user->username, FunctionalTester::PASSWORD);
+
+        $I->amOnPage('/web.user.edit/');
+        $I->seePageIsOk('settings');
+        $I->submitForm('#frm-editForm', ['signature' => 'Signed *in italics*']);
+        $I->seePageIsOk('settings saved');
+
+        $I->amOnPage('/web.user.view/' . $user->uuid->toString());
+        $I->seePageIsOk('profile');
+        $I->seeInSource('<em>in italics</em>');
     }
 
     private function anyTopic(FunctionalTester $I) : TopicEntity

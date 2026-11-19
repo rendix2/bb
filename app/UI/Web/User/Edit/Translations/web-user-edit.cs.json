@@ -2,7 +2,15 @@
   "form.header": "Editace",
   "form.subtitle": "Upravte své osobní údaje a nastavení účtu",
   "back": "Zpět bez uložení",
-
   "form.submit.label": "Uložit",
-  "form.submit.success": "Uživatel uložen."
+  "form.submit.success": "Uživatel uložen.",
+  "form.protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+  "form.username.minLength": "Uživatelské jméno musí mít alespoň %minChars% znaky.",
+  "form.language.label": "Jazyk",
+  "form.language.required": "Vyberte jazyk.",
+  "form.language.unknown": "Neznámý jazyk.",
+  "form.signature.label": "Podpis",
+  "form.signature.description": "Markdown, nejvýše %maxChars% znaků. Zobrazuje se pod vašimi příspěvky.",
+  "form.signature.maxLength": "Podpis může mít nejvýše %maxChars% znaků.",
+  "form.signature.preview": "Náhled podpisu"
 }

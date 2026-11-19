@@ -2,7 +2,15 @@
   "form.header": "Edit profile",
   "form.subtitle": "Edit your personal details and account settings",
   "back": "Back without saving",
-
   "form.submit.label": "Save",
-  "form.submit.success": "User saved."
+  "form.submit.success": "User saved.",
+  "form.protection": "The form has expired, please send it again.",
+  "form.username.minLength": "The username must have at least %minChars% characters.",
+  "form.language.label": "Language",
+  "form.language.required": "Choose a language.",
+  "form.language.unknown": "Unknown language.",
+  "form.signature.label": "Signature",
+  "form.signature.description": "Markdown, at most %maxChars% characters. Shown under your posts.",
+  "form.signature.maxLength": "The signature may have at most %maxChars% characters.",
+  "form.signature.preview": "Preview of the signature"
 }

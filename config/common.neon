@@ -75,6 +75,7 @@ parameters:
         neededActivate: true
         minUserNameLength: 3
         minUserPasswordLength: 8
+        signatureMaxLength: 1000 # characters of the Markdown signature (Web:User:Edit)
     search:
         minLength: 3
     mail:

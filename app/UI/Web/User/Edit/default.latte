@@ -21,6 +21,11 @@
                     <div class="edit-form-container">
                         {control editForm}
                     </div>
+
+                    <div n:if="$signature" class="mt-4 signature-preview">
+                        <h2 class="h6">{_web-user-edit.form.signature.preview}</h2>
+                        <div class="small text-muted border-top pt-2">{$signature|markdown}</div>
+                    </div>
                 </div>
 
                 <!-- Footer s odkazem zpět (volitelné) -->
