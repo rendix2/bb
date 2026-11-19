@@ -1,0 +1,2 @@
+# Linux line endings everywhere (in git and in the working copy), like alfred
+* text=auto eol=lf
