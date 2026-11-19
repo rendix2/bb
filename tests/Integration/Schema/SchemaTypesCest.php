@@ -149,6 +149,13 @@ class SchemaTypesCest
      */
     private function property(ClassMetadata $meta, string $property) : ReflectionProperty
     {
+        // bb: a field of an embeddable ("permissions.topicAdd") is a property of the embeddable class
+        if (str_contains($property, '.')) {
+            $mapping = $meta->getFieldMapping($property);
+
+            return (new ReflectionClass((string) $mapping->originalClass))->getProperty((string) $mapping->originalField);
+        }
+
         return (new ReflectionClass($meta->getName()))->getProperty($property);
     }
 }

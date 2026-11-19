@@ -51,7 +51,9 @@ class SchemaNamingCest
         $wrong = [];
         foreach ($this->schema->entities() as $meta) {
             foreach ([...$meta->getFieldNames(), ...$meta->getAssociationNames()] as $property) {
-                if (preg_match(self::CAMEL_CASE, $property) !== 1) {
+                // bb: a field of an embeddable is "embedded.field" - every part is a property name
+                $parts = explode('.', $property);
+                if (array_filter($parts, fn (string $part) : bool => preg_match(self::CAMEL_CASE, $part) !== 1) !== []) {
                     $wrong[] = $this->schema->label($meta, $property) . ": expected a camelCase property name, got \"$property\"";
                 }
             }

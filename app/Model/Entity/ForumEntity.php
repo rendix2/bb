@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
@@ -57,6 +58,10 @@ class ForumEntity
 
     #[Column(type: Types::INTEGER, nullable:  false, options: ['comment' => 'Order'])]
     public int $sortOrder;
+
+    // the flag columns without a prefix (topic_add, post_add, ...)
+    #[Embedded(class: ForumPermissions::class, columnPrefix: false)]
+    public ForumPermissions $permissions;
 
     #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
@@ -120,6 +125,9 @@ class ForumEntity
 
     public function __construct()
     {
+        $this->permissions = new ForumPermissions();
+        // defaults of logged-in users in this forum
+        $this->permissions->grantDefaultsOfANewForum();
         $this->uuid = Uuid::uuid4();
 
         $this->createdAt = new DateTimeImmutable();

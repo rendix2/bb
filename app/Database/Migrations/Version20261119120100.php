@@ -35,6 +35,30 @@ final class Version20261119120100 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Updated at');
 
+        $table->addColumn('topic_add', Types::BOOLEAN)
+            ->setComment('May start a topic');
+
+        $table->addColumn('topic_update', Types::BOOLEAN)
+            ->setComment('May edit his topic');
+
+        $table->addColumn('topic_delete', Types::BOOLEAN)
+            ->setComment('May delete his topic');
+
+        $table->addColumn('post_add', Types::BOOLEAN)
+            ->setComment('May reply');
+
+        $table->addColumn('post_update', Types::BOOLEAN)
+            ->setComment('May edit his post');
+
+        $table->addColumn('post_delete', Types::BOOLEAN)
+            ->setComment('May delete his post');
+
+        $table->addColumn('topic_thank', Types::BOOLEAN)
+            ->setComment('May thank');
+
+        $table->addColumn('topic_fast_reply', Types::BOOLEAN)
+            ->setComment('May use the fast reply');
+
         $table->addColumn('group_id', Types::BIGINT)
             ->setComment('Group ID');
 

@@ -6,6 +6,7 @@ use App\Model\Repository\GroupForumPermissionRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
@@ -40,6 +41,10 @@ class GroupForumPermissionEntity
     #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Forum ID'])]
     public ForumEntity $forum;
 
+    // the flag columns without a prefix (topic_add, post_add, ...)
+    #[Embedded(class: ForumPermissions::class, columnPrefix: false)]
+    public ForumPermissions $permissions;
+
     #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
@@ -48,6 +53,7 @@ class GroupForumPermissionEntity
 
     public function __construct()
     {
+        $this->permissions = new ForumPermissions();
         $this->uuid = Uuid::uuid4();
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;
