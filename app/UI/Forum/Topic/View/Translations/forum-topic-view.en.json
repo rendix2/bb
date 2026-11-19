@@ -16,5 +16,14 @@
   "edited": "edited",
   "edit": "Edit",
   "delete": "Delete",
-  "deleteTopic": "Delete the topic"
+  "deleteTopic": "Delete the topic",
+  "lockTopic": "Lock the topic",
+  "unlockTopic": "Unlock the topic",
+  "lockPost": "Lock",
+  "unlockPost": "Unlock",
+  "postLocked": "The post is locked",
+  "topicLockedDone": "The topic was locked.",
+  "topicUnlockedDone": "The topic was unlocked.",
+  "postLockedDone": "The post was locked.",
+  "postUnlockedDone": "The post was unlocked."
 }

@@ -167,6 +167,32 @@ class PostWriteService
         $this->em->flush();
     }
 
+    /**
+     * A moderator (or the admin) locks / unlocks a topic: a locked topic takes the rights of its authors (replies, edits).
+     */
+    public function setTopicLocked(UserEntity $user, TopicEntity $topic, bool $locked) : void
+    {
+        if (!$this->permissions->isAllowed($user, $topic, ForumPrivilege::MODERATE)) {
+            throw new PostWriteException(self::ERROR_NOT_ALLOWED);
+        }
+
+        $topic->isLocked = $locked;
+        $this->em->flush();
+    }
+
+    /**
+     * A moderator (or the admin) locks / unlocks one post: a locked post cannot be edited or deleted by its author.
+     */
+    public function setPostLocked(UserEntity $user, PostEntity $post, bool $locked) : void
+    {
+        if (!$this->permissions->isAllowed($user, $post, ForumPrivilege::MODERATE)) {
+            throw new PostWriteException(self::ERROR_NOT_ALLOWED);
+        }
+
+        $post->isLocked = $locked;
+        $this->em->flush();
+    }
+
     private function checkText(string $text) : string
     {
         $text = Strings::trim(Strings::unixNewLines($text));

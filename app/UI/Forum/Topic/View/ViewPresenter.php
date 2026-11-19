@@ -17,6 +17,7 @@ use App\Settings\TopicsSetting;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Multiplier;
 use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
 use Nette\Utils\Paginator;
@@ -107,6 +108,7 @@ class ViewPresenter extends Presenter
 
         $this->template->canEdit = $canEdit;
         $this->template->canDelete = $canDelete;
+        $this->template->canModerate = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::MODERATE);
         $this->template->canDeleteTopic = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::DELETE);
         $this->template->canReply = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::REPLY);
         $this->template->canFastReply = $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::FAST_REPLY);
@@ -128,6 +130,73 @@ class ViewPresenter extends Presenter
         $form->onSuccess[] = $this->fastReplyFormSucceeded(...);
 
         return $form;
+    }
+
+    /**
+     * Lock / unlock the topic (moderator): POST with CSRF protection, the permission checked when written.
+     */
+    protected function createComponentLockTopicForm() : BootstrapForm
+    {
+        $form = $this->moderationForm($this->topic->isLocked ? 'forum-topic-view.unlockTopic' : 'forum-topic-view.lockTopic');
+        $form->onSuccess[] = function () : void {
+            $this->moderate(fn (UserEntity $user) => $this->postWriteService->setTopicLocked($user, $this->topic, !$this->topic->isLocked));
+            $this->flashMessage($this->topic->isLocked ? 'forum-topic-view.topicLockedDone' : 'forum-topic-view.topicUnlockedDone', 'success');
+            $this->redirect('this');
+        };
+
+        return $form;
+    }
+
+    /**
+     * Lock / unlock one post of the page (moderator): one form per post id.
+     */
+    protected function createComponentLockPostForm() : Multiplier
+    {
+        return new Multiplier(function (string $postId) : BootstrapForm {
+            $post = $this->em->getRepository(PostEntity::class)->findOneBy(['id' => (int) $postId, 'topic' => $this->topic]);
+
+            if ($post === null) {
+                $this->error('Post was not found.');
+            }
+
+            $form = $this->moderationForm($post->isLocked ? 'forum-topic-view.unlockPost' : 'forum-topic-view.lockPost');
+            $form->onSuccess[] = function () use ($post) : void {
+                $this->moderate(fn (UserEntity $user) => $this->postWriteService->setPostLocked($user, $post, !$post->isLocked));
+                $this->flashMessage($post->isLocked ? 'forum-topic-view.postLockedDone' : 'forum-topic-view.postUnlockedDone', 'success');
+                $this->redirect('this#post-' . $post->id);
+            };
+
+            return $form;
+        });
+    }
+
+    private function moderationForm(string $caption) : BootstrapForm
+    {
+        $form = new BootstrapForm();
+        BootstrapForm::switchBootstrapVersion(BootstrapVersion::V5);
+
+        $form->setTranslator($this->translator);
+        $form->addProtection('forum-topic-view.form.protection');
+        $form->addSubmit('toggle', $caption)
+            ->setHtmlAttribute('class', 'btn btn-outline-secondary btn-sm');
+
+        return $form;
+    }
+
+    /**
+     * @param callable(UserEntity): void $action
+     */
+    private function moderate(callable $action) : void
+    {
+        if ($this->currentUser === null) {
+            $this->error('Not logged in.', 403);
+        }
+
+        try {
+            $action($this->currentUser);
+        } catch (PostWriteException) {
+            $this->error('You may not moderate this topic.', 403);
+        }
     }
 
     private function fastReplyFormSucceeded(Form $form) : void

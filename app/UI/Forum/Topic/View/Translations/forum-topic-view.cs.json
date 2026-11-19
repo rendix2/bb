@@ -16,5 +16,14 @@
   "edited": "upraveno",
   "edit": "Upravit",
   "delete": "Smazat",
-  "deleteTopic": "Smazat téma"
+  "deleteTopic": "Smazat téma",
+  "lockTopic": "Zamknout téma",
+  "unlockTopic": "Odemknout téma",
+  "lockPost": "Zamknout",
+  "unlockPost": "Odemknout",
+  "postLocked": "Příspěvek je zamčený",
+  "topicLockedDone": "Téma bylo zamčeno.",
+  "topicUnlockedDone": "Téma bylo odemčeno.",
+  "postLockedDone": "Příspěvek byl zamčen.",
+  "postUnlockedDone": "Příspěvek byl odemčen."
 }
