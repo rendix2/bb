@@ -1,4 +1,16 @@
 {
   "locked": "Zamčeno",
-  "posts": "Příspěvky"
+  "posts": "Příspěvky",
+  "lockedNotice": "Téma je zamčené, nelze do něj odpovídat.",
+  "reply": "Odpovědět",
+  "fastReply": "Rychlá odpověď",
+  "form": {
+    "protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+    "text": {
+      "label": "Text (Markdown)",
+      "required": "Napište text odpovědi."
+    },
+    "send": "Odeslat",
+    "success": "Odpověď byla uložena."
+  }
 }

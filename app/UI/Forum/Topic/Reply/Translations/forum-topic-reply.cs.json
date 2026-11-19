@@ -1,0 +1,16 @@
+{
+  "title": "Odpověď",
+  "markdownHint": "Text pište v Markdownu: **tučně**, *kurzíva*, [odkaz](https://…), seznamy začínají „- “.",
+  "form": {
+    "protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+    "title": {
+      "label": "Titulek (nepovinný)"
+    },
+    "text": {
+      "label": "Text (Markdown)",
+      "required": "Napište text odpovědi."
+    },
+    "send": "Odeslat odpověď",
+    "success": "Odpověď byla uložena."
+  }
+}

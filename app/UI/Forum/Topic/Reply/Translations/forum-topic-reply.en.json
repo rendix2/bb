@@ -1,0 +1,16 @@
+{
+  "title": "Reply",
+  "markdownHint": "Write the text in Markdown: **bold**, *italic*, [link](https://…), lists start with \"- \".",
+  "form": {
+    "protection": "The form has expired, please send it again.",
+    "title": {
+      "label": "Title (optional)"
+    },
+    "text": {
+      "label": "Text (Markdown)",
+      "required": "Write the text of the reply."
+    },
+    "send": "Send the reply",
+    "success": "The reply was saved."
+  }
+}

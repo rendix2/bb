@@ -1,4 +1,16 @@
 {
   "locked": "Locked",
-  "posts": "Posts"
+  "posts": "Posts",
+  "lockedNotice": "The topic is locked, replies are not possible.",
+  "reply": "Reply",
+  "fastReply": "Fast reply",
+  "form": {
+    "protection": "The form has expired, please send it again.",
+    "text": {
+      "label": "Text (Markdown)",
+      "required": "Write the text of the reply."
+    },
+    "send": "Send",
+    "success": "The reply was saved."
+  }
 }

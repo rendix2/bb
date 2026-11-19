@@ -1,0 +1,11 @@
+{block title}{_forum-topic-reply.title}: {$topic->name}{/block}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $topic->category, forum: $topic->forum, topic: $topic}
+
+    <h1>{_forum-topic-reply.title}: {$topic->name}</h1>
+
+    {control replyForm}
+
+    <p class="small text-muted">{_forum-topic-reply.markdownHint}</p>
+{/block}
