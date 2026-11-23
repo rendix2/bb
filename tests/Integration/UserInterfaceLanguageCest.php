@@ -2,7 +2,6 @@
 
 namespace Tests\Integration;
 
-use App\Core\Translation\UserLocaleResolver;
 use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\UserEntity;
 use Contributte\Translation\Translator;
@@ -10,7 +9,7 @@ use Tests\Support\IntegrationTester;
 
 /**
  * The language of the interface (decision of 2026-11-20): a logged-in user sees it in the language of his settings
- * (UserLocaleResolver: language.file_name czech/english -> cs/en), a guest in the default one (cs). Before, the setting was saved
+ * (UserLocaleResolver: language.locale cs/en), a guest in the default one (cs). Before, the setting was saved
  * but the interface stayed Czech. Every test runs in a transaction that is rolled back.
  */
 class UserInterfaceLanguageCest
@@ -57,6 +56,24 @@ class UserInterfaceLanguageCest
         $I->dontSee('Registrace');
     }
 
+    /**
+     * The locale comes from language.locale, not from the name of the language: an English language under another
+     * file name is still English (before, a hard-coded map file_name => locale; a new language had no locale).
+     */
+    public function theLocaleIsTheColumnOfTheLanguage(IntegrationTester $I) : void
+    {
+        $user = $this->createUserWithLanguage($I, 'Renamed', 'english');
+        $user->language->fileName = 'anglictina';
+        $user->language->name = 'Angličtina';
+        $I->em()->flush();
+
+        $I->amOnPage('/web.user.login/');
+        $I->submitForm('#frm-loginForm', ['username' => $user->username, 'password' => IntegrationTester::PASSWORD]);
+        $I->see('Successfully logged in');
+        $I->amOnPage('/forum.index/');
+        $I->see('Log out');
+    }
+
     public function aUserWithCzechSeesCzech(IntegrationTester $I) : void
     {
         $user = $this->createUserWithLanguage($I, 'Czech', 'czech');
@@ -93,7 +110,8 @@ class UserInterfaceLanguageCest
     public function theResolverMapsTheLanguagesOfTheFixtures(IntegrationTester $I) : void
     {
         foreach ($I->em()->getRepository(LanguageEntity::class)->findAll() as $language) {
-            $I->assertArrayHasKey($language->fileName, UserLocaleResolver::LOCALES, 'The language ' . $language->name . ' has no locale.');
+            $I->assertContains($language->locale, $I->grabService(Translator::class)->getLocalesWhitelist() ?? [], 'The locale of the language ' . $language->name . ' is not allowed.');
+            $I->assertFileExists(dirname(__DIR__, 2) . '/app/UI/Web/User/Edit/Translations/web-user-edit.' . $language->locale . '.json', 'The language ' . $language->name . ' has no translations.');
         }
 
         $I->assertSame('cs', $I->grabService(Translator::class)->getDefaultLocale());

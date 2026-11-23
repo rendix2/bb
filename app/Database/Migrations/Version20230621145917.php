@@ -36,6 +36,10 @@ final class Version20230621145917 extends AbstractMigration
             ->setLength(512)
             ->setComment('File name');
 
+        $table->addColumn('locale', Types::STRING)
+            ->setLength(16)
+            ->setComment('Locale of the translations');
+
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
 
@@ -50,6 +54,7 @@ final class Version20230621145917 extends AbstractMigration
         $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('Languages')
 
+            ->addUniqueIndex(['locale'], 'UK__Language__Locale')
             ->addUniqueIndex(['uuid'], 'UK__Language__Uuid');
     }
 

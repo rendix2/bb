@@ -34,6 +34,12 @@ class LanguageEntity
     #[Column(type: Types::STRING, length: 512, options: ['comment' => 'File name'])]
     public string $fileName;
 
+    /**
+     * The locale of the translations of the interface and of the e-mails (cs, en; translation.locales.whitelist).
+     */
+    #[Column(type: Types::STRING, length: 16, unique: true, options: ['comment' => 'Locale of the translations'])]
+    public string $locale;
+
     #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 

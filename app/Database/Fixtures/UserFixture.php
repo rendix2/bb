@@ -26,10 +26,12 @@ class UserFixture implements FixtureInterface, OrderedFixtureInterface, Containe
         $czechLanguageEntity = new LanguageEntity();
         $czechLanguageEntity->name = 'Czech';
         $czechLanguageEntity->fileName = 'czech';
+        $czechLanguageEntity->locale = 'cs';
 
         $englishLanguageEntity = new LanguageEntity();
         $englishLanguageEntity->name = 'English';
         $englishLanguageEntity->fileName = 'english';
+        $englishLanguageEntity->locale = 'en';
 
         $manager->persist($czechLanguageEntity);
         $manager->persist($englishLanguageEntity);
