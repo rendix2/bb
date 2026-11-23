@@ -6,5 +6,12 @@
   "thanks": "Thanks received",
   "moderates": "Moderates",
   "forum": "Forum",
-  "edit": "Edit the profile"
+  "edit": "Edit the profile",
+  "favourites": "My favourites",
+  "form.protection": "The form has expired, please submit it again.",
+  "favourite.add": "Add to favourites",
+  "favourite.remove": "Remove from favourites",
+  "favourite.added": "The user was added to favourites.",
+  "favourite.removed": "The user was removed from favourites.",
+  "favourite.self": "You cannot add yourself to favourites."
 }

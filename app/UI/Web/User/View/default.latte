@@ -53,6 +53,9 @@
     <div class="card-footer bg-transparent">
         <a n:href=":Forum:Index:default" class="btn btn-link btn-sm">{_web-user-view.forum}</a>
         <a n:if="$isOwn" n:href=":Web:User:Edit:default" class="btn btn-link btn-sm profile-edit-link">{_web-user-view.edit}</a>
+        {* the own lists are private: only on the own profile *}
+        <a n:if="$isOwn" n:href=":Web:User:Favourites:default" class="btn btn-link btn-sm profile-favourites-link">{_web-user-view.favourites}</a>
+        <div n:if="!$isOwn" class="d-inline-block profile-favourite-form" data-favourite="{$isFavourite ? 'yes' : 'no'}">{control favouriteForm}</div>
     </div>
 </div>
 {/block}

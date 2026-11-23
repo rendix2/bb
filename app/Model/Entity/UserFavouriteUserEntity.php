@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Model\Entity;
 
@@ -12,12 +12,15 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[Entity(repositoryClass: UserFavouriteUserRepository::class)]
 #[Table(name: 'user_favourite', options: ['comment' => 'User favourite users'])]
+// a user is a favourite of another user only once
+#[UniqueConstraint(name: 'UK__User_favourite__User_id_favourite_user_id', columns: ['user_id', 'favourite_user_id'])]
 class UserFavouriteUserEntity
 {
     #[Id()]
@@ -49,5 +52,4 @@ class UserFavouriteUserEntity
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;
     }
-
 }

@@ -6,5 +6,12 @@
   "thanks": "Přijatých poděkování",
   "moderates": "Moderuje",
   "forum": "Fórum",
-  "edit": "Upravit profil"
+  "edit": "Upravit profil",
+  "favourites": "Moji oblíbení",
+  "form.protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+  "favourite.add": "Přidat do oblíbených",
+  "favourite.remove": "Odebrat z oblíbených",
+  "favourite.added": "Uživatel přidán do oblíbených.",
+  "favourite.removed": "Uživatel odebrán z oblíbených.",
+  "favourite.self": "Sám sebe nelze přidat do oblíbených."
 }

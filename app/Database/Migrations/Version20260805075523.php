@@ -50,6 +50,7 @@ final class Version20260805075523 extends AbstractMigration
 
             ->addIndex(['favourite_user_id'], 'K__User_favourite__Favourite_user_id')
             ->addIndex(['user_id'], 'K__User_favourite__User_id')
+            ->addUniqueIndex(['user_id', 'favourite_user_id'], 'UK__User_favourite__User_id_favourite_user_id')
             ->addUniqueIndex(['uuid'], 'UK__User_favourite__Uuid')
 
             ->addForeignKeyConstraint('users', ['favourite_user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__User_favourite__Favourite_user_id')

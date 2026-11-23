@@ -1,0 +1,19 @@
+{block title}{_web-user-favourites.header}{/block}
+
+{block content}
+<div class="mt-2 user-favourites" style="max-width: 600px;">
+    <h1 class="h4">{_web-user-favourites.header}</h1>
+    <p><a n:href=":Web:User:View:default">{_web-user-favourites.profile}</a></p>
+
+    <table class="table table-sm align-middle">
+        <tbody>
+            <tr n:foreach="$favourites as $favourite" class="user-favourite">
+                <td><a n:href=":Web:User:View:default $favourite->favouriteUser->uuid->toString()" class="user-favourite-name">{$favourite->favouriteUser->username}</a></td>
+                <td class="text-muted small">{_web-user-favourites.since} {$favourite->createdAt|date:'j. n. Y'}</td>
+                <td class="text-end">{control "removeForm-{$favourite->favouriteUser->id}"}</td>
+            </tr>
+            <tr n:if="!$favourites"><td class="text-muted">{_web-user-favourites.none}</td></tr>
+        </tbody>
+    </table>
+</div>
+{/block}
