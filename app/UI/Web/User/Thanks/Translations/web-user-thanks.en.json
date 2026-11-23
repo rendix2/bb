@@ -1,0 +1,10 @@
+{
+  "header": "Thanks received by %username%",
+  "profile": "Back to the profile",
+  "date": "Date",
+  "who": "Thanked by",
+  "for": "For",
+  "forPost": "a post in the topic",
+  "forTopic": "the topic",
+  "none": "No thanks."
+}

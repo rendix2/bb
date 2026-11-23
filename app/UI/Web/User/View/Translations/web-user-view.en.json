@@ -13,5 +13,6 @@
   "favourite.remove": "Remove from favourites",
   "favourite.added": "The user was added to favourites.",
   "favourite.removed": "The user was removed from favourites.",
-  "favourite.self": "You cannot add yourself to favourites."
+  "favourite.self": "You cannot add yourself to favourites.",
+  "watches": "My watched topics"
 }

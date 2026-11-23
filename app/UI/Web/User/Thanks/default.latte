@@ -1,0 +1,35 @@
+{block title}{_web-user-thanks.header, [username: $userEntity->username]}{/block}
+
+{block content}
+<div class="mt-2 user-thanks">
+    <h1 class="h4">{_web-user-thanks.header, [username: $userEntity->username]}</h1>
+    <p><a n:href=":Web:User:View:default $userEntity->uuid->toString()">{_web-user-thanks.profile}</a></p>
+
+    {include '../../../Forum/@paginator.latte', paginator: $paginator}
+
+    <table class="table table-sm">
+        <thead>
+            <tr><th>{_web-user-thanks.date}</th><th>{_web-user-thanks.who}</th><th>{_web-user-thanks.for}</th></tr>
+        </thead>
+        <tbody>
+            <tr n:foreach="$items as $thank" class="user-thank">
+                <td class="text-nowrap">{$thank->createdAt|date:'j. n. Y H:i'}</td>
+                <td><a n:href=":Web:User:View:default $thank->user->uuid->toString()" class="user-thank-who">{$thank->user->username}</a></td>
+                <td>
+                    {if $thank->post}
+                        {_web-user-thanks.forPost}
+                        <a href="{link :Forum:Topic:View:default $thank->topic->uuid->toString(), page: $pages[$thank->post->id]}#post-{$thank->post->id}" class="user-thank-post">{$thank->topic->name}</a>
+                        <div class="small text-muted">{$thank->post->text|truncate:200}</div>
+                    {else}
+                        {_web-user-thanks.forTopic}
+                        <a n:href=":Forum:Topic:View:default $thank->topic->uuid->toString()" class="user-thank-topic">{$thank->topic->name}</a>
+                    {/if}
+                </td>
+            </tr>
+            <tr n:if="!$items"><td colspan="3" class="text-muted">{_web-user-thanks.none}</td></tr>
+        </tbody>
+    </table>
+
+    {include '../../../Forum/@paginator.latte', paginator: $paginator}
+</div>
+{/block}

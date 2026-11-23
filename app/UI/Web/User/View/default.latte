@@ -36,7 +36,7 @@
             <dd class="col-6"><a n:href=":Web:User:Topics:default $userEntity->uuid->toString()" class="profile-topic-count">{$counts['topics']}</a></dd>
 
             <dt class="col-6">{_web-user-view.thanks}</dt>
-            <dd class="col-6 profile-thank-count">{$counts['thanks']}</dd>
+            <dd class="col-6"><a n:href=":Web:User:Thanks:default $userEntity->uuid->toString()" class="profile-thank-count">{$counts['thanks']}</a></dd>
 
             <dt class="col-6">{_web-user-view.moderates}</dt>
             <dd class="col-6 profile-moderated-forums">
@@ -55,6 +55,7 @@
         <a n:if="$isOwn" n:href=":Web:User:Edit:default" class="btn btn-link btn-sm profile-edit-link">{_web-user-view.edit}</a>
         {* the own lists are private: only on the own profile *}
         <a n:if="$isOwn" n:href=":Web:User:Favourites:default" class="btn btn-link btn-sm profile-favourites-link">{_web-user-view.favourites}</a>
+        <a n:if="$isOwn" n:href=":Web:User:Watches:default" class="btn btn-link btn-sm profile-watches-link">{_web-user-view.watches}</a>
         <div n:if="!$isOwn" class="d-inline-block profile-favourite-form" data-favourite="{$isFavourite ? 'yes' : 'no'}">{control favouriteForm}</div>
     </div>
 </div>

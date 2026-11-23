@@ -48,17 +48,8 @@ class UserProfileService
             ->getQuery()
             ->getSingleScalarResult();
 
-        $thanks = $this->em->getRepository(ThankEntity::class)
-            ->createQueryBuilder('_th')
+        $thanks = $this->visibleThanks($user, $forumIds)
             ->select('COUNT(_th.id)')
-            ->innerJoin('_th.topic', '_t')
-            ->innerJoin('_t.category', '_tc')
-            ->leftJoin('_th.post', '_p')
-            ->where('(_p.id IS NOT NULL AND _p.user = :user) OR (_p.id IS NULL AND _t.user = :user)')
-            ->andWhere('_t.forum IN (:forums)')
-            ->andWhere('_tc.active = true')
-            ->setParameter('user', $user)
-            ->setParameter('forums', $forumIds)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -181,6 +172,58 @@ class UserProfileService
             ->getResult();
 
         return ['count' => (int) $count, 'items' => $topics];
+    }
+
+    /**
+     * One page of the thanks he received (for his posts and his topics) the viewer may read, the newest first, with who thanked
+     * and for what.
+     *
+     * @return array{count: int, items: list<ThankEntity>}
+     */
+    public function thanksPage(UserEntity $user, ?UserEntity $viewer, int $offset, int $limit) : array
+    {
+        $forumIds = $this->visibility->visibleForumIds($viewer);
+
+        if ($forumIds === []) {
+            return ['count' => 0, 'items' => []];
+        }
+
+        $count = $this->visibleThanks($user, $forumIds)
+            ->select('COUNT(_th.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        /** @var list<ThankEntity> $thanks */
+        $thanks = $this->visibleThanks($user, $forumIds)
+            ->select('_th', '_t', '_p', '_u')
+            ->innerJoin('_th.user', '_u')
+            ->orderBy('_th.createdAt', 'DESC')
+            ->addOrderBy('_th.id', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
+        return ['count' => (int) $count, 'items' => $thanks];
+    }
+
+    /**
+     * The thanks of his posts and (without a post) of his topics in the forums of $forumIds, topic in an active category.
+     *
+     * @param list<int> $forumIds
+     */
+    private function visibleThanks(UserEntity $user, array $forumIds) : QueryBuilder
+    {
+        return $this->em->getRepository(ThankEntity::class)
+            ->createQueryBuilder('_th')
+            ->innerJoin('_th.topic', '_t')
+            ->innerJoin('_t.category', '_tc')
+            ->leftJoin('_th.post', '_p')
+            ->where('(_p.id IS NOT NULL AND _p.user = :user) OR (_p.id IS NULL AND _t.user = :user)')
+            ->andWhere('_t.forum IN (:forums)')
+            ->andWhere('_tc.active = true')
+            ->setParameter('user', $user)
+            ->setParameter('forums', $forumIds);
     }
 
     /**

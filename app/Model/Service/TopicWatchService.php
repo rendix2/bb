@@ -7,6 +7,7 @@ use App\Model\Entity\TopicEntity;
 use App\Model\Entity\TopicWatchEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Security\ForumPermissionService;
+use App\Model\Security\ForumVisibilityService;
 use App\Model\Security\ForumPrivilege;
 
 /**
@@ -17,7 +18,40 @@ class TopicWatchService
     public function __construct(
         private readonly EntityManagerDecorator $em,
         private readonly ForumPermissionService $permissions,
+        private readonly ForumVisibilityService $visibility,
     ) {
+    }
+
+    /**
+     * The topics the user watches (the page "My watched topics"), only those he may still read (active forum readable for him and
+     * active category, as Forum:Topic:View requires), the newest watch first, with their forums.
+     *
+     * @return list<TopicWatchEntity>
+     */
+    public function watchedBy(UserEntity $user) : array
+    {
+        $forumIds = $this->visibility->visibleForumIds($user);
+
+        if ($forumIds === []) {
+            return [];
+        }
+
+        /** @var list<TopicWatchEntity> */
+        return $this->em->getRepository(TopicWatchEntity::class)
+            ->createQueryBuilder('_w')
+            ->select('_w', '_t', '_f')
+            ->innerJoin('_w.topic', '_t')
+            ->innerJoin('_t.forum', '_f')
+            ->innerJoin('_t.category', '_tc')
+            ->where('_w.user = :user')
+            ->andWhere('_t.forum IN (:forums)')
+            ->andWhere('_tc.active = true')
+            ->setParameter('user', $user)
+            ->setParameter('forums', $forumIds)
+            ->orderBy('_w.createdAt', 'DESC')
+            ->addOrderBy('_t.id', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     public function isWatching(?UserEntity $user, TopicEntity $topic) : bool
