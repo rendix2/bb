@@ -15,6 +15,9 @@ final class RouterFactory
     {
         $router = new RouteList;
 
+        // thumbnails of contributte/imagist outside www/ (config/ext/imagist.neon), the address it generates for n:img
+        $router->addRoute('cache/<scope avatars>/_<filter avatar128|avatar48>/<name [a-zA-Z0-9]{32}\.webp>', 'Web:Image:default');
+
         // the default action addressed by uuid without "/default/" (/forum.topic.view/<uuid>); first, so links are generated short
         $router->addRoute('<presenter>/<uuid>', [
                 'action' => 'default',

@@ -12,5 +12,19 @@
   "form.signature.label": "Podpis",
   "form.signature.description": "Markdown, nejvýše %maxChars% znaků. Zobrazuje se pod vašimi příspěvky.",
   "form.signature.maxLength": "Podpis může mít nejvýše %maxChars% znaků.",
-  "form.signature.preview": "Náhled podpisu"
+  "form.signature.preview": "Náhled podpisu",
+  "avatar.header": "Avatar",
+  "avatar.label": "Nový avatar",
+  "avatar.description": "JPEG, PNG, GIF (ne animovaný) nebo WebP, nejvýše %maxWidth%×%maxHeight% px a %maxSize% MB. Uloží se jako čtverec 256 px.",
+  "avatar.required": "Vyberte obrázek.",
+  "avatar.image": "Avatar musí být obrázek JPEG, PNG, GIF nebo WebP.",
+  "avatar.submit": "Nahrát avatar",
+  "avatar.delete": "Odebrat avatar",
+  "avatar.success": "Avatar uložen.",
+  "avatar.deleted": "Avatar odebrán.",
+  "avatar.error.upload": "Obrázek se nepodařilo nahrát.",
+  "avatar.error.size": "Avatar může mít nejvýše %maxSize% MB.",
+  "avatar.error.type": "Avatar musí být obrázek JPEG, PNG, GIF nebo WebP.",
+  "avatar.error.dimensions": "Avatar může mít nejvýše %maxWidth%×%maxHeight% px.",
+  "avatar.error.animated": "Animovaný obrázek nelze použít jako avatar."
 }

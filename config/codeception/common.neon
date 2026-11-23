@@ -26,6 +26,8 @@ parameters:
     fixturesDir: %appDir%/Database/Fixtures
     entityDir: %appDir%/Model/Entity
     assetsDir: %wwwDir%/assets
+    # the images (avatars) written by the tests go to temp/, not to data/images of the application
+    imagesDir: %tempDir%/images
 
 includes:
     - ../common.neon

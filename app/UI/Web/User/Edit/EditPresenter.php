@@ -8,6 +8,9 @@ use App\Forms\Renderer\IconBootstrapRenderer;
 use App\Forms\UsernameFormControlFactory;
 use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\UserEntity;
+use App\Model\Service\AvatarException;
+use App\Model\Service\UserAvatarService;
+use App\Settings\Avatars;
 use App\Settings\Users;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
@@ -24,7 +27,8 @@ use stdClass;
  * class EditPresenter
  *
  * bb: besides the name of web-project also the settings of the forum: language, signature (Markdown, users.signatureMaxLength)
- * and the username, if users.canChangeUserName allows it (unique case-insensitively, UsernameFormControl).
+ * and the username, if users.canChangeUserName allows it (unique case-insensitively, UsernameFormControl); the avatar
+ * (its own POST forms with a CSRF token: upload/replace and delete, UserAvatarService).
  *
  * @package App\UI\Web\User\Edit
  */
@@ -35,6 +39,8 @@ class EditPresenter extends Presenter
         private readonly Translator             $translator,
         private readonly Users                  $users,
         private readonly UsernameFormControlFactory $usernameFormControlFactory,
+        private readonly UserAvatarService      $userAvatarService,
+        private readonly Avatars                $avatars,
     )
     {
         parent::__construct();
@@ -72,6 +78,36 @@ class EditPresenter extends Presenter
         $this['editForm']->setDefaults($defaults);
         // the preview of the saved signature, as under the posts
         $this->getTemplate()->signature = $userEntity->signature;
+        $this->getTemplate()->avatar = $userEntity->avatar;
+    }
+
+    public function avatarFormSuccess(Form $form) : void
+    {
+        $values = $form->getValues(AvatarValues::class);
+        $userEntity = $this->loggedUser();
+
+        try {
+            $this->userAvatarService->change($userEntity, $values->avatar);
+        } catch (AvatarException $exception) {
+            $form->addError($this->translator->translate($exception->getMessage(), [
+                'maxWidth' => $this->avatars->getMaxWidth(),
+                'maxHeight' => $this->avatars->getMaxHeight(),
+                'maxSize' => (int) round($this->avatars->getMaxFileSize() / 1024 / 1024),
+            ]));
+
+            return;
+        }
+
+        $this->flashAvatar('web-user-edit.avatar.success');
+        $this->redirect('this');
+    }
+
+    public function avatarDeleteFormSuccess(Form $form) : void
+    {
+        $this->userAvatarService->delete($this->loggedUser());
+
+        $this->flashAvatar('web-user-edit.avatar.deleted');
+        $this->redirect('this');
     }
 
     public function editFormSuccess(Form $form) : void
@@ -201,6 +237,80 @@ class EditPresenter extends Presenter
         $form->onSuccess[] = [$this, 'editFormSuccess'];
 
         return $form;
+    }
+
+    protected function createComponentAvatarForm() : IconBootstrapForm
+    {
+        $form = new IconBootstrapForm();
+        BootstrapForm::switchBootstrapVersion(BootstrapVersion::V5);
+
+        $form->setTranslator($this->translator);
+        $form->addProtection('web-user-edit.form.protection');
+
+        $maxSize = $this->avatars->getMaxFileSize();
+        // the browser check only; UserAvatarService judges the content (type, dimensions, animation) and re-encodes it
+        $form->addUpload('avatar', 'web-user-edit.avatar.label')
+            ->setRequired('web-user-edit.avatar.required')
+            ->addRule(Form::Image, 'web-user-edit.avatar.image')
+            ->addRule(Form::MaxFileSize, $this->translator->translate('web-user-edit.avatar.error.size', ['maxSize' => (int) round($maxSize / 1024 / 1024)]), $maxSize)
+            ->setHtmlAttribute('accept', 'image/jpeg,image/png,image/gif,image/webp')
+            ->setOption('description', $this->translator->translate('web-user-edit.avatar.description', [
+                'maxWidth' => $this->avatars->getMaxWidth(),
+                'maxHeight' => $this->avatars->getMaxHeight(),
+                'maxSize' => (int) round($maxSize / 1024 / 1024),
+            ]));
+
+        $form->addSubmit('send', 'web-user-edit.avatar.submit')
+            ->setOption(IconBootstrapRenderer::ICON, 'fas fa-upload');
+
+        $form->onSuccess[] = [$this, 'avatarFormSuccess'];
+
+        return $form;
+    }
+
+    protected function createComponentAvatarDeleteForm() : IconBootstrapForm
+    {
+        $form = new IconBootstrapForm();
+        BootstrapForm::switchBootstrapVersion(BootstrapVersion::V5);
+
+        $form->setTranslator($this->translator);
+        $form->addProtection('web-user-edit.form.protection');
+
+        $form->addSubmit('delete', 'web-user-edit.avatar.delete')
+            ->setHtmlAttribute('class', 'btn btn-outline-danger btn-sm')
+            ->setOption(IconBootstrapRenderer::ICON, 'fas fa-trash');
+
+        $form->onSuccess[] = [$this, 'avatarDeleteFormSuccess'];
+
+        return $form;
+    }
+
+    /**
+     * The forms are processed before actionDefault() would refuse a guest (a POST does not need the page to have been shown).
+     */
+    private function loggedUser() : UserEntity
+    {
+        if (!$this->getUser()->isLoggedIn()) {
+            $this->error('user not logged in', IResponse::S403_Forbidden);
+        }
+
+        $userEntity = $this->em->find(UserEntity::class, $this->getUser()->getId());
+
+        if ($userEntity === null) {
+            $this->error('user not found');
+        }
+
+        return $userEntity;
+    }
+
+    private function flashAvatar(string $message) : void
+    {
+        $flash = new stdClass();
+        $flash->place = 'general';
+        $flash->type = 'success';
+        $flash->message = $this->translator->translate($message);
+
+        $this->flashMessage($flash);
     }
 
     private function canChangeUsername() : bool

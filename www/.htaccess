@@ -25,6 +25,10 @@ Require all granted
 	# Block access to hidden files (starting with a dot) and URLs resembling WordPress admin paths
 	RewriteRule /\.|^\.|^wp-(login|admin|includes|content) - [F]
 
+	# bb: the images of contributte/imagist are outside www/, the presenter Web:Image sends them (route cache/<scope>/_<filter>/<name>)
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^cache/(avatars|ranks)/ index.php [L]
+
 	# Return 404 for missing files with specific extensions (images, scripts, styles, archives)
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteRule \.(pdf|js|mjs|ico|gif|jpg|jpeg|png|webp|avif|svg|css|rar|zip|7z|tar\.gz|map|eot|ttf|otf|woff|woff2)$ - [L]

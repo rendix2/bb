@@ -12,5 +12,19 @@
   "form.signature.label": "Signature",
   "form.signature.description": "Markdown, at most %maxChars% characters. Shown under your posts.",
   "form.signature.maxLength": "The signature may have at most %maxChars% characters.",
-  "form.signature.preview": "Preview of the signature"
+  "form.signature.preview": "Preview of the signature",
+  "avatar.header": "Avatar",
+  "avatar.label": "New avatar",
+  "avatar.description": "JPEG, PNG, GIF (not animated) or WebP, at most %maxWidth%×%maxHeight% px and %maxSize% MB. Stored as a 256 px square.",
+  "avatar.required": "Choose an image.",
+  "avatar.image": "The avatar must be a JPEG, PNG, GIF or WebP image.",
+  "avatar.submit": "Upload the avatar",
+  "avatar.delete": "Remove the avatar",
+  "avatar.success": "The avatar was saved.",
+  "avatar.deleted": "The avatar was removed.",
+  "avatar.error.upload": "The image could not be uploaded.",
+  "avatar.error.size": "The avatar may have at most %maxSize% MB.",
+  "avatar.error.type": "The avatar must be a JPEG, PNG, GIF or WebP image.",
+  "avatar.error.dimensions": "The avatar may have at most %maxWidth%×%maxHeight% px.",
+  "avatar.error.animated": "An animated image cannot be an avatar."
 }

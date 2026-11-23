@@ -10,6 +10,7 @@ use App\Model\Entity\UserActivationEntity;
 use App\Model\Entity\UserEmailEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Entity\UserPasswordEntity;
+use App\Model\Service\UserAvatarService;
 use App\UI\Admin\User\Edit\EditUserValues;
 use App\UI\Web\User\Registration\RegistrationValues;
 use Contributte\Mailing\IMailBuilderFactory;
@@ -34,6 +35,7 @@ class UserFacade
         private readonly IMailBuilderFactory    $mailBuilderFactory,
         private readonly Translator             $translator,
         private readonly DefaultLanguageService $defaultLanguageService,
+        private readonly UserAvatarService      $userAvatarService,
     )
     {
     }
@@ -107,6 +109,19 @@ class UserFacade
                 return $userEntity;
             }
         );
+    }
+
+    /**
+     * bb: deletes the user (its rows by the foreign keys ON DELETE CASCADE) and then the files of its avatar from the disk.
+     */
+    public function delete(UserEntity $userEntity) : void
+    {
+        $avatar = $userEntity->avatar;
+
+        $this->em->remove($userEntity);
+        $this->em->flush();
+
+        $this->userAvatarService->removeFiles($avatar);
     }
 
     public function activate(string $userId, string $key) : void

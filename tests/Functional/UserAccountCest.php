@@ -71,7 +71,8 @@ class UserAccountCest
         $I->amOnPage('/web.user.activation/?userId=' . $userEntity->id . '&key=' . $activationEntity->activationKey);
         $I->seeResponseCodeIs(200);
         $I->dontSeeInSource('id="tracy-bs"');
-        $I->see('byl úspěšně aktivován');
+        // bb: the home page (~440 kB with the Tracy bar) is over the PCRE limit of see() (strip_tags() of null)
+        $I->seeInSource('byl úspěšně aktivován');
 
         $em->clear();
         $I->assertTrue((bool) $em->getRepository(UserEntity::class)->find($userEntity->id)?->isActive);

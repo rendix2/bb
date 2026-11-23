@@ -26,7 +26,7 @@ db: guard-not-production
 	php bin/console migrations:migrate --no-interaction
 	php bin/console doctrine:fixtures:load --no-interaction
 
-dirs-build: create-dirs chmod-dirs
+dirs-build: create-dirs chmod-dirs data-dirs
 
 create-dirs:
 	rm temp -r -f
@@ -59,6 +59,12 @@ chmod-dirs:
 
 	chmod 777 log/web
 	chmod 777 log/console
+
+# the uploaded files outside www/ (attachments of posts, images of contributte/imagist): written by the web server (www-data);
+# nothing is deleted, safe to run any time
+data-dirs:
+	mkdir -p data/attachments data/images
+	chmod 777 data -R
 
 migration:
 	php bin/console migrations:generate

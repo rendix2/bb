@@ -27,6 +27,7 @@ class UserDataGrid
         private readonly Translator                 $translator,
         private readonly UsernameFormControlFactory $usernameFormControlFactory,
         private readonly EmailFormControlFactory    $emailFormControlFactory,
+        private readonly UserFacade                 $userFacade,
     )
     {
         $this->grid = new Datagrid();
@@ -148,8 +149,8 @@ class UserDataGrid
             }
 
             try {
-                $this->em->remove($userEntity);
-                $this->em->flush();
+                // bb: also deletes the files of the avatar
+                $this->userFacade->delete($userEntity);
 
                 $this->grid->presenter->flashMessage(
                     $this->translator->translate('admin-user-list.delete.success', ['username' => $userEntity->username]),

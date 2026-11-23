@@ -55,8 +55,8 @@ class UserEntity
     #[Column(type: Types::BOOLEAN, options: ['comment' => 'Is active?'])]
     public bool $isActive;
 
-    #[Column(type: Types::STRING, length: 1024, nullable: true, options: ['comment' => 'Avatar'])]
-    public ?string $avatar;
+    #[Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => 'Avatar: the image id of contributte/imagist (avatars/<name>.webp)'])]
+    public ?string $avatar = null;
 
     #[Column(type: Types::TEXT, nullable: true, options: ['comment' => 'Signature'])]
     public ?string $signature;

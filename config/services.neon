@@ -123,6 +123,7 @@ includes:
 	- ext/mailing.neon
 	- ext/redis.neon
 	- ext/pwned.neon
+	- ext/imagist.neon
 	- settings.neon
 	#- config.neon
 	- factory.neon

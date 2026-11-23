@@ -1,16 +1,22 @@
 parameters:
     defaultLanguage: "czech"
+    # images of contributte/imagist (config/ext/imagist.neon): OUTSIDE www/, originals in media/<scope>/, thumbnails in
+    # cache/<scope>/_<filter>/; served by the presenter Web:Image (only thumbnails of existing users)
+    imagesDir: %appDir%/../data/images
+    # avatars of users (App\Model\Service\UserAvatarService): only static images (JPEG, PNG, GIF, WebP; an animated GIF is
+    # refused), re-encoded to a 256x256 WebP (drops EXIF, appended data and animation), thumbnails 128 and 48 px made on upload
     avatars:
-        relativeDir: /avatars
-        dir: %wwwDir%%avatars.relativeDir%
-        maxWidth: 2000
+        relativeDir: /avatars # only the old code (app/*Module)
+        dir: %imagesDir%/media/avatars
+        maxWidth: 2000 # of the uploaded image, checked before it is decoded
         maxHeight: 2000
-        maxFileSize: 5242880 # 5 mb
-        enabledExtension:
+        maxFileSize: 5242880 # 5 MB
+        enabledExtension: # only the old code (app/*Module)
             - jpg
             - jpeg
             - png
             - gif
+            - webp
     ranks:
         relativeDir: /ranks
         dir: %wwwDir%%ranks.relativeDir%

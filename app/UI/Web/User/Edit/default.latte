@@ -22,6 +22,15 @@
                         {control editForm}
                     </div>
 
+                    <div class="mt-4 pt-3 border-top avatar-settings">
+                        <h2 class="h6">{_web-user-edit.avatar.header}</h2>
+                        <div n:if="$avatar" class="d-flex align-items-center mb-3">
+                            <img n:img="$avatar, filter: avatar128" alt="" width="128" height="128" class="rounded-circle me-3 current-avatar">
+                            <div class="avatar-delete-form">{control avatarDeleteForm}</div>
+                        </div>
+                        <div class="avatar-form">{control avatarForm}</div>
+                    </div>
+
                     <div n:if="$signature" class="mt-4 signature-preview">
                         <h2 class="h6">{_web-user-edit.form.signature.preview}</h2>
                         <div class="small text-muted border-top pt-2">{$signature|markdown}</div>

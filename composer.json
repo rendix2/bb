@@ -65,7 +65,8 @@
         "donatj/phpuseragentparser": "^1.12",
         "league/commonmark": "^2.7",
         "contributte/scheduler": "^0.9.0",
-        "jgxvx/cilician": "^6.1"
+        "jgxvx/cilician": "^6.1",
+        "contributte/imagist": "^2.1"
     },
     "require-dev": {
         "nette/tester": "^v2.3.5",

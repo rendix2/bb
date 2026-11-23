@@ -1,0 +1,17 @@
+# contributte/imagist: only the core, the filters of this file and the Latte tag n:img (no Doctrine bridge - its ImageType
+# does not work with DBAL 4; UserEntity::$avatar is a plain string id "avatars/<name>.webp").
+# Files are OUTSIDE www/ (%imagesDir%), served by the presenter Web:Image (route cache/<scope>/_<filter>/<name>).
+extensions:
+	imagist: Contributte\Imagist\Bridge\Nette\DI\ImagistExtension
+	imagist.filters: Contributte\Imagist\Bridge\Nette\DI\ImagistNeonFiltersExtension
+
+imagist:
+	baseDir: %imagesDir%
+
+imagist.filters:
+	filters:
+		# scope avatars: generated right on upload (UserAvatarService), never lazily in a template
+		avatar128: Contributte\Imagist\Filter\CompositeFilter(avatar128, Contributte\Imagist\Filter\Operation\ResizeOperation(128, 128, exact))
+		avatar48: Contributte\Imagist\Filter\CompositeFilter(avatar48, Contributte\Imagist\Filter\Operation\ResizeOperation(48, 48, exact))
+		# scope ranks: prepared for the images of ranks (not used yet)
+		rank: Contributte\Imagist\Filter\CompositeFilter(rank, Contributte\Imagist\Filter\Operation\ResizeOperation(null, %ranks.maxHeight%, shrink_only))

@@ -52,9 +52,9 @@ final class Version20230621145918 extends AbstractMigration
             ->setComment('Is active?');
 
         $table->addColumn('avatar', Types::STRING)
-            ->setLength(1024)
+            ->setLength(255)
             ->setNotnull(false)
-            ->setComment('Avatar');
+            ->setComment('Avatar: the image id of contributte/imagist (avatars/<name>.webp)');
 
         $table->addColumn('signature', Types::TEXT)
             ->setNotnull(false)
