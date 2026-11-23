@@ -9,7 +9,9 @@ translation:
     dirs:
         - %appDir%
     returnOriginalMessage: true # to not translate undefined messages, default is true
+    # the language of the settings of the logged-in user (users.language), a guest the default (cs)
     localeResolvers:
+        - App\Core\Translation\UserLocaleResolver
         - Contributte\Translation\LocalesResolvers\Router
     loaders:
         json: Symfony\Component\Translation\Loader\JsonFileLoader
