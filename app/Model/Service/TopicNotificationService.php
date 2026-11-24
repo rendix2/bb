@@ -5,6 +5,7 @@ namespace App\Model\Service;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\TopicWatchEntity;
+use App\Model\Security\ForumVisibilityService;
 use App\Settings\SiteUrl;
 use Contributte\Translation\Translator;
 use Nette\Application\LinkGenerator;
@@ -12,8 +13,8 @@ use Nette\Bridges\ApplicationLatte\LatteFactory;
 
 /**
  * A new reply: every watcher of the topic (but its author) who was not notified since his last visit gets ONE queued mail
- * (each his own, the old code put all recipients into one To: and mailed user ids instead of addresses). The mail is in the
- * language of the RECIPIENT (users.language -> language.locale), not of the one who replied.
+ * (each his own, the old code put all recipients into one To: and mailed user ids instead of addresses). Only a watcher who may
+ * still read the topic (ForumVisibilityService). The mail is in the language of the RECIPIENT (users.language -> language.locale), not of the one who replied.
  */
 class TopicNotificationService
 {
@@ -25,6 +26,7 @@ class TopicNotificationService
         private readonly Translator $translator,
         private readonly TopicPaginationService $topicPagination,
         private readonly SiteUrl $siteUrl,
+        private readonly ForumVisibilityService $visibility,
     ) {
     }
 
@@ -44,6 +46,12 @@ class TopicNotificationService
             ->setParameter('author', $reply->user)
             ->getQuery()
             ->getResult();
+
+        // the mail names the topic and the author of the reply: only to a watcher who may still read the topic
+        $watches = array_values(array_filter(
+            $watches,
+            fn (TopicWatchEntity $watch) : bool => $this->visibility->canReadTopic($watch->user, $reply->topic),
+        ));
 
         if ($watches === []) {
             return 0;

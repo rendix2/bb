@@ -4,6 +4,7 @@ namespace App\Model\Security;
 
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
+use App\Model\Entity\TopicEntity;
 use App\Model\Entity\UserEntity;
 
 /**
@@ -51,6 +52,20 @@ class ForumVisibilityService
         }
 
         return $this->visible[$key] = $ids;
+    }
+
+    /**
+     * May the viewer read the topic: its forum is among visibleForumIds() and the category of the topic is active (as
+     * Forum:Topic:View requires). For one topic of many users (the watchers of a topic) without loading all forums for each.
+     */
+    public function canReadTopic(?UserEntity $viewer, TopicEntity $topic) : bool
+    {
+        $forum = $topic->forum;
+
+        return $forum->active
+            && ($forum->category === null || $forum->category->active)
+            && $topic->category->active
+            && $this->permissions->isAllowed($viewer, $forum, ForumPrivilege::VIEW);
     }
 
 }

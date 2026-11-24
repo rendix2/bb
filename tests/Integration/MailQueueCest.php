@@ -12,6 +12,7 @@ use App\Model\Entity\TopicWatchEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Service\MailQueueService;
 use App\Model\Service\PostWriteService;
+use App\Model\Service\TopicNotificationService;
 use App\Model\Service\TopicWatchService;
 use DateTimeImmutable;
 use Tests\Support\IntegrationTester;
@@ -104,6 +105,33 @@ class MailQueueCest
         $I->assertStringContainsString('je nová odpověď od uživatele', $czechMail->body);
     }
 
+    /**
+     * Regression: a watcher who may not read the topic any more (forum or category deactivated; later rights by groups) got
+     * the mail with the name of the topic and the author of the reply.
+     */
+    public function onlyAWatcherWhoMayReadTheTopicGetsTheMail(IntegrationTester $I) : void
+    {
+        [$topic] = $this->createTopic($I);
+        $watcher = $I->createUser('Watcher', role: 'Normal');
+        $I->grabService(TopicWatchService::class)->watch($watcher, $topic);
+        $notification = $I->grabService(TopicNotificationService::class);
+
+        $topic->forum->active = false;
+        $I->em()->flush();
+        $I->assertSame(0, $notification->notifyWatchers($this->createReply($I, $topic)));
+
+        $topic->forum->active = true;
+        $topic->category->active = false;
+        $I->em()->flush();
+        $I->assertSame(0, $notification->notifyWatchers($this->createReply($I, $topic)));
+        $I->assertSame([], $this->queuedTo($I, [$watcher]));
+
+        $topic->category->active = true;
+        $I->em()->flush();
+        $I->assertSame(1, $notification->notifyWatchers($this->createReply($I, $topic)));
+        $I->assertSame([$watcher->email => 1], $this->queuedTo($I, [$watcher]));
+    }
+
     public function theQueueIsSentAndMarked(IntegrationTester $I) : void
     {
         $queue = $I->grabService(MailQueueService::class);
@@ -143,6 +171,23 @@ class MailQueueCest
         $I->assertNotNull($language);
 
         return $language;
+    }
+
+    private function createReply(IntegrationTester $I, TopicEntity $topic) : PostEntity
+    {
+        $post = new PostEntity();
+        $post->user = $I->createUser('Replier', role: 'Normal');
+        $post->category = $topic->category;
+        $post->forum = $topic->forum;
+        $post->topic = $topic;
+        $post->title = null;
+        $post->text = 'A reply';
+        $post->addIpAddress = '127.0.0.1';
+        $post->editIpAddress = null;
+        $I->em()->persist($post);
+        $I->em()->flush();
+
+        return $post;
     }
 
     private function lastMailTo(IntegrationTester $I, UserEntity $user) : MailEntity
