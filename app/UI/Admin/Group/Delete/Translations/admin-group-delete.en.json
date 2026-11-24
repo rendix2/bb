@@ -1,0 +1,7 @@
+{
+  "title": "Delete the group",
+  "question": "Really delete it? The memberships, its permissions and moderation go with it, the users stay.",
+  "confirm": "Delete",
+  "success": "The group %name% has been deleted.",
+  "back": "Back to the list"
+}

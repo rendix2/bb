@@ -103,7 +103,7 @@ class ForumPermissionServiceCest
         $outsider = $I->createUser('Outsider', role: 'Normal');
         [$forum] = $this->createForum($I, $member);
         $forum->permissions->topicAdd = false;
-        $group = $this->createGroup($I, $member, [$member]);
+        $group = $this->createGroup($I, [$member]);
 
         $grant = new GroupForumPermissionEntity();
         $grant->group = $group;
@@ -143,7 +143,7 @@ class ForumPermissionServiceCest
         [$otherForum, , $otherPost] = $this->createForum($I, $author);
 
         $this->makeUserModerator($I, $userModerator, $forum);
-        $group = $this->createGroup($I, $groupModerator, [$groupModerator]);
+        $group = $this->createGroup($I, [$groupModerator]);
         $groupModeratorEntity = new GroupModeratorEntity();
         $groupModeratorEntity->group = $group;
         $groupModeratorEntity->forum = $forum;
@@ -220,11 +220,10 @@ class ForumPermissionServiceCest
     /**
      * @param list<UserEntity> $members
      */
-    private function createGroup(IntegrationTester $I, UserEntity $moderator, array $members) : GroupEntity
+    private function createGroup(IntegrationTester $I, array $members) : GroupEntity
     {
         $group = new GroupEntity();
         $group->name = 'Permissions group';
-        $group->moderator = $moderator;
         $I->em()->persist($group);
 
         foreach ($members as $member) {

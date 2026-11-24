@@ -1,0 +1,20 @@
+{
+  "groupName": "Name of the group",
+  "flag": {
+    "topicAdd": "Start topics",
+    "topicUpdate": "Edit own topics",
+    "topicDelete": "Delete own topics",
+    "postAdd": "Reply",
+    "postUpdate": "Edit own posts",
+    "postDelete": "Delete own posts",
+    "topicThank": "Thank",
+    "topicFastReply": "Fast reply"
+  },
+  "error": {
+    "groupName": "Fill in the name of the group (at most 255 characters).",
+    "groupExists": "The group %name% already exists (the case does not matter).",
+    "unknownUser": "The user %username% does not exist.",
+    "alreadyMember": "The user %username% is in the group already.",
+    "alreadyModerator": "The user %username% moderates the forum already."
+  }
+}

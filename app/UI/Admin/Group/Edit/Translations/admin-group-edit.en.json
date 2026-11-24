@@ -1,0 +1,21 @@
+{
+  "title": "Group",
+  "name": "Name",
+  "saved": "The group %name% has been saved.",
+  "members": "Members",
+  "noMembers": "The group has no members.",
+  "member": {
+    "username": "Username",
+    "required": "Fill in the username.",
+    "add": "Add a member",
+    "added": "The user %username% has been added to the group.",
+    "remove": "Remove",
+    "removed": "The user %username% has been removed from the group."
+  },
+  "access": "Access to the forums",
+  "accessHelp": "The permissions of the group add to the defaults of logged-in users in the forum (they take nothing away). A moderator of a forum may do everything in it.",
+  "forum": "Forum",
+  "moderator": "Moderates",
+  "accessSaved": "The access of the group to the forums has been saved.",
+  "back": "Back to the list"
+}

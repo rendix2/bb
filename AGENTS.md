@@ -53,8 +53,8 @@ hlášení, ranky, avatary, moderace, admin). Historie od 2018 (dibi + MySQL), o
 ## Pravidla (navíc ke globálnímu ~/.claude/CLAUDE.md)
 - **Schéma (krok 0 hotový 2026-11-19):** entity popisují DB úplně (komentáře, id `BIGINT` → `int`, `#[JoinColumn]` s `nullable`/`onDelete`,
   `#[ManyToOne]` s `cascade: ['persist']`), hlídá `tests/Integration/Schema/*`. `onDelete`: CASCADE pro vše, co patří uživateli / obsahu;
-  bez `onDelete` (NO ACTION) jen `users.language`, `groups.moderator`, `category.parent`, `forum.parent`, `forum.category`.
-  Tabulky v množném čísle, kde je název klíčové slovo SQL (`users`, `groups`) - žádné uvozovky v `#[Table]`.
+  bez `onDelete` (NO ACTION) jen `users.language`, `category.parent`, `forum.parent`, `forum.category`.
+  Skupiny nemají moderátora (`groups.moderator` zrušen 2026-11-24, fóra moderují `moderator_user`/`group_moderator`). Tabulky v množném čísle, kde je název klíčové slovo SQL (`users`, `groups`) - žádné uvozovky v `#[Table]`.
   Bez cyklů cizích klíčů (proto `topic` nemá `first_post_id`/`last_post_id`/`poll_id`). Soukromé zprávy = vlákna `private_message_*`.
   `cascade: 'remove'` na `ManyToMany` NIKDY (maže entity na druhé straně, ne vazební řádky).
 - **Konce řádků LF** (`.gitattributes`: `* text=auto eol=lf`, repo převedeno 2026-11-19). Nové soubory piš s LF.

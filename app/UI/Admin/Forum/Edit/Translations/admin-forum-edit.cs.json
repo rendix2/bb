@@ -1,5 +1,6 @@
 {
   "title": "Úprava fóra",
   "success": "Fórum %name% bylo uloženo.",
-  "back": "Zpět na seznam"
+  "back": "Zpět na seznam",
+  "access": "Moderátoři a oprávnění uživatelů"
 }

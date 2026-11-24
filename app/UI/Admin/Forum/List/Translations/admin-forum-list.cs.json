@@ -10,5 +10,6 @@
   "delete": "Smazat",
   "place": "Patří do",
   "subforumOf": "podfórum %forum%",
-  "topics": "Témata"
+  "topics": "Témata",
+  "access": "Přístup"
 }

@@ -1,0 +1,51 @@
+{block title}{_admin-forum-access.title}: {$forum->name}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-forum-access.title}: {$forum->name}</h1>
+    <p class="small text-muted">{_admin-forum-access.help}</p>
+
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0 mb-3 forum-moderators">
+                <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-forum-access.moderators}</h2></div>
+                <div class="card-body">
+                    {control addModeratorForm}
+                    <table class="table table-sm mt-3">
+                        <tr n:foreach="$moderators as $moderator" class="forum-moderator">
+                            <td>{$moderator->user->username}</td>
+                            <td class="text-end">{control "removeModeratorForm-$moderator->id"}</td>
+                        </tr>
+                        <tr n:if="!$moderators"><td>{_admin-forum-access.noModerators}</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 mb-3 forum-grants">
+                <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-forum-access.grants}</h2></div>
+                <div class="card-body">
+                    {control grantForm}
+                    <div class="table-responsive mt-3">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr><th>{_admin-forum-access.username}</th><th n:foreach="$flags as $flag" class="small">{_"admin-access.flag.$flag"}</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                                <tr n:foreach="$grants as $grant" class="forum-grant">
+                                    <td>{$grant->user->username}</td>
+                                    <td n:foreach="$flags as $flag" class="text-center">{if $grant->permissions->$flag}✓{/if}</td>
+                                    <td class="text-end">{control "removeGrantForm-$grant->id"}</td>
+                                </tr>
+                                <tr n:if="!$grants"><td colspan="10">{_admin-forum-access.noGrants}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a n:href=":Admin:Forum:Edit:default $forum->id" class="btn btn-link">{_admin-forum-access.backToForum}</a>
+    <a n:href=":Admin:Forum:List:default" class="btn btn-link">{_admin-forum-access.backToList}</a>
+{/block}

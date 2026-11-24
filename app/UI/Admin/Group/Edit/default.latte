@@ -1,0 +1,61 @@
+{block title}{_admin-group-edit.title}: {$group->name}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-group-edit.title}: {$group->name}</h1>
+
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0 mb-3">
+                <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-group-edit.name}</h2></div>
+                <div class="card-body">{control groupForm}</div>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-3 group-members">
+                <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-group-edit.members} ({count($members)})</h2></div>
+                <div class="card-body">
+                    {control addMemberForm}
+                    <table class="table table-sm mt-3">
+                        <tr n:foreach="$members as $member" class="group-member">
+                            <td>{$member->username}</td>
+                            <td class="text-end">{control "removeMemberForm-$member->id"}</td>
+                        </tr>
+                        <tr n:if="!$members"><td>{_admin-group-edit.noMembers}</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 mb-3">
+                <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-group-edit.access}</h2></div>
+                <div class="card-body">
+                    <p class="small text-muted">{_admin-group-edit.accessHelp}</p>
+                    {form accessForm}
+                        <ul n:if="$form->hasErrors()" class="alert alert-danger"><li n:foreach="$form->getErrors() as $error">{$error}</li></ul>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered align-middle group-access">
+                                <thead>
+                                    <tr>
+                                        <th>{_admin-group-edit.forum}</th>
+                                        <th n:foreach="$flags as $flag" class="small">{_"admin-access.flag.$flag"}</th>
+                                        <th class="small">{_admin-group-edit.moderator}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr n:foreach="$forums as $forum">
+                                        <td>{$forum->name}</td>
+                                        <td n:foreach="$flags as $flag" class="text-center"><input n:name="a{$forum->id}_{$flag}"></td>
+                                        <td class="text-center"><input n:name="a{$forum->id}_moderator"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button n:name="save" class="btn btn-primary">{_admin-forum.save}</button>
+                    {/form}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a n:href=":Admin:Group:List:default" class="btn btn-link">{_admin-group-edit.back}</a>
+{/block}

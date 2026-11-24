@@ -24,7 +24,6 @@ class GroupMemberCest
 
             $group = new GroupEntity();
             $group->name = 'Test group';
-            $group->moderator = $user;
             $em->persist($group);
 
             $first = new UserGroupMemberEntity();

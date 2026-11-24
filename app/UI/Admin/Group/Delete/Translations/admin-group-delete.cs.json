@@ -1,0 +1,7 @@
+{
+  "title": "Smazání skupiny",
+  "question": "Opravdu smazat? Se skupinou zmizí členství, její oprávnění i moderování fór, uživatelé zůstanou.",
+  "confirm": "Smazat",
+  "success": "Skupina %name% byla smazána.",
+  "back": "Zpět na seznam"
+}

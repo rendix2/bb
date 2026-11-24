@@ -10,5 +10,6 @@
   "delete": "Delete",
   "place": "Belongs to",
   "subforumOf": "subforum of %forum%",
-  "topics": "Topics"
+  "topics": "Topics",
+  "access": "Access"
 }

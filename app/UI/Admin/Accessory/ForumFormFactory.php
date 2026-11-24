@@ -21,8 +21,6 @@ use Nette\Localization\Translator;
  */
 class ForumFormFactory
 {
-    public const array PERMISSIONS = ['topicAdd', 'topicUpdate', 'topicDelete', 'postAdd', 'postUpdate', 'postDelete', 'topicThank', 'topicFastReply'];
-
     public function __construct(
         private readonly EntityManagerDecorator $em,
         private readonly ForumAdminService $forumAdmin,
@@ -62,7 +60,7 @@ class ForumFormFactory
         $permissions = $form->addContainer('permissions');
         $defaults = $forum?->permissions ?? $this->newPermissions();
 
-        foreach (self::PERMISSIONS as $permission) {
+        foreach (ForumPermissions::FLAGS as $permission) {
             $permissions->addCheckbox($permission, 'admin-forum.permission.' . $permission)
                 ->setDefaultValue($defaults->$permission);
         }
@@ -86,10 +84,7 @@ class ForumFormFactory
             $category = str_starts_with($values['place'], 'c') ? $this->em->find(CategoryEntity::class, (int) substr($values['place'], 1)) : null;
             $parent = str_starts_with($values['place'], 'f') ? $this->em->find(ForumEntity::class, (int) substr($values['place'], 1)) : null;
             $permissions = new ForumPermissions();
-
-            foreach (self::PERMISSIONS as $permission) {
-                $permissions->$permission = $values['permissions'][$permission];
-            }
+            $permissions->setFlags($values['permissions']);
 
             try {
                 $saved = $this->forumAdmin->saveForum($forum, $values['name'], $values['description'], $category, $parent, $values['active'], $values['rules'], $values['sortOrder'], $permissions);

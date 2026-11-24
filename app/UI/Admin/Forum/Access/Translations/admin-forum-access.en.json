@@ -1,0 +1,19 @@
+{
+  "title": "Access to the forum",
+  "help": "Moderators and own grants of single users. The grants add to the defaults of the forum and the grants of groups; groups are set at the group.",
+  "moderators": "Moderators (users)",
+  "noModerators": "No user moderates the forum.",
+  "username": "Username",
+  "usernameRequired": "Fill in the username.",
+  "addModerator": "Add a moderator",
+  "moderatorAdded": "The user %username% moderates the forum.",
+  "moderatorRemoved": "The user %username% does not moderate the forum anymore.",
+  "remove": "Remove",
+  "grants": "Grants of users",
+  "noGrants": "No user has an own grant.",
+  "saveGrant": "Save the grant (nothing checked = remove)",
+  "grantSaved": "The grant of the user %username% has been saved.",
+  "grantRemoved": "The grant of the user %username% has been removed.",
+  "backToForum": "Back to the forum",
+  "backToList": "Back to the forums"
+}

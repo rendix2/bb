@@ -1,5 +1,6 @@
 {
   "title": "Edit the forum",
   "success": "The forum %name% has been saved.",
-  "back": "Back to the list"
+  "back": "Back to the list",
+  "access": "Moderators and grants of users"
 }

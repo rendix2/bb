@@ -1,0 +1,21 @@
+{
+  "title": "Skupina",
+  "name": "Název",
+  "saved": "Skupina %name% byla uložena.",
+  "members": "Členové",
+  "noMembers": "Skupina nemá členy.",
+  "member": {
+    "username": "Uživatelské jméno",
+    "required": "Vyplňte uživatelské jméno.",
+    "add": "Přidat člena",
+    "added": "Uživatel %username% byl přidán do skupiny.",
+    "remove": "Odebrat",
+    "removed": "Uživatel %username% byl ze skupiny odebrán."
+  },
+  "access": "Přístup k fórům",
+  "accessHelp": "Oprávnění skupiny se přičítají k výchozím oprávněním přihlášených ve fóru (nic neodebírají). Moderátor fóra smí v něm všechno.",
+  "forum": "Fórum",
+  "moderator": "Moderuje",
+  "accessSaved": "Přístup skupiny k fórům byl uložen.",
+  "back": "Zpět na seznam"
+}

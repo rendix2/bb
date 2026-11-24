@@ -27,3 +27,7 @@ menu:
                 action: :Admin:Forum:List:default
                 include:
                     - '^Admin:Forum:'
+            Groups:
+                action: :Admin:Group:List:default
+                include:
+                    - '^Admin:Group:'

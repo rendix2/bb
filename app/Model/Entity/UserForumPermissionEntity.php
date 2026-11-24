@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -22,6 +23,8 @@ use Ramsey\Uuid\UuidInterface;
  */
 #[Entity(repositoryClass: UserForumPermissionRepository::class)]
 #[Table(name: 'user_forum', options: ['comment' => 'Forum access of users'])]
+// one row per pair
+#[UniqueConstraint(name: 'UK__User_forum__User_id_forum_id', columns: ['user_id', 'forum_id'])]
 class UserForumPermissionEntity
 {
 

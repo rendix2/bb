@@ -56,6 +56,9 @@ class ForumDataGrid
         $grid->addAction('edit', 'admin-forum-list.edit', ':Admin:Forum:Edit:default')
             ->setIcon('edit')
             ->setClass('btn btn-xs btn-outline-primary forum-edit-link');
+        $grid->addAction('access', 'admin-forum-list.access', ':Admin:Forum:Access:default')
+            ->setIcon('user-shield')
+            ->setClass('btn btn-xs btn-outline-secondary forum-access-link');
         $grid->addAction('delete', 'admin-forum-list.delete', ':Admin:Forum:Delete:default')
             ->setIcon('trash')
             ->setClass('btn btn-xs btn-outline-danger forum-delete-link');

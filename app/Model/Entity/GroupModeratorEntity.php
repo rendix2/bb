@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -21,6 +22,8 @@ use Ramsey\Uuid\UuidInterface;
  */
 #[Entity(repositoryClass: GroupModeratorRepository::class)]
 #[Table(name: 'group_moderator', options: ['comment' => 'Groups moderating forums'])]
+// one row per pair
+#[UniqueConstraint(name: 'UK__Group_moderator__Group_id_forum_id', columns: ['group_id', 'forum_id'])]
 class GroupModeratorEntity
 {
 

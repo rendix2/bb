@@ -5,5 +5,6 @@
         <div class="card-header bg-white py-3"><h1 class="h6 m-0 fw-bold text-primary">{_admin-forum-edit.title}: {$forum->name}</h1></div>
         <div class="card-body">{control forumForm}</div>
     </div>
+    <a n:href=":Admin:Forum:Access:default $forum->id" class="btn btn-outline-secondary forum-access-link">{_admin-forum-edit.access}</a>
     <a n:href=":Admin:Forum:List:default" class="btn btn-link">{_admin-forum-edit.back}</a>
 {/block}

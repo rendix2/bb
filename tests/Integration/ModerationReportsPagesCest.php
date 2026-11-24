@@ -89,7 +89,6 @@ class ModerationReportsPagesCest
 
         $group = new GroupEntity();
         $group->name = 'Moderators ' . random_int(1000, 9999);
-        $group->moderator = $user;
         $em->persist($group);
         $member = new UserGroupMemberEntity();
         $member->user = $user;

@@ -39,9 +39,6 @@ final class Version20260717233326 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Updated at');
 
-        $table->addColumn('moderator_id', Types::BIGINT)
-            ->setComment('Moderator ID');
-
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
@@ -49,15 +46,18 @@ final class Version20260717233326 extends AbstractMigration
         $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('Groups')
 
-            ->addIndex(['moderator_id'], 'K__Groups__Moderator_id')
-            ->addUniqueIndex(['uuid'], 'UK__Groups__Uuid')
-
-            ->addForeignKeyConstraint('users', ['moderator_id'], ['id'], name: 'FK__Groups__Moderator_id');
+            ->addUniqueIndex(['uuid'], 'UK__Groups__Uuid');
     }
 
     public function down(Schema $schema) : void
     {
         $schema->dropTable('public.groups');
+    }
+
+    public function postUp(Schema $schema) : void
+    {
+        // the name of a group is unique regardless of the case (as the username): a unique expression index, DBAL cannot express it
+        $this->connection->executeStatement("CREATE UNIQUE INDEX UK__Groups__Lower_name ON public.groups (lower(name))");
     }
 
 }

@@ -74,6 +74,7 @@ final class Version20260718085638 extends AbstractMigration
 
             ->addIndex(['forum_id'], 'K__User_forum__Forum_id')
             ->addIndex(['user_id'], 'K__User_forum__User_id')
+            ->addUniqueIndex(['user_id', 'forum_id'], 'UK__User_forum__User_id_forum_id')
             ->addUniqueIndex(['uuid'], 'UK__User_forum__Uuid')
 
             ->addForeignKeyConstraint('forum', ['forum_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__User_forum__Forum_id')

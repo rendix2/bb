@@ -1,0 +1,19 @@
+{
+  "title": "Přístup k fóru",
+  "help": "Moderátoři a vlastní oprávnění jednotlivých uživatelů. Oprávnění se přičítají k výchozím oprávněním fóra a oprávněním skupin; skupiny se nastavují u skupiny.",
+  "moderators": "Moderátoři (uživatelé)",
+  "noModerators": "Fórum nemoderuje žádný uživatel.",
+  "username": "Uživatelské jméno",
+  "usernameRequired": "Vyplňte uživatelské jméno.",
+  "addModerator": "Přidat moderátora",
+  "moderatorAdded": "Uživatel %username% moderuje fórum.",
+  "moderatorRemoved": "Uživatel %username% už fórum nemoderuje.",
+  "remove": "Odebrat",
+  "grants": "Oprávnění uživatelů",
+  "noGrants": "Žádný uživatel nemá vlastní oprávnění.",
+  "saveGrant": "Uložit oprávnění (nic nezaškrtnuté = odebrat)",
+  "grantSaved": "Oprávnění uživatele %username% byla uložena.",
+  "grantRemoved": "Oprávnění uživatele %username% byla odebrána.",
+  "backToForum": "Zpět na fórum",
+  "backToList": "Zpět na seznam fór"
+}

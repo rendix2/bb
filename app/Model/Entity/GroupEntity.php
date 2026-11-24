@@ -9,8 +9,6 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\Uuid;
@@ -30,12 +28,9 @@ class GroupEntity
     #[Column(type: UuidType::NAME, unique: true, options: ['comment' => 'UUID'])]
     public UuidInterface $uuid;
 
+    // unique regardless of the case: the index UK__Groups__Lower_name on lower(name) (postUp() of the migration)
     #[Column(type: Types::STRING, length: 512, nullable: false, options: ['comment' => 'Name'])]
     public string $name;
-
-    #[ManyToOne(targetEntity: UserEntity::class, cascade: ['persist'])]
-    #[JoinColumn(nullable: false, options: ['comment' => 'Moderator ID'])]
-    public UserEntity $moderator;
 
     #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;

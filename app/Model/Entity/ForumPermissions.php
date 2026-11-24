@@ -13,7 +13,8 @@ use Doctrine\ORM\Mapping\Embeddable;
 #[Embeddable]
 class ForumPermissions
 {
-
+    /** The flags, in the order of the forms of the administration. */
+    public const array FLAGS = ['topicAdd', 'topicUpdate', 'topicDelete', 'postAdd', 'postUpdate', 'postDelete', 'topicThank', 'topicFastReply'];
     #[Column(type: Types::BOOLEAN, options: ['comment' => 'May start a topic'])]
     public bool $topicAdd = false;
 
@@ -63,6 +64,32 @@ class ForumPermissions
         }
 
         return $union;
+    }
+
+    /**
+     * No flag set: a grant like this adds nothing (the administration deletes it).
+     */
+    public function isEmpty() : bool
+    {
+        foreach (self::FLAGS as $flag) {
+            if ($this->$flag) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Sets every flag (a missing one to false).
+     *
+     * @param array<string, bool> $flags flag => value
+     */
+    public function setFlags(array $flags) : void
+    {
+        foreach (self::FLAGS as $flag) {
+            $this->$flag = $flags[$flag] ?? false;
+        }
     }
 
 }

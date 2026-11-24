@@ -1,0 +1,20 @@
+{
+  "groupName": "Název skupiny",
+  "flag": {
+    "topicAdd": "Zakládat témata",
+    "topicUpdate": "Upravovat svá témata",
+    "topicDelete": "Mazat svá témata",
+    "postAdd": "Odpovídat",
+    "postUpdate": "Upravovat své příspěvky",
+    "postDelete": "Mazat své příspěvky",
+    "topicThank": "Děkovat",
+    "topicFastReply": "Rychlá odpověď"
+  },
+  "error": {
+    "groupName": "Vyplňte název skupiny (nejvýše 255 znaků).",
+    "groupExists": "Skupina %name% už existuje (velikost písmen se nerozlišuje).",
+    "unknownUser": "Uživatel %username% neexistuje.",
+    "alreadyMember": "Uživatel %username% už ve skupině je.",
+    "alreadyModerator": "Uživatel %username% už fórum moderuje."
+  }
+}
