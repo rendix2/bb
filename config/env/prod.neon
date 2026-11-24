@@ -7,7 +7,6 @@ parameters:
             host: "bb-postgres"
             port: 5432
             driver: pdo_pgsql
-            type: mysql
             username: "bb"
             password: "password"
             database: "bb"

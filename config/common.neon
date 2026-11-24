@@ -185,13 +185,3 @@ services:
 
 extensions:
     chatbot: App\DI\ServicesExtension
-    dibi: Dibi\Bridges\Nette\DibiExtension3
-
-dibi:
-    driver: PDO
-    port: 3306
-    database: %database.default.database%
-    username: %database.default.username%
-    password: %database.default.password%
-    lazy: TRUE
-    dsn: %database.default.dsn%

@@ -12,7 +12,6 @@ use Nette\Application\UI\Presenter;
  * Description of IndexPresenter
  *
  * @author rendix2
- * @package App\ForumModule\Presenters
  */
 class IndexPresenter extends Presenter
 {

@@ -10,7 +10,7 @@ hlášení, ranky, avatary, moderace, admin). Historie od 2018 (dibi + MySQL), o
 
 ## Prostředí
 - Docker: `docker compose up -d`, služba **`bb-web`** (PHP 8.4 Apache, http://localhost:9380), adminer 9382, `bb-postgres` 5732,
-  `bb-redis` 6479, `bb-mysql` 4306 (legacy, mizí). Porty jsou zvolené tak, aby běžel zároveň s alfred/web-project/family-tree.
+  `bb-redis` 6479 (MySQL zrušena v řezu 8a, 2026-11-25). Porty jsou zvolené tak, aby běžel zároveň s alfred/web-project/family-tree.
   Příkazy: `docker compose exec -T bb-web …`.
 - Větev `master`, `composer.lock` je verzovaný, `package-lock.json` je v repu taky.
 - ⚠️ `make all` / `make dirs-build` → `create-dirs` **smaže `vendor`, `node_modules`, `temp`**. Nepouštět bez potřeby.
@@ -20,7 +20,7 @@ hlášení, ranky, avatary, moderace, admin). Historie od 2018 (dibi + MySQL), o
   Sady Unit (bez DB), Integration (DI kontejner + dev DB), Functional (PhpBrowser na `bb-web`), Acceptance (`selenium-chrome`, porty 4744/5903/7903).
   Převzaté konvenční testy: `tests/Unit/MigrationConventionsCest`, `tests/Integration/Schema/*`, `MigrationsDownUpCest`, `BigIntIdentifiersCest`,
   `ForeignKeyOnDeleteCest` (= cíl kroku 0: srovnat entity a migrace). Skupina `known-bug` (Make ji přeskakuje) = záměrně padající do opravy:
-  `NoStaticMethodsOrTraitsCest` (starý dibi kód, Bootstrap, RouterFactory). `QueriesUseTheQueryBuilderCest` hlídá naostro od 7f (2026-11-24).
+  `NoStaticMethodsOrTraitsCest` (Bootstrap, RouterFactory), `FlashMessageIsAnObjectCest`. `QueriesUseTheQueryBuilderCest` hlídá naostro od 7f (2026-11-24).
 - Codestyle: `ruleset.xml` → **ninjify/coding-standard** (ne contributte/qa jako ostatní projekty); `composer qa` skript chybí.
 - Konzole: `php bin/console` (contributte/console; migrations, fixtures, `database:create`).
 
@@ -33,9 +33,8 @@ hlášení, ranky, avatary, moderace, admin). Historie od 2018 (dibi + MySQL), o
 - **Nový kód**: `app/UI/<Modul>/<Entita>/<Akce>/` (presenter + `*Values` + DataGrid + `default.latte` + `Translations/*.cs|en.json`),
   `app/Model/Entity` (Doctrine atributy, `id` BIGINT + `uuid` Ramsey), `app/Model/Repository`, `app/Model/Facade`,
   `app/Database/{Migrations,Fixtures,Types}`, `app/Core` (authenticatory, router).
-- **Starý kód (mizí)**: `app/models` (dibi `Manager`/`CrudManager`, `#[Deprecated]`), `app/*Module/presenters`,
-  `app/presenters`, `app/forms`, `app/controls`, `config/config.neon` (stará MySQL konfigurace, Bootstrap ho nenačítá).
-  Commity „remove old model, update entity“ = postupná migrace.
+- **Starý kód smazán** (řez 8a, 2026-11-25): dibi, `app/models`, `app/*Module`, `app/presenters`, `app/controls`, `app/authorization`, staré neony.
+  Z `app/forms` zůstávají jen kopie z web-project (`App\Forms`: `*FormControl*`, `IconBootstrapForm`, `Renderer`, `Mapper`).
 - Repozitáře se registrují v `config/services.neon` přes `entityManagerDecorator::getRepository(...)`.
 
 ## Přepis (rozhodnutí 2026-11-19)

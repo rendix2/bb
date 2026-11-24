@@ -1,6 +1,0 @@
-services:
-    UserLoginFormFactory: App\Services\UserLoginFormFactory
-
-    PremissionFactory:
-        class: App\Authorization\PermissionFactory
-    Authorizator: App\Authorization\Authorizator(@App\Authorization\PermissionFactory::create())
