@@ -1,0 +1,26 @@
+{
+  "title": "Reports",
+  "open": "Open",
+  "handledTab": "Handled",
+  "reportedBy": "reported by",
+  "reason": "Reason",
+  "postBy": "Post of",
+  "note": "Note of the moderator",
+  "none": "No reports.",
+  "handled": "The report was handled, the reporter got a private message.",
+  "status": {
+    "resolved": "Resolved",
+    "rejected": "Rejected"
+  },
+  "form": {
+    "protection": "The form has expired, please send it again.",
+    "status": {
+      "label": "Result",
+      "required": "Choose the result."
+    },
+    "note": {
+      "label": "Note for the moderators (the reporter will not see it)"
+    },
+    "send": "Handle"
+  }
+}

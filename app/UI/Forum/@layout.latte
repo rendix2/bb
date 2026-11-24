@@ -34,6 +34,11 @@
                     {var $unreadPrivateMessages = unreadPrivateMessages()}
                     <a class="nav-link pm-link" n:href=":Forum:Pm:List:default">{_forum-layout.privateMessages}<span n:if="$unreadPrivateMessages" class="badge bg-danger ms-1 pm-unread-count">{$unreadPrivateMessages}</span></a>
                 </li>
+                {* the reports only for moderators (of any forum) and the admin *}
+                {var $openReports = openReports()}
+                <li n:if="$openReports !== null" class={[nav-item, active => str_starts_with($presenter->getName(), 'Forum:Moderation:')]}>
+                    <a class="nav-link reports-link" n:href=":Forum:Moderation:Reports:default">{_forum-layout.reports}<span n:if="$openReports" class="badge bg-warning text-dark ms-1 reports-open-count">{$openReports}</span></a>
+                </li>
                 <li class={[nav-item, active => $presenter->getName() === 'Web:User:List']}>
                     <a class="nav-link user-list-link" n:href=":Web:User:List:default">{_forum-layout.users}</a>
                 </li>

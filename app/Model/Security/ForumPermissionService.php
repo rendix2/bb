@@ -52,6 +52,46 @@ class ForumPermissionService
     }
 
     /**
+     * The forums the user moderates (MODERATE in isAllowed()): all forums when a global role of his may moderate (the admin),
+     * otherwise the forums of moderator_user (himself) and group_moderator (his groups). For lists across forums (the reports)
+     * without asking isAllowed() for every forum.
+     *
+     * @return list<int>
+     */
+    public function moderatedForumIds(UserEntity $user) : array
+    {
+        foreach ($this->globalRoles($user) as $role) {
+            if ($this->acl->isAllowed($role, ForumPrivilege::RESOURCE_FORUM, ForumPrivilege::MODERATE)) {
+                return array_map(
+                    static fn (array $row) : int => (int) $row['id'],
+                    $this->em->getRepository(ForumEntity::class)->createQueryBuilder('_f')->select('_f.id')->getQuery()->getArrayResult(),
+                );
+            }
+        }
+
+        $own = $this->em->getRepository(UserModeratorEntity::class)
+            ->createQueryBuilder('_m')
+            ->select('IDENTITY(_m.forum) AS forumId')
+            ->where('_m.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getArrayResult();
+
+        $groups = $this->em->getRepository(GroupModeratorEntity::class)
+            ->createQueryBuilder('_gm')
+            ->select('IDENTITY(_gm.forum) AS forumId')
+            ->innerJoin(UserGroupMemberEntity::class, '_m', 'WITH', '_m.group = _gm.group')
+            ->where('_m.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getArrayResult();
+
+        $ids = array_map(static fn (array $row) : int => (int) $row['forumId'], [...$own, ...$groups]);
+
+        return array_values(array_unique($ids));
+    }
+
+    /**
      * @return list<string>
      */
     private function rolesInForum(?UserEntity $user, ForumEntity $forum) : array

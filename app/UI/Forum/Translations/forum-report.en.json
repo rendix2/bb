@@ -3,6 +3,14 @@
     "own": "You cannot report your own post.",
     "already": "You have already reported this post.",
     "empty": "Write the reason of the report.",
-    "tooLong": "The reason of the report is too long."
+    "tooLong": "The reason of the report is too long.",
+    "handled": "The report has already been handled.",
+    "status": "Choose how the report was handled.",
+    "noteTooLong": "The note is too long."
+  },
+  "message": {
+    "subject": "Your report in the topic “%topic%”",
+    "resolved": "Hello,\n\nthank you for reporting a post in the topic “%topic%” (%date%). The moderators checked the report and **resolved** it – the post was edited, locked or dealt with otherwise.\n\nTopic: <%url%>\n\n*This message was created automatically when the report was handled.*",
+    "rejected": "Hello,\n\nthank you for reporting a post in the topic “%topic%” (%date%). The moderators checked the report and **rejected** it – they found no breach of the rules of the forum.\n\nTopic: <%url%>\n\n*This message was created automatically when the report was handled.*"
   }
 }

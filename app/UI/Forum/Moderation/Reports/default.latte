@@ -1,0 +1,50 @@
+{block title}{_forum-moderation-reports.title}{/block}
+
+{block content}
+<div class="col-sm-12 moderation-reports">
+    <h1 class="h4">{_forum-moderation-reports.title}</h1>
+
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a n:href="this status: open, page: 1" class={[nav-link, reports-open-link, active => $open]}>{_forum-moderation-reports.open} <span class="badge bg-secondary">{$openCount}</span></a>
+        </li>
+        <li class="nav-item">
+            <a n:href="this status: handled, page: 1" class={[nav-link, reports-handled-link, active => !$open]}>{_forum-moderation-reports.handledTab}</a>
+        </li>
+    </ul>
+
+    {include '../../@paginator.latte', paginator: $paginator}
+
+    <div n:foreach="$reports as $report" id="report-{$report->id}" class="card mb-3 report">
+        <div class="card-header small">
+            <a n:href=":Forum:Forum:View:default $report->forum->uuid->toString()">{$report->forum->name}</a>
+            › <a n:href=":Forum:Topic:View:default#post-{$report->post->id} $report->topic->uuid->toString(), page: $pages[$report->id]" class="report-post-link">{$report->topic->name}</a>
+            · {_forum-moderation-reports.reportedBy}
+            <a n:href=":Web:User:View:default $report->user->uuid->toString()" class="report-reporter">{$report->user->username}</a>
+            {$report->createdAt|date:'j. n. Y H:i'}
+        </div>
+        <div class="card-body">
+            <p class="mb-1"><strong>{_forum-moderation-reports.reason}:</strong> <span class="report-text">{$report->reportText}</span></p>
+            <blockquote class="border-start ps-2 small text-muted post-text">
+                {_forum-moderation-reports.postBy} {$report->post->user->username}:
+                {$report->post->text|markdown}
+            </blockquote>
+
+            {if $open}
+                <div class="report-handle-form">{control "handleForm-$report->id"}</div>
+            {else}
+                <p class="mb-0 report-result">
+                    <span class={[badge, report-status, $report->status === $statusResolved ? bg-success : bg-secondary]}>
+                        {if $report->status === $statusResolved}{_forum-moderation-reports.status.resolved}{else}{_forum-moderation-reports.status.rejected}{/if}
+                    </span>
+                    {$report->handledBy?->username ?? '—'}, {$report->handledAt|date:'j. n. Y H:i'}
+                </p>
+                <p n:if="$report->moderatorNote" class="small mb-0 report-note"><strong>{_forum-moderation-reports.note}:</strong> {$report->moderatorNote}</p>
+            {/if}
+        </div>
+    </div>
+    <p n:if="!$reports" class="text-muted reports-none">{_forum-moderation-reports.none}</p>
+
+    {include '../../@paginator.latte', paginator: $paginator}
+</div>
+{/block}

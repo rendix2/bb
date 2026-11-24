@@ -36,7 +36,15 @@ final class Version20260718094805 extends AbstractMigration
             ->setComment('Report text');
 
         $table->addColumn('status', Types::INTEGER)
-            ->setComment('Status (0 = open)');
+            ->setComment('Status (0 = open, 1 = resolved, 2 = rejected)');
+
+        $table->addColumn('handled_at', Types::DATETIME_IMMUTABLE)
+            ->setNotnull(false)
+            ->setComment('Handled at');
+
+        $table->addColumn('moderator_note', Types::TEXT)
+            ->setNotnull(false)
+            ->setComment('Note of the moderator (only for moderators)');
 
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
@@ -60,6 +68,10 @@ final class Version20260718094805 extends AbstractMigration
         $table->addColumn('user_id', Types::BIGINT)
             ->setComment('User ID');
 
+        $table->addColumn('handled_by_id', Types::BIGINT)
+            ->setNotnull(false)
+            ->setComment('Handled by (user ID)');
+
         $primaryKey = new PrimaryKeyConstraintEditor();
         $primaryKey->setIsClustered(false);
         $primaryKey->setColumnNames(new UnqualifiedName(Identifier::unquoted('id')));
@@ -69,6 +81,7 @@ final class Version20260718094805 extends AbstractMigration
 
             ->addIndex(['category_id'], 'K__Report__Category_id')
             ->addIndex(['forum_id'], 'K__Report__Forum_id')
+            ->addIndex(['handled_by_id'], 'K__Report__Handled_by_id')
             ->addIndex(['post_id'], 'K__Report__Post_id')
             ->addIndex(['topic_id'], 'K__Report__Topic_id')
             ->addIndex(['user_id'], 'K__Report__User_id')
@@ -79,6 +92,7 @@ final class Version20260718094805 extends AbstractMigration
             ->addForeignKeyConstraint('forum', ['forum_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Forum_id')
             ->addForeignKeyConstraint('post', ['post_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Post_id')
             ->addForeignKeyConstraint('topic', ['topic_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Topic_id')
+            ->addForeignKeyConstraint('users', ['handled_by_id'], ['id'], options: ['onDelete' => 'SET NULL'], name: 'FK__Report__Handled_by_id')
             ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__User_id');
     }
 

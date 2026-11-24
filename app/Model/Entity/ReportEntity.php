@@ -58,8 +58,19 @@ class ReportEntity
     #[Column(type: Types::TEXT, nullable: false, options: ['comment' => 'Report text'])]
     public string $reportText;
 
-    #[Column(type: Types::INTEGER, nullable: false, options: ['comment' => 'Status (0 = open)'])]
+    #[Column(type: Types::INTEGER, nullable: false, options: ['comment' => 'Status (0 = open, 1 = resolved, 2 = rejected)'])]
     public int $status;
+
+    // the moderator who handled the report; the report stays when his account is deleted
+    #[ManyToOne(targetEntity: UserEntity::class, cascade: ['persist'])]
+    #[JoinColumn(nullable: true, onDelete: 'SET NULL', options: ['comment' => 'Handled by (user ID)'])]
+    public ?UserEntity $handledBy;
+
+    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Handled at'])]
+    public ?DateTimeImmutable $handledAt;
+
+    #[Column(type: Types::TEXT, nullable: true, options: ['comment' => 'Note of the moderator (only for moderators)'])]
+    public ?string $moderatorNote;
 
     #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
@@ -70,6 +81,10 @@ class ReportEntity
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
+
+        $this->handledBy = null;
+        $this->handledAt = null;
+        $this->moderatorNote = null;
 
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;

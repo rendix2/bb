@@ -1,0 +1,26 @@
+{
+  "title": "Hlášení",
+  "open": "Otevřená",
+  "handledTab": "Vyřízená",
+  "reportedBy": "nahlásil(a)",
+  "reason": "Důvod",
+  "postBy": "Příspěvek uživatele",
+  "note": "Poznámka moderátora",
+  "none": "Žádná hlášení.",
+  "handled": "Hlášení bylo vyřízeno, nahlasovatel dostal soukromou zprávu.",
+  "status": {
+    "resolved": "Vyřízeno",
+    "rejected": "Zamítnuto"
+  },
+  "form": {
+    "protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+    "status": {
+      "label": "Výsledek",
+      "required": "Zvolte výsledek."
+    },
+    "note": {
+      "label": "Poznámka pro moderátory (nahlasovatel ji neuvidí)"
+    },
+    "send": "Vyřídit"
+  }
+}

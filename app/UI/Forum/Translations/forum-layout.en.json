@@ -6,5 +6,6 @@
   "admin": "Administration",
   "users": "Users",
   "search": "Search",
-  "privateMessages": "Private messages"
+  "privateMessages": "Private messages",
+  "reports": "Reports"
 }

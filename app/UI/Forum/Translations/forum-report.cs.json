@@ -3,6 +3,14 @@
     "own": "Vlastní příspěvek nahlásit nelze.",
     "already": "Tento příspěvek už jste nahlásili.",
     "empty": "Napište důvod nahlášení.",
-    "tooLong": "Důvod nahlášení je příliš dlouhý."
+    "tooLong": "Důvod nahlášení je příliš dlouhý.",
+    "handled": "Hlášení už bylo vyřízeno.",
+    "status": "Zvolte, jak bylo hlášení vyřízeno.",
+    "noteTooLong": "Poznámka je příliš dlouhá."
+  },
+  "message": {
+    "subject": "Vaše nahlášení v tématu „%topic%“",
+    "resolved": "Dobrý den,\n\nděkujeme za nahlášení příspěvku v tématu „%topic%“ (%date%). Moderátoři hlášení prověřili a **vyřídili** – příspěvek byl upraven, zamčen nebo jinak vyřešen.\n\nTéma: <%url%>\n\n*Tato zpráva byla vytvořena automaticky po vyřízení hlášení.*",
+    "rejected": "Dobrý den,\n\nděkujeme za nahlášení příspěvku v tématu „%topic%“ (%date%). Moderátoři hlášení prověřili a **zamítli** – neshledali porušení pravidel fóra.\n\nTéma: <%url%>\n\n*Tato zpráva byla vytvořena automaticky po vyřízení hlášení.*"
   }
 }
