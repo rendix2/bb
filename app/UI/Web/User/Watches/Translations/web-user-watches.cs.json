@@ -6,5 +6,6 @@
   "since": "Sleduji od",
   "unwatch": "Přestat sledovat",
   "unwatched": "Sledování tématu zrušeno.",
-  "none": "Nesledujete žádné téma. Sledování zapnete tlačítkem „Sledovat“ v tématu."
+  "none": "Nesledujete žádné téma. Sledování zapnete tlačítkem „Sledovat“ v tématu.",
+  "inaccessible": "Nepřístupné téma (už ho nesmíte číst)"
 }

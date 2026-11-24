@@ -23,35 +23,37 @@ class TopicWatchService
     }
 
     /**
-     * The topics the user watches (the page "My watched topics"), only those he may still read (active forum readable for him and
-     * active category, as Forum:Topic:View requires), the newest watch first, with their forums.
+     * The topics the user watches (the page "My watched topics"), the newest watch first, each with whether he may still read it
+     * (active forum readable for him and active category, as Forum:Topic:View requires). An unreadable one is listed only so that
+     * the user can stop watching it – the page must not show its name or forum.
      *
-     * @return list<TopicWatchEntity>
+     * @return list<array{watch: TopicWatchEntity, readable: bool}>
      */
     public function watchedBy(UserEntity $user) : array
     {
         $forumIds = $this->visibility->visibleForumIds($user);
 
-        if ($forumIds === []) {
-            return [];
-        }
-
-        /** @var list<TopicWatchEntity> */
-        return $this->em->getRepository(TopicWatchEntity::class)
+        /** @var list<TopicWatchEntity> $watches */
+        $watches = $this->em->getRepository(TopicWatchEntity::class)
             ->createQueryBuilder('_w')
-            ->select('_w', '_t', '_f')
+            ->select('_w', '_t', '_f', '_tc')
             ->innerJoin('_w.topic', '_t')
             ->innerJoin('_t.forum', '_f')
             ->innerJoin('_t.category', '_tc')
             ->where('_w.user = :user')
-            ->andWhere('_t.forum IN (:forums)')
-            ->andWhere('_tc.active = true')
             ->setParameter('user', $user)
-            ->setParameter('forums', $forumIds)
             ->orderBy('_w.createdAt', 'DESC')
             ->addOrderBy('_t.id', 'DESC')
             ->getQuery()
             ->getResult();
+
+        return array_map(
+            static fn (TopicWatchEntity $watch) : array => [
+                'watch' => $watch,
+                'readable' => in_array($watch->topic->forum->id, $forumIds, true) && $watch->topic->category->active,
+            ],
+            $watches,
+        );
     }
 
     public function isWatching(?UserEntity $user, TopicEntity $topic) : bool

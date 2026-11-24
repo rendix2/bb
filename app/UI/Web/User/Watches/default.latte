@@ -10,9 +10,16 @@
             <tr><th>{_web-user-watches.forum}</th><th>{_web-user-watches.topic}</th><th>{_web-user-watches.since}</th><th></th></tr>
         </thead>
         <tbody>
-            <tr n:foreach="$watches as $watch" class="user-watch">
-                <td><a n:href=":Forum:Forum:View:default $watch->topic->forum->uuid->toString()">{$watch->topic->forum->name}</a></td>
-                <td><a n:href=":Forum:Topic:View:default $watch->topic->uuid->toString()" class="user-watch-topic">{$watch->topic->name}</a></td>
+            <tr n:foreach="$watches as $item" class={[user-watch, !$item['readable'] ? user-watch-inaccessible]}>
+                {var $watch = $item['watch']}
+                {if $item['readable']}
+                    <td><a n:href=":Forum:Forum:View:default $watch->topic->forum->uuid->toString()">{$watch->topic->forum->name}</a></td>
+                    <td><a n:href=":Forum:Topic:View:default $watch->topic->uuid->toString()" class="user-watch-topic">{$watch->topic->name}</a></td>
+                {else}
+                    {* the user may not read the topic any more: neither its name nor its forum, only stop watching *}
+                    <td class="text-muted">–</td>
+                    <td class="text-muted fst-italic">{_web-user-watches.inaccessible}</td>
+                {/if}
                 <td class="text-nowrap small text-muted">{$watch->createdAt|date:'j. n. Y'}</td>
                 <td class="text-end">{control "unwatchForm-{$watch->topic->id}"}</td>
             </tr>

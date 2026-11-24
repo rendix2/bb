@@ -10,8 +10,8 @@ use App\UI\Web\User\Accessory\ProfilePresenter;
 use Nette\Application\UI\Multiplier;
 
 /**
- * My watched topics (decision of 2026-11-20): only the own list (no uuid in the address, the watches of others are private), only
- * the topics the user may still read; each can be stopped (POST + CSRF).
+ * My watched topics (decision of 2026-11-20): only the own list (no uuid in the address, the watches of others are private); each
+ * can be stopped (POST + CSRF). A topic the user may not read any more is shown as "inaccessible" without its name or forum.
  */
 class WatchesPresenter extends ProfilePresenter
 {

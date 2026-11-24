@@ -55,9 +55,18 @@ class UserWatchesAndThanksPagesCest
         $I->click('.profile-watches-link');
         $I->seeResponseCodeIs(200);
         $I->seeElement('a.user-watch-topic[href*="' . $visible->uuid->toString() . '"]');
+        // a topic he may not read any more: listed as inaccessible without its name and forum, only to stop watching it
         $I->dontSee($inactive->name);
         $I->dontSee($hidden->name);
+        $I->dontSee('Closed watched forum');
+        $I->dontSee('Watched forum of closed category');
+        $I->seeNumberOfElements('tr.user-watch-inaccessible', 2);
+        $I->see('Nepřístupné téma', 'tr.user-watch-inaccessible');
         $I->dontSee($foreign->name);
+        $I->submitForm('#frm-unwatchForm-' . $inactive->id, []);
+        $I->assertSame(0, $this->watchCount($I, $owner, $inactive));
+        $I->amOnPage('/web.user.watches/');
+        $I->seeNumberOfElements('tr.user-watch-inaccessible', 1);
 
         $I->amOnPage('/web.user.watches/' . $other->uuid->toString());
         $I->see($visible->name, '.user-watch-topic');

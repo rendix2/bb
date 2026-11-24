@@ -6,5 +6,6 @@
   "since": "Watched since",
   "unwatch": "Stop watching",
   "unwatched": "You no longer watch the topic.",
-  "none": "You watch no topic. Use the button “Watch” in a topic."
+  "none": "You watch no topic. Use the button “Watch” in a topic.",
+  "inaccessible": "An inaccessible topic (you may not read it any more)"
 }
