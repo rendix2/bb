@@ -36,3 +36,11 @@ menu:
                 action: :Admin:Ban:List:default
                 include:
                     - '^Admin:Ban'
+            Ranks:
+                action: :Admin:Rank:List:default
+                include:
+                    - '^Admin:Rank:'
+            Languages:
+                action: :Admin:Language:List:default
+                include:
+                    - '^Admin:Language:'

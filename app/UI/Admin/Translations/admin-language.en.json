@@ -1,0 +1,7 @@
+{
+  "error": {
+    "notAvailable": "The language %locale% cannot be added (not allowed, already there or without all the translations).",
+    "used": "The language is used by %users% users, it cannot be deleted.",
+    "default": "The default language of the web cannot be deleted."
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Jazyky",
+  "help": "Jazyk je locale (cs, en, …). Přidat jde jen locale ze seznamu povolených (translation.locales.whitelist), pro které existují všechny překlady. Jazyky se nepřejmenovávají; nový jazyk do aplikace přidá vývojář (překladové soubory + whitelist).",
+  "name": "Název",
+  "locale": "Locale",
+  "users": "Uživatelé",
+  "delete": "Smazat",
+  "add": "Přidat jazyk",
+  "choose": "Vyberte jazyk",
+  "noneAvailable": "Žádný další jazyk nemá kompletní překlady",
+  "added": "Jazyk %name% byl přidán.",
+  "incomplete": "Povolené jazyky bez kompletních překladů",
+  "missing": "chybí %count% překladových souborů"
+}

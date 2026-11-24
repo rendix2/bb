@@ -1,0 +1,8 @@
+{block title}{_admin-language-delete.title}: {$language->name}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-language-delete.title}: {$language->name}</h1>
+    <p>{_admin-language-delete.question}</p>
+    {control deleteForm}
+    <a n:href=":Admin:Language:List:default" class="btn btn-link">{_admin-language-delete.back}</a>
+{/block}

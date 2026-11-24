@@ -3,12 +3,12 @@
 namespace Tests\Integration;
 
 use App\Model\Entity\LanguageEntity;
-use App\Model\Entity\RankEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Enum\BanScope;
 use App\Model\Service\AdminException;
 use App\Model\Service\BanAdminService;
 use App\Model\Service\ForumAccessAdminService;
+use App\Model\Service\RankAdminService;
 use App\Model\Service\UserForumAdminService;
 use Tests\Support\IntegrationTester;
 
@@ -33,7 +33,8 @@ class AdminUserForumPagesCest
     {
         $user = $I->createUser('Forumer', role: 'Normal');
         $english = $I->em()->getRepository(LanguageEntity::class)->findOneBy(['locale' => 'en']) ?? $I->fail('No English.');
-        $rank = $I->em()->getRepository(RankEntity::class)->findOneBy([]) ?? $I->fail('No rank.');
+        // a special rank (no minimum of posts): only those are given by the admin
+        $rank = $I->grabService(RankAdminService::class)->save(null, 'Special for test', null, null, false);
         $I->loginAsAdmin();
 
         $I->amOnPage('/admin.user.edit/' . $user->uuid->toString());

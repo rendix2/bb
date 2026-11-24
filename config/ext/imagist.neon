@@ -13,5 +13,5 @@ imagist.filters:
 		# scope avatars: generated right on upload (UserAvatarService), never lazily in a template
 		avatar128: Contributte\Imagist\Filter\CompositeFilter(avatar128, Contributte\Imagist\Filter\Operation\ResizeOperation(128, 128, exact))
 		avatar48: Contributte\Imagist\Filter\CompositeFilter(avatar48, Contributte\Imagist\Filter\Operation\ResizeOperation(48, 48, exact))
-		# scope ranks: prepared for the images of ranks (not used yet)
-		rank: Contributte\Imagist\Filter\CompositeFilter(rank, Contributte\Imagist\Filter\Operation\ResizeOperation(null, %ranks.maxHeight%, shrink_only))
+		# scope ranks: generated right on upload (RankImageService), at most 200 x 60 px
+		rank: Contributte\Imagist\Filter\CompositeFilter(rank, Contributte\Imagist\Filter\Operation\ResizeOperation(200, 60, shrink_only))

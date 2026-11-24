@@ -72,7 +72,7 @@ class ForumPresenter extends AdminBasePresenter
         $ranks = [];
 
         /** @var list<RankEntity> $allRanks */
-        $allRanks = $this->em->createQueryBuilder()->select('_r')->from(RankEntity::class, '_r')->orderBy('_r.name', 'ASC')->getQuery()->getResult();
+        $allRanks = $this->em->createQueryBuilder()->select('_r')->from(RankEntity::class, '_r')->where('_r.minPosts IS NULL')->orderBy('_r.name', 'ASC')->getQuery()->getResult();
 
         foreach ($allRanks as $rank) {
             $ranks[$rank->id] = $rank->name;

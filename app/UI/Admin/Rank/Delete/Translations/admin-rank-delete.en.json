@@ -1,0 +1,7 @@
+{
+  "title": "Delete the rank",
+  "question": "Really delete it? The users with this special rank get the rank by their posts.",
+  "confirm": "Delete",
+  "success": "The rank %name% has been deleted.",
+  "back": "Back to the list"
+}

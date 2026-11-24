@@ -33,11 +33,9 @@ class RankEntity
     #[Column(type: Types::INTEGER, nullable: true, options: ['comment' => 'Minimum posts'])]
     public ?int $minPosts;
 
-    #[Column(type: Types::TEXT, unique: true, options: ['comment' => 'File name'])]
-    public string $fileName;
-
-    #[Column(type: Types::BOOLEAN, options: ['comment' => 'Is special'])]
-    public bool $isSpecial;
+    // the image id of contributte/imagist (ranks/<name>.webp, RankImageService); a rank needs no image
+    #[Column(type: Types::STRING, length: 255, nullable: true, options: ['comment' => 'Image: the image id of contributte/imagist (ranks/<name>.webp)'])]
+    public ?string $image;
 
     #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
@@ -48,9 +46,18 @@ class RankEntity
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
+        $this->minPosts = null;
+        $this->image = null;
 
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;
     }
 
+    /**
+     * A special rank is given by the admin (no minimum of posts).
+     */
+    public function isSpecial() : bool
+    {
+        return $this->minPosts === null;
+    }
 }

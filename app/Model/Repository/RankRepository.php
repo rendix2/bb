@@ -5,10 +5,10 @@ namespace App\Model\Repository;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * class SessionRepository
+ * bb: used only by the old code (app/AdminModule, app/services/RankService), it goes with it (slice 7f)
  *
  * @package App\Model\Repository
- * @extends EntityRepository<RankRepository>
+ * @extends EntityRepository<\App\Model\Entity\RankEntity>
  */
 class RankRepository extends EntityRepository
 {

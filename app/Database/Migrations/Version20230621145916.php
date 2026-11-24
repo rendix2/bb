@@ -36,11 +36,10 @@ final class Version20230621145916 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Minimum posts');
 
-        $table->addColumn('file_name', Types::TEXT)
-            ->setComment('File name');
-
-        $table->addColumn('is_special', Types::BOOLEAN)
-            ->setComment('Is special');
+        $table->addColumn('image', Types::STRING)
+            ->setLength(255)
+            ->setNotnull(false)
+            ->setComment('Image: the image id of contributte/imagist (ranks/<name>.webp)');
 
         $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
@@ -56,7 +55,6 @@ final class Version20230621145916 extends AbstractMigration
         $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('Ranks')
 
-            ->addUniqueIndex(['file_name'], 'UK__Rank__File_name')
             ->addUniqueIndex(['uuid'], 'UK__Rank__Uuid');
     }
 

@@ -1,0 +1,14 @@
+{
+  "title": "Languages",
+  "help": "A language is a locale (cs, en, …). Only a locale of the whitelist (translation.locales.whitelist) with all the translations can be added. Languages are not renamed; a developer adds a new language to the application (the translation files + the whitelist).",
+  "name": "Name",
+  "locale": "Locale",
+  "users": "Users",
+  "delete": "Delete",
+  "add": "Add a language",
+  "choose": "Choose a language",
+  "noneAvailable": "No other language has complete translations",
+  "added": "The language %name% has been added.",
+  "incomplete": "Allowed languages without complete translations",
+  "missing": "%count% translation files are missing"
+}

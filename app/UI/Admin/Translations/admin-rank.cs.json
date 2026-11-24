@@ -1,0 +1,22 @@
+{
+  "form": {
+    "name": "Název",
+    "minPosts": "Minimální počet příspěvků",
+    "minPostsHelp": "Prázdné = speciální rank, který přiděluje admin uživateli (stránka „Uživatel ve fóru“).",
+    "image": "Obrázek",
+    "imageHelp": "JPEG, PNG, GIF (ne animovaný) nebo WebP, nejvýše 1 MB; zmenší se na 200 × 60 px.",
+    "deleteImage": "Smazat obrázek"
+  },
+  "error": {
+    "name": "Vyplňte název (nejvýše 255 znaků).",
+    "minPosts": "Minimální počet příspěvků nesmí být záporný.",
+    "minPostsTaken": "Minimum %minPosts% už má rank %name%.",
+    "image": {
+      "upload": "Obrázek se nepodařilo nahrát.",
+      "size": "Obrázek je příliš velký.",
+      "type": "Soubor není podporovaný obrázek.",
+      "dimensions": "Obrázek má příliš velké rozměry.",
+      "animated": "Animovaný GIF nelze použít."
+    }
+  }
+}

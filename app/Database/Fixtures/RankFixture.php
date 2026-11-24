@@ -24,12 +24,10 @@ class RankFixture implements FixtureInterface, OrderedFixtureInterface
             [self::SpecialRankName, null],
         ];
 
-        foreach ($ranks as $i => [$name, $minPosts]) {
+        foreach ($ranks as [$name, $minPosts]) {
             $rankEntity = new RankEntity();
             $rankEntity->name = $name;
             $rankEntity->minPosts = $minPosts;
-            $rankEntity->isSpecial = $minPosts === null;
-            $rankEntity->fileName = 'rank-' . ($i + 1) . '.png';
 
             $manager->persist($rankEntity);
         }

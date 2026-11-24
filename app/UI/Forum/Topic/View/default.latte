@@ -33,6 +33,7 @@
                 <img n:if="$post->user->avatar" n:img="$post->user->avatar, filter: avatar48" alt="" width="48" height="48" class="rounded-circle me-1 post-avatar">
                 <a n:href=":Web:User:View:default $post->user->uuid->toString()" class="post-author">{$post->user->username}</a>
                 <span n:if="$ranks[$post->user->id]" class="badge badge-secondary post-rank">{$ranks[$post->user->id]->name}</span>
+                <img n:if="$ranks[$post->user->id]?->image" n:img="$ranks[$post->user->id]->image, filter: rank" alt="" class="post-rank-image d-block mt-1">
                 <span class="small text-muted">{_forum-topic-view.posts}: <span class="post-count">{$postCounts[$post->user->id]}</span></span>
             </span>
             <span class="small text-muted">

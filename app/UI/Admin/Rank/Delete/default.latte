@@ -1,0 +1,8 @@
+{block title}{_admin-rank-delete.title}: {$rank->name}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-rank-delete.title}: {$rank->name}</h1>
+    <p>{_admin-rank-delete.question}</p>
+    {control deleteForm}
+    <a n:href=":Admin:Rank:List:default" class="btn btn-link">{_admin-rank-delete.back}</a>
+{/block}

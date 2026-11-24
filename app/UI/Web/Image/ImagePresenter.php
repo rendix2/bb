@@ -4,6 +4,8 @@ namespace App\UI\Web\Image;
 
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\UserEntity;
+use App\Model\Entity\RankEntity;
+use App\Model\Service\RankImageService;
 use App\Model\Service\UserAvatarService;
 use App\Settings\ImagesDir;
 use Nette\Application\Responses\FileResponse;
@@ -26,16 +28,21 @@ class ImagePresenter extends Presenter
     public function actionDefault(string $scope, string $filter, string $name) : void
     {
         // the route allows only these values; checked again, the path below is made of them
-        if ($scope !== UserAvatarService::SCOPE
-            || !in_array($filter, UserAvatarService::FILTERS, true)
-            || preg_match('#^[a-zA-Z0-9]{32}\.webp$#D', $name) !== 1
-        ) {
+        $owner = match (true) {
+            $scope === UserAvatarService::SCOPE && in_array($filter, UserAvatarService::FILTERS, true) => UserEntity::class,
+            // bb: the images of ranks (slice 7d)
+            $scope === RankImageService::SCOPE && $filter === RankImageService::FILTER => RankEntity::class,
+            default => null,
+        };
+
+        if ($owner === null || preg_match('#^[a-zA-Z0-9]{32}\.webp$#D', $name) !== 1) {
             $this->error('Image was not found.');
         }
 
-        $user = $this->em->getRepository(UserEntity::class)->findOneBy(['avatar' => $scope . '/' . $name]);
+        // only the image of an existing user or rank (a deleted one may stay on the disk for a moment)
+        $exists = $this->em->getRepository($owner)->count([$owner === UserEntity::class ? 'avatar' : 'image' => $scope . '/' . $name]) > 0;
 
-        if ($user === null) {
+        if (!$exists) {
             $this->error('Image was not found.');
         }
 

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "notAvailable": "Jazyk %locale% nejde přidat (není povolený, už existuje, nebo nemá všechny překlady).",
+    "used": "Jazyk používá %users% uživatelů, nejde smazat.",
+    "default": "Výchozí jazyk webu nejde smazat."
+  }
+}

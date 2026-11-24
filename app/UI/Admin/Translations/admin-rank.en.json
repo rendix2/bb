@@ -1,0 +1,22 @@
+{
+  "form": {
+    "name": "Name",
+    "minPosts": "Minimum of posts",
+    "minPostsHelp": "Empty = a special rank the admin gives to a user (the page \"User in the forum\").",
+    "image": "Image",
+    "imageHelp": "JPEG, PNG, GIF (not animated) or WebP, at most 1 MB; shrunk to 200 × 60 px.",
+    "deleteImage": "Delete the image"
+  },
+  "error": {
+    "name": "Fill in the name (at most 255 characters).",
+    "minPosts": "The minimum of posts cannot be negative.",
+    "minPostsTaken": "The minimum %minPosts% belongs to the rank %name% already.",
+    "image": {
+      "upload": "The image could not be uploaded.",
+      "size": "The image is too big.",
+      "type": "The file is no supported image.",
+      "dimensions": "The image is too large.",
+      "animated": "An animated GIF cannot be used."
+    }
+  }
+}

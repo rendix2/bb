@@ -13,7 +13,6 @@ use Contributte\Imagist\Scope\Scope;
 use Contributte\Imagist\Uploader\StringUploader;
 use Nette\Http\FileUpload;
 use Nette\Utils\Image;
-use Nette\Utils\ImageException;
 use Nette\Utils\ImageType;
 use Nette\Utils\Random;
 use Throwable;
@@ -41,12 +40,11 @@ class UserAvatarService
     public const string ERROR_DIMENSIONS = 'web-user-edit.avatar.error.dimensions';
     public const string ERROR_ANIMATED = 'web-user-edit.avatar.error.animated';
 
-    private const array TYPES = [ImageType::JPEG, ImageType::PNG, ImageType::GIF, ImageType::WEBP];
-
     public function __construct(
         private readonly EntityManagerDecorator $em,
         private readonly ImageStorageInterface $imageStorage,
         private readonly Avatars $avatars,
+        private readonly UploadedImageReader $imageReader,
     ) {
     }
 
@@ -115,92 +113,21 @@ class UserAvatarService
      */
     private function reencode(FileUpload $upload) : string
     {
-        if (!$upload->isOk()) {
-            throw new AvatarException(self::ERROR_UPLOAD);
-        }
-
-        if ($upload->getSize() > $this->avatars->getMaxFileSize()) {
-            throw new AvatarException(self::ERROR_SIZE);
-        }
-
-        $path = $upload->getTemporaryFile();
-        // the type from the content (the magic bytes), never the name or the type sent by the client
-        $type = Image::detectTypeFromFile($path, $width, $height);
-
-        if ($type === null || !in_array($type, self::TYPES, true)) {
-            throw new AvatarException(self::ERROR_TYPE);
-        }
-
-        // before decoding: a small file can declare a huge bitmap (decompression bomb)
-        if ($width > $this->avatars->getMaxWidth() || $height > $this->avatars->getMaxHeight()) {
-            throw new AvatarException(self::ERROR_DIMENSIONS);
-        }
-
-        $content = (string) file_get_contents($path);
-
-        if ($type === ImageType::GIF && $this->isAnimatedGif($content)) {
-            throw new AvatarException(self::ERROR_ANIMATED);
-        }
-
         try {
-            $image = Image::fromString($content);
-        } catch (ImageException) {
-            throw new AvatarException(self::ERROR_TYPE);
+            $image = $this->imageReader->read($upload, $this->avatars->getMaxFileSize(), $this->avatars->getMaxWidth(), $this->avatars->getMaxHeight());
+        } catch (UploadedImageException $exception) {
+            throw new AvatarException(match ($exception->getMessage()) {
+                UploadedImageReader::ERROR_SIZE => self::ERROR_SIZE,
+                UploadedImageReader::ERROR_TYPE => self::ERROR_TYPE,
+                UploadedImageReader::ERROR_DIMENSIONS => self::ERROR_DIMENSIONS,
+                UploadedImageReader::ERROR_ANIMATED => self::ERROR_ANIMATED,
+                default => self::ERROR_UPLOAD,
+            });
         }
 
         $image->resize(self::SIZE, self::SIZE, Image::Cover);
         $image->crop('50%', '50%', self::SIZE, self::SIZE);
 
         return $image->toString(ImageType::WEBP, self::QUALITY);
-    }
-
-    /**
-     * More than one image in the GIF (its blocks are walked; GD would quietly take the first frame only).
-     */
-    private function isAnimatedGif(string $content) : bool
-    {
-        $length = strlen($content);
-
-        if ($length < 13) {
-            return false;
-        }
-
-        $packed = ord($content[10]);
-        // the header (6), the logical screen descriptor (7) and the global color table
-        $position = 13 + (($packed & 0x80) !== 0 ? 3 * (2 << ($packed & 0x07)) : 0);
-        $frames = 0;
-
-        while ($position < $length) {
-            $block = ord($content[$position]);
-
-            if ($block === 0x2C) {
-                if (++$frames > 1) {
-                    return true;
-                }
-
-                if ($position + 10 > $length) {
-                    return false;
-                }
-
-                $packed = ord($content[$position + 9]);
-                // the image descriptor (10), the local color table and the LZW minimum code size (1)
-                $position += 10 + (($packed & 0x80) !== 0 ? 3 * (2 << ($packed & 0x07)) : 0) + 1;
-            } elseif ($block === 0x21) {
-                // an extension: the introducer and the label
-                $position += 2;
-            } else {
-                // the trailer (0x3B) or garbage
-                return false;
-            }
-
-            // the data sub-blocks up to the terminator
-            while ($position < $length && ($size = ord($content[$position])) !== 0) {
-                $position += $size + 1;
-            }
-
-            $position++;
-        }
-
-        return false;
     }
 }

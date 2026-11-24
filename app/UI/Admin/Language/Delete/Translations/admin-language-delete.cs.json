@@ -1,0 +1,7 @@
+{
+  "title": "Smazání jazyka",
+  "question": "Opravdu smazat? Smazat nejde jazyk, který někdo používá, ani výchozí jazyk.",
+  "confirm": "Smazat",
+  "success": "Jazyk %name% byl smazán.",
+  "back": "Zpět na seznam"
+}

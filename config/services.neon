@@ -1,6 +1,7 @@
 services:
 	RouterFactory: App\Core\RouterFactory::createRouter
 	- App\Model\Service\MarkdownRenderer
+	- App\Model\Service\UploadedImageReader
 	# bans of the whole web and of the login on every request (config/common.neon, application.application)
 	- App\Core\BanGuard
 	- App\ConsoleModule\Commands\SendMailQueueCommand

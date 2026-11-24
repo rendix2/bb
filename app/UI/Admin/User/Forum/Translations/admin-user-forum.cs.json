@@ -8,7 +8,7 @@
     "language": "Jazyk",
     "signature": "Podpis",
     "signatureHelp": "Markdown, nejvýše %maxChars% znaků.",
-    "rank": "Speciální rank",
+    "rank": "Speciální rank (bez minima příspěvků)",
     "rankByPosts": "— podle počtu příspěvků —"
   },
   "saved": "Nastavení uživatele %username% bylo uloženo.",

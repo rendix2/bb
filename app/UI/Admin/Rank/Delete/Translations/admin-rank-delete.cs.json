@@ -1,0 +1,7 @@
+{
+  "title": "Smazání ranku",
+  "question": "Opravdu smazat? Uživatelé s tímto speciálním rankem dostanou rank podle počtu příspěvků.",
+  "confirm": "Smazat",
+  "success": "Rank %name% byl smazán.",
+  "back": "Zpět na seznam"
+}

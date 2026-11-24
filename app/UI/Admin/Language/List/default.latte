@@ -1,0 +1,32 @@
+{block title}{_admin-language-list.title}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-language-list.title}</h1>
+    <p class="small text-muted">{_admin-language-list.help}</p>
+
+    <table class="table table-sm table-striped">
+        <thead><tr><th>{_admin-language-list.name}</th><th>{_admin-language-list.locale}</th><th>{_admin-language-list.users}</th><th></th></tr></thead>
+        <tbody>
+            <tr n:foreach="$languages as $language" class="language">
+                <td>{$language->name}</td>
+                <td><code>{$language->locale}</code></td>
+                <td>{$users[$language->id]}</td>
+                <td class="text-end"><a n:href=":Admin:Language:Delete:default $language->id" class="btn btn-sm btn-outline-danger language-delete-link">{_admin-language-list.delete}</a></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="card shadow-sm border-0 col-lg-6 mb-3">
+        <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-language-list.add}</h2></div>
+        <div class="card-body">{control addForm}</div>
+    </div>
+
+    <div n:if="$incomplete" class="card shadow-sm border-0 mb-3 language-incomplete">
+        <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-language-list.incomplete}</h2></div>
+        <div class="card-body small">
+            <p n:foreach="$incomplete as $locale => $candidate" class="mb-1">
+                <strong>{$candidate['name']} ({$locale})</strong>: {_admin-language-list.missing, [count: count($candidate['missing'])]}
+            </p>
+        </div>
+    </div>
+{/block}

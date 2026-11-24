@@ -1,0 +1,13 @@
+{
+  "title": "Ranks",
+  "create": "Add a rank",
+  "name": "Name",
+  "minPosts": "From posts",
+  "special": "special",
+  "image": "Image",
+  "yes": "yes",
+  "no": "no",
+  "users": "Users with the special rank",
+  "edit": "Edit",
+  "delete": "Delete"
+}

@@ -1,0 +1,7 @@
+{
+  "title": "Delete the language",
+  "question": "Really delete it? A language used by somebody or the default one cannot be deleted.",
+  "confirm": "Delete",
+  "success": "The language %name% has been deleted.",
+  "back": "Back to the list"
+}

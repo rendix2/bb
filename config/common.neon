@@ -20,9 +20,9 @@ parameters:
     ranks:
         relativeDir: /ranks
         dir: %wwwDir%%ranks.relativeDir%
-        maxHeight: 200
-        maxWidth: 50
-        maxFileSize: 5120
+        maxWidth: 2000 # of the uploaded image, checked before it is decoded (RankImageService)
+        maxHeight: 2000
+        maxFileSize: 1048576 # 1 MB
         enabledExtension:
             - jpg
             - jpeg
