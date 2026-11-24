@@ -153,8 +153,6 @@ class ThankWatchPagesCest
 
         $post = new PostEntity();
         $post->user = $author;
-        $post->category = $category;
-        $post->forum = $forum;
         $post->topic = $topic;
         $post->title = null;
         $post->text = 'A post to thank for';

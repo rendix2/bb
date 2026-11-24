@@ -113,8 +113,6 @@ class PostWriteService
         $history = new PostHistoryEntity();
         $history->post = $post;
         $history->user = $editor;
-        $history->category = $post->category;
-        $history->forum = $post->forum;
         $history->topic = $post->topic;
         $history->title = $post->title;
         $history->text = $post->text;
@@ -273,8 +271,6 @@ class PostWriteService
         $post = new PostEntity();
         $post->user = $user;
         $post->topic = $topic;
-        $post->forum = $topic->forum;
-        $post->category = $topic->category;
         $post->title = $title !== null && Strings::trim($title) !== '' ? Strings::trim($title) : null;
         $post->text = $text;
         $post->addIpAddress = $ipAddress;

@@ -8,6 +8,7 @@ use App\Model\Entity\PostEntity;
 use App\Model\Entity\ReportEntity;
 use App\Model\Entity\TopicEntity;
 use App\Model\Entity\UserEntity;
+use App\Model\Enum\ReportStatus;
 use App\Model\Service\PostWriteException;
 use App\Model\Service\ReportService;
 use Tests\Support\IntegrationTester;
@@ -44,7 +45,7 @@ class ReportPagesCest
         $report = $I->em()->getRepository(ReportEntity::class)->findOneBy(['post' => $post->id]);
         $I->assertNotNull($report);
         $I->assertSame('Spam with links', $report->reportText);
-        $I->assertSame(ReportService::STATUS_OPEN, $report->status);
+        $I->assertSame(ReportStatus::Open, $report->status);
         $I->assertSame($reader->id, $report->user->id);
         $I->assertSame($topic->id, $report->topic->id);
 
@@ -144,8 +145,6 @@ class ReportPagesCest
 
         $post = new PostEntity();
         $post->user = $author;
-        $post->category = $category;
-        $post->forum = $forum;
         $post->topic = $topic;
         $post->title = null;
         $post->text = 'A post to report';

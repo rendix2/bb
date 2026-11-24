@@ -17,7 +17,7 @@
 
     <div n:foreach="$reports as $report" id="report-{$report->id}" class="card mb-3 report">
         <div class="card-header small">
-            <a n:href=":Forum:Forum:View:default $report->forum->uuid->toString()">{$report->forum->name}</a>
+            <a n:href=":Forum:Forum:View:default $report->topic->forum->uuid->toString()">{$report->topic->forum->name}</a>
             › <a n:href=":Forum:Topic:View:default#post-{$report->post->id} $report->topic->uuid->toString(), page: $pages[$report->id]" class="report-post-link">{$report->topic->name}</a>
             · {_forum-moderation-reports.reportedBy}
             <a n:href=":Web:User:View:default $report->user->uuid->toString()" class="report-reporter">{$report->user->username}</a>
@@ -35,7 +35,7 @@
             {else}
                 <p class="mb-0 report-result">
                     <span class={[badge, report-status, $report->status === $statusResolved ? bg-success : bg-secondary]}>
-                        {if $report->status === $statusResolved}{_forum-moderation-reports.status.resolved}{else}{_forum-moderation-reports.status.rejected}{/if}
+                        {_$report->status->translationKey()}
                     </span>
                     {$report->handledBy?->username ?? '—'}, {$report->handledAt|date:'j. n. Y H:i'}
                 </p>

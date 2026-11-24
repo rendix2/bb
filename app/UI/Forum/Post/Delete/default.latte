@@ -1,7 +1,7 @@
 {block title}{_forum-post-delete.title}{/block}
 
 {block content}
-    {include '../../@breadcrumb.latte', category: $post->category, forum: $post->forum, topic: $post->topic}
+    {include '../../@breadcrumb.latte', category: $post->topic->category, forum: $post->topic->forum, topic: $post->topic}
 
     <h1>{_forum-post-delete.title}</h1>
     <p>{_forum-post-delete.question}</p>

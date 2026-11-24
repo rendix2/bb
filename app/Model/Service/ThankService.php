@@ -144,8 +144,6 @@ class ThankService
         $thank = new ThankEntity();
         $thank->user = $user;
         $thank->topic = $topic;
-        $thank->forum = $topic->forum;
-        $thank->category = $topic->category;
         $thank->post = $post;
         $thank->ipAddress = $ipAddress;
 

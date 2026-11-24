@@ -45,10 +45,10 @@ final class Version20260717221524 extends AbstractMigration
         $table->addColumn('sort_order', Types::INTEGER)
             ->setComment('Order');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
 

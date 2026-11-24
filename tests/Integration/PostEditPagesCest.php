@@ -86,8 +86,6 @@ class PostEditPagesCest
 
         $post = new PostEntity();
         $post->user = $author;
-        $post->category = $category;
-        $post->forum = $forum;
         $post->topic = $topic;
         $post->title = null;
         $post->text = 'The original text';

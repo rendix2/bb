@@ -25,7 +25,7 @@ class AttachmentPresenter extends Presenter
     {
         $file = $this->em->getRepository(FileEntity::class)->findOneBy(['uuid' => $uuid]);
 
-        if ($file === null || !$file->post->forum->active || !$file->post->category->active) {
+        if ($file === null || !$file->post->topic->forum->active || !$file->post->topic->category->active) {
             $this->error('Attachment was not found.');
         }
 

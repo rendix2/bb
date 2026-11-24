@@ -243,8 +243,6 @@ class UserProfilePagesCest
     {
         $post = new PostEntity();
         $post->user = $author;
-        $post->category = $topic->category;
-        $post->forum = $topic->forum;
         $post->topic = $topic;
         $post->title = null;
         $post->text = 'A post in ' . $topic->name . ' ' . random_int(100000, 999999);
@@ -260,8 +258,6 @@ class UserProfilePagesCest
     {
         $thank = new ThankEntity();
         $thank->user = $thanker;
-        $thank->category = $topic->category;
-        $thank->forum = $topic->forum;
         $thank->topic = $topic;
         $thank->post = $post;
         $thank->ipAddress = '127.0.0.1';

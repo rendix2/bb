@@ -6,6 +6,7 @@ use App\Database\EntityManagerDecorator;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\ReportEntity;
 use App\Model\Entity\UserEntity;
+use App\Model\Enum\ReportStatus;
 use App\Model\Security\ForumPermissionService;
 use App\Model\Security\ForumPrivilege;
 use App\Settings\SiteUrl;
@@ -22,10 +23,6 @@ use Nette\Utils\Strings;
  */
 class ReportService
 {
-    public const int STATUS_OPEN = 0;
-    public const int STATUS_RESOLVED = 1;
-    public const int STATUS_REJECTED = 2;
-
     public const int TEXT_MAX_LENGTH = 5000;
 
     public const string ERROR_OWN = 'forum-report.error.own';
@@ -89,10 +86,7 @@ class ReportService
         $report->user = $user;
         $report->post = $post;
         $report->topic = $post->topic;
-        $report->forum = $post->forum;
-        $report->category = $post->category;
         $report->reportText = $text;
-        $report->status = self::STATUS_OPEN;
         $report->ipAddress = $ipAddress;
 
         $this->em->persist($report);
@@ -106,7 +100,7 @@ class ReportService
      */
     public function mayHandle(?UserEntity $user, ReportEntity $report) : bool
     {
-        return $user !== null && $this->permissions->isAllowed($user, $report->forum, ForumPrivilege::MODERATE);
+        return $user !== null && $this->permissions->isAllowed($user, $report->topic->forum, ForumPrivilege::MODERATE);
     }
 
     /**
@@ -134,8 +128,7 @@ class ReportService
         return $query
             ->select('_r', '_p', '_t', '_f', '_u')
             ->innerJoin('_r.post', '_p')
-            ->innerJoin('_r.topic', '_t')
-            ->innerJoin('_r.forum', '_f')
+            ->innerJoin('_t.forum', '_f')
             ->innerJoin('_r.user', '_u')
             ->orderBy($open ? '_r.createdAt' : '_r.handledAt', 'DESC')
             ->addOrderBy('_r.id', 'DESC')
@@ -156,17 +149,17 @@ class ReportService
      * The moderator resolves or rejects an open report (with a note for the other moderators); the reporter gets a private
      * message from him with the result, in the language of the reporter.
      */
-    public function handle(UserEntity $moderator, ReportEntity $report, int $status, ?string $note) : void
+    public function handle(UserEntity $moderator, ReportEntity $report, ReportStatus $status, ?string $note) : void
     {
         if (!$this->mayHandle($moderator, $report)) {
             throw new PostWriteException(PostWriteService::ERROR_NOT_ALLOWED);
         }
 
-        if (!in_array($status, [self::STATUS_RESOLVED, self::STATUS_REJECTED], true)) {
+        if (!$status->isResult()) {
             throw new PostWriteException(self::ERROR_STATUS);
         }
 
-        if ($report->status !== self::STATUS_OPEN) {
+        if ($report->status !== ReportStatus::Open) {
             throw new PostWriteException(self::ERROR_HANDLED);
         }
 
@@ -190,7 +183,6 @@ class ReportService
     {
         $reporter = $report->user;
         $locale = $reporter->language->locale;
-        $result = $report->status === self::STATUS_RESOLVED ? 'resolved' : 'rejected';
         // against the URL of the web, not of the current request
         $url = $this->linkGenerator->withReferenceUrl((string) $this->siteUrl->get())->link('Forum:Topic:View:default', [
             'uuid' => $report->topic->uuid->toString(),
@@ -205,7 +197,7 @@ class ReportService
             $moderator,
             $reporter,
             $this->translator->translate('forum-report.message.subject', $parameters, null, $locale),
-            $this->translator->translate('forum-report.message.' . $result, $parameters, null, $locale),
+            $this->translator->translate('forum-report.message.' . $report->status->value, $parameters, null, $locale),
         );
     }
 
@@ -222,9 +214,10 @@ class ReportService
 
         return $this->em->getRepository(ReportEntity::class)
             ->createQueryBuilder('_r')
-            ->where('_r.forum IN (:forums)')
+            ->innerJoin('_r.topic', '_t')
+            ->where('_t.forum IN (:forums)')
             ->andWhere($open ? '_r.status = :open' : '_r.status != :open')
             ->setParameter('forums', $forumIds)
-            ->setParameter('open', self::STATUS_OPEN);
+            ->setParameter('open', ReportStatus::Open);
     }
 }

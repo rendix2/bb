@@ -35,14 +35,14 @@ class MailEntity
     #[Column(type: Types::TEXT, nullable: false, options: ['comment' => 'Body'])]
     public string $body;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     // null = waits in the queue (sent by the console command), else when it was sent
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Sent at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true, options: ['comment' => 'Sent at'])]
     public ?DateTimeImmutable $sentAt;
 
     public function __construct()

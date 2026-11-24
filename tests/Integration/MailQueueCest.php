@@ -177,8 +177,6 @@ class MailQueueCest
     {
         $post = new PostEntity();
         $post->user = $I->createUser('Replier', role: 'Normal');
-        $post->category = $topic->category;
-        $post->forum = $topic->forum;
         $post->topic = $topic;
         $post->title = null;
         $post->text = 'A reply';
@@ -232,8 +230,6 @@ class MailQueueCest
 
         $post = new PostEntity();
         $post->user = $author;
-        $post->category = $category;
-        $post->forum = $forum;
         $post->topic = $topic;
         $post->title = null;
         $post->text = 'The first post';

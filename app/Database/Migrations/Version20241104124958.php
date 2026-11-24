@@ -28,10 +28,10 @@ final class Version20241104124958 extends AbstractMigration
             ->setLength(512)
             ->setComment('Email');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
 

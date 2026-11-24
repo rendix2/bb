@@ -190,8 +190,6 @@ class ForumReadingPagesCest
         for ($i = 0; $i < $postCount; $i++) {
             $post = new PostEntity();
             $post->user = $user;
-            $post->category = $category;
-            $post->forum = $forum;
             $post->topic = $topic;
             $post->title = null;
             $post->text = $label . ' post ' . $i;

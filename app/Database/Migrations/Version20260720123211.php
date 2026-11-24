@@ -31,13 +31,13 @@ final class Version20260720123211 extends AbstractMigration
         $table->addColumn('subject', Types::TEXT)
             ->setComment('Subject');
 
-        $table->addColumn('last_message_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('last_message_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Last message at');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
 

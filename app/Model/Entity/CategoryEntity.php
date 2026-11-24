@@ -45,10 +45,10 @@ class CategoryEntity
     #[Column(type: Types::BOOLEAN, options: ['comment' => 'Active'])]
     public bool $active;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     /**
@@ -69,36 +69,6 @@ class CategoryEntity
     #[OneToMany(targetEntity: TopicEntity::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
     public Collection $topics;
 
-    /**
-     * @var Collection<int, PostEntity> $posts
-     */
-    #[OneToMany(targetEntity: PostEntity::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
-    public Collection $posts;
-
-    /**
-     * @var Collection<int, ThankEntity> $thanks
-     */
-    #[OneToMany(targetEntity: ThankEntity::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
-    public Collection $thanks;
-
-    /**
-     * @var Collection<int, PollEntity> $polls
-     */
-    #[OneToMany(targetEntity: PollEntity::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
-    public Collection $polls;
-
-    /**
-     * @var Collection<int, PollAnswerEntity> $pollAnswers
-     */
-    #[OneToMany(targetEntity: PollAnswerEntity::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
-    public Collection $pollAnswers;
-
-    /**
-     * @var Collection<int, PollVoteEntity> $pollVotes
-     */
-    #[OneToMany(targetEntity: PollVoteEntity::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
-    public Collection $pollVotes;
-
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
@@ -106,12 +76,7 @@ class CategoryEntity
         $this->children = new ArrayCollection();
         $this->topics = new ArrayCollection();
         $this->forums = new ArrayCollection();
-        $this->posts = new ArrayCollection();
 
-        $this->thanks = new ArrayCollection();
-        $this->polls = new ArrayCollection();
-        $this->pollAnswers = new ArrayCollection();
-        $this->pollVotes = new ArrayCollection();
 
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;

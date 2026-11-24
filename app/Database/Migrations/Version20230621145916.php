@@ -42,10 +42,10 @@ final class Version20230621145916 extends AbstractMigration
         $table->addColumn('is_special', Types::BOOLEAN)
             ->setComment('Is special');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
 
@@ -63,6 +63,12 @@ final class Version20230621145916 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         $schema->dropTable('public.rank');
+    }
+
+    public function postUp(Schema $schema) : void
+    {
+        // a CHECK constraint, DBAL cannot express it: the minimum count of posts is never negative
+        $this->connection->executeStatement("ALTER TABLE public.rank ADD CONSTRAINT CH__Rank__Min_posts CHECK (min_posts >= 0)");
     }
 
 }

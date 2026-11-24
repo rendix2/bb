@@ -180,8 +180,6 @@ class SearchPagesCest
     {
         $post = new PostEntity();
         $post->user = $author;
-        $post->category = $topic->category;
-        $post->forum = $topic->forum;
         $post->topic = $topic;
         $post->title = null;
         $post->text = $text;

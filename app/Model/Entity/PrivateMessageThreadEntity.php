@@ -43,13 +43,13 @@ class PrivateMessageThreadEntity
     public string $subject;
 
     // the list of threads is ordered by it (the newest message first)
-    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Last message at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Last message at'])]
     public DateTimeImmutable $lastMessageAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     /**

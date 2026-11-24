@@ -35,10 +35,10 @@ final class Version20261119120000 extends AbstractMigration
         $table->addColumn('text', Types::TEXT)
             ->setComment('Text');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
 
@@ -47,12 +47,6 @@ final class Version20261119120000 extends AbstractMigration
 
         $table->addColumn('user_id', Types::BIGINT)
             ->setComment('User ID');
-
-        $table->addColumn('category_id', Types::BIGINT)
-            ->setComment('Category ID');
-
-        $table->addColumn('forum_id', Types::BIGINT)
-            ->setComment('Forum ID');
 
         $table->addColumn('topic_id', Types::BIGINT)
             ->setComment('Topic ID');
@@ -64,15 +58,11 @@ final class Version20261119120000 extends AbstractMigration
         $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('Post history')
 
-            ->addIndex(['category_id'], 'K__Post_history__Category_id')
-            ->addIndex(['forum_id'], 'K__Post_history__Forum_id')
             ->addIndex(['post_id'], 'K__Post_history__Post_id')
             ->addIndex(['topic_id'], 'K__Post_history__Topic_id')
             ->addIndex(['user_id'], 'K__Post_history__User_id')
             ->addUniqueIndex(['uuid'], 'UK__Post_history__Uuid')
 
-            ->addForeignKeyConstraint('category', ['category_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Post_history__Category_id')
-            ->addForeignKeyConstraint('forum', ['forum_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Post_history__Forum_id')
             ->addForeignKeyConstraint('post', ['post_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Post_history__Post_id')
             ->addForeignKeyConstraint('topic', ['topic_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Post_history__Topic_id')
             ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Post_history__User_id');

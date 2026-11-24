@@ -40,7 +40,7 @@ class EditPresenter extends Presenter
     {
         $post = $this->em->getRepository(PostEntity::class)->findOneBy(['uuid' => $uuid]);
 
-        if ($post === null || !$post->forum->active || !$post->category->active) {
+        if ($post === null || !$post->topic->forum->active || !$post->topic->category->active) {
             $this->error('Post was not found.');
         }
 

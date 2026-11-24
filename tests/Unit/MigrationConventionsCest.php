@@ -15,7 +15,8 @@ use Tests\Support\UnitTester;
  *
  * - the structure changes through the Schema API, `addSql()` / `executeStatement()` only for data (INSERT / UPDATE / DELETE)
  *   and for what the Schema API cannot express (`CREATE / DROP EXTENSION`, an expression or partial index, an
- *   `ALTER ... TYPE ... USING` conversion), such a statement with a comment saying why;
+ *   `ALTER ... TYPE ... USING` conversion, a `CHECK` constraint named `CH__<Table>__<Columns>`), such a statement with a
+ *   comment saying why;
  * - indexes and foreign keys have an explicit name `K__<Table>__<Columns>` (`K__User_password_request_attempt__Email_created_at`),
  *   `UK__...` (unique), `FK__...`;
  * - `down()` is not empty: it reverts the tables `up()` changed, or calls `throwIrreversibleMigrationException()`;
@@ -289,6 +290,11 @@ class MigrationConventionsCest
             $this->migrationViolations[self::RULE_NAMING][] = $line . ': index ' . $match[1] . ' (K__<Table>__... / UK__<Table>__...)';
         }
 
+        if (preg_match('~^ALTER\s+TABLE\s+\S+\s+ADD\s+CONSTRAINT\s+"?(\w+)"?\s+CHECK\b~s', $statement, $match) === 1
+            && preg_match('~^CH__~i', $match[1]) !== 1) {
+            $this->migrationViolations[self::RULE_NAMING][] = $line . ': check constraint ' . $match[1] . ' (CH__<Table>__...)';
+        }
+
         return $tables;
     }
 
@@ -303,6 +309,10 @@ class MigrationConventionsCest
         }
 
         if (preg_match('~^ALTER\s+TABLE\b.*\bTYPE\b.*\bUSING\b~s', $statement) === 1) {
+            return true;
+        }
+
+        if (preg_match('~^ALTER\s+TABLE\s+\S+\s+ADD\s+CONSTRAINT\s+\S+\s+CHECK\b~s', $statement) === 1) {
             return true;
         }
 

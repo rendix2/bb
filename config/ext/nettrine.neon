@@ -37,6 +37,9 @@ nettrine.dbal:
             charset: %database.default.charset%
             defaultTableOptions:
                 charset: %database.default.charset%
+            # timestamptz columns are read and compared in the time zone of PHP, not of the database server
+            middlewares:
+                sessionTimeZone: App\Database\Middleware\SessionTimeZoneMiddleware
 
 nettrine.orm:
     managers:

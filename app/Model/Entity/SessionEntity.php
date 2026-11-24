@@ -42,13 +42,13 @@ class SessionEntity
     #[Column(type: IpAddressType::NAME, options: ['comment' => 'IP Address'])]
     public string $ipAddress;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Last activity'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Last activity'])]
     public DateTimeImmutable $lastActivity;
 
     public function __construct()

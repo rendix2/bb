@@ -28,13 +28,13 @@ final class Version20241106003834 extends AbstractMigration
             ->setLength(1024)
             ->setComment('Forget password key');
 
-        $table->addColumn('valid_until', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('valid_until', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Key is valid until');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
 

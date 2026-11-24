@@ -205,8 +205,6 @@ class ForumPermissionServiceCest
 
         $post = new PostEntity();
         $post->user = $author;
-        $post->category = $category;
-        $post->forum = $forum;
         $post->topic = $topic;
         $post->title = null;
         $post->text = 'First post';

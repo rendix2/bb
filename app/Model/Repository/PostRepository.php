@@ -149,7 +149,8 @@ class PostRepository extends EntityRepository
         $subQb = $this->createQueryBuilder('_p2');
 
         $subQb->select('MAX(_p2.id)')
-            ->where('_p2.forum = :forumId');
+            ->innerJoin('_p2.topic', '_t2')
+            ->where('_t2.forum = :forumId');
 
         return $qb->where($qb->expr()->eq('_p.id', '(' . $subQb->getDQL() . ')'))
             ->setParameter('forumId', $forumId)
@@ -163,7 +164,8 @@ class PostRepository extends EntityRepository
         $subQb = $this->createQueryBuilder('_p2');
 
         $subQb->select('MIN(_p2.id)')
-            ->where('_p2.forum = :forumId');
+            ->innerJoin('_p2.topic', '_t2')
+            ->where('_t2.forum = :forumId');
 
         return $qb->where($qb->expr()->eq('_p.id', '(' . $subQb->getDQL() . ')'))
             ->setParameter('forumId', $forumId)
@@ -174,8 +176,8 @@ class PostRepository extends EntityRepository
     public function findNewerPosts(int $forum_id, \DateTimeImmutable $post_time): array
     {
         return $this->createQueryBuilder('_p')
-
-            ->where('_p.forum = :forum')
+            ->innerJoin('_p.topic', '_t')
+            ->where('_t.forum = :forum')
             ->setParameter('forum', $forum_id)
 
             ->andWhere('_p.createdAt > :createdAt')

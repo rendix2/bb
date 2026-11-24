@@ -38,10 +38,10 @@ final class Version20260718085905 extends AbstractMigration
         $table->addColumn('view_count', Types::INTEGER)
             ->setComment('View count');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
 
@@ -80,6 +80,8 @@ final class Version20260718085905 extends AbstractMigration
     {
         // the full-text search (Forum:Search): a GIN expression index, DBAL cannot express it; the expression must stay the same as in App\Database\Query\TsMatchFunction (simple, name)
         $this->connection->executeStatement("CREATE INDEX K__Topic__Search ON public.topic USING GIN (to_tsvector('simple', name))");
+        // a CHECK constraint, DBAL cannot express it: the count of views is never negative
+        $this->connection->executeStatement("ALTER TABLE public.topic ADD CONSTRAINT CH__Topic__View_count CHECK (view_count >= 0)");
     }
 
 }

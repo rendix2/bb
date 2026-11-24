@@ -9,6 +9,7 @@
   "none": "Žádná hlášení.",
   "handled": "Hlášení bylo vyřízeno, nahlasovatel dostal soukromou zprávu.",
   "status": {
+    "open": "Otevřené",
     "resolved": "Vyřízeno",
     "rejected": "Zamítnuto"
   },

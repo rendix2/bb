@@ -29,7 +29,7 @@ final class Version20241103230453 extends AbstractMigration
             ->setLength(64)
             ->setComment('SHA-256 of the token saved in the cookie');
 
-        $table->addColumn('valid_until', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('valid_until', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Token is valid until');
 
         $table->addColumn('ip_address', IpAddressType::NAME)
@@ -45,10 +45,10 @@ final class Version20241103230453 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Country code');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
 

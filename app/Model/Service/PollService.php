@@ -77,8 +77,6 @@ class PollService
         $poll = new PollEntity();
         $poll->user = $user;
         $poll->topic = $topic;
-        $poll->forum = $topic->forum;
-        $poll->category = $topic->category;
         $poll->question = $question;
         $poll->endsAt = $endsAt;
 
@@ -90,8 +88,6 @@ class PollService
                 $answer->poll = $poll;
                 $answer->user = $user;
                 $answer->topic = $topic;
-                $answer->forum = $topic->forum;
-                $answer->category = $topic->category;
                 $answer->text = $text;
                 $this->em->persist($answer);
                 $poll->answers->add($answer);
@@ -144,8 +140,6 @@ class PollService
         $vote->poll = $poll;
         $vote->pollAnswer = $answer;
         $vote->topic = $poll->topic;
-        $vote->forum = $poll->forum;
-        $vote->category = $poll->category;
 
         $this->em->persist($vote);
         $this->em->flush();

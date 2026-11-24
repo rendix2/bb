@@ -5,6 +5,7 @@ namespace App\UI\Forum\Moderation\Reports;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ReportEntity;
 use App\Model\Entity\UserEntity;
+use App\Model\Enum\ReportStatus;
 use App\Model\Service\PostWriteException;
 use App\Model\Service\ReportService;
 use App\Model\Service\TopicPaginationService;
@@ -76,7 +77,7 @@ class ReportsPresenter extends Presenter
         $this->template->pages = $pages;
         $this->template->openCount = $open ? $paginator->getItemCount() : $this->reportService->countFor($this->viewer, true);
         $this->template->paginator = $paginator;
-        $this->template->statusResolved = ReportService::STATUS_RESOLVED;
+        $this->template->statusResolved = ReportStatus::Resolved;
     }
 
     /**
@@ -97,10 +98,15 @@ class ReportsPresenter extends Presenter
             $form->setTranslator($this->translator);
             $form->addProtection('forum-moderation-reports.form.protection');
 
-            $form->addRadioList('status', 'forum-moderation-reports.form.status.label', [
-                ReportService::STATUS_RESOLVED => 'forum-moderation-reports.status.resolved',
-                ReportService::STATUS_REJECTED => 'forum-moderation-reports.status.rejected',
-            ])->setRequired('forum-moderation-reports.form.status.required');
+            $results = [];
+
+            foreach (ReportStatus::cases() as $status) {
+                if ($status->isResult()) {
+                    $results[$status->value] = $status->translationKey();
+                }
+            }
+
+            $form->addRadioList('status', 'forum-moderation-reports.form.status.label', $results)->setRequired('forum-moderation-reports.form.status.required');
             $form->addTextArea('note', 'forum-moderation-reports.form.note.label', rows: 2)
                 ->setMaxLength(ReportService::TEXT_MAX_LENGTH);
             $form->addSubmit('send', 'forum-moderation-reports.form.send')
@@ -110,7 +116,7 @@ class ReportsPresenter extends Presenter
                 $values = $form->getValues('array');
 
                 try {
-                    $this->reportService->handle($this->viewer, $report, (int) $values['status'], (string) $values['note']);
+                    $this->reportService->handle($this->viewer, $report, ReportStatus::from((string) $values['status']), (string) $values['note']);
                 } catch (PostWriteException $exception) {
                     $form->addError($exception->getMessage());
 

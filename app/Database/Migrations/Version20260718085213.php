@@ -20,7 +20,7 @@ final class Version20260718085213 extends AbstractMigration
     {
         $table = $schema->createTable('public.group_member');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
         $table->addColumn('user_id', Types::BIGINT)

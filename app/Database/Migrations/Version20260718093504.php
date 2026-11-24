@@ -32,18 +32,12 @@ final class Version20260718093504 extends AbstractMigration
         $table->addColumn('ip_address', IpAddressType::NAME)
             ->setComment('IP Address');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
-
-        $table->addColumn('category_id', Types::BIGINT)
-            ->setComment('Category ID');
-
-        $table->addColumn('forum_id', Types::BIGINT)
-            ->setComment('Forum ID');
 
         $table->addColumn('topic_id', Types::BIGINT)
             ->setComment('Topic ID');
@@ -62,8 +56,6 @@ final class Version20260718093504 extends AbstractMigration
         $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('Thanks')
 
-            ->addIndex(['category_id'], 'K__Thank__Category_id')
-            ->addIndex(['forum_id'], 'K__Thank__Forum_id')
             ->addIndex(['post_id'], 'K__Thank__Post_id')
             ->addIndex(['topic_id'], 'K__Thank__Topic_id')
             ->addIndex(['user_id'], 'K__Thank__User_id')
@@ -71,8 +63,6 @@ final class Version20260718093504 extends AbstractMigration
             ->addUniqueIndex(['user_id', 'topic_id'], 'UK__Thank__User_id_topic_id', options: ['where' => '(post_id IS NULL)'])
             ->addUniqueIndex(['uuid'], 'UK__Thank__Uuid')
 
-            ->addForeignKeyConstraint('category', ['category_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Thank__Category_id')
-            ->addForeignKeyConstraint('forum', ['forum_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Thank__Forum_id')
             ->addForeignKeyConstraint('post', ['post_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Thank__Post_id')
             ->addForeignKeyConstraint('topic', ['topic_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Thank__Topic_id')
             ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Thank__User_id');

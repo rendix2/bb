@@ -1,7 +1,7 @@
 {block title}{_forum-post-edit.title}: {$post->topic->name}{/block}
 
 {block content}
-    {include '../../@breadcrumb.latte', category: $post->category, forum: $post->forum, topic: $post->topic}
+    {include '../../@breadcrumb.latte', category: $post->topic->category, forum: $post->topic->forum, topic: $post->topic}
 
     <h1>{_forum-post-edit.title}</h1>
 

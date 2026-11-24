@@ -46,21 +46,15 @@ final class Version20260718093503 extends AbstractMigration
         $table->addColumn('is_locked', Types::BOOLEAN)
             ->setComment('Is locked?');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
 
         $table->addColumn('user_id', Types::BIGINT)
             ->setComment('User ID');
-
-        $table->addColumn('category_id', Types::BIGINT)
-            ->setComment('Category ID');
-
-        $table->addColumn('forum_id', Types::BIGINT)
-            ->setComment('Forum ID');
 
         $table->addColumn('topic_id', Types::BIGINT)
             ->setComment('Topic ID');
@@ -72,14 +66,10 @@ final class Version20260718093503 extends AbstractMigration
         $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('Posts')
 
-            ->addIndex(['category_id'], 'K__Post__Category_id')
-            ->addIndex(['forum_id'], 'K__Post__Forum_id')
             ->addIndex(['topic_id'], 'K__Post__Topic_id')
             ->addIndex(['user_id'], 'K__Post__User_id')
             ->addUniqueIndex(['uuid'], 'UK__Post__Uuid')
 
-            ->addForeignKeyConstraint('category', ['category_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Post__Category_id')
-            ->addForeignKeyConstraint('forum', ['forum_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Post__Forum_id')
             ->addForeignKeyConstraint('topic', ['topic_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Post__Topic_id')
             ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Post__User_id');
     }

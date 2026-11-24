@@ -160,8 +160,6 @@ class AttachmentCest
         foreach (['The first post', 'A reply with an attachment'] as $text) {
             $post = new PostEntity();
             $post->user = $user;
-            $post->category = $category;
-            $post->forum = $forum;
             $post->topic = $topic;
             $post->title = null;
             $post->text = $text;

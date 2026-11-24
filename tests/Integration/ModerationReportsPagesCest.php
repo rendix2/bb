@@ -15,6 +15,7 @@ use App\Model\Entity\TopicEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Entity\UserGroupMemberEntity;
 use App\Model\Entity\UserModeratorEntity;
+use App\Model\Enum\ReportStatus;
 use App\Model\Security\ForumPermissionService;
 use App\Model\Security\ForumPrivilege;
 use App\Model\Service\PostWriteException;
@@ -118,11 +119,11 @@ class ModerationReportsPagesCest
 
         $I->login($moderator->username, IntegrationTester::PASSWORD);
         $I->amOnPage('/forum.moderation.reports/');
-        $I->submitForm('#frm-handleForm-' . $report->id, ['status' => (string) ReportService::STATUS_RESOLVED, 'note' => 'Edited the post']);
+        $I->submitForm('#frm-handleForm-' . $report->id, ['status' => ReportStatus::Resolved->value, 'note' => 'Edited the post']);
 
         $handled = $I->reload(ReportEntity::class, $report->id);
         $I->assertNotNull($handled);
-        $I->assertSame(ReportService::STATUS_RESOLVED, $handled->status);
+        $I->assertSame(ReportStatus::Resolved, $handled->status);
         $I->assertSame($moderator->id, $handled->handledBy?->id);
         $I->assertNotNull($handled->handledAt);
         $I->assertSame('Edited the post', $handled->moderatorNote);
@@ -149,7 +150,7 @@ class ModerationReportsPagesCest
 
         // only once
         $service = $I->grabService(ReportService::class);
-        $this->expectError($I, ReportService::ERROR_HANDLED, fn () => $service->handle($this->user($I, $moderator), $handled, ReportService::STATUS_REJECTED, null));
+        $this->expectError($I, ReportService::ERROR_HANDLED, fn () => $service->handle($this->user($I, $moderator), $handled, ReportStatus::Rejected, null));
     }
 
     public function aModeratorOfAnotherForumMayNotHandleIt(IntegrationTester $I) : void
@@ -159,13 +160,13 @@ class ModerationReportsPagesCest
         $report = $this->createReport($I, $this->createForum($I, 'Foreign forum'), 'Not his');
 
         $service = $I->grabService(ReportService::class);
-        $this->expectError($I, PostWriteService::ERROR_NOT_ALLOWED, fn () => $service->handle($this->user($I, $moderator), $report, ReportService::STATUS_REJECTED, null));
-        $this->expectError($I, ReportService::ERROR_STATUS, fn () => $service->handle($this->user($I, $I->em()->getRepository(UserEntity::class)->findOneBy(['username' => 'TestUsername']) ?? $moderator), $report, 7, null));
+        $this->expectError($I, PostWriteService::ERROR_NOT_ALLOWED, fn () => $service->handle($this->user($I, $moderator), $report, ReportStatus::Rejected, null));
+        $this->expectError($I, ReportService::ERROR_STATUS, fn () => $service->handle($this->user($I, $I->em()->getRepository(UserEntity::class)->findOneBy(['username' => 'TestUsername']) ?? $moderator), $report, ReportStatus::Open, null));
 
         // the form of a foreign report does not exist for him
         $I->login($moderator->username, IntegrationTester::PASSWORD);
         $I->seePageIsRefused('/forum.moderation.reports/?do=handleForm-' . $report->id . '-submit', 404);
-        $I->assertSame(ReportService::STATUS_OPEN, $I->reload(ReportEntity::class, $report->id)?->status);
+        $I->assertSame(ReportStatus::Open, $I->reload(ReportEntity::class, $report->id)?->status);
     }
 
     public function theHandleFormNeedsTheToken(IntegrationTester $I) : void
@@ -175,8 +176,8 @@ class ModerationReportsPagesCest
 
         $I->login($moderator->username, IntegrationTester::PASSWORD);
         $I->amOnPage('/forum.moderation.reports/');
-        $I->submitForm('#frm-handleForm-' . $report->id, ['status' => (string) ReportService::STATUS_REJECTED, '_token_' => 'wrong']);
-        $I->assertSame(ReportService::STATUS_OPEN, $I->reload(ReportEntity::class, $report->id)?->status);
+        $I->submitForm('#frm-handleForm-' . $report->id, ['status' => ReportStatus::Rejected->value, '_token_' => 'wrong']);
+        $I->assertSame(ReportStatus::Open, $I->reload(ReportEntity::class, $report->id)?->status);
         $I->assertSame(0, $I->em()->getRepository(PrivateMessageParticipantEntity::class)->count(['user' => $report->user->id]));
     }
 
@@ -255,8 +256,6 @@ class ModerationReportsPagesCest
 
         $post = new PostEntity();
         $post->user = $author;
-        $post->category = $category;
-        $post->forum = $forum;
         $post->topic = $topic;
         $post->title = null;
         $post->text = 'A reported post';

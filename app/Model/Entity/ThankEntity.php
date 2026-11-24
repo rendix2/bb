@@ -33,14 +33,6 @@ class ThankEntity
     #[Column(type: UuidType::NAME, unique: true, options: ['comment' => 'UUID'])]
     public UuidInterface $uuid;
 
-    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'thanks', cascade: ['persist'])]
-    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Category ID'])]
-    public CategoryEntity $category;
-
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'thanks', cascade: ['persist'])]
-    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Forum ID'])]
-    public ForumEntity $forum;
-
     #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'thanks', cascade: ['persist'])]
     #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Topic ID'])]
     public TopicEntity $topic;
@@ -56,10 +48,10 @@ class ThankEntity
     #[Column(type: IpAddressType::NAME, nullable: false, options: ['comment' => 'IP Address'])]
     public string $ipAddress;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     public function __construct()

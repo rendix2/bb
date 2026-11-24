@@ -32,7 +32,7 @@ class UserGroupMemberEntity
     #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Group ID'])]
     public GroupEntity $group;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
     public function __construct()

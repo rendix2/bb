@@ -35,10 +35,11 @@ final class Version20260718094805 extends AbstractMigration
         $table->addColumn('report_text', Types::TEXT)
             ->setComment('Report text');
 
-        $table->addColumn('status', Types::INTEGER)
-            ->setComment('Status (0 = open, 1 = resolved, 2 = rejected)');
+        $table->addColumn('status', Types::STRING)
+            ->setLength(16)
+            ->setComment('Status (ReportStatus)');
 
-        $table->addColumn('handled_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('handled_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Handled at');
 
@@ -46,18 +47,12 @@ final class Version20260718094805 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Note of the moderator (only for moderators)');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
-
-        $table->addColumn('category_id', Types::BIGINT)
-            ->setComment('Category ID');
-
-        $table->addColumn('forum_id', Types::BIGINT)
-            ->setComment('Forum ID');
 
         $table->addColumn('topic_id', Types::BIGINT)
             ->setComment('Topic ID');
@@ -79,8 +74,6 @@ final class Version20260718094805 extends AbstractMigration
         $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('Post reports')
 
-            ->addIndex(['category_id'], 'K__Report__Category_id')
-            ->addIndex(['forum_id'], 'K__Report__Forum_id')
             ->addIndex(['handled_by_id'], 'K__Report__Handled_by_id')
             ->addIndex(['post_id'], 'K__Report__Post_id')
             ->addIndex(['topic_id'], 'K__Report__Topic_id')
@@ -88,8 +81,6 @@ final class Version20260718094805 extends AbstractMigration
             ->addUniqueIndex(['user_id', 'post_id'], 'UK__Report__User_id_post_id')
             ->addUniqueIndex(['uuid'], 'UK__Report__Uuid')
 
-            ->addForeignKeyConstraint('category', ['category_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Category_id')
-            ->addForeignKeyConstraint('forum', ['forum_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Forum_id')
             ->addForeignKeyConstraint('post', ['post_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Post_id')
             ->addForeignKeyConstraint('topic', ['topic_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Report__Topic_id')
             ->addForeignKeyConstraint('users', ['handled_by_id'], ['id'], options: ['onDelete' => 'SET NULL'], name: 'FK__Report__Handled_by_id')
@@ -99,6 +90,12 @@ final class Version20260718094805 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         $schema->dropTable('public.report');
+    }
+
+    public function postUp(Schema $schema) : void
+    {
+        // a CHECK constraint, DBAL cannot express it: the status is one of App\Model\Enum\ReportStatus (ReportStatusCheckCest compares them)
+        $this->connection->executeStatement("ALTER TABLE public.report ADD CONSTRAINT CH__Report__Status CHECK (status IN ('open', 'resolved', 'rejected'))");
     }
 
 }

@@ -116,8 +116,6 @@ class TopicListsPagesCest
         $thank = new ThankEntity();
         $thank->user = $user;
         $thank->topic = $topic;
-        $thank->forum = $topic->forum;
-        $thank->category = $topic->category;
         $thank->post = $post;
         $thank->ipAddress = '127.0.0.1';
         $I->em()->persist($thank);
@@ -157,8 +155,6 @@ class TopicListsPagesCest
 
         $post = new PostEntity();
         $post->user = $author;
-        $post->category = $category;
-        $post->forum = $forum;
         $post->topic = $topic;
         $post->title = null;
         $post->text = 'A post with lists';

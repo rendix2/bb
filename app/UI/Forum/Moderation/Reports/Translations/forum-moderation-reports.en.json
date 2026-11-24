@@ -9,6 +9,7 @@
   "none": "No reports.",
   "handled": "The report was handled, the reporter got a private message.",
   "status": {
+    "open": "Open",
     "resolved": "Resolved",
     "rejected": "Rejected"
   },

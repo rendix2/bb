@@ -36,14 +36,14 @@ final class Version20260718095044 extends AbstractMigration
         $table->addColumn('ip_address', IpAddressType::NAME)
             ->setComment('IP Address');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
 
-        $table->addColumn('last_activity', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('last_activity', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Last activity');
 
         $table->addColumn('user_id', Types::BIGINT)

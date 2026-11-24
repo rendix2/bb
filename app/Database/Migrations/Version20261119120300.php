@@ -31,21 +31,15 @@ final class Version20261119120300 extends AbstractMigration
         $table->addColumn('text', Types::TEXT)
             ->setComment('Text');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
 
         $table->addColumn('user_id', Types::BIGINT)
             ->setComment('User ID');
-
-        $table->addColumn('category_id', Types::BIGINT)
-            ->setComment('Category ID');
-
-        $table->addColumn('forum_id', Types::BIGINT)
-            ->setComment('Forum ID');
 
         $table->addColumn('topic_id', Types::BIGINT)
             ->setComment('Topic ID');
@@ -60,15 +54,11 @@ final class Version20261119120300 extends AbstractMigration
         $table->addPrimaryKeyConstraint($primaryKey->create())
             ->setComment('Poll answer')
 
-            ->addIndex(['category_id'], 'K__Poll_answer__Category_id')
-            ->addIndex(['forum_id'], 'K__Poll_answer__Forum_id')
             ->addIndex(['poll_id'], 'K__Poll_answer__Poll_id')
             ->addIndex(['topic_id'], 'K__Poll_answer__Topic_id')
             ->addIndex(['user_id'], 'K__Poll_answer__User_id')
             ->addUniqueIndex(['uuid'], 'UK__Poll_answer__Uuid')
 
-            ->addForeignKeyConstraint('category', ['category_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Poll_answer__Category_id')
-            ->addForeignKeyConstraint('forum', ['forum_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Poll_answer__Forum_id')
             ->addForeignKeyConstraint('poll', ['poll_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Poll_answer__Poll_id')
             ->addForeignKeyConstraint('topic', ['topic_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Poll_answer__Topic_id')
             ->addForeignKeyConstraint('users', ['user_id'], ['id'], options: ['onDelete' => 'CASCADE'], name: 'FK__Poll_answer__User_id');

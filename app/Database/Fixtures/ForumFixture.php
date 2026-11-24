@@ -56,8 +56,6 @@ class ForumFixture implements FixtureInterface, OrderedFixtureInterface
 
                     $firstPost = new PostEntity();
                     $firstPost->user = $topic->user;
-                    $firstPost->category = $category;
-                    $firstPost->forum = $forum;
                     $firstPost->topic = $topic;
                     $firstPost->title = $topic->name;
                     $firstPost->text = $faker->paragraphs(3, true);
@@ -72,8 +70,6 @@ class ForumFixture implements FixtureInterface, OrderedFixtureInterface
                     for ($r = 1; $r <= $replyCount; $r++) {
                         $reply = new PostEntity();
                         $reply->user = $faker->randomElement($users);
-                        $reply->category = $category;
-                        $reply->forum = $forum;
                         $reply->topic = $topic;
                         $reply->text = $faker->paragraph(rand(1, 5));
                         $reply->addIpAddress = $faker->ipv4;

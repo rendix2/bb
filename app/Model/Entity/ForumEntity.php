@@ -63,10 +63,10 @@ class ForumEntity
     #[Embedded(class: ForumPermissions::class, columnPrefix: false)]
     public ForumPermissions $permissions;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     /**
@@ -74,36 +74,6 @@ class ForumEntity
      */
     #[OneToMany(targetEntity: TopicEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
     public Collection $topics;
-
-    /**
-     * @var Collection<int, PostEntity> $thanks
-     */
-    #[OneToMany(targetEntity: PostEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
-    public Collection $posts;
-
-    /**
-     * @var Collection<int, ThankEntity> $thanks
-     */
-    #[OneToMany(targetEntity: ThankEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
-    public Collection $thanks;
-
-    /**
-     * @var Collection<int, PollEntity> $polls
-     */
-    #[OneToMany(targetEntity: PollEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
-    public Collection $polls;
-
-    /**
-     * @var Collection<int, PollAnswerEntity> $pollAnswers
-     */
-    #[OneToMany(targetEntity: PollAnswerEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
-    public Collection $pollAnswers;
-
-    /**
-     * @var Collection<int, PollVoteEntity> $pollVotes
-     */
-    #[OneToMany(targetEntity: PollVoteEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
-    public Collection $pollVotes;
 
     /**
      * @var Collection<int, UserModeratorEntity> $thanks
@@ -134,14 +104,9 @@ class ForumEntity
         $this->updatedAt = null;
 
         $this->topics = new ArrayCollection();
-        $this->posts = new ArrayCollection();
-        $this->thanks = new ArrayCollection();
         $this->moderatorUsers = new ArrayCollection();
         $this->children = new ArrayCollection();
 
-        $this->polls = new ArrayCollection();
-        $this->pollAnswers = new ArrayCollection();
-        $this->pollVotes = new ArrayCollection();
     }
 
 }

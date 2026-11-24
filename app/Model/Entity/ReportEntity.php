@@ -3,6 +3,7 @@
 namespace App\Model\Entity;
 
 use App\Database\Types\IpAddressType;
+use App\Model\Enum\ReportStatus;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
@@ -32,14 +33,6 @@ class ReportEntity
     #[Column(type: UuidType::NAME, unique: true, options: ['comment' => 'UUID'])]
     public UuidInterface $uuid;
 
-    #[ManyToOne(targetEntity: CategoryEntity::class, cascade: ['persist'])]
-    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Category ID'])]
-    public CategoryEntity $category;
-
-    #[ManyToOne(targetEntity: ForumEntity::class, cascade: ['persist'])]
-    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Forum ID'])]
-    public ForumEntity $forum;
-
     #[ManyToOne(targetEntity: TopicEntity::class, cascade: ['persist'])]
     #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Topic ID'])]
     public TopicEntity $topic;
@@ -58,29 +51,30 @@ class ReportEntity
     #[Column(type: Types::TEXT, nullable: false, options: ['comment' => 'Report text'])]
     public string $reportText;
 
-    #[Column(type: Types::INTEGER, nullable: false, options: ['comment' => 'Status (0 = open, 1 = resolved, 2 = rejected)'])]
-    public int $status;
+    #[Column(type: Types::STRING, length: 16, nullable: false, enumType: ReportStatus::class, options: ['comment' => 'Status (ReportStatus)'])]
+    public ReportStatus $status;
 
     // the moderator who handled the report; the report stays when his account is deleted
     #[ManyToOne(targetEntity: UserEntity::class, cascade: ['persist'])]
     #[JoinColumn(nullable: true, onDelete: 'SET NULL', options: ['comment' => 'Handled by (user ID)'])]
     public ?UserEntity $handledBy;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Handled at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true, options: ['comment' => 'Handled at'])]
     public ?DateTimeImmutable $handledAt;
 
     #[Column(type: Types::TEXT, nullable: true, options: ['comment' => 'Note of the moderator (only for moderators)'])]
     public ?string $moderatorNote;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
+        $this->status = ReportStatus::Open;
 
         $this->handledBy = null;
         $this->handledAt = null;

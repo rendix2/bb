@@ -43,10 +43,12 @@ class UserEntity
     #[Column(type: Types::STRING, length: 512, options: ['comment' => 'Surname'])]
     public string $surname;
 
-    #[Column(type: Types::STRING, length: 512, unique: true, options: ['comment' => 'Username'])]
+    // unique regardless of the case: the index UK__Users__Lower_username on lower(username) (postUp() of the migration)
+    #[Column(type: Types::STRING, length: 512, options: ['comment' => 'Username'])]
     public string $username;
 
-    #[Column(type: Types::STRING, length: 512, unique: true, options: ['comment' => 'Email'])]
+    // unique regardless of the case: the index UK__Users__Lower_email on lower(email) (postUp() of the migration)
+    #[Column(type: Types::STRING, length: 512, options: ['comment' => 'Email'])]
     public string $email;
 
     #[Column(type: Types::STRING, length: 1024, options: ['comment' => 'Password'])]
@@ -70,10 +72,10 @@ class UserEntity
     #[JoinColumn(nullable: false, options: ['comment' => 'Language ID'])]
     public LanguageEntity $language;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     /**

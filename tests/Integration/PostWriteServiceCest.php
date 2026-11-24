@@ -56,7 +56,6 @@ class PostWriteServiceCest
         $post = $this->service->reply($user, $topic, 'A reply text', 'Re: title', '127.0.0.1');
 
         $I->assertSame($topic, $post->topic);
-        $I->assertSame($topic->forum, $post->forum);
         $I->assertSame('Re: title', $post->title);
     }
 

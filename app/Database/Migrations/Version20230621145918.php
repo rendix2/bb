@@ -60,10 +60,10 @@ final class Version20230621145918 extends AbstractMigration
             ->setNotnull(false)
             ->setComment('Signature');
 
-        $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('created_at', Types::DATETIMETZ_IMMUTABLE)
             ->setComment('Created at');
 
-        $table->addColumn('updated_at', Types::DATETIME_IMMUTABLE)
+        $table->addColumn('updated_at', Types::DATETIMETZ_IMMUTABLE)
             ->setNotnull(false)
             ->setComment('Updated at');
 
@@ -83,8 +83,6 @@ final class Version20230621145918 extends AbstractMigration
 
             ->addIndex(['language_id'], 'K__Users__Language_id')
             ->addIndex(['rank_id'], 'K__Users__Rank_id')
-            ->addUniqueIndex(['email'], 'UK__Users__Email')
-            ->addUniqueIndex(['username'], 'UK__Users__Username')
             ->addUniqueIndex(['uuid'], 'UK__Users__Uuid')
 
             ->addForeignKeyConstraint('language', ['language_id'], ['id'], name: 'FK__Users__Language_id')
@@ -94,6 +92,14 @@ final class Version20230621145918 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         $schema->dropTable('public.users');
+    }
+
+    public function postUp(Schema $schema) : void
+    {
+        // the username is unique regardless of the case (the application compares it so, two parallel registrations of Petr and petr must not pass): a unique expression index, DBAL cannot express it
+        $this->connection->executeStatement("CREATE UNIQUE INDEX UK__Users__Lower_username ON public.users (lower(username))");
+        // the email is unique regardless of the case (as the username)
+        $this->connection->executeStatement("CREATE UNIQUE INDEX UK__Users__Lower_email ON public.users (lower(email))");
     }
 
 }

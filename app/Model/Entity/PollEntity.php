@@ -39,14 +39,6 @@ class PollEntity
     #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'User ID'])]
     public UserEntity $user;
 
-    #[ManyToOne(targetEntity: CategoryEntity::class, inversedBy: 'polls', cascade: ['persist'])]
-    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Category ID'])]
-    public CategoryEntity $category;
-
-    #[ManyToOne(targetEntity: ForumEntity::class, inversedBy: 'polls', cascade: ['persist'])]
-    #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Forum ID'])]
-    public ForumEntity $forum;
-
     #[ManyToOne(targetEntity: TopicEntity::class, inversedBy: 'polls', cascade: ['persist'])]
     #[JoinColumn(nullable: false, onDelete: 'CASCADE', options: ['comment' => 'Topic ID'])]
     public TopicEntity $topic;
@@ -55,13 +47,13 @@ class PollEntity
     public string $question;
 
     // null = open forever
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Ends at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true, options: ['comment' => 'Ends at'])]
     public ?DateTimeImmutable $endsAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
-    #[Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
+    #[Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true, options: ['comment' => 'Updated at'])]
     public ?DateTimeImmutable $updatedAt;
 
     /**
