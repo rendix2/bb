@@ -1,0 +1,14 @@
+{
+  "title": "Forums",
+  "create": "Add a forum",
+  "name": "Name",
+  "sortOrder": "Order",
+  "active": "Active",
+  "yes": "yes",
+  "no": "no",
+  "edit": "Edit",
+  "delete": "Delete",
+  "place": "Belongs to",
+  "subforumOf": "subforum of %forum%",
+  "topics": "Topics"
+}

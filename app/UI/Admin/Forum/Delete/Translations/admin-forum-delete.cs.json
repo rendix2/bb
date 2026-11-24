@@ -1,0 +1,7 @@
+{
+  "title": "Smazání fóra",
+  "question": "Opravdu smazat? Smazat jde jen prázdné fórum (bez témat a podfór).",
+  "confirm": "Smazat",
+  "success": "Fórum %name% bylo smazáno.",
+  "back": "Zpět na seznam"
+}

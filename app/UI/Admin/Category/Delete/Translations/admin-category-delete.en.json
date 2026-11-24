@@ -1,0 +1,7 @@
+{
+  "title": "Delete the category",
+  "question": "Really delete it? Only an empty category (no forums) can be deleted.",
+  "confirm": "Delete",
+  "success": "The category %name% has been deleted.",
+  "back": "Back to the list"
+}

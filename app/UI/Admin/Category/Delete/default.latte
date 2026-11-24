@@ -1,0 +1,8 @@
+{block title}{_admin-category-delete.title}: {$category->name}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-category-delete.title}: {$category->name}</h1>
+    <p>{_admin-category-delete.question}</p>
+    {control deleteForm}
+    <a n:href=":Admin:Category:List:default" class="btn btn-link">{_admin-category-delete.back}</a>
+{/block}

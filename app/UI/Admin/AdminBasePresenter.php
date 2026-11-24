@@ -6,6 +6,7 @@ use App\Core\AutoLoginService;
 use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
 use Nette\Http\IResponse;
+use stdClass;
 
 /**
  * class AdminBasePresenter
@@ -29,5 +30,18 @@ abstract class AdminBasePresenter extends Presenter
         if (!$this->getUser()->isInRole('Admin')) {
             $this->error('Forbidden', IResponse::S403_Forbidden);
         }
+    }
+
+    /**
+     * bb: a flash message for Admin/@layout.latte (an object with place, type, message, as web-project builds it inline).
+     */
+    protected function adminFlash(string $message, string $type = 'success') : void
+    {
+        $flash = new stdClass();
+        $flash->place = 'general';
+        $flash->type = $type;
+        $flash->message = $message;
+
+        $this->flashMessage($flash);
     }
 }

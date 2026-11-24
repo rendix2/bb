@@ -1,0 +1,14 @@
+{
+  "title": "Fóra",
+  "create": "Přidat fórum",
+  "name": "Název",
+  "sortOrder": "Pořadí",
+  "active": "Aktivní",
+  "yes": "ano",
+  "no": "ne",
+  "edit": "Upravit",
+  "delete": "Smazat",
+  "place": "Patří do",
+  "subforumOf": "podfórum %forum%",
+  "topics": "Témata"
+}

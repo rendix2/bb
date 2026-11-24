@@ -1,0 +1,36 @@
+{
+  "protection": "The form has expired, please submit it again.",
+  "save": "Save",
+  "sortOrder": "Order",
+  "active": "Active",
+  "category": {
+    "name": "Name of the category"
+  },
+  "forum": {
+    "name": "Name of the forum",
+    "description": "Description",
+    "place": "Belongs to",
+    "placePrompt": "Choose a category or a parent forum",
+    "placeCategories": "Categories",
+    "placeForums": "Subforum of",
+    "rules": "Rules of the forum",
+    "rulesDescription": "Markdown, shown on the page of the rules of the forum."
+  },
+  "permission": {
+    "topicAdd": "Logged-in users may start topics",
+    "topicUpdate": "… edit their topics",
+    "topicDelete": "… delete their topics",
+    "postAdd": "… reply",
+    "postUpdate": "… edit their posts",
+    "postDelete": "… delete their posts",
+    "topicThank": "… thank",
+    "topicFastReply": "… use the fast reply"
+  },
+  "error": {
+    "name": "Fill in the name (at most 255 characters).",
+    "place": "Choose a category or a parent forum (only one).",
+    "cycle": "A forum cannot be a subforum of itself or of its subforum.",
+    "categoryNotEmpty": "The category cannot be deleted, it has forums. Move or delete them first, or deactivate the category.",
+    "forumNotEmpty": "The forum cannot be deleted, it has topics or subforums. Move the topics first, or deactivate the forum."
+  }
+}

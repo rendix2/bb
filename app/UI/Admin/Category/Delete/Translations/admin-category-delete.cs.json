@@ -1,0 +1,7 @@
+{
+  "title": "Smazání kategorie",
+  "question": "Opravdu smazat? Smazat jde jen prázdná kategorie (bez fór).",
+  "confirm": "Smazat",
+  "success": "Kategorie %name% byla smazána.",
+  "back": "Zpět na seznam"
+}

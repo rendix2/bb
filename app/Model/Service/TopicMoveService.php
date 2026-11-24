@@ -25,7 +25,7 @@ class TopicMoveService
     public function __construct(
         private readonly EntityManagerDecorator $em,
         private readonly ForumPermissionService $permissions,
-        private readonly PostWriteService $postWriteService,
+        private readonly ForumTreeService $forumTree,
         private readonly TopicsSetting $topicsSetting,
     ) {
     }
@@ -62,7 +62,7 @@ class TopicMoveService
             throw new PostWriteException(PostWriteService::ERROR_NOT_ALLOWED);
         }
 
-        $category = $this->postWriteService->categoryOf($target);
+        $category = $this->forumTree->categoryOf($target);
 
         if (!$this->isTarget($user, $topic, $target) || $category === null) {
             throw new PostWriteException(self::ERROR_TARGET);
@@ -121,7 +121,7 @@ class TopicMoveService
 
     private function isTarget(UserEntity $user, TopicEntity $topic, ForumEntity $forum) : bool
     {
-        $category = $this->postWriteService->categoryOf($forum);
+        $category = $this->forumTree->categoryOf($forum);
 
         return $forum->id !== $topic->forum->id
             && $forum->active

@@ -1,0 +1,7 @@
+{
+  "title": "Delete the forum",
+  "question": "Really delete it? Only an empty forum (no topics, no subforums) can be deleted.",
+  "confirm": "Delete",
+  "success": "The forum %name% has been deleted.",
+  "back": "Back to the list"
+}

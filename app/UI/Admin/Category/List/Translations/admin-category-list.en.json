@@ -1,0 +1,12 @@
+{
+  "title": "Categories",
+  "create": "Add a category",
+  "name": "Name",
+  "sortOrder": "Order",
+  "active": "Active",
+  "yes": "yes",
+  "no": "no",
+  "edit": "Edit",
+  "delete": "Delete",
+  "forums": "Forums"
+}

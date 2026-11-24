@@ -19,3 +19,11 @@ menu:
                 action: :Admin:Role:List:default
                 include:
                     - '^Admin:Role:Edit:default'
+            Categories:
+                action: :Admin:Category:List:default
+                include:
+                    - '^Admin:Category:'
+            Forums:
+                action: :Admin:Forum:List:default
+                include:
+                    - '^Admin:Forum:'

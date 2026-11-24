@@ -7,7 +7,7 @@ use App\Model\Entity\ForumEntity;
 use App\Model\Entity\TopicEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Service\PostWriteException;
-use App\Model\Service\PostWriteService;
+use App\Model\Service\ForumTreeService;
 use App\Model\Service\TopicMoveService;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
@@ -29,7 +29,7 @@ class MovePresenter extends Presenter
     public function __construct(
         private readonly EntityManagerDecorator $em,
         private readonly TopicMoveService $topicMove,
-        private readonly PostWriteService $postWriteService,
+        private readonly ForumTreeService $forumTree,
         private readonly Translator $translator,
     ) {
         parent::__construct();
@@ -73,7 +73,7 @@ class MovePresenter extends Presenter
         $choices = [];
 
         foreach ($this->topicMove->targets($this->currentUser, $this->topic) as $forum) {
-            $choices[$this->postWriteService->categoryOf($forum)?->name ?? ''][$forum->uuid->toString()] = $forum->name;
+            $choices[$this->forumTree->categoryOf($forum)?->name ?? ''][$forum->uuid->toString()] = $forum->name;
         }
 
         // the names of the forums are not translated: no translator for the select, its texts translated here

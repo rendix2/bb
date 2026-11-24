@@ -1,0 +1,36 @@
+{
+  "protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+  "save": "Uložit",
+  "sortOrder": "Pořadí",
+  "active": "Aktivní",
+  "category": {
+    "name": "Název kategorie"
+  },
+  "forum": {
+    "name": "Název fóra",
+    "description": "Popis",
+    "place": "Patří do",
+    "placePrompt": "Vyberte kategorii nebo nadřazené fórum",
+    "placeCategories": "Kategorie",
+    "placeForums": "Podfórum fóra",
+    "rules": "Pravidla fóra",
+    "rulesDescription": "Markdown, zobrazí se na stránce pravidel fóra."
+  },
+  "permission": {
+    "topicAdd": "Přihlášení smí zakládat témata",
+    "topicUpdate": "… upravovat svá témata",
+    "topicDelete": "… mazat svá témata",
+    "postAdd": "… odpovídat",
+    "postUpdate": "… upravovat své příspěvky",
+    "postDelete": "… mazat své příspěvky",
+    "topicThank": "… děkovat",
+    "topicFastReply": "… používat rychlou odpověď"
+  },
+  "error": {
+    "name": "Vyplňte název (nejvýše 255 znaků).",
+    "place": "Vyberte kategorii, nebo nadřazené fórum (jen jedno).",
+    "cycle": "Fórum nemůže být podfórem sebe sama ani svého podfóra.",
+    "categoryNotEmpty": "Kategorii nelze smazat, obsahuje fóra. Fóra nejdřív přesuňte nebo smažte, případně kategorii deaktivujte.",
+    "forumNotEmpty": "Fórum nelze smazat, obsahuje témata nebo podfóra. Témata nejdřív přesuňte, případně fórum deaktivujte."
+  }
+}
