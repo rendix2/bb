@@ -1,6 +1,6 @@
 {
   "back": "Zpět na soukromé zprávy",
-  "markdownHint": "Text pište v Markdownu: **tučně**, *kurzíva*, [odkaz](https://…), seznamy začínají „- “.",
+  "markdownHint": "Text pište v Markdownu: **tučně**, *kurzíva*, [odkaz](https://…), seznamy začínají „- “, smajlíky přímo 😀 nebo zkratkou :smile:, :wink:, :+1:.",
   "form": {
     "protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
     "preview": "Náhled"

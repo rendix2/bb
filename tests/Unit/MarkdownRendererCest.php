@@ -35,4 +35,21 @@ class MarkdownRendererCest
 
         $I->assertStringNotContainsString('javascript:', $html);
     }
+
+    public function shortcodesBecomeEmojiAndEmojiPass(UnitTester $I) : void
+    {
+        $html = (new MarkdownRenderer())->toHtml('Hi :smile: :+1: :Wink: 😀');
+
+        $I->assertSame("<p>Hi 😄 👍 😉 😀</p>\n", $html);
+    }
+
+    public function unknownShortcodesCodeAndLinksStay(UnitTester $I) : void
+    {
+        $html = (new MarkdownRenderer())->toHtml("at 10:30:45 :nothing: `:smile:` [a](https://example.com/:smile:)\n\n    :heart:");
+
+        $I->assertStringContainsString('10:30:45 :nothing:', $html);
+        $I->assertStringContainsString('<code>:smile:</code>', $html);
+        $I->assertStringContainsString('href="https://example.com/:smile:"', $html);
+        $I->assertStringContainsString("<pre><code>:heart:\n</code></pre>", $html);
+    }
 }

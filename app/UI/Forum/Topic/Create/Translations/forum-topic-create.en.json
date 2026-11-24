@@ -1,6 +1,6 @@
 {
   "title": "New topic",
-  "markdownHint": "Write the text in Markdown: **bold**, *italic*, [link](https://…), lists start with \"- \".",
+  "markdownHint": "Write the text in Markdown: **bold**, *italic*, [link](https://…), lists start with \"- \", smileys directly 😀 or as :smile:, :wink:, :+1:.",
   "form": {
     "protection": "The form has expired, please send it again.",
     "name": {
