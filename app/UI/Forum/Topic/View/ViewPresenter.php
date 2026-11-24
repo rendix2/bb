@@ -13,6 +13,7 @@ use App\Model\Service\PostWriteException;
 use App\Model\Entity\PollEntity;
 use App\Model\Service\AttachmentService;
 use App\Model\Service\PollService;
+use App\Model\Service\PostHistoryService;
 use App\Model\Service\PostWriteService;
 use App\Model\Service\ReportService;
 use App\Model\Service\ThankService;
@@ -53,6 +54,7 @@ class ViewPresenter extends Presenter
         private readonly PollService $pollService,
         private readonly AttachmentService $attachmentService,
         private readonly ReportService $reportService,
+        private readonly PostHistoryService $postHistory,
         private readonly ForumJumpFormFactory $forumJumpFormFactory,
     ) {
         parent::__construct();
@@ -120,6 +122,7 @@ class ViewPresenter extends Presenter
         $canEdit = [];
         $canDelete = [];
         $canReport = [];
+        $canViewHistory = [];
         $firstPostId = $paginator->isFirst() && $posts !== [] ? $posts[0]->id : null;
 
         foreach ($posts as $post) {
@@ -127,11 +130,13 @@ class ViewPresenter extends Presenter
             // the first post goes only with its topic (Forum:Topic:Delete)
             $canDelete[$post->id] = $post->id !== $firstPostId && $this->permissions->isAllowed($this->currentUser, $post, ForumPrivilege::DELETE);
             $canReport[$post->id] = $this->reportService->mayReport($this->currentUser, $post);
+            $canViewHistory[$post->id] = $post->updatedAt !== null && $this->postHistory->mayView($this->currentUser, $post);
         }
 
         $this->template->canEdit = $canEdit;
         $this->template->canDelete = $canDelete;
         $this->template->canReport = $canReport;
+        $this->template->canViewHistory = $canViewHistory;
         $this->template->canThank = $this->currentUser !== null && $this->permissions->isAllowed($this->currentUser, $this->topic, ForumPrivilege::THANK);
         $this->template->postThanks = $this->thankService->postThanks($posts, $this->currentUser);
         $this->template->topicThankCount = $this->thankService->topicThankCount($this->topic);

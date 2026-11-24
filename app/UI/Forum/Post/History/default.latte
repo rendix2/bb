@@ -1,0 +1,35 @@
+{block title}{_forum-post-history.title}: {$post->topic->name}{/block}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $post->topic->category, forum: $post->topic->forum, topic: $post->topic}
+
+    <h1>{_forum-post-history.title}</h1>
+    <p class="text-muted">{_forum-post-history.author}: {$post->user->username}, {$post->createdAt|date:'j. n. Y H:i'}</p>
+
+    <div class="card mb-3 border-primary post-history-current">
+        <div class="card-header">
+            {_forum-post-history.current}
+            <span n:if="$post->updatedAt" class="small text-muted">({_forum-post-history.editedAt} {$post->updatedAt|date:'j. n. Y H:i'})</span>
+        </div>
+        <div class="card-body">
+            <h2 n:if="$post->title" class="h6">{$post->title}</h2>
+            <div class="post-text">{$post->text|markdown}</div>
+        </div>
+    </div>
+
+    {foreach $versions as $version}
+        <div class="card mb-3 post-history-version post-history-version-{$iterator->counter}">
+            <div class="card-header small">
+                {_forum-post-history.replaced, [user: $version->user->username, date: ($version->createdAt|date:'j. n. Y H:i')]}
+            </div>
+            <div class="card-body">
+                <h2 n:if="$version->title" class="h6">{$version->title}</h2>
+                <div class="post-text">{$version->text|markdown}</div>
+            </div>
+        </div>
+    {else}
+        <p class="alert alert-info post-history-empty">{_forum-post-history.empty}</p>
+    {/foreach}
+
+    <a n:href=":Forum:Topic:View:default $post->topic->uuid->toString()" class="btn btn-link">{_forum-post-history.back}</a>
+{/block}

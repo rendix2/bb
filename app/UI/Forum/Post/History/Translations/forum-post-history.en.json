@@ -1,0 +1,9 @@
+{
+  "title": "Edit history of the post",
+  "author": "Author",
+  "current": "Current version",
+  "editedAt": "last edited",
+  "replaced": "Version before the edit (edited by %user%, %date%)",
+  "empty": "The post has not been edited.",
+  "back": "Back to the topic"
+}

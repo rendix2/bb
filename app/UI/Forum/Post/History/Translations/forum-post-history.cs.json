@@ -1,0 +1,9 @@
+{
+  "title": "Historie úprav příspěvku",
+  "author": "Autor",
+  "current": "Aktuální verze",
+  "editedAt": "naposledy upraveno",
+  "replaced": "Verze před úpravou (upravil %user%, %date%)",
+  "empty": "Příspěvek nebyl upraven.",
+  "back": "Zpět do tématu"
+}

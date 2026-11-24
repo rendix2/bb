@@ -37,7 +37,7 @@
             </span>
             <span class="small text-muted">
                 {$post->createdAt|date:'j. n. Y H:i'}
-                <span n:if="$post->updatedAt" class="post-edited">({_forum-topic-view.edited} {$post->updatedAt|date:'j. n. Y H:i'})</span>
+                <span n:if="$post->updatedAt" class="post-edited">({_forum-topic-view.edited} {$post->updatedAt|date:'j. n. Y H:i'}<a n:if="$canViewHistory[$post->id]" n:href=":Forum:Post:History:default $post->uuid->toString()" class="post-history-link ms-1">{_forum-topic-view.history}</a>)</span>
                 <a n:if="$canReply" n:href=":Forum:Topic:Reply:default $topic->uuid->toString(), quote: $post->uuid->toString()" class="post-quote-link">{_forum-topic-view.quote}</a>
                 <a n:if="$canEdit[$post->id]" n:href=":Forum:Post:Edit:default $post->uuid->toString()" class="post-edit-link">{_forum-topic-view.edit}</a>
                 <a n:if="$canDelete[$post->id]" n:href=":Forum:Post:Delete:default $post->uuid->toString()" class="post-delete-link">{_forum-topic-view.delete}</a>
