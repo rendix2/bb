@@ -16,6 +16,7 @@
     "tooMany": "A conversation can have at most %max% participants.",
     "tooShort": "The text is too short.",
     "tooLong": "The text is too long.",
-    "flood": "You are writing too fast, please wait a moment."
+    "flood": "You are writing too fast, please wait a moment.",
+    "banned": "Writing is blocked for you (a ban)."
   }
 }

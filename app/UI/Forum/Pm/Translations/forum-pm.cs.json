@@ -16,6 +16,7 @@
     "tooMany": "Konverzace může mít nejvýše %max% účastníků.",
     "tooShort": "Text je příliš krátký.",
     "tooLong": "Text je příliš dlouhý.",
-    "flood": "Píšete příliš rychle, chvíli počkejte."
+    "flood": "Píšete příliš rychle, chvíli počkejte.",
+    "banned": "Psaní máte zablokované (ban)."
   }
 }

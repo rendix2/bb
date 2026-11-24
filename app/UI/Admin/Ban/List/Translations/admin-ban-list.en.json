@@ -1,0 +1,16 @@
+{
+  "title": "Bans",
+  "create": "Add a ban",
+  "reasons": "Predefined reasons",
+  "target": "Who",
+  "scope": "Blocks",
+  "reason": "Reason",
+  "expiresAt": "Valid until",
+  "forever": "for ever",
+  "state": "State",
+  "active": "active",
+  "expired": "expired",
+  "createdAt": "Created",
+  "edit": "Edit",
+  "delete": "Lift the ban"
+}

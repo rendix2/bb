@@ -1,0 +1,33 @@
+{
+  "scope": {
+    "web": "Celý web",
+    "login": "Přihlášení",
+    "registration": "Registrace",
+    "writing": "Psaní (témata, příspěvky, ankety, poděkování, soukromé zprávy)"
+  },
+  "form": {
+    "username": "Uživatelské jméno",
+    "email": "E-mail",
+    "ipAddress": "IP adresa",
+    "targetHelp": "Vyplňte aspoň jedno z uživatelského jména, e-mailu a IP adresy.",
+    "scope": "Co ban blokuje",
+    "reasonPreset": "Předdefinovaný důvod",
+    "reasonPresetPrompt": "— napsat vlastní —",
+    "reason": "Důvod",
+    "reasonHelp": "Napsaný důvod má přednost před vybraným. Zabanovaný ho uvidí.",
+    "expiresAt": "Platí do",
+    "expiresAtHelp": "Prázdné = trvalý ban."
+  },
+  "reason": {
+    "text": "Text důvodu"
+  },
+  "error": {
+    "target": "Vyplňte uživatelské jméno, e-mail nebo IP adresu.",
+    "unknownUser": "Uživatel %username% neexistuje.",
+    "admin": "Administrátora nelze zabanovat.",
+    "email": "Neplatný e-mail.",
+    "ip": "Neplatná IP adresa.",
+    "reason": "Napište nebo vyberte důvod.",
+    "expires": "Konec banu musí být v budoucnosti."
+  }
+}

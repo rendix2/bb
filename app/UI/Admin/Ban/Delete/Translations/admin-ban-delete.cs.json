@@ -1,0 +1,7 @@
+{
+  "title": "Zrušení banu",
+  "question": "Opravdu ban zrušit?",
+  "confirm": "Zrušit ban",
+  "success": "Ban #%name% byl zrušen.",
+  "back": "Zpět na seznam"
+}

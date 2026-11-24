@@ -1,0 +1,7 @@
+{
+  "title": "Smazání důvodu",
+  "question": "Opravdu smazat? Existující bany si text ponechají.",
+  "confirm": "Smazat",
+  "success": "Důvod %name% byl smazán.",
+  "back": "Zpět na seznam"
+}

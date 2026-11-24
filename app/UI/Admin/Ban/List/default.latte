@@ -1,0 +1,18 @@
+{block title}{_admin-ban-list.title}{/block}
+
+{block content}
+    <a n:href=":Admin:Ban:Create:default" class="btn btn-secondary mt-1 ban-create-link">
+        <i class="fa-solid fa-plus"></i> {_admin-ban-list.create}
+    </a>
+
+    <a n:href=":Admin:BanReason:List:default" class="btn btn-outline-secondary mt-1 ban-reasons-link">{_admin-ban-list.reasons}</a>
+
+    <div class="card shadow-sm border-0 mt-3">
+        <div class="card-header bg-white py-3">
+            <h1 class="h6 m-0 fw-bold text-primary">{_admin-ban-list.title}</h1>
+        </div>
+        <div class="card-body">
+            {control grid}
+        </div>
+    </div>
+{/block}

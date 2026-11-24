@@ -31,3 +31,7 @@ menu:
                 action: :Admin:Group:List:default
                 include:
                     - '^Admin:Group:'
+            Bans:
+                action: :Admin:Ban:List:default
+                include:
+                    - '^Admin:Ban'

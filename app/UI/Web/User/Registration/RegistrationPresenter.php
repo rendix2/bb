@@ -7,7 +7,9 @@ use App\Forms\IconBootstrapForm;
 use App\Forms\PasswordFormControlFactory;
 use App\Forms\Renderer\IconBootstrapRenderer;
 use App\Forms\UsernameFormControlFactory;
+use App\Model\Enum\BanScope;
 use App\Model\Facade\UserFacade;
+use App\Model\Service\BanService;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Contributte\Translation\Translator;
@@ -24,6 +26,8 @@ class RegistrationPresenter extends Presenter
         private readonly EmailFormControlFactory    $emailFormControlFactory,
         private readonly UsernameFormControlFactory $usernameFormControlFactory,
         private readonly UserFacade                 $userFacade,
+        // bb: a ban of the registration (or of the whole web) by the e-mail or the IP address (slice 7c1)
+        private readonly BanService                 $banService,
     )
     {
         parent::__construct();
@@ -80,6 +84,12 @@ class RegistrationPresenter extends Presenter
     public function registrationFormSuccess(Form $form) : void
     {
         $values = $form->getValues(RegistrationValues::class);
+
+        if ($this->banService->find(null, $values->email, $this->getHttpRequest()->getRemoteAddress(), BanScope::Registration) !== null) {
+            $form->addError($this->translator->translate('web-user-registration.form.banned'), false);
+
+            return;
+        }
 
         try {
             $this->userFacade->register($values);

@@ -2,6 +2,9 @@
 
 namespace App\Model\Security;
 
+use App\Model\Enum\BanScope;
+use App\Model\Service\BanService;
+use Nette\Http\IRequest;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
 use App\Model\Entity\ForumPermissions;
@@ -30,12 +33,20 @@ class ForumPermissionService
     public function __construct(
         private readonly EntityManagerDecorator $em,
         ForumAclFactory $aclFactory,
+        private readonly BanService $banService,
+        private readonly IRequest $httpRequest,
     ) {
         $this->acl = $aclFactory->create();
     }
 
     public function isAllowed(?UserEntity $user, ForumEntity|TopicEntity|PostEntity $subject, string $privilege) : bool
     {
+        // a ban of writing (or of the whole web) by the account or the IP address leaves only reading (slice 7c1)
+        if ($privilege !== ForumPrivilege::VIEW && $user !== null
+            && $this->banService->find($user, null, $this->httpRequest->getRemoteAddress(), BanScope::Writing) !== null) {
+            return false;
+        }
+
         [$resource, $roles] = match (true) {
             $subject instanceof ForumEntity => [ForumPrivilege::RESOURCE_FORUM, $this->rolesInForum($user, $subject)],
             $subject instanceof TopicEntity => [ForumPrivilege::RESOURCE_TOPIC, $this->rolesInTopic($user, $subject)],

@@ -1,0 +1,28 @@
+{block title}{_admin-ban-reason-list.title}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-ban-reason-list.title}</h1>
+    <p class="small text-muted">{_admin-ban-reason-list.help}</p>
+
+    <table class="table table-sm table-striped">
+        <thead><tr><th>{_admin-ban-reason-list.text}</th><th>{_admin-forum.sortOrder}</th><th></th></tr></thead>
+        <tbody>
+            <tr n:foreach="$reasons as $reason" class="ban-reason">
+                <td>{$reason->text}</td>
+                <td>{$reason->sortOrder}</td>
+                <td class="text-end">
+                    <a n:href=":Admin:BanReason:Edit:default $reason->id" class="btn btn-sm btn-outline-primary ban-reason-edit-link">{_admin-ban-reason-list.edit}</a>
+                    <a n:href=":Admin:BanReason:Delete:default $reason->id" class="btn btn-sm btn-outline-danger ban-reason-delete-link">{_admin-ban-reason-list.delete}</a>
+                </td>
+            </tr>
+            <tr n:if="!$reasons"><td colspan="3">{_admin-ban-reason-list.empty}</td></tr>
+        </tbody>
+    </table>
+
+    <div class="card shadow-sm border-0 col-lg-6">
+        <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-ban-reason-list.add}</h2></div>
+        <div class="card-body">{control reasonForm}</div>
+    </div>
+
+    <a n:href=":Admin:Ban:List:default" class="btn btn-link">{_admin-ban-reason-list.back}</a>
+{/block}

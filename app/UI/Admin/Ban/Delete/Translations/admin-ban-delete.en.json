@@ -1,0 +1,7 @@
+{
+  "title": "Lift the ban",
+  "question": "Really lift the ban?",
+  "confirm": "Lift the ban",
+  "success": "The ban #%name% has been lifted.",
+  "back": "Back to the list"
+}

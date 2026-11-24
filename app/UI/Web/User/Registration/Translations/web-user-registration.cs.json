@@ -3,6 +3,7 @@
 
   "form.submit.label": "Registrovat",
   "form.submit.success": "Uživatel %username% byl vytvořen",
+  "form.banned": "Registrace z této adresy nebo s tímto e-mailem je zablokovaná (ban).",
 
   "mail.subject": "Registrace"
 }

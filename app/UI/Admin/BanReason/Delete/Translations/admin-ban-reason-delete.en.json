@@ -1,0 +1,7 @@
+{
+  "title": "Delete the reason",
+  "question": "Really delete it? The existing bans keep their text.",
+  "confirm": "Delete",
+  "success": "The reason %name% has been deleted.",
+  "back": "Back to the list"
+}

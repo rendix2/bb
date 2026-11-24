@@ -3,6 +3,8 @@
 namespace App\UI\Admin;
 
 use App\Core\AutoLoginService;
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\UserEntity;
 use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
 use Nette\Http\IResponse;
@@ -18,6 +20,10 @@ abstract class AdminBasePresenter extends Presenter
     #[Inject]
     public AutoLoginService $autoLoginService;
 
+    // bb: admin()
+    #[Inject]
+    public EntityManagerDecorator $adminEntityManager;
+
     public function startup() : void
     {
         parent::startup();
@@ -30,6 +36,15 @@ abstract class AdminBasePresenter extends Presenter
         if (!$this->getUser()->isInRole('Admin')) {
             $this->error('Forbidden', IResponse::S403_Forbidden);
         }
+    }
+
+    /**
+     * bb: the logged-in admin as an entity (the author of a ban etc.).
+     */
+    protected function admin() : UserEntity
+    {
+        return $this->adminEntityManager->find(UserEntity::class, $this->getUser()->getId())
+            ?? $this->error('Not logged in', IResponse::S401_Unauthorized);
     }
 
     /**

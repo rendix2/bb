@@ -1,0 +1,11 @@
+{
+  "title": "Předdefinované důvody banů",
+  "help": "Formulář banu je nabízí v selectu; ban si text zkopíruje, takže úprava ani smazání důvodu existující bany nezmění.",
+  "text": "Text",
+  "edit": "Upravit",
+  "delete": "Smazat",
+  "empty": "Zatím žádné důvody.",
+  "add": "Přidat důvod",
+  "created": "Důvod byl přidán.",
+  "back": "Zpět na bany"
+}

@@ -3,6 +3,7 @@
 
   "form.submit.label": "Register",
   "form.submit.success": "User successfully created",
+  "form.banned": "Registration from this address or with this e-mail is blocked (a ban).",
 
   "mail.subject": "Registration"
 }

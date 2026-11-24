@@ -1,0 +1,6 @@
+{
+  "title": "Access blocked",
+  "reason": "Reason",
+  "until": "The ban is valid until",
+  "forever": "The ban is permanent."
+}

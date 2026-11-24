@@ -1,0 +1,12 @@
+{block title}{_web-banned.title}{/block}
+
+{block content}
+    <div class="container my-5 ban-page">
+        <h1 class="h3">{_web-banned.title}</h1>
+        <p class="ban-scope">{_$ban->scope->translationKey()}</p>
+        <p><strong>{_web-banned.reason}:</strong> <span class="ban-reason">{$ban->reason}</span></p>
+        <p class="ban-expires">
+            {if $ban->expiresAt}{_web-banned.until} {$ban->expiresAt|date:'j. n. Y H:i'}{else}{_web-banned.forever}{/if}
+        </p>
+    </div>
+{/block}

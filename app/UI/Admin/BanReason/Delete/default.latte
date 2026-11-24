@@ -1,0 +1,8 @@
+{block title}{_admin-ban-reason-delete.title}: {$reason->text|truncate:40}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-ban-reason-delete.title}: {$reason->text|truncate:40}</h1>
+    <p>{_admin-ban-reason-delete.question}</p>
+    {control deleteForm}
+    <a n:href=":Admin:BanReason:List:default" class="btn btn-link">{_admin-ban-reason-delete.back}</a>
+{/block}

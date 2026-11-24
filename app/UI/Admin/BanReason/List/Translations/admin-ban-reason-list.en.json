@@ -1,0 +1,11 @@
+{
+  "title": "Predefined reasons of bans",
+  "help": "The form of a ban offers them in a select; a ban copies the text, so editing or deleting a reason changes no existing ban.",
+  "text": "Text",
+  "edit": "Edit",
+  "delete": "Delete",
+  "empty": "No reasons yet.",
+  "add": "Add a reason",
+  "created": "The reason has been added.",
+  "back": "Back to the bans"
+}

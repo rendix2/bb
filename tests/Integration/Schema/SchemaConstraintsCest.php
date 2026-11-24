@@ -2,6 +2,7 @@
 
 namespace Tests\Integration\Schema;
 
+use App\Model\Enum\BanScope;
 use App\Model\Enum\ReportStatus;
 use Contributte\Translation\Translator;
 use DateTimeImmutable;
@@ -90,28 +91,32 @@ class SchemaConstraintsCest
     }
 
     /**
-     * The CHECK constraint of report.status lists exactly the cases of ReportStatus, every case has a translation.
+     * The CHECK constraints of enum columns list exactly the cases of their enum, every case has a translation.
      */
-    public function theReportStatusCheckFollowsTheEnum(IntegrationTester $I) : void
+    public function theEnumChecksFollowTheEnums(IntegrationTester $I) : void
     {
-        $definition = (string) $this->connection($I)->createQueryBuilder()
-            ->select('pg_get_constraintdef(oid)')
-            ->from('pg_constraint')
-            ->where("conname = 'ch__report__status'")
-            ->fetchOne();
-        preg_match_all("~'(\\w+)'~", $definition, $matches);
-        $values = $matches[1];
-        sort($values);
-
-        $cases = array_map(static fn (ReportStatus $status) : string => $status->value, ReportStatus::cases());
-        sort($cases);
-
-        $I->assertSame($cases, $values, "The CHECK constraint of report.status ($definition) does not list the cases of ReportStatus.");
-
         $translator = $I->grabService(Translator::class);
-        foreach (['cs', 'en'] as $locale) {
-            foreach (ReportStatus::cases() as $status) {
-                $I->assertNotSame($status->translationKey(), $translator->translate($status->translationKey(), [], null, $locale), "Missing $locale translation of {$status->translationKey()}.");
+
+        foreach (['ch__report__status' => ReportStatus::cases(), 'ch__ban__scope' => BanScope::cases()] as $constraint => $enumCases) {
+            $definition = (string) $this->connection($I)->createQueryBuilder()
+                ->select('pg_get_constraintdef(oid)')
+                ->from('pg_constraint')
+                ->where('conname = :name')
+                ->setParameter('name', $constraint)
+                ->fetchOne();
+            preg_match_all("~'(\\w+)'~", $definition, $matches);
+            $values = $matches[1];
+            sort($values);
+
+            $cases = array_map(static fn (ReportStatus|BanScope $case) : string => $case->value, $enumCases);
+            sort($cases);
+
+            $I->assertSame($cases, $values, "The CHECK constraint $constraint ($definition) does not list the cases of its enum.");
+
+            foreach (['cs', 'en'] as $locale) {
+                foreach ($enumCases as $case) {
+                    $I->assertNotSame($case->translationKey(), $translator->translate($case->translationKey(), [], null, $locale), "Missing $locale translation of {$case->translationKey()}.");
+                }
             }
         }
     }

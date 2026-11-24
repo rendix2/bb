@@ -2,6 +2,8 @@
 
 namespace App\Model\Service;
 
+use App\Model\Enum\BanScope;
+use Nette\Http\IRequest;
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\PrivateMessageEntity;
 use App\Model\Entity\PrivateMessageParticipantEntity;
@@ -28,6 +30,7 @@ class PrivateMessageService
     public const string ERROR_NOT_PARTICIPANT = 'forum-pm.error.notParticipant';
     public const string ERROR_NOT_FOUNDER = 'forum-pm.error.notFounder';
     public const string ERROR_SUBJECT = 'forum-pm.error.subject';
+    public const string ERROR_BANNED = 'forum-pm.error.banned';
     public const string ERROR_NO_RECIPIENT = 'forum-pm.error.noRecipient';
     public const string ERROR_UNKNOWN_RECIPIENT = 'forum-pm.error.unknownRecipient';
     public const string ERROR_SELF = 'forum-pm.error.self';
@@ -47,6 +50,8 @@ class PrivateMessageService
         private readonly UserRepository $userRepository,
         private readonly PostSetting $postSetting,
         private readonly PrivateMessageNotificationService $notification,
+        private readonly BanService $banService,
+        private readonly IRequest $httpRequest,
     ) {
     }
 
@@ -57,6 +62,7 @@ class PrivateMessageService
      */
     public function createThread(UserEntity $author, string $subject, array $usernames, string $text) : PrivateMessageThreadEntity
     {
+        $this->checkBan($author);
         $subject = Strings::trim($subject);
 
         if ($subject === '' || Strings::length($subject) > self::SUBJECT_MAX_LENGTH) {
@@ -128,6 +134,7 @@ class PrivateMessageService
      */
     public function reply(UserEntity $author, PrivateMessageThreadEntity $thread, string $text) : PrivateMessageEntity
     {
+        $this->checkBan($author);
         $this->requireParticipant($author, $thread);
         $text = $this->checkText($text);
         $this->checkFlood($author);
@@ -153,6 +160,7 @@ class PrivateMessageService
      */
     public function addParticipants(UserEntity $founder, PrivateMessageThreadEntity $thread, array $usernames) : void
     {
+        $this->checkBan($founder);
         $this->requireParticipant($founder, $thread);
 
         if ($thread->user?->id !== $founder->id) {
@@ -446,6 +454,16 @@ class PrivateMessageService
 
         if ((int) $recent > 0) {
             throw new PrivateMessageException(self::ERROR_FLOOD);
+        }
+    }
+
+    /**
+     * A ban of writing (or of the whole web) by the account or the IP address (slice 7c1).
+     */
+    private function checkBan(UserEntity $user) : void
+    {
+        if ($this->banService->find($user, null, $this->httpRequest->getRemoteAddress(), BanScope::Writing) !== null) {
+            throw new PrivateMessageException(self::ERROR_BANNED);
         }
     }
 }

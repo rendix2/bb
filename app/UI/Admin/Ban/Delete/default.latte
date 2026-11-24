@@ -1,0 +1,8 @@
+{block title}{_admin-ban-delete.title}: #{$ban->id}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-ban-delete.title}: #{$ban->id}</h1>
+    <p>{_admin-ban-delete.question}</p>
+    {control deleteForm}
+    <a n:href=":Admin:Ban:List:default" class="btn btn-link">{_admin-ban-delete.back}</a>
+{/block}

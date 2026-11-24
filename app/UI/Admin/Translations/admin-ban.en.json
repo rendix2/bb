@@ -1,0 +1,33 @@
+{
+  "scope": {
+    "web": "The whole web",
+    "login": "Login",
+    "registration": "Registration",
+    "writing": "Writing (topics, posts, polls, thanks, private messages)"
+  },
+  "form": {
+    "username": "Username",
+    "email": "E-mail",
+    "ipAddress": "IP address",
+    "targetHelp": "Fill in at least one of the username, the e-mail and the IP address.",
+    "scope": "What the ban blocks",
+    "reasonPreset": "Predefined reason",
+    "reasonPresetPrompt": "— write my own —",
+    "reason": "Reason",
+    "reasonHelp": "A written reason wins over the chosen one. The banned visitor sees it.",
+    "expiresAt": "Valid until",
+    "expiresAtHelp": "Empty = a permanent ban."
+  },
+  "reason": {
+    "text": "Text of the reason"
+  },
+  "error": {
+    "target": "Fill in the username, the e-mail or the IP address.",
+    "unknownUser": "The user %username% does not exist.",
+    "admin": "An administrator cannot be banned.",
+    "email": "An invalid e-mail.",
+    "ip": "An invalid IP address.",
+    "reason": "Write or choose a reason.",
+    "expires": "The end of the ban must be in the future."
+  }
+}

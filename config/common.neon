@@ -175,6 +175,8 @@ services:
             - '$onPresenter[]' = [@App\Core\AutoLoginService, tryLogin]
             # the language of the interface from the settings of the logged-in user (after the cookie login above)
             - '$onPresenter[]' = [@App\Core\Translation\UserLocaleService, onPresenter]
+            # bans of the whole web and of the login (after the cookie login above): log out, the page of the ban
+            - '$onPresenter[]' = [@App\Core\BanGuard, onPresenter]
 
     # the login form answers in the same request: its page already in the language of the user (UserLocaleService)
     security.user:

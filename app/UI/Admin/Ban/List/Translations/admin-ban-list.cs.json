@@ -1,0 +1,16 @@
+{
+  "title": "Bany",
+  "create": "Přidat ban",
+  "reasons": "Předdefinované důvody",
+  "target": "Koho",
+  "scope": "Co blokuje",
+  "reason": "Důvod",
+  "expiresAt": "Platí do",
+  "forever": "trvale",
+  "state": "Stav",
+  "active": "platí",
+  "expired": "vypršel",
+  "createdAt": "Vytvořen",
+  "edit": "Upravit",
+  "delete": "Zrušit ban"
+}
