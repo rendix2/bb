@@ -4,6 +4,7 @@ namespace Tests\Integration;
 
 use App\Model\Entity\CategoryEntity;
 use App\Model\Entity\ForumEntity;
+use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\MailEntity;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\TopicEntity;
@@ -76,6 +77,33 @@ class MailQueueCest
         $I->assertSame([$watcher->email => 2], $this->queuedTo($I, [$watcher]));
     }
 
+    /**
+     * Regression: the mail was rendered once in the language of the one who replied (the request), not of the recipient.
+     */
+    public function theMailIsInTheLanguageOfTheRecipient(IntegrationTester $I) : void
+    {
+        [$topic] = $this->createTopic($I);
+        $czech = $I->createUser('Czech', role: 'Normal');
+        $english = $I->createUser('English', role: 'Normal');
+        $english->language = $this->language($I, 'en');
+        $replier = $I->createUser('Replier', role: 'Normal');
+        $replier->language = $this->language($I, 'en');
+        $I->em()->flush();
+        $watch = $I->grabService(TopicWatchService::class);
+        $watch->watch($czech, $topic);
+        $watch->watch($english, $topic);
+
+        $I->grabService(PostWriteService::class)->reply($replier, $topic, 'A reply in two languages', null, '127.0.0.1');
+
+        $englishMail = $this->lastMailTo($I, $english);
+        $I->assertSame('A new reply in the topic Mail topic', $englishMail->subject);
+        $I->assertStringContainsString('There is a new reply from', $englishMail->body);
+        $I->assertStringContainsString('/forum.topic.view/' . $topic->uuid->toString(), $englishMail->body);
+        $czechMail = $this->lastMailTo($I, $czech);
+        $I->assertSame('Nová odpověď v tématu Mail topic', $czechMail->subject);
+        $I->assertStringContainsString('je nová odpověď od uživatele', $czechMail->body);
+    }
+
     public function theQueueIsSentAndMarked(IntegrationTester $I) : void
     {
         $queue = $I->grabService(MailQueueService::class);
@@ -107,6 +135,14 @@ class MailQueueCest
         }
 
         return $counts;
+    }
+
+    private function language(IntegrationTester $I, string $locale) : LanguageEntity
+    {
+        $language = $I->em()->getRepository(LanguageEntity::class)->findOneBy(['locale' => $locale]);
+        $I->assertNotNull($language);
+
+        return $language;
     }
 
     private function lastMailTo(IntegrationTester $I, UserEntity $user) : MailEntity
