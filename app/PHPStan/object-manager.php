@@ -9,5 +9,5 @@ require __DIR__ . '/../../vendor/autoload.php';
 // moment, so the Finder the rebuild needs must be loaded beforehand (otherwise "Class Nette\Utils\Finder not found")
 class_exists(Nette\Utils\Finder::class);
 
-return Bootstrap::boot('console')->createContainer()
+return (new Bootstrap())->boot('console')->createContainer()
     ->getByType(EntityManagerInterface::class);
