@@ -9,7 +9,7 @@ use Nette\Bootstrap\Configurator;
 final class Bootstrap
 {
 
-    public static function boot(string $context): Configurator
+    public function boot(string $context): Configurator
     {
         $sep = DIRECTORY_SEPARATOR;
         $dir = __DIR__;
@@ -90,17 +90,17 @@ final class Bootstrap
         return $configurator;
     }
 
-    public static function runWebApplication(): void
+    public function runWebApplication(): void
     {
-        self::boot('web')
+        $this->boot('web')
             ->createContainer()
             ->getByType(WebApplication::class)
             ->run();
     }
 
-    public static function runConsoleApplication(): void
+    public function runConsoleApplication(): void
     {
-        self::boot('console')
+        $this->boot('console')
             ->createContainer()
             ->getByType(ConsoleApplication::class)
             ->run();

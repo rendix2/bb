@@ -2,13 +2,12 @@
 
 namespace Tests\Unit;
 
-use Codeception\Attribute\Group;
 use Tests\Support\UnitTester;
 
 /**
  * No static methods and no traits in the application (AGENTS.md "No static calls, never" and "No traits"): every behaviour is an
  * instance method of a service that is constructor-injected, shared code is a collaborator or a parent class, never a trait. The
- * router factory is a normal service (`@routerFactory::create()`), Bootstrap is created by `new Bootstrap()` in the entry points.
+ * router factory is a normal class (`App\Core\RouterFactory()::create()`), Bootstrap is created by `new Bootstrap()` in the entry points.
  *
  * A static CLOSURE (`static fn () => ...`) is no static method and is fine. There is no allowed exception now: a method that a
  * library interface really requires to be static would get an explicit list of allowed files here, each with the reason.
@@ -21,8 +20,6 @@ class NoStaticMethodsOrTraitsCest
         '~^[ \t]*trait\s+\w~m' => 'a trait',
     ];
 
-    // bb: known bug - the legacy dibi code, Bootstrap and RouterFactory still have them (removed in the dibi step, see AGENTS.md)
-    #[Group('known-bug')]
     public function theApplicationHasNoStaticMethodsAndNoTraits(UnitTester $I) : void
     {
         $directory = dirname(__DIR__, 2) . '/app';

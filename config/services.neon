@@ -1,5 +1,6 @@
 services:
-	RouterFactory: App\Core\RouterFactory::createRouter
+	# an inline instance, not a service reference: the router is cached (routing.cache), its factory runs at compile time
+	- App\Core\RouterFactory()::create()
 	- App\Model\Service\MarkdownRenderer
 	- App\Model\Service\UploadedImageReader
 	# bans of the whole web and of the login on every request (config/common.neon, application.application)

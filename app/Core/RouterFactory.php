@@ -4,14 +4,11 @@ namespace App\Core;
 
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
-use Nette\StaticClass;
 
 final class RouterFactory
 {
 
-    use StaticClass;
-
-    public static function createRouter() : RouteList
+    public function create() : RouteList
     {
         $router = new RouteList;
 
