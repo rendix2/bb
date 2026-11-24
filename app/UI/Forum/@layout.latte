@@ -24,8 +24,11 @@
                 <a class="nav-link" n:href=":Forum:Index:default">{_forum-layout.index}</a>
             </li>
 
-            {* search, member list, private messages and the profile come with their slices (users, PM) *}
+            {* private messages come with their slice (PM); the list of users only for logged-in users *}
             {if $user->isLoggedIn()}
+                <li class={[nav-item, active => $presenter->getName() === 'Web:User:List']}>
+                    <a class="nav-link user-list-link" n:href=":Web:User:List:default">{_forum-layout.users}</a>
+                </li>
                 <li class="nav-item">
                     {* the own profile: Web:User:View without uuid finds it by the id of the logged-in user (the identity has no uuid) *}
                     <a class="nav-link own-profile-link" n:href=":Web:User:View:default">{$user->getIdentity()->getData()['username']}</a>

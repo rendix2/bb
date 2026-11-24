@@ -1,0 +1,44 @@
+{block title}{_web-user-list.header}{/block}
+
+{* a column header: sorts by the column, again the other direction *}
+{define sortLink, string $column, string $caption}
+    {var $next = $sort === $column && $order === 'asc' ? 'desc' : 'asc'}
+    <a n:href="this sort: $column, order: $next, page: 1" class="user-list-sort-{$column}">{_$caption}</a>
+    {if $sort === $column}{$order === 'asc' ? '▲' : '▼'}{/if}
+{/define}
+
+{block content}
+<div class="mt-2 user-list">
+    <h1 class="h4">{_web-user-list.header}</h1>
+
+    {control filterForm}
+
+    {include '../../../Forum/@paginator.latte', paginator: $paginator}
+
+    <table class="table table-sm align-middle">
+        <thead>
+            <tr>
+                <th>{include sortLink, username, 'web-user-list.username'}</th>
+                <th>{_web-user-list.rank}</th>
+                <th>{include sortLink, registered, 'web-user-list.registered'}</th>
+                <th class="text-end">{include sortLink, posts, 'web-user-list.posts'}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr n:foreach="$items as $item" class="user-list-item">
+                {var $listed = $item['user']}
+                <td>
+                    <img n:if="$listed->avatar" n:img="$listed->avatar, filter: avatar48" alt="" width="24" height="24" class="rounded-circle me-1">
+                    <a n:href=":Web:User:View:default $listed->uuid->toString()" class="user-list-username">{$listed->username}</a>
+                </td>
+                <td><span n:if="$ranks[$listed->id]" class="badge bg-secondary">{$ranks[$listed->id]->name}</span></td>
+                <td class="text-nowrap">{$listed->createdAt|date:'j. n. Y'}</td>
+                <td class="text-end user-list-posts">{$item['posts']}</td>
+            </tr>
+            <tr n:if="!$items"><td colspan="4" class="text-muted">{_web-user-list.none}</td></tr>
+        </tbody>
+    </table>
+
+    {include '../../../Forum/@paginator.latte', paginator: $paginator}
+</div>
+{/block}

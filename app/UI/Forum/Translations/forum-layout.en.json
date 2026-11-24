@@ -3,5 +3,6 @@
   "logout": "Log out",
   "login": "Log in",
   "register": "Register",
-  "admin": "Administration"
+  "admin": "Administration",
+  "users": "Users"
 }

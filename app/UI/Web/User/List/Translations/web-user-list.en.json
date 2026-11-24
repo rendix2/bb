@@ -1,0 +1,10 @@
+{
+  "header": "Users",
+  "filter": "The username contains",
+  "search": "Search",
+  "username": "Username",
+  "rank": "Rank",
+  "registered": "Registered",
+  "posts": "Posts",
+  "none": "No user."
+}

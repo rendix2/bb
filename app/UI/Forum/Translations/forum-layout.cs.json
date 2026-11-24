@@ -3,5 +3,6 @@
   "logout": "Odhlásit",
   "login": "Přihlásit",
   "register": "Registrace",
-  "admin": "Administrace"
+  "admin": "Administrace",
+  "users": "Uživatelé"
 }
