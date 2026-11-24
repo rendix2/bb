@@ -47,7 +47,7 @@ class TopicRepository extends EntityRepository
         foreach ($rows as $row) {
             $page[] = [
                 'topic' => $row[0],
-                'postCount' => (int) $row['postCount'],
+                'postCount' => $row['postCount'],
                 'lastPostAt' => new DateTimeImmutable($row['lastPostAt']),
             ];
         }

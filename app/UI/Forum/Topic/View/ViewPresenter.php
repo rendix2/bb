@@ -43,6 +43,7 @@ class ViewPresenter extends ForumBasePresenter
 
     public function __construct(
         private readonly EntityManagerDecorator $em,
+        private readonly PostRepository $postRepository,
         private readonly TopicsSetting $topicsSetting,
         private readonly UserRankService $userRankService,
         private readonly ForumPermissionService $permissions,
@@ -95,18 +96,15 @@ class ViewPresenter extends ForumBasePresenter
 
     public function renderDefault(string $uuid, int $page = 1) : void
     {
-        /** @var PostRepository $postRepository */
-        $postRepository = $this->em->getRepository(PostEntity::class);
-
         $paginator = new Paginator();
         $paginator->setItemsPerPage((int) $this->topicsSetting->get()['pagination']['itemsPerPage']);
-        $paginator->setItemCount($postRepository->count(['topic' => $this->topic]));
+        $paginator->setItemCount($this->postRepository->count(['topic' => $this->topic]));
         $paginator->setPage($page);
 
-        $posts = $postRepository->findPageOfTopic($this->topic, $paginator->getOffset(), $paginator->getLength());
+        $posts = $this->postRepository->findPageOfTopic($this->topic, $paginator->getOffset(), $paginator->getLength());
 
         $authorIds = array_values(array_unique(array_map(static fn (PostEntity $post) : int => $post->user->id, $posts)));
-        $postCounts = $postRepository->countByUsers($authorIds);
+        $postCounts = $this->postRepository->countByUsers($authorIds);
 
         $ranks = [];
 

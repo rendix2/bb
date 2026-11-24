@@ -25,3 +25,8 @@ parameters:
 
     paths:
         - app
+
+services:
+    -
+        class: App\PHPStan\IpAddressTypeDescriptor
+        tags: [phpstan.doctrine.typeDescriptor]

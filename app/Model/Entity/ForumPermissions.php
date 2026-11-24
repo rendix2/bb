@@ -59,9 +59,14 @@ class ForumPermissions
     {
         $union = new self();
 
-        foreach (get_object_vars($this) as $flag => $value) {
-            $union->$flag = $value || $other->$flag;
-        }
+        $union->topicAdd = $this->topicAdd || $other->topicAdd;
+        $union->topicUpdate = $this->topicUpdate || $other->topicUpdate;
+        $union->topicDelete = $this->topicDelete || $other->topicDelete;
+        $union->postAdd = $this->postAdd || $other->postAdd;
+        $union->postUpdate = $this->postUpdate || $other->postUpdate;
+        $union->postDelete = $this->postDelete || $other->postDelete;
+        $union->topicThank = $this->topicThank || $other->topicThank;
+        $union->topicFastReply = $this->topicFastReply || $other->topicFastReply;
 
         return $union;
     }

@@ -118,14 +118,14 @@ class ReportService
      */
     public function reportsFor(UserEntity $moderator, bool $open, int $offset, int $limit) : array
     {
-        $query = $this->reportsQuery($moderator, $open);
+        $forumIds = $this->permissions->moderatedForumIds($moderator);
 
-        if ($query === null) {
+        if ($forumIds === []) {
             return [];
         }
 
         /** @var list<ReportEntity> */
-        return $query
+        return $this->reportsQuery($forumIds, $open)
             ->select('_r', '_p', '_t', '_f', '_u')
             ->innerJoin('_r.post', '_p')
             ->innerJoin('_t.forum', '_f')
@@ -140,9 +140,13 @@ class ReportService
 
     public function countFor(UserEntity $moderator, bool $open) : int
     {
-        $query = $this->reportsQuery($moderator, $open);
+        $forumIds = $this->permissions->moderatedForumIds($moderator);
 
-        return $query === null ? 0 : (int) $query->select('COUNT(_r.id)')->getQuery()->getSingleScalarResult();
+        if ($forumIds === []) {
+            return 0;
+        }
+
+        return (int) $this->reportsQuery($forumIds, $open)->select('COUNT(_r.id)')->getQuery()->getSingleScalarResult();
     }
 
     /**
@@ -202,16 +206,12 @@ class ReportService
     }
 
     /**
-     * One query for the list and its count; null when the user moderates no forum.
+     * One query for the list and its count (the callers skip it when the user moderates no forum: no `IN ()`).
+     *
+     * @param list<int> $forumIds
      */
-    private function reportsQuery(UserEntity $moderator, bool $open) : ?QueryBuilder
+    private function reportsQuery(array $forumIds, bool $open) : QueryBuilder
     {
-        $forumIds = $this->permissions->moderatedForumIds($moderator);
-
-        if ($forumIds === []) {
-            return null;
-        }
-
         return $this->em->getRepository(ReportEntity::class)
             ->createQueryBuilder('_r')
             ->innerJoin('_r.topic', '_t')

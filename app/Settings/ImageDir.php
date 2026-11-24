@@ -110,9 +110,6 @@ abstract class ImageDir
         }
         
         foreach (Finder::findFiles($extensions)->in($this->getDir()) as $file) {
-            /**
-             * @var SplFileInfo $file
-             */
             $size += $file->getSize();
         }
         

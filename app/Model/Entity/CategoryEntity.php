@@ -64,7 +64,7 @@ class CategoryEntity
     public Collection $forums;
 
     /**
-     * @var Collection<int, TopicEntity> $posts
+     * @var Collection<int, TopicEntity> $topics
      */
     #[OneToMany(targetEntity: TopicEntity::class, mappedBy: 'category', cascade: ['persist', 'remove'])]
     public Collection $topics;

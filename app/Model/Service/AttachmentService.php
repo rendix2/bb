@@ -39,7 +39,7 @@ class AttachmentService
     {
         $settings = $this->settings();
 
-        if (count($uploads) > (int) $settings['maxFiles']) {
+        if (count($uploads) > $settings['maxFiles']) {
             throw new PostWriteException(self::ERROR_COUNT);
         }
 
@@ -48,7 +48,7 @@ class AttachmentService
                 throw new PostWriteException(self::ERROR_UPLOAD);
             }
 
-            if ($upload->getSize() > (int) $settings['maxSize']) {
+            if ($upload->getSize() > $settings['maxSize']) {
                 throw new PostWriteException(self::ERROR_SIZE);
             }
 
@@ -85,7 +85,7 @@ class AttachmentService
 
     public function path(FileEntity $file) : string
     {
-        return rtrim((string) $this->settings()['dir'], '/') . '/' . $file->storedName;
+        return rtrim($this->settings()['dir'], '/') . '/' . $file->storedName;
     }
 
     /**

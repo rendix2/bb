@@ -4,7 +4,6 @@ namespace App\UI\Forum\Forum\View;
 
 use App\Database\EntityManagerDecorator;
 use App\Model\Entity\ForumEntity;
-use App\Model\Entity\TopicEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Security\ForumPermissionService;
 use App\Model\Security\ForumPrivilege;
@@ -23,6 +22,7 @@ class ViewPresenter extends Presenter
 {
     public function __construct(
         private readonly EntityManagerDecorator $em,
+        private readonly TopicRepository $topicRepository,
         private readonly ForumSettings $forumSettings,
         private readonly ForumPermissionService $permissions,
         private readonly ForumJumpFormFactory $forumJumpFormFactory,
@@ -39,18 +39,15 @@ class ViewPresenter extends Presenter
             $this->error('Forum was not found.');
         }
 
-        /** @var TopicRepository $topicRepository */
-        $topicRepository = $this->em->getRepository(TopicEntity::class);
-
         $paginator = new Paginator();
         $paginator->setItemsPerPage((int) $this->forumSettings->get()['pagination']['itemsPerPage']);
-        $paginator->setItemCount($topicRepository->count(['forum' => $forum]));
+        $paginator->setItemCount($this->topicRepository->count(['forum' => $forum]));
         $paginator->setPage($page);
 
         $this->template->forum = $forum;
         $this->template->subforums = $this->em->getRepository(ForumEntity::class)
             ->findBy(['parent' => $forum, 'active' => true], ['sortOrder' => 'ASC']);
-        $this->template->topics = $topicRepository->findPageOfForum($forum, $paginator->getOffset(), $paginator->getLength());
+        $this->template->topics = $this->topicRepository->findPageOfForum($forum, $paginator->getOffset(), $paginator->getLength());
         $this->template->paginator = $paginator;
         // "moved to ..." above the topics of the first page
         $this->template->moves = $paginator->isFirst() ? $this->topicMove->recentMovesFrom($forum) : [];

@@ -2,7 +2,6 @@
 
 namespace App\Model\Entity;
 
-use App\Model\Repository\GroupForumPermissionRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
@@ -21,7 +20,7 @@ use Ramsey\Uuid\UuidInterface;
 /**
  * Access of a group to a forum.
  */
-#[Entity(repositoryClass: GroupForumPermissionRepository::class)]
+#[Entity]
 #[Table(name: 'group_forum', options: ['comment' => 'Forum access of groups'])]
 // one row per pair
 #[UniqueConstraint(name: 'UK__Group_forum__Group_id_forum_id', columns: ['group_id', 'forum_id'])]

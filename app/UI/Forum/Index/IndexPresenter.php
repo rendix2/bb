@@ -52,7 +52,7 @@ class IndexPresenter extends Presenter
                 ]
             );
 
-        if ($this->getUser()->getIdentity()) {
+        if ($this->getUser()->getIdentity() !== null) {
             $last_login_time = $this->getUser()->getIdentity()->getData()['user_last_login_time'];
         } else {
             // we do not show any new posts

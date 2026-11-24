@@ -76,13 +76,13 @@ class ForumEntity
     public Collection $topics;
 
     /**
-     * @var Collection<int, UserModeratorEntity> $thanks
+     * @var Collection<int, UserModeratorEntity> $moderatorUsers
      */
     #[OneToMany(targetEntity: UserModeratorEntity::class, mappedBy: 'forum', cascade: ['persist', 'remove'])]
     public Collection $moderatorUsers;
 
     /**
-     * @var Collection<int, ForumEntity> $thanks
+     * @var Collection<int, ForumEntity> $children
      */
     #[OneToMany(targetEntity: ForumEntity::class, mappedBy: 'parent')]
     public Collection $children;

@@ -116,7 +116,7 @@ class UserEntity
     public Collection $roles;
 
     /**
-     * @var Collection<int, SessionEntity> $activationKeys
+     * @var Collection<int, SessionEntity> $sessions
      */
     #[OneToMany(targetEntity: SessionEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     public Collection $sessions;
@@ -171,7 +171,7 @@ class UserEntity
     public Collection $thanks;
 
     /**
-     * @var Collection<int, UserModeratorEntity> $thanks
+     * @var Collection<int, UserModeratorEntity> $moderatorUsers
      */
     #[OneToMany(targetEntity: UserModeratorEntity::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     public Collection $moderatorUsers;

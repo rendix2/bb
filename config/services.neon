@@ -52,10 +52,6 @@ services:
 		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\PollVoteEntity)
 
 	-
-		type: App\Model\Repository\ReportRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\ReportEntity)
-
-	-
 		type: App\Model\Repository\SessionRepository
 		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\SessionEntity)
 
@@ -70,10 +66,6 @@ services:
 	-
 		type: App\Model\Repository\GroupRepository
 		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\GroupEntity)
-
-	-
-		type: App\Model\Repository\GroupForumPermissionRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\GroupForumPermissionEntity)
 
 	-
 		type: App\Model\Repository\FileRepository

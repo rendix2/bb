@@ -63,7 +63,7 @@ class PollEntity
     public Collection $votes;
 
     /**
-     * @var Collection<int, PollAnswerEntity> $passwordRequests
+     * @var Collection<int, PollAnswerEntity> $answers
      */
     #[OneToMany(targetEntity: PollAnswerEntity::class, mappedBy: 'poll', cascade: ['persist', 'remove'])]
     public Collection $answers;
