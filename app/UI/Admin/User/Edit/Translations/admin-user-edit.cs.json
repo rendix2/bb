@@ -49,6 +49,8 @@
   "passwordHistoryGrid.id": "ID",
   "passwordHistoryGrid.createdAt": "Vytvořeno",
 
+  "roleGrid.role.added": "Role byla přidána",
+  "roleGrid.role.removed": "Role byla odebrána",
   "roleGrid.addRole": "Přidat roli",
   "roleGrid.removeRole": "Odebrat roli",
   "roleGrid.role.id": "ID",

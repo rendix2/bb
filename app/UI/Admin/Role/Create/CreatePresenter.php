@@ -12,6 +12,9 @@ use Contributte\MenuControl\UI\MenuComponentFactory;
 use Doctrine\DBAL\Exception as DbalException;
 use Nette\Application\UI\Form;
 use Nette\Localization\Translator;
+use stdClass;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 /**
  * class CreatePresenter
@@ -65,14 +68,23 @@ class CreatePresenter extends AdminBasePresenter
             $this->em->persist($roleEntity);
             $this->em->flush();
 
-            $this->flashMessage(
-                $this->translator->translate('admin-role-create.form.submit.success', ['name' => $values->name]),
-                'success'
-            );
+            $flash = new stdClass();
+            $flash->place = 'general';
+            $flash->type = 'success';
+            $flash->message = $this->translator->translate('admin-role-create.form.submit.success', ['name' => $values->name]);
+
+            $this->flashMessage($flash);
             $this->redrawControl('flashes');
             //$this->redirect('this');
         } catch (DbalException $exception) {
-            $this->flashMessage($exception->getMessage(), 'danger');
+            // the text of the exception goes to the log, the user gets a translated message
+            Debugger::log($exception, ILogger::EXCEPTION);
+            $flash = new stdClass();
+            $flash->place = 'general';
+            $flash->type = 'danger';
+            $flash->message = $this->translator->translate('messages.operationFailed');
+
+            $this->flashMessage($flash);
             $this->redrawControl('flashes');
         }
     }

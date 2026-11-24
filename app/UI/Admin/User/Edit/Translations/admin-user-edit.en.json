@@ -47,6 +47,8 @@
   "passwordHistoryGrid.id": "ID",
   "passwordHistoryGrid.createdAt": "Created",
 
+  "roleGrid.role.added": "Role was added",
+  "roleGrid.role.removed": "Role was removed",
   "roleGrid.addRole": "Add Role",
   "roleGrid.removeRole": "Remove Role",
   "roleGrid.role.id": "ID",

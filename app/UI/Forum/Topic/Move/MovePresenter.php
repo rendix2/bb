@@ -9,10 +9,10 @@ use App\Model\Entity\UserEntity;
 use App\Model\Service\PostWriteException;
 use App\Model\Service\ForumTreeService;
 use App\Model\Service\TopicMoveService;
+use App\UI\Forum\ForumBasePresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Nette\Application\UI\Form;
-use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
 use Nette\Localization\Translator;
 
@@ -20,7 +20,7 @@ use Nette\Localization\Translator;
  * A moderator of the forum of the topic (or the admin) moves the topic to another forum (TopicMoveService); the old forum
  * shows "moved to ..." for a few days.
  */
-class MovePresenter extends Presenter
+class MovePresenter extends ForumBasePresenter
 {
     private TopicEntity $topic;
 
@@ -105,7 +105,7 @@ class MovePresenter extends Presenter
             return;
         }
 
-        $this->flashMessage('forum-topic-move.success', 'success');
+        $this->forumFlash('forum-topic-move.success', 'success');
         $this->redirect(':Forum:Topic:View:default', ['uuid' => $this->topic->uuid->toString()]);
     }
 }

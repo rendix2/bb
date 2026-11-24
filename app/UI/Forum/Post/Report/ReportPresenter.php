@@ -8,10 +8,10 @@ use App\Model\Entity\UserEntity;
 use App\Model\Service\PostWriteException;
 use App\Model\Service\ReportService;
 use App\Model\Service\TopicPaginationService;
+use App\UI\Forum\ForumBasePresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Nette\Application\UI\Form;
-use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
 use Nette\Localization\Translator;
 
@@ -19,7 +19,7 @@ use Nette\Localization\Translator;
  * Reporting a post to the moderators (a logged-in user who sees the post, not his own, once per post). The moderators
  * handle the reports in slice 6.
  */
-class ReportPresenter extends Presenter
+class ReportPresenter extends ForumBasePresenter
 {
     private PostEntity $post;
 
@@ -93,7 +93,7 @@ class ReportPresenter extends Presenter
             return;
         }
 
-        $this->flashMessage('forum-post-report.success', 'success');
+        $this->forumFlash('forum-post-report.success', 'success');
         $this->redirect(':Forum:Topic:View:default#post-' . $this->post->id, ['uuid' => $this->post->topic->uuid->toString(), 'page' => $this->topicPagination->pageOf($this->post)]);
     }
 }

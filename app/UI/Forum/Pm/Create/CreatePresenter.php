@@ -74,7 +74,7 @@ class CreatePresenter extends PrivateMessagePresenter
             return;
         }
 
-        $this->flashMessage('forum-pm-create.success', 'success');
+        $this->forumFlash('forum-pm-create.success', 'success');
         $this->redirect(':Forum:Pm:Thread:default', ['uuid' => $thread->uuid->toString()]);
     }
 }

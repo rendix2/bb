@@ -16,6 +16,9 @@ use Doctrine\ORM\QueryBuilder;
 use Nette\Forms\Container;
 use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
+use stdClass;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 /**
  * class RoleGrid
@@ -116,15 +119,24 @@ class RoleDataGrid
                 $this->em->remove($roleEntity);
                 $this->em->flush();
 
-                $this->grid->presenter->flashMessage(
-                    $this->translator->translate('admin-role-list.delete.success', ['name' => $roleEntity->name]),
-                    'success'
-                );
+                $flash = new stdClass();
+                $flash->place = 'general';
+                $flash->type = 'success';
+                $flash->message = $this->translator->translate('admin-role-list.delete.success', ['name' => $roleEntity->name]);
+
+                $this->grid->presenter->flashMessage($flash);
                 $this->grid->presenter->redrawControl('flashes');
 
                 $this->grid->reload();
             } catch (DbalException $exception) {
-                $this->grid->presenter->flashMessage($exception->getMessage(), 'danger');
+                // the text of the exception goes to the log, the user gets a translated message
+                Debugger::log($exception, ILogger::EXCEPTION);
+                $flash = new stdClass();
+                $flash->place = 'general';
+                $flash->type = 'danger';
+                $flash->message = $this->translator->translate('messages.operationFailed');
+
+                $this->grid->presenter->flashMessage($flash);
                 $this->grid->presenter->redrawControl('flashes');
             }
         };
@@ -188,16 +200,25 @@ class RoleDataGrid
                 $this->em->persist($roleEntity);
                 $this->em->flush();
 
-                $this->grid->presenter->flashMessage(
-                    $this->translator->translate('admin-role-list.edit.success', ['name' => $roleEntity->name]),
-                    'success'
-                );
+                $flash = new stdClass();
+                $flash->place = 'general';
+                $flash->type = 'success';
+                $flash->message = $this->translator->translate('admin-role-list.edit.success', ['name' => $roleEntity->name]);
+
+                $this->grid->presenter->flashMessage($flash);
                 $this->grid->presenter->redrawControl('flashes');
                 //$this->grid->redrawItem($id);
                 ///$this->grid->reload();
                 bdump('OK');
             } catch (DbalException $exception) {
-                $this->grid->presenter->flashMessage($exception->getMessage(), 'danger');
+                // the text of the exception goes to the log, the user gets a translated message
+                Debugger::log($exception, ILogger::EXCEPTION);
+                $flash = new stdClass();
+                $flash->place = 'general';
+                $flash->type = 'danger';
+                $flash->message = $this->translator->translate('messages.operationFailed');
+
+                $this->grid->presenter->flashMessage($flash);
                 $this->grid->presenter->redrawControl('flashes');
                 bdump('FAIL');
             }

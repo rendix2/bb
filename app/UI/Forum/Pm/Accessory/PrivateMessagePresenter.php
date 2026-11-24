@@ -6,16 +6,16 @@ use App\Database\EntityManagerDecorator;
 use App\Model\Entity\UserEntity;
 use App\Model\Service\PrivateMessageException;
 use App\Model\Service\PrivateMessageService;
+use App\UI\Forum\ForumBasePresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Nette\Application\UI\Form;
-use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
 
 /**
  * Private messages (slice 5): only for logged-in users (a guest goes to the login and comes back), the layout of the forum.
  */
-abstract class PrivateMessagePresenter extends Presenter
+abstract class PrivateMessagePresenter extends ForumBasePresenter
 {
     protected UserEntity $viewer;
 

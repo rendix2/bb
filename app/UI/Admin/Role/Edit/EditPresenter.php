@@ -14,6 +14,8 @@ use Nette\Application\UI\Form;
 use Nette\Http\IResponse;
 use Nette\Localization\Translator;
 use stdClass;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 /**
  * class EditPresenter
@@ -125,18 +127,22 @@ class EditPresenter extends AdminBasePresenter
             $this->redrawControl('editFormWrapper');
             $this->redrawControl('editForm');
         } catch (DbalException $exception) {
+            // the text of the exception goes to the log, the user gets a translated message
+            Debugger::log($exception, ILogger::EXCEPTION);
             $flash = new stdClass();
             $flash->place = 'general';
             $flash->type = 'danger';
-            $flash->message = $exception->getMessage();
+            $flash->message = $this->translator->translate('messages.operationFailed');
 
             $this->flashMessage($flash);
             $this->redrawControl('flashes');
         } catch (\Throwable $exception) {
+            // the text of the exception goes to the log, the user gets a translated message
+            Debugger::log($exception, ILogger::EXCEPTION);
             $flash = new stdClass();
             $flash->place = 'general';
             $flash->type = 'danger';
-            $flash->message = $exception->getMessage();
+            $flash->message = $this->translator->translate('messages.operationFailed');
 
             $this->flashMessage($flash);
             $this->redrawControl('flashes');

@@ -10,17 +10,17 @@ use App\Model\Security\ForumPrivilege;
 use App\Model\Service\AttachmentService;
 use App\Model\Service\PostWriteException;
 use App\Model\Service\PostWriteService;
+use App\UI\Forum\ForumBasePresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Nette\Application\UI\Form;
-use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
 use Nette\Localization\Translator;
 
 /**
  * A new topic in a forum, with its first post.
  */
-class CreatePresenter extends Presenter
+class CreatePresenter extends ForumBasePresenter
 {
     private ForumEntity $forum;
 
@@ -114,7 +114,7 @@ class CreatePresenter extends Presenter
             return;
         }
 
-        $this->flashMessage('forum-topic-create.form.success', 'success');
+        $this->forumFlash('forum-topic-create.form.success', 'success');
         $this->redirect(':Forum:Topic:View:default', ['uuid' => $topic->uuid->toString()]);
     }
 }

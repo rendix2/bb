@@ -57,6 +57,8 @@ class PrivateMessageCest
         $I->submitForm('#frm-createForm', ['subject' => $this->subject, 'text' => 'Hello **Anna**']);
         $I->seePageIsOk('thread after sending');
         $I->seeInSource('<strong>Anna</strong>');
+        // the flash of the forum is translated once (ForumBasePresenter::forumFlash), not printed as its key
+        $I->see('Zpráva byla odeslána.', '.alert-success');
         $url = $I->grabFromCurrentUrl();
 
         $I->amOnPage('/web.user.logout/');

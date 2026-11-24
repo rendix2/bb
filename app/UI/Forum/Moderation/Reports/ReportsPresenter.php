@@ -8,9 +8,9 @@ use App\Model\Entity\UserEntity;
 use App\Model\Service\ReportService;
 use App\UI\Forum\Accessory\ReportHandleFormFactory;
 use App\UI\Forum\Accessory\ReportListFactory;
+use App\UI\Forum\ForumBasePresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Nette\Application\UI\Multiplier;
-use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
 
 /**
@@ -18,7 +18,7 @@ use Nette\Http\IResponse;
  * all of them; open or handled ones. An open report is resolved or rejected by a POST form (CSRF) with a note for the
  * moderators; the reporter gets a private message (ReportService::handle()).
  */
-class ReportsPresenter extends Presenter
+class ReportsPresenter extends ForumBasePresenter
 {
     public const string FILTER_OPEN = ReportListFactory::FILTER_OPEN;
     public const string FILTER_HANDLED = ReportListFactory::FILTER_HANDLED;
@@ -67,7 +67,7 @@ class ReportsPresenter extends Presenter
             }
 
             return $this->reportHandleFormFactory->create($this->viewer, $report, function () : void {
-                $this->flashMessage('forum-moderation-reports.handled', 'success');
+                $this->forumFlash('forum-moderation-reports.handled', 'success');
                 $this->redirect('this');
             });
         });

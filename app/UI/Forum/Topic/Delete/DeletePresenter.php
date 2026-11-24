@@ -9,17 +9,17 @@ use App\Model\Security\ForumPermissionService;
 use App\Model\Security\ForumPrivilege;
 use App\Model\Service\PostWriteException;
 use App\Model\Service\PostWriteService;
+use App\UI\Forum\ForumBasePresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Nette\Application\UI\Form;
-use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
 use Nette\Localization\Translator;
 
 /**
  * Deleting a topic with all its posts, confirmed by a form (POST with CSRF protection).
  */
-class DeletePresenter extends Presenter
+class DeletePresenter extends ForumBasePresenter
 {
     private TopicEntity $topic;
 
@@ -87,7 +87,7 @@ class DeletePresenter extends Presenter
             return;
         }
 
-        $this->flashMessage('forum-topic-delete.success', 'success');
+        $this->forumFlash('forum-topic-delete.success', 'success');
         $this->redirect(':Forum:Forum:View:default', ['uuid' => $forumUuid]);
     }
 }

@@ -20,7 +20,7 @@ hlášení, ranky, avatary, moderace, admin). Historie od 2018 (dibi + MySQL), o
   Sady Unit (bez DB), Integration (DI kontejner + dev DB), Functional (PhpBrowser na `bb-web`), Acceptance (`selenium-chrome`, porty 4744/5903/7903).
   Převzaté konvenční testy: `tests/Unit/MigrationConventionsCest`, `tests/Integration/Schema/*`, `MigrationsDownUpCest`, `BigIntIdentifiersCest`,
   `ForeignKeyOnDeleteCest` (= cíl kroku 0: srovnat entity a migrace). Skupina `known-bug` (Make ji přeskakuje) = záměrně padající do opravy:
-  `FlashMessageIsAnObjectCest`. `NoStaticMethodsOrTraitsCest` hlídá naostro od 8b (2026-11-25). `QueriesUseTheQueryBuilderCest` hlídá naostro od 7f (2026-11-24).
+  zatím prázdná; `FlashMessageIsAnObjectCest` hlídá naostro od 8c, `NoStaticMethodsOrTraitsCest` od 8b (2026-11-25). `QueriesUseTheQueryBuilderCest` hlídá naostro od 7f (2026-11-24).
 - Codestyle: `ruleset.xml` → **ninjify/coding-standard** (ne contributte/qa jako ostatní projekty); `composer qa` skript chybí.
 - Konzole: `php bin/console` (contributte/console; migrations, fixtures, `database:create`).
 

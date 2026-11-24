@@ -77,7 +77,7 @@ class ThreadPresenter extends PrivateMessagePresenter
                 return;
             }
 
-            $this->flashMessage('forum-pm-thread.replied', 'success');
+            $this->forumFlash('forum-pm-thread.replied', 'success');
             $this->redirect('this#message-' . $message->id);
         };
 
@@ -105,7 +105,7 @@ class ThreadPresenter extends PrivateMessagePresenter
                 return;
             }
 
-            $this->flashMessage('forum-pm-thread.added', 'success');
+            $this->forumFlash('forum-pm-thread.added', 'success');
             $this->redirect('this');
         };
 
@@ -174,9 +174,9 @@ class ThreadPresenter extends PrivateMessagePresenter
         $form->onSuccess[] = function () use ($action, $done, $redirect) : void {
             try {
                 $action($this->viewer);
-                $this->flashMessage($done, 'success');
+                $this->forumFlash($done, 'success');
             } catch (PrivateMessageException $exception) {
-                $this->flashMessage($exception->getMessage(), 'danger');
+                $this->forumFlash($exception->getMessage(), 'danger', $exception->parameters);
             }
 
             $this->redirect($redirect);

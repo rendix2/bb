@@ -17,6 +17,7 @@ use Nette\Localization\Translator;
 use Tracy\Debugger;
 use Tracy\ILogger;
 use App\Database\EntityManagerDecorator;
+use stdClass;
 
 class UserDataGrid
 {
@@ -152,17 +153,24 @@ class UserDataGrid
                 // bb: also deletes the files of the avatar
                 $this->userFacade->delete($userEntity);
 
-                $this->grid->presenter->flashMessage(
-                    $this->translator->translate('admin-user-list.delete.success', ['username' => $userEntity->username]),
-                    'success'
-                );
+                $flash = new stdClass();
+                $flash->place = 'general';
+                $flash->type = 'success';
+                $flash->message = $this->translator->translate('admin-user-list.delete.success', ['username' => $userEntity->username]);
+
+                $this->grid->presenter->flashMessage($flash);
                 $this->grid->presenter->redrawControl('flashes');
 
                 $this->grid->reload();
             } catch (DbalException $exception) {
                 // the text of the exception goes to the log, the user gets a translated message
                 Debugger::log($exception, ILogger::EXCEPTION);
-                $this->grid->presenter->flashMessage($this->translator->translate('messages.operationFailed'), 'danger');
+                $flash = new stdClass();
+                $flash->place = 'general';
+                $flash->type = 'danger';
+                $flash->message = $this->translator->translate('messages.operationFailed');
+
+                $this->grid->presenter->flashMessage($flash);
                 $this->grid->presenter->redrawControl('flashes');
             }
         };
@@ -210,10 +218,12 @@ class UserDataGrid
 
         $onSubmitEdit = function(string $uuid, UserInlineEditValues $values) : void {
             if (substr_count($values->fullName, ' ') === 0) {
-                $this->grid->presenter->flashMessage(
-                    $this->translator->translate('admin-user-list.form.fullName.noSpace'),
-                    'danger'
-                );
+                $flash = new stdClass();
+                $flash->place = 'general';
+                $flash->type = 'danger';
+                $flash->message = $this->translator->translate('admin-user-list.form.fullName.noSpace');
+
+                $this->grid->presenter->flashMessage($flash);
                 $this->grid->presenter->redrawControl('flashes');
 
                 return;
@@ -255,17 +265,24 @@ class UserDataGrid
                 $this->em->persist($userEntity);
                 $this->em->flush();
 
-                $this->grid->presenter->flashMessage(
-                    $this->translator->translate('admin-user-list.edit.success', ['username' => $userEntity->username]),
-                    'success'
-                );
+                $flash = new stdClass();
+                $flash->place = 'general';
+                $flash->type = 'success';
+                $flash->message = $this->translator->translate('admin-user-list.edit.success', ['username' => $userEntity->username]);
+
+                $this->grid->presenter->flashMessage($flash);
                 $this->grid->presenter->redrawControl('flashes');
                 $this->grid->reload();
                 bdump('OK');
             } catch (DbalException $exception) {
                 // the text of the exception goes to the log, the user gets a translated message
                 Debugger::log($exception, ILogger::EXCEPTION);
-                $this->grid->presenter->flashMessage($this->translator->translate('messages.operationFailed'), 'danger');
+                $flash = new stdClass();
+                $flash->place = 'general';
+                $flash->type = 'danger';
+                $flash->message = $this->translator->translate('messages.operationFailed');
+
+                $this->grid->presenter->flashMessage($flash);
                 $this->grid->presenter->redrawControl('flashes');
                 bdump('FAIL');
             }

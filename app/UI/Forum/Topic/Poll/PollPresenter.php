@@ -7,10 +7,10 @@ use App\Model\Entity\TopicEntity;
 use App\Model\Entity\UserEntity;
 use App\Model\Service\PollService;
 use App\Model\Service\PostWriteException;
+use App\UI\Forum\ForumBasePresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Nette\Application\UI\Form;
-use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
 use Nette\Localization\Translator;
 use Nette\Utils\Strings;
@@ -18,7 +18,7 @@ use Nette\Utils\Strings;
 /**
  * Adding the poll of a topic (its author while the topic is open, or a moderator).
  */
-class PollPresenter extends Presenter
+class PollPresenter extends ForumBasePresenter
 {
     private TopicEntity $topic;
 
@@ -95,7 +95,7 @@ class PollPresenter extends Presenter
             return;
         }
 
-        $this->flashMessage('forum-topic-poll.form.success', 'success');
+        $this->forumFlash('forum-topic-poll.form.success', 'success');
         $this->redirect(':Forum:Topic:View:default', ['uuid' => $this->topic->uuid->toString()]);
     }
 }

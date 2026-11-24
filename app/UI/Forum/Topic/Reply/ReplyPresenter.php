@@ -12,17 +12,17 @@ use App\Model\Service\AttachmentService;
 use App\Model\Service\PostWriteException;
 use App\Model\Service\PostWriteService;
 use App\Model\Service\TopicPaginationService;
+use App\UI\Forum\ForumBasePresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Nette\Application\UI\Form;
-use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
 use Nette\Localization\Translator;
 
 /**
  * A reply to a topic with an optional title (the fast reply without a title is on the topic page).
  */
-class ReplyPresenter extends Presenter
+class ReplyPresenter extends ForumBasePresenter
 {
     private TopicEntity $topic;
 
@@ -126,7 +126,7 @@ class ReplyPresenter extends Presenter
             return;
         }
 
-        $this->flashMessage('forum-topic-reply.form.success', 'success');
+        $this->forumFlash('forum-topic-reply.form.success', 'success');
         $this->redirect(':Forum:Topic:View:default#post-' . $post->id, ['uuid' => $this->topic->uuid->toString(), 'page' => $this->topicPagination->pageOf($post)]);
     }
 }

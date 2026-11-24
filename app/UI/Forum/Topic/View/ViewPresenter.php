@@ -22,18 +22,18 @@ use App\Model\Service\TopicPaginationService;
 use App\Model\Service\UserRankService;
 use App\Settings\TopicsSetting;
 use App\UI\Forum\Accessory\ForumJumpFormFactory;
+use App\UI\Forum\ForumBasePresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Multiplier;
-use Nette\Application\UI\Presenter;
 use Nette\Localization\Translator;
 use Nette\Utils\Paginator;
 
 /**
  * A topic: one page of its posts with their authors (post count, rank, signature).
  */
-class ViewPresenter extends Presenter
+class ViewPresenter extends ForumBasePresenter
 {
     private TopicEntity $topic;
 
@@ -188,7 +188,7 @@ class ViewPresenter extends Presenter
         $form = $this->buttonForm($this->topic->isLocked ? 'forum-topic-view.unlockTopic' : 'forum-topic-view.lockTopic');
         $form->onSuccess[] = function () : void {
             $this->moderate(fn (UserEntity $user) => $this->postWriteService->setTopicLocked($user, $this->topic, !$this->topic->isLocked));
-            $this->flashMessage($this->topic->isLocked ? 'forum-topic-view.topicLockedDone' : 'forum-topic-view.topicUnlockedDone', 'success');
+            $this->forumFlash($this->topic->isLocked ? 'forum-topic-view.topicLockedDone' : 'forum-topic-view.topicUnlockedDone', 'success');
             $this->redirect('this');
         };
 
@@ -210,7 +210,7 @@ class ViewPresenter extends Presenter
             $form = $this->buttonForm($post->isLocked ? 'forum-topic-view.unlockPost' : 'forum-topic-view.lockPost');
             $form->onSuccess[] = function () use ($post) : void {
                 $this->moderate(fn (UserEntity $user) => $this->postWriteService->setPostLocked($user, $post, !$post->isLocked));
-                $this->flashMessage($post->isLocked ? 'forum-topic-view.postLockedDone' : 'forum-topic-view.postUnlockedDone', 'success');
+                $this->forumFlash($post->isLocked ? 'forum-topic-view.postLockedDone' : 'forum-topic-view.postUnlockedDone', 'success');
                 $this->redirect('this#post-' . $post->id);
             };
 
@@ -287,9 +287,9 @@ class ViewPresenter extends Presenter
 
         try {
             $action($this->currentUser);
-            $this->flashMessage($successMessage, 'success');
+            $this->forumFlash($successMessage, 'success');
         } catch (PostWriteException $exception) {
-            $this->flashMessage($exception->getMessage(), 'danger');
+            $this->forumFlash($exception->getMessage(), 'danger');
         }
     }
 
@@ -371,7 +371,7 @@ class ViewPresenter extends Presenter
             return;
         }
 
-        $this->flashMessage('forum-topic-view.form.success', 'success');
+        $this->forumFlash('forum-topic-view.form.success', 'success');
         $this->redirect('this#post-' . $post->id, ['page' => $this->topicPagination->pageOf($post)]);
     }
 

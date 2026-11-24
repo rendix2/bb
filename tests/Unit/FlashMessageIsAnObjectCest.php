@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use Codeception\Attribute\Group;
 use Tests\Support\UnitTester;
 
 /**
@@ -18,8 +17,8 @@ use Tests\Support\UnitTester;
  *
  * Nette uses the object as the flash itself, so the templates keep reading `$flash->type` and `$flash->message`.
  *
- * bb (ported from web-project 2026-11-19): the account pages (app/UI/Web) are guarded; the rest of the application (the forum of
- * the slices 1-3, the admin grids, the old code) still passes strings, the whole scan is a known bug until it is converted.
+ * bb (ported from web-project 2026-11-19): the forum pages build it in ForumBasePresenter::forumFlash(), the admin pages in
+ * AdminBasePresenter::adminFlash() or inline; the whole application is guarded since slice 8c.
  */
 class FlashMessageIsAnObjectCest
 {
@@ -28,7 +27,6 @@ class FlashMessageIsAnObjectCest
         $this->scan($I, dirname(__DIR__, 2) . '/app/UI/Web', 5);
     }
 
-    #[Group('known-bug')]
     public function flashMessageGetsAnObjectWithPlaceTypeAndMessage(UnitTester $I) : void
     {
         $this->scan($I, dirname(__DIR__, 2) . '/app', 20);

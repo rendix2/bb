@@ -10,17 +10,17 @@ use App\Model\Security\ForumPrivilege;
 use App\Model\Service\PostWriteException;
 use App\Model\Service\PostWriteService;
 use App\Model\Service\TopicPaginationService;
+use App\UI\Forum\ForumBasePresenter;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Nette\Application\UI\Form;
-use Nette\Application\UI\Presenter;
 use Nette\Http\IResponse;
 use Nette\Localization\Translator;
 
 /**
  * Editing a post (the author by the flags of the forum, a moderator, the admin); the previous version goes to the history.
  */
-class EditPresenter extends Presenter
+class EditPresenter extends ForumBasePresenter
 {
     private PostEntity $post;
 
@@ -108,7 +108,7 @@ class EditPresenter extends Presenter
             return;
         }
 
-        $this->flashMessage('forum-post-edit.form.success', 'success');
+        $this->forumFlash('forum-post-edit.form.success', 'success');
         $this->redirect(':Forum:Topic:View:default#post-' . $this->post->id, ['uuid' => $this->post->topic->uuid->toString(), 'page' => $this->topicPagination->pageOf($this->post)]);
     }
 }
