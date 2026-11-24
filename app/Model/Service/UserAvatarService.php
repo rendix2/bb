@@ -96,6 +96,34 @@ class UserAvatarService
     }
 
     /**
+     * @return list<UserEntity> the users with an avatar by the username (the gallery of the administration, slice 7e5)
+     */
+    public function usersWithAvatar(int $offset, int $limit) : array
+    {
+        /** @var list<UserEntity> $users */
+        $users = $this->em->getRepository(UserEntity::class)
+            ->createQueryBuilder('_u')
+            ->where('_u.avatar IS NOT NULL')
+            ->orderBy('_u.username', 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
+        return $users;
+    }
+
+    public function countUsersWithAvatar() : int
+    {
+        return (int) $this->em->getRepository(UserEntity::class)
+            ->createQueryBuilder('_u')
+            ->select('COUNT(_u.id)')
+            ->where('_u.avatar IS NOT NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
      * Deletes the original and all thumbnails of the avatar from the disk (also after the user was deleted).
      */
     public function removeFiles(?string $avatar) : void

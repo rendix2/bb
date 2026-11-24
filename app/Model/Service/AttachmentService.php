@@ -114,6 +114,55 @@ class AttachmentService
     }
 
     /**
+     * The administration (slice 7e5): the attachment of a post goes from the database and from the disk.
+     */
+    public function delete(FileEntity $file) : void
+    {
+        $path = $this->path($file);
+
+        $this->em->remove($file);
+        $this->em->flush();
+
+        FileSystem::delete($path);
+    }
+
+    /**
+     * @return list<FileEntity> the newest first, with the author and the topic (one query for a page of the administration)
+     */
+    public function newest(int $offset, int $limit) : array
+    {
+        /** @var list<FileEntity> $files */
+        $files = $this->em->getRepository(FileEntity::class)
+            ->createQueryBuilder('_f')
+            ->select('_f', '_u', '_p', '_t')
+            ->join('_f.user', '_u')
+            ->join('_f.post', '_p')
+            ->join('_p.topic', '_t')
+            ->orderBy('_f.id', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
+        return $files;
+    }
+
+    /**
+     * @return array{count: int, size: int} the number and the total size in bytes of all attachments
+     */
+    public function totals() : array
+    {
+        /** @var array{count: int|string, size: int|string|null} $row */
+        $row = $this->em->getRepository(FileEntity::class)
+            ->createQueryBuilder('_f')
+            ->select('COUNT(_f.id) AS count', 'SUM(_f.size) AS size')
+            ->getQuery()
+            ->getSingleResult();
+
+        return ['count' => (int) $row['count'], 'size' => (int) $row['size']];
+    }
+
+    /**
      * @param list<PostEntity> $posts
      * @return array<int, list<FileEntity>> post id => its attachments (one query for a page)
      */

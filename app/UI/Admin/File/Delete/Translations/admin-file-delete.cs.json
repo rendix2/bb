@@ -1,0 +1,7 @@
+{
+  "title": "Smazání přílohy",
+  "question": "Opravdu smazat přílohu uživatele %author% v tématu %topic%? Příspěvek zůstane.",
+  "confirm": "Smazat přílohu",
+  "success": "Příloha %name% byla smazána.",
+  "back": "Zpět na přílohy"
+}

@@ -1,0 +1,19 @@
+{block title}{_admin-avatar-list.title}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-avatar-list.title}</h1>
+    <p class="avatar-count">{_admin-avatar-list.count, [count: $paginator->getItemCount()]}</p>
+
+    <div class="d-flex flex-wrap gap-3 mb-3">
+        <div n:foreach="$users as $avatarUser" class="card text-center avatar" style="width: 9rem">
+            <div class="card-body p-2">
+                <img n:img="$avatarUser->avatar, filter: avatar128" alt="" width="128" height="128" class="rounded mb-1">
+                <div class="small text-truncate"><a n:href=":Admin:User:Forum:default $avatarUser->uuid->toString()">{$avatarUser->username}</a></div>
+                <a n:href=":Admin:Avatar:Delete:default $avatarUser->id" class="btn btn-sm btn-outline-danger mt-1 avatar-delete-link">{_admin-avatar-list.delete}</a>
+            </div>
+        </div>
+    </div>
+    <p n:if="!$users">{_admin-avatar-list.empty}</p>
+
+    {include '../../../Forum/@paginator.latte', paginator: $paginator}
+{/block}

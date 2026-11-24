@@ -1,0 +1,7 @@
+{
+  "title": "Deleting an attachment",
+  "question": "Really delete the attachment of %author% in the topic %topic%? The post stays.",
+  "confirm": "Delete the attachment",
+  "success": "The attachment %name% was deleted.",
+  "back": "Back to the attachments"
+}

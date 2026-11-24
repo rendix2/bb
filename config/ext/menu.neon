@@ -54,6 +54,14 @@ menu:
                 action: :Admin:Mail:List:default
                 include:
                     - '^Admin:Mail:'
+            Files:
+                action: :Admin:File:List:default
+                include:
+                    - '^Admin:File:'
+            Avatars:
+                action: :Admin:Avatar:List:default
+                include:
+                    - '^Admin:Avatar:'
             Reports:
                 action: :Admin:Report:List:default
                 include:

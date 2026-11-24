@@ -1,0 +1,7 @@
+{
+  "title": "Smazání avataru",
+  "question": "Opravdu smazat avatar tohoto uživatele? Účet zůstane, uživatel si může nahrát nový.",
+  "confirm": "Smazat avatar",
+  "success": "Avatar uživatele %name% byl smazán.",
+  "back": "Zpět na avatary"
+}

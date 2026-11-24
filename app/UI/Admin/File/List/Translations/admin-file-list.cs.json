@@ -1,0 +1,11 @@
+{
+  "title": "Přílohy",
+  "totals": "Příloh: %count%, celkem %size%.",
+  "name": "Soubor",
+  "size": "Velikost",
+  "author": "Autor",
+  "topic": "Téma",
+  "createdAt": "Nahráno",
+  "delete": "Smazat",
+  "empty": "Zatím žádné přílohy."
+}

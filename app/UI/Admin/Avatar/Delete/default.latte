@@ -1,0 +1,9 @@
+{block title}{_admin-avatar-delete.title}: {$avatarUser->username}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-avatar-delete.title}: {$avatarUser->username}</h1>
+    <img n:img="$avatarUser->avatar, filter: avatar128" alt="" width="128" height="128" class="rounded mb-2">
+    <p>{_admin-avatar-delete.question}</p>
+    {control deleteForm}
+    <a n:href=":Admin:Avatar:List:default" class="btn btn-link">{_admin-avatar-delete.back}</a>
+{/block}

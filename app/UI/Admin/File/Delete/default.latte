@@ -1,0 +1,8 @@
+{block title}{_admin-file-delete.title}: {$file->originalName}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-file-delete.title}: {$file->originalName}</h1>
+    <p>{_admin-file-delete.question, [author: $file->user->username, topic: $file->post->topic->name]}</p>
+    {control deleteForm}
+    <a n:href=":Admin:File:List:default" class="btn btn-link">{_admin-file-delete.back}</a>
+{/block}

@@ -1,0 +1,23 @@
+{block title}{_admin-file-list.title}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-file-list.title}</h1>
+    <p class="file-totals">{_admin-file-list.totals, [count: $totals['count'], size: ($totals['size']|bytes)]}</p>
+
+    <table class="table table-sm table-striped">
+        <thead><tr><th>{_admin-file-list.name}</th><th>{_admin-file-list.size}</th><th>{_admin-file-list.author}</th><th>{_admin-file-list.topic}</th><th>{_admin-file-list.createdAt}</th><th></th></tr></thead>
+        <tbody>
+            <tr n:foreach="$files as $file" class="attachment">
+                <td><a n:href=":Forum:Post:Attachment:default $file->uuid->toString()">{$file->originalName}</a> <span class="small text-muted">{$file->mimeType}</span></td>
+                <td>{$file->size|bytes}</td>
+                <td>{$file->user->username}</td>
+                <td><a n:href=":Forum:Topic:View:default $file->post->topic->uuid->toString()">{$file->post->topic->name}</a></td>
+                <td>{$file->createdAt|date:'j. n. Y H:i'}</td>
+                <td class="text-end"><a n:href=":Admin:File:Delete:default $file->id" class="btn btn-sm btn-outline-danger file-delete-link">{_admin-file-list.delete}</a></td>
+            </tr>
+            <tr n:if="!$files"><td colspan="6">{_admin-file-list.empty}</td></tr>
+        </tbody>
+    </table>
+
+    {include '../../../Forum/@paginator.latte', paginator: $paginator}
+{/block}

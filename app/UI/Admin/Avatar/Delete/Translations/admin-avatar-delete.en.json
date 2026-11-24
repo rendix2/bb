@@ -1,0 +1,7 @@
+{
+  "title": "Deleting an avatar",
+  "question": "Really delete the avatar of this user? The account stays, the user may upload a new one.",
+  "confirm": "Delete the avatar",
+  "success": "The avatar of %name% was deleted.",
+  "back": "Back to the avatars"
+}

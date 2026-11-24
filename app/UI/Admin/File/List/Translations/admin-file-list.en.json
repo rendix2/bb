@@ -1,0 +1,11 @@
+{
+  "title": "Attachments",
+  "totals": "Attachments: %count%, %size% in total.",
+  "name": "File",
+  "size": "Size",
+  "author": "Author",
+  "topic": "Topic",
+  "createdAt": "Uploaded",
+  "delete": "Delete",
+  "empty": "No attachments yet."
+}
