@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * A user taking part in a private message thread, with his own read / deleted / starred state; once per thread.
+ * is_deleted = he left the thread (hidden for him, no new messages, no mails); the founder may add him again.
  */
 #[Entity()]
 #[Table(name: 'private_message_participant', options: ['comment' => 'Private message participants'])]
@@ -44,6 +45,14 @@ class PrivateMessageParticipantEntity
     #[Column(type: Types::BOOLEAN, options: ['comment' => 'Is starred'])]
     public bool $isStarred;
 
+    // the participant wants a mail about a new message (his choice per thread, like watching a topic)
+    #[Column(type: Types::BOOLEAN, options: ['comment' => 'Wants a mail about a new message?'])]
+    public bool $wantsMail;
+
+    // a mail about a new message was queued; reset when he opens the thread again (one mail until the next visit)
+    #[Column(type: Types::BOOLEAN, options: ['comment' => 'Is notified?'])]
+    public bool $isNotified;
+
     #[Column(type: Types::DATETIME_IMMUTABLE, options: ['comment' => 'Created at'])]
     public DateTimeImmutable $createdAt;
 
@@ -55,6 +64,8 @@ class PrivateMessageParticipantEntity
         $this->isRead = false;
         $this->isDeleted = false;
         $this->isStarred = false;
+        $this->wantsMail = true;
+        $this->isNotified = false;
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;
     }

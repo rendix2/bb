@@ -33,6 +33,12 @@ final class Version20260720123217 extends AbstractMigration
         $table->addColumn('is_starred', Types::BOOLEAN)
             ->setComment('Is starred');
 
+        $table->addColumn('wants_mail', Types::BOOLEAN)
+            ->setComment('Wants a mail about a new message?');
+
+        $table->addColumn('is_notified', Types::BOOLEAN)
+            ->setComment('Is notified?');
+
         $table->addColumn('created_at', Types::DATETIME_IMMUTABLE)
             ->setComment('Created at');
 
