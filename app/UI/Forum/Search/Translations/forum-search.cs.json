@@ -1,0 +1,18 @@
+{
+  "header": "Hledání",
+  "query": "Hledat",
+  "required": "Zadejte, co hledáte.",
+  "in": "V",
+  "type": {
+    "posts": "příspěvcích",
+    "topics": "názvech témat",
+    "users": "uživatelích"
+  },
+  "search": "Hledat",
+  "found": "Nalezeno: %count%",
+  "topic": "Téma",
+  "forum": "Fórum",
+  "author": "Autor",
+  "username": "Uživatelské jméno",
+  "posts": "Příspěvky"
+}

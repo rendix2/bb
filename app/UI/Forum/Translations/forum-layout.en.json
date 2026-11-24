@@ -4,5 +4,6 @@
   "login": "Log in",
   "register": "Register",
   "admin": "Administration",
-  "users": "Users"
+  "users": "Users",
+  "search": "Search"
 }

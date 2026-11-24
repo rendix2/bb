@@ -1,0 +1,18 @@
+{
+  "header": "Search",
+  "query": "Search for",
+  "required": "Enter what you search for.",
+  "in": "In",
+  "type": {
+    "posts": "posts",
+    "topics": "topic names",
+    "users": "users"
+  },
+  "search": "Search",
+  "found": "Found: %count%",
+  "topic": "Topic",
+  "forum": "Forum",
+  "author": "Author",
+  "username": "Username",
+  "posts": "Posts"
+}

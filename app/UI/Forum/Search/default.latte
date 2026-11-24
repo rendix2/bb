@@ -1,0 +1,49 @@
+{block title}{_forum-search.header}{/block}
+
+{block content}
+<div class="mt-2 forum-search">
+    <h1 class="h4">{_forum-search.header}</h1>
+
+    {control searchForm}
+
+    {if $q !== ''}
+        <p class="text-muted forum-search-count">{_forum-search.found, [count: $count]}</p>
+
+        {include '../@paginator.latte', paginator: $paginator}
+
+        {if $type === 'posts'}
+            <div n:foreach="$items as $post" class="card mb-2 forum-search-post">
+                <div class="card-body py-2">
+                    <a href="{link :Forum:Topic:View:default $post->topic->uuid->toString(), page: $pages[$post->id]}#post-{$post->id}" class="forum-search-topic">{$post->topic->name}</a>
+                    <span class="small text-muted">– {$post->user->username}, {$post->createdAt|date:'j. n. Y H:i'}</span>
+                    <div n:if="$post->title" class="fw-bold small">{$post->title}</div>
+                    <div class="small">{$post->text|truncate:300}</div>
+                </div>
+            </div>
+        {elseif $type === 'topics'}
+            <table class="table table-sm" n:if="$items">
+                <thead><tr><th>{_forum-search.topic}</th><th>{_forum-search.forum}</th><th>{_forum-search.author}</th></tr></thead>
+                <tbody>
+                    <tr n:foreach="$items as $topic" class="forum-search-topic-row">
+                        <td><a n:href=":Forum:Topic:View:default $topic->uuid->toString()" class="forum-search-topic">{$topic->name}</a></td>
+                        <td><a n:href=":Forum:Forum:View:default $topic->forum->uuid->toString()">{$topic->forum->name}</a></td>
+                        <td>{$topic->user->username}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {else}
+            <table class="table table-sm" n:if="$items">
+                <thead><tr><th>{_forum-search.username}</th><th class="text-end">{_forum-search.posts}</th></tr></thead>
+                <tbody>
+                    <tr n:foreach="$items as $item" class="forum-search-user">
+                        <td><a n:href=":Web:User:View:default $item['user']->uuid->toString()" class="forum-search-username">{$item['user']->username}</a></td>
+                        <td class="text-end">{$item['posts']}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {/if}
+
+        {include '../@paginator.latte', paginator: $paginator}
+    {/if}
+</div>
+{/block}

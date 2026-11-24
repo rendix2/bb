@@ -149,6 +149,14 @@ class MigrationConventionsCest
             $tables[$name] = $this->checkMethod($methods[$name]);
         }
 
+        // preUp() / postUp() (postUp: what must run after the Schema API SQL, e.g. an expression index of the new table) and
+        // preDown() / postDown() follow the same rules and belong to their direction
+        foreach (['preUp' => 'up', 'postUp' => 'up', 'preDown' => 'down', 'postDown' => 'down'] as $name => $direction) {
+            if (isset($methods[$name])) {
+                $tables[$direction] = array_values(array_unique([...$tables[$direction], ...$this->checkMethod($methods[$name])]));
+            }
+        }
+
         if (isset($methods['down'])) {
             $this->checkDown($methods['down'], $tables['up'], $tables['down']);
         }
@@ -261,7 +269,8 @@ class MigrationConventionsCest
 
         $tables = [];
 
-        if (preg_match_all('~\b(?:TABLE|ON)\s+(?:ONLY\s+|IF\s+(?:NOT\s+)?EXISTS\s+)*"?(\w+)~', $statement, $matches) > 0) {
+        // the name with its schema as the Schema API writes it ("public.post"), not only "public"
+        if (preg_match_all('~\b(?:TABLE|ON)\s+(?:ONLY\s+|IF\s+(?:NOT\s+)?EXISTS\s+)*"?((?:\w+\.)?\w+)~', $statement, $matches) > 0) {
             $tables = array_map(strtolower(...), $matches[1]);
         }
 

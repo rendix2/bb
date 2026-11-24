@@ -51,6 +51,10 @@ nettrine.orm:
                     type: attributes
                     directories: [%entityDir%]
                     namespace: App\Model\Entity
+            # the PostgreSQL full-text search (Forum:Search); beberlei/doctrineextensions has none
+            customStringFunctions:
+                TS_MATCH: App\Database\Query\TsMatchFunction
+                TS_RANK: App\Database\Query\TsRankFunction
 
 nettrine.extensions.beberlei:
     connections:

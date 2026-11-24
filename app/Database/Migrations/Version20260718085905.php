@@ -76,4 +76,10 @@ final class Version20260718085905 extends AbstractMigration
         $schema->dropTable('public.topic');
     }
 
+    public function postUp(Schema $schema) : void
+    {
+        // the full-text search (Forum:Search): a GIN expression index, DBAL cannot express it; the expression must stay the same as in App\Database\Query\TsMatchFunction (simple, name)
+        $this->connection->executeStatement("CREATE INDEX K__Topic__Search ON public.topic USING GIN (to_tsvector('simple', name))");
+    }
+
 }
