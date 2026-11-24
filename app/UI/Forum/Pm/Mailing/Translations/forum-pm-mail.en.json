@@ -1,0 +1,5 @@
+{
+  "newMessage": {
+    "subject": "A new private message: %subject%"
+  }
+}

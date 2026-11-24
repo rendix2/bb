@@ -19,8 +19,9 @@ use Nette\Utils\Strings;
  * - only an active participant (not left) reads and writes the thread, only the founder adds participants;
  * - recipients by username (case-insensitive), an existing active user, not the author himself;
  * - the text like a post (posts.minLength / maxLength, Markdown), the flood interval of posts (posts.minUserTimeInterval);
- * - a new message is unread for the other active participants; a participant who left does not see the thread any more, a new
- *   message does not bring it back (only the founder adding him again).
+ * - a new message is unread for the other active participants and mailed to those who want it (PrivateMessageNotificationService);
+ *   a participant who left does not see the thread any more, a new message does not bring it back (only the founder adding
+ *   him again).
  */
 class PrivateMessageService
 {
@@ -45,6 +46,7 @@ class PrivateMessageService
         private readonly EntityManagerDecorator $em,
         private readonly UserRepository $userRepository,
         private readonly PostSetting $postSetting,
+        private readonly PrivateMessageNotificationService $notification,
     ) {
     }
 
@@ -78,7 +80,7 @@ class PrivateMessageService
         $thread->user = $author;
         $thread->subject = $subject;
 
-        $this->em->wrapInTransaction(function () use ($thread, $author, $recipients, $text) : void {
+        $message = $this->em->wrapInTransaction(function () use ($thread, $author, $recipients, $text) : PrivateMessageEntity {
             $this->em->persist($thread);
             $this->newParticipant($thread, $author)->isRead = true;
 
@@ -86,8 +88,9 @@ class PrivateMessageService
                 $this->newParticipant($thread, $recipient);
             }
 
-            $this->newMessage($thread, $author, $text);
+            return $this->newMessage($thread, $author, $text);
         });
+        $this->notification->notify($message);
 
         return $thread;
     }
@@ -101,7 +104,7 @@ class PrivateMessageService
         $text = $this->checkText($text);
         $this->checkFlood($author);
 
-        return $this->em->wrapInTransaction(function () use ($thread, $author, $text) : PrivateMessageEntity {
+        $message = $this->em->wrapInTransaction(function () use ($thread, $author, $text) : PrivateMessageEntity {
             $message = $this->newMessage($thread, $author, $text);
 
             foreach ($this->activeParticipants($thread) as $participant) {
@@ -110,6 +113,9 @@ class PrivateMessageService
 
             return $message;
         });
+        $this->notification->notify($message);
+
+        return $message;
     }
 
     /**
