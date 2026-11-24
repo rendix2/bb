@@ -182,12 +182,13 @@ class PrivateMessageServiceCest
         $thread = $this->service($I)->createThread($author, 'S', [$anna->username], 'Hello Anna');
 
         $this->service($I)->setStarred($anna, $thread, true);
-        $this->service($I)->setWantsMail($anna, $thread, false);
+        $this->service($I)->setWantsMail($anna, $thread, true);
         $this->service($I)->setRead($author, $thread, false);
         $I->assertTrue($this->participant($I, $anna, $thread)->isStarred);
         $I->assertFalse($this->participant($I, $author, $thread)->isStarred);
-        $I->assertFalse($this->participant($I, $anna, $thread)->wantsMail);
-        $I->assertTrue($this->participant($I, $author, $thread)->wantsMail);
+        $I->assertTrue($this->participant($I, $anna, $thread)->wantsMail);
+        // mails about new messages are off by default (user 2026-11-24)
+        $I->assertFalse($this->participant($I, $author, $thread)->wantsMail);
         $I->assertSame(1, $this->service($I)->unreadCount($author));
         $I->assertSame(1, $this->service($I)->unreadCount($anna));
         $this->service($I)->setRead($anna, $thread, true);

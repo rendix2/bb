@@ -64,7 +64,7 @@ class PrivateMessageParticipantEntity
         $this->isRead = false;
         $this->isDeleted = false;
         $this->isStarred = false;
-        $this->wantsMail = true;
+        $this->wantsMail = false;
         $this->isNotified = false;
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = null;

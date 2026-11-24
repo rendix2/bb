@@ -154,9 +154,10 @@ class PrivateMessagePagesCest
         $I->assertTrue($this->participant($I, $anna, $thread)->isStarred);
         $I->seeElement('h1 .pm-starred');
 
+        // off by default (user 2026-11-24): the button turns the mails on
         $I->submitForm('#frm-mailForm', []);
-        $I->assertFalse($this->participant($I, $anna, $thread)->wantsMail);
-        $I->seeElement('.pm-mail-form[data-mail=no]');
+        $I->assertTrue($this->participant($I, $anna, $thread)->wantsMail);
+        $I->seeElement('.pm-mail-form[data-mail=yes]');
 
         $I->submitForm('#frm-unreadForm', []);
         $I->seeInCurrentUrl('/forum.pm.list/');

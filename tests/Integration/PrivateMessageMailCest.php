@@ -35,7 +35,15 @@ class PrivateMessageMailCest
         $service = $I->grabService(PrivateMessageService::class);
 
         $thread = $service->createThread($author, 'Plans', [$anna->username, $bob->username], 'The first message');
-        $I->assertSame(0, $this->mailCount($I, $author));
+        // mails are off by default (user 2026-11-24): the recipients turn them on
+        $service->setWantsMail($anna, $thread, true);
+        $service->setWantsMail($bob, $thread, true);
+        // nobody wanted a mail when the thread was created
+        $I->assertSame(0, $this->mailCount($I, $anna));
+
+        $this->age($I, $thread);
+        $service->reply($author, $thread, 'Are you there?');
+        $I->assertSame(0, $this->mailCount($I, $author), 'The author keeps the default: no mails.');
         $I->assertSame(1, $this->mailCount($I, $anna));
         $I->assertSame(1, $this->mailCount($I, $bob));
 
@@ -47,7 +55,7 @@ class PrivateMessageMailCest
         $this->age($I, $thread);
         $service->reply($bob, $thread, 'Not yet');
         $I->assertSame(2, $this->mailCount($I, $anna));
-        $I->assertSame(1, $this->mailCount($I, $author));
+        $I->assertSame(0, $this->mailCount($I, $author));
         $I->assertSame(1, $this->mailCount($I, $bob));
     }
 
@@ -61,6 +69,9 @@ class PrivateMessageMailCest
         $bob = $I->createUser('Bob');
         $service = $I->grabService(PrivateMessageService::class);
         $thread = $service->createThread($author, 'Plans', [$anna->username, $bob->username], 'The first message');
+        // mails are off by default (user 2026-11-24): the recipients turn them on
+        $service->setWantsMail($anna, $thread, true);
+        $service->setWantsMail($bob, $thread, true);
         $service->visited($anna, $thread);
         $service->visited($bob, $thread);
 
@@ -69,8 +80,8 @@ class PrivateMessageMailCest
         $this->age($I, $thread);
         $service->reply($author, $thread, 'Anyone?');
 
-        $I->assertSame(1, $this->mailCount($I, $anna));
-        $I->assertSame(1, $this->mailCount($I, $bob));
+        $I->assertSame(0, $this->mailCount($I, $anna), 'Anna turned the mails off.');
+        $I->assertSame(0, $this->mailCount($I, $bob), 'Bob left the thread.');
     }
 
     /**
@@ -87,7 +98,12 @@ class PrivateMessageMailCest
         $I->em()->flush();
 
         $thread = $I->grabService(PrivateMessageService::class)->createThread($author, 'Holiday', [$english->username, $czech->username], 'The first message');
-        $message = $I->em()->getRepository(PrivateMessageEntity::class)->findOneBy(['thread' => $thread]);
+        // mails are off by default (user 2026-11-24): the recipients turn them on
+        $I->grabService(PrivateMessageService::class)->setWantsMail($english, $thread, true);
+        $I->grabService(PrivateMessageService::class)->setWantsMail($czech, $thread, true);
+        $this->age($I, $thread);
+        $I->grabService(PrivateMessageService::class)->reply($author, $thread, 'The first message');
+        $message = $I->em()->getRepository(PrivateMessageEntity::class)->findOneBy(['thread' => $thread], ['id' => 'DESC']);
         $I->assertNotNull($message);
 
         $englishMail = $this->lastMailTo($I, $english);
