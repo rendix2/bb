@@ -1,0 +1,12 @@
+{block title}{_forum-topic-move.title}: {$topic->name}{/block}
+
+{block content}
+    {include '../../@breadcrumb.latte', category: $topic->category, forum: $topic->forum, topic: $topic}
+
+    <h1>{_forum-topic-move.title}</h1>
+    <p>{_forum-topic-move.intro, [forum: $topic->forum->name]}</p>
+
+    {control moveForm}
+
+    <a n:href=":Forum:Topic:View:default $topic->uuid->toString()" class="btn btn-link">{_forum-topic-move.cancel}</a>
+{/block}

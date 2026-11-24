@@ -9,6 +9,7 @@ use App\Model\Entity\UserEntity;
 use App\Model\Security\ForumPermissionService;
 use App\Model\Security\ForumPrivilege;
 use App\Model\Repository\TopicRepository;
+use App\Model\Service\TopicMoveService;
 use App\Settings\ForumSettings;
 use App\UI\Forum\Accessory\ForumJumpFormFactory;
 use Contributte\FormsBootstrap\BootstrapForm;
@@ -25,6 +26,7 @@ class ViewPresenter extends Presenter
         private readonly ForumSettings $forumSettings,
         private readonly ForumPermissionService $permissions,
         private readonly ForumJumpFormFactory $forumJumpFormFactory,
+        private readonly TopicMoveService $topicMove,
     ) {
         parent::__construct();
     }
@@ -50,6 +52,8 @@ class ViewPresenter extends Presenter
             ->findBy(['parent' => $forum, 'active' => true], ['sortOrder' => 'ASC']);
         $this->template->topics = $topicRepository->findPageOfForum($forum, $paginator->getOffset(), $paginator->getLength());
         $this->template->paginator = $paginator;
+        // "moved to ..." above the topics of the first page
+        $this->template->moves = $paginator->isFirst() ? $this->topicMove->recentMovesFrom($forum) : [];
 
         $currentUser = $this->getUser()->isLoggedIn() ? $this->em->find(UserEntity::class, $this->getUser()->getId()) : null;
         $this->template->canAddTopic = $this->permissions->isAllowed($currentUser, $forum, ForumPrivilege::TOPIC_ADD);

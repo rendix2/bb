@@ -1,0 +1,16 @@
+{
+  "title": "Move the topic",
+  "intro": "The topic is in the forum %forum% now. The old forum shows \"moved to ...\" for a few days.",
+  "protection": "The form has expired, please submit it again.",
+  "forum": {
+    "label": "Move to the forum",
+    "prompt": "Choose a forum",
+    "required": "Choose a forum."
+  },
+  "send": "Move",
+  "cancel": "Back to the topic",
+  "success": "The topic has been moved.",
+  "error": {
+    "target": "The topic cannot be moved to this forum."
+  }
+}

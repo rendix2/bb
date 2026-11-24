@@ -1,0 +1,16 @@
+{
+  "title": "Přesun tématu",
+  "intro": "Téma je teď ve fóru %forum%. Ve starém fóru bude několik dní vidět odkaz „přesunuto do …“.",
+  "protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+  "forum": {
+    "label": "Přesunout do fóra",
+    "prompt": "Vyberte fórum",
+    "required": "Vyberte fórum."
+  },
+  "send": "Přesunout",
+  "cancel": "Zpět do tématu",
+  "success": "Téma bylo přesunuto.",
+  "error": {
+    "target": "Do tohoto fóra téma přesunout nelze."
+  }
+}

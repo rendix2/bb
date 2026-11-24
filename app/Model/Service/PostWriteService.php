@@ -3,6 +3,7 @@
 namespace App\Model\Service;
 
 use App\Database\EntityManagerDecorator;
+use App\Model\Entity\CategoryEntity;
 use App\Model\Entity\ForumEntity;
 use App\Model\Entity\PostEntity;
 use App\Model\Entity\PostHistoryEntity;
@@ -81,9 +82,7 @@ class PostWriteService
         $topic->name = $name;
         $topic->user = $user;
         $topic->forum = $forum;
-        // a forum without a category is a subforum: the topic belongs to the category of its root forum
-        $topic->category = $forum->category ?? $this->rootForum($forum)->category
-            ?? throw new PostWriteException(self::ERROR_NOT_ALLOWED);
+        $topic->category = $this->categoryOf($forum) ?? throw new PostWriteException(self::ERROR_NOT_ALLOWED);
 
         $this->em->wrapInTransaction(function () use ($user, $topic, $text, $ipAddress) : void {
             $this->em->persist($topic);
@@ -279,12 +278,16 @@ class PostWriteService
         return $post;
     }
 
-    private function rootForum(ForumEntity $forum) : ForumEntity
+    /**
+     * The category of the topics of the forum: a forum without a category is a subforum, its topics belong to the category
+     * of its root forum (also TopicMoveService).
+     */
+    public function categoryOf(ForumEntity $forum) : ?CategoryEntity
     {
-        while ($forum->parent !== null) {
+        while ($forum->category === null && $forum->parent !== null) {
             $forum = $forum->parent;
         }
 
-        return $forum;
+        return $forum->category;
     }
 }

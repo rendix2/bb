@@ -46,5 +46,6 @@
   "whoThanked": "Who thanked",
   "attachments": "Attachments of the topic",
   "watchers": "Who watches",
-  "history": "history"
+  "history": "history",
+  "move": "move the topic"
 }

@@ -45,6 +45,8 @@ parameters:
             totalTopics: 1 hour
             primaryKey: 10 day
         logViews: true
+        # how many days the old forum shows "moved to ..." after a moderator moved a topic away (Forum:Topic:Move)
+        movedNoticeDays: 7
     posts:
         cache:
             totalPosts: 1 hour

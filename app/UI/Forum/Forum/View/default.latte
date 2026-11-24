@@ -29,6 +29,13 @@
             </tr>
         </thead>
         <tbody>
+            <tr n:foreach="$moves as $move" class="topic-moved table-secondary">
+                <td colspan="5">
+                    {_forum-forum-view.movedTo} <a n:href=":Forum:Forum:View:default $move->toForum->uuid->toString()">{$move->toForum->name}</a>:
+                    <a n:href=":Forum:Topic:View:default $move->topic->uuid->toString()" class="topic-moved-link">{$move->topic->name}</a>
+                    <span class="small text-muted">({$move->createdAt|date:'j. n. Y H:i'})</span>
+                </td>
+            </tr>
             <tr n:foreach="$topics as $row" data-topic={$row['topic']->uuid->toString()}>
                 <td>
                     <span n:if="$row['topic']->isLocked" class="topic-locked" title={_forum-forum-view.locked}>&#128274;</span>
