@@ -1,0 +1,9 @@
+{
+  "title": "Frequently asked questions (FAQ)",
+  "help": "Each question has a text for each language of the site. A reader sees their language, the default one when it is missing (a language added later).",
+  "add": "Add a question",
+  "question": "Question",
+  "edit": "Edit",
+  "delete": "Delete",
+  "empty": "No questions yet."
+}

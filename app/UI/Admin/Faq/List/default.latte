@@ -1,0 +1,23 @@
+{block title}{_admin-faq-list.title}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-faq-list.title}</h1>
+    <p class="small text-muted">{_admin-faq-list.help}</p>
+
+    <a n:href=":Admin:Faq:Create:default" class="btn btn-sm btn-primary mb-2 faq-create-link">{_admin-faq-list.add}</a>
+
+    <table class="table table-sm table-striped">
+        <thead><tr><th>{_admin-faq-list.question}</th><th>{_admin-forum.sortOrder}</th><th></th></tr></thead>
+        <tbody>
+            <tr n:foreach="$items as $item" class="faq">
+                <td>{$item->question}</td>
+                <td>{$item->faq->sortOrder}</td>
+                <td class="text-end">
+                    <a n:href=":Admin:Faq:Edit:default $item->faq->id" class="btn btn-sm btn-outline-primary faq-edit-link">{_admin-faq-list.edit}</a>
+                    <a n:href=":Admin:Faq:Delete:default $item->faq->id" class="btn btn-sm btn-outline-danger faq-delete-link">{_admin-faq-list.delete}</a>
+                </td>
+            </tr>
+            <tr n:if="!$items"><td colspan="3">{_admin-faq-list.empty}</td></tr>
+        </tbody>
+    </table>
+{/block}

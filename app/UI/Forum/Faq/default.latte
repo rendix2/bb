@@ -1,0 +1,14 @@
+{block title}{_forum-faq.header}{/block}
+
+{block content}
+<div class="mt-2 forum-faq">
+    <h1 class="h4">{_forum-faq.header}</h1>
+
+    <div n:foreach="$items as $item" class="card mb-2 faq">
+        <div class="card-header"><h2 class="h6 m-0 faq-question">{$item->question}</h2></div>
+        <div class="card-body faq-answer">{$item->answer|markdown}</div>
+    </div>
+
+    <p n:if="!$items" class="text-muted faq-empty">{_forum-faq.empty}</p>
+</div>
+{/block}

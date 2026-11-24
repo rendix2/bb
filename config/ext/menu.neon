@@ -46,6 +46,10 @@ menu:
                 action: :Admin:Language:List:default
                 include:
                     - '^Admin:Language:'
+            Faq:
+                action: :Admin:Faq:List:default
+                include:
+                    - '^Admin:Faq:'
             Reports:
                 action: :Admin:Report:List:default
                 include:

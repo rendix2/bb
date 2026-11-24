@@ -1,0 +1,9 @@
+{
+  "title": "Časté otázky (FAQ)",
+  "help": "Každá otázka má text pro každý jazyk webu. Čtenář vidí svůj jazyk, chybí-li (jazyk přidaný později), výchozí jazyk.",
+  "add": "Přidat otázku",
+  "question": "Otázka",
+  "edit": "Upravit",
+  "delete": "Smazat",
+  "empty": "Zatím žádné otázky."
+}

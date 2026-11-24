@@ -1,0 +1,7 @@
+{
+  "title": "Deleting a question",
+  "question": "Really delete the question with its texts in all languages?",
+  "confirm": "Delete",
+  "success": "The question was deleted.",
+  "back": "Back to the list"
+}

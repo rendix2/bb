@@ -1,0 +1,9 @@
+{
+  "question": "Otázka (%language%)",
+  "answer": "Odpověď v Markdownu (%language%)",
+  "error": {
+    "question": "Vyplňte otázku (%language%).",
+    "answer": "Vyplňte odpověď (%language%).",
+    "text": "Vyplňte otázku i odpověď pro jazyk %language%."
+  }
+}

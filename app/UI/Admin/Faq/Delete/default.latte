@@ -1,0 +1,11 @@
+{block title}{_admin-faq-delete.title}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-faq-delete.title}</h1>
+    <ul>
+        <li n:foreach="$texts as $text">{$text->language->name}: {$text->question}</li>
+    </ul>
+    <p>{_admin-faq-delete.question}</p>
+    {control deleteForm}
+    <a n:href=":Admin:Faq:List:default" class="btn btn-link">{_admin-faq-delete.back}</a>
+{/block}

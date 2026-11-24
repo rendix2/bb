@@ -1,0 +1,7 @@
+{
+  "title": "Smazání otázky",
+  "question": "Opravdu smazat otázku i její texty ve všech jazycích?",
+  "confirm": "Smazat",
+  "success": "Otázka byla smazána.",
+  "back": "Zpět na seznam"
+}

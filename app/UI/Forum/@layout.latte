@@ -27,6 +27,9 @@
             <li class={[nav-item, active => $presenter->getName() === 'Forum:Search']}>
                 <a class="nav-link search-link" n:href=":Forum:Search:default">{_forum-layout.search}</a>
             </li>
+            <li class={[nav-item, active => $presenter->getName() === 'Forum:Faq']}>
+                <a class="nav-link faq-link" n:href=":Forum:Faq:default">{_forum-layout.faq}</a>
+            </li>
 
             {* private messages and the list of users only for logged-in users *}
             {if $user->isLoggedIn()}

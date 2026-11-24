@@ -1,0 +1,9 @@
+{
+  "question": "Question (%language%)",
+  "answer": "Answer in Markdown (%language%)",
+  "error": {
+    "question": "Fill in the question (%language%).",
+    "answer": "Fill in the answer (%language%).",
+    "text": "Fill in both the question and the answer for the language %language%."
+  }
+}
