@@ -44,7 +44,8 @@ class DashboardPresenter extends AdminBasePresenter
             'posts' => $this->em->getRepository(PostEntity::class)->count([]),
             'openReports' => $this->em->getRepository(ReportEntity::class)->count(['status' => ReportStatus::Open]),
             'activeBans' => $activeBans,
-            'mailQueue' => $this->em->getRepository(MailEntity::class)->count([]),
+            // only the mails not sent yet; the sent ones stay in the table as the history
+            'mailQueue' => $this->em->getRepository(MailEntity::class)->count(['sentAt' => null]),
         ];
     }
 

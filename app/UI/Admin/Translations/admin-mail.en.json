@@ -1,0 +1,7 @@
+{
+  "error": {
+    "subject": "Fill in the subject (at most 1024 characters).",
+    "body": "Fill in the text of the e-mail.",
+    "noRecipients": "There is no active user to send the e-mail to."
+  }
+}

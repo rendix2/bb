@@ -1,0 +1,21 @@
+{block title}{_admin-mail-list.title}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-mail-list.title}</h1>
+
+    <a n:href=":Admin:Mail:Create:default" class="btn btn-sm btn-primary mb-2 mail-create-link">{_admin-mail-list.create}</a>
+    <a n:href=":Admin:Mail:Queue:default" class="btn btn-sm btn-outline-secondary mb-2 mail-queue-link">{_admin-mail-list.queue, [count: $queueCount]}</a>
+
+    <table class="table table-sm table-striped">
+        <thead><tr><th>{_admin-mail-list.subject}</th><th>{_admin-mail-list.sentBy}</th><th>{_admin-mail-list.sentAt}</th><th>{_admin-mail-list.recipients}</th></tr></thead>
+        <tbody>
+            <tr n:foreach="$massMails as $massMail" class="mass-mail">
+                <td>{$massMail->subject}</td>
+                <td>{$massMail->sentBy?->username ?? '–'}</td>
+                <td>{$massMail->createdAt|date:'j. n. Y H:i'}</td>
+                <td class="mass-mail-recipients">{$massMail->recipientCount}</td>
+            </tr>
+            <tr n:if="!$massMails"><td colspan="4">{_admin-mail-list.empty}</td></tr>
+        </tbody>
+    </table>
+{/block}

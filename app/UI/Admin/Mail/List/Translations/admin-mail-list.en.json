@@ -1,0 +1,10 @@
+{
+  "title": "Mass e-mails",
+  "create": "New mass e-mail",
+  "queue": "Mail queue (%count%)",
+  "subject": "Subject",
+  "sentBy": "Sent by",
+  "sentAt": "When",
+  "recipients": "Recipients",
+  "empty": "No mass e-mail was sent yet."
+}

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "subject": "Vyplňte předmět (nejvýše 1024 znaků).",
+    "body": "Vyplňte text e-mailu.",
+    "noRecipients": "Není žádný aktivní uživatel, kterému by šlo e-mail poslat."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Hromadné e-maily",
+  "create": "Nový hromadný e-mail",
+  "queue": "Fronta e-mailů (%count%)",
+  "subject": "Předmět",
+  "sentBy": "Odeslal(a)",
+  "sentAt": "Kdy",
+  "recipients": "Příjemců",
+  "empty": "Zatím nebyl odeslán žádný hromadný e-mail."
+}

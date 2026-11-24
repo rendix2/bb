@@ -1,0 +1,10 @@
+{
+  "title": "Mail queue",
+  "count": "Waiting to be sent: %count%. The cron mail:send-queue sends them.",
+  "limited": "The oldest %limit% are shown.",
+  "to": "To",
+  "subject": "Subject",
+  "createdAt": "Queued",
+  "empty": "The queue is empty.",
+  "back": "Back to the mass e-mails"
+}

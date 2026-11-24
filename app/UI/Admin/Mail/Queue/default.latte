@@ -1,0 +1,21 @@
+{block title}{_admin-mail-queue.title}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-mail-queue.title}</h1>
+    <p class="mail-queue-count">{_admin-mail-queue.count, [count: $count]}</p>
+    <p n:if="$count > $limit" class="small text-muted">{_admin-mail-queue.limited, [limit: $limit]}</p>
+
+    <table class="table table-sm table-striped">
+        <thead><tr><th>{_admin-mail-queue.to}</th><th>{_admin-mail-queue.subject}</th><th>{_admin-mail-queue.createdAt}</th></tr></thead>
+        <tbody>
+            <tr n:foreach="$mails as $mail" class="queued-mail">
+                <td>{$mail->emailTo}</td>
+                <td>{$mail->subject}</td>
+                <td>{$mail->createdAt|date:'j. n. Y H:i'}</td>
+            </tr>
+            <tr n:if="!$mails"><td colspan="3">{_admin-mail-queue.empty}</td></tr>
+        </tbody>
+    </table>
+
+    <a n:href=":Admin:Mail:List:default" class="btn btn-link">{_admin-mail-queue.back}</a>
+{/block}

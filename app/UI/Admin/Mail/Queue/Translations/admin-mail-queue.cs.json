@@ -1,0 +1,10 @@
+{
+  "title": "Fronta e-mailů",
+  "count": "Čeká na odeslání: %count%. Odesílá je cron mail:send-queue.",
+  "limited": "Zobrazeno nejstarších %limit%.",
+  "to": "Komu",
+  "subject": "Předmět",
+  "createdAt": "Zařazeno",
+  "empty": "Fronta je prázdná.",
+  "back": "Zpět na hromadné e-maily"
+}

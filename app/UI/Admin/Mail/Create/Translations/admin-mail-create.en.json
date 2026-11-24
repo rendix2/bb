@@ -1,0 +1,10 @@
+{
+  "title": "New mass e-mail",
+  "recipients": "All active users get the e-mail: %count%. It is sent gradually from the queue.",
+  "subject": "Subject",
+  "body": "Text",
+  "bodyHelp": "Markdown: **bold**, *italic*, [link](https://…), smileys :smile:.",
+  "send": "Send to all",
+  "success": "The e-mail was queued for %count% recipients.",
+  "back": "Back to the mass e-mails"
+}

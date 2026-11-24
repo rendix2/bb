@@ -1,0 +1,10 @@
+{
+  "title": "Nový hromadný e-mail",
+  "recipients": "E-mail dostanou všichni aktivní uživatelé: %count%. Odešle se postupně z fronty.",
+  "subject": "Předmět",
+  "body": "Text",
+  "bodyHelp": "Markdown: **tučně**, *kurzíva*, [odkaz](https://…), smajlíky :smile:.",
+  "send": "Odeslat všem",
+  "success": "E-mail byl zařazen do fronty pro %count% příjemců.",
+  "back": "Zpět na hromadné e-maily"
+}

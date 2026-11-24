@@ -50,6 +50,10 @@ menu:
                 action: :Admin:Faq:List:default
                 include:
                     - '^Admin:Faq:'
+            Mails:
+                action: :Admin:Mail:List:default
+                include:
+                    - '^Admin:Mail:'
             Reports:
                 action: :Admin:Report:List:default
                 include:
