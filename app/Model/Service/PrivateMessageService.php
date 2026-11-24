@@ -1,0 +1,417 @@
+<?php declare(strict_types=1);
+
+namespace App\Model\Service;
+
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\PrivateMessageEntity;
+use App\Model\Entity\PrivateMessageParticipantEntity;
+use App\Model\Entity\PrivateMessageThreadEntity;
+use App\Model\Entity\UserEntity;
+use App\Model\Repository\UserRepository;
+use App\Settings\PostSetting;
+use DateTimeImmutable;
+use Doctrine\ORM\QueryBuilder;
+use Nette\Utils\Strings;
+
+/**
+ * Private messages in threads of two or more participants (decisions of 2026-11-24). Every write checks the rights itself (a POST
+ * does not need the page to have been shown):
+ * - only an active participant (not left) reads and writes the thread, only the founder adds participants;
+ * - recipients by username (case-insensitive), an existing active user, not the author himself;
+ * - the text like a post (posts.minLength / maxLength, Markdown), the flood interval of posts (posts.minUserTimeInterval);
+ * - a new message is unread for the other active participants; a participant who left does not see the thread any more, a new
+ *   message does not bring it back (only the founder adding him again).
+ */
+class PrivateMessageService
+{
+    public const string ERROR_NOT_PARTICIPANT = 'forum-pm.error.notParticipant';
+    public const string ERROR_NOT_FOUNDER = 'forum-pm.error.notFounder';
+    public const string ERROR_SUBJECT = 'forum-pm.error.subject';
+    public const string ERROR_NO_RECIPIENT = 'forum-pm.error.noRecipient';
+    public const string ERROR_UNKNOWN_RECIPIENT = 'forum-pm.error.unknownRecipient';
+    public const string ERROR_SELF = 'forum-pm.error.self';
+    public const string ERROR_ALREADY_PARTICIPANT = 'forum-pm.error.alreadyParticipant';
+    public const string ERROR_TOO_MANY = 'forum-pm.error.tooMany';
+    public const string ERROR_TOO_SHORT = 'forum-pm.error.tooShort';
+    public const string ERROR_TOO_LONG = 'forum-pm.error.tooLong';
+    public const string ERROR_FLOOD = 'forum-pm.error.flood';
+
+    /** participants of one thread including the founder */
+    public const int MAX_PARTICIPANTS = 20;
+
+    private const int SUBJECT_MAX_LENGTH = 1024;
+
+    public function __construct(
+        private readonly EntityManagerDecorator $em,
+        private readonly UserRepository $userRepository,
+        private readonly PostSetting $postSetting,
+    ) {
+    }
+
+    /**
+     * A new thread of the author with the first recipients and the first message.
+     *
+     * @param list<string> $usernames
+     */
+    public function createThread(UserEntity $author, string $subject, array $usernames, string $text) : PrivateMessageThreadEntity
+    {
+        $subject = Strings::trim($subject);
+
+        if ($subject === '' || Strings::length($subject) > self::SUBJECT_MAX_LENGTH) {
+            throw new PrivateMessageException(self::ERROR_SUBJECT);
+        }
+
+        $recipients = $this->resolveRecipients($author, $usernames);
+
+        if ($recipients === []) {
+            throw new PrivateMessageException(self::ERROR_NO_RECIPIENT);
+        }
+
+        if (count($recipients) + 1 > self::MAX_PARTICIPANTS) {
+            throw new PrivateMessageException(self::ERROR_TOO_MANY, ['max' => self::MAX_PARTICIPANTS]);
+        }
+
+        $text = $this->checkText($text);
+        $this->checkFlood($author);
+
+        $thread = new PrivateMessageThreadEntity();
+        $thread->user = $author;
+        $thread->subject = $subject;
+
+        $this->em->wrapInTransaction(function () use ($thread, $author, $recipients, $text) : void {
+            $this->em->persist($thread);
+            $this->newParticipant($thread, $author)->isRead = true;
+
+            foreach ($recipients as $recipient) {
+                $this->newParticipant($thread, $recipient);
+            }
+
+            $this->newMessage($thread, $author, $text);
+        });
+
+        return $thread;
+    }
+
+    /**
+     * A reply of an active participant: unread for the other active participants.
+     */
+    public function reply(UserEntity $author, PrivateMessageThreadEntity $thread, string $text) : PrivateMessageEntity
+    {
+        $this->requireParticipant($author, $thread);
+        $text = $this->checkText($text);
+        $this->checkFlood($author);
+
+        return $this->em->wrapInTransaction(function () use ($thread, $author, $text) : PrivateMessageEntity {
+            $message = $this->newMessage($thread, $author, $text);
+
+            foreach ($this->activeParticipants($thread) as $participant) {
+                $participant->isRead = $participant->user->id === $author->id;
+            }
+
+            return $message;
+        });
+    }
+
+    /**
+     * The founder (still a participant) adds users; one who left the thread comes back (unread).
+     *
+     * @param list<string> $usernames
+     */
+    public function addParticipants(UserEntity $founder, PrivateMessageThreadEntity $thread, array $usernames) : void
+    {
+        $this->requireParticipant($founder, $thread);
+
+        if ($thread->user?->id !== $founder->id) {
+            throw new PrivateMessageException(self::ERROR_NOT_FOUNDER);
+        }
+
+        $recipients = $this->resolveRecipients($founder, $usernames);
+
+        if ($recipients === []) {
+            throw new PrivateMessageException(self::ERROR_NO_RECIPIENT);
+        }
+
+        $active = $this->activeParticipants($thread);
+
+        foreach ($recipients as $recipient) {
+            foreach ($active as $participant) {
+                if ($participant->user->id === $recipient->id) {
+                    throw new PrivateMessageException(self::ERROR_ALREADY_PARTICIPANT, ['username' => $recipient->username]);
+                }
+            }
+        }
+
+        if (count($active) + count($recipients) > self::MAX_PARTICIPANTS) {
+            throw new PrivateMessageException(self::ERROR_TOO_MANY, ['max' => self::MAX_PARTICIPANTS]);
+        }
+
+        $this->em->wrapInTransaction(function () use ($thread, $recipients) : void {
+            foreach ($recipients as $recipient) {
+                $participant = $this->findParticipant($recipient, $thread);
+
+                if ($participant === null) {
+                    $this->newParticipant($thread, $recipient);
+
+                    continue;
+                }
+
+                // he left before: back with the thread unread, mails as he chose them
+                $participant->isDeleted = false;
+                $participant->isRead = false;
+                $participant->isNotified = false;
+                $participant->updatedAt = new DateTimeImmutable();
+            }
+        });
+    }
+
+    /**
+     * The participant leaves the thread: hidden for him, no new messages nor mails.
+     */
+    public function leave(UserEntity $user, PrivateMessageThreadEntity $thread) : void
+    {
+        $participant = $this->requireParticipant($user, $thread);
+        $participant->isDeleted = true;
+        $participant->updatedAt = new DateTimeImmutable();
+        $this->em->flush();
+    }
+
+    /**
+     * The participant opened the thread: read, and the next message may notify him again.
+     */
+    public function visited(UserEntity $user, PrivateMessageThreadEntity $thread) : void
+    {
+        $participant = $this->requireParticipant($user, $thread);
+
+        if (!$participant->isRead || $participant->isNotified) {
+            $participant->isRead = true;
+            $participant->isNotified = false;
+            $this->em->flush();
+        }
+    }
+
+    public function setRead(UserEntity $user, PrivateMessageThreadEntity $thread, bool $read) : void
+    {
+        $this->requireParticipant($user, $thread)->isRead = $read;
+        $this->em->flush();
+    }
+
+    public function setStarred(UserEntity $user, PrivateMessageThreadEntity $thread, bool $starred) : void
+    {
+        $this->requireParticipant($user, $thread)->isStarred = $starred;
+        $this->em->flush();
+    }
+
+    public function setWantsMail(UserEntity $user, PrivateMessageThreadEntity $thread, bool $wantsMail) : void
+    {
+        $this->requireParticipant($user, $thread)->wantsMail = $wantsMail;
+        $this->em->flush();
+    }
+
+    /**
+     * The user as an active participant (not left) of the thread, null otherwise: the thread is not his (404).
+     */
+    public function participantOf(?UserEntity $user, PrivateMessageThreadEntity $thread) : ?PrivateMessageParticipantEntity
+    {
+        if ($user === null) {
+            return null;
+        }
+
+        $participant = $this->findParticipant($user, $thread);
+
+        return $participant !== null && !$participant->isDeleted ? $participant : null;
+    }
+
+    /**
+     * The threads of the user (the list), the newest message first; each is his participation (read / starred) with the thread.
+     *
+     * @return list<PrivateMessageParticipantEntity>
+     */
+    public function threadsOf(UserEntity $user, int $offset, int $limit) : array
+    {
+        /** @var list<PrivateMessageParticipantEntity> */
+        return $this->threadsQuery($user)
+            ->select('_p', '_t')
+            ->orderBy('_t.lastMessageAt', 'DESC')
+            ->addOrderBy('_t.id', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countThreadsOf(UserEntity $user) : int
+    {
+        return (int) $this->threadsQuery($user)
+            ->select('COUNT(_p.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Threads with an unread message (the link in the layout of the forum).
+     */
+    public function unreadCount(UserEntity $user) : int
+    {
+        return (int) $this->threadsQuery($user)
+            ->select('COUNT(_p.id)')
+            ->andWhere('_p.isRead = false')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @return list<PrivateMessageEntity>
+     */
+    public function messagesOf(PrivateMessageThreadEntity $thread) : array
+    {
+        /** @var list<PrivateMessageEntity> */
+        return $this->em->getRepository(PrivateMessageEntity::class)
+            ->createQueryBuilder('_m')
+            ->select('_m', '_u')
+            ->innerJoin('_m.user', '_u')
+            ->where('_m.thread = :thread')
+            ->setParameter('thread', $thread)
+            ->orderBy('_m.createdAt', 'ASC')
+            ->addOrderBy('_m.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * The participants who did not leave, by username.
+     *
+     * @return list<PrivateMessageParticipantEntity>
+     */
+    public function activeParticipants(PrivateMessageThreadEntity $thread) : array
+    {
+        /** @var list<PrivateMessageParticipantEntity> */
+        return $this->em->getRepository(PrivateMessageParticipantEntity::class)
+            ->createQueryBuilder('_p')
+            ->select('_p', '_u')
+            ->innerJoin('_p.user', '_u')
+            ->where('_p.thread = :thread')
+            ->andWhere('_p.isDeleted = false')
+            ->setParameter('thread', $thread)
+            ->orderBy('_u.username', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Usernames written by the user ("a, b" or one per line) as a list without empty items.
+     *
+     * @return list<string>
+     */
+    public function parseUsernames(string $usernames) : array
+    {
+        return array_values(array_filter(
+            array_map(static fn (string $username) : string => Strings::trim($username), preg_split('~[,;\n]~', $usernames) ?: []),
+            static fn (string $username) : bool => $username !== '',
+        ));
+    }
+
+    private function threadsQuery(UserEntity $user) : QueryBuilder
+    {
+        return $this->em->getRepository(PrivateMessageParticipantEntity::class)
+            ->createQueryBuilder('_p')
+            ->innerJoin('_p.thread', '_t')
+            ->where('_p.user = :user')
+            ->andWhere('_p.isDeleted = false')
+            ->setParameter('user', $user);
+    }
+
+    /**
+     * @param list<string> $usernames
+     * @return list<UserEntity> each once
+     */
+    private function resolveRecipients(UserEntity $author, array $usernames) : array
+    {
+        $recipients = [];
+
+        foreach ($usernames as $username) {
+            $recipient = $this->userRepository->findOneByUsername(Strings::trim($username));
+
+            if ($recipient === null || !$recipient->isActive) {
+                throw new PrivateMessageException(self::ERROR_UNKNOWN_RECIPIENT, ['username' => Strings::trim($username)]);
+            }
+
+            if ($recipient->id === $author->id) {
+                throw new PrivateMessageException(self::ERROR_SELF);
+            }
+
+            $recipients[$recipient->id] = $recipient;
+        }
+
+        return array_values($recipients);
+    }
+
+    private function requireParticipant(UserEntity $user, PrivateMessageThreadEntity $thread) : PrivateMessageParticipantEntity
+    {
+        return $this->participantOf($user, $thread) ?? throw new PrivateMessageException(self::ERROR_NOT_PARTICIPANT);
+    }
+
+    private function findParticipant(UserEntity $user, PrivateMessageThreadEntity $thread) : ?PrivateMessageParticipantEntity
+    {
+        return $this->em->getRepository(PrivateMessageParticipantEntity::class)->findOneBy(['user' => $user, 'thread' => $thread]);
+    }
+
+    private function newParticipant(PrivateMessageThreadEntity $thread, UserEntity $user) : PrivateMessageParticipantEntity
+    {
+        $participant = new PrivateMessageParticipantEntity();
+        $participant->thread = $thread;
+        $participant->user = $user;
+        $thread->participants->add($participant);
+        $this->em->persist($participant);
+
+        return $participant;
+    }
+
+    private function newMessage(PrivateMessageThreadEntity $thread, UserEntity $author, string $text) : PrivateMessageEntity
+    {
+        $message = new PrivateMessageEntity();
+        $message->thread = $thread;
+        $message->user = $author;
+        $message->text = $text;
+        $thread->messages->add($message);
+        $thread->lastMessageAt = $message->createdAt;
+        $this->em->persist($message);
+
+        return $message;
+    }
+
+    private function checkText(string $text) : string
+    {
+        $text = Strings::trim(Strings::unixNewLines($text));
+        $settings = $this->postSetting->get();
+        $length = Strings::length($text);
+
+        if ($length === 0 || ($settings['minLength'] !== null && $length < (int) $settings['minLength'])) {
+            throw new PrivateMessageException(self::ERROR_TOO_SHORT);
+        }
+
+        if ($settings['maxLength'] !== null && $length > (int) $settings['maxLength']) {
+            throw new PrivateMessageException(self::ERROR_TOO_LONG);
+        }
+
+        return $text;
+    }
+
+    private function checkFlood(UserEntity $user) : void
+    {
+        $since = new DateTimeImmutable('-' . (int) $this->postSetting->get()['minUserTimeInterval'] . ' seconds');
+
+        $recent = $this->em->getRepository(PrivateMessageEntity::class)
+            ->createQueryBuilder('_m')
+            ->select('COUNT(_m.id)')
+            ->where('_m.user = :user')
+            ->andWhere('_m.createdAt > :since')
+            ->setParameter('user', $user)
+            ->setParameter('since', $since)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        if ((int) $recent > 0) {
+            throw new PrivateMessageException(self::ERROR_FLOOD);
+        }
+    }
+}
