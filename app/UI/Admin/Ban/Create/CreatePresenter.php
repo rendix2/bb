@@ -23,6 +23,16 @@ class CreatePresenter extends AdminBasePresenter
         parent::__construct();
     }
 
+    /**
+     * From Admin:User:Forum with the username filled in.
+     */
+    public function actionDefault(?string $username = null) : void
+    {
+        if ($username !== null) {
+            $this['banForm']->setDefaults(['username' => $username]);
+        }
+    }
+
     protected function createComponentMenu() : MenuComponent
     {
         return $this->menuFactory->create('admin');

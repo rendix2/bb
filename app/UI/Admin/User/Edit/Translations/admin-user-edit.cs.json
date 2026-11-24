@@ -1,4 +1,5 @@
 {
+  "forum": "Uživatel ve fóru (jazyk, podpis, rank, avatar, skupiny, bany)",
   "title": "Editace Uživatele",
 
   "form.username.label": "Uživatelské jméno",

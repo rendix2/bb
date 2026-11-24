@@ -1,4 +1,5 @@
 {
+  "forum": "User in the forum (language, signature, rank, avatar, groups, bans)",
   "title": "User edit",
 
   "form.username.label": "Username",

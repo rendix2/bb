@@ -1,0 +1,35 @@
+{
+  "title": "User in the forum",
+  "account": "Account",
+  "profile": "Public profile",
+  "ban": "Ban",
+  "settings": "Forum settings",
+  "form": {
+    "language": "Language",
+    "signature": "Signature",
+    "signatureHelp": "Markdown, at most %maxChars% characters.",
+    "rank": "Special rank",
+    "rankByPosts": "— by the post count —"
+  },
+  "saved": "The settings of the user %username% have been saved.",
+  "avatar": {
+    "title": "Avatar",
+    "none": "The user has no avatar.",
+    "delete": "Delete the avatar",
+    "deleted": "The avatar of the user %username% has been deleted."
+  },
+  "stats": "Activity",
+  "posts": "Posts",
+  "topics": "Topics",
+  "thanks": "Thanks received",
+  "groups": "Groups",
+  "moderated": "Moderates forums (himself or through a group)",
+  "grants": "Own grants in forums",
+  "bans": "Bans",
+  "forever": "for ever",
+  "expired": "expired",
+  "none": "—",
+  "error": {
+    "signature": "The signature can have at most %maxChars% characters."
+  }
+}

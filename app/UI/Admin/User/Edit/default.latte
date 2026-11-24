@@ -2,6 +2,9 @@
 
 {block content}
 <div class="container-fluid py-4">
+    {* bb: the forum side of the user (language, signature, rank, avatar, groups, bans) *}
+    <p><a n:href=":Admin:User:Forum:default $userEntity->uuid->toString()" class="btn btn-outline-primary user-forum-link">{_admin-user-edit.forum}</a></p>
+
     <!-- Hlavní karta s formulářem - Roztažená na celou šířku nebo velkou část -->
     <div class="row mb-4">
         <div class="col-6">

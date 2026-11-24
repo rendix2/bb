@@ -1,0 +1,35 @@
+{
+  "title": "Uživatel ve fóru",
+  "account": "Účet",
+  "profile": "Veřejný profil",
+  "ban": "Zabanovat",
+  "settings": "Nastavení ve fóru",
+  "form": {
+    "language": "Jazyk",
+    "signature": "Podpis",
+    "signatureHelp": "Markdown, nejvýše %maxChars% znaků.",
+    "rank": "Speciální rank",
+    "rankByPosts": "— podle počtu příspěvků —"
+  },
+  "saved": "Nastavení uživatele %username% bylo uloženo.",
+  "avatar": {
+    "title": "Avatar",
+    "none": "Uživatel nemá avatar.",
+    "delete": "Smazat avatar",
+    "deleted": "Avatar uživatele %username% byl smazán."
+  },
+  "stats": "Aktivita",
+  "posts": "Příspěvky",
+  "topics": "Témata",
+  "thanks": "Obdržená poděkování",
+  "groups": "Skupiny",
+  "moderated": "Moderuje fóra (sám nebo přes skupinu)",
+  "grants": "Vlastní oprávnění ve fórech",
+  "bans": "Bany",
+  "forever": "trvale",
+  "expired": "vypršel",
+  "none": "—",
+  "error": {
+    "signature": "Podpis může mít nejvýše %maxChars% znaků."
+  }
+}

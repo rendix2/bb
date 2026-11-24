@@ -15,6 +15,7 @@ menu:
                 action: :Admin:User:List:default
                 include:
                     - '^Admin:User:Edit:default'
+                    - '^Admin:User:Forum:default'
             Roles:
                 action: :Admin:Role:List:default
                 include:

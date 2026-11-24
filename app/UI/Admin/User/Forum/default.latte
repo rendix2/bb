@@ -1,0 +1,76 @@
+{block title}{_admin-user-forum.title}: {$userEntity->username}{/block}
+
+{block content}
+    <h1 class="h4 mt-3">{_admin-user-forum.title}: {$userEntity->username}</h1>
+    <p>
+        <a n:href=":Admin:User:Edit:default $userEntity->uuid->toString()" class="btn btn-sm btn-outline-secondary">{_admin-user-forum.account}</a>
+        <a n:href=":Web:User:View:default $userEntity->uuid->toString()" class="btn btn-sm btn-outline-secondary">{_admin-user-forum.profile}</a>
+        <a n:href=":Admin:Ban:Create:default username: $userEntity->username" class="btn btn-sm btn-outline-danger user-ban-link">{_admin-user-forum.ban}</a>
+    </p>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 mb-3">
+                <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-user-forum.settings}</h2></div>
+                <div class="card-body">{control forumForm}</div>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-3 user-avatar">
+                <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-user-forum.avatar.title}</h2></div>
+                <div class="card-body">
+                    {if $userEntity->avatar}
+                        <img n:img="$userEntity->avatar, filter: avatar128" alt="" width="128" height="128" class="rounded mb-2">
+                        {control deleteAvatarForm}
+                    {else}
+                        <p class="mb-0 user-no-avatar">{_admin-user-forum.avatar.none}</p>
+                    {/if}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 mb-3 user-stats">
+                <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-user-forum.stats}</h2></div>
+                <div class="card-body">
+                    {_admin-user-forum.posts}: <strong class="user-post-count">{$counts['posts']}</strong>,
+                    {_admin-user-forum.topics}: <strong>{$counts['topics']}</strong>,
+                    {_admin-user-forum.thanks}: <strong>{$counts['thanks']}</strong>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-3 user-groups">
+                <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-user-forum.groups}</h2></div>
+                <div class="card-body">
+                    {foreach $groups as $group}<a n:href=":Admin:Group:Edit:default $group->id">{$group->name}</a>{sep}, {/sep}{else}{_admin-user-forum.none}{/foreach}
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-3 user-moderated">
+                <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-user-forum.moderated}</h2></div>
+                <div class="card-body">
+                    {foreach $moderatedForums as $forum}<a n:href=":Admin:Forum:Access:default $forum->id">{$forum->name}</a>{sep}, {/sep}{else}{_admin-user-forum.none}{/foreach}
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-3 user-grants">
+                <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-user-forum.grants}</h2></div>
+                <div class="card-body">
+                    {foreach $grants as $grant}<a n:href=":Admin:Forum:Access:default $grant->forum->id">{$grant->forum->name}</a>{sep}, {/sep}{else}{_admin-user-forum.none}{/foreach}
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-3 user-bans">
+                <div class="card-header bg-white"><h2 class="h6 m-0">{_admin-user-forum.bans}</h2></div>
+                <div class="card-body">
+                    <ul class="mb-0" n:if="$bans">
+                        <li n:foreach="$bans as $ban" class="user-ban">
+                            <a n:href=":Admin:Ban:Edit:default $ban->id">{_$ban->scope->translationKey()}</a>: {$ban->reason}
+                            ({if $ban->expiresAt}{$ban->expiresAt|date:'j. n. Y H:i'}{else}{_admin-user-forum.forever}{/if}{if !$ban->isActive($now)}, {_admin-user-forum.expired}{/if})
+                        </li>
+                    </ul>
+                    {if !$bans}{_admin-user-forum.none}{/if}
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}
