@@ -89,7 +89,6 @@ parameters:
     mail:
         from: rendix2@gmail.com
         templateDir: %wwwDir%/controls/templates/emails
-    databaseBackupDir: %tempDir%/dumps
     startDay: 1.3.2018 00:00
 
 

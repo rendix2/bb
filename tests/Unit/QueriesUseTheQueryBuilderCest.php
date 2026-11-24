@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use Codeception\Attribute\Group;
 use Tests\Support\UnitTester;
 
 /**
@@ -23,8 +22,6 @@ class QueriesUseTheQueryBuilderCest
         '~->fetch(?:One|Associative|AllAssociative|AllNumeric|FirstColumn|AllKeyValue|AllAssociativeIndexed)\s*\(\s*[^)\s]~' => 'hand-written SQL (fetch* with an SQL string)',
     ];
 
-    // bb: known bug - the legacy AdminModule still runs hand-written SQL (removed in the dibi step, see AGENTS.md)
-    #[Group('known-bug')]
     public function theApplicationWritesNoQueriesByHand(UnitTester $I) : void
     {
         $directory = dirname(__DIR__, 2) . '/app';

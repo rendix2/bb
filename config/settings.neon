@@ -13,8 +13,6 @@ services:
         class: App\Settings\RanksDir(%ranks%)
     TempDir:
         class: App\Settings\TempDir(%tempDir%)
-    CacheDir:
-        class: App\Settings\CacheDir(%tempDir%/cache)
     ForumSetting:
         class: App\Settings\ForumSettings(%forums%)
     TopicSetting:
@@ -25,8 +23,6 @@ services:
         class: App\Settings\Email(%mail.from%)
     Users:
         class: App\Settings\Users(%users%)
-    DatabaseBackupDir:
-        class: App\Settings\DatabaseBackupDir(%databaseBackupDir%)
     StartDay:
         class: App\Settings\StartDay(%startDay%)
     PostsSettings:

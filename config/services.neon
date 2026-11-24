@@ -11,8 +11,6 @@ services:
 		class: App\Controls\BBMailer
 	GridFilter:
 		factory: App\Controls\GridFilter
-	UserSearchControl:
-		factory:  App\Controls\UserSearchControl
 
 	-
 		type: App\Model\Repository\UserRepository
@@ -57,10 +55,6 @@ services:
 	-
 		type: App\Model\Repository\PollVoteRepository
 		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\PollVoteEntity)
-
-	-
-		type: App\Model\Repository\RankRepository
-		factory: @nettrine.orm.managers.default.entityManagerDecorator::getRepository(App\Model\Entity\RankEntity)
 
 	-
 		type: App\Model\Repository\ReportRepository

@@ -2,7 +2,6 @@
 
 namespace App\Model\Entity;
 
-use App\Model\Repository\RankRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
@@ -14,7 +13,7 @@ use Ramsey\Uuid\Doctrine\UuidType;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-#[Entity(repositoryClass: RankRepository::class)]
+#[Entity()]
 #[Table(name: 'rank', options: ['comment' => 'Ranks'])]
 class RankEntity
 {

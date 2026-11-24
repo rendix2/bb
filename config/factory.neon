@@ -1,9 +1,5 @@
 services:
     UserLoginFormFactory: App\Services\UserLoginFormFactory
-    ChangePasswordFactory:
-        class: App\Services\ChangePasswordFactory
-    DeleteAvatarFactory:
-        class: App\Services\DeleteAvatarFactory
 
     PremissionFactory:
         class: App\Authorization\PermissionFactory
