@@ -1,0 +1,27 @@
+{block title}{_forum-pm-list.title}{/block}
+
+{block content}
+<div class="col-sm-12 pm-list">
+    <h1 class="h4">{_forum-pm-list.title}</h1>
+    <p><a n:href=":Forum:Pm:Create:default" class="btn btn-primary btn-sm pm-create-link">{_forum-pm-list.create}</a></p>
+
+    {include '../../@paginator.latte', paginator: $paginator}
+
+    <table class="table table-sm align-middle">
+        <thead>
+            <tr><th></th><th>{_forum-pm-list.subject}</th><th>{_forum-pm-list.lastMessage}</th></tr>
+        </thead>
+        <tbody>
+            <tr n:foreach="$threads as $participant" class={[pm-thread, !$participant->isRead ? pm-thread-unread]}>
+                <td class="text-nowrap">
+                    <span n:if="$participant->isStarred" class="pm-starred" title={_forum-pm-list.starred}>&#9733;</span>
+                    <span n:if="!$participant->isRead" class="badge bg-primary pm-unread">{_forum-pm-list.unread}</span>
+                </td>
+                <td><a n:href=":Forum:Pm:Thread:default $participant->thread->uuid->toString()" class={[pm-thread-link, !$participant->isRead ? fw-bold]}>{$participant->thread->subject}</a></td>
+                <td class="text-nowrap small text-muted">{$participant->thread->lastMessageAt|date:'j. n. Y H:i'}</td>
+            </tr>
+            <tr n:if="!$threads"><td colspan="3" class="text-muted">{_forum-pm-list.none}</td></tr>
+        </tbody>
+    </table>
+</div>
+{/block}

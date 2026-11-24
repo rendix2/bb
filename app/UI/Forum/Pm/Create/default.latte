@@ -1,0 +1,17 @@
+{block title}{_forum-pm-create.title}{/block}
+
+{block content}
+<div class="col-sm-12 pm-create">
+    <p><a n:href=":Forum:Pm:List:default">{_forum-pm.back}</a></p>
+    <h1 class="h4">{_forum-pm-create.title}</h1>
+
+    <div n:if="$preview !== null" class="card mb-3 pm-preview">
+        <div class="card-header">{_forum-pm.form.preview}</div>
+        <div class="card-body">{$preview|markdown}</div>
+    </div>
+
+    {control createForm}
+
+    <p class="small text-muted">{_forum-pm.markdownHint}</p>
+</div>
+{/block}

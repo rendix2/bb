@@ -1,0 +1,47 @@
+{block title}{$thread->subject}{/block}
+
+{block content}
+<div class="col-sm-12 pm-thread-page">
+    <p><a n:href=":Forum:Pm:List:default" class="pm-back-link">{_forum-pm.back}</a></p>
+    <h1 class="h4">
+        <span n:if="$participant->isStarred" class="pm-starred" title={_forum-pm-list.starred}>&#9733;</span>
+        {$thread->subject}
+    </h1>
+
+    <p class="pm-participants">
+        {_forum-pm-thread.participants}:
+        {foreach $participants as $p}
+            <a n:href=":Web:User:View:default $p->user->uuid->toString()" class="pm-participant">{$p->user->username}</a>{if $thread->user && $p->user->id === $thread->user->id} <span class="small text-muted">({_forum-pm-thread.founder})</span>{/if}{sep}, {/sep}
+        {/foreach}
+    </p>
+
+    <div class="d-flex flex-wrap gap-2 mb-3 pm-actions">
+        <div class="pm-star-form">{control starForm}</div>
+        <div class="pm-unread-form">{control unreadForm}</div>
+        <div class="pm-mail-form" data-mail={$participant->wantsMail ? 'yes' : 'no'}>{control mailForm}</div>
+        <div class="pm-leave-form">{control leaveForm}</div>
+    </div>
+
+    <div n:foreach="$messages as $message" id="message-{$message->id}" class="card mb-3 pm-message">
+        <div class="card-header d-flex justify-content-between">
+            <a n:href=":Web:User:View:default $message->user->uuid->toString()" class="pm-message-author">{$message->user->username}</a>
+            <span class="small text-muted">{$message->createdAt|date:'j. n. Y H:i'}</span>
+        </div>
+        <div class="card-body pm-message-text">{$message->text|markdown}</div>
+    </div>
+
+    <div n:if="$preview !== null" class="card mb-3 pm-preview">
+        <div class="card-header">{_forum-pm.form.preview}</div>
+        <div class="card-body">{$preview|markdown}</div>
+    </div>
+
+    <h2 class="h5">{_forum-pm-thread.reply}</h2>
+    {control replyForm}
+    <p class="small text-muted">{_forum-pm.markdownHint}</p>
+
+    <div n:if="$isFounder" class="mt-3 pm-add-participants">
+        <h2 class="h5">{_forum-pm-thread.addParticipants}</h2>
+        {control addParticipantsForm}
+    </div>
+</div>
+{/block}

@@ -305,7 +305,7 @@ class PrivateMessageService
     public function parseUsernames(string $usernames) : array
     {
         return array_values(array_filter(
-            array_map(static fn (string $username) : string => Strings::trim($username), preg_split('~[,;\n]~', $usernames) ?: []),
+            array_map(static fn (string $username) : string => Strings::trim($username), Strings::split($usernames, '~[,;\n]~')),
             static fn (string $username) : bool => $username !== '',
         ));
     }

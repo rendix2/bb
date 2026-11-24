@@ -1,0 +1,33 @@
+{
+  "participants": "Participants",
+  "founder": "founder",
+  "reply": "Reply",
+  "replied": "The message was sent.",
+  "addParticipants": "Add participants",
+  "added": "The participants were added.",
+  "star": "Star",
+  "unstar": "Remove the star",
+  "starred": "The conversation is starred.",
+  "unstarred": "The star was removed.",
+  "markUnread": "Mark as unread",
+  "markedUnread": "The conversation is marked as unread.",
+  "mailOn": "Notify me by mail",
+  "mailOff": "Do not notify me by mail",
+  "mailTurnedOn": "You will get a mail about new messages.",
+  "mailTurnedOff": "Mail notifications are turned off.",
+  "leave": "Leave the conversation",
+  "leaveConfirm": "Really leave the conversation? You will see it again only when the founder adds you.",
+  "left": "You left the conversation.",
+  "form": {
+    "text": {
+      "label": "Text (Markdown)",
+      "required": "Write the text of the message."
+    },
+    "send": "Send",
+    "usernames": {
+      "label": "Usernames separated by commas",
+      "required": "Enter at least one username."
+    },
+    "add": "Add"
+  }
+}

@@ -28,8 +28,12 @@
                 <a class="nav-link search-link" n:href=":Forum:Search:default">{_forum-layout.search}</a>
             </li>
 
-            {* private messages come with their slice (PM); the list of users only for logged-in users *}
+            {* private messages and the list of users only for logged-in users *}
             {if $user->isLoggedIn()}
+                <li class={[nav-item, active => str_starts_with($presenter->getName(), 'Forum:Pm:')]}>
+                    {var $unreadPrivateMessages = unreadPrivateMessages()}
+                    <a class="nav-link pm-link" n:href=":Forum:Pm:List:default">{_forum-layout.privateMessages}<span n:if="$unreadPrivateMessages" class="badge bg-danger ms-1 pm-unread-count">{$unreadPrivateMessages}</span></a>
+                </li>
                 <li class={[nav-item, active => $presenter->getName() === 'Web:User:List']}>
                     <a class="nav-link user-list-link" n:href=":Web:User:List:default">{_forum-layout.users}</a>
                 </li>

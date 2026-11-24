@@ -1,0 +1,9 @@
+{
+  "title": "Private messages",
+  "create": "New conversation",
+  "subject": "Subject",
+  "lastMessage": "Last message",
+  "unread": "new",
+  "starred": "Starred",
+  "none": "You have no private messages yet."
+}

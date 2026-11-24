@@ -1,0 +1,20 @@
+{
+  "title": "Nová konverzace",
+  "success": "Zpráva byla odeslána.",
+  "form": {
+    "recipients": {
+      "label": "Příjemci",
+      "required": "Zadejte alespoň jednoho příjemce.",
+      "description": "Uživatelská jména oddělená čárkou."
+    },
+    "subject": {
+      "label": "Předmět",
+      "required": "Zadejte předmět."
+    },
+    "text": {
+      "label": "Text (Markdown)",
+      "required": "Napište text zprávy."
+    },
+    "send": "Odeslat"
+  }
+}

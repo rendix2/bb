@@ -1,0 +1,20 @@
+{
+  "title": "New conversation",
+  "success": "The message was sent.",
+  "form": {
+    "recipients": {
+      "label": "Recipients",
+      "required": "Enter at least one recipient.",
+      "description": "Usernames separated by commas."
+    },
+    "subject": {
+      "label": "Subject",
+      "required": "Enter a subject."
+    },
+    "text": {
+      "label": "Text (Markdown)",
+      "required": "Write the text of the message."
+    },
+    "send": "Send"
+  }
+}

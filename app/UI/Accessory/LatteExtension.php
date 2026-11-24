@@ -2,18 +2,38 @@
 
 namespace App\UI\Accessory;
 
+use App\Database\EntityManagerDecorator;
+use App\Model\Entity\UserEntity;
 use App\Model\Service\MarkdownRenderer;
+use App\Model\Service\PrivateMessageService;
 use Latte\Extension;
 use Latte\Runtime\Html;
+use Nette\Security\User;
 
 /**
  * Filters of the application: {$post->text|markdown} prints the Markdown as safe HTML (MarkdownRenderer).
+ * Functions: unreadPrivateMessages() = threads with an unread message of the logged-in user (the layout of the forum), 0 for a guest.
  */
 class LatteExtension extends Extension
 {
     public function __construct(
         private readonly MarkdownRenderer $markdownRenderer,
+        private readonly User $user,
+        private readonly EntityManagerDecorator $em,
+        private readonly PrivateMessageService $privateMessages,
     ) {
+    }
+
+    /**
+     * @return array<string, callable>
+     */
+    public function getFunctions() : array
+    {
+        return [
+            'unreadPrivateMessages' => fn () : int => $this->user->isLoggedIn()
+                ? $this->privateMessages->unreadCount($this->em->getReference(UserEntity::class, $this->user->getId()))
+                : 0,
+        ];
     }
 
     /**

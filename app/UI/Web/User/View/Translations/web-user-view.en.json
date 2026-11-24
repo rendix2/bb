@@ -14,5 +14,6 @@
   "favourite.added": "The user was added to favourites.",
   "favourite.removed": "The user was removed from favourites.",
   "favourite.self": "You cannot add yourself to favourites.",
-  "watches": "My watched topics"
+  "watches": "My watched topics",
+  "sendPrivateMessage": "Send a private message"
 }

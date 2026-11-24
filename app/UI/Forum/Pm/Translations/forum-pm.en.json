@@ -1,0 +1,21 @@
+{
+  "back": "Back to private messages",
+  "markdownHint": "Write the text in Markdown: **bold**, *italics*, [link](https://…), lists start with “- ”.",
+  "form": {
+    "protection": "The form has expired, please send it again.",
+    "preview": "Preview"
+  },
+  "error": {
+    "notParticipant": "This conversation does not exist or you are not in it any more.",
+    "notFounder": "Only the founder of the conversation can add participants.",
+    "subject": "Enter a subject (at most 1024 characters).",
+    "noRecipient": "Enter at least one recipient.",
+    "unknownRecipient": "The user “%username%” does not exist or is not active.",
+    "self": "You cannot send a message to yourself.",
+    "alreadyParticipant": "The user “%username%” already takes part in the conversation.",
+    "tooMany": "A conversation can have at most %max% participants.",
+    "tooShort": "The text is too short.",
+    "tooLong": "The text is too long.",
+    "flood": "You are writing too fast, please wait a moment."
+  }
+}

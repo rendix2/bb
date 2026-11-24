@@ -1,0 +1,21 @@
+{
+  "back": "Zpět na soukromé zprávy",
+  "markdownHint": "Text pište v Markdownu: **tučně**, *kurzíva*, [odkaz](https://…), seznamy začínají „- “.",
+  "form": {
+    "protection": "Platnost formuláře vypršela, odešlete ho prosím znovu.",
+    "preview": "Náhled"
+  },
+  "error": {
+    "notParticipant": "Tato konverzace neexistuje nebo v ní už nejste.",
+    "notFounder": "Účastníky může přidávat jen zakladatel konverzace.",
+    "subject": "Zadejte předmět (nejvýše 1024 znaků).",
+    "noRecipient": "Zadejte alespoň jednoho příjemce.",
+    "unknownRecipient": "Uživatel „%username%“ neexistuje nebo není aktivní.",
+    "self": "Sobě zprávu poslat nelze.",
+    "alreadyParticipant": "Uživatel „%username%“ už je účastníkem konverzace.",
+    "tooMany": "Konverzace může mít nejvýše %max% účastníků.",
+    "tooShort": "Text je příliš krátký.",
+    "tooLong": "Text je příliš dlouhý.",
+    "flood": "Píšete příliš rychle, chvíli počkejte."
+  }
+}

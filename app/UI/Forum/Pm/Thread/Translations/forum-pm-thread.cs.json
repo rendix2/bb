@@ -1,0 +1,33 @@
+{
+  "participants": "Účastníci",
+  "founder": "zakladatel",
+  "reply": "Odpovědět",
+  "replied": "Zpráva byla odeslána.",
+  "addParticipants": "Přidat účastníky",
+  "added": "Účastníci byli přidáni.",
+  "star": "Označit hvězdičkou",
+  "unstar": "Odebrat hvězdičku",
+  "starred": "Konverzace má hvězdičku.",
+  "unstarred": "Hvězdička byla odebrána.",
+  "markUnread": "Označit jako nepřečtené",
+  "markedUnread": "Konverzace je označena jako nepřečtená.",
+  "mailOn": "Upozorňovat e-mailem",
+  "mailOff": "Neupozorňovat e-mailem",
+  "mailTurnedOn": "Na nové zprávy vás upozorníme e-mailem.",
+  "mailTurnedOff": "E-mailová upozornění jsou vypnutá.",
+  "leave": "Opustit konverzaci",
+  "leaveConfirm": "Opravdu opustit konverzaci? Uvidíte ji znovu, jen když vás přidá zakladatel.",
+  "left": "Konverzaci jste opustili.",
+  "form": {
+    "text": {
+      "label": "Text (Markdown)",
+      "required": "Napište text zprávy."
+    },
+    "send": "Odeslat",
+    "usernames": {
+      "label": "Uživatelská jména oddělená čárkou",
+      "required": "Zadejte alespoň jedno uživatelské jméno."
+    },
+    "add": "Přidat"
+  }
+}

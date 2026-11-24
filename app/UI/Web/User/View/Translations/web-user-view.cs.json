@@ -14,5 +14,6 @@
   "favourite.added": "Uživatel přidán do oblíbených.",
   "favourite.removed": "Uživatel odebrán z oblíbených.",
   "favourite.self": "Sám sebe nelze přidat do oblíbených.",
-  "watches": "Moje sledovaná témata"
+  "watches": "Moje sledovaná témata",
+  "sendPrivateMessage": "Poslat soukromou zprávu"
 }

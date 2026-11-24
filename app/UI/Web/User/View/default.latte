@@ -56,6 +56,7 @@
         {* the own lists are private: only on the own profile *}
         <a n:if="$isOwn" n:href=":Web:User:Favourites:default" class="btn btn-link btn-sm profile-favourites-link">{_web-user-view.favourites}</a>
         <a n:if="$isOwn" n:href=":Web:User:Watches:default" class="btn btn-link btn-sm profile-watches-link">{_web-user-view.watches}</a>
+        <a n:if="!$isOwn && $userEntity->isActive" n:href=":Forum:Pm:Create:default to: $userEntity->username" class="btn btn-link btn-sm profile-pm-link">{_web-user-view.sendPrivateMessage}</a>
         <div n:if="!$isOwn" class="d-inline-block profile-favourite-form" data-favourite="{$isFavourite ? 'yes' : 'no'}">{control favouriteForm}</div>
     </div>
 </div>
